@@ -1,0 +1,23 @@
+// Global constants should be defined here
+
+// Font url + font weights
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,500,700'); 
+$font-netmobiel-bold: 700;
+$font-netmobiel-medium: 500;
+$font-netmobiel-light: 300;
+$font-netmobiel-family: 'Montserrat', sans-serif;
+$font-color: #7d7d7d;
+
+// Netmobiel color definitions
+$color-netmobiel-green: #58acab;
+$color-netmobiel-sub-green: #458b88;
+$color-netmobiel-dark-green: #095e5b;
+$color-netmobiel-white: #ffffff;
+
+// Default form configuration
+$form-border-radius: 25px;
+$form-padding-top-bottom: 40px;
+$form-placeholder-font-color: #aeb1b3;
+
+// Default button configuration
+$btn-border-radius: $form-border-radius;

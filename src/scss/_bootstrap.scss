@@ -1,0 +1,8 @@
+@import '_variables';
+
+// Override default btn config from Bootstrap
+.btn {
+    background-color: $color-netmobiel-green;
+    border-radius: $btn-border-radius;
+    border: 1px solid #ffffff;
+}

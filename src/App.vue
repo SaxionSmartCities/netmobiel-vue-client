@@ -1,28 +1,69 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div>
+      <netmobiel-header/>
+    </div>
+        <!-- TODO: Replace with router-view -->
+    <div id="content" class="container">
+      <div id="progress" class="container">
+        <progress-registration :current-selected="3"/>
+      </div>
+
+      <div class="col-md-12">
+        <sign-up-form/>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="container">
+        Bye World!
+      </div>
+    </footer>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import NetmobielHeader from './components/NetmobielHeader.vue'
+import SignUpForm from './components/SignUpForm.vue'
+import ProgressRegistration from './components/ProgressRegistration.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    NetmobielHeader,
+    SignUpForm,
+    ProgressRegistration
+  },
+  data : function() { 
+    return {
+
+    };
   }
 }
 </script>
 
 <style lang="scss">
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: $font-netmobiel-family;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: $font-color;
+}
+
+.site-footer {
+  position: absolute;
+  bottom: 0;
+}
+
+#progress {
+  margin-top: 25px;
+}
+
+body {
+  background: $color-netmobiel-green;
+}
+
+small {
+  color: $form-placeholder-font-color
 }
 </style>
