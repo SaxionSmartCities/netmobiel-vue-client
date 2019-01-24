@@ -36,7 +36,7 @@
 export default {
   name: 'SignUpForm',
   data : function() {
-      return { 
+      return {
         name : '',
         email : '',
         password : '',
@@ -49,8 +49,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+
 #form {
-  
   padding-top:20px;
 }
 
@@ -64,27 +64,32 @@ export default {
   height: 100px;
   border-radius: 1000px;
   text-align: center;
-  position: absolute;
   left: 0;
   right: 0;
   margin: auto;
-  top: -90px;
   border: 1px solid #ffffff;
 }
 
 #sign-up-form {
-  padding-top: $form-padding-top-bottom;
-  padding-bottom: $form-padding-top-bottom;
-  background: #ffffff;
-  border-radius: $form-border-radius;
-  margin-top: 50px;
-  margin-bottom: 20px;
+}
+
+#form::before {
+// Alleen de hoogte is nog een beetje een gedoe
+    content:'';
+    top:0;
+    background: #ffffff;
+    border-radius: $form-border-radius;
+    // Hoogte min de padding die form krijgt, min de hoogte van de knop
+    height:calc(100% - 50px - 40px);
+    width:100%;
+    left:0;
+    position: absolute;
+    // Hoogte min de padding die form krijgt, min de helft van de hoogte van de foto.
+    margin-top:calc(50px + 20px);
 }
 
 form {
     position: relative;
-    padding-left: 10px;
-    padding-right: 10px;
 }
 
 ::placeholder {
@@ -92,11 +97,11 @@ form {
 }
 
 button {
-  position: absolute;
-  bottom: -58px;
   width: 95%;
   left: 0;
   right: 0;
+  height: 40px;
   margin: auto;
+  margin-top:15px;
 }
 </style>

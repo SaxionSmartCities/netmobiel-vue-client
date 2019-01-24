@@ -11,7 +11,7 @@ export default {
       currentSelected : Number
   },
   data : function() {
-      return { 
+      return {
           numbers : [ 1, 2, 3, 4 ]
       };
     }
