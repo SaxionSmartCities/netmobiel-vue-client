@@ -25,7 +25,7 @@
             <input class="form-check-input" type="checkbox" value="" id="agree" v-model="agree" required>
             <label class="form-check-label" for="agree"><small>Ik ga akkoord met de algemene voorwaarden van Netmobiel</small></label>
           </div>
-          <button class="btn btn-primary btn-block">Volgende stap</button>
+          <button class="btn btn-primary btn-block" @click="submitForm($event)">Volgende stap</button>
         </form>
       </div>
     </div>
@@ -34,8 +34,8 @@
 
 <script>
 export default {
-  name: 'SignUpForm',
-  data : function() {
+  name: 'UserForm',
+  data: function() {
       return {
         name : '',
         email : '',
@@ -43,11 +43,23 @@ export default {
         repeatpassword : '',
         agree : false
       };
+    },
+    methods: {
+      submitForm: function(event) {
+        event.preventDefault()
+
+        if(this.$data.agree && this.$data.password === this.$data.repeatpassword) {
+          this.$store.commit('saveUser', this.$data);
+          this.$router.push('/profile');
+        } else {
+          // Display pretty error message thingy..
+          console.log('repeat password incorrect');
+        }
+      }
     }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 
 #form {

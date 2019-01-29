@@ -1,8 +1,8 @@
 <template>
-    <nav class="site-header">
+    <nav v-if="isVisible" class="site-header">
         <div class="container">
               <div class="absolute-center">
-                  <img class="img-fluid mt-1 logo" src="@/assets/logo_white.png"/>
+                  <img class="img-fluid mt-1 logo" src="@/assets/logo_header.png"/>
               </div>
         </div>
     </nav>
@@ -11,15 +11,15 @@
 <script>
 export default {
   name: 'Header',
-  data : function() {
-      return {
-
-      };
-    }
+  computed: {
+      isVisible: function() {
+          return this.$store.getters.isHeaderVisible;
+      }
+  }
+  
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 nav {
     background: $color-netmobiel-dark-green;

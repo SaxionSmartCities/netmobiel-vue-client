@@ -1,43 +1,25 @@
 <template>
   <div id="app">
-    <div>
-      <netmobiel-header/>
-    </div>
-        <!-- TODO: Replace with router-view -->
-    <div id="content" class="container">
-      <div id="progress" class="container">
-        <progress-registration :current-selected="3"/>
-      </div>
+    <netmobiel-header/>
 
-      <div class="col-md-12">
-        <sign-up-form/>
-      </div>
+    <div id="content">
+      <router-view></router-view>
     </div>
 
-    <footer class="site-footer">
-      <div class="container">
-        Bye World!
-      </div>
-    </footer>
+    <netmobiel-footer/>
+
   </div>
 </template>
 
 <script>
-import NetmobielHeader from './components/NetmobielHeader.vue'
-import SignUpForm from './components/SignUpForm.vue'
-import ProgressRegistration from './components/ProgressRegistration.vue'
+import NetmobielHeader from '@/views/common/NetmobielHeader.vue';
+import NetmobielFooter from '@/views/common/NetmobielFooter.vue';
 
 export default {
   name: 'app',
   components: {
     NetmobielHeader,
-    SignUpForm,
-    ProgressRegistration
-  },
-  data : function() { 
-    return {
-
-    };
+    NetmobielFooter
   }
 }
 </script>
@@ -53,10 +35,6 @@ export default {
 .site-footer {
   position: absolute;
   bottom: 0;
-}
-
-#progress {
-  margin-top: 25px;
 }
 
 body {
