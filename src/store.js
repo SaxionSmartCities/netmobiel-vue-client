@@ -6,13 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
-    user: {
-      name : 'dummy',
-      email: 'dummy@example.com',
-      password: 'test1234',
-      photo: 'someImage',
-      attributes: []
-    },
+    user: {},
     ui: {
       header: {
         visible: true
@@ -28,7 +22,7 @@ export default new Vuex.Store({
     },
     isHeaderVisible: state => {
       return state.ui.header.visible;
-    }, 
+    },
     isFooterVisible: state => {
       return state.ui.footer.visible;
     }
@@ -37,7 +31,7 @@ export default new Vuex.Store({
     saveUser: (state, payload) => {
       state.user.name = payload.name;
       state.user.email = payload.email;
-      state.user.password = payload.password;
+      state.user.accessToken = payload.accessToken;
     },
     enableHeader: state => {
       console.log('Enabling header')
