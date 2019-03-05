@@ -3,13 +3,13 @@
         <div class="row mt-2">
             <router-link to='/home'>
                 <div class="col">
-                    <font-awesome-icon icon="home" />
+                    <i class="fas fa-home"></i>
                     <p>Home</p>
                 </div>
             </router-link>
             <router-link to='/home'>
                 <div class="col">
-                    <font-awesome-icon icon="suitcase" />
+                    <i class="fas fa-suitcase"></i>
                     <p>Reizen</p>
                 </div>
             </router-link>
@@ -17,13 +17,13 @@
             </div>
             <router-link to='/home'>
                 <div class="col">
-                    <font-awesome-icon icon="car" />
+                    <i class="fas fa-car"></i>
                     <p>Aanbieden</p>
                 </div>
             </router-link>
             <router-link to='/home'>
                 <div class="col">
-                    <font-awesome-icon icon="user" />
+                    <i class="fas fa-user"></i>
                     <p>Profiel</p>
                 </div>
             </router-link>

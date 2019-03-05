@@ -4,19 +4,19 @@
             <div class="white-box-widget">
                 <h3 class="left-align">Plan uw reis</h3>
                     <div class="form-group row">
-                        <label for="from" class="col-1 col-form-label"><font-awesome-icon icon="home" /></label>
+                        <label for="from" class="col-1 col-form-label"><i class="fas fa-home"></i></label>
                         <div class="col-10">
                             <input type="text" class="form-control" id="from" placeholder="Huidige locatie" required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="from" class="col-1 col-form-label"><font-awesome-icon icon="map-marker-alt" /></label>
+                        <label for="from" class="col-1 col-form-label"><i class="fas fa-map-marker-alt"></i></label>
                         <div class="col-10">
                             <input type="text" class="form-control" id="from" placeholder="Bestemming" required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="from" class="col-1 col-form-label"><font-awesome-icon icon="clock" /></label>
+                        <label for="from" class="col-1 col-form-label"><i class="fas fa-clock"></i></label>
                         <div class="col-5">
                             <input type="time" class="form-control" id="from" placeholder="Vertrektijd" required>
                         </div>
@@ -45,9 +45,6 @@ export default {
 </script>
 
 <style lang="scss">
-.left-align {
-    text-align: left;
-}
 
 small {
     text-align: center;
