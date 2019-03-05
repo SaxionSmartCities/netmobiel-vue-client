@@ -26,7 +26,7 @@ export default {
 
 <style lang="scss">
 #app {
-  font-family: $font-netmobiel-family;
+  font-family: $font-family;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: $font-color;
@@ -38,10 +38,46 @@ export default {
 }
 
 body {
-  background: $color-netmobiel-green;
+  background: $color-green;
 }
 
 small {
   color: $form-placeholder-font-color
+}
+
+.white-box-widget {
+    background: #ffffff;
+    border-radius: $form-border-radius;
+    width:100%;
+    padding: 20px;
+    margin-top:calc(50px + 20px);
+    font-weight: $font-light;
+    text-align: center;
+}
+
+.btn-netmobiel-white {
+  width: 100%;
+  height: 40px;
+  margin: auto;
+  margin-top:15px;
+  background-color: $color-white;
+  color: $color-green;
+}
+
+.btn-netmobiel-white {
+  width: 100%;
+  height: 40px;
+  margin: auto;
+  margin-top:15px;
+  background-color: $color-green;
+  color: $color-white;
+}
+
+.left-align {
+    text-align: left;
+}
+
+.right-align {
+  text-align: right;
 }
 </style>

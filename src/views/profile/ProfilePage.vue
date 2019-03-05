@@ -25,7 +25,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 #container {
     background: #ffffff;
     border-radius: $form-border-radius;

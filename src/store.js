@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import VueJwtDecode from 'vue-jwt-decode'
+
 
 Vue.use(Vuex)
 
@@ -29,9 +31,11 @@ export default new Vuex.Store({
   },
   mutations: {
     saveUser: (state, payload) => {
-      state.user.name = payload.name;
-      state.user.email = payload.email;
       state.user.accessToken = payload.accessToken;
+
+      var decodedObject = VueJwtDecode.decode(payload.accessToken)
+      state.user.name = decodedObject.name;
+      state.user.email = decodedObject.email;
     },
     enableHeader: state => {
       console.log('Enabling header')
@@ -48,6 +52,10 @@ export default new Vuex.Store({
     disableFooter: state => {
       console.log('Enabling footer')
       state.ui.footer.visible = false;
+    },
+    deleteAccessToken: state => {
+      console.log('Deleting access token')
+      state.user.accessToken = null;
     }
   },
   actions: {

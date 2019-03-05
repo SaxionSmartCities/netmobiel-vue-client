@@ -1,9 +1,11 @@
 <template>
-    <nav v-if="isVisible" class="site-header">
+    <nav v-if="isVisible">
         <div class="container">
-              <div class="absolute-center">
-                  <img class="img-fluid mt-1 logo" src="@/assets/logo_header.png"/>
+            <div class="row justify-content-end">
+              <div class="col-4">
+                <button class="btn mt-1 btn-netmobiel-white" @click="logout">Logout</button>
               </div>
+            </div>
         </div>
     </nav>
 </template>
@@ -15,23 +17,32 @@ export default {
       isVisible: function() {
           return this.$store.getters.isHeaderVisible;
       }
+  },
+  methods: {
+    logout: function() {
+      console.log('Logging out!')
+      this.$keycloak.logoutFn();
+      this.$store.commit('deleteAccessToken');
+    }
   }
   
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 nav {
-    background: $color-netmobiel-dark-green;
+    background: $color-dark-green;
+    background-image: url("../../assets/logo_header.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
     height: 50px;
     border-bottom: 1px solid #ffffff;
 }
+
 .logo{
   max-width: 175px;
   margin: 0 auto;
+}
 
-}
-.absolute-center{
-  text-align:center;
-}
 </style>

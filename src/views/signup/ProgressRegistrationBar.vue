@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" id="progressbar">
         <div class="circle" :class="n <= currentSelected ? 'selected' : ''" :id="n" :key="n" v-for="n in numbers">{{ n }}</div>
     </div>
 </template>
@@ -18,14 +18,14 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.container {
+<style lang="scss">
+#progressbar {
     display: flex;
     justify-content: space-between;
     position: relative;
 }
 
-.container::before {
+#progressbar::before {
     content: '';
     position: absolute;
     top: 48%;
@@ -44,11 +44,11 @@ export default {
     z-index: 2;
     color: #ffffff;
     border: 2px solid #ffffff;
-    background: $color-netmobiel-green;
+    background: $color-green;
 }
 
 .selected {
     background: #ffffff;
-    color: $color-netmobiel-green;
+    color: $color-green;
 }
 </style>

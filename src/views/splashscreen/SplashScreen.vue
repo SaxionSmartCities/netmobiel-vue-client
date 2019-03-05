@@ -2,8 +2,8 @@
   <div id="splash-screen">
     <img class="img-fluid" src="@/assets/logo_splash.png">
     <div class="footer">
-      <a class="btn btn-primary btn-block" @click="$keycloak.loginFn()">Login</a>
-      <router-link to="/createUser" class="btn btn-primary btn-block">Registreren</router-link>
+      <a class="btn btn-netmobiel-white btn-block" @click="$keycloak.loginFn()">Login</a>
+      <router-link to="/createUser" class="btn btn-netmobiel-white btn-block">Registreren</router-link>
     </div>
   </div>
 </template>
@@ -26,12 +26,12 @@ export default {
         accessToken: this.$keycloak.token,
       }
       this.$store.commit('saveUser', payload)
-      this.$router.push('/profile')
+      this.$router.push('/home')
     }
   }
 }
 </script>
 
-<style scoped lang="scss">
-    // Heinze is going to do some flex-box magic here!
+<style lang="scss">
+
 </style>

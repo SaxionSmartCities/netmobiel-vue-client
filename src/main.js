@@ -6,8 +6,15 @@ import App from './App.vue'
 import store from './store'
 import router from './router'
 import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faHome, faMapMarkerAlt, faClock, faSuitcase, faUser, faCar } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 Vue.use(BootstrapVue);
+
+library.add(faHome, faMapMarkerAlt, faClock, faSuitcase, faUser, faCar)
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false
 
