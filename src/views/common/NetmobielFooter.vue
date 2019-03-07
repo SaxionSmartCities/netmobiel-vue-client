@@ -32,32 +32,33 @@
 </template>
 
 <script>
-export default {
-  name: 'Footer',
-   computed: {
-      isVisible: function() {
-          return this.$store.getters.isFooterVisible;
-      }
-  }
-}
+    export default {
+        name: 'Footer',
+        computed: {
+            isVisible: function () {
+                return this.$store.getters.isFooterVisible;
+            }
+        }
+    }
 </script>
 
 <style lang="scss">
-footer {
-    position: absolute;
-    bottom: 0;
-    height: 75px;
-    background-color: $color-white;
-    font-size: 2em;
-    text-align: center;
-    line-height: 1.2;
-}
+    footer {
+        position: absolute;
+        bottom: 0;
+        height: 75px;
+        width: max-content;
+        background-color: $color-white;
+        font-size: 2em;
+        text-align: center;
+        line-height: 1.2;
+    }
 
-footer p {
-    font-size: 0.5em;
-}
+    footer p {
+        font-size: 0.5em;
+    }
 
-footer a { 
-    color: $font-color;
-}
+    footer a {
+        color: $font-color;
+    }
 </style>

@@ -12,21 +12,21 @@ Vue.use(BootstrapVue);
 Vue.config.productionTip = false
 
 Vue.use(VueKeyCloak, {
-  config: {
-    "authRealm": "saxion",
-    "authUrl": "https://keycloak.actmedialab.nl/auth",
-    "authClientId": "netmobiel-poc"
-  },
-  init: {
-    onLoad: 'check-sso'
-  },
-  onReady: (keycloak) => {
-    console.log(`I wonder what Keycloak returns: ${keycloak}`)
-    /* eslint-disable no-new */
-    new Vue({
-      store,
-      router,
-      render: h => h(App)
-    }).$mount('#app')
-  }
+    config: {
+        "authRealm": "saxion",
+        "authUrl": "https://keycloak.actmedialab.nl/auth",
+        "authClientId": "netmobiel-poc"
+    },
+    init: {
+        onLoad: 'check-sso'
+    },
+    onReady: (keycloak) => {
+        console.log(`I wonder what Keycloak returns: ${keycloak}`)
+        /* eslint-disable no-new */
+        new Vue({
+            store,
+            router,
+            render: h => h(App)
+        }).$mount('#app')
+    }
 })
