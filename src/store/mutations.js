@@ -1,35 +1,6 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
 import VueJwtDecode from 'vue-jwt-decode'
 
-
-Vue.use(Vuex)
-
-export default new Vuex.Store({
-  strict: process.env.NODE_ENV !== 'production',
-  state: {
-    user: {},
-    ui: {
-      header: {
-        visible: true
-      },
-      footer: {
-        visible: true
-      }
-    }
-  },
-  getters: {
-    getUser: state => {
-      return state.user;
-    },
-    isHeaderVisible: state => {
-      return state.ui.header.visible;
-    },
-    isFooterVisible: state => {
-      return state.ui.footer.visible;
-    }
-  },
-  mutations: {
+export default {
     saveUser: (state, payload) => {
       state.user.accessToken = payload.accessToken;
 
@@ -57,9 +28,4 @@ export default new Vuex.Store({
       console.log('Deleting access token')
       state.user.accessToken = null;
     }
-  },
-  actions: {
-
   }
-
-})
