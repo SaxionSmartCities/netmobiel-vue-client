@@ -1,0 +1,51 @@
+// Import variables --> bootstrap --> this file
+@import "_bootstrap";
+
+// App-specific configuration
+body {
+  background: $color-secondary;
+  font-family: $font-family;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: $font-color;
+}
+
+// Box widget
+.box-widget {
+  border-radius: $form-border-radius;
+  padding: $box-widget-padding;
+  font-weight: $font-light;
+}
+
+.background-primary {
+  background: $color-primary;
+}
+
+.background-secondary {
+  background: $color-secondary;
+}
+
+// Typography
+.text-primary {
+  color: $color-primary;
+}
+
+.text-secondary {
+  color: $color-secondary;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-small {
+  font-size: 0.8em;
+}

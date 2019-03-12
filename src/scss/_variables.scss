@@ -1,18 +1,26 @@
 // Global constants should be defined here
 
 // Font url + font weights
-@import url('https://fonts.googleapis.com/css?family=Montserrat:300,500,700'); 
+@import url("https://fonts.googleapis.com/css?family=Montserrat:300,500,700");
 $font-bold: 700;
 $font-medium: 500;
 $font-light: 300;
-$font-family: 'Montserrat', sans-serif;
+$font-family: "Montserrat", sans-serif;
 $font-color: #7d7d7d;
 
 // Netmobiel color definitions
-$color-green: #58acab;
-$color-sub-green: #458b88;
-$color-dark-green: #095e5b;
-$color-white: #ffffff; // Just because we can.
+$netmobiel-green: #58acab;
+$netmobiel-sub-green: #458b88;
+$netmobiel-dark-green: #095e5b;
+$netmobiel-white: #ffffff; // Just because we can.
+
+// Color definitions
+$color-primary: $netmobiel-white;
+$color-primary-light: $netmobiel-white;
+$color-primary-dark: #cccccc; // Obtained via material.io color tool
+$color-secondary: $netmobiel-green;
+$color-secondary-light: #8adedd; // Obtained via material.io color tool
+$color-secondary-dark: #095e5b;
 
 // Default form configuration
 $form-border-radius: 25px;
@@ -20,7 +28,11 @@ $form-margin-top-bottom: 20px;
 $form-placeholder-font-color: #aeb1b3;
 
 // Default button configuration
+$btn-height: 40px;
 $btn-border-radius: $form-border-radius;
 
 // Photo
 $photo-height: 100px;
+
+// Box-widge configuration
+$box-widget-padding: 20px;
