@@ -71,7 +71,7 @@
           <div class="row">
             <toggle-button class="col" title="baggage" icon="fa fa-shopping-bag"></toggle-button>
             <toggle-button class="col" title="animal" icon="fas fa-cat"></toggle-button>
-            <toggle-button class="col" title="baby" icon="fas fa-baby"></toggle-button>
+            <toggle-button v-if="amountOfPersons>1" class="col" title="baby" icon="fas fa-baby"></toggle-button>
           </div>
         </div>
       </div>
