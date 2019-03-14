@@ -49,30 +49,30 @@
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <button class="btn background-secondary" type="button"
-                          id="btn_number_of_persons_min" @click="decrementValue">-
+                          id="btn_number_of_persons_min" @click="incrementAmountofPersons(-1)">-
                   </button>
                 </div>
                 <input type="number" class="col-4 form-control" id="input_number_of_persons"
-                       :value="numberOfPersons" required>
+                       :value="amountOfPersons" required>
                 <div class="input-group-append">
                   <button class="btn background-secondary" type="button"
-                          id="btn_number_of_persons_plus" @click="incrementValue">+
+                          id="btn_number_of_persons_plus" @click="incrementAmountofPersons(1)">+
                   </button>
                 </div>
               </div>
             </div>
           </div>
           <div class-="row">
-            <label class="col-10 col-form-label" id="label_switch_transport">Overstappen:</label>
+            <label class="col-6 col-form-label" id="label_switch_transport">Overstappen:</label>
             <b-form-checkbox class="col-auto" id="checkbox_switch_transport"
                              value="accepted" unchecked-value="not_accepted" v-model="status">
             </b-form-checkbox>
           </div>
-        </div>
-        <div class="row">
-          <toggle-button class="col" title="baggage" icon="fa fa-shopping-bag"></toggle-button>
-          <toggle-button class="col" title="animal" icon="fas fa-cat"></toggle-button>
-          <toggle-button class="col" title="baby" icon="fas fa-baby"></toggle-button>
+          <div class="row">
+            <toggle-button class="col" title="baggage" icon="fa fa-shopping-bag"></toggle-button>
+            <toggle-button class="col" title="animal" icon="fas fa-cat"></toggle-button>
+            <toggle-button class="col" title="baby" icon="fas fa-baby"></toggle-button>
+          </div>
         </div>
       </div>
 
@@ -90,7 +90,7 @@ export default {
   data: function(){
     return {
       isOptionsHidden: true,
-      numberOfPersons: 1,
+      amountOfPersons: 1,
       status: 'not accepted'
     }
   },
@@ -103,14 +103,9 @@ export default {
     showOptions: function(){
       this.isOptionsHidden = !this.isOptionsHidden;
     },
-    decrementValue: function(){
-      if (this.numberOfPersons > 1) {
-        this.numberOfPersons = this.numberOfPersons - 1;
-      }
-    },
-    incrementValue: function (number) {
-      if (this.numberOfPersons + number != 0) {
-        this.numberOfPersons = this.numberOfPersons + 1;
+    incrementAmountofPersons: function (number) {
+      if (this.amountOfPersons + number > 0) {
+        this.amountOfPersons = this.amountOfPersons + number;
       }
     }
   }
