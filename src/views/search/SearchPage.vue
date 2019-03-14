@@ -52,7 +52,7 @@
                           id="btn_number_of_persons_min" @click="decrementValue">-
                   </button>
                 </div>
-                <input type="number" class="form-control" id="input_number_of_persons"
+                <input type="number" class="col-4 form-control" id="input_number_of_persons"
                        :value="numberOfPersons" required>
                 <div class="input-group-append">
                   <button class="btn background-secondary" type="button"
@@ -69,7 +69,6 @@
             </b-form-checkbox>
           </div>
         </div>
-
       </div>
 
       <button class="btn btn-primary btn-block">Zoek mijn reis</button>
