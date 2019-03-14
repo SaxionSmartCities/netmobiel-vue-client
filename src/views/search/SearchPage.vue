@@ -63,7 +63,7 @@
             </div>
           </div>
           <div class-="row">
-            <label class="col-6 col-form-label" id="label_switch_transport">Overstappen:</label>
+            <label class="col-10 col-form-label" id="label_switch_transport">Overstappen:</label>
             <b-form-checkbox class="col-auto" id="checkbox_switch_transport"
                              value="accepted" unchecked-value="not_accepted" v-model="status">
             </b-form-checkbox>
