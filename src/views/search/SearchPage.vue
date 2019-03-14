@@ -133,7 +133,10 @@ export default {
 
   .custom-control-label::after{
     background-color: #095e5b;
-    height: 25px;
-    width: 25px;
+    -ms-transform: scale(1.2); /* IE /
+    -moz-transform: scale(1.2); /* FF */
+    -webkit-transform: scale(1.2); /* Safari and Chrome */
+    -o-transform: scale(1.2); /* Opera */
+    padding: 10px;
   }
 </style>

@@ -1,7 +1,7 @@
 <template>
-    <div class="btn btn-block" v-bind:class="currentClass"  @click="buttonOnClick">
-        <i :class="icon"></i>
-    </div>
+  <div class="btn btn-block default" v-bind:class="{toggled: isToggled}" @click="buttonOnClick">
+    <i id="iconId" :class="icon"> </i>
+  </div>
 </template>
 
 <script>
@@ -10,19 +10,14 @@
 
     data: function () {
       return {
-        selected: true,
-        currentClass : "btn-primary"
+        isToggled: false,
       }
     },
     methods: {
       buttonOnClick() {
         console.log("buttonOnClick");
-        this.selected = !this.selected;
-        if (!this.selected) {
-          this.currentClass = "btn-secondary"
-        }else {
-          this.currentClass= "btn-primary"
-        }
+        this.isToggled = !this.isToggled;
+
       }
     },
 
@@ -30,9 +25,17 @@
   }
 </script>
 
-<style scoped>
-    div{
-        margin-top : 8px;
-    }
+<style scoped lang="scss">
+  div {
+    margin-top: 8px;
 
+  }
+  .default {
+    background: white;
+    color: $netmobiel-dark-green;
+  }
+  .toggled {
+    background: $netmobiel-dark-green;
+    color: white;
+  }
 </style>
