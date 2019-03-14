@@ -38,6 +38,7 @@
         </div>
 
         <p class="text-small text-center" @click="showOptions">Meer opties</p>
+        <transition name="fade">
         <div v-if="!isOptionsHidden">
           <div class="row">
             <label class="col-10 col-form-label">Extra voorkeuren</label>
@@ -74,6 +75,7 @@
             <toggle-button class="col" title="baby" icon="fas fa-baby"></toggle-button>
           </div>
         </div>
+        </transition>
       </div>
 
       <button class="btn btn-primary btn-block">Zoek mijn reis</button>
@@ -138,5 +140,12 @@ export default {
     -webkit-transform: scale(1.2); /* Safari and Chrome */
     -o-transform: scale(1.2); /* Opera */
     padding: 10px;
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
   }
 </style>
