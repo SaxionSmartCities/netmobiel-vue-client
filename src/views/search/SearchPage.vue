@@ -36,22 +36,48 @@
             <input type="text" class="form-control" id="from" placeholder="+/- 10 min" required>
           </div>
         </div>
+          <div v-if="showExtras" >
+              <div class="row">
+                  <h6 class="left-align col-auto">Extra voorkeuren</h6>
+                  <label class="col-auto"><i class="fas fa fa-info"></i></label>
+              </div>
+              <div class="row">
+                  <toggle-button class="col" title="baggage" icon="fa fa-shopping-bag"></toggle-button>
+                  <toggle-button class="col" title="animal" icon="fas fa-cat"></toggle-button>
+                  <toggle-button class="col" title="baby" icon="fas fa-baby"></toggle-button>
+              </div>
+          </div>
 
-        <p class="text-small text-center">Meer opties</p>
+          <div>
+              <p class="text-small text-center" @click="extraOptionsOnClick">Meer opties</p>
+          </div>
       </div>
-
       <button class="btn btn-primary btn-block">Zoek mijn reis</button>
     </form>
   </div>
 </template>
 
 <script>
+  import ToggleButton from "@/views/common/ToggleButton.vue"
 export default {
+  components: {
+    ToggleButton
+  },
   computed: {
     user() {
       return this.$store.getters.getUser;
     }
+  },
+  data: function () {
+    return {showExtras: false,}
+  },
+  methods: {
+    extraOptionsOnClick: function () {
+      console.log("in onclick");
+      this.showExtras = !this.showExtras;
+    }
   }
+
 };
 </script>
 
