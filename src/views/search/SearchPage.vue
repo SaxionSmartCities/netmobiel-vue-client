@@ -70,6 +70,9 @@
             </b-form-checkbox>
           </div>
           <div class="row">
+          <label class="col-auto col-form-label">Ik reis en neem mee:</label>
+          </div>
+          <div class="row">
             <toggle-button class="col" title="baggage" icon="fa fa-shopping-bag"></toggle-button>
             <toggle-button class="col" title="animal" icon="fas fa-cat"></toggle-button>
             <toggle-button class="col" title="baby" icon="fas fa-baby"></toggle-button>
