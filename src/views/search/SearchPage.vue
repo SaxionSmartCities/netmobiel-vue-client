@@ -69,6 +69,11 @@
             </b-form-checkbox>
           </div>
         </div>
+        <div class="row">
+          <toggle-button class="col" title="baggage" icon="fa fa-shopping-bag"></toggle-button>
+          <toggle-button class="col" title="animal" icon="fas fa-cat"></toggle-button>
+          <toggle-button class="col" title="baby" icon="fas fa-baby"></toggle-button>
+        </div>
       </div>
 
       <button class="btn btn-primary btn-block">Zoek mijn reis</button>
@@ -77,7 +82,11 @@
 </template>
 
 <script>
+  import ToggleButton from "@/views/common/ToggleButton.vue"
 export default {
+  components: {
+    ToggleButton
+  },
   data: function(){
     return {
       isOptionsHidden: true,
