@@ -37,7 +37,39 @@
           </div>
         </div>
 
-        <p class="text-small text-center">Meer opties</p>
+        <p class="text-small text-center" @click="showOptions">Meer opties</p>
+        <div v-if="!isOptionsHidden">
+          <div class="row">
+            <label class="col-10 col-form-label">Extra voorkeuren</label>
+            <label class="col-auto col-form-label"><i class="fa fa-info"></i> </label>
+          </div>
+          <div class="form-group row">
+            <label class="col-7 col-form-label" id="label_number_of_persons">Aantal personen</label>
+            <div class="col-5">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <button class="btn background-secondary" type="button"
+                          id="btn_number_of_persons_min" @click="decrementValue">-
+                  </button>
+                </div>
+                <input type="number" class="form-control" id="input_number_of_persons"
+                       :value="numberOfPersons" required>
+                <div class="input-group-append">
+                  <button class="btn background-secondary" type="button"
+                          id="btn_number_of_persons_plus" @click="incrementValue">+
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class-="row">
+            <label class="col-10 col-form-label" id="label_switch_transport">Overstappen:</label>
+            <b-form-checkbox class="col-auto" id="checkbox_switch_transport"
+                             value="accepted" unchecked-value="not_accepted" v-model="status">
+            </b-form-checkbox>
+          </div>
+        </div>
+
       </div>
 
       <button class="btn btn-primary btn-block">Zoek mijn reis</button>
@@ -47,13 +79,58 @@
 
 <script>
 export default {
+  data: function(){
+    return {
+      isOptionsHidden: true,
+      numberOfPersons: 1,
+      status: 'not accepted'
+    }
+  },
   computed: {
     user() {
       return this.$store.getters.getUser;
+    }
+  },
+  methods: {
+    showOptions: function(){
+      this.isOptionsHidden = !this.isOptionsHidden;
+    },
+    decrementValue: function(){
+      if (this.numberOfPersons > 1) {
+        this.numberOfPersons = this.numberOfPersons - 1;
+      }
+    },
+    incrementValue: function (number) {
+      if (this.numberOfPersons + number != 0) {
+        this.numberOfPersons = this.numberOfPersons + 1;
+      }
     }
   }
 };
 </script>
 
 <style lang="scss">
+  #btn_number_of_persons_plus{
+    background-color: $color-secondary-dark;
+    color: $color-primary;
+  }
+
+  #btn_number_of_persons_min{
+    background-color: $color-secondary-dark;
+    color: $color-primary;
+  }
+
+  #label_number_of_persons{
+    margin-right: 0;
+  }
+
+  #label_switch_transport {
+    padding-left: 0;
+  }
+
+  .custom-control-label::after{
+    background-color: #095e5b;
+    height: 25px;
+    width: 25px;
+  }
 </style>
