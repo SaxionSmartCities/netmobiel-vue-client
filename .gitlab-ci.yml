@@ -8,22 +8,12 @@ stages:
 
 run linter:
   stage: lint
-  only:
-    refs:
-      - dev
-      - master
-      - /*pull*/
   script:
     - npm install --progress=false
     - npm run lint
 
 build site:
   stage: build
-  only:
-    refs:
-      - dev
-      - master
-      - merge_requests
   script:
     - npm install --progress=false
     - npm run build
@@ -31,3 +21,11 @@ build site:
     expire_in: 1 week
     paths:
       - dist
+
+deploy site:
+  stage: deploy
+  only:
+    refs:
+      - master
+  script:
+    - npm install --progress=false
