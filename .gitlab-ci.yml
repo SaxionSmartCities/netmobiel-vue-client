@@ -1,6 +1,6 @@
 run linter:
   image: node:8
-  stage: lint
+  stage: test
   variables:
     NODE_ENV: "production"
   script:
