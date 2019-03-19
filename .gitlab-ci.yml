@@ -12,7 +12,7 @@ run linter:
     refs:
       - dev
       - master
-      - merge_requests
+      - /*pull*/
   script:
     - npm install --progress=false
     - npm run lint
