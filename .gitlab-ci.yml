@@ -1,11 +1,5 @@
-job:
-  image: node:11
-  only:
-    refs:
-      - dev
-      - master
-      - merge_requests
-      
+image: node:11
+
 stages:
   - lint
   - build
@@ -14,12 +8,22 @@ stages:
 
 run linter:
   stage: lint
+  only:
+    refs:
+      - dev
+      - master
+      - merge_requests
   script:
     - npm install --progress=false
     - npm run lint
 
 build site:
   stage: build
+  only:
+    refs:
+      - dev
+      - master
+      - merge_requests
   script:
     - npm install --progress=false
     - npm run build
