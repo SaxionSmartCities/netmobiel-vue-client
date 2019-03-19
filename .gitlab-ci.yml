@@ -7,11 +7,9 @@ stages:
 run linter:
   image: node:11
   stage: lint
-  variables:
-    NODE_ENV: "production"
   script:
     - npm install
-    - npm run lint
+    - NODE_ENV=production npm run lint
 
 build site:
   image: node:8
