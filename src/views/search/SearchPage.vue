@@ -9,12 +9,12 @@
           </label>
           <div class="col-10">
             <input
+              id="from"
               type="text"
               class="form-control"
-              id="from"
               placeholder="Huidige locatie"
               required
-            >
+            />
           </div>
         </div>
         <div class="form-group row">
@@ -22,7 +22,13 @@
             <i class="fas fa-map-marker-alt"></i>
           </label>
           <div class="col-10">
-            <input type="text" class="form-control" id="from" placeholder="Bestemming" required>
+            <input
+              id="from"
+              type="text"
+              class="form-control"
+              placeholder="Bestemming"
+              required
+            />
           </div>
         </div>
         <div class="form-group row">
@@ -30,10 +36,22 @@
             <i class="fas fa-clock"></i>
           </label>
           <div class="col-5">
-            <input type="time" class="form-control" id="from" placeholder="Vertrektijd" required>
+            <input
+              id="from"
+              type="time"
+              class="form-control"
+              placeholder="Vertrektijd"
+              required
+            />
           </div>
           <div class="col-5">
-            <input type="text" class="form-control" id="from" placeholder="+/- 10 min" required>
+            <input
+              id="from"
+              type="text"
+              class="form-control"
+              placeholder="+/- 10 min"
+              required
+            />
           </div>
         </div>
 
@@ -49,11 +67,10 @@
 export default {
   computed: {
     user() {
-      return this.$store.getters.getUser;
-    }
-  }
-};
+      return this.$store.getters.getUser
+    },
+  },
+}
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>

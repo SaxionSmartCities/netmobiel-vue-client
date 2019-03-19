@@ -34,14 +34,13 @@
 
 <script>
 export default {
-  name: "Footer",
+  name: 'Footer',
   computed: {
     isVisible: function() {
-      return this.$store.getters.isFooterVisible;
-    }
-  }
-};
+      return this.$store.getters.isFooterVisible
+    },
+  },
+}
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>

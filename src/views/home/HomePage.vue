@@ -5,12 +5,15 @@
       <p>Welkom bij Netmobiel!</p>
     </div>
 
-    <router-link to="/search" class="btn btn-block btn-primary">Ik wil een reis zoeken!</router-link>
-    <button class="btn btn-block btn-primary">Ik wil een reis aanbieden!</button>
-    <router-link
-      to="/createUser"
-      class="btn btn-block btn-primary"
-    >Ik wil als nog een account aanmaken!</router-link>
+    <router-link to="/search" class="btn btn-block btn-primary">
+      Ik wil een reis zoeken!
+    </router-link>
+    <button class="btn btn-block btn-primary">
+      Ik wil een reis aanbieden!
+    </button>
+    <router-link to="/createUser" class="btn btn-block btn-primary">
+      Ik wil als nog een account aanmaken!
+    </router-link>
   </div>
 </template>
 
@@ -18,11 +21,10 @@
 export default {
   computed: {
     user() {
-      return this.$store.getters.getUser;
-    }
-  }
-};
+      return this.$store.getters.getUser
+    },
+  },
+}
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>

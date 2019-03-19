@@ -4,74 +4,83 @@
       <div>
         <form>
           <div class="form-group">
-            <label for="name">Naam
+            <label for="name"
+              >Naam
               <sup>*</sup>
             </label>
             <input
+              id="name"
+              v-model="name"
               type="text"
               class="form-control"
-              id="name"
               placeholder="Uw naam"
-              v-model="name"
               required
-            >
+            />
           </div>
           <div class="form-group">
-            <label for="email">E-mail
+            <label for="email"
+              >E-mail
               <sup>*</sup>
             </label>
             <input
+              id="email"
+              v-model="email"
               type="email"
               class="form-control"
-              id="email"
               placeholder="Uw e-mailadres"
-              v-model="email"
               required
-            >
+            />
           </div>
           <div class="form-group">
-            <label for="password">Wachtwoord
+            <label for="password"
+              >Wachtwoord
               <sup>*</sup>
             </label>
             <input
-              type="password"
-              class="form-control"
               id="password"
-              placeholder="Uw wachtwoord"
               v-model="password"
+              type="password"
+              class="form-control"
+              placeholder="Uw wachtwoord"
               required
-            >
+            />
           </div>
           <div class="form-group">
-            <label for="repeatpassword">Herhaal wachtwoord
+            <label for="repeatpassword"
+              >Herhaal wachtwoord
               <sup>*</sup>
             </label>
             <input
+              id="repeatpassword"
+              v-model="repeatpassword"
               type="password"
               class="form-control"
-              id="repeatpassword"
               placeholder="Herhaal uw wachtwoord"
-              v-model="repeatpassword"
               required
-            >
+            />
           </div>
-          <p class="text-small">
-            <sup>*</sup> Verplichte velden
-          </p>
+          <p class="text-small"><sup>*</sup> Verplichte velden</p>
           <div class="form-check">
             <input
+              id="agree"
+              v-model="agree"
               class="form-check-input"
               type="checkbox"
               value
-              id="agree"
-              v-model="agree"
               required
-            >
+            />
             <label class="form-check-label" for="agree">
-              <p class="text-small">Ik ga akkoord met de algemene voorwaarden van Netmobiel</p>
+              <p class="text-small">
+                Ik ga akkoord met de algemene voorwaarden van Netmobiel
+              </p>
             </label>
           </div>
-          <button class="btn btn-block btn-secondary" @click="submitForm($event)">Volgende stap</button>
+          <button
+            class="btn btn-block btn-secondary"
+            @click="submitForm($event)"
+          >
+            Volgende stap
+          </button>
         </form>
       </div>
     </div>
@@ -80,34 +89,33 @@
 
 <script>
 export default {
-  name: "UserForm",
+  name: 'UserForm',
   data: function() {
     return {
-      name: "",
-      email: "",
-      password: "",
-      repeatpassword: "",
-      agree: false
-    };
+      name: '',
+      email: '',
+      password: '',
+      repeatpassword: '',
+      agree: false,
+    }
   },
   methods: {
     submitForm: function(event) {
-      event.preventDefault();
+      event.preventDefault()
 
       if (
         this.$data.agree &&
         this.$data.password === this.$data.repeatpassword
       ) {
-        this.$store.commit("saveUser", this.$data);
-        this.$router.push("/profile");
+        this.$store.commit('saveUser', this.$data)
+        this.$router.push('/profile')
       } else {
         // Display pretty error message thingy..
-        console.log("repeat password incorrect");
+        console.log('repeat password incorrect')
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>

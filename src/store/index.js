@@ -13,14 +13,14 @@ export default new Vuex.Store({
     user: {},
     ui: {
       header: {
-        visible: true
+        visible: true,
       },
       footer: {
-        visible: true
-      }
-    }
+        visible: true,
+      },
+    },
   },
   getters,
   mutations,
-  actions
+  actions,
 })

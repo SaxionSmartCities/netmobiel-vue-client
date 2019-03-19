@@ -6,7 +6,9 @@
         <li>Email: {{ user.email }}</li>
       </ul>
     </div>
-    <button class="btn btn-block" @click="navToHome()">Terug naar het vorige scherm!</button>
+    <button class="btn btn-block" @click="navToHome()">
+      Terug naar het vorige scherm!
+    </button>
   </div>
 </template>
 
@@ -14,15 +16,15 @@
 export default {
   computed: {
     user() {
-      return this.$store.getters.getUser;
-    }
+      return this.$store.getters.getUser
+    },
   },
   methods: {
     navToHome: function() {
-      this.$router.push("/");
-    }
-  }
-};
+      this.$router.push('/')
+    },
+  },
+}
 </script>
 
 <style lang="scss">

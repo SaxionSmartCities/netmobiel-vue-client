@@ -1,32 +1,37 @@
 <template>
-  <div class="container" id="progressbar">
+  <div id="progressbar" class="container">
     <div
-      class="circle"
-      :class="n <= currentSelected ? 'selected' : ''"
+      v-for="n in numbers"
       :id="n"
       :key="n"
-      v-for="n in numbers"
-    >{{ n }}</div>
+      class="circle"
+      :class="n <= currentSelected ? 'selected' : ''"
+    >
+      {{ n }}
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "ProgressRegistrationBar",
+  name: 'ProgressRegistrationBar',
   props: {
-    currentSelected: Number
+    currentSelected: {
+      type: Number,
+      default: 1,
+    },
   },
   data: function() {
     return {
-      numbers: [1, 2, 3, 4]
-    };
-  }
-};
+      numbers: [1, 2, 3, 4],
+    }
+  },
+}
 </script>
 
 <style lang="scss">
 #progressbar {
-  background-image: url("../../assets/spacer.gif");
+  background-image: url('../../assets/spacer.gif');
   background-repeat: repeat-x;
   background-position: left;
   background-clip: content-box;
