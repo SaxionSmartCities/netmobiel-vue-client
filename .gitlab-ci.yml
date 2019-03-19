@@ -1,5 +1,5 @@
 build site:
-  image: node:6
+  image: node:8
   stage: build
   script:
     - npm install --progress=false
