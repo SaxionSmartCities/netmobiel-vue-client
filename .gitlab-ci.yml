@@ -1,6 +1,12 @@
+stages:
+  - lint
+  - build
+  - test
+  - deploy
+
 run linter:
   image: node:8
-  stage: test
+  stage: lint
   variables:
     NODE_ENV: "production"
   script:
