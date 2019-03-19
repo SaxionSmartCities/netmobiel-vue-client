@@ -1,3 +1,12 @@
+run linter:
+  image: node:8
+  stage: lint
+  variables:
+    NODE_ENV: "production"
+  script:
+    - npm install --progress=false
+    - npm run lint
+
 build site:
   image: node:8
   stage: build
