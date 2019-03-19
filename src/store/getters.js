@@ -8,4 +8,7 @@ export default {
   isFooterVisible: state => {
     return state.ui.footer.visible
   },
+  getLocations: state => {
+    return state.user.locations
+  },
 }

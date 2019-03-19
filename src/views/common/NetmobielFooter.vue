@@ -8,10 +8,10 @@
             <p class="text-small">Home</p>
           </div>
         </router-link>
-        <router-link to="/home" class="text-secondary text-center">
+        <router-link to="/locations" class="text-secondary text-center">
           <div class="col">
-            <i class="fas fa-suitcase"></i>
-            <p class="text-small">Reizen</p>
+            <i class="fas fa-map-marker-alt"></i>
+            <p class="text-small">Mijn locaties</p>
           </div>
         </router-link>
         <div class="col"></div>
