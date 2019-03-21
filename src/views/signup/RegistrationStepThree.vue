@@ -48,14 +48,14 @@
           </div>
           <div class="col-4 text-center">
             <toggle-button
-              icon="fas fa-car"
+              icon="fas fa-wheelchair"
               name="wheelChair"
               @toggle="setWheelChair"
             ></toggle-button>
           </div>
           <div class="col-4 text-center">
             <toggle-button
-              icon="fas fa-car"
+              icon="fas fas fa-dog"
               name="animal"
               @toggle="setAnimal"
             ></toggle-button>
