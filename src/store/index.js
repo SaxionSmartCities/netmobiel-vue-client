@@ -35,7 +35,7 @@ export default new Vuex.Store({
       },
     },
     ui: {
-      registrationStep: 2,
+      registrationStep: 1,
       header: {
         visible: true,
       },
