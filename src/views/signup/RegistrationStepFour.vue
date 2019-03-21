@@ -44,7 +44,6 @@
       </div>
       <div class="col-4 text-center">
         <toggle-button
-
           icon="fas fa-bicycle"
           name="Deelfiets"
           @toggle="setShareBike"
@@ -52,7 +51,6 @@
       </div>
       <div class="col-4 text-center">
         <toggle-button
-
           icon="fas fa-train"
           name="trein"
           @toggle="setTrain"
@@ -93,10 +91,12 @@ export default {
       this.$store.commit('incrementRegistrationStep', -3)
     },
     setRideAlong() {
-      this.conveyancePreferences.rideAlong = !this.conveyancePreferences.rideAlong
+      this.conveyancePreferences.rideAlong = !this.conveyancePreferences
+        .rideAlong
     },
     setRegionTaxi() {
-      this.conveyancePreferences.regionTaxi = !this.conveyancePreferences.regionTaxi
+      this.conveyancePreferences.regionTaxi = !this.conveyancePreferences
+        .regionTaxi
     },
     setBus() {
       this.conveyancePreferences.bus = !this.conveyancePreferences.bus
@@ -105,7 +105,8 @@ export default {
       this.conveyancePreferences.shareCar = !this.conveyancePreferences.shareCar
     },
     setShareBike() {
-      this.conveyancePreferences.shareBike = !this.conveyancePreferences.shareBike
+      this.conveyancePreferences.shareBike = !this.conveyancePreferences
+        .shareBike
     },
     setTrain() {
       this.conveyancePreferences.train = !this.conveyancePreferences.train
