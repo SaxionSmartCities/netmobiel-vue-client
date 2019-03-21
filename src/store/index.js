@@ -16,7 +16,7 @@ export default new Vuex.Store({
       email: undefined,
       password: undefined,
       //
-      date: Date.now(),
+      dateOfBirth: Date.now(),
       biography: '',
       maxWalkDistance: 10,
       flexibility: 10,

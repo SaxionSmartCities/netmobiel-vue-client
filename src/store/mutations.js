@@ -12,18 +12,15 @@ export default {
     state.user.password = payload.password
   },
   saveUserStep2: (state, payload) => {
-    console.log('save user step 2')
-    state.user.date = payload.date
+    state.user.dateOfBirth = payload.dateOfBirth
     state.user.biography = payload.biography
   },
   saveUserStep3: (state, payload) => {
-    console.log('save user step 3')
     state.user.maxWalkDistance = payload.maxWalkDistance
     state.user.flexibility = payload.flexibility
     state.user.rideBaggage = payload.rideBaggage
   },
   saveUserStep4: (state, payload) => {
-    console.log('save user step 4')
     state.user.conveyancePreferences = payload.conveyancePreferences
   },
   enableHeader: state => {
