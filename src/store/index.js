@@ -12,7 +12,7 @@ export default new Vuex.Store({
   state: {
     user: {},
     ui: {
-      registrationStep: 1,
+      registrationStep: 2,
       header: {
         visible: true,
       },
