@@ -91,7 +91,6 @@ export default {
       this.$store.commit('saveUserStep4', this.$data)
       this.$router.push('/home')
       console.log(this.$store.state.user)
-      console.log(this.$data)
       //ugly
       this.$store.commit('incrementRegistrationStep', -3)
     },

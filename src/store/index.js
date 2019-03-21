@@ -21,8 +21,7 @@ export default new Vuex.Store({
       maxWalkDistance: 10,
       flexibility: 10,
       rideBaggage: {
-        buggy: false,
-        walkAppliance: false,
+        baggage: false,
         wheelChair: false,
         animal: false,
       },
