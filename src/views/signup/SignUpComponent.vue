@@ -2,7 +2,7 @@
   <div>
     <div class="container">
       <div class="mt-4 mb-4">
-        <progress-registration-bar :current-selected="3" />
+        <progress-registration-bar :current-selected="registrationStep" />
       </div>
 
       <div class="col-md-12">
@@ -12,6 +12,12 @@
           </div>
           <user-form />
         </div>
+        <div class="container box-widget background-primary mt-3">
+          <registration-step-one v-show="registrationStep == 1" />
+          <registration-step-two v-show="registrationStep == 2" />
+          <registration-step-three v-show="registrationStep == 3" />
+          <registration-step-four v-show="registrationStep == 4" />
+        </div>
       </div>
     </div>
   </div>
@@ -19,13 +25,24 @@
 
 <script>
 import ProgressRegistrationBar from './ProgressRegistrationBar.vue'
-import UserForm from './UserForm.vue'
+import RegistrationStepOne from './RegistrationStepOne.vue'
+import RegistrationStepTwo from './RegistrationStepTwo'
+import RegistrationStepThree from './RegistrationStepThree'
+import RegistrationStepFour from './RegistrationStepFour'
 
 export default {
   name: 'SignUpComponent',
   components: {
+    RegistrationStepFour,
+    RegistrationStepThree,
+    RegistrationStepTwo,
     ProgressRegistrationBar,
-    UserForm,
+    RegistrationStepOne,
+  },
+  computed: {
+    registrationStep() {
+      return this.$store.getters.getRegistrationStep
+    },
   },
 }
 </script>
