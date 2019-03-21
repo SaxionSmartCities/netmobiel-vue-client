@@ -46,4 +46,7 @@ export default {
     console.log('Deleting access token')
     state.user.accessToken = null
   },
+  incrementRegistrationStep: (state, payload) => {
+    state.ui.registrationStep += payload
+  },
 }
