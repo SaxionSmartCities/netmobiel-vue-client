@@ -8,4 +8,7 @@ export default {
   isFooterVisible: state => {
     return state.ui.footer.visible
   },
+  getRegistrationStep: state => {
+    return state.ui.registrationStep
+  },
 }
