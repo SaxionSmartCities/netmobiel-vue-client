@@ -11,25 +11,23 @@
       </h6>
     </div>
     <div class="row">
-      <div class="col text-center">
+      <div class="col-4 text-center">
         <toggle-button
           icon="fas fa-car"
           name="Meerijden"
           @toggle="setRideAlong"
         ></toggle-button>
       </div>
-      <div class="col text-center">
+      <div class="col-4 text-center">
         <toggle-button
-          class="col"
           icon="fas fa-taxi"
           name="Regiotaxi"
           @toggle="setRegionTaxi"
         ></toggle-button>
       </div>
-      <div class="col text-center">
+      <div class="col-4 text-center">
         <toggle-button
           id="togglebtnBus"
-          class="col"
           icon="fas fa-bus"
           name="Bus"
           @toggle="setBus"
@@ -37,24 +35,24 @@
       </div>
     </div>
     <div class="row">
-      <div class="col text-center">
+      <div class="col-4 text-center">
         <toggle-button
           icon="fas fa-car"
           name="DeelAuto"
           @toggle="setShareCar"
         ></toggle-button>
       </div>
-      <div class="col text-center">
+      <div class="col-4 text-center">
         <toggle-button
-          class="col"
+
           icon="fas fa-bicycle"
           name="Deelfiets"
           @toggle="setShareBike"
         ></toggle-button>
       </div>
-      <div class="col text-center">
+      <div class="col-4 text-center">
         <toggle-button
-          class="col"
+
           icon="fas fa-train"
           name="trein"
           @toggle="setTrain"
