@@ -11,4 +11,7 @@ export default {
   getRegistrationStep: state => {
     return state.ui.registrationStep
   },
+  getCurrentDate: state => {
+    return new Date(state.user.dateOfBirth)
+  },
 }
