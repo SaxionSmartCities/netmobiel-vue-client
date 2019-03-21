@@ -10,7 +10,31 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
-    user: {},
+    user: {
+      //these fields are only used for the registration
+      name: undefined,
+      email: undefined,
+      password: undefined,
+      //
+      date: Date.now(),
+      biography: '',
+      maxWalkDistance: 10,
+      flexibility: 10,
+      rideBaggage: {
+        buggy: false,
+        walkAppliance: false,
+        wheelChair: false,
+        animal: false,
+      },
+      conveyancePreferences: {
+        rideAlong: false,
+        regionTaxi: false,
+        bus: false,
+        shareCar: false,
+        shareBike: false,
+        train: false,
+      },
+    },
     ui: {
       header: {
         visible: true,
