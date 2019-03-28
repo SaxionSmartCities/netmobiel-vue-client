@@ -76,7 +76,7 @@
 import ToggleButton from '../common/ToggleButton'
 
 export default {
-  name: 'RegistrationStepThree',
+  name: 'Flexibility',
   components: { ToggleButton },
   data: function() {
     return {

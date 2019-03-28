@@ -8,10 +8,10 @@
       <div id="test" class="col-md-12">
         <div class="container box-widget background-primary mt-3">
           <img src="../../assets/profile_img.png" alt="nophoto" />
-          <registration-step-one v-show="registrationStep == 1" />
-          <registration-step-two v-show="registrationStep == 2" />
-          <registration-step-three v-show="registrationStep == 3" />
-          <registration-step-four v-show="registrationStep == 4" />
+          <user-profile-input v-show="registrationStep == 1" />
+          <extra-profile-input v-show="registrationStep == 2" />
+          <flexibility v-show="registrationStep == 3" />
+          <travel-preferences v-show="registrationStep == 4" />
         </div>
       </div>
     </div>
@@ -20,19 +20,19 @@
 
 <script>
 import ProgressRegistrationBar from './ProgressRegistrationBar.vue'
-import RegistrationStepOne from './RegistrationStepOne.vue'
-import RegistrationStepTwo from './RegistrationStepTwo'
-import RegistrationStepThree from './RegistrationStepThree'
-import RegistrationStepFour from './RegistrationStepFour'
+import UserProfileInput from './UserProfileInput.vue'
+import ExtraProfileInput from './ExtraProfileInput'
+import Flexibility from './Flexibility'
+import TravelPreferences from './TravelPreferences'
 
 export default {
   name: 'SignUpComponent',
   components: {
-    RegistrationStepFour,
-    RegistrationStepThree,
-    RegistrationStepTwo,
+    TravelPreferences,
+    Flexibility,
+    ExtraProfileInput,
     ProgressRegistrationBar,
-    RegistrationStepOne,
+    UserProfileInput,
   },
   computed: {
     registrationStep() {
