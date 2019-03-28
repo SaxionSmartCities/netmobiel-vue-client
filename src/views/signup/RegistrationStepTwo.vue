@@ -3,7 +3,7 @@
     <div>
       <form>
         <div class="text-center">
-          <h6>Dag Laura!</h6>
+          <h6>Dag {{ getUserName }}!</h6>
           <small
             >Op deze pagina kunt u uw voorkeuren opgeven voor het reizen met
             Netmobiel.</small
@@ -91,21 +91,28 @@ export default {
       dayOfBirth: '',
       monthOfBirth: '',
       yearOfBirth: '',
-      dateOfBirth: '',
       //
       biography: '',
     }
+  },
+  computed: {
+    getUserName() {
+      return this.$store.getters.getUser.name
+    },
   },
   methods: {
     submitForm: function(event) {
       event.preventDefault()
       //logic to get the date from the text field
-      this.dateOfBirth = new Date(
-        this.yearOfBirth,
-        this.dayOfBirth,
-        this.monthOfBirth
-      )
-      this.$store.commit('saveUserStep2', this.$data)
+      var storeData = {
+        dateOfBirth: new Date(
+          this.yearOfBirth,
+          this.dayOfBirth,
+          this.monthOfBirth
+        ),
+        biography: this.$data.biography,
+      }
+      this.$store.commit('saveUser', storeData)
       this.$store.commit('incrementRegistrationStep', 1)
     },
   },
