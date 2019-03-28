@@ -1,58 +1,54 @@
 <template>
-  <div id="progressbar" class="container">
-    <div
-      v-for="n in numbers"
-      :id="n"
-      :key="n"
-      class="circle"
-      :class="n <= currentSelected ? 'selected' : ''"
-    >
-      {{ n }}
+    <div class="container" id="progressbar">
+        <div class="circle" :class="n <= currentSelected ? 'selected' : ''" :id="n" :key="n" v-for="n in numbers">{{ n }}</div>
     </div>
-  </div>
 </template>
 
 <script>
 export default {
   name: 'ProgressRegistrationBar',
-  props: {
-    currentSelected: {
-      type: Number,
-      default: 1,
-    },
+  props : {
+      currentSelected : Number
   },
-  data: function() {
-    return {
-      numbers: [1, 2, 3, 4],
+  data : function() {
+      return {
+          numbers : [ 1, 2, 3, 4 ]
+      };
     }
-  },
 }
 </script>
 
 <style lang="scss">
 #progressbar {
-  background-image: url('../../assets/spacer.gif');
-  background-repeat: repeat-x;
-  background-position: left;
-  background-clip: content-box;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
 
-  display: flex;
-  justify-content: space-between;
-  position: relative;
+#progressbar::before {
+    content: '';
+    position: absolute;
+    top: 48%;
+    left: 0;
+    border-top: 2px solid #ffffff;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 90%;
 }
 
 .circle {
-  border-radius: 50%;
-  width: 27px;
-  text-align: center;
-  z-index: 2;
-  color: $color-primary;
-  border: 2px solid $color-primary;
-  background: $color-secondary;
+    border-radius: 50%;
+    width: 27px;
+    text-align: center;
+    z-index: 2;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    background: $color-green;
 }
 
 .selected {
-  background: $color-primary;
-  color: $color-secondary;
+    background: #ffffff;
+    color: $color-green;
 }
 </style>
