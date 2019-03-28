@@ -89,7 +89,7 @@ export default {
   methods: {
     submitForm: function(event) {
       event.preventDefault()
-      this.$store.commit('saveUserStep3', this.$data)
+      this.$store.commit('saveUser', this.$data)
       this.$store.commit('incrementRegistrationStep', 1)
     },
     setMaxWalkDistance(event) {
