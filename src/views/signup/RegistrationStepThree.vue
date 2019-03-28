@@ -43,6 +43,7 @@
             <toggle-button
               icon="fas fa-shopping-bag	"
               name="baggage"
+              :is-toggled-default-state="rideBaggage.baggage"
               @toggle="setBaggage"
             ></toggle-button>
           </div>
@@ -50,6 +51,7 @@
             <toggle-button
               icon="fas fa-wheelchair"
               name="wheelChair"
+              :is-toggled-default-state="rideBaggage.wheelChair"
               @toggle="setWheelChair"
             ></toggle-button>
           </div>
@@ -57,6 +59,7 @@
             <toggle-button
               icon="fas fas fa-dog"
               name="animal"
+              :is-toggled-default-state="rideBaggage.animal"
               @toggle="setAnimal"
             ></toggle-button>
           </div>
