@@ -11,11 +11,15 @@
 export default {
   name: 'ToggleButton',
 
-  props: ['icon', 'name'],
+  props: {
+    icon: { type: String, default: '' },
+    name: { type: String, default: '' },
+    isToggledDefaultState: { type: Boolean, default: false },
+  },
 
   data: function() {
     return {
-      isToggled: false,
+      isToggled: this.isToggledDefaultState,
     }
   },
   methods: {
