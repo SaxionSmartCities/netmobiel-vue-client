@@ -91,7 +91,6 @@ export default {
       dayOfBirth: '',
       monthOfBirth: '',
       yearOfBirth: '',
-      dateOfBirth: '',
       //
       biography: '',
     }
@@ -105,12 +104,15 @@ export default {
     submitForm: function(event) {
       event.preventDefault()
       //logic to get the date from the text field
-      this.dateOfBirth = new Date(
-        this.yearOfBirth,
-        this.dayOfBirth,
-        this.monthOfBirth
-      )
-      this.$store.commit('saveUserStep2', this.$data)
+      var storeData = {
+        dateOfBirth: new Date(
+          this.yearOfBirth,
+          this.dayOfBirth,
+          this.monthOfBirth
+        ),
+        biography: this.$data.biography,
+      }
+      this.$store.commit('saveUser', storeData)
       this.$store.commit('incrementRegistrationStep', 1)
     },
   },

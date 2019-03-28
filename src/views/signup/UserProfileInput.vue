@@ -102,6 +102,7 @@ export default {
         this.$data.agree &&
         this.$data.password === this.$data.repeatpassword
       ) {
+        delete this.$data.repeatpassword
         this.$store.commit('saveUser', this.$data)
         this.$store.commit('incrementRegistrationStep', 1)
       } else {
