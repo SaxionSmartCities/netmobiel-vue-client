@@ -67,7 +67,7 @@
 import ToggleButton from '../common/ToggleButton'
 
 export default {
-  name: 'RegistrationStepFour',
+  name: 'TravelPreferences',
   components: { ToggleButton },
   data: function() {
     return {
