@@ -3,7 +3,7 @@
     <div>
       <form>
         <div class="text-center">
-          <h6>Dag Laura!</h6>
+          <h6>Dag {{ getUserName }}!</h6>
           <small
             >Op deze pagina kunt u uw voorkeuren opgeven voor het reizen met
             Netmobiel.</small
@@ -95,6 +95,11 @@ export default {
       //
       biography: '',
     }
+  },
+  computed: {
+    getUserName() {
+      return this.$store.getters.getUser.name
+    },
   },
   methods: {
     submitForm: function(event) {
