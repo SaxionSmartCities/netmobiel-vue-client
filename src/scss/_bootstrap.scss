@@ -1,7 +1,21 @@
-@import '_variables';
+@import "_variables";
 
 // Override default btn config from Bootstrap
 .btn {
-    border-radius: $btn-border-radius;
-    border: 1px solid #ffffff;
+  border-radius: $btn-border-radius;
+  border: 1px solid #ffffff;
+}
+
+.btn-block {
+  height: $btn-height;
+}
+
+.btn-primary {
+  background-color: $color-primary;
+  color: $color-secondary;
+}
+
+.btn-secondary {
+  background-color: $color-secondary;
+  color: $color-primary;
 }

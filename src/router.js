@@ -19,21 +19,21 @@ const router = new Router({
     },
     {
       path: '/home',
-      component: HomePage
+      component: HomePage,
     },
     {
       path: '/createUser',
-      component: SignUpForm
+      component: SignUpForm,
     },
     {
       path: '/profile',
-      component: ProfilePage
+      component: ProfilePage,
     },
     {
       path: '/search',
-      component: SearchPage
-    }
-  ]
+      component: SearchPage,
+    },
+  ],
 })
 
 router.beforeEach((to, from, next) => {
@@ -47,4 +47,4 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-export default router;
+export default router
