@@ -37,12 +37,12 @@ div {
 }
 
 .default {
-  background: white;
-  color: $netmobiel-dark-green;
+  background: $color-primary-light;
+  color: $color-secondary-dark;
 }
 
 .toggled {
-  background: $netmobiel-dark-green;
-  color: white;
+  background: $color-secondary-dark;
+  color: $color-primary-light;
 }
 </style>
