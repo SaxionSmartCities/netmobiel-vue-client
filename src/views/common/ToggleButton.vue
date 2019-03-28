@@ -20,7 +20,6 @@ export default {
   },
   methods: {
     buttonOnClick() {
-      console.log('buttonOnClick')
       this.isToggled = !this.isToggled
       this.$emit('toggle', this.isToggled)
     },
@@ -28,7 +27,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 div {
   margin-top: 8px;
 }
