@@ -24,7 +24,6 @@ export default {
   },
   methods: {
     buttonOnClick() {
-      console.log('buttonOnClick')
       this.isToggled = !this.isToggled
       this.$emit('toggle', this.isToggled)
     },

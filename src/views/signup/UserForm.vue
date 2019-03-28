@@ -104,9 +104,6 @@ export default {
       ) {
         this.$store.commit('saveUser', this.$data)
         this.$router.push('/profile')
-      } else {
-        // Display pretty error message thingy..
-        console.log('repeat password incorrect')
       }
     },
   },

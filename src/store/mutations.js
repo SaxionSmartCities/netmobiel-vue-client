@@ -9,7 +9,6 @@ export default {
     // password is stored in the store, maybe change later
     for (var key in payload) {
       if (payload.hasOwnProperty(key)) {
-        console.log('key : ' + key + ' payload : ' + payload[key])
         state.user[key] = payload[key]
       }
     }
