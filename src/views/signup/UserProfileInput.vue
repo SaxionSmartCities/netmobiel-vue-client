@@ -84,7 +84,7 @@
 
 <script>
 export default {
-  name: 'RegistrationStepOne',
+  name: 'UserProfileInput',
   data: function() {
     return {
       name: '',
@@ -102,6 +102,7 @@ export default {
         this.$data.agree &&
         this.$data.password === this.$data.repeatpassword
       ) {
+        delete this.$data.repeatpassword
         this.$store.commit('saveUser', this.$data)
         this.$store.commit('incrementRegistrationStep', 1)
       } else {
