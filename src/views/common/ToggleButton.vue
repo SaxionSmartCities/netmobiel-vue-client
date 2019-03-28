@@ -11,16 +11,19 @@
 export default {
   name: 'ToggleButton',
 
-  props: ['icon', 'name'],
+  props: {
+    icon: { type: String, default: '' },
+    name: { type: String, default: '' },
+    isToggledDefaultState: { type: Boolean, default: false },
+  },
 
   data: function() {
     return {
-      isToggled: false,
+      isToggled: this.isToggledDefaultState,
     }
   },
   methods: {
     buttonOnClick() {
-      console.log('buttonOnClick')
       this.isToggled = !this.isToggled
       this.$emit('toggle', this.isToggled)
     },
@@ -34,12 +37,12 @@ div {
 }
 
 .default {
-  background: white;
-  color: $netmobiel-dark-green;
+  background: $color-primary-light;
+  color: $color-secondary-dark;
 }
 
 .toggled {
-  background: $netmobiel-dark-green;
-  color: white;
+  background: $color-secondary-dark;
+  color: $color-primary-light;
 }
 </style>

@@ -16,7 +16,6 @@ export default {
   },
   methods: {
     logout: function() {
-      console.log('Logging out!')
       this.$keycloak.logoutFn()
       this.$store.commit('deleteAccessToken')
     },
