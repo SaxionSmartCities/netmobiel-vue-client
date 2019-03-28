@@ -15,10 +15,9 @@
 <script>
 export default {
   name: 'ProgressRegistrationBar',
-  props: {
-    currentSelected: {
-      type: Number,
-      default: 1,
+  computed: {
+    currentSelected() {
+      return this.$store.getters.getRegistrationStep
     },
   },
   data: function() {
