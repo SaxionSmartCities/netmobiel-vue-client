@@ -1,7 +1,7 @@
 <template>
   <form>
     <div class="text-center">
-      <h6>Dag Laura Jansen!</h6>
+      <h6>Hoi {{ getUserName }}!</h6>
       <small>Met welke vervoermiddelen wilt u reizen</small>
     </div>
     <p></p>
@@ -80,6 +80,11 @@ export default {
         train: false,
       },
     }
+  },
+  computed: {
+    getUserName() {
+      return this.$store.getters.getUser.name
+    },
   },
   methods: {
     submitForm: function(event) {
