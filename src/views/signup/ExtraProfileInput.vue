@@ -82,7 +82,7 @@
 
 <script>
 export default {
-  name: 'RegistrationStepTwo',
+  name: 'ExtraProfileInput',
   data: function() {
     return {
       currentDay: this.$store.getters.getCurrentDate.getDate(),

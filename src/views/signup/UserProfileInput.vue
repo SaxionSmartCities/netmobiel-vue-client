@@ -84,7 +84,7 @@
 
 <script>
 export default {
-  name: 'RegistrationStepOne',
+  name: 'UserProfileInput',
   data: function() {
     return {
       name: '',
