@@ -7,21 +7,12 @@ export default {
     //
     // let decodedObject = VueJwtDecode.decode(payload.accessToken)
     // password is stored in the store, maybe change later
-    state.user.name = payload.name
-    state.user.email = payload.email
-    state.user.password = payload.password
-  },
-  saveUserStep2: (state, payload) => {
-    state.user.dateOfBirth = payload.dateOfBirth
-    state.user.biography = payload.biography
-  },
-  saveUserStep3: (state, payload) => {
-    state.user.maxWalkDistance = payload.maxWalkDistance
-    state.user.flexibility = payload.flexibility
-    state.user.rideBaggage = payload.rideBaggage
-  },
-  saveUserStep4: (state, payload) => {
-    state.user.conveyancePreferences = payload.conveyancePreferences
+    for (var key in payload) {
+      if (payload.hasOwnProperty(key)) {
+        console.log('key : ' + key + ' payload : ' + payload[key])
+        state.user[key] = payload[key]
+      }
+    }
   },
   enableHeader: state => {
     console.log('Enabling header')

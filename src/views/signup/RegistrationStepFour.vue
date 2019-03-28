@@ -84,9 +84,8 @@ export default {
   methods: {
     submitForm: function(event) {
       event.preventDefault()
-      this.$store.commit('saveUserStep4', this.$data)
+      this.$store.commit('saveUser', this.$data)
       this.$router.push('/home')
-      console.log(this.$store.state.user)
       //ugly
       this.$store.commit('incrementRegistrationStep', -3)
     },
