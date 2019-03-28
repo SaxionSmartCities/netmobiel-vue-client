@@ -84,7 +84,7 @@
 
 <script>
 export default {
-  name: 'RegistrationStepOne',
+  name: 'UserProfileInput',
   data: function() {
     return {
       name: '',
@@ -105,9 +105,6 @@ export default {
         delete this.$data.repeatpassword
         this.$store.commit('saveUser', this.$data)
         this.$store.commit('incrementRegistrationStep', 1)
-      } else {
-        // Display pretty error message thingy..
-        console.log('repeat password incorrect')
       }
     },
   },

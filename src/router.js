@@ -6,7 +6,7 @@ Vue.use(Router)
 
 import SplashScreen from './views/splashscreen/SplashScreen.vue'
 import ProfilePage from './views/profile/ProfilePage.vue'
-import SignUpForm from './views/signup/SignUpComponent.vue'
+import SignUpForm from './views/signup/RegistrationContainer.vue'
 import HomePage from './views/home/HomePage.vue'
 import SearchPage from './views/search/SearchPage.vue'
 
