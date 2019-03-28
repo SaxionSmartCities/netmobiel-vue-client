@@ -15,6 +15,7 @@
         <toggle-button
           icon="fas fa-car"
           name="Meerijden"
+          :is-toggled-default-state="conveyancePreferences.rideAlong"
           @toggle="setRideAlong"
         ></toggle-button>
       </div>
@@ -22,6 +23,7 @@
         <toggle-button
           icon="fas fa-taxi"
           name="Regiotaxi"
+          :is-toggled-default-state="conveyancePreferences.regionTaxi"
           @toggle="setRegionTaxi"
         ></toggle-button>
       </div>
@@ -30,6 +32,7 @@
           id="togglebtnBus"
           icon="fas fa-bus"
           name="Bus"
+          :is-toggled-default-state="conveyancePreferences.bus"
           @toggle="setBus"
         ></toggle-button>
       </div>
@@ -39,6 +42,7 @@
         <toggle-button
           icon="fas fa-car"
           name="DeelAuto"
+          :is-toggled-default-state="conveyancePreferences.shareCar"
           @toggle="setShareCar"
         ></toggle-button>
       </div>
@@ -46,6 +50,7 @@
         <toggle-button
           icon="fas fa-bicycle"
           name="Deelfiets"
+          :is-toggled-default-state="conveyancePreferences.shareBike"
           @toggle="setShareBike"
         ></toggle-button>
       </div>
@@ -53,6 +58,7 @@
         <toggle-button
           icon="fas fa-train"
           name="trein"
+          :is-toggled-default-state="conveyancePreferences.train"
           @toggle="setTrain"
         ></toggle-button>
       </div>
@@ -67,7 +73,7 @@
 import ToggleButton from '../common/ToggleButton'
 
 export default {
-  name: 'RegistrationStepFour',
+  name: 'TravelPreferences',
   components: { ToggleButton },
   data: function() {
     return {
@@ -89,9 +95,8 @@ export default {
   methods: {
     submitForm: function(event) {
       event.preventDefault()
-      this.$store.commit('saveUserStep4', this.$data)
+      this.$store.commit('saveUser', this.$data)
       this.$router.push('/home')
-      console.log(this.$store.state.user)
       //ugly
       this.$store.commit('incrementRegistrationStep', -3)
     },
