@@ -13,8 +13,16 @@ export default new Vuex.Store({
     user: {
       locations: [
         {
+          id: 0,
           name: 'Thuis',
-          adress: 'Dorpstraat 19, Zieuwent',
+          address: 'Dorpstraat 19, Zieuwent',
+          lat: 52.001796,
+          long: 6.520976,
+        },
+        {
+          id: 1,
+          name: 'Elders',
+          address: 'Dorpstraat 21, Zieuwent',
           lat: 52.001796,
           long: 6.520976,
         },
@@ -27,6 +35,7 @@ export default new Vuex.Store({
       footer: {
         visible: true,
       },
+      selectedLocationId: -1,
     },
   },
   getters,

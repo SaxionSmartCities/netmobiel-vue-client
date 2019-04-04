@@ -10,6 +10,7 @@ import SignUpForm from './views/signup/SignUpComponent.vue'
 import HomePage from './views/home/HomePage.vue'
 import SearchPage from './views/search/SearchPage.vue'
 import SavedLocations from './views/location/SavedLocations.vue'
+import EditLocation from './views/location/EditLocation.vue'
 
 const router = new Router({
   mode: 'history',
@@ -37,6 +38,10 @@ const router = new Router({
     {
       path: '/locations',
       component: SavedLocations,
+    },
+    {
+      path: '/editLocation',
+      component: EditLocation,
     },
   ],
 })

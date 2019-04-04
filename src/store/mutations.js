@@ -28,4 +28,8 @@ export default {
     console.log('Deleting access token')
     state.user.accessToken = null
   },
+  setCurrentLocation: (state, locationId) => {
+    console.log('Saving currently selected location')
+    state.ui.selectedLocationId = locationId
+  },
 }

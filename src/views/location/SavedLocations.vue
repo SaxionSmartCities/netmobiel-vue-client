@@ -6,21 +6,19 @@
       <ul class="list-group">
         <li
           v-for="location in locations"
-          :key="location.name"
+          :key="location.id"
           class="list-group-item"
+          @click="openDetails(location.id)"
         >
-          <router-link
-            class="text-secondary"
-            :to="'/editLocation/' + location.name"
-          >
-            <i class="fas fa-map-marker-alt mr-2"></i> {{ location.name }}
-          </router-link>
-        </li>
-        <li class="list-group-item">
-          <i class="fas fa-plus-circle mr-2"></i>
-          Nieuwe locatie toevoegen
+          <span class="text-secondary">
+            <i class="fas fa-map-marker-alt mr-2"></i>
+            {{ location.name }}
+          </span>
         </li>
       </ul>
+    </div>
+    <div class="bottom-button mt-5" @click="createLocation()">
+      <i class="fas fa-plus-circle mr-2"></i>
     </div>
   </div>
 </template>
@@ -33,7 +31,29 @@ export default {
       return this.$store.getters.getLocations
     },
   },
+  methods: {
+    openDetails: function(id) {
+      var currentLocationId = id
+
+      this.$store.commit('setCurrentLocation', currentLocationId)
+
+      this.$router.push('/editLocation')
+    },
+    createLocation: function() {
+      console.log('Clicked on new location')
+
+      this.$store.commit('setCurrentLocation', -1)
+
+      this.$router.push('/editLocation')
+    },
+  },
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.bottom-button {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 4em;
+}
+</style>
