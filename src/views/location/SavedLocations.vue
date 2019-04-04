@@ -40,8 +40,6 @@ export default {
       this.$router.push('/editLocation')
     },
     createLocation: function() {
-      console.log('Clicked on new location')
-
       this.$store.commit('setCurrentLocation', -1)
 
       this.$router.push('/editLocation')

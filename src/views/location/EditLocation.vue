@@ -64,12 +64,8 @@ export default {
     }
   },
   beforeMount: function() {
-    console.log('loaded screen')
-    console.log(this.$store.getters.getCurrentSelectedLocationId)
-
     var selectedLocationId = this.$store.getters.getCurrentSelectedLocationId
     if (selectedLocationId === -1) {
-      console.log('Creating a new location')
       this.$data.createNewLocation = true
       this.$data.currentLocation = {
         name: '',
@@ -92,7 +88,6 @@ export default {
   },
   methods: {
     submitLocation: function() {
-      console.log('submitting data')
       this.$store.commit('updateLocation', this.$data.currentLocation)
       this.$router.push('/locations')
     },

@@ -32,4 +32,14 @@ export default {
     console.log('Saving currently selected location')
     state.ui.selectedLocationId = locationId
   },
+  updateLocation: (state, currentLocation) => {
+    //Adding the right id to the currentLocation
+    if (state.ui.selectedLocationId === -1) {
+      currentLocation.id = state.user.locations.length
+      state.user.locations.push(currentLocation)
+    } else {
+      currentLocation.id = state.ui.selectedLocationId
+      state.user.locations[state.ui.selectedLocationId] = currentLocation
+    }
+  },
 }
