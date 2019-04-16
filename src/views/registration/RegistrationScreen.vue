@@ -9,12 +9,7 @@
           <span>Gebruikersnaam</span>
         </v-flex>
         <v-flex xs9>
-          <v-text-field
-            :counter="10"
-            label="First name"
-            solo
-            required
-          ></v-text-field>
+          <v-text-field label="First name" solo required></v-text-field>
         </v-flex>
       </v-layout>
       <v-layout pa-1>
@@ -22,12 +17,7 @@
           <span>Email</span>
         </v-flex>
         <v-flex xs9>
-          <v-text-field
-            :counter="10"
-            label="First name"
-            solo
-            required
-          ></v-text-field>
+          <v-text-field label="First name" solo required></v-text-field>
         </v-flex>
       </v-layout>
       <v-layout pa-1>
@@ -35,12 +25,7 @@
           <span>Wachtwoord</span>
         </v-flex>
         <v-flex xs9>
-          <v-text-field
-            :counter="10"
-            label="First name"
-            solo
-            required
-          ></v-text-field>
+          <v-text-field label="First name" solo required></v-text-field>
         </v-flex>
       </v-layout>
       <v-layout pa-1>
@@ -48,12 +33,7 @@
           <span>Wachtwoord (herhaling)</span>
         </v-flex>
         <v-flex xs9>
-          <v-text-field
-            :counter="10"
-            label="First name"
-            solo
-            required
-          ></v-text-field>
+          <v-text-field label="First name" solo required></v-text-field>
         </v-flex>
       </v-layout>
     </v-container>

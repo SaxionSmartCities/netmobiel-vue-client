@@ -25,12 +25,11 @@ export default {
 
 <style lang="scss">
 nav {
-  background: $color-secondary-dark;
+  background: $color-green;
   background-image: url('../../assets/logo_header.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
-  border-bottom: 1px solid $color-primary;
 }
 
 #logout-container {
@@ -38,6 +37,5 @@ nav {
   align-items: center;
   justify-content: flex-end;
   height: 100%;
-  color: $color-primary;
 }
 </style>
