@@ -12,7 +12,6 @@ body {
 .box-widget {
   border-radius: $form-border-radius;
   padding: $box-widget-padding;
-  font-weight: $font-light;
 }
 
 .background-primary {
@@ -26,7 +25,9 @@ body {
 .background-secondary-dark {
   background: $color-secondary-dark;
 }
-
+.background-white{
+  background: $color-white;
+}
 // Typography
 .text-primary {
   color: $color-primary;
@@ -67,4 +68,8 @@ body {
 // TPO: Dunno why...
 .v-btn {
   margin: 0px;
+}
+
+.v-text-field {
+  padding-top: 0;
 }
