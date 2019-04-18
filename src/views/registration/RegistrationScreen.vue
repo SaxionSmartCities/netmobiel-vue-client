@@ -1,100 +1,96 @@
 <template>
   <v-form>
-    <v-container grid-list-xs>
+    <v-container v-if="step === 1" grid-list-xs>
       <v-layout pa-3
-        ><v-flex text-xs-center><h1>Registration</h1></v-flex></v-layout
+        ><v-flex text-xs-center><h1>Accountgegevens</h1></v-flex></v-layout
       >
-      <v-layout pa-1>
+      <v-layout pa-1 vertical-align-center>
         <v-flex xs3>
           <span>Gebruikersnaam</span>
         </v-flex>
         <v-flex xs9>
-          <v-text-field label="First name" solo required></v-text-field>
+          <v-text-field required></v-text-field>
         </v-flex>
       </v-layout>
-      <v-layout pa-1>
+      <v-layout pa-1 vertical-align-center>
         <v-flex xs3>
           <span>Email</span>
         </v-flex>
         <v-flex xs9>
-          <v-text-field label="First name" solo required></v-text-field>
+          <v-text-field required></v-text-field>
         </v-flex>
       </v-layout>
-      <v-layout pa-1>
+      <v-layout pa-1 vertical align-center>
+        <v-flex xs3>
+          <span>Geboortedatum</span>
+        </v-flex>
+        <v-flex xs9>
+          <v-text-field required></v-text-field>
+        </v-flex>
+      </v-layout>
+      <v-layout pa-1 vertical-align-center>
         <v-flex xs3>
           <span>Wachtwoord</span>
         </v-flex>
         <v-flex xs9>
-          <v-text-field label="First name" solo required></v-text-field>
+          <v-text-field required></v-text-field>
         </v-flex>
       </v-layout>
-      <v-layout pa-1>
+      <v-layout pa-1 vertical-align-center>
         <v-flex xs3>
           <span>Wachtwoord (herhaling)</span>
         </v-flex>
         <v-flex xs9>
-          <v-text-field label="First name" solo required></v-text-field>
+          <v-text-field required></v-text-field>
+        </v-flex>
+      </v-layout>
+      <v-layout mt-5>
+        <v-flex text-xs-center>
+          <v-btn class="full-width" @click="step = 2">Volgende scherm</v-btn>
+        </v-flex>
+      </v-layout>
+    </v-container>
+    <v-container v-if="step === 2" grid-list-xs>
+      <v-layout pa-3>
+        <v-flex text-xs-center><h1>Flexibiliteit en bagage</h1></v-flex>
+      </v-layout>
+      <v-layout pa-1 vertical-align-center>
+        <v-flex xs3>
+          <span>Max. looptafstand</span>
+        </v-flex>
+        <v-flex xs9> </v-flex>
+      </v-layout>
+      <v-layout pa-1 vertical-align-center>
+        <v-flex xs3>
+          <span>Ik reis en meestal neem ik mee:</span>
+        </v-flex>
+        <v-layout xs9>
+          <v-btn-toggle v-model="toggle_multiple" class="transparent" multiple>
+            <v-flex>
+              <v-btn :value="1" flat>
+                <v-icon>pets</v-icon>
+              </v-btn>
+            </v-flex>
+            <v-flex>
+              <v-btn :value="2" flat>
+                <v-icon>accessible</v-icon>
+              </v-btn>
+            </v-flex>
+            <v-flex>
+              <v-btn :value="3" flat>
+                <v-icon>child_friendly</v-icon>
+              </v-btn>
+            </v-flex>
+          </v-btn-toggle>
+        </v-layout>
+      </v-layout>
+      <v-layout mt-5>
+        <v-flex text-xs-center>
+          <v-btn class="full-width">Volgende scherm</v-btn>
         </v-flex>
       </v-layout>
     </v-container>
   </v-form>
-  <!-- 
-  <div class="component-padding full-height">
-    <form>
-      <div class="md-layout md-layout-item">
-        <div class="md-layout-item border-bottom"><h1>Registratie</h1></div>
-      </div>
-      <div class="md-layout md-gutter md-alignment-center border-bottom">
-        <div class="md-layout-item md-size-33 text-label">Gebruikersnaam</div>
-        <div class="md-layout-item md-size-66 text-input">
-          <md-field md-inline>
-            <label>Naam</label>
-            <md-input v-model="name"></md-input>
-          </md-field>
-        </div>
-      </div>
-      <div class="md-layout md-gutter md-alignment-center border-bottom">
-        <div class="md-layout-item md-size-33 text-label">Email</div>
-        <div class="md-layout-item md-size-66 text-input">
-          <md-field md-inline>
-            <label>Email</label>
-            <md-input v-model="email" type="email" required></md-input>
-          </md-field>
-        </div>
-      </div>
-      <div class="md-layout md-gutter md-alignment-center border-bottom">
-        <div class="md-layout-item md-size-33 text-label">Wachtwoord</div>
-        <div class="md-layout-item md-size-66 text-input">
-          <md-field md-inline>
-            <label>Wachtwoord</label>
-            <md-input v-model="password" type="password" required></md-input>
-          </md-field>
-        </div>
-      </div>
-      <div class="md-layout md-gutter md-alignment-center border-bottom">
-        <div class="md-layout-item md-size-33 text-label">
-          Wachtwoord herhalen
-        </div>
-        <div class="md-layout-item md-size-66 text-input ">
-          <md-field md-inline>
-            <label>Wachtwoord (herhalen)</label>
-            <md-input
-              v-model="repeatpassword"
-              type="password"
-              required
-            ></md-input>
-          </md-field>
-        </div>
-      </div>
-      <div class="md-layout">
-        <md-button
-          class="full-width md-raised page-button margin-top-40"
-          @click="submitForm($event)"
-          >Volgende stap</md-button
-        >
-      </div>
-    </form>
-  </div> -->
 </template>
 
 <script>
@@ -102,11 +98,15 @@ export default {
   name: 'RegistrationScreen',
   data: function() {
     return {
-      name: '',
-      email: '',
-      password: '',
-      repeatpassword: '',
-      agree: false,
+      step: 1,
+      toggle_multiple: [1, 2, 3],
+      userProfile: {
+        name: '',
+        email: '',
+        password: '',
+        repeatpassword: '',
+        agree: false,
+      },
     }
   },
   beforeCreate() {
@@ -126,11 +126,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.label {
-  align-items: center;
-}
-
-.margin-top-40 {
-  margin-top: 40px;
+.form-label {
+  align-self: center;
 }
 </style>

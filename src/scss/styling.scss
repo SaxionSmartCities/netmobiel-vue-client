@@ -51,3 +51,20 @@ body {
 .text-small {
   font-size: 0.8em;
 }
+
+.full-width {
+  width: 100%;
+}
+
+.full-height {
+ height: 100%;
+}
+
+.vertical-align-center {
+  align-items: center;
+}
+
+// TPO: Dunno why...
+.v-btn {
+  margin: 0px;
+}
