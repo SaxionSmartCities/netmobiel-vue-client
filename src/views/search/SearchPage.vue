@@ -9,15 +9,18 @@
           <v-flex xs4>
             <v-subheader class="font-weight-bold">Van</v-subheader>
           </v-flex>
-          <v-flex xs8>
+          <v-flex xs7>
             <v-text-field value="Enschede"></v-text-field>
           </v-flex>
+        </v-layout>
+        <v-layout justify-end>
+            <v-icon class="absolute-icon">import_export</v-icon>
         </v-layout>
         <v-layout>
           <v-flex xs4>
             <v-subheader class="font-weight-bold">Naar</v-subheader>
           </v-flex>
-          <v-flex xs8 class="pa-0">
+          <v-flex xs7 class="pa-0">
             <v-text-field value="Deventer"></v-text-field>
           </v-flex>
         </v-layout>
@@ -34,7 +37,6 @@
         </v-layout>
         <v-layout mt-2 justify-center>
           <v-icon>settings</v-icon>
-
           <v-subheader>Reisvoorkeuren</v-subheader>
         </v-layout>
       </v-form>
