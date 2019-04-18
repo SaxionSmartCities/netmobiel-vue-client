@@ -1,24 +1,22 @@
 <template>
   <div id="home-page">
-    <v-container fill-height>
-      <v-layout justify-center column>
-        <v-layout align-center justify-center column>
-          <h3 class="white--text">Hoi {{ user.name }}</h3>
-          <p class="white--text">Welkom bij Netmobiel!</p>
-        </v-layout>
-        <v-layout align-center justify-start column>
-          <v-btn large round class="mb-2 nav-buttons" to="/search">
-            Ik wil een reis zoeken!
-          </v-btn>
-          <v-btn large round class="mb-2 nav-buttons">
-            Ik wil een reis aanbieden!
-          </v-btn>
-          <v-btn large round to="/createUser" class="nav-buttons">
-            Ik wil als nog een account aanmaken!
-          </v-btn>
-        </v-layout>
+    <v-layout justify-center column fill-height>
+      <v-layout align-center justify-center column>
+        <h3 class="white--text">Hoi {{ user.name }}</h3>
+        <p class="white--text">Welkom bij Netmobiel!</p>
       </v-layout>
-    </v-container>
+      <v-layout align-center justify-start column>
+        <v-btn large round class="mb-2 nav-buttons" to="/search">
+          Ik wil een reis zoeken!
+        </v-btn>
+        <v-btn large round class="mb-2 nav-buttons">
+          Ik wil een reis aanbieden!
+        </v-btn>
+        <v-btn large round to="/createUser" class="nav-buttons">
+          Ik wil als nog een account aanmaken!
+        </v-btn>
+      </v-layout>
+    </v-layout>
   </div>
 </template>
 
