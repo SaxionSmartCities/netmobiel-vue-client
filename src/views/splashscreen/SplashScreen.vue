@@ -1,15 +1,22 @@
 <template>
-  <div id="splash-screen" class="container">
-    <img id="logo" class="img-fluid" src="@/assets/logo_splash.png" />
-    <div id="splash-buttons">
-      <a class="btn btn-block btn-primary" @click="$keycloak.loginFn()"
-        >Login</a
+  <v-container id="splash-screen" class="background-green">
+    <v-layout justify-center>
+      <img id="logo" class="img-fluid" src="@/assets/logo_splash.png" />
+    </v-layout>
+    <v-layout align-center justify-center column id="splash-buttons">
+      <v-btn
+        round
+        large
+        class="mb-2 title"
+        @click="$keycloak.loginFn()"
+        id="loginButton"
+        >Login</v-btn
       >
-      <router-link to="/createUser" class="btn btn-block btn-primary"
-        >Registreren</router-link
+      <v-btn class="title" id="registrateButton" round large to="/createUser"
+        >Registreren</v-btn
       >
-    </div>
-  </div>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -38,19 +45,20 @@ export default {
 
 <style scoped lang="scss">
 #splash-screen {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
   height: 100vh;
 }
 
 #logo {
-  align-self: center;
+  max-width: 105%;
 }
 
-#splash-buttons {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+.v-btn {
+  width: 250px;
+  color: white;
+  text-transform: none;
+}
+
+.theme--light.v-btn:not(.v-btn--icon):not(.v-btn--flat){
+  background-color: $color-orange;
 }
 </style>

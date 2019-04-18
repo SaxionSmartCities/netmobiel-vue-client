@@ -26,6 +26,13 @@ body {
 .background-secondary-dark {
   background: $color-secondary-dark;
 }
+.background-white{
+  background: $color-white;
+}
+
+.background-green {
+  background: $color-green;
+}
 
 // Typography
 .text-primary {
@@ -67,4 +74,12 @@ body {
 // TPO: Dunno why...
 .v-btn {
   margin: 0px;
+}
+
+.v-text-field {
+  padding-top: 0;
+}
+
+.absolute-icon{
+  position: absolute;
 }
