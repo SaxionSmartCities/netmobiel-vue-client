@@ -1,19 +1,24 @@
 <template>
-  <div class="container">
-    <div class="mt-3 mb-3 box-widget text-center background-primary">
-      <h3>Hoi {{ user.name }}</h3>
-      <p>Welkom bij Netmobiel!</p>
-    </div>
-
-    <router-link to="/search" class="btn btn-block btn-primary">
-      Ik wil een reis zoeken!
-    </router-link>
-    <button class="btn btn-block btn-primary">
-      Ik wil een reis aanbieden!
-    </button>
-    <router-link to="/createUser" class="btn btn-block btn-primary">
-      Ik wil als nog een account aanmaken!
-    </router-link>
+  <div id="home-page">
+    <v-container fill-height>
+      <v-layout justify-center column>
+        <v-layout align-center justify-center column>
+          <h3 class="white--text">Hoi {{ user.name }}</h3>
+          <p class="white--text">Welkom bij Netmobiel!</p>
+        </v-layout>
+        <v-layout align-center justify-start column>
+          <v-btn large round class="mb-2 nav-buttons" to="/search">
+            Ik wil een reis zoeken!
+          </v-btn>
+          <v-btn large round class="mb-2 nav-buttons">
+            Ik wil een reis aanbieden!
+          </v-btn>
+          <v-btn large round to="/createUser" class="nav-buttons">
+            Ik wil als nog een account aanmaken!
+          </v-btn>
+        </v-layout>
+      </v-layout>
+    </v-container>
   </div>
 </template>
 
@@ -27,4 +32,20 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+#home-page {
+  background-color: $color-green;
+  height: 100%;
+}
+.v-btn {
+  text-transform: none;
+}
+.nav-buttons {
+  width: 300px;
+}
+
+.theme--light.v-btn:not(.v-btn--icon):not(.v-btn--flat) {
+  background-color: $color-orange;
+  color: white;
+}
+</style>

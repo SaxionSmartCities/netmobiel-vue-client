@@ -1,5 +1,10 @@
 <template>
-  <v-container fill-height class="background-primary">
+  <v-container
+    align-center
+    justify-center
+    fill-height
+    class="background-primary"
+  >
     <div class="align-center full-width box-widget background-white">
       <v-form wrap>
         <v-layout justify-center>
