@@ -7,7 +7,7 @@ import store from './store'
 import router from './router'
 import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
 
-Vue.use(Vuetify)
+Vue.use(Vuetify, { theme: false })
 
 Vue.config.productionTip = false
 
