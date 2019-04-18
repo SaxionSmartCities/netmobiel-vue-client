@@ -1,5 +1,5 @@
 <template>
-  <div id="splash">
+  <div id="splash-screen">
     <v-layout justify-center>
       <img id="logo" class="img-fluid" src="@/assets/logo_splash.png" />
     </v-layout>
@@ -44,7 +44,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-#splash {
+#splash-screen {
   height: 100%;
   background-color: $color-green;
 }
