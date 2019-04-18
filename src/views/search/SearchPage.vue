@@ -5,19 +5,22 @@
         <v-layout justify-center>
           <v-subheader class="headline">Waar wil je heen?</v-subheader>
         </v-layout>
-        <v-layout row>
-          <v-flex xs4 align-right>
+        <v-layout>
+          <v-flex xs4>
             <v-subheader class="font-weight-bold">Van</v-subheader>
           </v-flex>
-          <v-flex xs8>
+          <v-flex xs7>
             <v-text-field value="Enschede"></v-text-field>
           </v-flex>
+        </v-layout>
+        <v-layout justify-end>
+            <v-icon class="absolute-icon">import_export</v-icon>
         </v-layout>
         <v-layout>
           <v-flex xs4>
             <v-subheader class="font-weight-bold">Naar</v-subheader>
           </v-flex>
-          <v-flex xs8 class="pa-0">
+          <v-flex xs7 class="pa-0">
             <v-text-field value="Deventer"></v-text-field>
           </v-flex>
         </v-layout>
@@ -29,12 +32,11 @@
             <v-text-field value="Morgen, 10.00 uur"></v-text-field>
           </v-flex>
         </v-layout>
-        <v-layout ma-2 align-center justify-center>
-          <v-btn round>Plan je reis!</v-btn>
+        <v-layout mt-2>
+          <v-flex><v-btn class="full-width" round>Plan je reis!</v-btn></v-flex>
         </v-layout>
-        <v-layout justify-center>
+        <v-layout mt-2 justify-center>
           <v-icon>settings</v-icon>
-
           <v-subheader>Reisvoorkeuren</v-subheader>
         </v-layout>
       </v-form>
@@ -52,6 +54,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>
