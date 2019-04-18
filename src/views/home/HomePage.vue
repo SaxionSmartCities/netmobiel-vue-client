@@ -7,13 +7,13 @@
           <p class="white--text">Welkom bij Netmobiel!</p>
         </v-layout>
         <v-layout align-center justify-start column>
-          <v-btn round class="mb-2" to="/search">
+          <v-btn large round class="mb-2 nav-buttons" to="/search">
             Ik wil een reis zoeken!
           </v-btn>
-          <v-btn round class="mb-2">
+          <v-btn large round class="mb-2 nav-buttons">
             Ik wil een reis aanbieden!
           </v-btn>
-          <v-btn round to="/createUser">
+          <v-btn large round to="/createUser" class="nav-buttons">
             Ik wil als nog een account aanmaken!
           </v-btn>
         </v-layout>
@@ -39,6 +39,9 @@ export default {
 }
 .v-btn {
   text-transform: none;
+}
+.nav-buttons {
+  width: 300px;
 }
 
 .theme--light.v-btn:not(.v-btn--icon):not(.v-btn--flat) {

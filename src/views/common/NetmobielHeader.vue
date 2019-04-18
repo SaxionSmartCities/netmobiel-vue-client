@@ -1,7 +1,7 @@
 <template>
   <nav v-if="isVisible">
     <v-layout align-center justify-end fill-height>
-      <v-btn id="logout-button" flat round small class="ma-1" @click="logout">
+      <v-btn id="logout-button" flat round small class="ma-1 subheading" @click="logout">
         Logout
       </v-btn>
     </v-layout>
