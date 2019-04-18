@@ -1,11 +1,6 @@
 <template>
   <footer v-if="isVisible">
-    <v-bottom-nav
-      :active.sync="selectedNav"
-      :value="true"
-      absolute
-      color="transparant"
-    >
+    <v-bottom-nav :active.sync="selectedNav" :value="true" color="transparant">
       <v-btn flat value="plan-trip">
         <span>Reis plannen</span>
         <v-icon>commute</v-icon>

@@ -2,7 +2,7 @@
   <div id="app">
     <netmobiel-header id="header" />
 
-    <div id="content">
+    <div id="content" class="scroll">
       <router-view></router-view>
     </div>
 
@@ -42,5 +42,9 @@ export default {
 #footer {
   // height: 5vh;
   justify-self: flex-end;
+}
+
+.scroll {
+  overflow-y: scroll;
 }
 </style>
