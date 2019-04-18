@@ -14,7 +14,7 @@
           </v-flex>
         </v-layout>
         <v-layout justify-end>
-            <v-icon class="absolute-icon">import_export</v-icon>
+          <v-icon class="absolute-icon">import_export</v-icon>
         </v-layout>
         <v-layout>
           <v-flex xs4>
@@ -33,7 +33,7 @@
           </v-flex>
         </v-layout>
         <v-layout mt-2>
-          <v-flex><v-btn class="full-width" round>Plan je reis!</v-btn></v-flex>
+          <v-flex><v-btn class="full-width subheading" round>Plan je reis!</v-btn></v-flex>
         </v-layout>
         <v-layout mt-2 justify-center>
           <v-icon>settings</v-icon>
@@ -54,4 +54,10 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.theme--light.v-btn:not(.v-btn--icon):not(.v-btn--flat) {
+  background-color: $color-orange;
+  color: $color-white;
+  text-transform: none;
+}
+</style>

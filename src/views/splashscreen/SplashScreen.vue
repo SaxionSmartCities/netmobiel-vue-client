@@ -1,5 +1,5 @@
 <template>
-  <v-container id="splash-screen" class="background-green">
+  <div id="splash">
     <v-layout justify-center>
       <img id="logo" class="img-fluid" src="@/assets/logo_splash.png" />
     </v-layout>
@@ -7,7 +7,7 @@
       <v-btn
         round
         large
-        class="mb-2 title"
+        class="mb-2 mt-4 title"
         @click="$keycloak.loginFn()"
         id="loginButton"
         >Login</v-btn
@@ -16,7 +16,7 @@
         >Registreren</v-btn
       >
     </v-layout>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -44,21 +44,19 @@ export default {
 </script>
 
 <style scoped lang="scss">
-#splash-screen {
-  height: 100vh;
+#splash {
+  height: 100%;
+  background-color: $color-green;
 }
 
 #logo {
   max-width: 105%;
 }
 
-.v-btn {
-  width: 250px;
-  color: white;
-  text-transform: none;
-}
-
-.theme--light.v-btn:not(.v-btn--icon):not(.v-btn--flat){
+.theme--light.v-btn:not(.v-btn--icon):not(.v-btn--flat) {
   background-color: $color-orange;
+  width: 250px;
+  color: $color-white;
+  text-transform: none;
 }
 </style>
