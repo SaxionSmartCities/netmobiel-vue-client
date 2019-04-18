@@ -1,8 +1,10 @@
 <template>
   <nav v-if="isVisible">
-    <div id="logout-container" class="container" @click="logout">
-      <i class="fas fa-sign-out-alt"></i>
-    </div>
+    <v-layout align-center justify-end fill-height>
+      <v-btn id="logout-button" flat round small class="ma-1" @click="logout">
+        Logout
+      </v-btn>
+    </v-layout>
   </nav>
 </template>
 
@@ -32,10 +34,8 @@ nav {
   background-position: center center;
 }
 
-#logout-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  height: 100%;
+#logout-button {
+  background-color: $color-orange;
+  color: white;
 }
 </style>
