@@ -3,7 +3,7 @@
     <v-layout column wrap>
       <v-flex>
         <v-subheader class="headline">Aankomst</v-subheader>
-        <v-subheader class="text-uppercase body-2" id="subheaderDate"
+        <v-subheader id="subheaderDate" class="text-uppercase body-2"
           >Datum</v-subheader
         >
       </v-flex>
@@ -25,7 +25,7 @@
         <!--&gt;</v-date-picker>-->
       </v-flex>
       <v-flex>
-        <v-subheader class="text-uppercase body-2" id="subheaderTime"
+        <v-subheader id="subheaderTime" class="text-uppercase body-2"
           >Tijd</v-subheader
         >
       </v-flex>

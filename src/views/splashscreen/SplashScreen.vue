@@ -1,18 +1,18 @@
 <template>
-  <v-container column fluid class="background-green">
-    <v-layout column align-center>
-      <v-flex full-width>
+  <v-container grid-list-lg fluid class="background-green">
+    <v-layout>
+      <v-flex xs12>
         <v-img id="logo" :src="require('@/assets/logo_splash.png')"></v-img>
       </v-flex>
     </v-layout>
-    <v-layout column align-center mt-5>
-      <v-flex full-width>
-        <v-btn round large class="full-width" @click="$keycloak.loginFn()">
+    <v-layout row wrap mt-5>
+      <v-flex xs12 md6>
+        <v-btn round large block @click="$keycloak.loginFn()">
           Login
         </v-btn>
       </v-flex>
-      <v-flex full-width mt-2>
-        <v-btn round large class="full-width" to="/createUser">
+      <v-flex xs12 md6>
+        <v-btn round large block to="/createUser">
           Registreren
         </v-btn>
       </v-flex>

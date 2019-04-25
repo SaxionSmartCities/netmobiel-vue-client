@@ -1,68 +1,98 @@
 <template>
-  <div id="search-screen">
-    <v-container
-      align-center
-      justify-center
-      fill-height
-      class="background-primary"
-    >
-      <div class="align-center full-width box-widget background-white">
-        <v-form wrap>
-          <v-layout justify-center>
-            <v-subheader class="headline">Waar wil je heen?</v-subheader>
-          </v-layout>
-          <v-layout>
-            <v-flex xs4>
-              <v-subheader class="font-weight-bold">Van</v-subheader>
-            </v-flex>
-            <v-flex xs7>
-              <v-text-field value="Enschede"></v-text-field>
-            </v-flex>
-          </v-layout>
-          <v-layout justify-end>
-            <v-icon class="absolute-icon">import_export</v-icon>
-          </v-layout>
-          <v-layout>
-            <v-flex xs4>
-              <v-subheader class="font-weight-bold">Naar</v-subheader>
-            </v-flex>
-            <v-flex xs7 class="pa-0">
-              <v-text-field value="Deventer"></v-text-field>
-            </v-flex>
-          </v-layout>
-          <v-layout>
-            <v-flex xs4>
-              <v-subheader class="font-weight-bold">Aankomst</v-subheader>
-            </v-flex>
-            <v-flex xs8>
-              <v-text-field
-                @click="toSearchRideDate"
-                value="Morgen, 10.00 uur"
-              ></v-text-field>
-            </v-flex>
-          </v-layout>
-          <v-layout mt-2>
-            <v-flex
-              ><v-btn class="full-width subheading" round to="/searchOptions"
-                >Plan je reis!</v-btn
-              ></v-flex
-            >
-          </v-layout>
-          <v-layout mt-2 justify-center>
-            <v-btn
-              round
-              depressed
-              id="ridePreferencesButton"
-              to="/ridePreferences"
-            >
-              <v-icon>settings</v-icon>
-              <v-subheader>Reisvoorkeuren</v-subheader>
-            </v-btn>
-          </v-layout>
-        </v-form>
-      </div>
-    </v-container>
-  </div>
+  <v-container
+    align-center
+    justify-center
+    fill-height
+    fluid
+    grid-list-lg
+    class="background-primary"
+  >
+    <v-layout justify-center align-center>
+      <v-flex xs11 sm9 md6>
+        <v-layout column shrink>
+          <v-flex class="box-widget background-white">
+            <v-form>
+              <v-layout>
+                <v-flex text-xs-center xs12>
+                  <h1>Waar wil je heen?</h1>
+                </v-flex>
+              </v-layout>
+              <v-layout>
+                <v-flex id="vannaar" xs11>
+                  <v-layout column>
+                    <v-flex id="van">
+                      <v-layout row>
+                        <v-flex xs3 sm2>
+                          <v-subheader class="font-weight-bold">
+                            Van
+                          </v-subheader>
+                        </v-flex>
+                        <v-flex>
+                          <v-text-field value="Enschede"></v-text-field>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                    <v-flex id="naar">
+                      <v-layout row>
+                        <v-flex xs3 sm2>
+                          <v-subheader class="font-weight-bold"
+                            >Naar</v-subheader
+                          >
+                        </v-flex>
+                        <v-flex>
+                          <v-text-field value="Deventer"></v-text-field>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+                <v-flex d-flex>
+                  <v-layout column justify-center>
+                    <v-flex
+                      id="heenweericoon"
+                      text-xs-center
+                      justify-center
+                      shrink
+                    >
+                      <v-icon>import_export</v-icon>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+
+              <v-layout>
+                <v-flex id="aankomsttijd" xs11>
+                  <v-layout row>
+                    <v-flex xs4 sm2>
+                      <v-subheader class="font-weight-bold">
+                        Aankomst
+                      </v-subheader>
+                    </v-flex>
+                    <v-flex>
+                      <v-text-field value="Morgen, 10.00 uur"></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+              <v-layout>
+                <v-flex mt-2>
+                  <v-btn large round block to="/searchOptions">
+                    Plan je reis!
+                  </v-btn>
+                </v-flex>
+              </v-layout>
+              <v-layout mt-2 justify-center>
+                <v-flex shrink @click="toRidePrefrences">
+                  <v-icon>settings</v-icon>
+                  <span>Reisvoorkeuren</span>
+                </v-flex>
+              </v-layout>
+            </v-form>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>

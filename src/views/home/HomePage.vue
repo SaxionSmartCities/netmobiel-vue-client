@@ -1,23 +1,29 @@
 <template>
-  <div id="home-page">
-    <v-layout justify-center column fill-height>
-      <v-layout align-center justify-center column>
-        <h3 class="white--text">Hoi {{ user.name }}</h3>
-        <p class="white--text">Welkom bij Netmobiel!</p>
-      </v-layout>
-      <v-layout align-center justify-start column>
-        <v-btn large round class="mb-2 nav-buttons" to="/search">
+  <v-container grid-list-lg>
+    <v-layout>
+      <v-flex text-xs-center xs12>
+        <h3>Hoi {{ user.name }}</h3>
+        <p>Welkom bij Netmobiel!</p>
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap>
+      <v-flex xs12 md4>
+        <v-btn round large block to="/search">
           Ik wil een reis zoeken!
         </v-btn>
-        <v-btn large round class="mb-2 nav-buttons">
+      </v-flex>
+      <v-flex xs12 md4>
+        <v-btn round large block>
           Ik wil een reis aanbieden!
         </v-btn>
-        <v-btn large round to="/createUser" class="nav-buttons">
+      </v-flex>
+      <v-flex xs12 md4>
+        <v-btn round large block to="/createUser">
           Ik wil als nog een account aanmaken!
         </v-btn>
-      </v-layout>
+      </v-flex>
     </v-layout>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -31,15 +37,8 @@ export default {
 </script>
 
 <style lang="scss">
-#home-page {
-  background-color: $color-green;
-  height: 100%;
-}
 .v-btn {
   text-transform: none;
-}
-.nav-buttons {
-  width: 300px;
 }
 
 .theme--light.v-btn:not(.v-btn--icon):not(.v-btn--flat) {

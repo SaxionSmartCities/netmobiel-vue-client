@@ -10,7 +10,7 @@ import RegistrationScreen from './views/registration/RegistrationScreen.vue'
 import HomePage from './views/home/HomePage.vue'
 import SearchPage from './views/search/SearchPage.vue'
 import SearchPageOptions from './views/search/RidePreferences'
-import SearchRideDate from "./views/search/SearchRideDate";
+import SearchRideDate from './views/search/SearchRideDate'
 
 const router = new Router({
   mode: 'history',
