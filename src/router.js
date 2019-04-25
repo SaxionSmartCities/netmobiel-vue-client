@@ -9,6 +9,7 @@ import ProfilePage from './views/profile/ProfilePage.vue'
 import RegistrationScreen from './views/registration/RegistrationScreen.vue'
 import HomePage from './views/home/HomePage.vue'
 import SearchPage from './views/search/SearchPage.vue'
+import SearchPageOptions from './views/search/RidePreferences'
 
 const router = new Router({
   mode: 'history',
@@ -32,6 +33,11 @@ const router = new Router({
     {
       path: '/search',
       component: SearchPage,
+    },
+    {
+      path: '/ridePreferences',
+      component: SearchPageOptions,
+      name: 'ridePreferences',
     },
   ],
 })

@@ -1,22 +1,24 @@
 <template>
-  <div id="splash-screen">
-    <v-layout justify-center>
-      <img id="logo" class="img-fluid" src="@/assets/logo_splash.png" />
+  <v-container column fluid class="background-green">
+    <v-layout column align-center>
+      <v-flex full-width>
+        <v-img id="logo" :src="require('@/assets/logo_splash.png')"></v-img>
+        <!-- <img id="logo" src="@/assets/logo_splash.png" /> -->
+      </v-flex>
     </v-layout>
-    <v-layout align-center justify-center column id="splash-buttons">
-      <v-btn
-        round
-        large
-        class="mb-2 mt-4 title"
-        @click="$keycloak.loginFn()"
-        id="loginButton"
-        >Login</v-btn
-      >
-      <v-btn class="title" id="registrateButton" round large to="/createUser"
-        >Registreren</v-btn
-      >
+    <v-layout column align-center mt-5>
+      <v-flex>
+        <v-btn round large title @click="$keycloak.loginFn()">
+          Login
+        </v-btn>
+      </v-flex>
+      <v-flex mt-4>
+        <v-btn round large title to="/createUser">
+          Registreren
+        </v-btn>
+      </v-flex>
     </v-layout>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -49,8 +51,8 @@ export default {
   background-color: $color-green;
 }
 
-#logo {
-  max-width: 105%;
+.container {
+  height: 100%;
 }
 
 .theme--light.v-btn:not(.v-btn--icon):not(.v-btn--flat) {
@@ -58,5 +60,10 @@ export default {
   width: 250px;
   color: $color-white;
   text-transform: none;
+}
+
+#logo {
+  max-width: 500px;
+  margin: 0 auto;
 }
 </style>
