@@ -35,7 +35,10 @@
               <v-subheader class="font-weight-bold">Aankomst</v-subheader>
             </v-flex>
             <v-flex xs8>
-              <v-text-field value="Morgen, 10.00 uur"></v-text-field>
+              <v-text-field
+                @click="toSearchRideDate"
+                value="Morgen, 10.00 uur"
+              ></v-text-field>
             </v-flex>
           </v-layout>
           <v-layout mt-2>
@@ -64,7 +67,10 @@ export default {
   },
   methods: {
     toRidePrefrences() {
-     this.$router.push({name: 'ridePreferences'})
+      this.$router.push({ name: 'ridePreferences' })
+    },
+    toSearchRideDate() {
+      this.$router.push({ name: 'searchRideDate' })
     },
   },
 }
