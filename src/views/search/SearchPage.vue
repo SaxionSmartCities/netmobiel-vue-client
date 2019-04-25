@@ -47,7 +47,7 @@
           </v-layout>
           <v-layout mt-2 justify-center>
             <v-icon>settings</v-icon>
-            <v-subheader>Reisvoorkeuren</v-subheader>
+            <v-subheader @click="toRidePrefrences">Reisvoorkeuren</v-subheader>
           </v-layout>
         </v-form>
       </div>
@@ -60,6 +60,11 @@ export default {
   computed: {
     user() {
       return this.$store.getters.getUser
+    },
+  },
+  methods: {
+    toRidePrefrences() {
+     this.$router.push({name: 'ridePreferences'})
     },
   },
 }
