@@ -43,14 +43,21 @@
           </v-layout>
           <v-layout mt-2>
             <v-flex
-              ><v-btn class="full-width subheading" round
+              ><v-btn class="full-width subheading" round to="/searchOptions"
                 >Plan je reis!</v-btn
               ></v-flex
             >
           </v-layout>
           <v-layout mt-2 justify-center>
-            <v-icon>settings</v-icon>
-            <v-subheader @click="toRidePrefrences">Reisvoorkeuren</v-subheader>
+            <v-btn
+              round
+              depressed
+              id="ridePreferencesButton"
+              to="/ridePreferences"
+            >
+              <v-icon>settings</v-icon>
+              <v-subheader>Reisvoorkeuren</v-subheader>
+            </v-btn>
           </v-layout>
         </v-form>
       </div>
@@ -85,5 +92,9 @@ export default {
   background-color: $color-orange;
   color: $color-white;
   text-transform: none;
+}
+#ridePreferencesButton {
+  background-color: transparent;
+  color: black;
 }
 </style>
