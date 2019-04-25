@@ -40,7 +40,7 @@
           </v-layout>
           <v-layout mt-2>
             <v-flex
-              ><v-btn class="full-width subheading" round to="/searhOptions"
+              ><v-btn class="full-width subheading" round
                 >Plan je reis!</v-btn
               ></v-flex
             >
