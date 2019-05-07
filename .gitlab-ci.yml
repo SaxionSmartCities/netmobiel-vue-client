@@ -28,6 +28,8 @@ build site:
 
 deploy site:
   stage: deploy
+  only:
+    - master
   cache: {}
   script:
     - apk add --no-cache openssh rsync
