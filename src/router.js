@@ -6,7 +6,7 @@ Vue.use(Router)
 
 import SplashScreen from './views/splashscreen/SplashScreen.vue'
 import ProfilePage from './views/profile/ProfilePage.vue'
-import RegistrationScreen from './views/registration/RegistrationScreen.vue'
+import StartRegistrationForm from './views/registration/StartRegistrationForm.vue'
 import HomePage from './views/home/HomePage.vue'
 import SearchPage from './views/search/SearchPage.vue'
 import SearchPageOptions from './views/search/RidePreferences'
@@ -25,7 +25,7 @@ const router = new Router({
     },
     {
       path: '/createUser',
-      component: RegistrationScreen,
+      component: StartRegistrationForm,
     },
     {
       path: '/profile',

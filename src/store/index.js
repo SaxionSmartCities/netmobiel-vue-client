@@ -11,6 +11,12 @@ export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
     user: {
+      registrationRequest: {
+        first_name: '',
+        last_name: '',
+        email: '',
+      },
+
       //these fields are only used for the registration
       name: undefined,
       email: undefined,
