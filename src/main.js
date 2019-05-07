@@ -13,9 +13,9 @@ Vue.config.productionTip = false
 
 Vue.use(VueKeyCloak, {
   config: {
-    authRealm: 'saxion',
+    authRealm: 'netmobiel',
     authUrl: 'https://keycloak.actmedialab.nl/auth',
-    authClientId: 'netmobiel-poc',
+    authClientId: 'netmobiel-frontend',
   },
   init: {
     onLoad: 'check-sso',
