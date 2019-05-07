@@ -42,4 +42,4 @@ deploy site:
     - chmod 600 ~/.ssh/id_rsa
     - cat ~/.ssh/id_rsa
     - echo "HELLO WORLD" >> ~/test_file
-    - scp -o StrictHostKeyChecking=no test_file gitlab@dev.netmobiel.eu:~
+    - scp -o StrictHostKeyChecking=no ~/test_file gitlab@dev.netmobiel.eu:~
