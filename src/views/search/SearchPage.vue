@@ -28,19 +28,19 @@
                           </v-subheader>
                         </v-flex>
                         <v-flex>
-                          <v-text-field value="Enschede"></v-text-field>
+                          <v-text-field v-model="fromLocation"></v-text-field>
                         </v-flex>
                       </v-layout>
                     </v-flex>
                     <v-flex id="naar">
                       <v-layout row>
                         <v-flex xs3 sm2>
-                          <v-subheader class="font-weight-bold"
-                            >Naar</v-subheader
-                          >
+                          <v-subheader class="font-weight-bold">
+                            Naar
+                          </v-subheader>
                         </v-flex>
                         <v-flex>
-                          <v-text-field value="Deventer"></v-text-field>
+                          <v-text-field v-model="toLocation"></v-text-field>
                         </v-flex>
                       </v-layout>
                     </v-flex>
@@ -53,6 +53,7 @@
                       text-xs-center
                       justify-center
                       shrink
+                      @click="swapLocations()"
                     >
                       <v-icon>import_export</v-icon>
                     </v-flex>
@@ -97,10 +98,11 @@
 
 <script>
 export default {
-  computed: {
-    user() {
-      return this.$store.getters.getUser
-    },
+  data: function() {
+    return {
+      fromLocation: 'Enschede',
+      toLocation: 'Deventer',
+    }
   },
   methods: {
     toRidePrefrences() {
@@ -109,22 +111,14 @@ export default {
     toSearchRideDate() {
       this.$router.push({ name: 'searchRideDate' })
     },
+    swapLocations() {
+      var tempLocation = this.fromLocation
+
+      this.fromLocation = this.toLocation
+      this.toLocation = tempLocation
+    },
   },
 }
 </script>
 
-<style lang="scss">
-#search-screen {
-  height: 100%;
-  background-color: $color-green;
-}
-.theme--light.v-btn:not(.v-btn--icon):not(.v-btn--flat) {
-  background-color: $color-orange;
-  color: $color-white;
-  text-transform: none;
-}
-#ridePreferencesButton {
-  background-color: transparent;
-  color: black;
-}
-</style>
+<style lang="scss"></style>
