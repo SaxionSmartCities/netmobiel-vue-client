@@ -6,16 +6,21 @@ stages:
   - test
   - deploy
 
+cache:
+  paths:
+   - node_modules/
+
+before_script:
+ - npm install
+
 run linter:
   stage: lint
   script:
-    - npm install --progress=false
     - npm run lint
 
 build site:
   stage: build
   script:
-    - npm install --progress=false
     - npm run build
   artifacts:
     expire_in: 1 week
