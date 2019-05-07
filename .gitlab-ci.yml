@@ -8,18 +8,12 @@ stages:
 
 run linter:
   stage: lint
-  only:
-    refs:
-      - master
   script:
     - npm install --progress=false
     - npm run lint
 
 build site:
   stage: build
-  only:
-    refs:
-      - master
   script:
     - npm install --progress=false
     - npm run build
@@ -30,16 +24,10 @@ build site:
 
 deploy site:
   stage: deploy
-  only:
-    refs:
-      - master
-      - dev
   script:
-    - npm install --progress=false
     - apk add --no-cache openssh
     - mkdir -p ~/.ssh
     - echo "$NETMOBIEL_SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - cat ~/.ssh/id_rsa
-    - echo "HELLO WORLD" >> ~/test_file
-    - scp -o StrictHostKeyChecking=no ~/test_file gitlab@dev.netmobiel.eu:~
+    - ls
+    - scp -r -o StrictHostKeyChecking=no dist gitlab@dev.netmobiel.eu:~/html
