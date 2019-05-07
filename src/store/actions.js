@@ -1,14 +1,13 @@
 import axios from 'axios'
 
+var BASE_URL = 'http://localhost:8080'
+
 export default {
   submitRegistrationRequest: (context, payload) => {
     context.commit('storeRegistrationRequest', payload)
 
-    console.log('make some fancy axios call')
-    console.log(context.state.user.registrationRequest)
-
     axios
-      .post('http://localhost:8080', context.state.user.registrationRequest)
+      .post(BASE_URL + '/someApi/someCall', context.state.registrationRequest)
       .then(function(response) {
         console.log(response)
       })

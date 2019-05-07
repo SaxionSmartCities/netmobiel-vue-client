@@ -15,15 +15,15 @@
 <script>
 export default {
   name: 'ProgressRegistrationBar',
-  computed: {
-    currentSelected() {
-      return this.$store.getters.getRegistrationStep
-    },
-  },
   data: function() {
     return {
       numbers: [1, 2, 3, 4],
     }
+  },
+  computed: {
+    currentSelected() {
+      return this.$store.getters.getRegistrationStep
+    },
   },
 }
 </script>
