@@ -70,9 +70,6 @@ export default {
     submitForm: function(event) {
       event.preventDefault()
 
-      console.log('submitting form')
-      console.log(this.registrationRequest)
-
       this.$store.dispatch(
         'submitRegistrationRequest',
         this.registrationRequest
