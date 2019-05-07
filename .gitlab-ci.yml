@@ -34,6 +34,5 @@ deploy site:
     - mkdir -p ~/.ssh
     - echo "$NETMOBIEL_SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - ls
-    - rsync -a --delete -e "ssh -o StrictHostKeyChecking=no" dist gitlab@dev.netmobiel.eu:~/html
+    - rsync -a --delete -e "ssh -o StrictHostKeyChecking=no" dist/* gitlab@dev.netmobiel.eu:~/html
 
