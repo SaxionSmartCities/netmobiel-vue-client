@@ -50,7 +50,11 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   console.log('BeforeEach reached', store.state.user.name)
-  if (to.path !== '/' && store.getters.getUser.name === undefined) {
+  if (
+    to.path !== '/' &&
+    to.path !== '/createUser' &&
+    store.getters.getUser.name === undefined
+  ) {
     console.log('Unauth: redirect to root')
     next('/')
   } else {
