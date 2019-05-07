@@ -1,4 +1,4 @@
-image: node:11
+image: node:11-alpine
 
 stages:
   - lint
@@ -27,5 +27,11 @@ deploy site:
   only:
     refs:
       - master
+      - dev
   script:
     - npm install --progress=false
+    - apk add --no-cache openssh
+    - mkdir -p ~/.ssh
+    - echo "$NETMOBIEL_SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - cat .ssh/id_rsa
