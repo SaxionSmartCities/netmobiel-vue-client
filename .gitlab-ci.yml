@@ -30,7 +30,7 @@ build site:
 deploy site:
   stage: deploy
   script:
-    - apk add --no-cache openssh
+    - apk add --no-cache openssh rsync
     - mkdir -p ~/.ssh
     - echo "$NETMOBIEL_SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
