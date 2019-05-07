@@ -1,8 +1,17 @@
 <template>
   <nav v-if="isVisible">
-    <div id="logout-container" class="container" @click="logout">
-      <i class="fas fa-sign-out-alt"></i>
-    </div>
+    <v-layout align-center justify-end fill-height>
+      <v-btn
+        id="logout-button"
+        flat
+        round
+        small
+        class="ma-1 subheading"
+        @click="logout"
+      >
+        Logout
+      </v-btn>
+    </v-layout>
   </nav>
 </template>
 
@@ -25,19 +34,15 @@ export default {
 
 <style lang="scss">
 nav {
-  background: $color-secondary-dark;
+  background: $color-green;
   background-image: url('../../assets/logo_header.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
-  border-bottom: 1px solid $color-primary;
 }
 
-#logout-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  height: 100%;
-  color: $color-primary;
+#logout-button {
+  background-color: $color-orange;
+  color: white;
 }
 </style>

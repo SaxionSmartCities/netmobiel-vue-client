@@ -36,4 +36,9 @@ export default {
   incrementRegistrationStep: (state, payload) => {
     state.ui.registrationStep += payload
   },
+  storeRegistrationRequest: (state, payload) => {
+    state.user.registrationRequest.first_name = payload.firstName
+    state.user.registrationRequest.last_name = payload.lastName
+    state.user.registrationRequest.email = payload.email
+  },
 }

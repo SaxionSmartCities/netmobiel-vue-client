@@ -1,13 +1,11 @@
 // Import variables --> bootstrap --> this file
-@import "_bootstrap";
+@import "_variables";
 
 // App-specific configuration
 body {
-  background: $color-secondary;
   font-family: $font-family;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: $font-color;
 }
 
 // Box widget
@@ -27,6 +25,17 @@ body {
 
 .background-secondary-dark {
   background: $color-secondary-dark;
+}
+.background-white{
+  background: $color-white;
+}
+
+.background-green {
+  background: $color-green;
+}
+
+.background-orange {
+  background: $color-orange;
 }
 
 // Typography
@@ -52,4 +61,33 @@ body {
 
 .text-small {
   font-size: 0.8em;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.full-height {
+ height: 100%;
+}
+
+.vertical-align-center {
+  align-items: center;
+}
+
+// TPO: Dunno why...
+.v-btn {
+  margin: 0px;
+}
+
+.v-text-field {
+  padding-top: 0;
+}
+
+.absolute-icon{
+  position: absolute;
+}
+
+.container {
+  height: 100%;
 }

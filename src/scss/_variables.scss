@@ -2,25 +2,30 @@
 
 // Font url + font weights
 @import url("https://fonts.googleapis.com/css?family=Montserrat:300,500,700");
-$font-bold: 700;
-$font-medium: 500;
-$font-light: 300;
-$font-family: "Montserrat", sans-serif;
-$font-color: #7d7d7d;
+@import url("https://fonts.googleapis.com/css?family=Lato:300,400,700");
 
-// Netmobiel color definitions
-$netmobiel-green: #58acab;
-$netmobiel-sub-green: #458b88;
-$netmobiel-dark-green: #095e5b;
-$netmobiel-white: #ffffff; // Just because we can.
+$font-bold: 700;
+$font-medium: 400;
+$font-light: 300;
+$font-family: "Lato", sans-serif;
 
 // Color definitions
-$color-primary: $netmobiel-white;
-$color-primary-light: $netmobiel-white;
-$color-primary-dark: #cccccc; // Obtained via material.io color tool
-$color-secondary: $netmobiel-green;
-$color-secondary-light: #8adedd; // Obtained via material.io color tool
-$color-secondary-dark: #095e5b;
+$color-white: #FFFFFF;
+$color-inputGray: #737373;
+$color-headerGray: #9B9B9B;
+$color-optionsGray: #BEBEBE;
+$color-labelGray: #4A4A4A;
+$color-green: #2E8997;
+$color-orange: #FF8500;
+$color-alertRed: #D0021B;
+$color-borderGray: #E9E9E9;
+
+$color-primary: $color-green;
+$color-primary-light: $color-primary;
+$color-primary-dark: $color-primary;
+$color-secondary: $color-orange;
+$color-secondary-light: $color-secondary;
+$color-secondary-dark: $color-secondary;
 
 // Default form configuration
 $form-border-radius: 25px;

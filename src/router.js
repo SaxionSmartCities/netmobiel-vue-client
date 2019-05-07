@@ -6,9 +6,11 @@ Vue.use(Router)
 
 import SplashScreen from './views/splashscreen/SplashScreen.vue'
 import ProfilePage from './views/profile/ProfilePage.vue'
-import SignUpForm from './views/signup/RegistrationContainer.vue'
+import StartRegistrationForm from './views/registration/StartRegistrationForm.vue'
 import HomePage from './views/home/HomePage.vue'
 import SearchPage from './views/search/SearchPage.vue'
+import SearchPageOptions from './views/search/RidePreferences'
+import SearchRideDate from './views/search/SearchRideDate'
 
 const router = new Router({
   mode: 'history',
@@ -23,7 +25,7 @@ const router = new Router({
     },
     {
       path: '/createUser',
-      component: SignUpForm,
+      component: StartRegistrationForm,
     },
     {
       path: '/profile',
@@ -32,6 +34,16 @@ const router = new Router({
     {
       path: '/search',
       component: SearchPage,
+    },
+    {
+      path: '/ridePreferences',
+      component: SearchPageOptions,
+      name: 'ridePreferences',
+    },
+    {
+      path: '/searchRideDate',
+      component: SearchRideDate,
+      name: 'searchRideDate',
     },
   ],
 })

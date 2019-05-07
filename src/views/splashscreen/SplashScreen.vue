@@ -1,15 +1,23 @@
 <template>
-  <div id="splash-screen" class="container">
-    <img id="logo" class="img-fluid" src="@/assets/logo_splash.png" />
-    <div id="splash-buttons">
-      <a class="btn btn-block btn-primary" @click="$keycloak.loginFn()"
-        >Login</a
-      >
-      <router-link to="/createUser" class="btn btn-block btn-primary"
-        >Registreren</router-link
-      >
-    </div>
-  </div>
+  <v-container grid-list-lg fluid class="background-green">
+    <v-layout>
+      <v-flex xs12>
+        <v-img id="logo" :src="require('@/assets/logo_splash.png')"></v-img>
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap mt-5>
+      <v-flex xs12 md6>
+        <v-btn round large block @click="$keycloak.loginFn()">
+          Login
+        </v-btn>
+      </v-flex>
+      <v-flex xs12 md6>
+        <v-btn round large block to="/createUser">
+          Registreren
+        </v-btn>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -37,20 +45,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
-#splash-screen {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  height: 100vh;
-}
-
 #logo {
-  align-self: center;
-}
-
-#splash-buttons {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  max-width: 500px;
+  margin: 0 auto;
 }
 </style>

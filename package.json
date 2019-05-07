@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@dsb-norge/vue-keycloak-js": "^1.0.7",
+    "axios": "^0.18.0",
     "bootstrap": "^4.2.1",
     "bootstrap-vue": "^2.0.0-rc.11",
     "i": "^0.3.6",
@@ -16,6 +17,7 @@
     "vue": "^2.5.21",
     "vue-jwt-decode": "^0.1.0",
     "vue-router": "^3.0.2",
+    "vuetify": "^1.5.11",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
