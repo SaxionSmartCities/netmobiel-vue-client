@@ -16,12 +16,16 @@ export default new Vuex.Store({
       email: '',
     },
     user: {
-      //these fields are only used for the registration
+      // Access token
+      accessToken: undefined,
+
+      // Credentials provided by identity provider.
       givenName: undefined,
       familyName: undefined,
       fullName: undefined,
       email: undefined,
-      //
+
+      // Other attributes
       dateOfBirth: Date.now(),
       biography: '',
       maxWalkDistance: 10,

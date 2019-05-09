@@ -1,10 +1,10 @@
 import VueJwtDecode from 'vue-jwt-decode'
 
 export default {
-  setUser: (state, payload) => {
-    state.user.accessToken = payload.accessToken
+  setUserToken: (state, token) => {
+    state.user.accessToken = token
 
-    let decodedObject = VueJwtDecode.decode(payload.accessToken)
+    let decodedObject = VueJwtDecode.decode(token)
     state.user.givenName = decodedObject['given_name']
     state.user.familyName = decodedObject['family_name']
     state.user.email = decodedObject['email']
