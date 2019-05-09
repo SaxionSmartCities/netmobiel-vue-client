@@ -52,7 +52,7 @@ router.beforeEach((to, from, next) => {
   if (
     to.path !== '/' &&
     // to.path !== '/createUser' &&
-    store.getters.getUser.name === undefined
+    store.getters.getUser.accessToken === undefined
   ) {
     console.log('Unauth: redirect to root')
     next('/')
