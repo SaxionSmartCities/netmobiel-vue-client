@@ -1,17 +1,14 @@
-// import VueJwtDecode from 'vue-jwt-decode'
+import VueJwtDecode from 'vue-jwt-decode'
 
 export default {
-  saveUser: (state, payload) => {
-    //old implementation
-    // state.user.accessToken = payload.accessToken
-    //
-    // let decodedObject = VueJwtDecode.decode(payload.accessToken)
-    // password is stored in the store, maybe change later
-    for (var key in payload) {
-      if (payload.hasOwnProperty(key)) {
-        state.user[key] = payload[key]
-      }
-    }
+  setUser: (state, payload) => {
+    state.user.accessToken = payload.accessToken
+
+    let decodedObject = VueJwtDecode.decode(payload.accessToken)
+    state.user.givenName = decodedObject['given_name']
+    state.user.familyName = decodedObject['family_name']
+    state.user.email = decodedObject['email']
+    state.user.fullName = decodedObject['name']
   },
   enableHeader: state => {
     console.log('Enabling header')

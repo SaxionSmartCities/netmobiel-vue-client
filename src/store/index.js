@@ -17,9 +17,10 @@ export default new Vuex.Store({
     },
     user: {
       //these fields are only used for the registration
-      name: undefined,
+      givenName: undefined,
+      familyName: undefined,
+      fullName: undefined,
       email: undefined,
-      password: undefined,
       //
       dateOfBirth: Date.now(),
       biography: '',

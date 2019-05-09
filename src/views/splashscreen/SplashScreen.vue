@@ -33,8 +33,6 @@ export default {
   mounted() {
     if (this.$keycloak.authenticated) {
       const payload = {
-        name: this.$keycloak.fullName,
-        email: 'zit in de jwt token',
         accessToken: this.$keycloak.token,
       }
       this.$store.commit('saveUser', payload)

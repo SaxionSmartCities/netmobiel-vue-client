@@ -2,7 +2,9 @@
   <v-container grid-list-lg>
     <v-layout>
       <v-flex text-xs-center xs12>
-        <h3>Hoi {{ user.name }}</h3>
+        <h3>
+          Hoi {{ user.givenName }} ({{ user.familyName }}, {{ user.email }})
+        </h3>
         <p>Welkom bij Netmobiel!</p>
       </v-flex>
     </v-layout>
