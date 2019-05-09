@@ -63,9 +63,6 @@ export default {
   beforeCreate() {
     this.$store.commit('disableFooter')
   },
-  beforeDestroy() {
-    this.$store.commit('enableFooter')
-  },
   methods: {
     submitForm: function(event) {
       event.preventDefault()
@@ -74,6 +71,8 @@ export default {
         'submitRegistrationRequest',
         this.registrationRequest
       )
+
+      this.$router.push('/')
     },
   },
 }

@@ -49,8 +49,9 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log('Routing: ' + to + ' ' + from)
-  console.log('User: ' + store.getters.getUser)
+  store.commit('enableFooter')
+  store.commit('enableHeader')
+
   if (
     to.path !== '/' &&
     to.path !== '/createUser' &&

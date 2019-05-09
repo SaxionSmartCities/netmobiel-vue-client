@@ -112,9 +112,6 @@ export default {
   beforeCreate() {
     this.$store.commit('disableFooter')
   },
-  beforeDestroy() {
-    this.$store.commit('enableFooter')
-  },
   methods: {
     submitForm: function(event) {
       event.preventDefault()

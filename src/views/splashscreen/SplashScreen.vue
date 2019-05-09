@@ -26,10 +26,6 @@ export default {
     this.$store.commit('disableHeader')
     this.$store.commit('disableFooter')
   },
-  beforeDestroy() {
-    this.$store.commit('enableHeader')
-    this.$store.commit('enableFooter')
-  },
   mounted() {
     if (this.$keycloak.authenticated) {
       this.$store.commit('setUserToken', this.$keycloak.token)
