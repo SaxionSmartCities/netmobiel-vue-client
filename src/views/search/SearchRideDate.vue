@@ -15,40 +15,22 @@
           locale="nl"
           full-width
         ></v-date-picker>
-        <!--<v-date-picker-->
-        <!--v-model="date"-->
-        <!--color="background-orange"-->
-        <!--header-color="background-green"-->
-        <!--full-width-->
-        <!--landscape-->
-        <!--class="mt-3"-->
-        <!--&gt;</v-date-picker>-->
       </v-flex>
-      <v-flex>
-        <v-subheader id="subheaderTime" class="text-uppercase body-2"
-          >Tijd</v-subheader
-        >
-      </v-flex>
-      <v-divider></v-divider>
-      <v-flex xs12>
-        <v-btn-toggle v-model="toggle_multiple">
-          <v-btn :value="1" flat>
-            07:00
-          </v-btn>
+    </v-layout>
 
-          <v-btn :value="2" flat>
-            07:30
-          </v-btn>
+    <v-subheader id="subheaderTime" class="text-uppercase body-2"
+      >Tijd</v-subheader
+    >
+    <v-divider></v-divider>
 
-          <v-btn :value="3" flat>
-            08:00
-          </v-btn>
-
-          <v-btn :value="4" flat>
-            08:30
+    <v-layout class="timeContainer">
+      <v-content>
+        <v-btn-toggle class="ma-3" v-for="i in list" :key="`2${i}`">
+          <v-btn class="px-3" :value="1" flat>
+            {{ timeStamp }}
           </v-btn>
         </v-btn-toggle>
-      </v-flex>
+      </v-content>
     </v-layout>
   </v-container>
 </template>
@@ -59,10 +41,9 @@ export default {
   data() {
     return {
       date: new Date().toISOString().substr(0, 10),
+      list: 8,
+      timeStamp: '07:30',
     }
-  },
-  methods: {
-    formatWeekday() {},
   },
 }
 </script>
@@ -72,11 +53,20 @@ export default {
   color: $color-green;
 }
 
-.v-btn .v-btn__content .v-icon {
-  color: $color-green;
+.timeContainer {
+  white-space: nowrap;
+  overflow-y: scroll;
 }
 
 .v-btn--active {
   background-color: $color-orange;
+}
+
+.v-btn--active div {
+  color: white;
+}
+
+.v-icon.material-icons.theme--light {
+  color: $color-green;
 }
 </style>

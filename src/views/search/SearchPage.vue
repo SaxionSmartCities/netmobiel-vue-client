@@ -64,7 +64,7 @@
               <v-layout>
                 <v-flex id="aankomsttijd" xs11>
                   <v-layout row>
-                    <v-flex xs4 sm2>
+                    <v-flex xs4 sm2 @click="toSearchRideDate">
                       <v-subheader class="font-weight-bold">
                         Aankomst
                       </v-subheader>
@@ -83,7 +83,7 @@
                 </v-flex>
               </v-layout>
               <v-layout mt-2 justify-center>
-                <v-flex shrink @click="toRidePrefrences">
+                <v-flex shrink @click="toRidePreferences">
                   <v-icon>settings</v-icon>
                   <span>Reisvoorkeuren</span>
                 </v-flex>
@@ -105,7 +105,7 @@ export default {
     }
   },
   methods: {
-    toRidePrefrences() {
+    toRidePreferences() {
       this.$router.push({ name: 'ridePreferences' })
     },
     toSearchRideDate() {
