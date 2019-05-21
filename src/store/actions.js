@@ -15,13 +15,25 @@ export default {
       },
     }
 
-    console.log(axiosConfig)
     axios(axiosConfig)
-      .then(function(response) {
-        console.log(response)
+      .then(function() {
+        context.commit('setRegistrationStatus', { success: true, message: '' })
       })
       .catch(function(error) {
-        console.log(error)
+        const status = error.response.status
+        var errorMsg = ''
+        if (status === 422) {
+          errorMsg = 'Ontbrekende data (email, voornaam of achternaam'
+        } else if (status === 500) {
+          errorMsg = error.response.data.message // No clue what is going on, but the server should report something about it
+        } else if (status === 409) {
+          errorMsg = 'Het emailadres is al in gebruik'
+        }
+
+        context.commit('setRegistrationStatus', {
+          success: false,
+          message: errorMsg,
+        })
       })
   },
 }

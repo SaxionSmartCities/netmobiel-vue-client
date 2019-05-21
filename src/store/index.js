@@ -14,6 +14,10 @@ export default new Vuex.Store({
       first_name: '',
       last_name: '',
       email: '',
+      submitStatus: {
+        success: undefined,
+        message: '',
+      },
     },
     user: {
       // Access token
