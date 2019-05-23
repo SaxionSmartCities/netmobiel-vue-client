@@ -53,6 +53,11 @@ export default new Vuex.Store({
         visible: true,
       },
     },
+    searchProperties: {
+      startLocation: '',
+      arrivelLocation: '',
+      date: Date.now(),
+    },
   },
   getters,
   mutations,

@@ -14,7 +14,6 @@
           color="background-orange"
           locale="nl"
           full-width
-          month-format=""
         ></v-date-picker>
       </v-flex>
     </v-layout>
@@ -28,7 +27,7 @@
       <v-content>
         <v-btn-toggle class="ma-3" v-for="i in list" :key="`2${i}`">
           <v-btn class="px-3" :value="1" flat>
-            {{ timeStamp }}
+            {{ setTimeStamp(i) }}
           </v-btn>
         </v-btn-toggle>
       </v-content>
@@ -43,6 +42,7 @@
 </template>
 
 <script>
+  let hour = 0;
 export default {
   name: 'SearchRideDate',
   data() {
@@ -51,22 +51,34 @@ export default {
       list: 48,
       hour: 0,
       minute: 0,
-      timeStamp: '07:30',
     }
   },
   methods: {
     setTimeStamp(i) {
+      var min = 0
+
       if (i % 2 === 1) {
-        this.minute = 30
+        min = 30
       } else if (i % 2 === 0) {
-        this.hour++
-        this.minute = '00'
+        hour++
+        min = '00'
       }
       if (i === 48) {
-        this.hour = '00'
+        hour = '00'
       }
-      return this.hour + ':' + this.minute
+      var time = ''
+      if (hour < 10 && hour > 0) {
+        time = '0' + hour + ':' + min
+      } else {
+        time = hour + ':' + min
+      }
+      return time
     },
+    // setMoment(hour, minute) {
+    //   let a = moment()
+    //   let b = moment().add(hour, 'hour').add(minute, 'minute') //b is the time portion
+    //   a.hour(b.hour()).minute(b.minute())
+    // },
   },
 }
 </script>
