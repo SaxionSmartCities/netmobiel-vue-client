@@ -17,4 +17,7 @@ export default {
   getRegistrationStatus: state => {
     return state.registrationRequest.submitStatus
   },
+  getRideSearchPreferences: state => {
+    return state.user.rideSearchPreferences
+  },
 }

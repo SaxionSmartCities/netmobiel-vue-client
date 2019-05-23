@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container data-app>
     <v-subheader class="headline">Reisvoorkeuren</v-subheader>
     <v-divider></v-divider>
     <v-layout>
@@ -69,6 +69,10 @@
       </v-flex>
     </v-layout>
     <v-divider></v-divider>
+    <v-layout mt-5 align-center justify-space-around row>
+      <v-btn @click="$router.push('search')">Back</v-btn>
+      <v-btn @click="save">Save</v-btn>
+    </v-layout>
   </v-container>
 </template>
 
@@ -91,9 +95,25 @@ export default {
       avoidSelected: [],
     }
   },
+  mounted() {
+    let prefs = this.$store.getters.getRideSearchPreferences
+    this.passengersSelected = prefs.passengersSelected
+    this.sortSelected = prefs.sortSelected
+    this.switchSelected = prefs.switchSelected
+    for (let i = 0; i < this.bagage.length; i++) {
+      if (Object.values(prefs.bagagePrefs)[i]) {
+        this.bagageSelected.push(this.bagage[i])
+      }
+    }
+    for (let i = 0; i < this.vermijden.length; i++) {
+      if (Object.values(prefs.avoidSelected)[i]) {
+        this.avoidSelected.push(this.vermijden[i])
+      }
+    }
+  },
   methods: {
     save: function() {
-      return {
+      this.$store.commit('setRideSearchPreferences', {
         passengersSelected: this.passengersSelected,
         bagagePrefs: {
           buggy: this.bagageSelected.indexOf(this.bagage[0]) > -1,
@@ -110,7 +130,8 @@ export default {
           walk: this.avoidSelected.indexOf(this.vermijden[2]) > -1,
           bike: this.avoidSelected.indexOf(this.vermijden[3]) > -1,
         },
-      }
+      })
+      this.$router.push('search')
     },
   },
 }

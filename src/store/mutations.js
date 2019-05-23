@@ -52,4 +52,7 @@ export default {
       },
     }
   },
+  setRideSearchPreferences: (state, payload) => {
+    state.user.rideSearchPreferences = payload
+  },
 }

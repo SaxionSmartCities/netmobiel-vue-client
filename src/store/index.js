@@ -32,20 +32,25 @@ export default new Vuex.Store({
       // Other attributes
       dateOfBirth: Date.now(),
       biography: '',
-      maxWalkDistance: 10,
-      flexibility: 10,
-      rideBaggage: {
-        baggage: false,
-        wheelChair: false,
-        animal: false,
-      },
-      conveyancePreferences: {
-        rideAlong: false,
-        regionTaxi: false,
-        bus: false,
-        shareCar: false,
-        shareBike: false,
-        train: false,
+
+      rideSearchPreferences: {
+        passengersSelected: 1,
+        switchSelected: 'Ja',
+        bagagePrefs: {
+          buggy: false,
+          handbagage: false,
+          animal: false,
+          walker: false,
+          wheelchair: false,
+        },
+        switchVehicle: false,
+        sortSelected: 'Bekenden',
+        avoidSelected: {
+          bus: false,
+          train: false,
+          walk: false,
+          bike: false,
+        },
       },
     },
     ui: {
