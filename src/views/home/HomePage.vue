@@ -9,19 +9,14 @@
       </v-flex>
     </v-layout>
     <v-layout row wrap>
-      <v-flex xs12 md4>
+      <v-flex xs12 md6>
         <v-btn round large block to="/search">
           Ik wil een reis zoeken!
         </v-btn>
       </v-flex>
-      <v-flex xs12 md4>
+      <v-flex xs12 md6>
         <v-btn round large block>
           Ik wil een reis aanbieden!
-        </v-btn>
-      </v-flex>
-      <v-flex xs12 md4>
-        <v-btn round large block to="/createUser">
-          Ik wil als nog een account aanmaken!
         </v-btn>
       </v-flex>
     </v-layout>
