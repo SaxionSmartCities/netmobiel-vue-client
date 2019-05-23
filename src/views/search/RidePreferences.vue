@@ -2,21 +2,29 @@
   <v-container data-app>
     <v-subheader class="headline">Reisvoorkeuren</v-subheader>
     <v-divider></v-divider>
-    <v-layout>
-      <v-flex>
+    <v-layout align-center>
+      <v-flex xs11>
         <v-subheader class="font-weight-bold">Personen</v-subheader>
       </v-flex>
-      <v-flex xs8 pt-1>
+      <v-flex>
+        <v-btn small fab @click="incrementPersons(-1)">-</v-btn>
+      </v-flex>
+      <v-flex xs1>
         <v-text-field
-          v-model="passengersSelected"
+          v-model="personen"
           type="number"
           max="10"
+          read-only
+          value="1"
         ></v-text-field>
+      </v-flex>
+      <v-flex>
+        <v-btn small fab @click="incrementPersons(1)">+</v-btn>
       </v-flex>
     </v-layout>
     <v-divider></v-divider>
 
-    <v-layout>
+    <v-layout align-center>
       <v-flex>
         <v-subheader class="font-weight-bold">Bagage</v-subheader>
       </v-flex>
@@ -86,6 +94,7 @@ export default {
       overstappen: ['Ja', 'Nee'],
       sorteren: ['Reistijd', 'Prijs', 'Bekenden'],
       vermijden: ['Bus', 'Trein', 'Lopen', 'Fiets'],
+      personen: 1,
 
       //selected
       passengersSelected: 1,
@@ -132,6 +141,12 @@ export default {
         },
       })
       this.$router.push('search')
+    },
+    incrementPersons(i) {
+      if (i === 1 && this.personen < 8) {
+        this.personen = this.personen + i
+      } else if (i === -1 && this.personen > 1)
+        this.personen = this.personen + i
     },
   },
 }

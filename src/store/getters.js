@@ -20,4 +20,7 @@ export default {
   getRideSearchPreferences: state => {
     return state.user.rideSearchPreferences
   },
+  getLocations: state => {
+    return state.locations
+  },
 }
