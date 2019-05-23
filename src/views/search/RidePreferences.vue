@@ -64,7 +64,15 @@ export default {
       sorteren: ['Reistijd', 'Prijs', 'Bekenden'],
       bagage: ['Buggy', 'Handbagage', 'Huisdier', 'Rollator', 'Rolstoel'],
       vermijden: ['Bus', 'Trein', 'Lopen', 'Fiets'],
+      personen: 1,
     }
+  },
+  methods: {
+    incrementPersons(i) {
+      if (i === 1 && this.personen < 8) {
+        this.personen = this.personen + i
+      } else if (i === -1 && this.personen > 1) this.personen = this.personen + i
+    },
   },
 }
 </script>

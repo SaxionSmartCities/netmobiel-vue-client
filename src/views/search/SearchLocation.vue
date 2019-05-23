@@ -11,7 +11,6 @@
     </v-layout>
     <v-layout>
       <v-list>
-        <v-
       </v-list>
     </v-layout>
   </v-container>
