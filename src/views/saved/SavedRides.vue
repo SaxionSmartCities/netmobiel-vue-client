@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-tabs id="tabs" grow centered slider-color="#bddade">
-      <v-tab class="white--text" @click="geplandClick">Gepland</v-tab>
-      <v-tab class="white--text" @click="archiefClick">Archief</v-tab>
+      <v-tab class="white--text no-caps" @click="geplandClick">Gepland</v-tab>
+      <v-tab class="white--text no-caps" @click="archiefClick">Archief</v-tab>
     </v-tabs>
     <div>
       <v-container fluid>
@@ -59,5 +59,8 @@ export default {
 .theme--light.v-btn:not(.v-btn--icon):not(.v-btn--flat) {
   background-color: $color-orange;
   color: white;
+}
+.no-caps {
+  text-transform: none;
 }
 </style>
