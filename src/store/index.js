@@ -57,7 +57,7 @@ export default new Vuex.Store({
         visible: true,
       },
     },
-    searchedLocation: {name: '',  type: ''},
+    searchedLocation: { name: '', type: '' },
     locations: [
       { name: 'Vorden', type: 'train' },
       { name: 'Vorden Station', type: 'train' },
