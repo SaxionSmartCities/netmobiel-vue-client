@@ -10,18 +10,19 @@
           <v-flex>
             <div v-if="archief === false">
               <v-card-text>Je hebt nog niets gepland</v-card-text>
-              <v-btn round large block>
-                Plan je reis
-              </v-btn>
             </div>
             <div v-else>
               <v-card-text>Je hebt nog niets in je archief!</v-card-text>
-              <v-btn round large block>
-                Plan je reis
-              </v-btn>
             </div>
           </v-flex>
         </v-layout>
+        <v-layout justify-center
+          ><v-flex xs6>
+            <v-btn round large block>
+              Plan je reis
+            </v-btn></v-flex
+          ></v-layout
+        >
       </v-container>
     </div>
   </div>
