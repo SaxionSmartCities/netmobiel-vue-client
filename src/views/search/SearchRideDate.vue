@@ -34,23 +34,23 @@
     </v-layout>
 
     <v-layout align-end justify-center>
-      <v-btn class="ma-5" round large block>
-        Kies
+      <v-btn class="ma-5" round large block @click="submitForm($event)">
+        Kies!
       </v-btn>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-  let hour = 0;
+import moment from 'moment'
+
+let hour = 0
 export default {
   name: 'SearchRideDate',
   data() {
     return {
       date: new Date().toISOString().substr(0, 10),
       list: 48,
-      hour: 0,
-      minute: 0,
     }
   },
   methods: {
@@ -72,13 +72,23 @@ export default {
       } else {
         time = hour + ':' + min
       }
+      // this.setTimeFormat(hour, min)
       return time
     },
-    // setMoment(hour, minute) {
-    //   let a = moment()
-    //   let b = moment().add(hour, 'hour').add(minute, 'minute') //b is the time portion
+    // setTimeFormat(hour, minute) {
+    //   moment(this.date, 'YYYY-MM-DD')
+    //   let a = moment
+    //   let b = moment.add(hour, 'hour').add(minute, 'minute') //b is the time portion
     //   a.hour(b.hour()).minute(b.minute())
     // },
+    submitForm: function(event) {
+      console.log('date', this.date)
+      let myDate = moment(this.date, 'YYYY-MM-DD')
+      console.log('myDate', myDate._d)
+      //set time
+      event.preventDefault()
+      this.$store.commit('setDate', myDate._d)
+    },
   },
 }
 </script>

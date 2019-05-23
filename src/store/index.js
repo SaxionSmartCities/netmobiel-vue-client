@@ -53,10 +53,10 @@ export default new Vuex.Store({
         visible: true,
       },
     },
-    searchProperties: {
+    searchRideProperties: {
       startLocation: '',
       arrivelLocation: '',
-      date: Date.now(),
+      date: '',
     },
   },
   getters,

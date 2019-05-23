@@ -38,4 +38,7 @@ export default {
     state.registrationRequest.last_name = payload.lastName
     state.registrationRequest.email = payload.email
   },
+  setDate: (state, payload) => {
+    state.searchRideProperties.date = payload
+  },
 }
