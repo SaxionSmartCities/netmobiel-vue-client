@@ -14,6 +14,7 @@
           color="background-orange"
           locale="nl"
           full-width
+          month-format=""
         ></v-date-picker>
       </v-flex>
     </v-layout>
@@ -32,6 +33,12 @@
         </v-btn-toggle>
       </v-content>
     </v-layout>
+
+    <v-layout align-end justify-center>
+      <v-btn class="ma-5" round large block>
+        Kies
+      </v-btn>
+    </v-layout>
   </v-container>
 </template>
 
@@ -41,9 +48,25 @@ export default {
   data() {
     return {
       date: new Date().toISOString().substr(0, 10),
-      list: 8,
+      list: 48,
+      hour: 0,
+      minute: 0,
       timeStamp: '07:30',
     }
+  },
+  methods: {
+    setTimeStamp(i) {
+      if (i % 2 === 1) {
+        this.minute = 30
+      } else if (i % 2 === 0) {
+        this.hour++
+        this.minute = '00'
+      }
+      if (i === 48) {
+        this.hour = '00'
+      }
+      return this.hour + ':' + this.minute
+    },
   },
 }
 </script>
@@ -64,9 +87,26 @@ export default {
 
 .v-btn--active div {
   color: white;
+  font-weight: bold;
 }
 
 .v-icon.material-icons.theme--light {
   color: $color-green;
+}
+
+.v-btn-toggle .v-btn:last-child {
+  border-radius: 25%;
+}
+
+.v-item-group.ma-3.theme--light.v-btn-toggle.v-btn-toggle--only-child.v-btn-toggle--selected {
+  border-radius: 25%;
+}
+
+.px-3.v-btn.v-btn--flat.theme--light {
+  border: 1px solid;
+}
+
+.px-3.v-btn.v-btn--active.v-btn--flat.theme--light {
+  border: 0;
 }
 </style>
