@@ -15,7 +15,7 @@
       <v-flex xs12>
         <v-list pt-0>
           <template v-for="(location, index) in filteredList">
-            <v-list-tile :key="location.name">
+            <v-list-tile :key="location.name" @click="completeSearch(location)">
               <v-icon class="mr-3">{{ location.type }}</v-icon>
               <v-list-tile-content class="grey--text">
                 <v-list-tile-title>
@@ -57,12 +57,16 @@ export default {
         return '<span class="font-weight-bold">' + match + '</span>'
       })
     },
+    completeSearch(location) {
+      this.$store.commit('setSearchedLocation', location)
+      this.$router.go(-1)
+    },
   },
 }
 </script>
 
 <style lang="scss">
-.theme--light.v-text-field--outline > .v-input__control > .v-input__slot {
+.border-radius-input > .v-input__control > .v-input__slot {
   border-radius: $form-border-radius-input;
 }
 </style>

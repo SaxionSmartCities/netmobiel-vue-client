@@ -52,4 +52,7 @@ export default {
       },
     }
   },
+  setSearchedLocation: (state, payload) => {
+    state.searchedLocation = payload
+  },
 }
