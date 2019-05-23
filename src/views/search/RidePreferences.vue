@@ -2,17 +2,30 @@
   <v-container>
     <v-subheader class="headline">Reisvoorkeuren</v-subheader>
     <v-divider></v-divider>
-    <v-layout>
-      <v-flex>
+    <v-layout align-center>
+      <v-flex xs11>
         <v-subheader class="font-weight-bold">Personen</v-subheader>
       </v-flex>
-      <v-flex xs9>
-        <v-text-field type="number" max="10" required value="1"></v-text-field>
+      <v-flex>
+        <v-btn small fab @click="incrementPersons(-1)">-</v-btn>
+      </v-flex>
+      <v-flex xs1>
+        <v-text-field
+          v-model="personen"
+          type="number"
+          max="10"
+
+          read-only
+          value="1"
+        ></v-text-field>
+      </v-flex>
+      <v-flex>
+        <v-btn small fab @click="incrementPersons(1)">+</v-btn>
       </v-flex>
     </v-layout>
     <v-divider></v-divider>
 
-    <v-layout>
+    <v-layout align-center>
       <v-flex>
         <v-subheader class="font-weight-bold">Bagage</v-subheader>
       </v-flex>
