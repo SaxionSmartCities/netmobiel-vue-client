@@ -6,8 +6,12 @@
       <v-flex>
         <v-subheader class="font-weight-bold">Personen</v-subheader>
       </v-flex>
-      <v-flex xs9>
-        <v-text-field type="number" max="10" required value="1"></v-text-field>
+      <v-flex xs8 pt-1>
+        <v-text-field
+          v-model="passengersSelected"
+          type="number"
+          max="10"
+        ></v-text-field>
       </v-flex>
     </v-layout>
     <v-divider></v-divider>
@@ -16,9 +20,14 @@
       <v-flex>
         <v-subheader class="font-weight-bold">Bagage</v-subheader>
       </v-flex>
-      <v-flex xs9>
-        <v-select :items="bagage" attach multiple></v-select
-      ></v-flex>
+      <v-flex xs8 pt-1>
+        <v-select
+          v-model="bagageSelected"
+          :items="bagage"
+          attach
+          multiple
+        ></v-select>
+      </v-flex>
     </v-layout>
     <v-divider></v-divider>
 
@@ -26,8 +35,12 @@
       <v-flex>
         <v-subheader class="font-weight-bold">Overstappen</v-subheader>
       </v-flex>
-      <v-flex xs9>
-        <v-select attach :items="overstappen" required></v-select>
+      <v-flex xs8 pt-1>
+        <v-select
+          v-model="switchSelected"
+          attach
+          :items="overstappen"
+        ></v-select>
       </v-flex>
     </v-layout>
     <v-divider></v-divider>
@@ -36,8 +49,8 @@
       <v-flex>
         <v-subheader class="font-weight-bold">Sorteren</v-subheader>
       </v-flex>
-      <v-flex xs9>
-        <v-select attach :items="sorteren"></v-select>
+      <v-flex xs8 pt-1>
+        <v-select v-model="sortSelected" attach :items="sorteren"></v-select>
       </v-flex>
     </v-layout>
     <v-divider></v-divider>
@@ -46,8 +59,13 @@
       <v-flex>
         <v-subheader class="font-weight-bold">Vermijden</v-subheader>
       </v-flex>
-      <v-flex xs9>
-        <v-select :items="vermijden" attach multiple></v-select>
+      <v-flex xs8 pt-1>
+        <v-select
+          v-model="avoidSelected"
+          :items="vermijden"
+          attach
+          multiple
+        ></v-select>
       </v-flex>
     </v-layout>
     <v-divider></v-divider>
@@ -60,11 +78,40 @@ export default {
   data: function() {
     return {
       //hardcoded lists, must be changed later
+      bagage: ['Buggy', 'Handbagage', 'Huisdier', 'Rollator', 'Rolstoel'],
       overstappen: ['Ja', 'Nee'],
       sorteren: ['Reistijd', 'Prijs', 'Bekenden'],
-      bagage: ['Buggy', 'Handbagage', 'Huisdier', 'Rollator', 'Rolstoel'],
       vermijden: ['Bus', 'Trein', 'Lopen', 'Fiets'],
+
+      //selected
+      passengersSelected: 1,
+      bagageSelected: [],
+      switchSelected: 'Ja',
+      sortSelected: 'Bekenden',
+      avoidSelected: [],
     }
+  },
+  methods: {
+    save: function() {
+      return {
+        passengersSelected: this.passengersSelected,
+        bagagePrefs: {
+          buggy: this.bagageSelected.indexOf(this.bagage[0]) > -1,
+          handbagage: this.bagageSelected.indexOf(this.bagage[1]) > -1,
+          animal: this.bagageSelected.indexOf(this.bagage[2]) > -1,
+          walker: this.bagageSelected.indexOf(this.bagage[3]) > -1,
+          wheelchair: this.bagageSelected.indexOf(this.bagage[4]) > -1,
+        },
+        switchSelected: this.switchSelected,
+        sortSelected: this.sortSelected,
+        avoidSelected: {
+          bus: this.avoidSelected.indexOf(this.vermijden[0]) > -1,
+          train: this.avoidSelected.indexOf(this.vermijden[1]) > -1,
+          walk: this.avoidSelected.indexOf(this.vermijden[2]) > -1,
+          bike: this.avoidSelected.indexOf(this.vermijden[3]) > -1,
+        },
+      }
+    },
   },
 }
 </script>
