@@ -14,7 +14,6 @@
           v-model="personen"
           type="number"
           max="10"
-
           read-only
           value="1"
         ></v-text-field>
@@ -84,7 +83,8 @@ export default {
     incrementPersons(i) {
       if (i === 1 && this.personen < 8) {
         this.personen = this.personen + i
-      } else if (i === -1 && this.personen > 1) this.personen = this.personen + i
+      } else if (i === -1 && this.personen > 1)
+        this.personen = this.personen + i
     },
   },
 }

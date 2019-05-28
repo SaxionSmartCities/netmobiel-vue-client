@@ -1,18 +1,11 @@
 <template>
-  <nav v-if="isVisible">
-    <v-layout align-center justify-end fill-height>
-      <v-btn
-        id="logout-button"
-        flat
-        round
-        small
-        class="ma-1 subheading"
-        @click="logout"
-      >
+  <v-layout v-if="isVisible" header fill-height justify-end align-center>
+    <v-flex pa-1 shrink>
+      <v-btn id="logout-button" flat round small @click="logout">
         Logout
       </v-btn>
-    </v-layout>
-  </nav>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
@@ -33,10 +26,10 @@ export default {
 </script>
 
 <style lang="scss">
-nav {
+.header {
   background: $color-green;
   background-image: url('../../assets/logo_header.png');
-  background-size: contain;
+  background-size: 40% auto;
   background-repeat: no-repeat;
   background-position: center center;
 }

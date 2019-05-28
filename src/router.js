@@ -13,6 +13,7 @@ import SearchPageOptions from './views/search/RidePreferences'
 import SearchRideDate from './views/search/SearchRideDate'
 import SearchLocation from './views/search/SearchLocation'
 import SavedRides from './views/saved/SavedRides'
+import SearchResults from './views/search-results/SearchResults.vue'
 
 const router = new Router({
   mode: 'history',
@@ -56,6 +57,11 @@ const router = new Router({
       path: '/savedRides',
       component: SavedRides,
       name: 'savedRides',
+    },
+    {
+      path: '/searchResults',
+      component: SearchResults,
+      name: 'searchResults',
     },
   ],
 })

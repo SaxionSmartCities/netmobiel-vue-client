@@ -1,13 +1,17 @@
 <template>
-  <div id="app">
-    <netmobiel-header id="header" />
-
-    <div id="content" class="scroll">
-      <router-view></router-view>
-    </div>
-
-    <netmobiel-footer id="footer" />
-  </div>
+  <v-container id="app" fluid ma-0 pa-0>
+    <v-layout fill-height column>
+      <v-flex id="header" xs1>
+        <netmobiel-header />
+      </v-flex>
+      <v-flex id="content" scroll>
+        <router-view></router-view>
+      </v-flex>
+      <div id="footer">
+        <netmobiel-footer />
+      </div>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -25,23 +29,15 @@ export default {
 
 <style lang="scss">
 #app {
-  display: flex;
-  flex-direction: column;
   height: 100vh;
 }
 
 #header {
-  justify-self: flex-start;
-  height: 10vmin;
-}
-
-#content {
-  flex: 1 0 auto;
+  height: 10vmax;
 }
 
 #footer {
-  // height: 5vh;
-  justify-self: flex-end;
+  height: 56px;
 }
 
 .scroll {
