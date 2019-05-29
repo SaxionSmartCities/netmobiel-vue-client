@@ -18,7 +18,7 @@
         </v-layout>
         <v-layout justify-center
           ><v-flex xs6>
-            <v-btn round large block>
+            <v-btn round large block to="/search">
               Plan je reis
             </v-btn></v-flex
           ></v-layout

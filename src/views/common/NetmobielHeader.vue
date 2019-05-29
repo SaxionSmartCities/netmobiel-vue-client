@@ -1,26 +1,13 @@
 <template>
-  <v-layout v-if="isVisible" header fill-height justify-end align-center>
-    <v-flex pa-1 shrink>
-      <v-btn id="logout-button" flat round small @click="logout">
-        Logout
-      </v-btn>
-    </v-flex>
-  </v-layout>
+  <v-layout header fill-height justify-end align-center></v-layout>
 </template>
 
 <script>
 export default {
   name: 'Header',
-  computed: {
-    isVisible: function() {
-      return this.$store.getters.isHeaderVisible
-    },
-  },
   methods: {
-    logout: function() {
-      this.$keycloak.logoutFn()
-      this.$store.commit('deleteAccessToken')
-    },
+    // logout: function() {
+    // },
   },
 }
 </script>

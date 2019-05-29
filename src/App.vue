@@ -1,13 +1,15 @@
 <template>
   <v-container id="app" fluid ma-0 pa-0>
     <v-layout fill-height column>
-      <v-flex id="header" xs1>
+      <v-flex v-if="isHeaderVisible" id="header" xs1>
         <netmobiel-header />
       </v-flex>
+
       <v-flex id="content" scroll>
         <router-view></router-view>
       </v-flex>
-      <div id="footer">
+
+      <div v-if="isFooterVisible" id="footer">
         <netmobiel-footer />
       </div>
     </v-layout>
@@ -23,6 +25,14 @@ export default {
   components: {
     NetmobielHeader,
     NetmobielFooter,
+  },
+  computed: {
+    isHeaderVisible: function() {
+      return this.$store.getters.isHeaderVisible
+    },
+    isFooterVisible: function() {
+      return this.$store.getters.isFooterVisible
+    },
   },
 }
 </script>
