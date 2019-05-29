@@ -11,7 +11,7 @@
           <v-icon>home</v-icon>
         </v-btn>
 
-        <v-btn flat value="plan-trip">
+        <v-btn flat value="plan-trip" to="/search">
           <span>Reis plannen</span>
           <v-icon>commute</v-icon>
         </v-btn>
