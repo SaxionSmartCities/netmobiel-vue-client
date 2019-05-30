@@ -24,7 +24,7 @@
 
 <script>
 export default {
-  name: 'TravelStep',
+  name: 'TravelLeg',
   props: {
     maxRating: { type: Number, default: 0 },
     currentRating: { type: Number, default: 0 },
