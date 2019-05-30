@@ -16,7 +16,11 @@
         </v-flex>
         <v-flex id="schematischoverzicht" mt-3>
           <v-layout>
-            <v-flex v-for="step in journey.steps" :key="step.id">
+            <v-flex
+              v-for="(step, index) in journey.steps"
+              :key="index"
+              :class="calculateClass(index)"
+            >
               <travel-step
                 v-if="step.mode.type === 'car'"
                 :max-rating="3"
@@ -28,18 +32,6 @@
                 {{ getIcon(step.mode.type) }}
               </travel-step>
             </v-flex>
-            <!-- <v-flex xs2>
-              <travel-step>directions_walk</travel-step>
-            </v-flex>
-            <v-flex xs4>
-              <travel-step>directions_car</travel-step>
-            </v-flex>
-            <v-flex>
-              <travel-step>directions_bus</travel-step>
-            </v-flex>
-            <v-flex>
-              <travel-step>train</travel-step>
-            </v-flex> -->
           </v-layout>
         </v-flex>
         <v-flex id="tijdkosten" mt-2>
@@ -94,17 +86,20 @@ export default {
 
             time: 15,
           },
-
           {
             id: 2,
             mode: { type: 'bus', line: 144 },
-            time: 35,
+            time: 5,
           },
         ],
         costs: 5,
         departureTime: '09:30',
       },
+      layoutRatios: [],
     }
+  },
+  mounted: function() {
+    this.calculateStepDivison()
   },
   methods: {
     getIcon: function(type) {
@@ -118,6 +113,54 @@ export default {
         case 'bus':
           return 'directions_bus'
       }
+    },
+    // Function to pre-determine the divions of columsn per step
+    calculateStepDivison: function() {
+      // Calculate total travel time
+      let totalTime = 0
+      this.journey.steps.forEach(element => {
+        totalTime += element.time
+      })
+
+      // Calculate ratio for each step and map it on a 1-12 scale (based on grid system)
+      let ratios = []
+      this.journey.steps.forEach(element => {
+        let currentRatio = element.time / totalTime // Calculate weight of value i.c.t. other values
+        let mappedRatio = currentRatio * 12 // Map over 12 columns
+        let pushValue = Math.max(1, mappedRatio) // Make sure the minimum value is 1 - otherwise it won't be displayed
+
+        ratios.push(Math.round(pushValue))
+      })
+
+      // We need to check whether we fill all 12 columns (because of grid).
+      // As there is no guarantee that we have exactly 12 columsn filled (because of rounding and min. of 1 column for all steps),
+      // we need to confirm this manually.
+      // We'll sum up the ratios array (which should be 12) and adjust if need be. We'll pick the (first) largest
+      // value in the array (== biggest column visually) apply the difference to it..
+      let sum = 0
+      ratios.forEach(element => {
+        sum += element
+      })
+
+      if (sum !== 12) {
+        let difference = 12 - sum // This can either be positive or negative.
+
+        // Find the highest value. We'll need to adjust this value to reach 12.
+        let highestIndex = 0
+        for (var i = 0; i < ratios.length; i++) {
+          if (ratios[i] > ratios[highestIndex]) {
+            highestIndex = i
+          }
+        }
+
+        // Adjust the widest column visually..
+        ratios[highestIndex] += difference
+      }
+
+      this.layoutRatios = ratios
+    },
+    calculateClass: function(index) {
+      return 'xs' + this.layoutRatios[index]
     },
   },
 }

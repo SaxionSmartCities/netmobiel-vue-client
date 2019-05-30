@@ -2,12 +2,12 @@
   <v-layout column>
     <v-flex>
       <v-layout>
-        <v-flex xs3>
+        <v-flex shrink>
           <v-icon class="text-primary"><slot></slot></v-icon>
         </v-flex>
         <v-flex v-if="maxRating > 0">
           <v-layout>
-            <v-flex v-for="star in starArray" :key="star" shrink>
+            <v-flex v-for="(star, index) in starArray" :key="index" shrink>
               <v-icon v-if="star === 0" class="star">star_border</v-icon>
               <v-icon v-if="star === 1" class="star">star_half</v-icon>
               <v-icon v-if="star === 2" class="star">star</v-icon>
