@@ -1,11 +1,11 @@
 <template>
   <v-container id="app" fluid ma-0 pa-0>
-    <v-layout fill-height column>
+    <v-layout fill-height column yellow>
       <v-flex v-if="isHeaderVisible" id="header" xs1>
         <netmobiel-header />
       </v-flex>
 
-      <v-flex id="content" scroll>
+      <v-flex id="content" scroll red>
         <router-view></router-view>
       </v-flex>
 
