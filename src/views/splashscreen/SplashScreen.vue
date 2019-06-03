@@ -24,7 +24,7 @@
 export default {
   beforeCreate() {
     this.$store.commit('disableHeader')
-    // this.$store.commit('disableFooter')
+    this.$store.commit('disableFooter')
   },
   mounted() {
     if (this.$keycloak.authenticated) {
