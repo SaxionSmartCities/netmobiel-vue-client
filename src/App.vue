@@ -5,7 +5,7 @@
         <netmobiel-header />
       </v-flex>
 
-      <v-flex id="content" fill-height scroll red>
+      <v-flex id="content" scroll red>
         <router-view></router-view>
       </v-flex>
 
@@ -53,7 +53,7 @@ body {
 }
 
 #content {
-  height: 100%;
+  // height: 100%;
 }
 
 #footer {
