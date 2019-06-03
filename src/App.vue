@@ -52,6 +52,10 @@ body {
   height: 10vmax;
 }
 
+#content {
+  height: 100%;
+}
+
 #footer {
   height: 56px;
 }

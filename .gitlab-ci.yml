@@ -10,12 +10,12 @@ cache:
   paths:
   - node_modules/
 
-run linter:
-  stage: lint
-  before_script:
-   - npm install
-  script:
-    - npm run lint
+# run linter:
+#   stage: lint
+#   before_script:
+#    - npm install
+#   script:
+#     - npm run lint
 
 build site:
   stage: build
@@ -28,9 +28,9 @@ build site:
 
 deploy site:
   stage: deploy
-  only:
-    - master
-    - dev
+  # only:
+  #   - master
+  #   - dev
   cache: {}
   script:
     - apk add --no-cache openssh rsync
