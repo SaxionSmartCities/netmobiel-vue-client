@@ -19,6 +19,21 @@ export default new Vuex.Store({
         message: '',
       },
     },
+    planningRequest: {
+      fromPlace: {
+        lat: 0.0,
+        lon: 0.0,
+      },
+      toPlace: {
+        lat: 0.0,
+        lon: 0.0,
+      },
+      submitStatus: {
+        success: undefined,
+        message: '',
+        data: '',
+      },
+    },
     user: {
       // Access token
       accessToken: undefined,

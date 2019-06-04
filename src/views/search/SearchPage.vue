@@ -77,7 +77,13 @@
               </v-layout>
               <v-layout>
                 <v-flex mt-2>
-                  <v-btn large round block to="/searchResults">
+                  <v-btn
+                    v-if="showSubmitButton"
+                    large
+                    round
+                    block
+                    @click="submitForm()"
+                  >
                     Plan je reis!
                   </v-btn>
                 </v-flex>
@@ -86,6 +92,18 @@
                 <v-flex shrink @click="toRidePrefrences">
                   <v-icon>settings</v-icon>
                   <span>Reisvoorkeuren</span>
+                </v-flex>
+              </v-layout>
+              <v-layout>
+                <v-flex text-xs-center>
+                  <v-alert
+                    v-if="getSubmitStatus.success === false"
+                    :value="true"
+                    type="error"
+                    color="red"
+                  >
+                    {{ getSubmitStatus.message }}
+                  </v-alert>
                 </v-flex>
               </v-layout>
             </v-form>
@@ -100,9 +118,28 @@
 export default {
   data: function() {
     return {
+      waiting: null,
+      showSubmitButton: true,
       fromLocation: 'Enschede',
       toLocation: 'Deventer',
     }
+  },
+  computed: {
+    getSubmitStatus() {
+      return this.$store.getters.getPlanningStatus
+    },
+  },
+  watch: {
+    getPlanningStatus(newValue) {
+      if (newValue.success === true) {
+        this.showSubmitButton = false
+
+        this.waiting = setTimeout(() => {
+          this.$store.commit('clearPlanningRequest')
+          this.$router.push('/searchResults')
+        }, 2500)
+      }
+    },
   },
   methods: {
     toRidePrefrences() {
@@ -116,6 +153,20 @@ export default {
 
       this.fromLocation = this.toLocation
       this.toLocation = tempLocation
+    },
+    submitForm() {
+      var searchQuery = {
+        fromPlace: {
+          lat: 52.219382,
+          lon: 6.888892,
+        },
+        toPlace: {
+          lat: 52.003318,
+          lon: 6.519264,
+        },
+      }
+
+      this.$store.dispatch('submitPlanningsRequest', searchQuery)
     },
   },
 }

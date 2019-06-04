@@ -55,4 +55,28 @@ export default {
   setSearchedLocation: (state, payload) => {
     state.searchedLocation = payload
   },
+  storePlanningRequest: (state, payload) => {
+    state.planningRequest.fromPlace = payload.fromPlace
+    state.planningRequest.toPlace = payload.toPlace
+  },
+  setPlanningStatus: (state, payload) => {
+    state.planningRequest.submitStatus = payload
+  },
+  clearPlanningRequest: state => {
+    state.planningRequest = {
+      fromPlace: {
+        lat: 0.0,
+        lon: 0.0,
+      },
+      toPlace: {
+        lat: 0.0,
+        lon: 0.0,
+      },
+      submitStatus: {
+        success: undefined,
+        message: '',
+        data: '',
+      },
+    }
+  },
 }

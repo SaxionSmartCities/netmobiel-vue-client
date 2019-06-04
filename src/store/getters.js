@@ -17,6 +17,9 @@ export default {
   getRegistrationStatus: state => {
     return state.registrationRequest.submitStatus
   },
+  getPlanningStatus: state => {
+    return state.planningRequest.submitStatus
+  },
   getLocations: state => {
     return state.locations
   },
