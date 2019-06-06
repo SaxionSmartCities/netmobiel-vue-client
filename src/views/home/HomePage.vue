@@ -23,19 +23,6 @@
         <v-btn round large block :to="{ name: 'searchLocation' }">
           Locatie zoeken
         </v-btn>
-        <v-btn round large block :to="{ name: 'profileHeader' }">
-          Profile header
-        </v-btn>
-      </v-flex>
-      <v-flex xs12 md6>
-        <v-btn round large block :to="{ name: 'termsOfUse' }">
-          Gebruikers voorwaarden
-        </v-btn>
-      </v-flex>
-      <v-flex xs12 md6>
-        <v-btn round large block :to="{ name: 'privacyStatement' }">
-          Privacy Statement
-        </v-btn>
       </v-flex>
     </v-layout>
   </v-container>

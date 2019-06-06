@@ -1,6 +1,24 @@
 <template>
   <v-container>
     <v-layout column>
+      <v-layout row mb-4>
+        <v-flex>
+          <v-avatar id="profileImage" :size="size">
+            <img :src="avatar" />
+          </v-avatar>
+        </v-flex>
+        <v-layout class="mt-2">
+          <v-flex>
+            <p class="ma-0">{{ getUserData().fullName }}</p>
+            <p class="ma-0">{{ address }}</p>
+            <v-layout row>
+              <v-flex v-for="i in getStars" :key="i" xs1>
+                <v-icon small color="yellow">star</v-icon>
+              </v-flex>
+            </v-layout>
+          </v-flex>
+        </v-layout>
+      </v-layout>
       <v-flex>
         <v-layout row mb-2>
           <v-flex travel-card mr-2
@@ -19,7 +37,11 @@
       </v-flex>
       <v-flex>
         <v-layout column>
-          <v-flex v-for="item in items" :key="item.name" @click="$router.push(item.route)">
+          <v-flex
+            v-for="item in items"
+            :key="item.name"
+            @click="$router.push(item.route)"
+          >
             <v-divider></v-divider>
             <v-layout align-center ma-3>
               <v-flex xs2>
@@ -47,22 +69,35 @@ export default {
         {
           icon: 'lock',
           name: 'Privacy & beveiliging',
-          route: '/privacyStatement',
+          route: '/privacyStatment',
         },
-        { icon: 'chrome_reader_mode', name: 'Gebruiksvoorwaarden', route: '/termsOfUse' },
+        {
+          icon: 'chrome_reader_mode',
+          name: 'Gebruiksvoorwaarden',
+          route: '/termsOfUse',
+        },
         { icon: 'error_outline', name: 'Over deze app', route: '' },
         { icon: 'cancel', name: 'Verwijder mijn account', route: '' },
       ],
+      avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
+      size: 70,
+      address: 'Gasthuisstraat 9, Bredevoort',
     }
   },
   computed: {
     user() {
       return this.$store.getters.getUser
     },
+    getStars() {
+      return 3
+    },
   },
   methods: {
     navToHome: function() {
       this.$router.push('/')
+    },
+    getUserData() {
+      return this.$store.getters.getUser
     },
   },
 }
