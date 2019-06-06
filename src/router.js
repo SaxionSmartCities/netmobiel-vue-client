@@ -14,6 +14,7 @@ import SearchRideDate from './views/search/SearchRideDate'
 import SearchLocation from './views/search/SearchLocation'
 import SavedRides from './views/saved/SavedRides'
 import SearchResults from './views/search-results/SearchResults.vue'
+import ProfileHeader from "./views/profile/ProfileHeader";
 
 const router = new Router({
   mode: 'history',
@@ -62,6 +63,11 @@ const router = new Router({
       path: '/searchResults',
       component: SearchResults,
       name: 'searchResults',
+    },
+    {
+      path: '/profileHeader',
+      component: ProfileHeader,
+      name: 'profileHeader',
     },
   ],
 })

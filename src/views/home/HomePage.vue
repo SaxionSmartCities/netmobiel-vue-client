@@ -23,6 +23,9 @@
         <v-btn round large block :to="{ name: 'searchLocation' }">
           Locatie zoeken
         </v-btn>
+        <v-btn round large block :to="{ name: 'profileHeader' }">
+          Profile header
+        </v-btn>
       </v-flex>
     </v-layout>
   </v-container>
