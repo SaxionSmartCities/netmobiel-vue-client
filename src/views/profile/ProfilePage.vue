@@ -89,7 +89,7 @@ export default {
         {
           icon: 'lock',
           name: 'Privacy & beveiliging',
-          route: '/privacyStatment',
+          route: '/privacySecurity',
         },
         {
           icon: 'chrome_reader_mode',

@@ -16,6 +16,7 @@ import SavedRides from './views/saved/SavedRides'
 import SearchResults from './views/search-results/SearchResults.vue'
 import TermsOfUse from './views/profile/TermsOfUse'
 import PrivacyStatement from './views/profile/PrivacyStatement'
+import PrivacySecurity from './views/profile/PrivacySecurity'
 
 const router = new Router({
   mode: 'history',
@@ -71,9 +72,14 @@ const router = new Router({
       name: 'termsOfUse',
     },
     {
-      path: '/privacyStatment',
+      path: '/privacyStatement',
       component: PrivacyStatement,
       name: 'privacyStatement',
+    },
+    {
+      path: '/privacySecurity',
+      component: PrivacySecurity,
+      name: 'privacySecurity',
     },
   ],
 })

@@ -23,4 +23,7 @@ export default {
   getLocations: state => {
     return state.locations
   },
+  getPrivacySecurity: state => {
+    return state.user.privacySecurity
+  },
 }

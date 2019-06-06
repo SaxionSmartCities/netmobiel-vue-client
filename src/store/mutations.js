@@ -58,4 +58,12 @@ export default {
   setSearchedLocation: (state, payload) => {
     state.searchedLocation = payload
   },
+  setPrivacySecurityValue: (state, payload) => {
+    state.user.privacySecurity.filter(function(item) {
+      if (item.name === payload.key) {
+        item.value = payload.value
+        return item
+      }
+    })
+  },
 }
