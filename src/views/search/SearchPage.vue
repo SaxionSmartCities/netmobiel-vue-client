@@ -77,7 +77,7 @@
               </v-layout>
               <v-layout>
                 <v-flex mt-2>
-                  <v-btn large round block to="/searchOptions">
+                  <v-btn large round block to="/searchResults">
                     Plan je reis!
                   </v-btn>
                 </v-flex>
