@@ -31,11 +31,6 @@
           <span>Profiel</span>
           <v-icon>person</v-icon>
         </v-btn>
-
-        <v-btn flat value="logout" @click="logOut">
-          <span>Log out</span>
-          <v-icon>exit_to_app</v-icon>
-        </v-btn>
       </v-bottom-nav>
     </v-flex>
   </v-layout>
@@ -48,12 +43,6 @@ export default {
     return {
       selectedNav: '',
     }
-  },
-  methods: {
-    logOut: function() {
-      this.$keycloak.logoutFn()
-      this.$store.commit('deleteAccessToken')
-    },
   },
 }
 </script>

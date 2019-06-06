@@ -15,10 +15,10 @@
                 <v-layout row>
                   <v-flex>
                     <v-rating
-                      v-model="rating"
+                      v-model="getUserData().rating"
                       background-color="yellow darken-3"
                       color="yellow darken-3"
-                      :length="getStars"
+                      :length="getUserData().rating"
                       small
                     ></v-rating>
                   </v-flex>
@@ -27,7 +27,7 @@
             </v-layout>
           </v-flex>
 
-          <v-flex lg1>
+          <v-flex lg1 sm1>
             <v-layout align-center justify-end fill-height>
               <v-flex align-center>
                 <v-icon class="align-center">chevron_right</v-icon>
@@ -72,6 +72,16 @@
           </v-flex>
         </v-layout>
       </v-flex>
+      <v-flex travel-card mr-2 @click="logOut">
+        <v-layout column align-center my-2>
+          <v-flex>
+            <v-icon>exit_to_app</v-icon>
+          </v-flex>
+          <v-flex style="color: red">
+            Log out
+          </v-flex>
+        </v-layout>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -105,20 +115,16 @@ export default {
       address: 'Gasthuisstraat 9, Bredevoort',
     }
   },
-  computed: {
-    user() {
-      return this.$store.getters.getUser
-    },
-    getStars() {
-      return 3
-    },
-  },
   methods: {
     navToHome: function() {
       this.$router.push('/')
     },
     getUserData() {
       return this.$store.getters.getUser
+    },
+    logOut: function() {
+      this.$keycloak.logoutFn()
+      this.$store.commit('deleteAccessToken')
     },
   },
 }
