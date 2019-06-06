@@ -1,13 +1,19 @@
 <template>
-  <div id="app">
-    <netmobiel-header id="header" />
+  <v-container id="app" fluid ma-0 pa-0>
+    <v-layout fill-height column>
+      <v-flex v-if="isHeaderVisible" id="header" xs1>
+        <netmobiel-header />
+      </v-flex>
 
-    <div id="content" class="scroll">
-      <router-view></router-view>
-    </div>
+      <v-flex id="content" fill-height scroll>
+        <router-view></router-view>
+      </v-flex>
 
-    <netmobiel-footer id="footer" />
-  </div>
+      <div v-if="isFooterVisible" id="footer">
+        <netmobiel-footer />
+      </div>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -20,28 +26,34 @@ export default {
     NetmobielHeader,
     NetmobielFooter,
   },
+  computed: {
+    isHeaderVisible: function() {
+      return this.$store.getters.isHeaderVisible
+    },
+    isFooterVisible: function() {
+      return this.$store.getters.isFooterVisible
+    },
+  },
 }
 </script>
 
 <style lang="scss">
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
 #app {
-  display: flex;
-  flex-direction: column;
   height: 100vh;
 }
 
 #header {
-  justify-self: flex-start;
-  height: 10vmin;
-}
-
-#content {
-  flex: 1 0 auto;
+  height: 10vmax;
 }
 
 #footer {
-  // height: 5vh;
-  justify-self: flex-end;
+  height: 56px;
 }
 
 .scroll {

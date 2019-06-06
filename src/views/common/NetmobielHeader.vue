@@ -1,42 +1,22 @@
 <template>
-  <nav v-if="isVisible">
-    <v-layout align-center justify-end fill-height>
-      <v-btn
-        id="logout-button"
-        flat
-        round
-        small
-        class="ma-1 subheading"
-        @click="logout"
-      >
-        Logout
-      </v-btn>
-    </v-layout>
-  </nav>
+  <v-layout header fill-height justify-end align-center></v-layout>
 </template>
 
 <script>
 export default {
   name: 'Header',
-  computed: {
-    isVisible: function() {
-      return this.$store.getters.isHeaderVisible
-    },
-  },
   methods: {
-    logout: function() {
-      this.$keycloak.logoutFn()
-      this.$store.commit('deleteAccessToken')
-    },
+    // logout: function() {
+    // },
   },
 }
 </script>
 
 <style lang="scss">
-nav {
+.header {
   background: $color-green;
   background-image: url('../../assets/logo_header.png');
-  background-size: contain;
+  background-size: 40% auto;
   background-repeat: no-repeat;
   background-position: center center;
 }

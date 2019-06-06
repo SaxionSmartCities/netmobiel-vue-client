@@ -14,6 +14,10 @@ export default new Vuex.Store({
       first_name: '',
       last_name: '',
       email: '',
+      submitStatus: {
+        success: undefined,
+        message: '',
+      },
     },
     user: {
       // Access token
@@ -53,11 +57,15 @@ export default new Vuex.Store({
         visible: true,
       },
     },
-    searchRideProperties: {
-      startLocation: '',
-      arrivelLocation: '',
-      date: '',
-    },
+    searchedLocation: { name: '', type: '' },
+    locations: [
+      { name: 'Vorden', type: 'train' },
+      { name: 'Vorden Station', type: 'train' },
+      { name: 'Vorden Centrum', type: 'train' },
+      { name: 'Vordensebeek, Zwolle', type: 'train' },
+      { name: 'Vordensebeek, Warnsveld', type: 'train' },
+      { name: 'Vorden, Kasteel Hackfort', type: 'home' },
+    ],
   },
   getters,
   mutations,

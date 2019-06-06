@@ -14,4 +14,10 @@ export default {
   getCurrentDate: state => {
     return new Date(state.user.dateOfBirth)
   },
+  getRegistrationStatus: state => {
+    return state.registrationRequest.submitStatus
+  },
+  getLocations: state => {
+    return state.locations
+  },
 }
