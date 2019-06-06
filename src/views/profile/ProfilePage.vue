@@ -2,7 +2,7 @@
   <v-container>
     <v-layout column>
       <v-layout row mb-4>
-        <v-flex>
+        <v-flex lg1 sm2>
           <v-avatar id="profileImage" :size="size">
             <img :src="avatar" />
           </v-avatar>
@@ -12,8 +12,14 @@
             <p class="ma-0">{{ getUserData().fullName }}</p>
             <p class="ma-0">{{ address }}</p>
             <v-layout row>
-              <v-flex v-for="i in getStars" :key="i" xs1>
-                <v-icon small color="yellow">star</v-icon>
+              <v-flex>
+                <v-rating
+                  v-model="rating"
+                  background-color="yellow darken-3"
+                  color="yellow darken-3"
+                  :length="getStars"
+                  small
+                ></v-rating>
               </v-flex>
             </v-layout>
           </v-flex>
@@ -63,6 +69,7 @@
 export default {
   data: function() {
     return {
+      rating: 4,
       items: [
         { icon: 'settings', name: 'Instellingen', route: '' },
         { icon: 'help_outline', name: 'Veel gestelde vragen', route: '' },
@@ -113,5 +120,8 @@ export default {
   height: calc(100% - 50px - 40px);
   width: 100%;
   margin-top: calc(50px + 20px);
+}
+.v-rating .v-icon {
+  padding: 0px;
 }
 </style>
