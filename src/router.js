@@ -14,6 +14,8 @@ import SearchRideDate from './views/search/SearchRideDate'
 import SearchLocation from './views/search/SearchLocation'
 import SavedRides from './views/saved/SavedRides'
 import SearchResults from './views/search-results/SearchResults.vue'
+import TermsOfUse from './views/profile/TermsOfUse'
+import PrivacyStatement from './views/profile/PrivacyStatement'
 
 const router = new Router({
   mode: 'history',
@@ -62,6 +64,16 @@ const router = new Router({
       path: '/searchResults',
       component: SearchResults,
       name: 'searchResults',
+    },
+    {
+      path: '/termsOfUse',
+      component: TermsOfUse,
+      name: 'termsOfUse',
+    },
+    {
+      path: '/privacyStatment',
+      component: PrivacyStatement,
+      name: 'privacyStatement',
     },
   ],
 })
