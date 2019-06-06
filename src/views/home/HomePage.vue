@@ -29,6 +29,11 @@
           Gebruikers voorwaarden
         </v-btn>
       </v-flex>
+      <v-flex xs12 md6>
+        <v-btn round large block :to="{ name: 'privacyStatement' }">
+          Privacy Statement
+        </v-btn>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
