@@ -28,6 +28,7 @@ export default new Vuex.Store({
       familyName: undefined,
       fullName: undefined,
       email: undefined,
+      image: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
 
       // Other attributes
       dateOfBirth: Date.now(),

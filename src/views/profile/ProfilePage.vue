@@ -4,9 +4,7 @@
       <v-flex>
         <v-layout row my-3 mr-3>
           <v-flex lg1 sm2 xs4>
-            <v-avatar id="profileImage" :size="size">
-              <img :src="avatar" />
-            </v-avatar>
+            <roundimg></roundimg>
           </v-flex>
 
           <v-flex>
@@ -79,7 +77,12 @@
 </template>
 
 <script>
+import roundimg from '@/views/common/RoundImage'
+
 export default {
+  components: {
+    roundimg,
+  },
   data: function() {
     return {
       rating: 4,
@@ -99,8 +102,6 @@ export default {
         { icon: 'error_outline', name: 'Over deze app', route: '' },
         { icon: 'cancel', name: 'Verwijder mijn account', route: '' },
       ],
-      avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-      size: 70,
       address: 'Gasthuisstraat 9, Bredevoort',
     }
   },
