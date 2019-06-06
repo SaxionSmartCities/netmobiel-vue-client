@@ -54,6 +54,11 @@ export default new Vuex.Store({
           bike: false,
         },
       },
+      privacySecurity: [
+        { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
+        { name: 'Deel reisdata met NetMobiel', value: false },
+        { name: 'Verberg mijn gegevens voor anderen', value: false },
+      ],
     },
     ui: {
       registrationStep: 1,
