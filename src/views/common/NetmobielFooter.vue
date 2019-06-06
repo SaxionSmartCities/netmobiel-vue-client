@@ -25,11 +25,12 @@
           <span>Community</span>
           <v-icon>chat</v-icon>
         </v-btn>
+        -->
 
-        <v-btn flat value="profile">
+        <v-btn flat value="profile" @click="$router.push('/profile')">
           <span>Profiel</span>
           <v-icon>person</v-icon>
-        </v-btn> -->
+        </v-btn>
 
         <v-btn flat value="logout" @click="logOut">
           <span>Log out</span>
