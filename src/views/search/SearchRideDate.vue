@@ -34,7 +34,7 @@
     </v-layout>
 
     <v-layout align-end justify-center>
-      <v-btn class="ma-5" round large block @click="submitForm($event)">
+      <v-btn class="ma-3" round large block @click="submitForm($event)">
         Kies!
       </v-btn>
     </v-layout>
