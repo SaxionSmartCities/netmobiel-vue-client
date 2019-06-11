@@ -16,10 +16,9 @@
                   <v-flex>
                     <v-rating
                       v-model="getUserData().rating"
-                      background-color="yellow darken-3"
-                      color="yellow darken-3"
                       :length="getUserData().rating"
-                      small
+                      color="yellow darken-3"
+                      small readonly
                     ></v-rating>
                   </v-flex>
                 </v-layout>
@@ -77,7 +76,7 @@
           <v-flex>
             <v-icon>exit_to_app</v-icon>
           </v-flex>
-          <v-flex style="color: red">
+          <v-flex>
             Log out
           </v-flex>
         </v-layout>
