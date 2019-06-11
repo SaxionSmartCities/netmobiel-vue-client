@@ -48,53 +48,53 @@ export default {
   },
   computed: {
     getItineraries() {
-      return stripData(this.$store.getters.getItineraries)
+      return this.$store.getters.getItineraries
     },
   },
 }
 
-function stripData(input) {
-  console.log('stripData')
-  console.log(input)
+// function stripData(input) {
+//   console.log('stripData')
+//   console.log(input)
 
-  var result = []
+//   var result = []
 
-  for (var i = 0; i < input.length; i++) {
-    let currentItinerary = input[i]
+//   for (var i = 0; i < input.length; i++) {
+//     let currentItinerary = input[i]
 
-    result.push(stripItineraryData(currentItinerary))
-  }
+//     result.push(stripItineraryData(currentItinerary))
+//   }
 
-  console.log(result)
-  return result
-}
+//   console.log(result)
+//   return result
+// }
 
-function stripItineraryData(input) {
-  console.log('stripItineraryData')
-  console.log(input)
-  var result = {
-    duration: input.duration,
-    startTime: input.startTime,
-    endTime: input.endTime,
-    legs: [],
-  }
+// function stripItineraryData(input) {
+//   console.log('stripItineraryData')
+//   console.log(input)
+//   var result = {
+//     duration: input.duration,
+//     startTime: input.startTime,
+//     endTime: input.endTime,
+//     legs: [],
+//   }
 
-  for (var i = 0; i < input.legs.length; i++) {
-    result.legs.push(stripLegData(input.legs[i]))
-  }
+//   for (var i = 0; i < input.legs.length; i++) {
+//     result.legs.push(stripLegData(input.legs[i]))
+//   }
 
-  console.log(result)
-  return result
-}
+//   console.log(result)
+//   return result
+// }
 
-function stripLegData(input) {
-  console.log('stripLegData')
-  console.log(input)
-  return {
-    duration: input.duration,
-    mode: input.mode,
-  }
-}
+// function stripLegData(input) {
+//   console.log('stripLegData')
+//   console.log(input)
+//   return {
+//     duration: input.duration,
+//     mode: input.mode,
+//   }
+// }
 </script>
 
 <style lang="scss"></style>

@@ -22,21 +22,21 @@
               :class="calculateClass(index)"
             >
               <travel-leg
-                v-if="leg.mode.type === 'car'"
+                v-if="leg.mode === 'NETMOBIEL'"
                 :max-rating="3"
                 :current-rating="leg.mode.driver.rating"
               >
-                {{ getIcon(leg.mode.type) }}
+                {{ getIcon(leg.mode) }}
               </travel-leg>
               <travel-leg v-else>
-                {{ getIcon(leg.mode.type) }}
+                {{ getIcon(leg.mode) }}
               </travel-leg>
             </v-flex>
           </v-layout>
         </v-flex>
         <v-flex id="tijdkosten" mt-2>
           <v-layout>
-            <v-flex id="tijd"> {{ totalTime }} minuten </v-flex>
+            <v-flex id="tijd"> {{ journey.duration / 60 }} minuten </v-flex>
             <v-flex id="kosten" text-xs-right pr-1>
               {{ journey.cost }} credits
             </v-flex>
@@ -83,13 +83,14 @@ export default {
   methods: {
     getIcon: function(type) {
       switch (type) {
-        case 'walk':
+        case 'WALK':
           return 'directions_walk'
-        case 'car':
+        case 'CAR':
+        case 'NETMOBIEL':
           return 'directions_car'
-        case 'train':
+        case 'TRAIN':
           return 'train'
-        case 'bus':
+        case 'BUS':
           return 'directions_bus'
       }
     },
@@ -97,13 +98,13 @@ export default {
     calculateLegDivison: function() {
       // Calculate total travel time
       this.journey.legs.forEach(element => {
-        this.totalTime += element.time
+        this.totalTime += element.duration
       })
 
       // Calculate ratio for each leg and map it on a 1-12 scale (based on grid system)
       let ratios = []
       this.journey.legs.forEach(element => {
-        let currentRatio = element.time / this.totalTime // Calculate weight of value i.c.t. other values
+        let currentRatio = element.duration / this.totalTime // Calculate weight of value i.c.t. other values
         let mappedRatio = currentRatio * 12 // Map over 12 columns
         let pushValue = Math.max(1, mappedRatio) // Make sure the minimum value is 1 - otherwise it won't be displayed
 
