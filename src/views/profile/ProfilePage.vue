@@ -16,7 +16,8 @@
                   <v-flex>
                     <v-rating
                       v-model="getUserData().rating"
-                      :length="getUserData().rating"
+                      :length="getUserData().maxRating"
+                      background-color="yellow darken-3"
                       color="yellow darken-3"
                       small
                       readonly

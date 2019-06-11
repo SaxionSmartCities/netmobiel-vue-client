@@ -29,7 +29,8 @@ export default new Vuex.Store({
       fullName: undefined,
       email: undefined,
       image: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-      rating: 3,
+      rating: 2,
+      maxRating: 3,
 
       // Other attributes
       dateOfBirth: Date.now(),
