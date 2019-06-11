@@ -1,9 +1,9 @@
 import axios from 'axios'
+import config from '@/config/config'
 
-var BASE_URL = 'https://dev.netmobiel.eu/gwapi'
-
-const GRAVITEE_PLAN_SERVICE_API_KEY = '58328a63-b55f-4cb3-9102-1d76291e55f9'
-const GRAVITEE_PROFILE_SERVICE_API_KEY = '3a4516db-ece3-4477-876f-6c1a9d4d723c'
+const BASE_URL = config.BASE_URL
+const GRAVITEE_PLAN_SERVICE_API_KEY = config.GRAVITEE_PLAN_SERVICE_API_KEY
+const GRAVITEE_PROFILE_SERVICE_API_KEY = config.GRAVITEE_PROFILE_SERVICE_API_KEY
 
 function generateHeader(key, context) {
   return {
