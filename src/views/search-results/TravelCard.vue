@@ -1,50 +1,39 @@
 <template>
   <v-layout travel-card pt-3 pb-3 pl-3 pr-1>
-    <v-flex id="allesbehalveknopje" xs11>
+    <v-flex xs11>
       <v-layout column>
-        <v-flex id="vertrekreismet">
+        <v-flex>
           <v-layout>
-            <v-flex id="vertrek">
+            <v-flex>
               <h4>Vertrek</h4>
-              {{ journey.departureTime }}
+              {{ departureTime }}
             </v-flex>
-            <v-flex v-if="hasCarLeg()" id="reizenmet" text-xs-right pr-1>
+            <v-flex v-if="hasCarLeg()" text-xs-right pr-1>
               <h4>Reizen met</h4>
               {{ getDriversString() }}
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex id="schematischoverzicht" mt-3>
+        <v-flex mt-3>
           <v-layout>
             <v-flex
               v-for="(leg, index) in journey.legs"
               :key="index"
               :class="calculateClass(index)"
             >
-              <travel-leg
-                v-if="leg.mode === 'NETMOBIEL'"
-                :max-rating="3"
-                :current-rating="leg.mode.driver.rating"
-              >
-                {{ getIcon(leg.mode) }}
-              </travel-leg>
-              <travel-leg v-else>
-                {{ getIcon(leg.mode) }}
-              </travel-leg>
+              <travel-leg :leg="leg"> </travel-leg>
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex id="tijdkosten" mt-2>
+        <v-flex mt-2>
           <v-layout>
-            <v-flex id="tijd"> {{ journey.duration / 60 }} minuten </v-flex>
-            <v-flex id="kosten" text-xs-right pr-1>
-              {{ journey.cost }} credits
-            </v-flex>
+            <v-flex> {{ Math.round(journey.duration / 60) }} minuten </v-flex>
+            <v-flex text-xs-right pr-1> {{ journey.cost }} credits </v-flex>
           </v-layout>
         </v-flex>
       </v-layout>
     </v-flex>
-    <v-flex id="knopje" d-flex>
+    <v-flex d-flex>
       <v-layout justify-center align-center column>
         <v-flex shrink>
           <v-icon>keyboard_arrow_right</v-icon>
@@ -55,6 +44,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import TravelLeg from '@/views/search-results/TravelLeg.vue'
 
 export default {
@@ -77,23 +67,43 @@ export default {
       totalTime: 0,
     }
   },
+  computed: {
+    departureTime: function() {
+      return moment(this.journey.startTime)
+        .locale('nl')
+        .calendar()
+    },
+    getDriversString: function() {
+      let drivers = []
+
+      for (let i = 0; i < this.journey.legs.length; i++) {
+        let currentLeg = this.journey.legs[i]
+
+        if (currentLeg.mode === 'NETMOBIEL') {
+          result.push(currentLeg.mode.driver.name)
+        }
+      }
+
+      if (drivers.length === 1) {
+        return drivers[0]
+      }
+
+      let result = ''
+
+      for (var i = 0; i < drivers.length - 1; i++) {
+        result += drivers[i]
+        result += ', '
+      }
+
+      result += drivers[i]
+
+      return result
+    },
+  },
   mounted: function() {
     this.calculateLegDivison()
   },
   methods: {
-    getIcon: function(type) {
-      switch (type) {
-        case 'WALK':
-          return 'directions_walk'
-        case 'CAR':
-        case 'NETMOBIEL':
-          return 'directions_car'
-        case 'TRAIN':
-          return 'train'
-        case 'BUS':
-          return 'directions_bus'
-      }
-    },
     // Function to pre-determine the divions of column per leg
     calculateLegDivison: function() {
       // Calculate total travel time
@@ -151,39 +161,6 @@ export default {
       }
 
       return false
-    },
-    getDriversString: function() {
-      let drivers = this.getDrivers()
-      console.log(drivers)
-
-      if (drivers.length === 1) {
-        return drivers[0]
-      }
-
-      let result = ''
-      let i = 0
-
-      for (i = 0; i < drivers.length - 1; i++) {
-        result += drivers[i]
-        result += ', '
-      }
-
-      result += drivers[i]
-
-      return result
-    },
-    getDrivers: function() {
-      let result = []
-
-      for (var i = 0; i < this.journey.legs.length; i++) {
-        let currentLeg = this.journey.legs[i]
-
-        if (currentLeg.mode.type === 'car') {
-          result.push(currentLeg.mode.driver.name)
-        }
-      }
-
-      return result
     },
   },
 }

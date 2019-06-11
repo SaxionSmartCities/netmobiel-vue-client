@@ -75,4 +75,7 @@ export default {
       // data: '',
     }
   },
+  sortItineraries: (state, payload) => {
+    state.planningRequest.result.data.itineraries.sort(payload)
+  },
 }

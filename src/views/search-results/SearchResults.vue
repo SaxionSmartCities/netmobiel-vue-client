@@ -5,7 +5,9 @@
       <v-flex mt-2>
         <v-layout>
           <v-flex text-uppercase xs8>datum</v-flex>
-          <v-flex>sorteerknop</v-flex>
+          <v-flex @click="changeSort()">{{
+            sortModi[selectedModus].name
+          }}</v-flex>
         </v-layout>
       </v-flex>
       <v-flex v-for="(itinerary, index) in getItineraries" :key="index">
@@ -44,57 +46,42 @@ export default {
     TravelCard,
   },
   data: function() {
-    return {}
+    return {
+      sortModi: [
+        { name: 'Vertrektijd', function: this.sortByStartTime },
+        { name: 'Tijdsduur', function: this.sortByDuration },
+        { name: 'Overstappen', function: this.sortByTransfers },
+      ],
+      selectedModus: 0,
+    }
   },
   computed: {
     getItineraries() {
       return this.$store.getters.getItineraries
     },
   },
+  methods: {
+    sortByDuration: function(a, b) {
+      return a.duration - b.duration
+    },
+    sortByTransfers: function(a, b) {
+      return a.legs.length - b.legs.length
+    },
+    sortByStartTime: function(a, b) {
+      return a.startTime - b.startTime
+    },
+    changeSort: function() {
+      console.log('hallo')
+      console.log(this.selectedModus)
+      console.log(this.sortModi[this.selectedModus])
+      this.selectedModus = (this.selectedModus + 1) % this.sortModi.length
+      this.$store.commit(
+        'sortItineraries',
+        this.sortModi[this.selectedModus].function
+      )
+    },
+  },
 }
-
-// function stripData(input) {
-//   console.log('stripData')
-//   console.log(input)
-
-//   var result = []
-
-//   for (var i = 0; i < input.length; i++) {
-//     let currentItinerary = input[i]
-
-//     result.push(stripItineraryData(currentItinerary))
-//   }
-
-//   console.log(result)
-//   return result
-// }
-
-// function stripItineraryData(input) {
-//   console.log('stripItineraryData')
-//   console.log(input)
-//   var result = {
-//     duration: input.duration,
-//     startTime: input.startTime,
-//     endTime: input.endTime,
-//     legs: [],
-//   }
-
-//   for (var i = 0; i < input.legs.length; i++) {
-//     result.legs.push(stripLegData(input.legs[i]))
-//   }
-
-//   console.log(result)
-//   return result
-// }
-
-// function stripLegData(input) {
-//   console.log('stripLegData')
-//   console.log(input)
-//   return {
-//     duration: input.duration,
-//     mode: input.mode,
-//   }
-// }
 </script>
 
 <style lang="scss"></style>

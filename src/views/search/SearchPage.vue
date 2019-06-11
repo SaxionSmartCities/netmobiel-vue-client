@@ -155,14 +155,24 @@ export default {
       this.toLocation = tempLocation
     },
     submitForm() {
+      // var searchQuery = {
+      //   fromPlace: {
+      //     lat: 52.219382,
+      //     lon: 6.888892,
+      //   },
+      //   toPlace: {
+      //     lat: 52.003318,
+      //     lon: 6.519264,
+      //   },
+      // }
       var searchQuery = {
         fromPlace: {
           lat: 52.219382,
           lon: 6.888892,
         },
         toPlace: {
-          lat: 52.003318,
-          lon: 6.519264,
+          lat: 52.199433,
+          lon: 6.635025,
         },
       }
 
