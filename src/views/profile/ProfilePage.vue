@@ -59,7 +59,8 @@
             @click="$router.push(item.route)"
           >
             <v-divider></v-divider>
-            <v-layout align-center ma-3>
+            <v-layout align-center ma-3
+              :class="{'no-route': !item.route}">
               <v-flex xs2>
                 <v-icon>{{ item.icon }}</v-icon>
               </v-flex>
@@ -142,5 +143,8 @@ export default {
 }
 .v-rating .v-icon {
   padding: 0px;
+}
+.no-route {
+  color: $color-optionsGray;
 }
 </style>
