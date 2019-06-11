@@ -68,12 +68,18 @@ export default {
       headers: generateHeader(GRAVITEE_PLAN_SERVICE_API_KEY, context),
     }
 
+    context.commit('setPlanningStatus', {
+      status: 'PENDING',
+    })
+
     axios(axiosConfig)
       .then(function(res) {
         context.commit('setPlanningStatus', {
-          success: true,
-          message: '',
-          data: res,
+          status: 'SUCCESS',
+        })
+
+        context.commit('setPlanningResults', {
+          data: res.data.plan,
         })
 
         console.log(res)
@@ -82,9 +88,8 @@ export default {
         var errorMsg = error.response.data.message
 
         context.commit('setPlanningStatus', {
-          success: false,
+          status: 'FAILED',
           message: errorMsg,
-          data: '',
         })
       })
   },

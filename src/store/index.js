@@ -29,8 +29,10 @@ export default new Vuex.Store({
         lon: 0.0,
       },
       submitStatus: {
-        success: undefined,
+        status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
         message: '',
+      },
+      result: {
         data: '',
       },
     },

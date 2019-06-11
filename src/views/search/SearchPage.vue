@@ -75,35 +75,37 @@
                   </v-layout>
                 </v-flex>
               </v-layout>
-              <v-layout>
-                <v-flex mt-2>
-                  <v-btn
-                    v-if="showSubmitButton"
-                    large
-                    round
-                    block
-                    @click="submitForm()"
-                  >
+              <v-layout mt-2 justify-center text-xs-center>
+                <v-flex v-if="getSubmitStatus.status === 'UNSUBMITTED'">
+                  <v-btn large round block @click="submitForm()">
                     Plan je reis!
                   </v-btn>
                 </v-flex>
-              </v-layout>
-              <v-layout mt-2 justify-center>
-                <v-flex shrink @click="toRidePrefrences">
-                  <v-icon>settings</v-icon>
-                  <span>Reisvoorkeuren</span>
-                </v-flex>
-              </v-layout>
-              <v-layout>
-                <v-flex text-xs-center>
-                  <v-alert
-                    v-if="getSubmitStatus.success === false"
-                    :value="true"
-                    type="error"
-                    color="red"
-                  >
+                <v-flex v-if="getSubmitStatus.status === 'FAILED'">
+                  <v-alert :value="true" type="error" color="red">
                     {{ getSubmitStatus.message }}
                   </v-alert>
+                </v-flex>
+                <v-flex v-if="getSubmitStatus.status === 'SUCCESS'">
+                  <v-alert :value="true" type="success" color="green">
+                    Zoekopdracht verstuurd! <br />
+                    Even geduld...
+                  </v-alert>
+                </v-flex>
+
+                <v-flex v-if="getSubmitStatus.status === 'PENDING'" shrink>
+                  <v-progress-circular indeterminate color="blue">
+                  </v-progress-circular>
+                </v-flex>
+              </v-layout>
+              <v-layout mt-2 justify-center>
+                <v-flex
+                  shrink
+                  transition="slide-x-transition"
+                  @click="toRidePrefrences"
+                >
+                  <v-icon>settings</v-icon>
+                  <span>Reisvoorkeuren</span>
                 </v-flex>
               </v-layout>
             </v-form>
@@ -119,7 +121,6 @@ export default {
   data: function() {
     return {
       waiting: null,
-      showSubmitButton: true,
       fromLocation: 'Enschede',
       toLocation: 'Deventer',
     }
@@ -130,14 +131,13 @@ export default {
     },
   },
   watch: {
-    getPlanningStatus(newValue) {
-      if (newValue.success === true) {
-        this.showSubmitButton = false
-
+    getSubmitStatus(newValue) {
+      console.log(newValue)
+      if (newValue.status === 'SUCCESS') {
         this.waiting = setTimeout(() => {
           this.$store.commit('clearPlanningRequest')
           this.$router.push('/searchResults')
-        }, 2500)
+        }, 1500)
       }
     },
   },

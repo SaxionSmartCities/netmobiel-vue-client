@@ -62,21 +62,17 @@ export default {
   setPlanningStatus: (state, payload) => {
     state.planningRequest.submitStatus = payload
   },
+  setPlanningResults: (state, payload) => {
+    state.planningRequest.result = payload
+  },
+  clearPlanningResults: state => {
+    state.planningRequest.result.data = ''
+  },
   clearPlanningRequest: state => {
-    state.planningRequest = {
-      fromPlace: {
-        lat: 0.0,
-        lon: 0.0,
-      },
-      toPlace: {
-        lat: 0.0,
-        lon: 0.0,
-      },
-      submitStatus: {
-        success: undefined,
-        message: '',
-        data: '',
-      },
+    state.planningRequest.submitStatus = {
+      status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
+      message: '',
+      // data: '',
     }
   },
 }
