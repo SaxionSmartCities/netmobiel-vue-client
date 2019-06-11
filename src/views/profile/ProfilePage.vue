@@ -18,7 +18,8 @@
                       v-model="getUserData().rating"
                       :length="getUserData().rating"
                       color="yellow darken-3"
-                      small readonly
+                      small
+                      readonly
                     ></v-rating>
                   </v-flex>
                 </v-layout>
@@ -59,8 +60,7 @@
             @click="$router.push(item.route)"
           >
             <v-divider></v-divider>
-            <v-layout align-center ma-3
-              :class="{'no-route': !item.route}">
+            <v-layout align-center ma-3 :class="{ 'no-route': !item.route }">
               <v-flex xs2>
                 <v-icon>{{ item.icon }}</v-icon>
               </v-flex>
