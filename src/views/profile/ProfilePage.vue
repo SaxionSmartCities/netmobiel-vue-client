@@ -1,38 +1,151 @@
 <template>
-  <div>
-    <div class="container">
-      <ul>
-        <li>Name: {{ user.name }}</li>
-        <li>Email: {{ user.email }}</li>
-      </ul>
-    </div>
-    <button class="btn btn-block" @click="navToHome()">
-      Terug naar het vorige scherm!
-    </button>
-  </div>
+  <v-container>
+    <v-layout column>
+      <v-flex>
+        <v-layout row my-3 mr-3>
+          <v-flex lg1 sm2 xs4>
+            <roundimg></roundimg>
+          </v-flex>
+
+          <v-flex>
+            <v-layout class="mt-2">
+              <v-flex>
+                <p class="ma-0">{{ getUserData().fullName }}</p>
+                <p class="ma-0">{{ address }}</p>
+                <v-layout row>
+                  <v-flex>
+                    <v-rating
+                      v-model="getUserData().rating"
+                      :length="getUserData().maxRating"
+                      background-color="yellow darken-3"
+                      color="yellow darken-3"
+                      small
+                      readonly
+                    ></v-rating>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+            </v-layout>
+          </v-flex>
+
+          <v-flex lg1 sm1>
+            <v-layout align-center justify-end fill-height>
+              <v-flex align-center>
+                <v-icon class="align-center">chevron_right</v-icon>
+              </v-flex>
+            </v-layout>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+      <v-flex>
+        <v-layout row mb-2>
+          <v-flex travel-card mr-2
+            ><v-layout column align-center my-2
+              ><v-flex><v-icon>control_point</v-icon></v-flex
+              ><v-flex>Doelen</v-flex></v-layout
+            ></v-flex
+          >
+          <v-flex travel-card ml-2
+            ><v-layout column align-center my-2
+              ><v-flex><v-icon>star_border</v-icon></v-flex
+              ><v-flex>Reviews</v-flex></v-layout
+            ></v-flex
+          >
+        </v-layout>
+      </v-flex>
+      <v-flex>
+        <v-layout column>
+          <v-flex
+            v-for="item in items"
+            :key="item.name"
+            @click="$router.push(item.route)"
+          >
+            <v-divider></v-divider>
+            <v-layout align-center ma-3 :class="{ 'no-route': !item.route }">
+              <v-flex xs2>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-flex>
+              <v-flex>{{ item.name }}</v-flex>
+              <v-flex xs1>
+                <v-icon>chevron_right</v-icon>
+              </v-flex>
+            </v-layout>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+      <v-flex travel-card mr-2 @click="logOut">
+        <v-layout column align-center my-2>
+          <v-flex>
+            <v-icon>exit_to_app</v-icon>
+          </v-flex>
+          <v-flex>
+            Log out
+          </v-flex>
+        </v-layout>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
+import roundimg from '@/views/common/RoundImage'
+
 export default {
-  computed: {
-    user() {
-      return this.$store.getters.getUser
-    },
+  components: {
+    roundimg,
+  },
+  data: function() {
+    return {
+      rating: 4,
+      items: [
+        { icon: 'settings', name: 'Instellingen', route: '' },
+        { icon: 'help_outline', name: 'Veel gestelde vragen', route: '' },
+        {
+          icon: 'lock',
+          name: 'Privacy & beveiliging',
+          route: '/privacySecurity',
+        },
+        {
+          icon: 'chrome_reader_mode',
+          name: 'Gebruiksvoorwaarden',
+          route: '/termsOfUse',
+        },
+        { icon: 'error_outline', name: 'Over deze app', route: '' },
+        { icon: 'cancel', name: 'Verwijder mijn account', route: '' },
+      ],
+      address: 'Gasthuisstraat 9, Bredevoort',
+    }
   },
   methods: {
     navToHome: function() {
       this.$router.push('/')
+    },
+    getUserData() {
+      return this.$store.getters.getUser
+    },
+    logOut: function() {
+      this.$keycloak.logoutFn()
+      this.$store.commit('deleteAccessToken')
     },
   },
 }
 </script>
 
 <style lang="scss">
+.theme--light.v-icon {
+  color: $color-green;
+}
 #container {
   background: #ffffff;
   border-radius: $form-border-radius;
   height: calc(100% - 50px - 40px);
   width: 100%;
   margin-top: calc(50px + 20px);
+}
+.v-rating .v-icon {
+  padding: 0px;
+}
+.no-route {
+  color: $color-optionsGray;
 }
 </style>

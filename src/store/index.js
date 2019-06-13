@@ -28,25 +28,38 @@ export default new Vuex.Store({
       familyName: undefined,
       fullName: undefined,
       email: undefined,
+      image: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
+      rating: 2,
+      maxRating: 3,
 
       // Other attributes
       dateOfBirth: Date.now(),
       biography: '',
-      maxWalkDistance: 10,
-      flexibility: 10,
-      rideBaggage: {
-        baggage: false,
-        wheelChair: false,
-        animal: false,
+
+      rideSearchPreferences: {
+        passengersSelected: 1,
+        switchSelected: 'Ja',
+        bagagePrefs: {
+          buggy: false,
+          handbagage: false,
+          animal: false,
+          walker: false,
+          wheelchair: false,
+        },
+        switchVehicle: false,
+        sortSelected: 'Bekenden',
+        avoidSelected: {
+          bus: false,
+          train: false,
+          walk: false,
+          bike: false,
+        },
       },
-      conveyancePreferences: {
-        rideAlong: false,
-        regionTaxi: false,
-        bus: false,
-        shareCar: false,
-        shareBike: false,
-        train: false,
-      },
+      privacySecurity: [
+        { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
+        { name: 'Deel reisdata met NetMobiel', value: false },
+        { name: 'Verberg mijn gegevens voor anderen', value: false },
+      ],
     },
     ui: {
       registrationStep: 1,
