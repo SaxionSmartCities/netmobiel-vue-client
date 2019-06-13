@@ -17,6 +17,7 @@ import SearchResults from './views/search-results/SearchResults.vue'
 import TermsOfUse from './views/profile/TermsOfUse'
 import PrivacyStatement from './views/profile/PrivacyStatement'
 import PrivacySecurity from './views/profile/PrivacySecurity'
+import GoalDetail from './views/marketplace/GoalDetail'
 
 const router = new Router({
   mode: 'history',
@@ -80,6 +81,11 @@ const router = new Router({
       path: '/privacySecurity',
       component: PrivacySecurity,
       name: 'privacySecurity',
+    },
+    {
+      path: '/goalDetail/:id',
+      component: GoalDetail,
+      name: 'goalDetail',
     },
   ],
 })

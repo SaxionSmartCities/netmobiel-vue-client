@@ -24,6 +24,16 @@
           Locatie zoeken
         </v-btn>
       </v-flex>
+      <v-flex xs12 md6>
+        <v-btn
+          round
+          large
+          block
+          :to="{ name: 'goalDetail', params: { id: 1 } }"
+        >
+          Doel detail
+        </v-btn>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
