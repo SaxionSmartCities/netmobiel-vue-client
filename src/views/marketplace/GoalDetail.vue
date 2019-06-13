@@ -24,7 +24,7 @@
           :size="100"
           :width="12"
           :value="100"
-          color="teal"
+          class="text-primary"
         >
           <p class="title mb-0">{{ goal.donators }}</p>
         </v-progress-circular>
@@ -36,7 +36,7 @@
           :size="100"
           :width="12"
           :value="getPercentageReceived"
-          color="teal"
+          class="text-primary"
         >
           <p class="title mb-0">{{ goal.receivedCredits }}</p>
           <p class="grey--text mb-0">
@@ -51,7 +51,7 @@
           :size="100"
           :width="12"
           :value="getPercentageReceived"
-          color="teal"
+          class="text-primary"
         >
           <p class="title mb-0">{{ getPercentageReceived }}%</p>
         </v-progress-circular>
@@ -67,13 +67,13 @@
       <v-flex class="text-end">
         <p class="text-uppercase font-weight-light mb-0">donators</p>
       </v-flex>
-      <v-flex shrink>
-        <v-btn round>beste</v-btn>
+      <v-flex shrink class="text-primary">
+        <v-btn round flat class="outline-btn">beste</v-btn>
       </v-flex>
     </v-layout>
     <v-divider class="my-2"></v-divider>
-    <v-layout v-for="donator in goal.topDonators">
-      <v-flex  xs12>
+    <v-layout v-for="(donator, index) in goal.topDonators" :key="index">
+      <v-flex xs12>
         <v-layout>
           <v-flex shrink>
             <round-image :size-img="50"></round-image>
@@ -145,11 +145,9 @@ export default {
 }
 </script>
 
-<style scoped>
-.background-fix {
-  background-color: #2e8997;
-}
-.text-end {
-  vertical-align: text-bottom;
+<style lang="scss">
+.text-primary .outline-btn {
+  color: $color-green;
+  border: 1px solid $color-green;
 }
 </style>
