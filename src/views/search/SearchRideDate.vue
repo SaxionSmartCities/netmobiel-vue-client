@@ -16,27 +16,39 @@
           full-width
         ></v-date-picker>
       </v-flex>
-    </v-layout>
 
-    <v-subheader id="subheaderTime" class="text-uppercase body-2"
-      >Tijd</v-subheader
-    >
-    <v-divider></v-divider>
+      <v-flex>
+        <v-subheader id="subheaderTime" class="text-uppercase body-2"
+          >Tijd</v-subheader
+        >
+      </v-flex>
 
-    <v-layout class="timeContainer">
-      <v-content>
-        <v-btn-toggle class="ma-3" v-for="i in list" :key="`2${i}`">
-          <v-btn class="px-3" :value="1" flat>
-            {{ setTimeStamp(i) }}
+      <v-divider></v-divider>
+
+      <v-flex>
+        <v-layout class="timeContainer">
+          <v-flex>
+            <v-btn-toggle
+              v-for="i in list"
+              :key="`2${i}`"
+              class="ma-2"
+              v-model="toggle_exclusive"
+            >
+              <v-btn class="px-3" :value="i" flat>
+                {{ setTijd(i) }}
+              </v-btn>
+            </v-btn-toggle>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+
+      <v-flex>
+        <v-layout align-end justify-center>
+          <v-btn class="ma-3" round large block @click="submitForm($event)">
+            Kies!
           </v-btn>
-        </v-btn-toggle>
-      </v-content>
-    </v-layout>
-
-    <v-layout align-end justify-center>
-      <v-btn class="ma-3" round large block @click="submitForm($event)">
-        Kies!
-      </v-btn>
+        </v-layout>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -51,6 +63,7 @@ export default {
     return {
       date: new Date().toISOString().substr(0, 10),
       list: 48,
+      toggle_exclusive: 2,
     }
   },
   methods: {
@@ -89,6 +102,39 @@ export default {
       event.preventDefault()
       this.$store.commit('setDate', myDate._d)
     },
+    setTijd(i) {
+      var currentDate = Date.now()
+      var currentMinutes = moment(currentDate).format('mm')
+      var currentHour = moment(currentDate).format('HH')
+
+      var min = 0
+      hour = currentHour
+
+      if (currentMinutes >= 30) {
+        hour++
+        min = '00'
+      } else {
+        min = 30
+      }
+
+      if (i % 2 === 1) {
+        min = 30
+      } else if (i % 2 === 0) {
+        hour++
+        min = '00'
+      }
+      if (i === 48) {
+        hour = '00'
+      }
+
+      var time = ''
+      if (hour < 10 && hour > 0) {
+        time = '0' + hour + ':' + min
+      } else {
+        time = hour + ':' + min
+      }
+      return time
+    },
   },
 }
 </script>
@@ -100,7 +146,7 @@ export default {
 
 .timeContainer {
   white-space: nowrap;
-  overflow-y: scroll;
+  overflow-x: scroll;
 }
 
 .v-btn--active {
@@ -120,7 +166,7 @@ export default {
   border-radius: 25%;
 }
 
-.v-item-group.ma-3.theme--light.v-btn-toggle.v-btn-toggle--only-child.v-btn-toggle--selected {
+.v-item-group.ma-2.theme--light.v-btn-toggle.v-btn-toggle--only-child.v-btn-toggle--selected {
   border-radius: 25%;
 }
 
