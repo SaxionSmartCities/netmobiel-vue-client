@@ -67,25 +67,30 @@
       <v-flex class="text-end">
         <p class="text-uppercase font-weight-light mb-0">donators</p>
       </v-flex>
-      <v-flex shrink class="">
-        <v-btn round class="background-fix">beste</v-btn>
+      <v-flex shrink>
+        <v-btn round>beste</v-btn>
       </v-flex>
     </v-layout>
     <v-divider class="my-2"></v-divider>
-    <v-layout>
-      <v-flex shrink>
-        <round-image :size-img="50" :size-av="58"></round-image>
-      </v-flex>
-      <v-flex ml-2>
-        <p class="subheading font-weight-light mb-1">
-          Henk van der laan
-        </p>
-        <p class="body-2 grey--text font-weight-light mb-0">
-          50 credits gedoneerd
-        </p>
-        <p class=" body-1 font-weight-light mt-1">
-          Ontzettend leuk! Veel succes allen.
-        </p>
+    <v-layout v-for="donator in goal.topDonators">
+      <v-flex  xs12>
+        <v-layout>
+          <v-flex shrink>
+            <round-image :size-img="50"></round-image>
+          </v-flex>
+          <v-flex ml-2>
+            <p class="subheading font-weight-light mb-1">
+              {{ donator.name }}
+            </p>
+            <p class="caption grey--text font-weight-light mb-0">
+              {{ donator.donatedCredits }} credits gedoneerd
+            </p>
+            <p class=" body-1 font-weight-light mt-1">
+              {{ donator.comment }}
+            </p>
+          </v-flex>
+        </v-layout>
+        <v-divider class="my-2"></v-divider>
       </v-flex>
     </v-layout>
   </v-container>
@@ -107,7 +112,28 @@ export default {
         donators: 32,
         creditsGoal: 1200,
         receivedCredits: 900,
-        topDonators: [],
+        topDonators: [
+          {
+            name: 'Henk van der laan',
+            donatedCredits: 50,
+            comment: 'Ontzettend leuk! Veel succes allen.',
+          },
+          {
+            name: 'Marc de Vries',
+            donatedCredits: 20,
+            comment: '',
+          },
+          {
+            name: 'Netmobiel gebruiker',
+            donatedCredits: 10,
+            comment: '',
+          },
+          {
+            name: 'Wout',
+            donatedCredits: 4,
+            comment: '',
+          },
+        ],
       },
     }
   },
