@@ -13,27 +13,41 @@
             </v-flex>
           </v-layout>
         </v-flex>
+        <v-flex v-if="donated">
+          <v-layout row align-end justify-end fill-height>
+            <v-flex>
+              <v-icon color="grey">chevron_right</v-icon>
+            </v-flex>
+          </v-layout>
+        </v-flex>
       </v-layout>
     </v-flex>
     <v-flex>
       <v-layout>
-        <v-flex mx-5>
+        <v-flex mx-4>
           <v-progress-linear
             :value="calculateProgress()"
-            color="green"
+            class="progressbar"
+            color="#2e8997"
+            background-color="grey"
           ></v-progress-linear>
         </v-flex>
       </v-layout>
-      <v-layout align-center column>
+      <v-layout v-if="!donatedCredits" align-center>
         <v-flex>
           <v-subheader
             >Nog
             {{ itemObj.goalCredits - itemObj.currentCredits }}
-            credits</v-subheader
-          >
+            credits
+          </v-subheader>
         </v-flex>
-        <v-flex mb-2>
+        <v-flex ma-2>
           <v-btn round>Doel steunen</v-btn>
+        </v-flex>
+      </v-layout>
+      <v-layout v-else align-center column>
+        <v-flex ma-2 class="grey--text"
+          >Gedoneerd door jou :{{ donated }} Credits
         </v-flex>
       </v-layout>
     </v-flex>
@@ -43,10 +57,11 @@
 <script>
 export default {
   name: 'GoalIteam',
-  props: ['item'],
+  props: ['item', 'donatedCredits'],
   data: function() {
     return {
       itemObj: this.item,
+      donated: this.donatedCredits,
     }
   },
   methods: {
@@ -57,4 +72,12 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.progressbar {
+  color: $color-green;
+  background-color: $color-optionsGray;
+}
+p {
+  margin-bottom: 0px;
+}
+</style>
