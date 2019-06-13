@@ -11,11 +11,9 @@
 <script>
 export default {
   name: 'RoundImage',
-  data() {
-    return {
-      sizeImg: 70,
-      sizeAv: 78,
-    }
+  props: {
+    sizeImg: { type: Number, default: 70 },
+    sizeAv: { type: Number, default: this.sizeImg + 8 },
   },
   methods: {
     getUserData() {

@@ -74,7 +74,7 @@
     <v-divider class="my-2"></v-divider>
     <v-layout>
       <v-flex shrink>
-        <round-image></round-image>
+        <round-image :size-img="50" :size-av="58"></round-image>
       </v-flex>
       <v-flex ml-2>
         <p class="subheading font-weight-light mb-1">
