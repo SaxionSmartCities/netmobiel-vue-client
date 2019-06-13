@@ -1,5 +1,5 @@
 <template>
-  <v-avatar :size="sizeAv">
+  <v-avatar :size="getSizeAv">
     <v-img
       :src="getUserData().image"
       :max-height="sizeImg"
@@ -13,7 +13,11 @@ export default {
   name: 'RoundImage',
   props: {
     sizeImg: { type: Number, default: 70 },
-    sizeAv: { type: Number, default: this.sizeImg + 8 },
+  },
+  computed: {
+    getSizeAv() {
+      return this.sizeImg + 8
+    },
   },
   methods: {
     getUserData() {
