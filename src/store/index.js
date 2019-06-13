@@ -28,6 +28,9 @@ export default new Vuex.Store({
       familyName: undefined,
       fullName: undefined,
       email: undefined,
+      image: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
+      rating: 2,
+      maxRating: 3,
 
       // Other attributes
       dateOfBirth: Date.now(),
@@ -52,6 +55,11 @@ export default new Vuex.Store({
           bike: false,
         },
       },
+      privacySecurity: [
+        { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
+        { name: 'Deel reisdata met NetMobiel', value: false },
+        { name: 'Verberg mijn gegevens voor anderen', value: false },
+      ],
     },
     ui: {
       registrationStep: 1,
