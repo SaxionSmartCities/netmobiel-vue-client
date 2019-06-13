@@ -26,4 +26,7 @@ export default {
   getPrivacySecurity: state => {
     return state.user.privacySecurity
   },
+  getFirstGoal: state => {
+    return state.marketplace.goals[0]
+  },
 }

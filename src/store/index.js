@@ -79,6 +79,41 @@ export default new Vuex.Store({
       { name: 'Vordensebeek, Warnsveld', type: 'train' },
       { name: 'Vorden, Kasteel Hackfort', type: 'home' },
     ],
+    marketplace: {
+      goals: [
+        {
+          subject: 'Renovatie De Zwaan',
+          locatie: 'Museumcafé, Bredevoort',
+          description:
+            'Museumcafé De Zwaan in Bredevoort heeft een lange historie. Het café is geliefd bij het publiek en neemt een centrale rol in tijdens de jaarlijkse Boekenmarkt. ',
+          donators: 32,
+          creditsGoal: 1200,
+          receivedCredits: 900,
+          topDonators: [
+            {
+              name: 'Henk van der laan',
+              donatedCredits: 50,
+              comment: 'Ontzettend leuk! Veel succes allen.',
+            },
+            {
+              name: 'Marc de Vries',
+              donatedCredits: 20,
+              comment: '',
+            },
+            {
+              name: 'Netmobiel gebruiker',
+              donatedCredits: 10,
+              comment: '',
+            },
+            {
+              name: 'Wout',
+              donatedCredits: 4,
+              comment: '',
+            },
+          ],
+        },
+      ],
+    },
   },
   getters,
   mutations,
