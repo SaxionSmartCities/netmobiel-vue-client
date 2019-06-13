@@ -2,7 +2,7 @@
   <div>
     <v-layout>
       <v-flex>
-        <v-parallax :src="'https://cataas.com/cat'" height="200"></v-parallax>
+        <v-parallax :src="'https://cataas.com/cat'" height="300"></v-parallax>
       </v-flex>
     </v-layout>
     <v-container>
