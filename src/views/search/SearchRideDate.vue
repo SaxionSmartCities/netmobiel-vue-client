@@ -31,11 +31,16 @@
             <v-btn-toggle
               v-for="i in list"
               :key="`2${i}`"
-              class="ma-2"
               v-model="toggle_exclusive"
+              class="ma-2"
             >
-              <v-btn class="px-3" :value="i" flat>
-                {{ setTijd(i) }}
+              <v-btn
+                class="px-3"
+                :value="i"
+                flat
+                :class="{ 'grey--text': !checkDate(i) }"
+              >
+                {{ setTimeStamp(i) }}
               </v-btn>
             </v-btn-toggle>
           </v-flex>
@@ -63,6 +68,7 @@ export default {
     return {
       date: new Date().toISOString().substr(0, 10),
       list: 48,
+      laterThenCurrentTime: false,
       toggle_exclusive: 2,
     }
   },
@@ -85,55 +91,40 @@ export default {
       } else {
         time = hour + ':' + min
       }
-      // this.setTimeFormat(hour, min)
+
       return time
     },
-    // setTimeFormat(hour, minute) {
-    //   moment(this.date, 'YYYY-MM-DD')
-    //   let a = moment
-    //   let b = moment.add(hour, 'hour').add(minute, 'minute') //b is the time portion
-    //   a.hour(b.hour()).minute(b.minute())
-    // },
+    checkDate(i) {
+      var dateNow = moment()._d
+      var date = this.setTime(i)
+
+      let time = false
+      if (date > dateNow) {
+        time = true
+      }
+
+      return time
+    },
+    setTime(index) {
+      var sum = index * 0.5
+      var calculateTime = sum % 2
+      var hour = sum
+      var minute = 0
+
+      if (calculateTime === 0 || calculateTime === 1) {
+        minute = '00'
+      } else {
+        minute = 30
+        hour = sum - 0.5
+      }
+      var time = hour + ':' + minute
+      var dateTime = this.date + ', ' + time
+      return moment(dateTime, 'YYYY-MM-DD, HH:mm')._d
+    },
     submitForm: function(event) {
-      console.log('date', this.date)
-      let myDate = moment(this.date, 'YYYY-MM-DD')
-      console.log('myDate', myDate._d)
-      //set time
+      var myDate = this.setTime(this.toggle_exclusive)
       event.preventDefault()
-      this.$store.commit('setDate', myDate._d)
-    },
-    setTijd(i) {
-      var currentDate = Date.now()
-      var currentMinutes = moment(currentDate).format('mm')
-      var currentHour = moment(currentDate).format('HH')
-
-      var min = 0
-      hour = currentHour
-
-      if (currentMinutes >= 30) {
-        hour++
-        min = '00'
-      } else {
-        min = 30
-      }
-
-      if (i % 2 === 1) {
-        min = 30
-      } else if (i % 2 === 0) {
-        hour++
-        min = '00'
-      }
-      if (i === 48) {
-        hour = '00'
-      }
-
-      var time = ''
-      if (hour < 10 && hour > 0) {
-        time = '0' + hour + ':' + min
-      } else {
-        time = hour + ':' + min
-      }
-      return time
+      this.$store.commit('setDate', myDate)
     },
   },
 }
@@ -176,5 +167,10 @@ export default {
 
 .px-3.v-btn.v-btn--active.v-btn--flat.theme--light {
   border: 0;
+}
+
+.v-btn-toggle .v-btn {
+  opacity: 1;
+  color: black;
 }
 </style>

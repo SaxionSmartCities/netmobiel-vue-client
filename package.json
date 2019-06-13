@@ -11,6 +11,7 @@
     "@dsb-norge/vue-keycloak-js": "^1.0.7",
     "axios": "^0.18.0",
     "i": "^0.3.6",
+    "moment": "^2.24.0",
     "npm": "^6.9.0",
     "vue": "^2.5.21",
     "vue-jwt-decode": "^0.1.0",
