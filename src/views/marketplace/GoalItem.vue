@@ -3,7 +3,7 @@
     <v-flex>
       <v-layout row align-center>
         <v-flex xs4 ma-4>
-          <v-img aspect-ratio="1" :src="itemObj.image"></v-img>
+          <v-img class="rounded-image" aspect-ratio="1" :src="itemObj.image"></v-img>
         </v-flex>
         <v-flex>
           <v-layout column align-end>
@@ -75,6 +75,7 @@ export default {
 <style lang="scss">
 .progressbar {
   background-color: $color-optionsGray;
+  border-radius: 10px;
   .v-progress-linear__bar__determinate {
     background-color: $color-green;
   }
@@ -84,5 +85,8 @@ export default {
 }
 .grey-text {
   color: $color-optionsGray;
+}
+.rounded-image {
+  border-radius: 10px;
 }
 </style>
