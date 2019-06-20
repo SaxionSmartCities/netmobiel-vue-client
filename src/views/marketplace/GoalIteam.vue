@@ -16,7 +16,9 @@
         <v-flex v-if="donated">
           <v-layout row align-end justify-end fill-height>
             <v-flex>
-              <v-icon color="grey">chevron_right</v-icon>
+              <v-btn flat round @click="$router.push('')">
+                <v-icon color="grey">chevron_right</v-icon>
+              </v-btn>
             </v-flex>
           </v-layout>
         </v-flex>
@@ -77,6 +79,7 @@ export default {
   color: $color-green;
   background-color: $color-optionsGray;
 }
+
 p {
   margin-bottom: 0px;
 }
