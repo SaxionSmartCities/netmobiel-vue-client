@@ -48,6 +48,7 @@ export default new Vuex.Store({
       image: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
       rating: 2,
       maxRating: 3,
+      credits: 1020,
 
       // Other attributes
       dateOfBirth: Date.now(),
@@ -92,6 +93,13 @@ export default new Vuex.Store({
       query: '',
       suggestions: [],
     },
+    goals: [
+      {
+        id: 1,
+        subject: 'Renovatie St. Bonifatiuskerk',
+        location: 'Lichtevoorde',
+      },
+    ],
   },
   getters,
   mutations,

@@ -33,4 +33,10 @@ export default {
   isBackButtonVisible: state => {
     return state.ui.backButtonVisible
   },
+  getGoal: state => {
+    return id => state.goals.filter(item => item.id === id)
+  },
+  getCredits: state => {
+    return state.user.credits
+  },
 }
