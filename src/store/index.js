@@ -87,15 +87,6 @@ export default new Vuex.Store({
         visible: true,
       },
     },
-    searchedLocation: { name: '', type: '' },
-    locations: [
-      { name: 'Vorden', type: 'train' },
-      { name: 'Vorden Station', type: 'train' },
-      { name: 'Vorden Centrum', type: 'train' },
-      { name: 'Vordensebeek, Zwolle', type: 'train' },
-      { name: 'Vordensebeek, Warnsveld', type: 'train' },
-      { name: 'Vorden, Kasteel Hackfort', type: 'home' },
-    ],
     geocoder: {
       query: '',
       suggestions: [],

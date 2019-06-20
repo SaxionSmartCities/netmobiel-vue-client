@@ -55,9 +55,6 @@ export default {
   setRideSearchPreferences: (state, payload) => {
     state.user.rideSearchPreferences = payload
   },
-  setSearchedLocation: (state, payload) => {
-    state.searchedLocation = payload
-  },
   setPrivacySecurityValue: (state, payload) => {
     state.user.privacySecurity.filter(function(item) {
       if (item.name === payload.key) {

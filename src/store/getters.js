@@ -23,9 +23,6 @@ export default {
   getPlanningStatus: state => {
     return state.planningRequest.submitStatus
   },
-  getLocations: state => {
-    return state.locations
-  },
   getPrivacySecurity: state => {
     return state.user.privacySecurity
   },
