@@ -23,7 +23,6 @@ export default {
       headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY, context),
     }
 
-    console.log(axiosConfig)
     axios(axiosConfig)
       .then(function() {
         context.commit('setRegistrationStatus', { success: true, message: '' })
@@ -46,7 +45,6 @@ export default {
       })
   },
   submitPlanningsRequest: (context, payload) => {
-    console.log('submit planning request')
     context.commit('storePlanningRequest', payload)
 
     let params = {
@@ -81,8 +79,6 @@ export default {
         context.commit('setPlanningResults', {
           data: res.data.plan,
         })
-
-        console.log(res)
       })
       .catch(function(error) {
         var errorMsg = error.response.data.message

@@ -71,9 +71,6 @@ export default {
       return a.startTime - b.startTime
     },
     changeSort: function() {
-      console.log('hallo')
-      console.log(this.selectedModus)
-      console.log(this.sortModi[this.selectedModus])
       this.selectedModus = (this.selectedModus + 1) % this.sortModi.length
       this.$store.commit(
         'sortItineraries',

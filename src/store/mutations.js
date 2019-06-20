@@ -11,23 +11,18 @@ export default {
     state.user.fullName = decodedObject['name']
   },
   enableHeader: state => {
-    console.log('Enabling header')
     state.ui.header.visible = true
   },
   disableHeader: state => {
-    console.log('Disabling header')
     state.ui.header.visible = false
   },
   enableFooter: state => {
-    console.log('Enabling footer')
     state.ui.footer.visible = true
   },
   disableFooter: state => {
-    console.log('Enabling footer')
     state.ui.footer.visible = false
   },
   deleteAccessToken: state => {
-    console.log('Deleting access token')
     state.user.accessToken = null
   },
   incrementRegistrationStep: (state, payload) => {

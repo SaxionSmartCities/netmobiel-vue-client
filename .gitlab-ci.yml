@@ -12,6 +12,8 @@ cache:
 
 run linter:
   stage: lint
+  variables:
+    NODE_ENV: "production"
   before_script:
    - npm install
   script:

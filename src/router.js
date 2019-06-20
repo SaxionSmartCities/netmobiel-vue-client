@@ -93,10 +93,8 @@ router.beforeEach((to, from, next) => {
     to.path !== '/createUser' &&
     store.getters.getUser.accessToken === undefined
   ) {
-    console.log('Unauth: redirect to root')
     next('/')
   } else {
-    console.log('Auth: Nothing to see here')
     next()
   }
 })
