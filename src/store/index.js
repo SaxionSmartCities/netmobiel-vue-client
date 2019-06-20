@@ -86,6 +86,7 @@ export default new Vuex.Store({
       footer: {
         visible: true,
       },
+      backButtonVisible: false,
     },
     geocoder: {
       query: '',

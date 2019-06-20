@@ -30,4 +30,7 @@ export default {
     return state.planningRequest.result.data.itineraries
   },
   getGeocoderSuggestions: state => state.geocoder.suggestions,
+  isBackButtonVisible: state => {
+    return state.ui.backButtonVisible
+  },
 }

@@ -132,7 +132,6 @@ export default {
   },
   watch: {
     getSubmitStatus(newValue) {
-      console.log(newValue)
       if (newValue.status === 'SUCCESS') {
         this.waiting = setTimeout(() => {
           this.$store.commit('clearPlanningRequest')

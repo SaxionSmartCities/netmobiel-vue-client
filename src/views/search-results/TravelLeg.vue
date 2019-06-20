@@ -67,7 +67,6 @@ export default {
   },
   methods: {
     getIcon: function() {
-      console.log(this.leg)
       switch (this.leg.mode) {
         case 'WALK':
           return 'directions_walk'
