@@ -26,4 +26,7 @@ export default {
   getPrivacySecurity: state => {
     return state.user.privacySecurity
   },
+  getSearchRideDate: state => {
+    return state.searchRide.date
+  },
 }

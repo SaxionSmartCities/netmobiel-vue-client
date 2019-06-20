@@ -70,6 +70,9 @@ export default new Vuex.Store({
         visible: true,
       },
     },
+    searchRide: {
+      date: undefined,
+    },
     searchedLocation: { name: '', type: '' },
     locations: [
       { name: 'Vorden', type: 'train' },

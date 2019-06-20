@@ -40,6 +40,7 @@ const router = new Router({
     {
       path: '/search',
       component: SearchPage,
+      name: 'searchRide',
     },
     {
       path: '/ridePreferences',

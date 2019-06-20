@@ -10,7 +10,7 @@
       <v-flex>
         <v-date-picker
           v-model="date"
-          no-title="true"
+          no-title="no-title"
           color="background-orange"
           locale="nl"
           full-width
@@ -39,6 +39,7 @@
                 :value="i"
                 flat
                 :class="{ 'grey--text': !checkDate(i) }"
+                :disabled="!checkDate(i)"
               >
                 {{ setTimeStamp(i) }}
               </v-btn>
@@ -69,7 +70,7 @@ export default {
       date: new Date().toISOString().substr(0, 10),
       list: 48,
       laterThenCurrentTime: false,
-      toggle_exclusive: 2,
+      toggle_exclusive: 1,
     }
   },
   methods: {
@@ -96,13 +97,19 @@ export default {
     },
     checkDate(i) {
       var dateNow = moment()._d
+      // console.log('date', dateNow)
+      // var minutes = moment().add(10, 'm')
+      // console.log('new date', minutes)
       var date = this.setTime(i)
 
       let time = false
       if (date > dateNow) {
         time = true
-      }
 
+        if (this.toggle_exclusive === 1) {
+          this.toggle_exclusive = i
+        }
+      }
       return time
     },
     setTime(index) {
@@ -123,7 +130,9 @@ export default {
     },
     submitForm: function(event) {
       var myDate = this.setTime(this.toggle_exclusive)
+      console.log('date', myDate)
       event.preventDefault()
+      this.$router.push({ name: 'searchRide' })
       this.$store.commit('setDate', myDate)
     },
   },

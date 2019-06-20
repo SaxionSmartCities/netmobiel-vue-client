@@ -28,7 +28,7 @@
                           </v-subheader>
                         </v-flex>
                         <v-flex>
-                          <v-text-field v-model="fromLocation"></v-text-field>
+                          <p class="ma-0 mt-3">{{ fromLocation }}</p>
                         </v-flex>
                       </v-layout>
                     </v-flex>
@@ -40,7 +40,7 @@
                           </v-subheader>
                         </v-flex>
                         <v-flex>
-                          <v-text-field v-model="toLocation"></v-text-field>
+                          <p class="ma-0 mt-3">{{ toLocation }}</p>
                         </v-flex>
                       </v-layout>
                     </v-flex>
@@ -64,13 +64,20 @@
               <v-layout>
                 <v-flex id="aankomsttijd" xs11>
                   <v-layout row>
-                    <v-flex xs4 sm2 @click="toSearchRideDate">
+                    <v-flex xs4 sm2>
                       <v-subheader class="font-weight-bold">
                         Aankomst
                       </v-subheader>
                     </v-flex>
                     <v-flex>
-                      <v-text-field value="Morgen, 10.00 uur"></v-text-field>
+                      <p
+                        class="ma-0 mt-3"
+                        v-if="dateRide === undefined"
+                        @click="toSearchRideDate"
+                      >
+                        Kies uw aankomst tijd
+                      </p>
+                      <p class="ma-0 mt-3" v-else>{{ dateRide }}</p>
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -85,7 +92,7 @@
               <v-layout mt-2 justify-center>
                 <v-flex shrink @click="toRidePreferences">
                   <v-icon>settings</v-icon>
-                  <span>Reisvoorkeuren</span>
+                  <span class="ml-1">Reisvoorkeuren</span>
                 </v-flex>
               </v-layout>
             </v-form>
@@ -97,11 +104,15 @@
 </template>
 
 <script>
+// import moment from 'moment'
+import moment from 'moment-with-locales-es6'
+
 export default {
   data: function() {
     return {
       fromLocation: 'Enschede',
       toLocation: 'Deventer',
+      dateRide: undefined,
     }
   },
   methods: {
@@ -117,6 +128,14 @@ export default {
       this.fromLocation = this.toLocation
       this.toLocation = tempLocation
     },
+  },
+  created() {
+    var date = this.$store.getters.getSearchRideDate
+    if (date !== undefined) {
+      moment.lang('nl')
+      var formattedDate = moment(date).format('dddd, DD MMMM HH:mm')
+      this.dateRide = formattedDate
+    }
   },
 }
 </script>
