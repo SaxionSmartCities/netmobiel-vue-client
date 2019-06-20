@@ -21,13 +21,13 @@
       </v-flex>
       <v-flex>
         <v-layout row class="scrolling-wrapper-flexbox">
-          <goal-iteam
+          <goal-item
             v-for="i in goalItems"
             :key="i.name"
             :item="i"
             class="item"
             :donated-credits="i.donated"
-          ></goal-iteam>
+          ></goal-item>
         </v-layout>
       </v-flex>
       <v-flex mb-3>
@@ -35,12 +35,12 @@
       </v-flex>
       <v-flex>
         <v-layout row class="scrolling-wrapper-flexbox">
-          <goal-iteam
+          <goal-item
             v-for="i in goalItems"
             :key="i.name"
             :item="i"
             class="item"
-          ></goal-iteam>
+          ></goal-item>
         </v-layout>
       </v-flex>
       <v-flex mb-3>
@@ -80,11 +80,11 @@
 </template>
 
 <script>
-import GoalIteam from './GoalIteam'
+import GoalItem from './GoalItem'
 
 export default {
   name: 'GoalsHomepage',
-  components: { GoalIteam },
+  components: { GoalItem },
   data: function() {
     return {
       searchInput: '',
@@ -161,5 +161,8 @@ export default {
   .item {
     flex: 0 0 auto;
   }
+}
+.theme--light.v-text-field--outline>.v-input__control>.v-input__slot {
+  border-width: 1px !important;
 }
 </style>
