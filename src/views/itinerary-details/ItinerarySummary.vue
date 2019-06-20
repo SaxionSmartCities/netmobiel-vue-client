@@ -29,7 +29,7 @@
 import moment from 'moment'
 
 export default {
-  name: 'TravelSummary',
+  name: 'ItinerarySummary',
   components: {},
   props: {
     date: { type: Number, default: 0 },
@@ -41,12 +41,11 @@ export default {
   },
   computed: {
     printableDate: function() {
-      console.log(this.date)
       let result = moment(this.date)
         .locale('nl')
         .format('LLLL')
 
-      return result.substring(0, result.lastIndexOf(' ') - 5)
+      return result.substring(0, result.lastIndexOf(' ') - 5) // Ugh.. (-5 because of - " 2019")
     },
   },
 }

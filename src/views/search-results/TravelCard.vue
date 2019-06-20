@@ -163,11 +163,9 @@ export default {
       return false
     },
     openDetails: function() {
-      this.$store.commit('setSelectedJourney', this.journey)
+      this.$store.commit('setSelectedItinerary', this.journey)
 
-      this.$router.push({
-        path: '/travelDetails',
-      })
+      this.$router.push('/itineraryDetailPage')
     },
   },
 }

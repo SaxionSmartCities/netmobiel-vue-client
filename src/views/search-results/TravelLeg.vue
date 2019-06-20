@@ -3,7 +3,7 @@
     <v-flex>
       <v-layout>
         <v-flex shrink>
-          <v-icon class="text-primary">{{ getIcon() }}</v-icon>
+          <v-icon class="text-primary">{{ getIcon }}</v-icon>
         </v-flex>
         <v-flex v-if="leg.mode === 'NETMOBIEL'">
           <v-layout>
@@ -64,9 +64,7 @@ export default {
 
       return result
     },
-  },
-  methods: {
-    getIcon: function() {
+    getIcon() {
       switch (this.leg.mode) {
         case 'WALK':
           return 'directions_walk'
@@ -79,11 +77,14 @@ export default {
           return 'directions_bus'
         case 'RAIL':
           return 'directions_railway'
+        case 'WAIT':
+          return 'timelapse'
         default:
           return 'warning'
       }
     },
   },
+  methods: {},
 }
 </script>
 
