@@ -5,8 +5,8 @@
         <p class="headline">{{ title }}</p>
       </v-flex>
       <v-divider></v-divider>
-      <v-flex mt-4
-        ><v-text-field
+      <v-flex mt-4>
+        <v-text-field
           v-model="searchInput"
           outline
           prepend-inner-icon="search"
@@ -14,8 +14,8 @@
           placeholder="Zoeken"
           class="border-radius-input"
           single-line
-        ></v-text-field
-      ></v-flex>
+        ></v-text-field>
+      </v-flex>
       <v-flex mb-3>
         <h1 class="font-weight-bold subheading mt-2">Gedoneerd</h1>
       </v-flex>
@@ -48,26 +48,32 @@
       </v-flex>
       <v-flex>
         <v-layout column>
-          <v-list v-for="user in userItems" :key="user.name">
-            <v-divider></v-divider>
-            <v-list-tile>
-              <v-list-tile-avatar>
-                <img :src="user.img" />
-              </v-list-tile-avatar>
-              <v-spacer></v-spacer>
-              <v-list-tile-content>
-                <v-layout column align-center ma-2>
-                  <v-flex
-                    ><h4>{{ user.name }}</h4></v-flex
-                  >
-                  <v-flex
-                    ><p>{{ user.donated }} credits gedoneerd.</p></v-flex
-                  >
-                </v-layout>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list></v-layout
-        >
+          <v-flex>
+            <v-list>
+              <div v-for="user in userItems" :key="user.name" class="my-2">
+                <v-divider></v-divider>
+                <v-list-tile>
+                  <v-list-tile-avatar>
+                    <img :src="user.img" />
+                  </v-list-tile-avatar>
+                  <v-spacer></v-spacer>
+                  <v-list-tile-content>
+                    <v-layout column align-center>
+                      <v-flex
+                        ><h4>{{ user.name }}</h4></v-flex
+                      >
+                      <v-flex
+                        ><div>
+                          {{ user.donated }} credits gedoneerd.
+                        </div></v-flex
+                      >
+                    </v-layout>
+                  </v-list-tile-content>
+                </v-list-tile>
+              </div>
+            </v-list>
+          </v-flex>
+        </v-layout>
       </v-flex>
     </v-layout>
   </v-container>
@@ -75,6 +81,7 @@
 
 <script>
 import GoalIteam from './GoalIteam'
+
 export default {
   name: 'GoalsHomepage',
   components: { GoalIteam },
@@ -150,12 +157,9 @@ export default {
 <style lang="scss">
 .scrolling-wrapper-flexbox {
   overflow-x: auto;
+
   .item {
     flex: 0 0 auto;
-  }
-
-  p {
-    margin-bottom: 0px;
   }
 }
 </style>

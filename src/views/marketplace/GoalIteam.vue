@@ -16,8 +16,8 @@
         <v-flex v-if="donated">
           <v-layout row align-end justify-end fill-height>
             <v-flex>
-              <v-btn flat round @click="$router.push('')">
-                <v-icon color="grey">chevron_right</v-icon>
+              <v-btn flat round>
+                <v-icon class="arrow-right">chevron_right</v-icon>
               </v-btn>
             </v-flex>
           </v-layout>
@@ -30,25 +30,23 @@
           <v-progress-linear
             :value="calculateProgress()"
             class="progressbar"
-            color="#2e8997"
-            background-color="grey"
           ></v-progress-linear>
         </v-flex>
       </v-layout>
-      <v-layout v-if="!donatedCredits" align-center>
-        <v-flex>
-          <v-subheader
-            >Nog
+      <v-layout v-if="!donatedCredits" align-center ma-4>
+        <v-flex pr-1>
+          <div class="grey-text">
+            Nog
             {{ itemObj.goalCredits - itemObj.currentCredits }}
             credits
-          </v-subheader>
+          </div>
         </v-flex>
-        <v-flex ma-2>
+        <v-flex pl-1>
           <v-btn round>Doel steunen</v-btn>
         </v-flex>
       </v-layout>
       <v-layout v-else align-center column>
-        <v-flex ma-2 class="grey--text"
+        <v-flex ma-2 class="grey-text"
           >Gedoneerd door jou :{{ donated }} Credits
         </v-flex>
       </v-layout>
@@ -76,11 +74,15 @@ export default {
 
 <style lang="scss">
 .progressbar {
-  color: $color-green;
   background-color: $color-optionsGray;
+  .v-progress-linear__bar__determinate {
+    background-color: $color-green;
+  }
 }
-
-p {
-  margin-bottom: 0px;
+.arrow-right {
+  color: $color-optionsGray !important;
+}
+.grey-text {
+  color: $color-optionsGray;
 }
 </style>
