@@ -87,11 +87,6 @@ const router = new Router({
       component: GoalsHomepage,
       name: 'goals',
     },
-    {
-      path: '/goaldonate',
-      component: GoalDonate,
-      name: '/goaldonate',
-    },
   ],
 })
 
