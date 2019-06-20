@@ -6,7 +6,7 @@
       <v-flex xs11>
         <v-subheader class="font-weight-bold">Personen</v-subheader>
       </v-flex>
-      <v-flex xs2>
+      <v-flex>
         <v-btn
           small
           fab
@@ -16,8 +16,10 @@
           >-</v-btn
         >
       </v-flex>
-      <v-flex xs1>
+      <v-flex xs2 md1 lg1 xl1 class="mt-2">
         <v-text-field
+          class="mx-2"
+          id="inputPersons"
           v-model="personen"
           type="number"
           max="10"
@@ -25,7 +27,7 @@
           value="1"
         ></v-text-field>
       </v-flex>
-      <v-flex xs2>
+      <v-flex>
         <v-btn
           small
           fab
@@ -173,10 +175,13 @@ export default {
 
 #buttonMinus {
   background-color: $color-green;
-  width: 75%;
 }
 
 #buttonPlus {
   background-color: $color-green;
+}
+
+#inputPersons {
+  text-align: center;
 }
 </style>
