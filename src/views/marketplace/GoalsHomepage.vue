@@ -17,7 +17,7 @@
         ></v-text-field>
       </v-flex>
       <v-flex mb-3>
-        <h1 class="font-weight-bold subheading mt-2 uppercase">Gedoneerd</h1>
+        <h1 class="font-weight-bold subheading mt-2 text-uppercase">Gedoneerd</h1>
       </v-flex>
       <v-flex>
         <v-layout row class="scrolling-wrapper-flexbox">
@@ -31,7 +31,7 @@
         </v-layout>
       </v-flex>
       <v-flex mb-3>
-        <h1 class="font-weight-bold subheading mt-2 uppercase">Populair in de buurt</h1>
+        <h1 class="font-weight-bold subheading mt-2 text-uppercase">Populair in de buurt</h1>
       </v-flex>
       <v-flex>
         <v-layout row class="scrolling-wrapper-flexbox">
@@ -44,7 +44,7 @@
         </v-layout>
       </v-flex>
       <v-flex mb-3>
-        <h1 class="font-weight-bold subheading mt-2 uppercase">Top donateurs</h1>
+        <h1 class="font-weight-bold subheading mt-2 text-uppercase">Top donateurs</h1>
       </v-flex>
       <v-flex>
         <v-layout column>
@@ -161,8 +161,5 @@ export default {
   .item {
     flex: 0 0 auto;
   }
-}
-.uppercase {
-  text-transform: uppercase;
 }
 </style>
