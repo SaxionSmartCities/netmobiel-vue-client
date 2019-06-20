@@ -101,6 +101,7 @@ export default {
       })
       .catch(function(error) {
         // TODO: Proper error handling.
+        // eslint-disable-next-line
         console.log(error)
       })
   },
@@ -114,10 +115,12 @@ export default {
       .then(function(resp) {
         // TODO: Store the information in the store somewhere.
         // Structure of the response can be found here: https://developer.here.com/documentation/geocoder/topics/resource-geocode.html
+        // eslint-disable-next-line
         console.log(resp.data)
       })
       .catch(function(error) {
         // TODO: Proper error handling.
+        // eslint-disable-next-line
         console.log(error)
       })
   },
