@@ -41,10 +41,10 @@
     <v-divider></v-divider>
 
     <v-layout align-center>
-      <v-flex>
+      <v-flex xs6 md4 lg2>
         <v-subheader class="font-weight-bold">Bagage</v-subheader>
       </v-flex>
-      <v-flex xs8 pt-1>
+      <v-flex xs8 lg10 pt-1>
         <v-select
           v-model="bagageSelected"
           :items="bagage"
@@ -56,10 +56,10 @@
     <v-divider></v-divider>
 
     <v-layout>
-      <v-flex>
+      <v-flex xs6 md4 lg2>
         <v-subheader class="font-weight-bold">Overstappen</v-subheader>
       </v-flex>
-      <v-flex xs8 pt-1>
+      <v-flex xs8 lg10 pt-1>
         <v-select
           v-model="switchSelected"
           attach
@@ -70,20 +70,20 @@
     <v-divider></v-divider>
 
     <v-layout>
-      <v-flex>
+      <v-flex xs6 md4 lg2>
         <v-subheader class="font-weight-bold">Sorteren</v-subheader>
       </v-flex>
-      <v-flex xs8 pt-1>
+      <v-flex xs8 lg10 pt-1>
         <v-select v-model="sortSelected" attach :items="sorteren"></v-select>
       </v-flex>
     </v-layout>
     <v-divider></v-divider>
 
     <v-layout justify-space-between>
-      <v-flex>
+      <v-flex xs6 md4 lg2>
         <v-subheader class="font-weight-bold">Vermijden</v-subheader>
       </v-flex>
-      <v-flex xs8 pt-1>
+      <v-flex xs8 lg10 pt-1>
         <v-select
           v-model="avoidSelected"
           :items="vermijden"
