@@ -85,6 +85,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+  store.commit('hideBackButton')
   store.commit('enableFooter')
   store.commit('enableHeader')
 

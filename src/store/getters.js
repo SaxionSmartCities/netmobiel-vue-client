@@ -32,4 +32,7 @@ export default {
   getItineraries: state => {
     return state.planningRequest.result.data.itineraries
   },
+  isBackButtonVisible: state => {
+    return state.ui.backButtonVisible
+  },
 }

@@ -83,4 +83,10 @@ export default {
   sortItineraries: (state, payload) => {
     state.planningRequest.result.data.itineraries.sort(payload)
   },
+  hideBackButton: state => {
+    state.ui.backButtonVisible = false
+  },
+  showBackButton: state => {
+    state.ui.backButtonVisible = true
+  },
 }
