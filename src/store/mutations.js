@@ -88,4 +88,6 @@ export default {
   sortItineraries: (state, payload) => {
     state.planningRequest.result.data.itineraries.sort(payload)
   },
+  setGeocoderSuggestions: (state, payload) =>
+    (state.geocoder.suggestions = payload),
 }

@@ -32,4 +32,5 @@ export default {
   getItineraries: state => {
     return state.planningRequest.result.data.itineraries
   },
+  getGeocoderSuggestions: state => state.geocoder.suggestions,
 }

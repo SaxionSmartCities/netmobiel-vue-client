@@ -96,6 +96,10 @@ export default new Vuex.Store({
       { name: 'Vordensebeek, Warnsveld', type: 'train' },
       { name: 'Vorden, Kasteel Hackfort', type: 'home' },
     ],
+    geocoder: {
+      query: '',
+      suggestions: [],
+    },
   },
   getters,
   mutations,
