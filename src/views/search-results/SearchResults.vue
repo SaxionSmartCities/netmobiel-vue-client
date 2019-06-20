@@ -5,11 +5,13 @@
       <v-flex mt-2>
         <v-layout>
           <v-flex text-uppercase xs8>datum</v-flex>
-          <v-flex>sorteerknop</v-flex>
+          <v-flex @click="changeSort()">{{
+            sortModi[selectedModus].name
+          }}</v-flex>
         </v-layout>
       </v-flex>
-      <v-flex v-for="(journey, index) in journeys" :key="index">
-        <travel-card class="mt-2" :journey="journey"></travel-card>
+      <v-flex v-for="(itinerary, index) in getItineraries" :key="index">
+        <travel-card class="mt-2" :journey="itinerary"></travel-card>
       </v-flex>
       <v-flex mt-3>
         <v-layout column>
@@ -45,127 +47,39 @@ export default {
   },
   data: function() {
     return {
-      journeys: [
-        {
-          journeyId: 123,
-          legs: [
-            {
-              id: 0,
-              mode: { type: 'bus', line: 144 },
-              time: 5,
-            },
-            {
-              id: 1,
-              mode: {
-                type: 'car',
-                driver: {
-                  name: 'Henk',
-                  rating: 3.0,
-                },
-              },
-
-              time: 20,
-            },
-            {
-              id: 2,
-              mode: { type: 'walk' },
-              time: 10,
-            },
-          ],
-          cost: 20,
-          departureTime: '09:40',
-        },
-        {
-          journeyId: 456,
-          legs: [
-            {
-              id: 0,
-              mode: { type: 'walk' },
-              time: 5,
-            },
-            {
-              id: 1,
-              mode: {
-                type: 'car',
-                driver: {
-                  name: 'Coby',
-                  rating: 1.2,
-                },
-              },
-
-              time: 10,
-            },
-            {
-              id: 2,
-              mode: { type: 'bus', line: 144 },
-              time: 35,
-            },
-          ],
-          cost: 5,
-          departureTime: '09:20',
-        },
-        {
-          journeyId: 457,
-          legs: [
-            {
-              id: 0,
-              mode: { type: 'walk' },
-              time: 5,
-            },
-            {
-              id: 1,
-              mode: {
-                type: 'car',
-                driver: {
-                  name: 'Bert',
-                  rating: 2.5,
-                },
-              },
-
-              time: 15,
-            },
-            {
-              id: 2,
-              mode: { type: 'bus', line: 144 },
-              time: 5,
-            },
-            {
-              id: 3,
-              mode: {
-                type: 'car',
-                driver: {
-                  name: 'Laura',
-                  rating: 1.8,
-                },
-              },
-
-              time: 10,
-            },
-          ],
-          cost: 5,
-          departureTime: '09:45',
-        },
-        {
-          journeyId: 789,
-          legs: [
-            {
-              id: 0,
-              mode: {
-                type: 'taxi',
-                driver: {
-                  name: 'Netmobiel chauffeur',
-                  rating: 3.0,
-                },
-              },
-
-              time: 35,
-            },
-          ],
-          cost: 100,
-          departureTime: '09:10',
-        },
+      sortModi: [
+        { name: 'Vertrektijd', function: this.sortByStartTime },
+        { name: 'Tijdsduur', function: this.sortByDuration },
+        { name: 'Overstappen', function: this.sortByTransfers },
       ],
+      selectedModus: 0,
     }
+  },
+  computed: {
+    getItineraries() {
+      return this.$store.getters.getItineraries
+    },
+  },
+  methods: {
+    sortByDuration: function(a, b) {
+      return a.duration - b.duration
+    },
+    sortByTransfers: function(a, b) {
+      return a.legs.length - b.legs.length
+    },
+    sortByStartTime: function(a, b) {
+      return a.startTime - b.startTime
+    },
+    changeSort: function() {
+      console.log('hallo')
+      console.log(this.selectedModus)
+      console.log(this.sortModi[this.selectedModus])
+      this.selectedModus = (this.selectedModus + 1) % this.sortModi.length
+      this.$store.commit(
+        'sortItineraries',
+        this.sortModi[this.selectedModus].function
+      )
+    },
   },
 }
 </script>

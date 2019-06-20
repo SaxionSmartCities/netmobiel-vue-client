@@ -75,15 +75,35 @@
                   </v-layout>
                 </v-flex>
               </v-layout>
-              <v-layout>
-                <v-flex mt-2>
-                  <v-btn large round block to="/searchResults">
+              <v-layout mt-2 justify-center text-xs-center>
+                <v-flex v-if="getSubmitStatus.status === 'UNSUBMITTED'">
+                  <v-btn large round block @click="submitForm()">
                     Plan je reis!
                   </v-btn>
                 </v-flex>
+                <v-flex v-if="getSubmitStatus.status === 'FAILED'">
+                  <v-alert :value="true" type="error" color="red">
+                    {{ getSubmitStatus.message }}
+                  </v-alert>
+                </v-flex>
+                <v-flex v-if="getSubmitStatus.status === 'SUCCESS'">
+                  <v-alert :value="true" type="success" color="green">
+                    Zoekopdracht verstuurd! <br />
+                    Even geduld...
+                  </v-alert>
+                </v-flex>
+
+                <v-flex v-if="getSubmitStatus.status === 'PENDING'" shrink>
+                  <v-progress-circular indeterminate color="blue">
+                  </v-progress-circular>
+                </v-flex>
               </v-layout>
               <v-layout mt-2 justify-center>
-                <v-flex shrink @click="toRidePrefrences">
+                <v-flex
+                  shrink
+                  transition="slide-x-transition"
+                  @click="toRidePrefrences"
+                >
                   <v-icon>settings</v-icon>
                   <span>Reisvoorkeuren</span>
                 </v-flex>
@@ -100,9 +120,26 @@
 export default {
   data: function() {
     return {
+      waiting: null,
       fromLocation: 'Enschede',
       toLocation: 'Deventer',
     }
+  },
+  computed: {
+    getSubmitStatus() {
+      return this.$store.getters.getPlanningStatus
+    },
+  },
+  watch: {
+    getSubmitStatus(newValue) {
+      console.log(newValue)
+      if (newValue.status === 'SUCCESS') {
+        this.waiting = setTimeout(() => {
+          this.$store.commit('clearPlanningRequest')
+          this.$router.push('/searchResults')
+        }, 1500)
+      }
+    },
   },
   methods: {
     toRidePrefrences() {
@@ -116,6 +153,30 @@ export default {
 
       this.fromLocation = this.toLocation
       this.toLocation = tempLocation
+    },
+    submitForm() {
+      // var searchQuery = {
+      //   fromPlace: {
+      //     lat: 52.219382,
+      //     lon: 6.888892,
+      //   },
+      //   toPlace: {
+      //     lat: 52.003318,
+      //     lon: 6.519264,
+      //   },
+      // }
+      var searchQuery = {
+        fromPlace: {
+          lat: 52.219382,
+          lon: 6.888892,
+        },
+        toPlace: {
+          lat: 52.199433,
+          lon: 6.635025,
+        },
+      }
+
+      this.$store.dispatch('submitPlanningsRequest', searchQuery)
     },
   },
 }

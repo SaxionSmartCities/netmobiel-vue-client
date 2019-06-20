@@ -20,10 +20,16 @@ export default {
   getRideSearchPreferences: state => {
     return state.user.rideSearchPreferences
   },
+  getPlanningStatus: state => {
+    return state.planningRequest.submitStatus
+  },
   getLocations: state => {
     return state.locations
   },
   getPrivacySecurity: state => {
     return state.user.privacySecurity
+  },
+  getItineraries: state => {
+    return state.planningRequest.result.data.itineraries
   },
 }
