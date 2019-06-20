@@ -103,7 +103,18 @@ export default {
   background-color: $color-primary;
 }
 
+.vue-slider-mark-step-active {
+  box-shadow: 0 0 0 2px $color-primary;
+}
+.vue-slider:hover,
+.vue-slider-ltr:hover {
+  border-color: $color-primary;
+}
+.vue-slider-dot-handle {
+  border: 2px solid $color-primary;
+}
 .vue-slider:hover .vue-slider-process {
   background-color: $color-primary;
+  color: $color-primary;
 }
 </style>
