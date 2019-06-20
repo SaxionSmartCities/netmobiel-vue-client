@@ -71,13 +71,15 @@
                     </v-flex>
                     <v-flex>
                       <p
-                        class="ma-0 mt-3"
                         v-if="dateRide === undefined"
+                        class="ma-0 mt-3"
                         @click="toSearchRideDate"
                       >
                         Kies uw aankomst tijd
                       </p>
-                      <p class="ma-0 mt-3" v-else @click="toSearchRideDate">{{ dateRide }}</p>
+                      <p v-else class="ma-0 mt-3" @click="toSearchRideDate">
+                        {{ dateRide }}
+                      </p>
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -115,6 +117,14 @@ export default {
       dateRide: undefined,
     }
   },
+  created() {
+    var date = this.$store.getters.getSearchRideDate
+    if (date !== undefined) {
+      moment.locale('nl')
+      var formattedDate = moment(date).format('dddd, DD MMMM HH:mm')
+      this.dateRide = formattedDate
+    }
+  },
   methods: {
     toRidePreferences() {
       this.$router.push({ name: 'ridePreferences' })
@@ -128,14 +138,6 @@ export default {
       this.fromLocation = this.toLocation
       this.toLocation = tempLocation
     },
-  },
-  created() {
-    var date = this.$store.getters.getSearchRideDate
-    if (date !== undefined) {
-      moment.locale('nl')
-      var formattedDate = moment(date).format('dddd, DD MMMM HH:mm')
-      this.dateRide = formattedDate
-    }
   },
 }
 </script>
