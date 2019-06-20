@@ -77,7 +77,7 @@
                       >
                         Kies uw aankomst tijd
                       </p>
-                      <p class="ma-0 mt-3" v-else>{{ dateRide }}</p>
+                      <p class="ma-0 mt-3" v-else @click="toSearchRideDate">{{ dateRide }}</p>
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -132,7 +132,7 @@ export default {
   created() {
     var date = this.$store.getters.getSearchRideDate
     if (date !== undefined) {
-      moment.lang('nl')
+      moment.locale('nl')
       var formattedDate = moment(date).format('dddd, DD MMMM HH:mm')
       this.dateRide = formattedDate
     }
