@@ -36,7 +36,7 @@
     <v-flex d-flex>
       <v-layout justify-center align-center column>
         <v-flex shrink>
-          <v-icon>keyboard_arrow_right</v-icon>
+          <v-icon @click="openDetails()">keyboard_arrow_right</v-icon>
         </v-flex>
       </v-layout>
     </v-flex>
@@ -161,6 +161,10 @@ export default {
       }
 
       return false
+    },
+    openDetails: function() {
+      console.log(this.journey)
+      this.$router.push('travelDetails')
     },
   },
 }
