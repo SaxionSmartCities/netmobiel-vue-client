@@ -108,4 +108,21 @@ export default {
         console.log(error)
       })
   },
+  fetchGeocoderLocation: (context, locationid) => {
+    const HERE_APP_ID = process.env.VUE_APP_HERE_APP_ID
+    const HERE_APP_CODE = process.env.VUE_APP_HERE_APP_CODE
+    const GEOCODER_BASE_URL = `http://geocoder.api.here.com/6.2/geocode.json?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&locationid=${locationid}&gen=9&jsonattributes=1`
+
+    axios
+      .get(GEOCODER_BASE_URL)
+      .then(function(resp) {
+        // TODO: Store the information in the store somewhere.
+        // Structure of the response can be found here: https://developer.here.com/documentation/geocoder/topics/resource-geocode.html
+        console.log(resp.data)
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        console.log(error)
+      })
+  },
 }

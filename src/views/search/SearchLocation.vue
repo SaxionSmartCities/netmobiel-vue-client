@@ -55,8 +55,7 @@ export default {
   },
   methods: {
     completeSearch(location) {
-      //TODO: Get the location from the geocoder
-      this.$store.commit('setSearchedLocation', location)
+      this.$store.dispatch('fetchGeocoderLocation', location.locationId)
       this.$router.go(-1)
     },
   },
