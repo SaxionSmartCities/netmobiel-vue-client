@@ -46,16 +46,10 @@ import TravelSummary from '@/views/travel-details/TravelSummary.vue'
 export default {
   name: 'TravelDetails',
   components: { TravelSummary },
-  props: {
-    journey: {
-      type: Object,
-      default: function() {
-        return {}
-      },
+  computed: {
+    journey: function() {
+      return this.$store.getters.getSelectedJourney
     },
-  },
-  data: function() {
-    return {}
   },
 }
 </script>

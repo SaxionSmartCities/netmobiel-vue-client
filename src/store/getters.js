@@ -33,4 +33,5 @@ export default {
   isBackButtonVisible: state => {
     return state.ui.backButtonVisible
   },
+  getSelectedJourney: state => state.selectedJourney,
 }

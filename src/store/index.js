@@ -19,6 +19,7 @@ export default new Vuex.Store({
         message: '',
       },
     },
+    selectedJourney: {},
     planningRequest: {
       fromPlace: {
         lat: 0.0,

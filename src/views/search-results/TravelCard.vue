@@ -163,8 +163,11 @@ export default {
       return false
     },
     openDetails: function() {
-      console.log(this.journey)
-      this.$router.push('travelDetails')
+      this.$store.commit('setSelectedJourney', this.journey)
+
+      this.$router.push({
+        path: '/travelDetails',
+      })
     },
   },
 }
