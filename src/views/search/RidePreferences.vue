@@ -6,8 +6,15 @@
       <v-flex xs11>
         <v-subheader class="font-weight-bold">Personen</v-subheader>
       </v-flex>
-      <v-flex>
-        <v-btn small fab @click="incrementPersons(-1)">-</v-btn>
+      <v-flex xs2>
+        <v-btn
+          small
+          fab
+          @click="incrementPersons(-1)"
+          id="buttonMinus"
+          class="title"
+          >-</v-btn
+        >
       </v-flex>
       <v-flex xs1>
         <v-text-field
@@ -18,8 +25,15 @@
           value="1"
         ></v-text-field>
       </v-flex>
-      <v-flex>
-        <v-btn small fab @click="incrementPersons(1)">+</v-btn>
+      <v-flex xs2>
+        <v-btn
+          small
+          fab
+          @click="incrementPersons(1)"
+          id="buttonPlus"
+          class="title"
+          >+</v-btn
+        >
       </v-flex>
     </v-layout>
     <v-divider></v-divider>
@@ -155,5 +169,14 @@ export default {
 <style lang="scss">
 .v-text-field > .v-input__control > .v-input__slot:before {
   border-style: none;
+}
+
+#buttonMinus {
+  background-color: $color-green;
+  width: 75%;
+}
+
+#buttonPlus {
+  background-color: $color-green;
 }
 </style>
