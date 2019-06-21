@@ -27,6 +27,8 @@
 </template>
 
 <script>
+const utils = require('@/utils/Utils.js')
+
 export default {
   name: 'TravelLeg',
   props: {
@@ -64,24 +66,8 @@ export default {
 
       return result
     },
-    getIcon() {
-      switch (this.leg.mode) {
-        case 'WALK':
-          return 'directions_walk'
-        case 'CAR':
-        case 'NETMOBIEL':
-          return 'directions_car'
-        case 'TRAIN':
-          return 'train'
-        case 'BUS':
-          return 'directions_bus'
-        case 'RAIL':
-          return 'directions_railway'
-        case 'WAIT':
-          return 'timelapse'
-        default:
-          return 'warning'
-      }
+    getIcon: function() {
+      return utils.getIcon(this.leg.mode)
     },
   },
   methods: {},

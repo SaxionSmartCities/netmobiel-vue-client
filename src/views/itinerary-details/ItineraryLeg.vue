@@ -29,6 +29,7 @@
 
 <script>
 import moment from 'moment'
+const utils = require('@/utils/Utils.js')
 
 export default {
   name: 'ItineraryLeg',
@@ -41,6 +42,9 @@ export default {
     },
   },
   computed: {
+    getIcon: function() {
+      return utils.getIcon(this.leg.mode)
+    },
     printableTime: function() {
       let result
 
@@ -104,27 +108,6 @@ export default {
           return ''
         case 'FINISH':
           return 'Aangekomen op ' + this.leg.to.lat + ' ' + this.leg.to.lon
-        default:
-          return 'warning'
-      }
-    },
-    getIcon: function() {
-      switch (this.leg.mode) {
-        case 'WALK':
-          return 'directions_walk'
-        case 'CAR':
-        case 'NETMOBIEL':
-          return 'directions_car'
-        case 'TRAIN':
-          return 'train'
-        case 'BUS':
-          return 'directions_bus'
-        case 'RAIL':
-          return 'directions_railway'
-        case 'WAIT':
-          return 'timelapse'
-        case 'FINISH':
-          return 'outlined_flag'
         default:
           return 'warning'
       }
