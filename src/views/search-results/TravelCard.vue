@@ -105,13 +105,12 @@ export default {
     calculateLegDivison: function() {
       // Calculate total travel time
       for (let i = 0, len = this.journey.legs; i < len; i++) {
-        this.totalTime += this.journey.legs[i]
+        this.totalTime += this.journey.legs[i].duration
       }
 
       // Calculate ratio for each leg and map it on a 1-12 scale (based on grid system)
       let ratios = []
-
-      for (let i = 0, len = this.journey.legs; i < len; i++) {
+      for (let i = 0, len = this.journey.legs.length; i < len; i++) {
         let currentRatio = this.journey.legs[i].duration / this.totalTime // Calculate weight of value i.c.t. other values
         let mappedRatio = currentRatio * 12 // Map over 12 columns
         let pushValue = Math.max(1, mappedRatio) // Make sure the minimum value is 1 - otherwise it won't be displayed
