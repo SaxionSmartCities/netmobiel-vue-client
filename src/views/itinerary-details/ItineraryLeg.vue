@@ -76,6 +76,8 @@ export default {
         case 'CAR':
         case 'NETMOBIEL':
           return 'Meerijden met NETMOBIEL gebruiker'
+        case 'RAIL':
+          return 'Trein'
         case 'BUS':
           return 'Reizen met bus ' + this.leg.routeShortName
         case 'WAIT':
@@ -88,7 +90,7 @@ export default {
         case 'FINISH':
           return 'Aangekomen op bestemming'
         default:
-          return 'warning'
+          return 'HEADER_NOT_DEFINED'
       }
     },
     description: function() {
@@ -119,7 +121,7 @@ export default {
         case 'FINISH':
           return 'Aangekomen op ' + this.leg.to.lat + ' ' + this.leg.to.lon
         default:
-          return 'warning'
+          return 'DESCRIPTION_NOT_DEFINED'
       }
     },
   },
