@@ -1,27 +1,35 @@
 <template>
   <v-layout column>
-    <v-flex id="headerregel" red>
+    <v-flex>
       <v-layout row>
-        <v-flex id="tijd" xs2>{{ printableTime }}</v-flex>
-        <v-flex id="bolletje" xs1>
-          <v-layout column align-center>
+        <v-flex xs2>{{ printableTime }}</v-flex>
+        <v-flex xs1>
+          <v-layout column align-center full-height>
             <v-flex>
               <div class="open-dot"></div>
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex id="locatienaam">{{ header }}</v-flex>
+        <v-flex>{{ header }}</v-flex>
       </v-layout>
     </v-flex>
-    <v-flex id="icoonborderdetails" green>
+    <v-flex>
       <v-layout row>
-        <v-flex id="icon" xs2>
-          <v-icon> {{ getIcon }}</v-icon>
+        <v-flex xs2 my-2>
+          <v-icon my-6> {{ getIcon }}</v-icon>
         </v-flex>
-        <v-flex id="bordertje" xs1 text-xs-center>
-          <span v-if="leg.mode !== 'FINISH'">|</span>
+        <v-flex xs1>
+          <v-layout v-if="leg.mode !== 'FINISH'" justify-center fill-height>
+            <v-flex shrink>
+              <div v-if="leg.mode === 'WAIT'" class="borderstopped"></div>
+              <div v-else class="border"></div>
+            </v-flex>
+          </v-layout>
         </v-flex>
-        <v-flex id="details"> {{ description }} </v-flex>
+        <v-flex caption>
+          <v-icon v-if="leg.mode !== 'WAIT'" size="15">map</v-icon>
+          {{ description }}
+        </v-flex>
       </v-layout>
     </v-flex>
   </v-layout>
@@ -29,7 +37,7 @@
 
 <script>
 import moment from 'moment'
-const utils = require('@/utils/Utils.js')
+import { getIcon } from '@/utils/Utils.js'
 
 export default {
   name: 'ItineraryLeg',
@@ -43,7 +51,7 @@ export default {
   },
   computed: {
     getIcon: function() {
-      return utils.getIcon(this.leg.mode)
+      return getIcon(this.leg.mode)
     },
     printableTime: function() {
       let result
@@ -63,7 +71,8 @@ export default {
     header: function() {
       switch (this.leg.mode) {
         case 'WALK':
-          return 'Lopen naar ' + this.leg.to.lat + ' ' + this.leg.to.lon
+          // return 'Lopen' naar ' + this.leg.to.lat + ' ' + this.leg.to.lon'
+          return 'Lopen'
         case 'CAR':
         case 'NETMOBIEL':
           return 'Meerijden met NETMOBIEL gebruiker'
@@ -85,16 +94,17 @@ export default {
     description: function() {
       switch (this.leg.mode) {
         case 'WALK':
-          return (
-            'Vanaf ' +
-            this.leg.from.lat +
-            ' ' +
-            this.leg.from.lon +
-            ' naar ' +
-            this.leg.to.lat +
-            ' ' +
-            this.leg.to.lon
-          )
+          return 'Lopen van ergens, naar ergens anders'
+        // return (
+        //   'Vanaf ' +
+        //   this.leg.from.lat +
+        //   ' ' +
+        //   this.leg.from.lon +
+        //   ' naar ' +
+        //   this.leg.to.lat +
+        //   ' ' +
+        //   this.leg.to.lon
+        // )
         case 'CAR':
         case 'NETMOBIEL':
           return 'Meerijden met een NETMOBIEL gebruiker'
@@ -118,11 +128,21 @@ export default {
 
 <style lang="scss">
 .open-dot {
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 10000px;
-  border-color: green;
-  width: 2vw;
-  height: 2vw;
+  background: url('../../assets/travel_details_dot.gif');
+  height: 21px;
+  width: 21px;
+  background-size: cover;
+}
+
+.border {
+  width: 1px;
+  border: 2px #222 solid;
+  height: 100%;
+}
+
+.borderstopped {
+  width: 1px;
+  border: 2px #ccc dotted;
+  height: 100%;
 }
 </style>

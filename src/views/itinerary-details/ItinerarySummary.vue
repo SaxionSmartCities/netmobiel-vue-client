@@ -1,22 +1,22 @@
 <template>
   <v-layout>
-    <v-flex id="details">
+    <v-flex>
       <v-layout column>
-        <v-flex id="datumRow">
+        <v-flex>
           <v-layout py-2>
-            <v-flex xs4>Datum</v-flex>
+            <v-flex xs3>Datum</v-flex>
             <v-flex>{{ printableDate }}</v-flex>
           </v-layout>
         </v-flex>
-        <v-flex id="reisduurRow">
+        <v-flex>
           <v-layout py-2>
-            <v-flex xs4>Reisduur</v-flex>
+            <v-flex xs3>Reisduur</v-flex>
             <v-flex>{{ Math.round(duration / 60) }} minuten</v-flex>
           </v-layout>
         </v-flex>
-        <v-flex id="kostenRow">
+        <v-flex>
           <v-layout py-2>
-            <v-flex xs4>Kosten</v-flex>
+            <v-flex xs3>Kosten</v-flex>
             <v-flex>{{ cost }} credits</v-flex>
           </v-layout>
         </v-flex>

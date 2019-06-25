@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-layout id="pagina" column>
+    <v-layout column>
       <v-flex mb-3>
         <h3>Reisdetails</h3>
       </v-flex>
@@ -22,7 +22,7 @@
         <v-divider />
       </v-flex>
 
-      <v-flex id="legs" mt-4>
+      <v-flex mt-4>
         <v-layout column>
           <v-flex v-for="(leg, index) in generateSteps" :key="index">
             <itinerary-leg :leg="leg" />
@@ -58,9 +58,9 @@ export default {
 
         result.push(currentLeg)
 
-        // We won't show any waiting times < 60 sec
+        // We won't show any waiting times < 60 sec -- should be made a config
         if (nextLeg.startTime - currentLeg.endTime > 60 * 1000) {
-          // There is some time to wait!
+          // Add "WAIT" element (not from OTP).
           result.push({
             mode: 'WAIT',
             startTime: currentLeg.endTime,
@@ -74,6 +74,7 @@ export default {
 
       result.push(lastLeg)
 
+      // Finally, we push the "FINISH" element (not from OTP)
       result.push({
         mode: 'FINISH',
         startTime: lastLeg.endTime,

@@ -27,7 +27,7 @@
 </template>
 
 <script>
-const utils = require('@/utils/Utils.js')
+import { getIcon } from '@/utils/Utils.js'
 
 export default {
   name: 'TravelLeg',
@@ -67,7 +67,7 @@ export default {
       return result
     },
     getIcon: function() {
-      return utils.getIcon(this.leg.mode)
+      return getIcon(this.leg.mode)
     },
   },
   methods: {},
