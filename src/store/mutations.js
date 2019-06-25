@@ -88,4 +88,7 @@ export default {
   showBackButton: state => {
     state.ui.backButtonVisible = true
   },
+  setSelectedItinerary: (state, payload) => {
+    state.selectedItinerary = payload
+  },
 }
