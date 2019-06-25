@@ -2,7 +2,7 @@
   <v-layout column>
     <v-flex>
       <v-layout row>
-        <v-flex xs2>{{ printableTime }}</v-flex>
+        <v-flex xs2>{{ time }}</v-flex>
         <v-flex xs1>
           <v-layout column align-center full-height>
             <v-flex>
@@ -16,7 +16,7 @@
     <v-flex>
       <v-layout row>
         <v-flex xs2 my-3>
-          <v-icon my-6> {{ getIcon }}</v-icon>
+          <v-icon my-6> {{ icon }}</v-icon>
         </v-flex>
         <v-flex xs1>
           <v-layout v-if="leg.mode !== 'FINISH'" justify-center fill-height>
@@ -50,23 +50,13 @@ export default {
     },
   },
   computed: {
-    getIcon: function() {
+    icon: function() {
       return getIcon(this.leg.mode)
     },
-    printableTime: function() {
-      let result
-
-      if (!this.isLastLeg) {
-        result = moment(this.leg.startTime)
-          .locale('nl')
-          .format('LT')
-      } else {
-        result = moment(this.leg.endTime)
-          .locale('nl')
-          .format('LT')
-      }
-
-      return result
+    time: function() {
+      return moment(this.leg.startTime)
+        .locale('nl')
+        .format('LT')
     },
     header: function() {
       switch (this.leg.mode) {

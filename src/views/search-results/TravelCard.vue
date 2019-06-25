@@ -10,7 +10,7 @@
             </v-flex>
             <v-flex v-if="hasCarLeg()" text-xs-right pr-1>
               <h4>Reizen met</h4>
-              {{ getDriversString() }}
+              {{ driverString }}
             </v-flex>
           </v-layout>
         </v-flex>
@@ -56,9 +56,6 @@ export default {
     journey: {
       type: Object,
       required: true,
-      default: function() {
-        return {}
-      },
     },
   },
   data: function() {
@@ -73,7 +70,7 @@ export default {
         .locale('nl')
         .calendar()
     },
-    getDriversString: function() {
+    driverString: function() {
       let drivers = []
 
       for (let i = 0; i < this.journey.legs.length; i++) {
@@ -107,29 +104,27 @@ export default {
     // Function to pre-determine the divions of column per leg
     calculateLegDivison: function() {
       // Calculate total travel time
-      this.journey.legs.forEach(element => {
-        this.totalTime += element.duration
-      })
+      for (let i = 0, len = this.journey.legs; i < len; i++) {
+        this.totalTime += this.journey.legs[i]
+      }
 
       // Calculate ratio for each leg and map it on a 1-12 scale (based on grid system)
       let ratios = []
-      this.journey.legs.forEach(element => {
-        let currentRatio = element.duration / this.totalTime // Calculate weight of value i.c.t. other values
+
+      for (let i = 0, len = this.journey.legs; i < len; i++) {
+        let currentRatio = this.journey.legs[i].duration / this.totalTime // Calculate weight of value i.c.t. other values
         let mappedRatio = currentRatio * 12 // Map over 12 columns
         let pushValue = Math.max(1, mappedRatio) // Make sure the minimum value is 1 - otherwise it won't be displayed
 
         ratios.push(Math.round(pushValue))
-      })
+      }
 
       // We need to check whether we fill all 12 columns (because of grid).
       // As there is no guarantee that we have exactly 12 columns filled (because of rounding and min. of 1 column for all legs),
       // we need to confirm this manually.
       // We'll sum up the ratios array (which should be 12) and adjust if need be. We'll pick the (first) largest
       // value in the array (== biggest column visually) apply the difference to it..
-      let sum = 0
-      ratios.forEach(element => {
-        sum += element
-      })
+      let sum = ratios.reduce((a, b) => a + b)
 
       if (sum !== 12) {
         let difference = 12 - sum // This can either be positive or negative.
@@ -152,15 +147,7 @@ export default {
       return 'xs' + this.layoutRatios[index]
     },
     hasCarLeg: function() {
-      for (var i = 0; i < this.journey.legs.length; i++) {
-        let currentLeg = this.journey.legs[i]
-
-        if (currentLeg.mode.type === 'car') {
-          return true
-        }
-      }
-
-      return false
+      return this.journey.legs.filter(leg => leg.mode === 'CAR').length > 0
     },
     openDetails: function() {
       this.$store.commit('setSelectedItinerary', this.journey)
