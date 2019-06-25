@@ -15,7 +15,7 @@
     </v-flex>
     <v-flex>
       <v-layout row>
-        <v-flex xs2 my-2>
+        <v-flex xs2 my-3>
           <v-icon my-6> {{ getIcon }}</v-icon>
         </v-flex>
         <v-flex xs1>
