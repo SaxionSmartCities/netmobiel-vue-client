@@ -30,7 +30,7 @@
         </v-layout>
       </v-flex>
       <v-flex my-4>
-        <v-btn large round block mb-4 @click="debugThis()">
+        <v-btn large round block mb-4>
           Deze reis bevestigen
         </v-btn>
       </v-flex>
@@ -81,13 +81,7 @@ export default {
         to: lastLeg.to,
       })
 
-      console.log(result)
       return result
-    },
-  },
-  methods: {
-    debugThis: function() {
-      console.log(this.generateSteps)
     },
   },
 }
