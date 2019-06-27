@@ -17,6 +17,7 @@ import SearchResults from './views/search-results/SearchResults.vue'
 import TermsOfUse from './views/profile/TermsOfUse'
 import PrivacyStatement from './views/profile/PrivacyStatement'
 import PrivacySecurity from './views/profile/PrivacySecurity'
+import GoalsHomepage from './views/marketplace/GoalsHomepage'
 import ItineraryDetailPage from './views/itinerary-details/ItineraryDetailPage.vue'
 
 const router = new Router({
@@ -83,6 +84,11 @@ const router = new Router({
       name: 'privacySecurity',
     },
     {
+      path: '/goals',
+      component: GoalsHomepage,
+      name: 'goals',
+    },
+    {
       path: '/itineraryDetailPage',
       component: ItineraryDetailPage,
       name: 'itineraryDetailPage',
@@ -100,8 +106,10 @@ router.beforeEach((to, from, next) => {
     to.path !== '/createUser' &&
     store.getters.getUser.accessToken === undefined
   ) {
+    console.log('Unauth: redirect to root')
     next('/')
   } else {
+    console.log('Auth: Nothing to see here')
     next()
   }
 })

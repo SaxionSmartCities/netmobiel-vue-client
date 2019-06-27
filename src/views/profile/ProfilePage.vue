@@ -40,7 +40,7 @@
       <v-flex>
         <v-layout row mb-2>
           <v-flex travel-card mr-2
-            ><v-layout column align-center my-2
+            ><v-layout column align-center my-2 @click="$router.push('/goals')"
               ><v-flex><v-icon>control_point</v-icon></v-flex
               ><v-flex>Doelen</v-flex></v-layout
             ></v-flex

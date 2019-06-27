@@ -5,11 +5,15 @@
         <p class="headline">{{ title }}</p>
       </v-flex>
       <v-flex>
-        <h1 class="font-weight-bold subheading mt-2">{{ subTitle[0] }}</h1>
+        <h1 class="font-weight-bold subheading mt-2 text-primary">
+          {{ subTitle[0] }}
+        </h1>
         <p class="font-weight-light">{{ text[0] }}</p>
       </v-flex>
       <v-flex>
-        <h1 class="font-weight-bold subheading mt-2">{{ subTitle[1] }}</h1>
+        <h1 class="font-weight-bold subheading mt-2 text-primary">
+          {{ subTitle[1] }}
+        </h1>
         <p class="font-weight-light">{{ text[1] }}</p>
       </v-flex>
     </v-layout>
@@ -41,8 +45,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.font-weight-bold.subheading.mt-2 {
-  color: $color-green;
-}
-</style>
+<style lang="scss"></style>
