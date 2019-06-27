@@ -6,10 +6,10 @@ Vue.use(Router)
 
 import HomePage from './pages/HomePage.vue'
 import ItineraryDetailPage from './pages/ItineraryDetailPage.vue'
+import ProfilePage from './pages/ProfilePage.vue'
+import StartRegistrationPage from './pages/StartRegistrationPage.vue'
 
 import SplashScreen from './views/splashscreen/SplashScreen.vue'
-import ProfilePage from './views/profile/ProfilePage.vue'
-import StartRegistrationForm from './views/registration/StartRegistrationForm.vue'
 import SearchPage from './views/search/SearchPage.vue'
 import SearchPageOptions from './views/search/RidePreferences'
 import SearchRideDate from './views/search/SearchRideDate'
@@ -33,7 +33,7 @@ const router = new Router({
     },
     {
       path: '/createUser',
-      component: StartRegistrationForm,
+      component: StartRegistrationPage,
     },
     {
       path: '/profile',
