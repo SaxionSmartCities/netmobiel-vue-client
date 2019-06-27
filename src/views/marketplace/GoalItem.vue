@@ -1,8 +1,8 @@
 <template>
-  <v-layout column travel-card ma-2>
+  <v-layout column travel-card mr-2>
     <v-flex>
       <v-layout row align-center>
-        <v-flex xs4 ma-4>
+        <v-flex xs4 ma-3>
           <v-img
             class="rounded-image"
             aspect-ratio="1"
@@ -34,16 +34,16 @@
     </v-flex>
     <v-flex>
       <v-layout column
-        ><v-flex>
-          <v-flex mx-4>
+        ><v-flex >
+          <v-flex mx-3>
             <v-progress-linear
               :value="calculateProgress()"
               class="progressbar"
             ></v-progress-linear> </v-flex></v-flex
         ><v-flex>
-          <v-layout v-if="!donatedCredits" align-center row fill-height ma-4>
+          <v-layout v-if="!donatedCredits" align-center row fill-height ma-3>
             <v-flex>
-              <div class="grey-text text-xs-center">
+              <div class="grey-text">
                 Nog
                 {{ itemObj.goalCredits - itemObj.currentCredits }}
                 credits
@@ -53,9 +53,9 @@
               <v-btn round>Doel steunen</v-btn>
             </v-flex>
           </v-layout>
-          <v-layout v-else align-center column>
-            <v-flex ma-4 class="grey-text"
-              >Gedoneerd door jou :{{ donated }} Credits
+          <v-layout v-else column>
+            <v-flex ma-3 class="grey-text"
+              >Door jou gedoneerd: {{ donated }} Credits
             </v-flex>
           </v-layout></v-flex
         ></v-layout
@@ -86,6 +86,7 @@ export default {
 .progressbar {
   background-color: $color-optionsGray;
   border-radius: 10px;
+  margin: 0;
   .v-progress-linear__bar__determinate {
     background-color: $color-green;
   }
@@ -98,5 +99,8 @@ export default {
 }
 .rounded-image {
   border-radius: 10px;
+}
+.travel-card {
+  border-color: #CCC;
 }
 </style>

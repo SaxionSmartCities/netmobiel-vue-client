@@ -2,7 +2,7 @@
   <v-container>
     <v-layout column>
       <v-flex>
-        <p class="headline">{{ title }}</p>
+        <p class="headline">Doelen</p>
       </v-flex>
       <v-divider></v-divider>
       <v-flex mt-4>
@@ -16,9 +16,9 @@
           single-line
         ></v-text-field>
       </v-flex>
-      <v-flex mb-3>
+      <v-flex mb-2>
         <h1
-          class="font-weight-bold subheading my-2 text-primary text-uppercase"
+          class="font-weight-bold subheading text-primary text-uppercase"
         >
           Gedoneerd
         </h1>
@@ -34,9 +34,9 @@
           ></goal-item>
         </v-layout>
       </v-flex>
-      <v-flex mb-3>
+      <v-flex mb-2 mt-4>
         <h1
-          class="font-weight-bold subheading my-2 text-primary text-uppercase"
+          class="font-weight-bold subheading text-primary text-uppercase"
         >
           Populair in de buurt
         </h1>
@@ -51,9 +51,9 @@
           ></goal-item>
         </v-layout>
       </v-flex>
-      <v-flex mb-3>
+      <v-flex mb-2 mt-4>
         <h1
-          class="font-weight-bold subheading my-2 text-primary text-uppercase"
+          class="font-weight-bold subheading text-primary text-uppercase"
         >
           Top donateurs
         </h1>
@@ -61,8 +61,8 @@
       <v-flex>
         <v-layout column>
           <v-flex>
-            <v-list>
-              <div v-for="user in userItems" :key="user.name" class="my-2">
+            <v-list >
+              <div v-for="user in userItems" :key="user.name">
                 <v-divider></v-divider>
                 <v-list-tile>
                   <v-list-tile-avatar>
@@ -70,13 +70,13 @@
                   </v-list-tile-avatar>
                   <v-spacer></v-spacer>
                   <v-list-tile-content>
-                    <v-layout column align-center>
+                    <v-layout column >
                       <v-flex
                         ><h4>{{ user.name }}</h4></v-flex
                       >
                       <v-flex
-                        ><div>
-                          {{ user.donated }} credits gedoneerd.
+                        ><div class="grey-text">
+                          {{ user.donated }} credits gedoneerd
                         </div></v-flex
                       >
                     </v-layout>
