@@ -6,12 +6,12 @@ Vue.use(Router)
 
 import HomePage from './pages/HomePage.vue'
 import ItineraryDetailPage from './pages/ItineraryDetailPage.vue'
+import LandingPage from './pages/LandingPage.vue'
 import ProfilePage from './pages/ProfilePage.vue'
-import StartRegistrationPage from './pages/StartRegistrationPage.vue'
 import SearchPage from './pages/SearchPage.vue'
 import SearchResultsPage from './pages/SearchResultsPage.vue'
+import StartRegistrationPage from './pages/StartRegistrationPage.vue'
 
-import SplashScreen from './views/splashscreen/SplashScreen.vue'
 import SearchPageOptions from './views/search/RidePreferences'
 import SearchRideDate from './views/search/SearchRideDate'
 import SearchLocation from './views/search/SearchLocation'
@@ -25,23 +25,28 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      component: SplashScreen,
+      component: LandingPage,
+      name: 'landingPage',
     },
     {
       path: '/home',
       component: HomePage,
+      name: 'homePage',
     },
     {
       path: '/createUser',
       component: StartRegistrationPage,
+      name: 'startRegistrationPage',
     },
     {
       path: '/profile',
       component: ProfilePage,
+      name: 'profilePage',
     },
     {
       path: '/search',
       component: SearchPage,
+      name: 'searchPage',
     },
     {
       path: '/ridePreferences',
