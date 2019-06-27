@@ -6,7 +6,9 @@
           v-model="searchInput"
           clearable
           placeholder="Zoek..."
+          prepend-inner-icon="search"
           class="border-radius-input"
+          outline
           single-line
           @click:clear="clearSearchInput"
         ></v-text-field>
@@ -64,7 +66,10 @@ export default {
   methods: {
     completeSearch(location) {
       this.$store.dispatch('fetchGeocoderLocation', location.locationId)
-      this.$emit('pickedLocation', location)
+      let newLocation = {}
+      Object.assign(newLocation, location)
+      newLocation.label = location.label.replace(/(<([^>]+)>)/gi, '')
+      this.$emit('pickedLocation', newLocation)
     },
     clearSearchInput() {
       this.searchInput = ''

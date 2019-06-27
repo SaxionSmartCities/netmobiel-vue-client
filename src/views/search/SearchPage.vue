@@ -1,5 +1,5 @@
 <template>
-  <div class="fill-height full-width">
+  <div class="fill-height full-width pa-0">
     <v-container
       v-if="!showPicklocation"
       align-center
@@ -167,9 +167,9 @@ export default {
     },
     setPickedLocationField(location) {
       if (this.pickedLocationState === 'to') {
-        this.toLocation = location.label.replace(/(<([^>]+)>)/gi, '')
+        this.toLocation = location.label
       } else if (this.pickedLocationState === 'from') {
-        this.fromLocation = location.label.replace(/(<([^>]+)>)/gi, '')
+        this.fromLocation = location.label
       }
       console.log(JSON.stringify(location, null, 2))
       this.showPicklocation = false
