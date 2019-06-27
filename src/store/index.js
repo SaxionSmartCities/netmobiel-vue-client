@@ -92,6 +92,7 @@ export default new Vuex.Store({
     geocoder: {
       query: '',
       suggestions: [],
+      pickedLocations: { to: {}, from: {} },
     },
   },
   getters,

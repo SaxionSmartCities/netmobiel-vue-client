@@ -34,4 +34,6 @@ export default {
     return state.ui.backButtonVisible
   },
   getSelectedItinerary: state => state.selectedItinerary,
+
+  getGeocoderPickedLocations: state => state.geocoder.pickedLocations,
 }

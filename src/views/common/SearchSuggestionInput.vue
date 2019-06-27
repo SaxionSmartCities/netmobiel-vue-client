@@ -65,11 +65,11 @@ export default {
   },
   methods: {
     completeSearch(location) {
-      this.$store.dispatch('fetchGeocoderLocation', location.locationId)
-      let newLocation = {}
-      Object.assign(newLocation, location)
-      newLocation.label = location.label.replace(/(<([^>]+)>)/gi, '')
-      this.$emit('pickedLocation', newLocation)
+      this.$store.dispatch('fetchGeocoderLocation', {
+        locationId: location.locationId,
+        field: this.$route.params.field,
+      })
+      this.$router.go(-1)
     },
     clearSearchInput() {
       this.searchInput = ''
