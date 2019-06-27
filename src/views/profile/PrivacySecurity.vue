@@ -17,7 +17,7 @@
     </v-layout>
     <v-layout pt-3>
       <v-flex>
-        <p class="body-1 text-primary font-weight-medium">LOCATIE</p>
+        <p class="text-primary-uppercase">locatie</p>
       </v-flex>
     </v-layout>
     <v-layout column>
