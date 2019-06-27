@@ -102,7 +102,7 @@
                 <v-flex
                   shrink
                   transition="slide-x-transition"
-                  @click="toRidePrefrences"
+                  @click="toRidePreferences"
                 >
                   <v-icon>settings</v-icon>
                   <span>Reisvoorkeuren</span>
@@ -141,8 +141,8 @@ export default {
     },
   },
   methods: {
-    toRidePrefrences() {
-      this.$router.push({ name: 'ridePreferences' })
+    toRidePreferences() {
+      this.$router.push('/ridePreferences')
     },
     swapLocations() {
       var tempLocation = this.fromLocation
