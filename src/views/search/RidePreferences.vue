@@ -48,7 +48,6 @@
       </v-flex>
       <v-flex xs8 lg10 pt-1>
         <v-select
-          class="testBorder"
           v-model="bagageSelected"
           :items="bagage"
           attach
