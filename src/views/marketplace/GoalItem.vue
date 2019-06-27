@@ -101,6 +101,6 @@ export default {
   border-radius: 10px;
 }
 .travel-card {
-  border-color: #ccc;
+  border-color: rgba(0, 0, 0, 0.12);
 }
 </style>
