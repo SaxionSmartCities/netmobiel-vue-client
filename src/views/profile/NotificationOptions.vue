@@ -12,7 +12,7 @@
     <v-layout column>
       <v-flex v-for="option in profileOptions" :key="option.name">
         <v-divider></v-divider>
-        <v-layout align-center mx-3>
+        <v-layout align-center mr-3>
           <v-flex>
             <p class="body-1 mb-0">{{ option.name }}</p>
           </v-flex>
@@ -35,7 +35,7 @@
     <v-layout column>
       <v-flex v-for="option in notificationOptions" :key="option.name">
         <v-divider></v-divider>
-        <v-layout align-center mx-3>
+        <v-layout align-center mr-3>
           <v-flex>
             <p class="body-1 mb-0">{{ option.name }}</p>
           </v-flex>
@@ -58,7 +58,7 @@
     <v-layout column>
       <v-flex v-for="option in reviewOptions" :key="option.name">
         <v-divider></v-divider>
-        <v-layout align-center mx-3>
+        <v-layout align-center mr-3>
           <v-flex>
             <p class="body-1 mb-0">{{ option.name }}</p>
           </v-flex>
