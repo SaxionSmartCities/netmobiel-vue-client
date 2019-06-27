@@ -75,6 +75,16 @@ body {
   align-items: center;
 }
 
+.blue-white-button {
+  color: $color-white !important;
+  background-color: $color-green !important;
+}
+
+.orange-white-button {
+  background-color: $color-orange !important;
+  color: $color-white !important;
+}
+
 // TPO: Dunno why...
 .v-btn {
   margin: 0px;

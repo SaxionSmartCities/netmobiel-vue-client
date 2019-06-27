@@ -22,25 +22,31 @@
                   <v-layout column>
                     <v-flex id="van">
                       <v-layout row>
-                        <v-flex xs3 sm2>
-                          <v-subheader class="font-weight-bold">
+                        <v-flex xs4 sm3 class="py-0">
+                          <v-subheader class="font-weight-bold py-0">
                             Van
                           </v-subheader>
                         </v-flex>
-                        <v-flex>
-                          <v-text-field v-model="fromLocation"></v-text-field>
+                        <v-flex class="py-0">
+                          <v-text-field
+                            v-model="fromLocation"
+                            class="pt-1"
+                          ></v-text-field>
                         </v-flex>
                       </v-layout>
                     </v-flex>
                     <v-flex id="naar">
                       <v-layout row>
-                        <v-flex xs3 sm2>
+                        <v-flex xs4 sm3 class="py-0">
                           <v-subheader class="font-weight-bold">
                             Naar
                           </v-subheader>
                         </v-flex>
-                        <v-flex>
-                          <v-text-field v-model="toLocation"></v-text-field>
+                        <v-flex class="py-0">
+                          <v-text-field
+                            v-model="toLocation"
+                            class="pt-1"
+                          ></v-text-field>
                         </v-flex>
                       </v-layout>
                     </v-flex>
@@ -64,20 +70,29 @@
               <v-layout>
                 <v-flex id="aankomsttijd" xs11>
                   <v-layout row>
-                    <v-flex xs4 sm2>
+                    <v-flex xs4 sm3>
                       <v-subheader class="font-weight-bold">
                         Aankomst
                       </v-subheader>
                     </v-flex>
                     <v-flex>
-                      <v-text-field value="Morgen, 10.00 uur"></v-text-field>
+                      <v-text-field
+                        value="Morgen, 10.00 uur"
+                        class="pt-1"
+                      ></v-text-field>
                     </v-flex>
                   </v-layout>
                 </v-flex>
               </v-layout>
-              <v-layout mt-2 justify-center text-xs-center>
+              <v-layout mt-1 justify-center text-xs-center>
                 <v-flex v-if="getSubmitStatus.status === 'UNSUBMITTED'">
-                  <v-btn large round block @click="submitForm()">
+                  <v-btn
+                    class="orange-white-button"
+                    large
+                    round
+                    block
+                    @click="submitForm()"
+                  >
                     Plan je reis!
                   </v-btn>
                 </v-flex>
@@ -105,7 +120,7 @@
                   @click="toRidePrefrences"
                 >
                   <v-icon>settings</v-icon>
-                  <span>Reisvoorkeuren</span>
+                  <span class="pl-1">Reisvoorkeuren</span>
                 </v-flex>
               </v-layout>
             </v-form>

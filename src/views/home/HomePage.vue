@@ -10,17 +10,23 @@
     </v-layout>
     <v-layout row wrap>
       <v-flex xs12 md6>
-        <v-btn round large block to="/search">
+        <v-btn class="orange-white-button" round large block to="/search">
           Ik wil een reis zoeken!
         </v-btn>
       </v-flex>
       <v-flex xs12 md6>
-        <v-btn round large block>
+        <v-btn class="orange-white-button" round large block>
           Ik wil een reis aanbieden!
         </v-btn>
       </v-flex>
       <v-flex xs12 md6>
-        <v-btn round large block :to="{ name: 'searchLocation' }">
+        <v-btn
+          class="orange-white-button"
+          round
+          large
+          block
+          :to="{ name: 'searchLocation' }"
+        >
           Locatie zoeken
         </v-btn>
       </v-flex>
@@ -41,10 +47,5 @@ export default {
 <style lang="scss">
 .v-btn {
   text-transform: none;
-}
-
-.theme--light.v-btn:not(.v-btn--icon):not(.v-btn--flat) {
-  background-color: $color-orange;
-  color: white;
 }
 </style>

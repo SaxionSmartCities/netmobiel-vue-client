@@ -18,7 +18,7 @@
         </v-layout>
         <v-layout justify-center
           ><v-flex xs6>
-            <v-btn round large block to="/search">
+            <v-btn class="orange-white-button" round large block to="/search">
               Plan je reis
             </v-btn></v-flex
           ></v-layout
@@ -56,10 +56,6 @@ export default {
   height: 4px;
 }
 
-.theme--light.v-btn:not(.v-btn--icon):not(.v-btn--flat) {
-  background-color: $color-orange;
-  color: white;
-}
 .no-caps {
   text-transform: none;
 }

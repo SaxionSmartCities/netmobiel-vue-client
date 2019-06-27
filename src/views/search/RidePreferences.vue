@@ -9,10 +9,11 @@
       <v-flex>
         <v-btn
           small
+          flat=""
           fab
           @click="incrementPersons(-1)"
           id="buttonMinus"
-          class="title"
+          class="blue-white-button"
           >-</v-btn
         >
       </v-flex>
@@ -30,10 +31,11 @@
       <v-flex>
         <v-btn
           small
+          flat
           fab
           @click="incrementPersons(1)"
           id="buttonPlus"
-          class="title"
+          class="blue-white-button"
           >+</v-btn
         >
       </v-flex>
@@ -46,6 +48,7 @@
       </v-flex>
       <v-flex xs8 lg10 pt-1>
         <v-select
+          class="testBorder"
           v-model="bagageSelected"
           :items="bagage"
           attach
@@ -55,21 +58,7 @@
     </v-layout>
     <v-divider></v-divider>
 
-    <v-layout>
-      <v-flex xs6 md4 lg2>
-        <v-subheader class="font-weight-bold">Overstappen</v-subheader>
-      </v-flex>
-      <v-flex xs8 lg10 pt-1>
-        <v-select
-          v-model="switchSelected"
-          attach
-          :items="overstappen"
-        ></v-select>
-      </v-flex>
-    </v-layout>
-    <v-divider></v-divider>
-
-    <v-layout>
+    <v-layout align-center>
       <v-flex xs6 md4 lg2>
         <v-subheader class="font-weight-bold">Sorteren</v-subheader>
       </v-flex>
@@ -79,7 +68,7 @@
     </v-layout>
     <v-divider></v-divider>
 
-    <v-layout justify-space-between>
+    <v-layout align-center justify-space-between>
       <v-flex xs6 md4 lg2>
         <v-subheader class="font-weight-bold">Vermijden</v-subheader>
       </v-flex>
@@ -93,9 +82,46 @@
       </v-flex>
     </v-layout>
     <v-divider></v-divider>
-    <v-layout mt-5 align-center justify-space-around row>
-      <v-btn @click="$router.push('search')">Back</v-btn>
-      <v-btn @click="save">Save</v-btn>
+
+    <v-layout align-center justify-space-between>
+      <v-flex shrink>
+        <v-subheader class="font-weight-bold">Overstappen</v-subheader>
+      </v-flex>
+      <v-flex shrink>
+        <v-switch
+          :value="switchTransfer"
+          color="#2E8997"
+          @change="setTransferChange()"
+        ></v-switch>
+      </v-flex>
+    </v-layout>
+    <v-divider></v-divider>
+
+    <v-layout justify-space-between>
+      <v-flex xs8 md4 lg2>
+        <v-subheader class="font-weight-bold">Ruimer zoeken</v-subheader>
+      </v-flex>
+      <v-flex xs4 lg10 pt-1>
+        <v-select v-model="widerSearch" :items="ruimerZoeken" attach></v-select>
+      </v-flex>
+    </v-layout>
+    <v-divider></v-divider>
+
+    <v-layout justify-space-between>
+      <v-flex xs8 md4 lg2>
+        <v-subheader class="font-weight-bold">Maximale loopafstand</v-subheader>
+      </v-flex>
+      <v-flex xs4 lg10 pt-1>
+        <v-select v-model="maxWalk" :items="maxLoop" attach></v-select>
+      </v-flex>
+    </v-layout>
+    <v-divider></v-divider>
+
+    <v-layout my-4 align-center justify-space-around row>
+      <v-btn class="blue-white-button" @click="$router.push('search')"
+        >Back</v-btn
+      >
+      <v-btn class="blue-white-button" @click="save">Save</v-btn>
     </v-layout>
   </v-container>
 </template>
@@ -106,25 +132,30 @@ export default {
   data: function() {
     return {
       //hardcoded lists, must be changed later
+      personen: 1,
       bagage: ['Buggy', 'Handbagage', 'Huisdier', 'Rollator', 'Rolstoel'],
-      overstappen: ['Ja', 'Nee'],
       sorteren: ['Reistijd', 'Prijs', 'Bekenden'],
       vermijden: ['Bus', 'Trein', 'Lopen', 'Fiets'],
-      personen: 1,
+      switchTransfer: false,
+      ruimerZoeken: ['1 uur', '2 uur', '3 uur', '4 uur', '5 uur'],
+      maxLoop: ['5 min.', '10 min.', '15 min.', '20 min.'],
 
       //selected
       passengersSelected: 1,
       bagageSelected: [],
-      switchSelected: 'Ja',
       sortSelected: 'Bekenden',
       avoidSelected: [],
+      widerSearch: '0',
+      maxWalk: '0',
     }
   },
   mounted() {
     let prefs = this.$store.getters.getRideSearchPreferences
     this.passengersSelected = prefs.passengersSelected
     this.sortSelected = prefs.sortSelected
-    this.switchSelected = prefs.switchSelected
+    this.switchTransfer = prefs.switchTransfer
+    this.widerSearch = prefs.widerSearch
+    this.maxWalk = prefs.maxWalk
     for (let i = 0; i < this.bagage.length; i++) {
       if (Object.values(prefs.bagagePrefs)[i]) {
         this.bagageSelected.push(this.bagage[i])
@@ -147,7 +178,6 @@ export default {
           walker: this.bagageSelected.indexOf(this.bagage[3]) > -1,
           wheelchair: this.bagageSelected.indexOf(this.bagage[4]) > -1,
         },
-        switchSelected: this.switchSelected,
         sortSelected: this.sortSelected,
         avoidSelected: {
           bus: this.avoidSelected.indexOf(this.vermijden[0]) > -1,
@@ -155,6 +185,10 @@ export default {
           walk: this.avoidSelected.indexOf(this.vermijden[2]) > -1,
           bike: this.avoidSelected.indexOf(this.vermijden[3]) > -1,
         },
+        switchTransfer: this.switchTransfer,
+        switchSelected: this.switchSelected,
+        widerSearch: this.widerSearch,
+        maxWalk: this.maxWalk,
       })
       this.$router.push('search')
     },
@@ -163,6 +197,13 @@ export default {
         this.personen = this.personen + i
       } else if (i === -1 && this.personen > 1)
         this.personen = this.personen + i
+    },
+    setTransferChange() {
+      if (this.switchTransfer === false) {
+        this.switchTransfer = true
+      } else {
+        this.switchTransfer = false
+      }
     },
   },
 }
@@ -173,12 +214,14 @@ export default {
   border-style: none;
 }
 
-#buttonMinus {
-  background-color: $color-green;
+#buttonPlus {
+  height: 35px !important;
+  width: 35px !important;
 }
 
-#buttonPlus {
-  background-color: $color-green;
+#buttonMinus {
+  height: 35px !important;
+  width: 35px !important;
 }
 
 #inputPersons {

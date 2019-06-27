@@ -56,7 +56,6 @@ export default new Vuex.Store({
 
       rideSearchPreferences: {
         passengersSelected: 1,
-        switchSelected: 'Ja',
         bagagePrefs: {
           buggy: false,
           handbagage: false,
@@ -64,7 +63,6 @@ export default new Vuex.Store({
           walker: false,
           wheelchair: false,
         },
-        switchVehicle: false,
         sortSelected: 'Bekenden',
         avoidSelected: {
           bus: false,
@@ -72,6 +70,9 @@ export default new Vuex.Store({
           walk: false,
           bike: false,
         },
+        switchTransfer: false,
+        widerSearch: '0',
+        maxWalk: '0',
       },
       privacySecurity: [
         { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
