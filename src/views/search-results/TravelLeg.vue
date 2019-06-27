@@ -3,7 +3,7 @@
     <v-flex>
       <v-layout>
         <v-flex shrink>
-          <v-icon class="text-primary">{{ getIcon() }}</v-icon>
+          <v-icon class="text-primary">{{ getIcon }}</v-icon>
         </v-flex>
         <v-flex v-if="leg.mode === 'NETMOBIEL'">
           <v-layout>
@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import { getIcon } from '@/utils/Utils.js'
+
 export default {
   name: 'TravelLeg',
   props: {
@@ -64,26 +66,11 @@ export default {
 
       return result
     },
-  },
-  methods: {
     getIcon: function() {
-      switch (this.leg.mode) {
-        case 'WALK':
-          return 'directions_walk'
-        case 'CAR':
-        case 'NETMOBIEL':
-          return 'directions_car'
-        case 'TRAIN':
-          return 'train'
-        case 'BUS':
-          return 'directions_bus'
-        case 'RAIL':
-          return 'directions_railway'
-        default:
-          return 'warning'
-      }
+      return getIcon(this.leg.mode)
     },
   },
+  methods: {},
 }
 </script>
 
