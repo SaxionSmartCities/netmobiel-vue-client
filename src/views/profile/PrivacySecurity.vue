@@ -30,6 +30,7 @@
           <v-flex xs1>
             <v-switch
               color="#2E8997"
+              :input-value="option.value"
               @change="setPrivacyValue(option.name, $event)"
             ></v-switch>
           </v-flex>
