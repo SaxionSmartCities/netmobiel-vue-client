@@ -98,7 +98,11 @@ export default {
     return {
       rating: 4,
       items: [
-        { icon: 'settings', name: 'Instellingen', route: '/profileNotificationOptions' },
+        {
+          icon: 'settings',
+          name: 'Instellingen',
+          route: '/profileNotificationOptions',
+        },
         { icon: 'help_outline', name: 'Veel gestelde vragen', route: '' },
         {
           icon: 'lock',
