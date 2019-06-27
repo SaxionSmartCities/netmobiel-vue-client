@@ -66,8 +66,17 @@
 
 <script>
 export default {
-  name: 'GoalIteam',
-  props: ['item', 'donatedCredits'],
+  name: 'GoalItem',
+  props: {
+    item: {
+      type: String,
+      default: '',
+    },
+    donatedCredits: {
+      type: Number,
+      default: 0,
+    },
+  },
   data: function() {
     return {
       itemObj: this.item,
