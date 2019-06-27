@@ -34,7 +34,7 @@
     </v-flex>
     <v-flex>
       <v-layout column
-        ><v-flex >
+        ><v-flex>
           <v-flex mx-3>
             <v-progress-linear
               :value="calculateProgress()"
@@ -43,7 +43,7 @@
         ><v-flex>
           <v-layout v-if="!donatedCredits" align-center row fill-height ma-3>
             <v-flex>
-              <div class="grey-text">
+              <div>
                 Nog
                 {{ itemObj.goalCredits - itemObj.currentCredits }}
                 credits
@@ -101,6 +101,6 @@ export default {
   border-radius: 10px;
 }
 .travel-card {
-  border-color: #CCC;
+  border-color: #ccc;
 }
 </style>

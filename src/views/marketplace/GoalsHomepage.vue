@@ -17,9 +17,7 @@
         ></v-text-field>
       </v-flex>
       <v-flex mb-2>
-        <h1
-          class="font-weight-bold subheading text-primary text-uppercase"
-        >
+        <h1 class="font-weight-bold subheading text-primary text-uppercase">
           Gedoneerd
         </h1>
       </v-flex>
@@ -35,9 +33,7 @@
         </v-layout>
       </v-flex>
       <v-flex mb-2 mt-4>
-        <h1
-          class="font-weight-bold subheading text-primary text-uppercase"
-        >
+        <h1 class="font-weight-bold subheading text-primary text-uppercase">
           Populair in de buurt
         </h1>
       </v-flex>
@@ -52,27 +48,24 @@
         </v-layout>
       </v-flex>
       <v-flex mb-2 mt-4>
-        <h1
-          class="font-weight-bold subheading text-primary text-uppercase"
-        >
+        <h1 class="font-weight-bold subheading text-primary text-uppercase">
           Top donateurs
         </h1>
       </v-flex>
       <v-flex>
         <v-layout column>
           <v-flex>
-            <v-list >
+            <v-list>
               <div v-for="user in userItems" :key="user.name">
-                <v-divider></v-divider>
+                <v-divider class="my-2"></v-divider>
                 <v-list-tile>
                   <v-list-tile-avatar>
-                    <img :src="user.img" />
+                    <img class="goal-homepage-img" :src="user.img" />
                   </v-list-tile-avatar>
-                  <v-spacer></v-spacer>
                   <v-list-tile-content>
-                    <v-layout column >
+                    <v-layout column>
                       <v-flex
-                        ><h4>{{ user.name }}</h4></v-flex
+                        ><div>{{ user.name }}</div></v-flex
                       >
                       <v-flex
                         ><div class="grey-text">
@@ -181,7 +174,17 @@ export default {
     max-width: 400px; /* or whatever width you want. */
   }
 }
+.v-list__tile {
+  padding: 0 0px;
+}
+.goal-homepage-img {
+  border: gray 2px;
+  padding: 3px;
+}
 .theme--light.v-text-field--outline > .v-input__control > .v-input__slot {
-  border-width: 1px !important;
+  border: 1px solid rgba(0, 0, 0, 0.54);
+}
+.v-list {
+  padding: 0px 0;
 }
 </style>
