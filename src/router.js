@@ -7,7 +7,7 @@ Vue.use(Router)
 import SplashScreen from './views/splashscreen/SplashScreen.vue'
 import ProfilePage from './views/profile/ProfilePage.vue'
 import StartRegistrationForm from './views/registration/StartRegistrationForm.vue'
-import HomePage from './views/home/HomePage.vue'
+import HomePage from './pages/HomePage.vue'
 import SearchPage from './views/search/SearchPage.vue'
 import SearchPageOptions from './views/search/RidePreferences'
 import SearchRideDate from './views/search/SearchRideDate'
