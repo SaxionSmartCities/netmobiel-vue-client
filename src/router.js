@@ -8,14 +8,14 @@ import HomePage from './pages/HomePage.vue'
 import ItineraryDetailPage from './pages/ItineraryDetailPage.vue'
 import ProfilePage from './pages/ProfilePage.vue'
 import StartRegistrationPage from './pages/StartRegistrationPage.vue'
+import SearchPage from './pages/SearchPage.vue'
+import SearchResultsPage from './pages/SearchResultsPage.vue'
 
 import SplashScreen from './views/splashscreen/SplashScreen.vue'
-import SearchPage from './views/search/SearchPage.vue'
 import SearchPageOptions from './views/search/RidePreferences'
 import SearchRideDate from './views/search/SearchRideDate'
 import SearchLocation from './views/search/SearchLocation'
 import SavedRides from './views/saved/SavedRides'
-import SearchResults from './views/search-results/SearchResults.vue'
 import TermsOfUse from './views/profile/TermsOfUse'
 import PrivacyStatement from './views/profile/PrivacyStatement'
 import PrivacySecurity from './views/profile/PrivacySecurity'
@@ -65,7 +65,7 @@ const router = new Router({
     },
     {
       path: '/searchResults',
-      component: SearchResults,
+      component: SearchResultsPage,
       name: 'searchResults',
     },
     {
