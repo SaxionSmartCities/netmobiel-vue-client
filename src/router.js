@@ -4,10 +4,12 @@ import store from './store'
 
 Vue.use(Router)
 
+import HomePage from './pages/HomePage.vue'
+import ItineraryDetailPage from './pages/ItineraryDetailPage.vue'
+
 import SplashScreen from './views/splashscreen/SplashScreen.vue'
 import ProfilePage from './views/profile/ProfilePage.vue'
 import StartRegistrationForm from './views/registration/StartRegistrationForm.vue'
-import HomePage from './pages/HomePage.vue'
 import SearchPage from './views/search/SearchPage.vue'
 import SearchPageOptions from './views/search/RidePreferences'
 import SearchRideDate from './views/search/SearchRideDate'
@@ -17,7 +19,6 @@ import SearchResults from './views/search-results/SearchResults.vue'
 import TermsOfUse from './views/profile/TermsOfUse'
 import PrivacyStatement from './views/profile/PrivacyStatement'
 import PrivacySecurity from './views/profile/PrivacySecurity'
-import ItineraryDetailPage from './views/itinerary-details/ItineraryDetailPage.vue'
 
 const router = new Router({
   mode: 'history',
