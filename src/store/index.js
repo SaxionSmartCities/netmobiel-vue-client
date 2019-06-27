@@ -19,6 +19,24 @@ export default new Vuex.Store({
         message: '',
       },
     },
+    selectedItinerary: {},
+    planningRequest: {
+      fromPlace: {
+        lat: 0.0,
+        lon: 0.0,
+      },
+      toPlace: {
+        lat: 0.0,
+        lon: 0.0,
+      },
+      submitStatus: {
+        status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
+        message: '',
+      },
+      result: {
+        data: '',
+      },
+    },
     user: {
       // Access token
       accessToken: undefined,
@@ -69,16 +87,12 @@ export default new Vuex.Store({
       footer: {
         visible: true,
       },
+      backButtonVisible: false,
     },
-    searchedLocation: { name: '', type: '' },
-    locations: [
-      { name: 'Vorden', type: 'train' },
-      { name: 'Vorden Station', type: 'train' },
-      { name: 'Vorden Centrum', type: 'train' },
-      { name: 'Vordensebeek, Zwolle', type: 'train' },
-      { name: 'Vordensebeek, Warnsveld', type: 'train' },
-      { name: 'Vorden, Kasteel Hackfort', type: 'home' },
-    ],
+    geocoder: {
+      query: '',
+      suggestions: [],
+    },
   },
   getters,
   mutations,

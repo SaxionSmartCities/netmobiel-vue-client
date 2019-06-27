@@ -1,13 +1,23 @@
 <template>
-  <v-layout header fill-height justify-end align-center></v-layout>
+  <v-layout header fill-height align-center>
+    <v-flex v-if="isBackButtonVisible" xs1 text-xs-center @click="goBack()">
+      <v-icon id="backButton">arrow_back</v-icon>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
 export default {
   name: 'Header',
+  computed: {
+    isBackButtonVisible: function() {
+      return this.$store.getters.isBackButtonVisible
+    },
+  },
   methods: {
-    // logout: function() {
-    // },
+    goBack: function() {
+      this.$router.go(-1)
+    },
   },
 }
 </script>
@@ -21,8 +31,8 @@ export default {
   background-position: center center;
 }
 
-#logout-button {
-  background-color: $color-orange;
-  color: white;
+#backButton {
+  color: $color-white;
+  font-size: 10vw;
 }
 </style>

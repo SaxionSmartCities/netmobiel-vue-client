@@ -18,6 +18,7 @@ import TermsOfUse from './views/profile/TermsOfUse'
 import PrivacyStatement from './views/profile/PrivacyStatement'
 import PrivacySecurity from './views/profile/PrivacySecurity'
 import GoalsHomepage from './views/marketplace/GoalsHomepage'
+import ItineraryDetailPage from './views/itinerary-details/ItineraryDetailPage.vue'
 
 const router = new Router({
   mode: 'history',
@@ -87,10 +88,16 @@ const router = new Router({
       component: GoalsHomepage,
       name: 'goals',
     },
+    {
+      path: '/itineraryDetailPage',
+      component: ItineraryDetailPage,
+      name: 'itineraryDetailPage',
+    },
   ],
 })
 
 router.beforeEach((to, from, next) => {
+  store.commit('hideBackButton')
   store.commit('enableFooter')
   store.commit('enableHeader')
 

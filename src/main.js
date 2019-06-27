@@ -20,8 +20,7 @@ Vue.use(VueKeyCloak, {
   init: {
     onLoad: 'check-sso',
   },
-  onReady: keycloak => {
-    console.log(`I wonder what Keycloak returns: ${keycloak}`)
+  onReady: function() {
     /* eslint-disable no-new */
     new Vue({
       store,

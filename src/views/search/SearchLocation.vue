@@ -14,17 +14,17 @@
     <v-layout>
       <v-flex xs12>
         <v-list pt-0>
-          <template v-for="(location, index) in filteredList">
+          <template v-for="(location, index) in locations">
             <v-list-tile :key="location.name" @click="completeSearch(location)">
               <v-icon class="mr-3">{{ location.type }}</v-icon>
               <v-list-tile-content class="grey--text">
                 <v-list-tile-title>
-                  <div v-html="highlight(location.name)"></div>
+                  <div v-html="location.label"></div>
                 </v-list-tile-title>
                 <v-list-tile-sub-title> </v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
-            <v-divider v-if="index + 1 < filteredList.length" :key="index">
+            <v-divider v-if="index + 1 < locations.length" :key="index">
             </v-divider>
           </template>
         </v-list>
@@ -43,22 +43,19 @@ export default {
   },
   computed: {
     locations() {
-      return this.$store.getters.getLocations
+      return this.$store.getters.getGeocoderSuggestions
     },
-    filteredList() {
-      return this.locations.filter(item => {
-        return item.name.includes(this.searchInput)
-      })
+  },
+  watch: {
+    searchInput: function(val) {
+      if (val.length > 3) {
+        this.$store.dispatch('fetchGeocoderSuggestions', val)
+      }
     },
   },
   methods: {
-    highlight(str) {
-      return str.replace(new RegExp(this.searchInput, 'gi'), match => {
-        return '<span class="font-weight-bold">' + match + '</span>'
-      })
-    },
     completeSearch(location) {
-      this.$store.commit('setSearchedLocation', location)
+      this.$store.dispatch('fetchGeocoderLocation', location.locationId)
       this.$router.go(-1)
     },
   },

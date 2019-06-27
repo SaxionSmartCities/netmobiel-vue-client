@@ -20,10 +20,18 @@ export default {
   getRideSearchPreferences: state => {
     return state.user.rideSearchPreferences
   },
-  getLocations: state => {
-    return state.locations
+  getPlanningStatus: state => {
+    return state.planningRequest.submitStatus
   },
   getPrivacySecurity: state => {
     return state.user.privacySecurity
   },
+  getItineraries: state => {
+    return state.planningRequest.result.data.itineraries
+  },
+  getGeocoderSuggestions: state => state.geocoder.suggestions,
+  isBackButtonVisible: state => {
+    return state.ui.backButtonVisible
+  },
+  getSelectedItinerary: state => state.selectedItinerary,
 }

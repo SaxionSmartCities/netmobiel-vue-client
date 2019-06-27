@@ -11,23 +11,18 @@ export default {
     state.user.fullName = decodedObject['name']
   },
   enableHeader: state => {
-    console.log('Enabling header')
     state.ui.header.visible = true
   },
   disableHeader: state => {
-    console.log('Disabling header')
     state.ui.header.visible = false
   },
   enableFooter: state => {
-    console.log('Enabling footer')
     state.ui.footer.visible = true
   },
   disableFooter: state => {
-    console.log('Enabling footer')
     state.ui.footer.visible = false
   },
   deleteAccessToken: state => {
-    console.log('Deleting access token')
     state.user.accessToken = null
   },
   incrementRegistrationStep: (state, payload) => {
@@ -55,9 +50,6 @@ export default {
   setRideSearchPreferences: (state, payload) => {
     state.user.rideSearchPreferences = payload
   },
-  setSearchedLocation: (state, payload) => {
-    state.searchedLocation = payload
-  },
   setPrivacySecurityValue: (state, payload) => {
     state.user.privacySecurity.filter(function(item) {
       if (item.name === payload.key) {
@@ -65,5 +57,38 @@ export default {
         return item
       }
     })
+  },
+  storePlanningRequest: (state, payload) => {
+    state.planningRequest.fromPlace = payload.fromPlace
+    state.planningRequest.toPlace = payload.toPlace
+  },
+  setPlanningStatus: (state, payload) => {
+    state.planningRequest.submitStatus = payload
+  },
+  setPlanningResults: (state, payload) => {
+    state.planningRequest.result = payload
+  },
+  clearPlanningResults: state => {
+    state.planningRequest.result.data = ''
+  },
+  clearPlanningRequest: state => {
+    state.planningRequest.submitStatus = {
+      status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
+      message: '',
+    }
+  },
+  sortItineraries: (state, payload) => {
+    state.planningRequest.result.data.itineraries.sort(payload)
+  },
+  setGeocoderSuggestions: (state, payload) =>
+    (state.geocoder.suggestions = payload),
+  hideBackButton: state => {
+    state.ui.backButtonVisible = false
+  },
+  showBackButton: state => {
+    state.ui.backButtonVisible = true
+  },
+  setSelectedItinerary: (state, payload) => {
+    state.selectedItinerary = payload
   },
 }

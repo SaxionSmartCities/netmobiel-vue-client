@@ -10,13 +10,30 @@ cache:
   paths:
   - node_modules/
 
-run linter:
+run development linter:
   stage: lint
+  variables:
+    NODE_ENV: "development"
+  except:
+    - master
+    - dev
   before_script:
    - npm install
   script:
     - npm run lint
 
+run production linter:
+  stage: lint
+  variables:
+    NODE_ENV: "production"
+  only:
+    - master
+    - dev
+  before_script:
+   - npm install
+  script:
+    - npm run lint
+    
 build site:
   stage: build
   script:

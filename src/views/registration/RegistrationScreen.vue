@@ -115,8 +115,6 @@ export default {
   methods: {
     submitForm: function(event) {
       event.preventDefault()
-
-      console.log('submitting form')
     },
   },
 }
