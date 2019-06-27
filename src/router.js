@@ -18,6 +18,7 @@ import TermsOfUse from './views/profile/TermsOfUse'
 import PrivacyStatement from './views/profile/PrivacyStatement'
 import PrivacySecurity from './views/profile/PrivacySecurity'
 import ItineraryDetailPage from './views/itinerary-details/ItineraryDetailPage.vue'
+import NotificationOptions from "./views/profile/NotificationOptions";
 
 const router = new Router({
   mode: 'history',
@@ -86,6 +87,11 @@ const router = new Router({
       path: '/itineraryDetailPage',
       component: ItineraryDetailPage,
       name: 'itineraryDetailPage',
+    },
+    {
+      path: '/profileNotificationOptions',
+      component: NotificationOptions,
+      name: 'notificationOptions',
     },
   ],
 })

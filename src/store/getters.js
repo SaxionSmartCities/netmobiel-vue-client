@@ -34,4 +34,13 @@ export default {
     return state.ui.backButtonVisible
   },
   getSelectedItinerary: state => state.selectedItinerary,
+  getNotificationOptions: state => {
+    return state.user.notificationOptions
+  },
+  getNotifcationProfileOptions: state => {
+    return state.user.profile
+  },
+  getReviewsOptions: state => {
+    return state.user.reviews
+  },
 }
