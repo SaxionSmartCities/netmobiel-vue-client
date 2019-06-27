@@ -17,7 +17,11 @@
         ></v-text-field>
       </v-flex>
       <v-flex mb-3>
-        <h1 class="font-weight-bold subheading mt-2 text-uppercase">Gedoneerd</h1>
+        <h1
+          class="font-weight-bold subheading my-2 text-primary text-uppercase"
+        >
+          Gedoneerd
+        </h1>
       </v-flex>
       <v-flex>
         <v-layout row class="scrolling-wrapper-flexbox">
@@ -25,13 +29,17 @@
             v-for="i in goalItems"
             :key="i.name"
             :item="i"
-            class="item"
+            class="itemlong"
             :donated-credits="i.donated"
           ></goal-item>
         </v-layout>
       </v-flex>
       <v-flex mb-3>
-        <h1 class="font-weight-bold subheading mt-2 text-uppercase">Populair in de buurt</h1>
+        <h1
+          class="font-weight-bold subheading my-2 text-primary text-uppercase"
+        >
+          Populair in de buurt
+        </h1>
       </v-flex>
       <v-flex>
         <v-layout row class="scrolling-wrapper-flexbox">
@@ -44,7 +52,11 @@
         </v-layout>
       </v-flex>
       <v-flex mb-3>
-        <h1 class="font-weight-bold subheading mt-2 text-uppercase">Top donateurs</h1>
+        <h1
+          class="font-weight-bold subheading my-2 text-primary text-uppercase"
+        >
+          Top donateurs
+        </h1>
       </v-flex>
       <v-flex>
         <v-layout column>
@@ -91,7 +103,7 @@ export default {
       title: 'Doelen',
       goalItems: [
         {
-          name: 'Renovatie Clubhuis',
+          name: 'Renovatie Clubhuis lalalalala',
           address: 'ZTV, Zieuwent',
           image:
             'https://images.pexels.com/photos/2102587/pexels-photo-2102587.jpeg?auto=format%2Ccompress&cs=tinysrgb&dpr=1&w=500',
@@ -160,9 +172,16 @@ export default {
 
   .item {
     flex: 0 0 auto;
+    width: 300px; /* or whatever width you want. */
+    max-width: 300px; /* or whatever width you want. */
+  }
+  .itemlong {
+    flex: 0 0 auto;
+    width: 400px; /* or whatever width you want. */
+    max-width: 400px; /* or whatever width you want. */
   }
 }
-.theme--light.v-text-field--outline>.v-input__control>.v-input__slot {
+.theme--light.v-text-field--outline > .v-input__control > .v-input__slot {
   border-width: 1px !important;
 }
 </style>

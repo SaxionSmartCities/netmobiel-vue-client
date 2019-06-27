@@ -104,7 +104,9 @@ export default {
     // Function to pre-determine the divions of column per leg
     calculateLegDivison: function() {
       // Calculate total travel time
-      this.totalTime = this.journey.legs.map(leg => leg.duration).reduce((a, b) => a + b)
+      this.totalTime = this.journey.legs
+        .map(leg => leg.duration)
+        .reduce((a, b) => a + b)
 
       // Calculate ratio for each leg and map it on a 1-12 scale (based on grid system)
       let ratios = []

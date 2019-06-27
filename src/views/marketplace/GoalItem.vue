@@ -3,12 +3,20 @@
     <v-flex>
       <v-layout row align-center>
         <v-flex xs4 ma-4>
-          <v-img class="rounded-image" aspect-ratio="1" :src="itemObj.image"></v-img>
+          <v-img
+            class="rounded-image"
+            aspect-ratio="1"
+            :src="itemObj.image"
+            width="80"
+            height="80"
+          ></v-img>
         </v-flex>
         <v-flex>
-          <v-layout column align-end>
-            <v-flex pr-4>
+          <v-layout column>
+            <v-flex pr-4 my-2>
               <h3>{{ itemObj.name }}</h3>
+            </v-flex>
+            <v-flex>
               <p>{{ itemObj.address }}</p>
             </v-flex>
           </v-layout>
@@ -25,31 +33,33 @@
       </v-layout>
     </v-flex>
     <v-flex>
-      <v-layout>
-        <v-flex mx-4>
-          <v-progress-linear
-            :value="calculateProgress()"
-            class="progressbar"
-          ></v-progress-linear>
-        </v-flex>
-      </v-layout>
-      <v-layout v-if="!donatedCredits" align-center ma-4>
-        <v-flex pr-1>
-          <div class="grey-text">
-            Nog
-            {{ itemObj.goalCredits - itemObj.currentCredits }}
-            credits
-          </div>
-        </v-flex>
-        <v-flex pl-1>
-          <v-btn round>Doel steunen</v-btn>
-        </v-flex>
-      </v-layout>
-      <v-layout v-else align-center column>
-        <v-flex ma-2 class="grey-text"
-          >Gedoneerd door jou :{{ donated }} Credits
-        </v-flex>
-      </v-layout>
+      <v-layout column
+        ><v-flex>
+          <v-flex mx-4>
+            <v-progress-linear
+              :value="calculateProgress()"
+              class="progressbar"
+            ></v-progress-linear> </v-flex></v-flex
+        ><v-flex>
+          <v-layout v-if="!donatedCredits" align-center row fill-height ma-4>
+            <v-flex>
+              <div class="grey-text text-xs-center">
+                Nog
+                {{ itemObj.goalCredits - itemObj.currentCredits }}
+                credits
+              </div>
+            </v-flex>
+            <v-flex xs5>
+              <v-btn round>Doel steunen</v-btn>
+            </v-flex>
+          </v-layout>
+          <v-layout v-else align-center column>
+            <v-flex ma-4 class="grey-text"
+              >Gedoneerd door jou :{{ donated }} Credits
+            </v-flex>
+          </v-layout></v-flex
+        ></v-layout
+      >
     </v-flex>
   </v-layout>
 </template>
