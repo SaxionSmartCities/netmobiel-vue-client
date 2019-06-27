@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import TravelCard from '@/views/search-results/TravelCard.vue'
+import TravelCard from '@/components/search-results/TravelCard.vue'
 
 export default {
   name: 'SearchResults',

@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import roundimg from '@/views/common/RoundImage'
+import roundimg from '@/components/utils/RoundImage.vue'
 
 export default {
   components: {

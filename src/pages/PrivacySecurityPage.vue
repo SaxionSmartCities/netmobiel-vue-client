@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     toPrivacyStatement() {
-      this.$router.push({ name: 'privacyStatement' })
+      this.$router.push('/privacyStatement')
     },
     setPrivacyValue(key, state) {
       this.$store.commit('setPrivacySecurityValue', { key: key, value: state })

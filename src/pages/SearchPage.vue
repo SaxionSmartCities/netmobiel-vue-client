@@ -144,9 +144,6 @@ export default {
     toRidePrefrences() {
       this.$router.push({ name: 'ridePreferences' })
     },
-    toSearchRideDate() {
-      this.$router.push({ name: 'searchRideDate' })
-    },
     swapLocations() {
       var tempLocation = this.fromLocation
 

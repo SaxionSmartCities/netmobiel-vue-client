@@ -7,18 +7,16 @@ Vue.use(Router)
 import HomePage from './pages/HomePage.vue'
 import ItineraryDetailPage from './pages/ItineraryDetailPage.vue'
 import LandingPage from './pages/LandingPage.vue'
+import PrivacySecurityPage from './pages/PrivacySecurityPage.vue'
+import PrivacyStatementPage from './pages/PrivacyStatementPage.vue'
 import ProfilePage from './pages/ProfilePage.vue'
+import RidePreferencesPage from './pages/RidePreferencesPage.vue'
+import SavedRidesPage from './pages/SavedRidesPage.vue'
+import SearchLocationPage from './pages/SearchLocationPage.vue'
 import SearchPage from './pages/SearchPage.vue'
 import SearchResultsPage from './pages/SearchResultsPage.vue'
 import StartRegistrationPage from './pages/StartRegistrationPage.vue'
-
-import SearchPageOptions from './views/search/RidePreferences'
-import SearchRideDate from './views/search/SearchRideDate'
-import SearchLocation from './views/search/SearchLocation'
-import SavedRides from './views/saved/SavedRides'
-import TermsOfUse from './views/profile/TermsOfUse'
-import PrivacyStatement from './views/profile/PrivacyStatement'
-import PrivacySecurity from './views/profile/PrivacySecurity'
+import TermsOfUsePage from './pages/TermsOfUsePage.vue'
 
 const router = new Router({
   mode: 'history',
@@ -50,22 +48,17 @@ const router = new Router({
     },
     {
       path: '/ridePreferences',
-      component: SearchPageOptions,
+      component: RidePreferencesPage,
       name: 'ridePreferences',
     },
     {
-      path: '/searchRideDate',
-      component: SearchRideDate,
-      name: 'searchRideDate',
-    },
-    {
       path: '/searchLocation',
-      component: SearchLocation,
+      component: SearchLocationPage,
       name: 'searchLocation',
     },
     {
       path: '/savedRides',
-      component: SavedRides,
+      component: SavedRidesPage,
       name: 'savedRides',
     },
     {
@@ -75,17 +68,17 @@ const router = new Router({
     },
     {
       path: '/termsOfUse',
-      component: TermsOfUse,
+      component: TermsOfUsePage,
       name: 'termsOfUse',
     },
     {
       path: '/privacyStatement',
-      component: PrivacyStatement,
+      component: PrivacyStatementPage,
       name: 'privacyStatement',
     },
     {
       path: '/privacySecurity',
-      component: PrivacySecurity,
+      component: PrivacySecurityPage,
       name: 'privacySecurity',
     },
     {
