@@ -87,7 +87,13 @@
               </v-layout>
               <v-layout mt-2 justify-center text-xs-center>
                 <v-flex v-if="getSubmitStatus.status === 'UNSUBMITTED'">
-                  <v-btn large round block @click="submitForm()">
+                  <v-btn
+                    :disabled="!locationsPicked"
+                    large
+                    round
+                    block
+                    @click="submitForm()"
+                  >
                     Plan je reis!
                   </v-btn>
                 </v-flex>
@@ -133,8 +139,7 @@ export default {
       pickedLocationState: 'NOTHING',
       showPicklocation: false,
       waiting: null,
-      // fromLocation: 'Enschede',
-      // toLocation: 'Deventer',
+      locationsPicked: false,
     }
   },
   computed: {
@@ -143,15 +148,16 @@ export default {
     },
     fromLocationLabel() {
       let location = this.$store.getters.getFromLocation
-      console.log(location)
 
-      return !location.address ? 'undefined' : location.address.label
+      return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
     },
     toLocationLabel() {
       let location = this.$store.getters.getToLocation
-      console.log(location)
 
-      return !location.address ? 'undefined' : location.address.label
+      return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
+    },
+    getGeocoderPickedLocations() {
+      return this.$store.getters.getGeocoderPickedLocations
     },
   },
   watch: {
@@ -162,6 +168,14 @@ export default {
           this.$router.push('/searchResults')
         }, 1500)
       }
+    },
+    getGeocoderPickedLocations: {
+      handler: function(newValue) {
+        if (newValue.from !== undefined && newValue.to !== undefined) {
+          this.locationsPicked = true
+        }
+      },
+      deep: true,
     },
   },
   methods: {
@@ -185,16 +199,6 @@ export default {
       this.toLocation = tempLocation
     },
     submitForm() {
-      // var searchQuery = {
-      //   fromPlace: {
-      //     lat: 52.219382,
-      //     lon: 6.888892,
-      //   },
-      //   toPlace: {
-      //     lat: 52.003318,
-      //     lon: 6.519264,
-      //   },
-      // }
       let pickedGeoLocations = this.$store.getters.getGeocoderPickedLocations
       let from = pickedGeoLocations.from
       let to = pickedGeoLocations.to
@@ -209,19 +213,7 @@ export default {
           lon: to.displayPosition.longitude,
         },
       }
-      // var dummyQuery = {
-      //   fromPlace: {
-      //     lat: 52.219382,
-      //     lon: 6.888892,
-      //   },
-      //   toPlace: {
-      //     lat: 52.199433,
-      //     lon: 6.635025,
-      //   },
-      // }
 
-      console.log('submit query')
-      console.log(searchQuery)
       this.$store.dispatch('submitPlanningsRequest', searchQuery)
     },
   },

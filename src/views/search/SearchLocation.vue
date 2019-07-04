@@ -36,6 +36,9 @@ export default {
       this.$router.go(-1)
     },
   },
+  mounted: function() {
+    this.$store.commit('showBackButton')
+  },
   methods: {
     completeSearch(location) {
       this.$store.dispatch('fetchGeocoderLocation', location.locationId)
