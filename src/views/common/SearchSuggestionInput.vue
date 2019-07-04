@@ -11,7 +11,8 @@
           outline
           single-line
           @click:clear="clearSearchInput"
-        ></v-text-field>
+        >
+        </v-text-field>
       </v-layout>
       <v-layout>
         <v-flex xs12>

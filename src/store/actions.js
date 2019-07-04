@@ -115,12 +115,7 @@ export default {
     axios
       .get(GEOCODER_BASE_URL)
       .then(function(resp) {
-        // TODO: Store the information in the store somewhere.
-        // Structure of the response can be found here: https://developer.here.com/documentation/geocoder/topics/resource-geocode.html
-        // eslint-disable-next-line
-        console.log(resp.data)
-        //This is the long and lat
-        let pos = resp.data.response.view[0].result[0].location.displayPosition
+        let pos = resp.data.response.view[0].result[0].location
         context.commit('setGeoLocationPicked', {
           pos: pos,
           field: payload.field,

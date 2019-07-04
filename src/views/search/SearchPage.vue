@@ -30,10 +30,10 @@
                         </v-flex>
                         <v-flex>
                           <v-text-field
-                            v-model="fromLocation"
-                            readonly
+                            :value="fromLocationLabel"
                             @click="toLocationSuggestionsPage('from')"
-                          ></v-text-field>
+                          >
+                          </v-text-field>
                         </v-flex>
                       </v-layout>
                     </v-flex>
@@ -46,10 +46,11 @@
                         </v-flex>
                         <v-flex>
                           <v-text-field
-                            v-model="toLocation"
                             readonly
+                            :value="toLocationLabel"
                             @click="toLocationSuggestionsPage('to')"
-                          ></v-text-field>
+                          >
+                          </v-text-field>
                         </v-flex>
                       </v-layout>
                     </v-flex>
@@ -132,13 +133,25 @@ export default {
       pickedLocationState: 'NOTHING',
       showPicklocation: false,
       waiting: null,
-      fromLocation: 'Enschede',
-      toLocation: 'Deventer',
+      // fromLocation: 'Enschede',
+      // toLocation: 'Deventer',
     }
   },
   computed: {
     getSubmitStatus() {
       return this.$store.getters.getPlanningStatus
+    },
+    fromLocationLabel() {
+      let location = this.$store.getters.getFromLocation
+      console.log(location)
+
+      return !location.address ? 'undefined' : location.address.label
+    },
+    toLocationLabel() {
+      let location = this.$store.getters.getToLocation
+      console.log(location)
+
+      return !location.address ? 'undefined' : location.address.label
     },
   },
   watch: {
@@ -182,17 +195,33 @@ export default {
       //     lon: 6.519264,
       //   },
       // }
+      let pickedGeoLocations = this.$store.getters.getGeocoderPickedLocations
+      let from = pickedGeoLocations.from
+      let to = pickedGeoLocations.to
+
       var searchQuery = {
         fromPlace: {
-          lat: 52.219382,
-          lon: 6.888892,
+          lat: from.displayPosition.latitude,
+          lon: from.displayPosition.longitude,
         },
         toPlace: {
-          lat: 52.199433,
-          lon: 6.635025,
+          lat: to.displayPosition.latitude,
+          lon: to.displayPosition.longitude,
         },
       }
+      // var dummyQuery = {
+      //   fromPlace: {
+      //     lat: 52.219382,
+      //     lon: 6.888892,
+      //   },
+      //   toPlace: {
+      //     lat: 52.199433,
+      //     lon: 6.635025,
+      //   },
+      // }
 
+      console.log('submit query')
+      console.log(searchQuery)
       this.$store.dispatch('submitPlanningsRequest', searchQuery)
     },
   },

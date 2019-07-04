@@ -19,6 +19,9 @@ export default {
     locations() {
       return this.$store.getters.getGeocoderSuggestions
     },
+    getGeocoderPickedLocations() {
+      return this.$store.getters.getGeocoderPickedLocations
+    },
   },
   watch: {
     searchInput: function(val) {
@@ -29,11 +32,14 @@ export default {
         }
       }
     },
+    getGeocoderPickedLocations: function() {
+      this.$router.go(-1)
+    },
   },
   methods: {
     completeSearch(location) {
       this.$store.dispatch('fetchGeocoderLocation', location.locationId)
-      this.$router.go(-1)
+      // this.$router.go(-1)
     },
     clearSearchInput() {
       this.searchInput = ''
