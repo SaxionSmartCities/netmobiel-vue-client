@@ -17,7 +17,7 @@
     </v-layout>
     <v-layout pt-3>
       <v-flex>
-        <p class="body-1 text-primary font-weight-medium">LOCATIE</p>
+        <p class="text-primary-uppercase">locatie</p>
       </v-flex>
     </v-layout>
     <v-layout column>
@@ -30,6 +30,7 @@
           <v-flex xs1>
             <v-switch
               color="#2E8997"
+              :input-value="option.value"
               @change="setPrivacyValue(option.name, $event)"
             ></v-switch>
           </v-flex>

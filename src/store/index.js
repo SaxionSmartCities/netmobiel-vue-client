@@ -78,6 +78,18 @@ export default new Vuex.Store({
         { name: 'Deel reisdata met NetMobiel', value: false },
         { name: 'Verberg mijn gegevens voor anderen', value: false },
       ],
+      profile: [{ name: 'Ik bied ritten aan', value: false }],
+      notificationOptions: [
+        { name: 'Bevestiging nieuwe reis', value: true },
+        { name: 'Wijziging bewaarde reis', value: true },
+        { name: 'Herinnering voor aanvang reis', value: false },
+        { name: 'Nieuw persoonlijke bericht', value: true },
+        { name: 'Oproepen uit de community', value: false },
+      ],
+      reviews: [
+        { name: 'Beoordeel je reis', value: true },
+        { name: 'Deel mijn reviews met anderen', value: false },
+      ],
     },
     ui: {
       registrationStep: 1,

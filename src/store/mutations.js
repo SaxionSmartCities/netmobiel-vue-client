@@ -98,4 +98,28 @@ export default {
       state.geocoder.pickedLocations.from = payload.pos
     }
   },
+  setNotificationOptionsValue: (state, payload) => {
+    state.user.notificationOptions.filter(function(item) {
+      if (item.name === payload.key) {
+        item.value = payload.value
+        return item
+      }
+    })
+  },
+  setProfileOptionsValue: (state, payload) => {
+    state.user.profile.filter(function(item) {
+      if (item.name === payload.key) {
+        item.value = payload.value
+        return item
+      }
+    })
+  },
+  setReviewOptionsValue: (state, payload) => {
+    state.user.reviews.filter(function(item) {
+      if (item.name === payload.key) {
+        item.value = payload.value
+        return item
+      }
+    })
+  },
 }

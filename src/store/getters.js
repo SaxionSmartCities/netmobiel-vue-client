@@ -34,14 +34,20 @@ export default {
     return state.ui.backButtonVisible
   },
   getSelectedItinerary: state => state.selectedItinerary,
-
   getGeocoderPickedLocations: state => state.geocoder.pickedLocations,
-
   getFromLocation: state => {
     return state.geocoder.pickedLocations.from
   },
-
   getToLocation: state => {
     return state.geocoder.pickedLocations.to
+  },
+  getNotificationOptions: state => {
+    return state.user.notificationOptions
+  },
+  getNotifcationProfileOptions: state => {
+    return state.user.profile
+  },
+  getReviewsOptions: state => {
+    return state.user.reviews
   },
 }
