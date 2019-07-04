@@ -55,7 +55,7 @@ const router = new Router({
       name: 'searchRideDate',
     },
     {
-      path: '/searchLocation',
+      path: '/searchLocation/:field',
       component: SearchLocation,
       name: 'searchLocation',
     },

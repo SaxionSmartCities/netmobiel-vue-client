@@ -105,18 +105,21 @@ export default {
         console.log(error)
       })
   },
-  fetchGeocoderLocation: (context, locationid) => {
+  fetchGeocoderLocation: (context, payload) => {
     const HERE_APP_ID = process.env.VUE_APP_HERE_APP_ID
     const HERE_APP_CODE = process.env.VUE_APP_HERE_APP_CODE
-    const GEOCODER_BASE_URL = `https://geocoder.api.here.com/6.2/geocode.json?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&locationid=${locationid}&gen=9&jsonattributes=1`
+    const GEOCODER_BASE_URL = `https://geocoder.api.here.com/6.2/geocode.json?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&locationid=${
+      payload.locationId
+    }&gen=9&jsonattributes=1`
 
     axios
       .get(GEOCODER_BASE_URL)
       .then(function(resp) {
-        // TODO: Store the information in the store somewhere.
-        // Structure of the response can be found here: https://developer.here.com/documentation/geocoder/topics/resource-geocode.html
-        // eslint-disable-next-line
-        console.log(resp.data)
+        let pos = resp.data.response.view[0].result[0].location
+        context.commit('setGeoLocationPicked', {
+          pos: pos,
+          field: payload.field,
+        })
       })
       .catch(function(error) {
         // TODO: Proper error handling.

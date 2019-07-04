@@ -104,6 +104,10 @@ export default new Vuex.Store({
     geocoder: {
       query: '',
       suggestions: [],
+      pickedLocations: {
+        to: { address: undefined, displayPosition: undefined },
+        from: { address: undefined, displayPosition: undefined },
+      },
     },
   },
   getters,

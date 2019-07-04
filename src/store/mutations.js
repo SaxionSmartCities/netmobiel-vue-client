@@ -91,6 +91,13 @@ export default {
   setSelectedItinerary: (state, payload) => {
     state.selectedItinerary = payload
   },
+  setGeoLocationPicked: (state, payload) => {
+    if (payload.field === 'to') {
+      state.geocoder.pickedLocations.to = payload.pos
+    } else if (payload.field === 'from') {
+      state.geocoder.pickedLocations.from = payload.pos
+    }
+  },
   setNotificationOptionsValue: (state, payload) => {
     state.user.notificationOptions.filter(function(item) {
       if (item.name === payload.key) {

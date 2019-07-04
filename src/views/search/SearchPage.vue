@@ -1,5 +1,6 @@
 <template>
   <v-container
+    v-if="!showPicklocation"
     align-center
     justify-center
     fill-height
@@ -28,7 +29,11 @@
                           </v-subheader>
                         </v-flex>
                         <v-flex>
-                          <v-text-field v-model="fromLocation"></v-text-field>
+                          <v-text-field
+                            :value="fromLocationLabel"
+                            @click="toLocationSuggestionsPage('from')"
+                          >
+                          </v-text-field>
                         </v-flex>
                       </v-layout>
                     </v-flex>
@@ -40,7 +45,12 @@
                           </v-subheader>
                         </v-flex>
                         <v-flex>
-                          <v-text-field v-model="toLocation"></v-text-field>
+                          <v-text-field
+                            readonly
+                            :value="toLocationLabel"
+                            @click="toLocationSuggestionsPage('to')"
+                          >
+                          </v-text-field>
                         </v-flex>
                       </v-layout>
                     </v-flex>
@@ -77,7 +87,13 @@
               </v-layout>
               <v-layout mt-2 justify-center text-xs-center>
                 <v-flex v-if="getSubmitStatus.status === 'UNSUBMITTED'">
-                  <v-btn large round block @click="submitForm()">
+                  <v-btn
+                    :disabled="!locationsPicked"
+                    large
+                    round
+                    block
+                    @click="submitForm()"
+                  >
                     Plan je reis!
                   </v-btn>
                 </v-flex>
@@ -120,14 +136,28 @@
 export default {
   data: function() {
     return {
+      pickedLocationState: 'NOTHING',
+      showPicklocation: false,
       waiting: null,
-      fromLocation: 'Enschede',
-      toLocation: 'Deventer',
+      locationsPicked: false,
     }
   },
   computed: {
     getSubmitStatus() {
       return this.$store.getters.getPlanningStatus
+    },
+    fromLocationLabel() {
+      let location = this.$store.getters.getFromLocation
+
+      return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
+    },
+    toLocationLabel() {
+      let location = this.$store.getters.getToLocation
+
+      return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
+    },
+    getGeocoderPickedLocations() {
+      return this.$store.getters.getGeocoderPickedLocations
     },
   },
   watch: {
@@ -139,13 +169,28 @@ export default {
         }, 1500)
       }
     },
+    getGeocoderPickedLocations: {
+      handler: function(newValue) {
+        if (newValue.from !== undefined && newValue.to !== undefined) {
+          this.locationsPicked = true
+        }
+      },
+      deep: true,
+    },
   },
   methods: {
+    showPickLocationView(fieldPressed) {
+      this.showPicklocation = true
+      this.pickedLocationState = fieldPressed
+    },
     toRidePrefrences() {
       this.$router.push({ name: 'ridePreferences' })
     },
     toSearchRideDate() {
       this.$router.push({ name: 'searchRideDate' })
+    },
+    toLocationSuggestionsPage(field) {
+      this.$router.push({ name: 'searchLocation', params: { field: field } })
     },
     swapLocations() {
       var tempLocation = this.fromLocation
@@ -154,24 +199,18 @@ export default {
       this.toLocation = tempLocation
     },
     submitForm() {
-      // var searchQuery = {
-      //   fromPlace: {
-      //     lat: 52.219382,
-      //     lon: 6.888892,
-      //   },
-      //   toPlace: {
-      //     lat: 52.003318,
-      //     lon: 6.519264,
-      //   },
-      // }
+      let pickedGeoLocations = this.$store.getters.getGeocoderPickedLocations
+      let from = pickedGeoLocations.from
+      let to = pickedGeoLocations.to
+
       var searchQuery = {
         fromPlace: {
-          lat: 52.219382,
-          lon: 6.888892,
+          lat: from.displayPosition.latitude,
+          lon: from.displayPosition.longitude,
         },
         toPlace: {
-          lat: 52.199433,
-          lon: 6.635025,
+          lat: to.displayPosition.latitude,
+          lon: to.displayPosition.longitude,
         },
       }
 
