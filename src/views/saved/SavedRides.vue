@@ -2,7 +2,7 @@
   <div>
     <v-tabs id="tabs" grow centered slider-color="#bddade">
       <v-tab class="white--text no-caps" @click="geplandClick">Gepland</v-tab>
-      <v-tab class="white--text no-caps" @click="archiefClick">Archief</v-tab>
+      <v-tab class="white--text no-caps" @click="archiefClick">Gezocht</v-tab>
     </v-tabs>
     <div>
       <v-container fluid>
@@ -16,7 +16,14 @@
             </div>
           </v-flex>
         </v-layout>
-        <v-layout justify-center
+        <v-layout v-if="archief === false" justify-center
+          ><v-flex xs6>
+            <v-btn round large block to="/search">
+              Plan je reis
+            </v-btn></v-flex
+          ></v-layout
+        >
+        <v-layout v-else justify-center
           ><v-flex xs6>
             <v-btn round large block to="/search">
               Plan je reis

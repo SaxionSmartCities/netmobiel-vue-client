@@ -17,8 +17,8 @@
         </v-btn>
 
         <v-btn flat value="saved" to="/savedRides">
-          <span>Bewaard</span>
-          <v-icon>favorite</v-icon>
+          <span>Ritten</span>
+          <v-icon>drive_eta</v-icon>
         </v-btn>
 
         <!-- <v-btn flat value="community">
