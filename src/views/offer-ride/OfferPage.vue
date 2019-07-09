@@ -96,9 +96,8 @@
                         </v-flex>
                         <v-flex>
                           <v-text-field
-                            class="text-truncate"
                             readonly
-                            :placeholder="
+                            :value="
                               $store.getters.getRideOfferPreferences.repeat
                             "
                             @click="$router.push('repeatSelection')"
