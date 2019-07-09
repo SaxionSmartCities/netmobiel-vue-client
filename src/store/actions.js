@@ -145,4 +145,42 @@ export default {
         console.log(error)
       })
   },
+  fetchMultiReverseGeocoderLocation: (context, payload) => {
+    //The payload will get an array of objects with {lat: ..., long: ... }
+    const HERE_APP_ID = process.env.VUE_APP_HERE_APP_ID
+    const HERE_APP_CODE = process.env.VUE_APP_HERE_APP_CODE
+    const GEOCODER_BASE_URL = `https://reverse.geocoder.api.here.com/6.2/multi-reversegeocode.json`
+
+    let body = 'id=1&prox=52.5309,13.3845,50'
+    console.log('payload: ', payload)
+    //
+    // for (let i = 0; i < payload.length; i++) {
+    //   let string = '' + payload[i].lat + ',' + payload[i].lon
+    //   body.push({ id: i, prox: string })
+    // }
+
+    console.log('now got this body =', body)
+
+    axios({
+      method: 'post',
+      url: GEOCODER_BASE_URL,
+      params: {
+        app_id: HERE_APP_ID,
+        app_code: HERE_APP_CODE,
+        gen: 9,
+        mode: 'retrieveAddresses',
+      },
+      data: body,
+      headers: { 'Content-Type': 'plain/text' },
+    })
+      .then(function(response) {
+        //handle success
+        console.log('This is the multi:::')
+        console.log(response)
+      })
+      .catch(function(response) {
+        //handle error
+        console.log(response)
+      })
+  },
 }
