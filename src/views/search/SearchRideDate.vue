@@ -2,10 +2,10 @@
   <v-container fluid>
     <v-layout column wrap>
       <v-flex>
-        <v-subheader class="headline">Aankomst</v-subheader>
-        <v-subheader id="subheaderDate" class="text-uppercase body-2"
-          >Datum</v-subheader
-        >
+        <!-- <v-subheader class="headline">Aankomst</v-subheader> -->
+        <v-subheader id="subheaderDate" class="text-uppercase body-2">
+          Datum
+        </v-subheader>
       </v-flex>
       <v-flex>
         <v-date-picker
@@ -14,16 +14,17 @@
           color="background-orange"
           locale="nl"
           full-width
-        ></v-date-picker>
+        >
+        </v-date-picker>
       </v-flex>
 
       <v-flex>
-        <v-subheader id="subheaderTime" class="text-uppercase body-2"
-          >Tijd</v-subheader
-        >
+        <v-subheader id="subheaderTime" class="text-uppercase body-2">
+          Tijd
+        </v-subheader>
       </v-flex>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <v-flex>
         <v-layout class="timeContainer">
@@ -51,7 +52,7 @@
       <v-flex>
         <v-layout align-end justify-center>
           <v-btn class="ma-3" round large block @click="submitForm($event)">
-            Kies!
+            Bevestig tijd
           </v-btn>
         </v-layout>
       </v-flex>
@@ -70,7 +71,7 @@ export default {
       date: new Date().toISOString().substr(0, 10),
       list: 48,
       laterThenCurrentTime: false,
-      toggle_exclusive: 1,
+      toggle_exclusive: 0,
     }
   },
   methods: {
@@ -99,16 +100,16 @@ export default {
       var currentDate = moment()
       var clickedDate = this.setTime(i)
 
-      let time = false
+      let validTime = false
       if (clickedDate > currentDate) {
-        time = true
+        validTime = true
 
         if (this.toggle_exclusive === 1) {
           this.toggle_exclusive = i
         }
       }
 
-      return time
+      return validTime
     },
     setTime(index) {
       var sum = index * 0.5
@@ -124,7 +125,7 @@ export default {
       }
       var time = hour + ':' + minute
       var dateTime = this.date + ', ' + time
-      return moment(dateTime, 'YYYY-MM-DD, HH:mm')._d
+      return moment(dateTime, 'YYYY-MM-DD, HH:mm')
     },
     submitForm: function(event) {
       var myDate = this.setTime(this.toggle_exclusive)

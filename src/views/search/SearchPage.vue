@@ -113,17 +113,22 @@ export default {
     return {
       fromLocation: 'Enschede',
       toLocation: 'Deventer',
-      dateRide: undefined,
     }
   },
-  created() {
-    var date = this.$store.getters.getSearchRideDate
-    if (date !== undefined) {
-      var formattedDate = moment(date)
-        .format('dddd, DD MMMM HH:mm')
-        .locale('nl')
-      this.dateRide = formattedDate
-    }
+  computed: {
+    dateRide: function() {
+      let date = this.$store.getters.getSearchRideDate
+
+      if (date !== undefined) {
+        return moment(date)
+          .locale('nl')
+          .format('dddd, DD MMMM HH:mm')
+      } else {
+        return moment()
+          .locale('nl')
+          .format('dddd, DD MMMM HH:mm')
+      }
+    },
   },
   methods: {
     toRidePreferences() {
