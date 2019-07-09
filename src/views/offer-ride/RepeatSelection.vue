@@ -79,7 +79,9 @@ export default {
   methods: {
     radioChange: function(n) {
       if (n !== 'Aangepast...') {
-        this.$store.commit('setRideOfferPreferencesRepeat', n)
+        this.$store.commit('setRideOfferPreferencesRepeat', {
+          repeat: n,
+        })
       } else {
         this.custom = true
       }
@@ -92,7 +94,7 @@ export default {
           result += ', '
         }
       }
-      this.$store.commit('setRideOfferPreferencesRepeat', result)
+      this.$store.commit('setRideOfferPreferencesRepeat', { repeat: result })
     },
   },
 }
