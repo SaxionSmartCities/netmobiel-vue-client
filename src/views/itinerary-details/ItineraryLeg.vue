@@ -87,17 +87,8 @@ export default {
       switch (this.leg.mode) {
         case 'WALK':
           console.log(this.leg)
-          return 'Lopen van ergens, naar ergens anders'
-        // return (
-        //   'Vanaf ' +
-        //   this.leg.from.lat +
-        //   ' ' +
-        //   this.leg.from.lon +
-        //   ' naar ' +
-        //   this.leg.to.lat +
-        //   ' ' +
-        //   this.leg.to.lon
-        // )
+          // return 'Lopen van ergens, naar ergens anders'
+          return 'Vanaf ' + this.leg.from.name + ' naar ' + this.leg.to.name
         case 'CAR':
         case 'NETMOBIEL':
           return 'Meerijden met een NETMOBIEL gebruiker'
