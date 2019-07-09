@@ -12,7 +12,9 @@ import SearchPage from './views/search/SearchPage.vue'
 import SearchPageOptions from './views/search/RidePreferences'
 import SearchRideDate from './views/search/SearchRideDate'
 import SearchLocation from './views/search/SearchLocation'
-import SavedRides from './views/saved/SavedRides'
+import SavedRidesPassenger from './views/saved/SavedRidesPassenger'
+import SavedRidesDriver from './views/saved/SavedRidesDriver'
+
 import SearchResults from './views/search-results/SearchResults.vue'
 import TermsOfUse from './views/profile/TermsOfUse'
 import PrivacyStatement from './views/profile/PrivacyStatement'
@@ -20,6 +22,8 @@ import PrivacySecurity from './views/profile/PrivacySecurity'
 import GoalsHomepage from './views/marketplace/GoalsHomepage'
 import ItineraryDetailPage from './views/itinerary-details/ItineraryDetailPage.vue'
 import NotificationOptions from './views/profile/NotificationOptions'
+import OfferPage from './views/offer-ride/OfferPage'
+import RepeatSelection from './views/offer-ride/RepeatSelection'
 
 const router = new Router({
   mode: 'history',
@@ -60,9 +64,14 @@ const router = new Router({
       name: 'searchLocation',
     },
     {
-      path: '/savedRides',
-      component: SavedRides,
-      name: 'savedRides',
+      path: '/savedRidesPassenger',
+      component: SavedRidesPassenger,
+      name: 'savedRidesPassenger',
+    },
+    {
+      path: '/savedRidesDriver',
+      component: SavedRidesDriver,
+      name: 'savedRidesDriver',
     },
     {
       path: '/searchResults',
@@ -98,6 +107,16 @@ const router = new Router({
       path: '/profileNotificationOptions',
       component: NotificationOptions,
       name: 'notificationOptions',
+    },
+    {
+      path: '/offerpage',
+      component: OfferPage,
+      name: 'offerPage',
+    },
+    {
+      path: '/repeatselection',
+      component: RepeatSelection,
+      name: 'repeatselection',
     },
   ],
 })

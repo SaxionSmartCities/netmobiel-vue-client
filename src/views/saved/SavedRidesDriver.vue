@@ -18,14 +18,14 @@
         </v-layout>
         <v-layout v-if="archief === false" justify-center
           ><v-flex xs6>
-            <v-btn round large block to="/search">
+            <v-btn round large block to="/offerPage">
               Plan je reis
             </v-btn></v-flex
           ></v-layout
         >
         <v-layout v-else justify-center
           ><v-flex xs6>
-            <v-btn round large block to="/search">
+            <v-btn round large block>
               Plan je reis
             </v-btn></v-flex
           ></v-layout

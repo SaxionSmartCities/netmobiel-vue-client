@@ -11,21 +11,15 @@
           <v-icon>home</v-icon>
         </v-btn>
 
-        <v-btn flat value="plan-trip" to="/search">
-          <span>Reis plannen</span>
+        <v-btn flat value="plan-trip" to="/savedRidesPassenger">
+          <span>Reizen</span>
           <v-icon>commute</v-icon>
         </v-btn>
 
-        <v-btn flat value="saved" to="/savedRides">
+        <v-btn flat value="saved" to="/savedRidesDriver">
           <span>Ritten</span>
           <v-icon>drive_eta</v-icon>
         </v-btn>
-
-        <!-- <v-btn flat value="community">
-          <span>Community</span>
-          <v-icon>chat</v-icon>
-        </v-btn>
-        -->
 
         <v-btn flat value="profile" @click="$router.push('/profile')">
           <span>Profiel</span>
