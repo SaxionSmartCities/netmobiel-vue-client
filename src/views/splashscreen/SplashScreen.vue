@@ -7,12 +7,18 @@
     </v-layout>
     <v-layout row wrap mt-5>
       <v-flex xs12 md6>
-        <v-btn round large block @click="$keycloak.loginFn()">
+        <v-btn
+          class="orange-white-button"
+          round
+          large
+          block
+          @click="$keycloak.loginFn()"
+        >
           Login
         </v-btn>
       </v-flex>
       <v-flex xs12 md6>
-        <v-btn round large block to="/createUser">
+        <v-btn class="orange-white-button" round large block to="/createUser">
           Registreren
         </v-btn>
       </v-flex>
