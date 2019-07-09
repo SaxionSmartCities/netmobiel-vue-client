@@ -106,8 +106,7 @@
 </template>
 
 <script>
-// import moment from 'moment'
-import moment from 'moment-with-locales-es6'
+import moment from 'moment'
 
 export default {
   data: function() {
@@ -120,8 +119,9 @@ export default {
   created() {
     var date = this.$store.getters.getSearchRideDate
     if (date !== undefined) {
-      moment.locale('nl')
-      var formattedDate = moment(date).format('dddd, DD MMMM HH:mm')
+      var formattedDate = moment(date)
+        .format('dddd, DD MMMM HH:mm')
+        .locale('nl')
       this.dateRide = formattedDate
     }
   },
