@@ -96,7 +96,7 @@
                         </v-flex>
                         <v-flex>
                           <v-text-field
-                            v-model="repeat"
+                            class="text-truncate"
                             readonly
                             :placeholder="
                               $store.getters.getRideOfferPreferences.repeat

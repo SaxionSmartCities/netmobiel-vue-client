@@ -23,21 +23,17 @@
       </v-flex>
       <v-flex> <v-divider></v-divider> </v-flex>
       <v-flex>
-        <v-radio-group v-model="radioGroup">
-          <v-radio
-            v-for="n in customChoices"
-            :key="n"
-            :label="n"
-            :value="n"
-            @change="radioChangeCustom(n)"
-          ></v-radio>
-        </v-radio-group>
-        <fieldset>
-          <legend>Please select one of the following</legend>
-          <input type="radio" name="action" id="track" value="track" /><label for="track">Track Submission</label><br />
-          <input type="radio" name="action" id="event" value="event"  /><label for="event">Events and Artist booking</label><br />
-          <input type="radio" name="action" id="message" value="message" /><label for="message">Message us</label><br />
-        </fieldset>
+        <v-layout column>
+          <v-flex v-for="n in customChoices" :key="n">
+            <v-checkbox
+              v-model="choiceCustom"
+              class="checkboxDaySelect"
+              :label="n"
+              :value="n"
+              @change="checkboxOnClick"
+            ></v-checkbox>
+          </v-flex>
+        </v-layout>
       </v-flex>
     </v-layout> </v-container
 ></template>
@@ -49,7 +45,7 @@ export default {
     return {
       test: '',
       radioGroup: this.$store.getters.getRideOfferPreferences.repeat,
-      radioGroupCustom: [],
+      choiceCustom: [],
       custom: false,
       choices: [
         'Eenmalig',
@@ -59,7 +55,7 @@ export default {
         'Elk weekend',
         'Elke twee weken',
         'Elke maand',
-        // 'Aangepast...',
+        'Aangepast...',
       ],
       customChoices: [
         'Maandag',
@@ -88,9 +84,24 @@ export default {
         this.custom = true
       }
     },
-    radioChangeCustom: function(n) {},
+    checkboxOnClick: function() {
+      let result = ''
+      for (let i = 0; i < this.choiceCustom.length; i++) {
+        result += this.choiceCustom[i]
+        if (i !== this.choiceCustom.length - 1) {
+          result += ', '
+        }
+      }
+      this.$store.commit('setRideOfferPreferencesRepeat', result)
+    },
   },
 }
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.checkboxDaySelect {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+}
+</style>
