@@ -110,8 +110,14 @@
               </v-layout>
               <v-layout mt-2 justify-center text-xs-center>
                 <v-flex>
-                  <v-btn large round block>
-                    Plan je reis!
+                  <v-btn
+                    class="orange-white-button"
+                    large
+                    round
+                    block
+                    :to="{ name: 'offerRideOptions' }"
+                  >
+                    Verder
                   </v-btn>
                 </v-flex>
               </v-layout>
