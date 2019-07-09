@@ -127,4 +127,22 @@ export default {
         console.log(error)
       })
   },
+  fetchReverseGeocoderLocation: (context, payload) => {
+    const HERE_APP_ID = process.env.VUE_APP_HERE_APP_ID
+    const HERE_APP_CODE = process.env.VUE_APP_HERE_APP_CODE
+    const GEOCODER_BASE_URL = `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&gen=9&jsonattributes=1&prox=${
+      payload.lat
+    },${payload.lon}&mode=retrieveAddresses`
+
+    axios
+      .get(GEOCODER_BASE_URL)
+      .then(function(res) {
+        console.log(res)
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
 }
