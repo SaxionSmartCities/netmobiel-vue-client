@@ -2,7 +2,7 @@
   <v-container>
     <v-layout column>
       <v-flex>
-        <v-layout>
+        <v-layout column>
           <v-flex
             ><h2>
               Rit gepland!
@@ -18,8 +18,8 @@
         </v-layout>
       </v-flex>
       <v-flex>
-        <v-layout wrap>
-          <v-flex>
+        <v-layout wrap column>
+          <v-flex my-2>
             <v-btn
               round
               block
@@ -29,12 +29,12 @@
               >Bekijk geplande ritten
             </v-btn>
           </v-flex>
-          <v-flex>
+          <v-flex my-2>
             <v-btn
               large
               round
               block
-              class="blue-white-button"
+              class="blue-outlined-button"
               @click="$store.commit('setRideApprovalDialog', { show: false })"
               >Plan een nieuwe rit
             </v-btn>
