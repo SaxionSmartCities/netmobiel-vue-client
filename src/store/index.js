@@ -73,6 +73,9 @@ export default new Vuex.Store({
           bike: false,
         },
       },
+      rideOfferPreferences: {
+        repeat: 'Eenmalig',
+      },
       privacySecurity: [
         { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
         { name: 'Deel reisdata met NetMobiel', value: false },

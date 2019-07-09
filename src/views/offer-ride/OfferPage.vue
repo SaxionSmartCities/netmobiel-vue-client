@@ -98,7 +98,9 @@
                           <v-text-field
                             v-model="repeat"
                             readonly
-                            placeholder="Eenmalig"
+                            :placeholder="
+                              $store.getters.getRideOfferPreferences.repeat
+                            "
                             @click="$router.push('repeatSelection')"
                           ></v-text-field>
                         </v-flex>
