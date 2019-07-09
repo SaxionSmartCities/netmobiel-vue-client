@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-layout>
+    <v-layout column>
       <v-flex>
         <v-layout>
           <v-flex
@@ -18,13 +18,32 @@
         </v-layout>
       </v-flex>
       <v-flex>
-        <v-layout>
-          <v-flex></v-flex>
-          <v-flex></v-flex>
+        <v-layout wrap>
+          <v-flex>
+            <v-btn
+              round
+              block
+              large
+              class="orange-white-button"
+              @click="$store.commit('setRideApprovalDialog', { show: false })"
+              >Bekijk geplande ritten
+            </v-btn>
+          </v-flex>
+          <v-flex>
+            <v-btn
+              large
+              round
+              block
+              class="blue-white-button"
+              @click="$store.commit('setRideApprovalDialog', { show: false })"
+              >Plan een nieuwe rit
+            </v-btn>
+          </v-flex>
         </v-layout>
       </v-flex>
-    </v-layout> </v-container
-></template>
+    </v-layout>
+  </v-container></template
+>
 
 <script>
 export default {

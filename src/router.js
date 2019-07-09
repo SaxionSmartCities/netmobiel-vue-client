@@ -22,9 +22,10 @@ import PrivacySecurity from './views/profile/PrivacySecurity'
 import GoalsHomepage from './views/marketplace/GoalsHomepage'
 import ItineraryDetailPage from './views/itinerary-details/ItineraryDetailPage.vue'
 import NotificationOptions from './views/profile/NotificationOptions'
-import OfferRideOptions from "./views/offer-ride/OfferRideOptions";
+import OfferRideOptions from './views/offer-ride/OfferRideOptions'
 import OfferPage from './views/offer-ride/OfferPage'
 import RepeatSelection from './views/offer-ride/RepeatSelection'
+import RidePlanned from './views/offer-ride/RidePlanned'
 
 const router = new Router({
   mode: 'history',
@@ -122,7 +123,12 @@ const router = new Router({
     {
       path: '/repeatselection',
       component: RepeatSelection,
-      name: 'repeatselection',
+      name: 'repeatSelection',
+    },
+    {
+      path: '/ridePlanned',
+      component: RidePlanned,
+      name: 'ridePlanned',
     },
   ],
 })
