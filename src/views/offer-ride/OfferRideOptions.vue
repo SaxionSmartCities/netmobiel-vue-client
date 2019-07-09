@@ -25,6 +25,7 @@
                 </v-flex>
                 <v-flex xs3 md1 lg1 xl1 class="mt-2">
                   <v-text-field
+                    readonly
                     class="font-weight-bold"
                     id="inputPersons"
                     v-model="personen"
@@ -69,8 +70,22 @@
                 </v-radio-group>
               </v-layout>
 
-              <v-layout justify-center align-center ma-1 v-if="step === 4">
-                <p>test4</p>
+              <v-layout justify-center align-center my-1 v-if="step === 4">
+                <v-flex>
+                  <v-layout row>
+                    <v-flex xs5 sm2>
+                      <v-subheader class="font-weight-bold">
+                        Kenteken
+                      </v-subheader>
+                    </v-flex>
+                    <v-flex>
+                      <v-text-field
+                        class="pb-0 pt-1 body-2"
+                        placeholder="Geef uw kenteken op"
+                      ></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
               </v-layout>
 
               <v-layout
@@ -152,6 +167,7 @@ export default {
     goStepBack() {
       if (this.step !== 1) {
         this.step--
+        this.buttonText = 'Volgende'
       } else {
         this.$router.push({ name: 'offerPage' })
       }
@@ -168,4 +184,8 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+#inputPersons {
+  text-align: center;
+}
+</style>
