@@ -24,6 +24,11 @@
           Locatie zoeken
         </v-btn>
       </v-flex>
+      <v-flex>
+        <v-btn round large block :to="{ name: 'offerRideOptions' }">
+          jojojo
+        </v-btn>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
