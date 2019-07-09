@@ -147,6 +147,8 @@ export default {
   },
   fetchMultiReverseGeocoderLocation: (context, payload) => {
     //The payload will get an array of objects with {lat: ..., long: ... }
+    // https://developer.here.com/documentation/geocoder/topics/resource-multi-reverse-geocode.html
+    // https://developer.here.com/api-explorer/rest/geocoder/multi-reverse-geocode
     const HERE_APP_ID = process.env.VUE_APP_HERE_APP_ID
     const HERE_APP_CODE = process.env.VUE_APP_HERE_APP_CODE
     const GEOCODER_BASE_URL = `https://reverse.geocoder.api.here.com/6.2/multi-reversegeocode.json`
