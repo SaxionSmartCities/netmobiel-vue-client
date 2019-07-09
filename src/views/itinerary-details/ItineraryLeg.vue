@@ -86,6 +86,7 @@ export default {
     description: function() {
       switch (this.leg.mode) {
         case 'WALK':
+          console.log(this.leg)
           return 'Lopen van ergens, naar ergens anders'
         // return (
         //   'Vanaf ' +
