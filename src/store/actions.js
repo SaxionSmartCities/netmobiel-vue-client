@@ -133,7 +133,7 @@ export default {
     const GEOCODER_BASE_URL = `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&gen=9&jsonattributes=1&prox=${
       payload.lat
     },${payload.lon}&mode=retrieveAddresses`
-    
+
     axios
       .get(GEOCODER_BASE_URL)
       .then(function(res) {
