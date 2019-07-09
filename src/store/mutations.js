@@ -122,4 +122,7 @@ export default {
       }
     })
   },
+  setRideOfferPreferencesRepeat: (state, payload) => {
+    state.user.rideOfferPreferences.repeat = payload
+  },
 }

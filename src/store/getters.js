@@ -50,4 +50,7 @@ export default {
   getReviewsOptions: state => {
     return state.user.reviews
   },
+  getRideOfferPreferences: state => {
+    return state.user.rideOfferPreferences
+  },
 }
