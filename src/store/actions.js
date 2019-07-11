@@ -127,4 +127,35 @@ export default {
         console.log(error)
       })
   },
+  getLicenseInfo: (context, payload) => {
+    const BASE_URL = 'https://opendata.rdw.nl/resource/m9d7-ebf2.json?kenteken='
+    var axiosConfig = {
+      method: 'GET',
+      url: BASE_URL + payload,
+    }
+    axios(axiosConfig)
+      .then(function(response) {
+        let filteredResult
+        if (response.data.length > 0) {
+          filteredResult = {
+            license: response.data[0].kenteken,
+            brand: response.data[0].merk,
+            model: response.data[0].handelsbenaming,
+            color: response.data[0].eerste_kleur,
+          }
+        } else {
+          filteredResult = {
+            license: 'niet gevonden',
+            brand: 'niet gevonden',
+            model: 'niet gevonden',
+            color: 'niet gevonden',
+          }
+        }
+
+        context.commit('setCarInfo', filteredResult)
+      })
+      .catch(function(error) {
+        console.log(error)
+      })
+  },
 }

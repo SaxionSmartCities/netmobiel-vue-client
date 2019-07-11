@@ -151,15 +151,6 @@ export default {
       optionsSetted: true,
     }
   },
-  methods: {
-    swapLocations() {
-      let to = this.$store.getters.getToOfferLocation
-      this.$store.commit('setToOfferLocation', {
-        name: this.$store.getters.getFromOfferLocation,
-      })
-      this.$store.commit('setFromOfferLocation', { name: to })
-    },
-  },
   created() {
     const rideOffer = Object.values(this.$store.getters.getRideOfferPreferences)
     for (let i = 0; i < rideOffer.length; i++) {
@@ -168,6 +159,15 @@ export default {
         break
       }
     }
+  },
+  methods: {
+    swapLocations() {
+      let to = this.$store.getters.getToOfferLocation
+      this.$store.commit('setToOfferLocation', {
+        name: this.$store.getters.getFromOfferLocation,
+      })
+      this.$store.commit('setFromOfferLocation', { name: to })
+    },
   },
 }
 </script>

@@ -48,18 +48,18 @@
                 </v-flex>
               </v-layout>
 
-              <v-layout column ma-1 v-if="step === 2">
+              <v-layout v-if="step === 2" column ma-1>
                 <v-flex
                   v-for="luggage in luggageList"
                   :key="luggage"
                   :label="luggage"
                 >
                   <v-checkbox
+                    id="checkbox"
                     v-model="luggageChoice"
                     class="checkboxDaySelect"
                     :label="luggage"
                     :value="luggage"
-                    id="checkbox"
                     @change="checkboxLuggageOnClick"
                   ></v-checkbox>
                 </v-flex>
@@ -86,9 +86,41 @@
                       </v-subheader>
                     </v-flex>
                     <v-flex>
+                      <v-form ref="form">
+                        <v-text-field
+                          v-model="kenteken"
+                          :rules="licenseRules"
+                          class="pb-0 pt-1 body-2"
+                          placeholder="Geef uw kenteken op"
+                        ></v-text-field>
+                      </v-form>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+
+              <v-layout v-if="step > 4" justify-center align-center my-1>
+                <v-flex>
+                  <v-layout column>
+                    <v-flex>
                       <v-text-field
+                        :value="this.$store.getters.getCarInfo.brand"
+                        label="Merk "
                         class="pb-0 pt-1 body-2"
-                        placeholder="Geef uw kenteken op"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex>
+                      <v-text-field
+                        :value="this.$store.getters.getCarInfo.model"
+                        label="Model "
+                        class="pb-0 pt-1 body-2"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex>
+                      <v-text-field
+                        :value="this.$store.getters.getCarInfo.color"
+                        label="Kleur"
+                        class="pb-0 pt-1 body-2"
                       ></v-text-field>
                     </v-flex>
                   </v-layout>
@@ -143,7 +175,8 @@ export default {
         'Hoeveel kunnen er mee?',
         'Wat kan er allemaal mee?',
         'Wil je eventueel omrijden?',
-        'Hoe ziet uw auto eruit?',
+        'Wat is uw kenteken?',
+        'Kloppen uw gegevens?',
       ],
       personen: 1,
       step: 1,
@@ -163,6 +196,15 @@ export default {
         'Ja, maximaal 5 minuten.',
         'Ja, maximaal 10 minuten.',
         'Ja, maximaal 20 minuten.',
+      ],
+      kenteken: '',
+      brand: null,
+      model: null,
+      color: null,
+      licenseRules: [
+        v => !!v || 'Kenteken moet worden ingevuld!',
+        v => /^[A-Z 0-9]*$/.test(v) || 'Kenteken moet geldig zijn!',
+        v => (v && v.length === 6) || 'Een kenteken bevat 6 tekens',
       ],
     }
   },
@@ -190,11 +232,18 @@ export default {
     },
     setNextStep() {
       this.setData()
-      if (this.step !== 4) {
-        this.step++
-        if (this.step === 4) {
-          this.buttonText = 'Rit bevestigen'
+      this.step++
+      if (this.step === 4) {
+        this.buttonText = 'Zoek'
+      } else if (this.step === 5) {
+        if (this.$refs.form.validate()) {
+          this.$store.dispatch('getLicenseInfo', this.kenteken)
+          this.buttonText = 'Bevestig en plan rit!'
+        } else {
+          this.step--
         }
+      } else if (this.step === 6) {
+        this.$router.push('ridePlanned')
       }
     },
     radioChangeDriveTime: function(drive) {

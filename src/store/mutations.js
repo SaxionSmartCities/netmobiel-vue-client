@@ -131,4 +131,8 @@ export default {
       }
     }
   },
+  setCarInfo: (state, payload) => {
+    console.log(payload)
+    state.user.rideOfferPreferences.carInfo = payload
+  },
 }
