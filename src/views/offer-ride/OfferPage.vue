@@ -153,6 +153,7 @@ export default {
   },
   created() {
     const rideOffer = Object.values(this.$store.getters.getRideOfferPreferences)
+    console.log('ride', rideOffer)
     for (let i = 0; i < rideOffer.length; i++) {
       if (rideOffer[i] === null) {
         this.optionsSetted = false
