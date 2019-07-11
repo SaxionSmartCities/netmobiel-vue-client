@@ -30,7 +30,7 @@
                         </v-flex>
                         <v-flex>
                           <v-text-field
-                            :value="fromLocationLabel"
+                            :value="fromLocationLabel()"
                             @click="toLocationSuggestionsPage('from')"
                           >
                           </v-text-field>
@@ -47,7 +47,7 @@
                         <v-flex>
                           <v-text-field
                             readonly
-                            :value="toLocationLabel"
+                            :value="toLocationLabel()"
                             @click="toLocationSuggestionsPage('to')"
                           >
                           </v-text-field>
@@ -161,24 +161,6 @@ export default {
       }
     },
   },
-  methods: {
-    getSubmitStatus() {
-      return this.$store.getters.getPlanningStatus
-    },
-    fromLocationLabel() {
-      let location = this.$store.getters.getFromLocation
-
-      return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
-    },
-    toLocationLabel() {
-      let location = this.$store.getters.getToLocation
-
-      return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
-    },
-    getGeocoderPickedLocations() {
-      return this.$store.getters.getGeocoderPickedLocations
-    },
-  },
   watch: {
     getSubmitStatus(newValue) {
       if (newValue.status === 'SUCCESS') {
@@ -198,6 +180,22 @@ export default {
     },
   },
   methods: {
+    getSubmitStatus() {
+      return this.$store.getters.getPlanningStatus
+    },
+    fromLocationLabel() {
+      let location = this.$store.getters.getFromLocation
+
+      return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
+    },
+    toLocationLabel() {
+      let location = this.$store.getters.getToLocation
+
+      return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
+    },
+    getGeocoderPickedLocations() {
+      return this.$store.getters.getGeocoderPickedLocations
+    },
     showPickLocationView(fieldPressed) {
       this.showPicklocation = true
       this.pickedLocationState = fieldPressed
