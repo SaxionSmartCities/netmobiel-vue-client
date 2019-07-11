@@ -105,6 +105,7 @@
                     <v-flex>
                       <v-text-field
                         :value="this.$store.getters.getCarInfo.brand"
+                        readonly
                         label="Merk "
                         class="pb-0 pt-1 body-2"
                       ></v-text-field>
@@ -112,6 +113,7 @@
                     <v-flex>
                       <v-text-field
                         :value="this.$store.getters.getCarInfo.model"
+                        readonly
                         label="Model "
                         class="pb-0 pt-1 body-2"
                       ></v-text-field>
@@ -119,6 +121,7 @@
                     <v-flex>
                       <v-text-field
                         :value="this.$store.getters.getCarInfo.color"
+                        readonly
                         label="Kleur"
                         class="pb-0 pt-1 body-2"
                       ></v-text-field>

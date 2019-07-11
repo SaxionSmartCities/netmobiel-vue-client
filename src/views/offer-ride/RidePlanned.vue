@@ -25,7 +25,7 @@
               block
               large
               class="orange-white-button"
-              @click="$store.commit('setRideApprovalDialog', { show: false })"
+              @click="$router.push('savedRidesDriver')"
               >Bekijk geplande ritten
             </v-btn>
           </v-flex>
@@ -35,7 +35,7 @@
               round
               block
               class="blue-outlined-button"
-              @click="$store.commit('setRideApprovalDialog', { show: false })"
+              @click="$router.push('offerPage')"
               >Plan een nieuwe rit
             </v-btn>
           </v-flex>
