@@ -1,25 +1,25 @@
 <template>
-  <v-container>
+  <v-container pt-4>
     <v-layout column>
       <v-flex>
-        <v-layout column>
+        <v-layout column ma-1>
           <v-flex
             ><h2>
-              Rit gepland!
+              Rit gepland! 🎉
             </h2>
             <v-icon></v-icon>
           </v-flex>
           <v-flex
             ><p>
               Goed bezig, jouw rit wordt meegenomen in de zoekresultaten! Je
-              krijgt automatich een bericht als er iemand mee wil.
+              krijgt automatisch een bericht als er iemand mee wil.
             </p></v-flex
           >
         </v-layout>
       </v-flex>
       <v-flex>
-        <v-layout wrap column>
-          <v-flex my-2>
+        <v-layout row wrap align-center>
+          <v-flex my-2 ma-1>
             <v-btn
               round
               block
@@ -29,7 +29,7 @@
               >Bekijk geplande ritten
             </v-btn>
           </v-flex>
-          <v-flex my-2>
+          <v-flex my-2 ma-1>
             <v-btn
               large
               round
