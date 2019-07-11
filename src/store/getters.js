@@ -53,4 +53,7 @@ export default {
   getRideOfferPreferences: state => {
     return state.user.rideOfferPreferences
   },
+  getCarInfo: state => {
+    return state.user.rideOfferPreferences.carInfo
+  },
 }
