@@ -26,6 +26,9 @@ export default {
   getPrivacySecurity: state => {
     return state.user.privacySecurity
   },
+  getSearchRideDateTime: state => {
+    return state.searchRide.dateTime
+  },
   getItineraries: state => {
     return state.planningRequest.result.data.itineraries
   },
