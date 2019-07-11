@@ -66,6 +66,7 @@
                     :key="drive"
                     :label="drive"
                     :value="drive"
+                    @change="radioChangeDriveTime(drive)"
                   ></v-radio>
                 </v-radio-group>
               </v-layout>
@@ -172,13 +173,27 @@ export default {
         this.$router.push({ name: 'offerPage' })
       }
     },
+    setData() {
+
+      if (this.step === 1) {
+        this.$store.commit('setRideOfferPreferencesRepeat', {
+          persons: this.personen,
+        })
+      }
+    },
     setNextStep() {
+      this.setData()
       if (this.step !== 4) {
         this.step++
         if (this.step === 4) {
           this.buttonText = 'Rit bevestigen'
         }
       }
+    },
+    radioChangeDriveTime: function(drive) {
+      this.$store.commit('setRideOfferPreferencesRepeat', {
+        drivingTime: drive,
+      })
     },
   },
 }

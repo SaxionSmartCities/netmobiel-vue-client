@@ -123,6 +123,12 @@ export default {
     })
   },
   setRideOfferPreferencesRepeat: (state, payload) => {
-    state.user.rideOfferPreferences = payload
+    const keys = Object.keys(state.user.rideOfferPreferences)
+    for (let i = 0; i < keys.length; i++) {
+      if (keys[i] === Object.keys(payload)[0]) {
+        state.user.rideOfferPreferences[keys[i]] = payload[keys[i]]
+        break
+      }
+    }
   },
 }
