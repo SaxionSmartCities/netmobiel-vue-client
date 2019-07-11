@@ -75,6 +75,10 @@ export default new Vuex.Store({
       },
       rideOfferPreferences: {
         repeat: 'Eenmalig',
+        persons: null,
+        luggage: null,
+        drivingTime: null,
+        carChauffeur: null,
       },
       privacySecurity: [
         { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
