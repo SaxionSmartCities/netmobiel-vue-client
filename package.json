@@ -5,12 +5,12 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "lint-prod": "vue-cli-service lint --mode production"
   },
   "dependencies": {
     "@dsb-norge/vue-keycloak-js": "^1.0.7",
     "axios": "^0.18.0",
-    "i": "^0.3.6",
     "moment": "^2.24.0",
     "npm": "^6.9.0",
     "vue": "^2.5.21",

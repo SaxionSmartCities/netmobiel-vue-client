@@ -40,7 +40,7 @@
       <v-flex>
         <v-layout row mb-2>
           <v-flex travel-card mr-2
-            ><v-layout column align-center my-2
+            ><v-layout column align-center my-2 @click="$router.push('/goals')"
               ><v-flex><v-icon>control_point</v-icon></v-flex
               ><v-flex>Doelen</v-flex></v-layout
             ></v-flex
@@ -98,7 +98,11 @@ export default {
     return {
       rating: 4,
       items: [
-        { icon: 'settings', name: 'Instellingen', route: '' },
+        {
+          icon: 'settings',
+          name: 'Instellingen',
+          route: '/profileNotificationOptions',
+        },
         { icon: 'help_outline', name: 'Veel gestelde vragen', route: '' },
         {
           icon: 'lock',

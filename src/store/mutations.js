@@ -11,23 +11,18 @@ export default {
     state.user.fullName = decodedObject['name']
   },
   enableHeader: state => {
-    console.log('Enabling header')
     state.ui.header.visible = true
   },
   disableHeader: state => {
-    console.log('Disabling header')
     state.ui.header.visible = false
   },
   enableFooter: state => {
-    console.log('Enabling footer')
     state.ui.footer.visible = true
   },
   disableFooter: state => {
-    console.log('Enabling footer')
     state.ui.footer.visible = false
   },
   deleteAccessToken: state => {
-    console.log('Deleting access token')
     state.user.accessToken = null
   },
   incrementRegistrationStep: (state, payload) => {
@@ -63,6 +58,70 @@ export default {
   },
   setPrivacySecurityValue: (state, payload) => {
     state.user.privacySecurity.filter(function(item) {
+      if (item.name === payload.key) {
+        item.value = payload.value
+        return item
+      }
+    })
+  },
+  storePlanningRequest: (state, payload) => {
+    state.planningRequest.fromPlace = payload.fromPlace
+    state.planningRequest.toPlace = payload.toPlace
+  },
+  setPlanningStatus: (state, payload) => {
+    state.planningRequest.submitStatus = payload
+  },
+  setPlanningResults: (state, payload) => {
+    state.planningRequest.result = payload
+  },
+  clearPlanningResults: state => {
+    state.planningRequest.result.data = ''
+  },
+  clearPlanningRequest: state => {
+    state.planningRequest.submitStatus = {
+      status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
+      message: '',
+    }
+  },
+  sortItineraries: (state, payload) => {
+    state.planningRequest.result.data.itineraries.sort(payload)
+  },
+  setGeocoderSuggestions: (state, payload) =>
+    (state.geocoder.suggestions = payload),
+  hideBackButton: state => {
+    state.ui.backButtonVisible = false
+  },
+  showBackButton: state => {
+    state.ui.backButtonVisible = true
+  },
+  setSelectedItinerary: (state, payload) => {
+    state.selectedItinerary = payload
+  },
+  setGeoLocationPicked: (state, payload) => {
+    if (payload.field === 'to') {
+      state.geocoder.pickedLocations.to = payload.pos
+    } else if (payload.field === 'from') {
+      state.geocoder.pickedLocations.from = payload.pos
+    }
+  },
+  setNotificationOptionsValue: (state, payload) => {
+    state.user.notificationOptions.filter(function(item) {
+      if (item.name === payload.key) {
+        item.value = payload.value
+        return item
+      }
+    })
+  },
+  setProfileOptionsValue: (state, payload) => {
+    state.user.profile.filter(function(item) {
+      if (item.name === payload.key) {
+        item.value = payload.value
+        return item
+      }
+    })
+  },
+  setReviewOptionsValue: (state, payload) => {
+    state.user.reviews.filter(function(item) {
       if (item.name === payload.key) {
         item.value = payload.value
         return item

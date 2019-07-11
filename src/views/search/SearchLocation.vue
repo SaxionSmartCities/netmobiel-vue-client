@@ -1,65 +1,52 @@
 <template>
   <v-container fluid>
-    <v-layout>
-      <v-text-field
-        v-model="searchInput"
-        outline
-        prepend-inner-icon="search"
-        clearable
-        placeholder="Zoek..."
-        class="border-radius-input"
-        single-line
-      ></v-text-field>
-    </v-layout>
-    <v-layout>
-      <v-flex xs12>
-        <v-list pt-0>
-          <template v-for="(location, index) in filteredList">
-            <v-list-tile :key="location.name" @click="completeSearch(location)">
-              <v-icon class="mr-3">{{ location.type }}</v-icon>
-              <v-list-tile-content class="grey--text">
-                <v-list-tile-title>
-                  <div v-html="highlight(location.name)"></div>
-                </v-list-tile-title>
-                <v-list-tile-sub-title> </v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-            <v-divider v-if="index + 1 < filteredList.length" :key="index">
-            </v-divider>
-          </template>
-        </v-list>
-      </v-flex>
-    </v-layout>
+    <search-suggestion-input></search-suggestion-input>
   </v-container>
 </template>
 
 <script>
+import SearchSuggestionInput from '../common/SearchSuggestionInput'
 export default {
   name: 'SearchLocation',
+  components: { SearchSuggestionInput },
   data() {
     return {
       searchInput: '',
+      showSuggestionsList: false,
     }
   },
   computed: {
     locations() {
-      return this.$store.getters.getLocations
+      return this.$store.getters.getGeocoderSuggestions
     },
-    filteredList() {
-      return this.locations.filter(item => {
-        return item.name.includes(this.searchInput)
-      })
+    getGeocoderPickedLocations() {
+      return this.$store.getters.getGeocoderPickedLocations
     },
   },
-  methods: {
-    highlight(str) {
-      return str.replace(new RegExp(this.searchInput, 'gi'), match => {
-        return '<span class="font-weight-bold">' + match + '</span>'
-      })
+  watch: {
+    searchInput: function(val) {
+      if (val) {
+        if (val.length > 3) {
+          this.showSuggestionsList = true
+          this.$store.dispatch('fetchGeocoderSuggestions', val)
+        }
+      }
     },
-    completeSearch(location) {
-      this.$store.commit('setSearchedLocation', location)
+    getGeocoderPickedLocations: function() {
       this.$router.go(-1)
+    },
+  },
+  mounted: function() {
+    this.$store.commit('showBackButton')
+  },
+  methods: {
+    completeSearch(location) {
+      this.$store.dispatch('fetchGeocoderLocation', location.locationId)
+      // this.$router.go(-1)
+    },
+    clearSearchInput() {
+      this.searchInput = ''
+      this.showSuggestionsList = false
     },
   },
 }

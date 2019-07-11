@@ -3,9 +3,9 @@
     <v-flex>
       <v-layout>
         <v-flex shrink>
-          <v-icon class="text-primary"><slot></slot></v-icon>
+          <v-icon class="text-primary">{{ getIcon }}</v-icon>
         </v-flex>
-        <v-flex v-if="maxRating > 0">
+        <v-flex v-if="leg.mode === 'NETMOBIEL'">
           <v-layout>
             <v-flex v-for="(star, index) in starArray" :key="index" shrink>
               <v-icon v-if="star === 0" class="star">star_border</v-icon>
@@ -14,46 +14,63 @@
             </v-flex>
           </v-layout>
         </v-flex>
+        <!-- <v-flex v-if="leg.mode === 'BUS'"> Lijn {{ leg.route }} </v-flex> -->
       </v-layout>
     </v-flex>
     <v-flex pt-1>
-      <div class="travel-line"></div>
+      <div
+        class="travel-line"
+        :class="leg.mode === 'WALK' ? 'dotted' : ''"
+      ></div>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
+import { getIcon } from '@/utils/Utils.js'
+
 export default {
   name: 'TravelLeg',
   props: {
-    maxRating: { type: Number, default: 0 },
     currentRating: { type: Number, default: 0 },
+    leg: {
+      type: Object,
+      default: function() {
+        return {
+          mode: undefined,
+        }
+      },
+    },
   },
   data: function() {
     return {
+      maxRating: 3,
       icon: 'directions_walk',
     }
   },
   computed: {
     starArray() {
       var result = []
-      if (this.maxRating > 0) {
-        for (var i = 0; i < Math.floor(this.currentRating); i++) {
-          result.push(2)
-        }
 
-        if (Math.round(this.currentRating % 1) === 1) {
-          result.push(1)
-        }
+      for (var i = 0; i < Math.floor(this.currentRating); i++) {
+        result.push(2)
+      }
 
-        for (var j = result.length; j < this.maxRating; j++) {
-          result.push(0)
-        }
+      if (Math.round(this.currentRating % 1) === 1) {
+        result.push(1)
+      }
+
+      for (var j = result.length; j < this.maxRating; j++) {
+        result.push(0)
       }
 
       return result
     },
+    getIcon: function() {
+      return getIcon(this.leg.mode)
+    },
   },
+  methods: {},
 }
 </script>
 
@@ -63,6 +80,12 @@ export default {
   height: 5px;
   background: #c2c2c2;
   border-radius: 1000px;
+}
+
+.dotted {
+  background: #ffffff;
+  border-style: dotted;
+  border-color: #c2c2c2;
 }
 
 .star {
