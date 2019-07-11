@@ -9,10 +9,10 @@
         <v-layout justify-center align-center column>
           <v-flex>
             <div v-if="archief === false">
-              <v-card-text>Je hebt nog niets gepland</v-card-text>
+              <v-card-text>Je hebt nog niets gepland!</v-card-text>
             </div>
             <div v-else>
-              <v-card-text>Je hebt nog niets in je archief!</v-card-text>
+              <v-card-text>Je hebt nog niets gezocht!</v-card-text>
             </div>
           </v-flex>
         </v-layout>
@@ -31,8 +31,14 @@
         >
         <v-layout v-else justify-center
           ><v-flex xs6>
-            <v-btn class="orange-white-button" round large block>
-              Plan je reis
+            <v-btn
+              class="orange-white-button"
+              round
+              large
+              block
+              to="/ridePlanned"
+            >
+              Plan je reisje
             </v-btn></v-flex
           ></v-layout
         >

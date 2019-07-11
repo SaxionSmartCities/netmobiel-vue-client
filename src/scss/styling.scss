@@ -121,3 +121,8 @@ body {
   background-color: $color-orange !important;
   color: $color-white !important;
 }
+.blue-outlined-button{
+  background-color: $color-white !important;
+  color: $color-primary !important;
+  border: $color-primary solid 1px !important;
+}
