@@ -23,14 +23,14 @@
                   <v-layout column>
                     <v-flex id="van">
                       <v-layout row>
-                        <v-flex xs3 sm2>
+                        <v-flex xs4 sm2>
                           <v-subheader class="font-weight-bold">
                             Van
                           </v-subheader>
                         </v-flex>
                         <v-flex>
                           <v-text-field
-                            :value="fromLocationLabel"
+                            :value="fromLocationLabel()"
                             @click="toLocationSuggestionsPage('from')"
                           >
                           </v-text-field>
@@ -39,7 +39,7 @@
                     </v-flex>
                     <v-flex id="naar">
                       <v-layout row>
-                        <v-flex xs3 sm2>
+                        <v-flex xs4 sm2>
                           <v-subheader class="font-weight-bold">
                             Naar
                           </v-subheader>
@@ -47,7 +47,7 @@
                         <v-flex>
                           <v-text-field
                             readonly
-                            :value="toLocationLabel"
+                            :value="toLocationLabel()"
                             @click="toLocationSuggestionsPage('to')"
                           >
                           </v-text-field>
@@ -80,7 +80,9 @@
                       </v-subheader>
                     </v-flex>
                     <v-flex>
-                      <v-text-field value="Morgen, 10.00 uur"></v-text-field>
+                      <p class="ma-0 mt-3" @click="toSearchRideDate">
+                        {{ dateRide }}
+                      </p>
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -122,7 +124,7 @@
                   @click="toRidePrefrences"
                 >
                   <v-icon>settings</v-icon>
-                  <span>Reisvoorkeuren</span>
+                  <span class="ml-1">Reisvoorkeuren</span>
                 </v-flex>
               </v-layout>
             </v-form>
@@ -134,6 +136,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   data: function() {
     return {
@@ -144,21 +148,18 @@ export default {
     }
   },
   computed: {
-    getSubmitStatus() {
-      return this.$store.getters.getPlanningStatus
-    },
-    fromLocationLabel() {
-      let location = this.$store.getters.getFromLocation
+    dateRide: function() {
+      let dateTime = this.$store.getters.getSearchRideDateTime
 
-      return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
-    },
-    toLocationLabel() {
-      let location = this.$store.getters.getToLocation
-
-      return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
-    },
-    getGeocoderPickedLocations() {
-      return this.$store.getters.getGeocoderPickedLocations
+      if (dateTime !== undefined) {
+        return moment(dateTime)
+          .locale('nl')
+          .format('dddd, DD MMMM HH:mm')
+      } else {
+        return moment()
+          .locale('nl')
+          .format('dddd, DD MMMM HH:mm')
+      }
     },
   },
   watch: {
@@ -180,6 +181,22 @@ export default {
     },
   },
   methods: {
+    getSubmitStatus() {
+      return this.$store.getters.getPlanningStatus
+    },
+    fromLocationLabel() {
+      let location = this.$store.getters.getFromLocation
+
+      return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
+    },
+    toLocationLabel() {
+      let location = this.$store.getters.getToLocation
+
+      return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
+    },
+    getGeocoderPickedLocations() {
+      return this.$store.getters.getGeocoderPickedLocations
+    },
     showPickLocationView(fieldPressed) {
       this.showPicklocation = true
       this.pickedLocationState = fieldPressed
