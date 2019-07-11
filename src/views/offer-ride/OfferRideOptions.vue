@@ -1,6 +1,6 @@
 <template>
   <v-container class="background-green">
-    <v-layout v-model="step" justify-center align-center>
+    <v-layout justify-center align-center column>
       <v-flex xs11 sm9 md6>
         <v-layout column shrink>
           <v-flex class="box-widget background-white">
@@ -48,15 +48,21 @@
                 </v-flex>
               </v-layout>
 
-              <v-layout v-if="step === 2" justify-center align-center ma-1>
-                <v-radio-group v-model="radioGroup">
-                  <v-radio
-                    v-for="luggage in luggageList"
-                    :key="luggage"
+              <v-layout column ma-1 v-if="step === 2">
+                <v-flex
+                  v-for="luggage in luggageList"
+                  :key="luggage"
+                  :label="luggage"
+                >
+                  <v-checkbox
+                    v-model="luggageChoice"
+                    class="checkboxDaySelect"
                     :label="luggage"
                     :value="luggage"
-                  ></v-radio>
-                </v-radio-group>
+                    id="checkbox"
+                    @change="checkboxLuggageOnClick"
+                  ></v-checkbox>
+                </v-flex>
               </v-layout>
 
               <v-layout v-if="step === 3" justify-center align-center ma-1>
@@ -142,6 +148,7 @@ export default {
       step: 1,
       buttonText: 'Verder',
       radioGroup: 1,
+      luggageChoice: [],
       luggageList: [
         'Geen bagage',
         'Boodschappen',
@@ -194,6 +201,16 @@ export default {
         drivingTime: drive,
       })
     },
+    checkboxLuggageOnClick: function() {
+      let result = ''
+      for (let i = 0; i < this.luggageChoice.length; i++) {
+        result += this.luggageChoice[i]
+        if (i !== this.luggageChoice.length - 1) {
+          result += ', '
+        }
+      }
+      this.$store.commit('setRideOfferPreferencesRepeat', { luggage: result })
+    },
   },
 }
 </script>
@@ -201,5 +218,48 @@ export default {
 <style lang="scss">
 #inputPersons {
   text-align: center;
+}
+
+.round label {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+  height: 28px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 28px;
+}
+
+.round label:after {
+  border: 2px solid #fff;
+  border-top: none;
+  border-right: none;
+  content: '';
+  height: 6px;
+  left: 7px;
+  opacity: 0;
+  position: absolute;
+  top: 8px;
+  transform: rotate(-45deg);
+  width: 12px;
+}
+
+.round input[type='checkbox'] {
+  visibility: hidden;
+}
+
+.round input[type='checkbox']:checked + label {
+  background-color: $color-green;
+  border-color: $color-green;
+}
+
+.round input[type='checkbox']:checked + label:after {
+  opacity: 1;
+}
+
+body {
+  background-color: #f1f2f3;
 }
 </style>
