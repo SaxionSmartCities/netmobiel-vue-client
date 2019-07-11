@@ -132,8 +132,14 @@ export default {
     }
   },
   setCarInfo: (state, payload) => {
-    console.log(payload)
-    state.user.rideOfferPreferences.carInfo = payload
+    const storeKeys = Object.keys(state.user.rideOfferPreferences.carInfo)
+
+    for (let i = 0; i < storeKeys.length; i++) {
+      if (payload[storeKeys[i]]) {
+        state.user.rideOfferPreferences.carInfo[storeKeys[i]] =
+          payload[storeKeys[i]]
+      }
+    }
   },
   setChauffeurValue: (state, payload) => {
     state.user.chauffeur = payload
