@@ -155,6 +155,7 @@ export default {
 
     //Assemble all urls for the axios get requests
     let urls = []
+    const prox = 5
     payload.forEach(function(item) {
       let fromLat = item.from.lat
       let fromLon = item.from.lon
@@ -162,9 +163,9 @@ export default {
       let toLat = item.to.lat
       let toLon = item.to.lon
 
-      let fromUrl = `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&gen=9&jsonattributes=1&prox=${fromLat},${fromLon}&mode=retrieveAddresses`
+      let fromUrl = `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&gen=9&jsonattributes=1&prox=${fromLat},${fromLon},${prox}&mode=retrieveAddresses`
 
-      let toUrl = `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&gen=9&jsonattributes=1&prox=${toLat},${toLon}&mode=retrieveAddresses`
+      let toUrl = `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&gen=9&jsonattributes=1&prox=${toLat},${toLon},${prox}&mode=retrieveAddresses`
       urls.push(fromUrl)
       urls.push(toUrl)
     })
