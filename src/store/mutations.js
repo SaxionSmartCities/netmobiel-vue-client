@@ -141,4 +141,7 @@ export default {
     console.log(payload)
     state.user.rideOfferPreferences.carInfo = payload
   },
+  setChauffeurValue: (state, payload) => {
+    state.user.chauffeur = payload
+  },
 }

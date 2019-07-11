@@ -116,6 +116,7 @@ export default {
         },
         { icon: 'error_outline', name: 'Over deze app', route: '' },
         { icon: 'cancel', name: 'Verwijder mijn account', route: '' },
+        { icon: 'settings', name: 'Chauffeur instellingen', route: '/chauffeurSettings' },
       ],
       address: 'Gasthuisstraat 9, Bredevoort',
     }

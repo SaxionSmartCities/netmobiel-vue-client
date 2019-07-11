@@ -78,7 +78,6 @@ export default new Vuex.Store({
         persons: null,
         luggage: null,
         drivingTime: null,
-        carChauffeur: null,
         carInfo: {
           license: null,
           color: null,
@@ -103,6 +102,7 @@ export default new Vuex.Store({
         { name: 'Beoordeel je reis', value: true },
         { name: 'Deel mijn reviews met anderen', value: false },
       ],
+      chauffeur: true,
     },
     ui: {
       registrationStep: 1,

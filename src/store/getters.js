@@ -59,4 +59,7 @@ export default {
   getCarInfo: state => {
     return state.user.rideOfferPreferences.carInfo
   },
+  isChauffeur: state => {
+    return state.user.chauffeur
+  },
 }
