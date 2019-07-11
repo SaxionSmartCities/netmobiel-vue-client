@@ -149,10 +149,8 @@ export default {
       step: 1,
       buttonText: 'Verder',
       radioGroup: 1,
-      luggagePicked: false,
       luggageChoice: [],
       luggageList: [
-        'Geen bagage',
         'Boodschappen',
         'Handbagage',
         'Buggy',
@@ -206,7 +204,6 @@ export default {
       })
     },
     checkboxLuggageOnClick: function() {
-      this.luggagePicked = true
       let result = ''
       for (let i = 0; i < this.luggageChoice.length; i++) {
         result += this.luggageChoice[i]
@@ -217,9 +214,7 @@ export default {
       this.$store.commit('setRideOfferPreferencesRepeat', { luggage: result })
     },
     setDisabled() {
-      if (this.step === 2) {
-        return this.luggagePicked
-      } else if (this.step === 3) {
+      if (this.step === 3) {
         return this.timeDrivePicked
       }
       return true
