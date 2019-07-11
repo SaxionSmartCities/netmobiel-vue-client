@@ -1,7 +1,7 @@
 <template>
   <v-container class="background-green" fluid>
     <v-layout justify-center align-center column>
-      <v-flex xs11 sm9 md6>
+      <v-flex xs12 sm9 md6 class="scalingFixedSize">
         <v-layout column shrink>
           <v-flex class="box-widget background-white">
             <v-form>
@@ -283,5 +283,14 @@ export default {
 <style lang="scss">
 #inputPersons {
   text-align: center;
+}
+.scalingFixedSize {
+  @media only screen and (max-width: 600px) {
+    width: 100%;
+    height: 100%;
+  }
+  @media only screen and (min-width: 600px) {
+    width: 40%;
+  }
 }
 </style>
