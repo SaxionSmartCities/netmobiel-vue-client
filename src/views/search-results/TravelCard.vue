@@ -151,10 +151,10 @@ export default {
     openDetails: function() {
       this.$store.commit('setSelectedItinerary', this.journey)
 
-      let legs = this.$store.getters.itineraryLegs
-      console.log('these are the legs: ', legs)
-
-      this.$store.dispatch('fetchMoreReverseGeocoderLocation', legs)
+      this.$store.dispatch(
+        'fetchMoreReverseGeocoderLocation',
+        this.$store.getters.itineraryLegs
+      )
 
       this.$router.push('/itineraryDetailPage')
     },

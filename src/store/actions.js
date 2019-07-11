@@ -151,7 +151,7 @@ export default {
   fetchMoreReverseGeocoderLocation: (context, payload) => {
     const HERE_APP_ID = process.env.VUE_APP_HERE_APP_ID
     const HERE_APP_CODE = process.env.VUE_APP_HERE_APP_CODE
-    //payload exists out of all legs
+    //payload exists out of all legs from the selectedItinerary
 
     //Assemble all urls for the axios get requests
     let urls = []
@@ -189,16 +189,10 @@ export default {
       return getData(URL)
     })
 
-    // let newPayload = []
-
     Promise.all(URLPromises)
       .then(values => {
         console.log(values)
         for (let i = 0; i < payload.length; i++) {
-          // Object.assign(newLeg, payload[i])
-          // newLeg.from.name = values[i * 2].data
-          // newLeg.to.name = values[i * 2 + 1].data
-          // newPayload.push(newLeg)
           let newLegProps = {
             index: i,
             fromName: values[i * 2].data,
@@ -206,9 +200,6 @@ export default {
           }
           context.commit('setNameForLegInSelectedItinerary', newLegProps)
         }
-
-        // console.log('whole new payload : ', newPayload)
-        // context.commit('setNameForLegInSelectedItinerary', newPayload) //gaf eerst newPayload mee....
       })
       .catch(error => {
         console.log(error)
