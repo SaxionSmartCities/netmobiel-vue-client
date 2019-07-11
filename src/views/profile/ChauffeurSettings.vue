@@ -40,6 +40,7 @@
                     <v-text-field
                       class="pb-0 pt-1 body-2"
                       :id="option"
+                      :readonly="setReadOnly(option)"
                       :value="carOptions[option]"
                       @change="setData(option, $event)"
                     ></v-text-field>
@@ -82,6 +83,12 @@ export default {
       let object = {}
       object[key] = value
       this.$store.commit('setCarInfo', object)
+    },
+    setReadOnly(option) {
+      if (option === 'color' || option === 'license') {
+        return false
+      }
+      return true
     },
   },
 }
