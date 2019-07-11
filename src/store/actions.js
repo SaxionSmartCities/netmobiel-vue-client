@@ -148,6 +148,59 @@ export default {
         console.log(error)
       })
   },
+  fetchMoreReverseGeocoderLocation: (context, payload) => {
+    const HERE_APP_ID = process.env.VUE_APP_HERE_APP_ID
+    const HERE_APP_CODE = process.env.VUE_APP_HERE_APP_CODE
+
+    // axios
+    //   .get(GEOCODER_BASE_URL)
+    //   .then(function(res) {
+    //     console.log(res)
+    //     payload.displayName =
+    //       res.data.response.view[0].result[0].location.address.label
+    //     console.log(res.data.response.view[0].result[0].location.address.label)
+    //   })
+    //   .catch(function(error) {
+    //     // TODO: Proper error handling.
+    //     // eslint-disable-next-line
+    //     console.log(error)
+    //   })
+
+    let urls = []
+    payload.forEach(function(item) {
+      let url = `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&gen=9&jsonattributes=1&prox=${
+        item.lat
+      },${item.lon}&mode=retrieveAddresses`
+
+      urls.push(url)
+    })
+    async function getAllData(URLs) {
+      let URLPromises = URLs.map(URL => {
+        return getData(URL)
+      })
+      let response = await Promise.all(URLPromises)
+      console.log(response)
+    }
+
+    function getData(URL) {
+      return axios
+        .get(URL)
+        .then(function(response) {
+          return {
+            success: true,
+            data:
+              response.data.response.view[0].result[0].location.address.label,
+          }
+        })
+        .catch(function(error) {
+          console.log(error)
+          return { success: false }
+        })
+    }
+
+    getAllData(urls)
+  },
+
   fetchMultiReverseGeocoderLocation: (context, payload) => {
     //The payload will get an array of objects with {lat: ..., long: ... }
     // https://developer.here.com/documentation/geocoder/topics/resource-multi-reverse-geocode.html
@@ -176,7 +229,7 @@ export default {
         mode: 'retrieveAddresses',
       },
       data: body,
-      headers: { 'Content-Type': 'plain/text' },
+      headers: { 'Content-Type': 'application/xml', Origin: 'app' },
     })
       .then(function(response) {
         //handle success

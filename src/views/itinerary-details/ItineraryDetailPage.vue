@@ -47,19 +47,12 @@ export default {
   components: { ItinerarySummary, ItineraryLeg },
   computed: {
     journey: function() {
-      // let posObj = {
-      //   lat: this.$store.getters.getSelectedItinerary.legs[0].from.lat,
-      //   lon: this.$store.getters.getSelectedItinerary.legs[0].from.lon,
-      // }
-      // let arr = [posObj, posObj]
-
       console.log(this.$store.getters.getSelectedItinerary.legs[0].from.lat)
       this.$store.dispatch('fetchReverseGeocoderLocation', {
         lat: this.$store.getters.getSelectedItinerary.legs[0].from.lat,
         lon: this.$store.getters.getSelectedItinerary.legs[0].from.lon,
       })
 
-      // this.$store.dispatch('fetchMultiReverseGeocoderLocation', arr)
       //fetchReverseGeocoderLocation
       return this.$store.getters.getSelectedItinerary
     },
