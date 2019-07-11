@@ -120,6 +120,7 @@
                   <v-btn
                     class="orange-white-button"
                     round
+                    :disabled="!setDisabled()"
                     @click="setNextStep()"
                     >{{ buttonText }}</v-btn
                   >
@@ -148,6 +149,7 @@ export default {
       step: 1,
       buttonText: 'Verder',
       radioGroup: 1,
+      luggagePicked: false,
       luggageChoice: [],
       luggageList: [
         'Geen bagage',
@@ -157,6 +159,7 @@ export default {
         'Rollator',
         'Huisdier',
       ],
+      timeDrivePicked: false,
       timeDriveList: [
         'Nee, ik rijd niet om.',
         'Ja, maximaal 5 minuten.',
@@ -197,11 +200,13 @@ export default {
       }
     },
     radioChangeDriveTime: function(drive) {
+      this.timeDrivePicked = true
       this.$store.commit('setRideOfferPreferencesRepeat', {
         drivingTime: drive,
       })
     },
     checkboxLuggageOnClick: function() {
+      this.luggagePicked = true
       let result = ''
       for (let i = 0; i < this.luggageChoice.length; i++) {
         result += this.luggageChoice[i]
@@ -210,6 +215,14 @@ export default {
         }
       }
       this.$store.commit('setRideOfferPreferencesRepeat', { luggage: result })
+    },
+    setDisabled() {
+      if (this.step === 2) {
+        return this.luggagePicked
+      } else if (this.step === 3) {
+        return this.timeDrivePicked
+      }
+      return true
     },
   },
 }
