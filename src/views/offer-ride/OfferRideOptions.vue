@@ -1,6 +1,6 @@
 <template>
   <v-container class="background-green">
-    <v-layout justify-center align-center v-model="step">
+    <v-layout v-model="step" justify-center align-center>
       <v-flex xs11 sm9 md6>
         <v-layout column shrink>
           <v-flex class="box-widget background-white">
@@ -11,24 +11,24 @@
                 </v-flex>
               </v-layout>
 
-              <v-layout justify-center align-center ma-5 v-if="step === 1">
+              <v-layout v-if="step === 1" justify-center align-center ma-5>
                 <v-flex shrink>
                   <v-btn
+                    id="buttonMinus"
                     small
                     flat=""
                     fab
-                    @click="incrementPersons(-1)"
-                    id="buttonMinus"
                     class="blue-white-button"
+                    @click="incrementPersons(-1)"
                     >-</v-btn
                   >
                 </v-flex>
                 <v-flex xs3 md1 lg1 xl1 class="mt-2">
                   <v-text-field
-                    readonly
-                    class="font-weight-bold"
                     id="inputPersons"
                     v-model="personen"
+                    readonly
+                    class="font-weight-bold"
                     type="number"
                     max="10"
                     read-only
@@ -37,18 +37,18 @@
                 </v-flex>
                 <v-flex shrink>
                   <v-btn
+                    id="buttonPlus"
                     small
                     flat
                     fab
-                    @click="incrementPersons(1)"
-                    id="buttonPlus"
                     class="blue-white-button"
+                    @click="incrementPersons(1)"
                     >+</v-btn
                   >
                 </v-flex>
               </v-layout>
 
-              <v-layout justify-center align-center ma-1 v-if="step === 2">
+              <v-layout v-if="step === 2" justify-center align-center ma-1>
                 <v-radio-group v-model="radioGroup">
                   <v-radio
                     v-for="luggage in luggageList"
@@ -59,7 +59,7 @@
                 </v-radio-group>
               </v-layout>
 
-              <v-layout justify-center align-center ma-1 v-if="step === 3">
+              <v-layout v-if="step === 3" justify-center align-center ma-1>
                 <v-radio-group v-model="radioGroup">
                   <v-radio
                     v-for="drive in timeDriveList"
@@ -71,7 +71,7 @@
                 </v-radio-group>
               </v-layout>
 
-              <v-layout justify-center align-center my-1 v-if="step === 4">
+              <v-layout v-if="step === 4" justify-center align-center my-1>
                 <v-flex>
                   <v-layout row>
                     <v-flex xs5 sm2>
@@ -96,7 +96,7 @@
                 fill-height
                 class="ma-2"
               >
-                <v-flex shrink v-on:click="goStepBack()">
+                <v-flex shrink @click="goStepBack()">
                   <v-layout row>
                     <v-flex>
                       <v-icon class="icon-grey">arrow_back</v-icon>
@@ -129,7 +129,7 @@
 
 <script>
 export default {
-  name: 'offerRideOptions',
+  name: 'OfferRideOptions',
   data() {
     return {
       title: [
@@ -174,7 +174,6 @@ export default {
       }
     },
     setData() {
-
       if (this.step === 1) {
         this.$store.commit('setRideOfferPreferencesRepeat', {
           persons: this.personen,
