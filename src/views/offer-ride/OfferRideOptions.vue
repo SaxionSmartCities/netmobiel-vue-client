@@ -1,6 +1,6 @@
 <template>
   <v-container class="background-green">
-    <v-layout justify-center align-center>
+    <v-layout justify-center align-center column>
       <v-flex xs11 sm9 md6>
         <v-layout column shrink>
           <v-flex class="box-widget background-white">
@@ -48,15 +48,21 @@
                 </v-flex>
               </v-layout>
 
-              <v-layout v-if="step === 2" justify-center align-center ma-1>
-                <v-radio-group v-model="radioGroup">
-                  <v-radio
-                    v-for="luggage in luggageList"
-                    :key="luggage"
+              <v-layout v-if="step === 2" column ma-1>
+                <v-flex
+                  v-for="luggage in luggageList"
+                  :key="luggage"
+                  :label="luggage"
+                >
+                  <v-checkbox
+                    id="checkbox"
+                    v-model="luggageChoice"
+                    class="checkboxDaySelect"
                     :label="luggage"
                     :value="luggage"
-                  ></v-radio>
-                </v-radio-group>
+                    @change="checkboxLuggageOnClick"
+                  ></v-checkbox>
+                </v-flex>
               </v-layout>
 
               <v-layout v-if="step === 3" justify-center align-center ma-1>
@@ -146,6 +152,7 @@
                   <v-btn
                     class="orange-white-button"
                     round
+                    :disabled="!setDisabled()"
                     @click="setNextStep()"
                     >{{ buttonText }}</v-btn
                   >
@@ -175,6 +182,8 @@ export default {
       step: 1,
       buttonText: 'Verder',
       radioGroup: 1,
+      luggagePicked: false,
+      luggageChoice: [],
       luggageList: [
         'Geen bagage',
         'Boodschappen',
@@ -183,6 +192,7 @@ export default {
         'Rollator',
         'Huisdier',
       ],
+      timeDrivePicked: false,
       timeDriveList: [
         'Nee, ik rijd niet om.',
         'Ja, maximaal 5 minuten.',
@@ -239,9 +249,29 @@ export default {
       }
     },
     radioChangeDriveTime: function(drive) {
+      this.timeDrivePicked = true
       this.$store.commit('setRideOfferPreferencesRepeat', {
         drivingTime: drive,
       })
+    },
+    checkboxLuggageOnClick: function() {
+      this.luggagePicked = true
+      let result = ''
+      for (let i = 0; i < this.luggageChoice.length; i++) {
+        result += this.luggageChoice[i]
+        if (i !== this.luggageChoice.length - 1) {
+          result += ', '
+        }
+      }
+      this.$store.commit('setRideOfferPreferencesRepeat', { luggage: result })
+    },
+    setDisabled() {
+      if (this.step === 2) {
+        return this.luggagePicked
+      } else if (this.step === 3) {
+        return this.timeDrivePicked
+      }
+      return true
     },
   },
 }

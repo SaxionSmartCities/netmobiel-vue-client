@@ -111,6 +111,7 @@
               <v-layout mt-2 justify-center text-xs-center>
                 <v-flex>
                   <v-btn
+                    v-if="optionsSetted === false"
                     class="orange-white-button"
                     large
                     round
@@ -118,6 +119,16 @@
                     :to="{ name: 'offerRideOptions' }"
                   >
                     Verder
+                  </v-btn>
+                  <v-btn
+                    v-else
+                    class="orange-white-button"
+                    large
+                    round
+                    block
+                    :to="{ name: 'ridePlanned' }"
+                  >
+                    Plan rit!
                   </v-btn>
                 </v-flex>
               </v-layout>
@@ -132,12 +143,21 @@
 <script>
 export default {
   name: 'OfferPage',
-
   data: function() {
     return {
       waiting: null,
       departureTime: '',
       repeat: '',
+      optionsSetted: true,
+    }
+  },
+  created() {
+    const rideOffer = Object.values(this.$store.getters.getRideOfferPreferences)
+    for (let i = 0; i < rideOffer.length; i++) {
+      if (rideOffer[i] === null) {
+        this.optionsSetted = false
+        break
+      }
     }
   },
   methods: {
