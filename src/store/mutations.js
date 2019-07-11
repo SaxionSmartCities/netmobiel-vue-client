@@ -91,6 +91,10 @@ export default {
   setSelectedItinerary: (state, payload) => {
     state.selectedItinerary = payload
   },
+  setNameForLegInSelectedItinerary: (state, payload) => {
+    state.selectedItinerary.legs[payload.index].from.name = payload.fromName
+    state.selectedItinerary.legs[payload.index].to.name = payload.toName
+  },
   setGeoLocationPicked: (state, payload) => {
     if (payload.field === 'to') {
       state.geocoder.pickedLocations.to = payload.pos
@@ -122,4 +126,5 @@ export default {
       }
     })
   },
+  // setMoreReversedGeoLocationNames: (state, payload) => {},
 }

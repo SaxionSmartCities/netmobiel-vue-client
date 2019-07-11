@@ -151,36 +151,23 @@ export default {
   fetchMoreReverseGeocoderLocation: (context, payload) => {
     const HERE_APP_ID = process.env.VUE_APP_HERE_APP_ID
     const HERE_APP_CODE = process.env.VUE_APP_HERE_APP_CODE
+    //payload exists out of all legs
 
-    // axios
-    //   .get(GEOCODER_BASE_URL)
-    //   .then(function(res) {
-    //     console.log(res)
-    //     payload.displayName =
-    //       res.data.response.view[0].result[0].location.address.label
-    //     console.log(res.data.response.view[0].result[0].location.address.label)
-    //   })
-    //   .catch(function(error) {
-    //     // TODO: Proper error handling.
-    //     // eslint-disable-next-line
-    //     console.log(error)
-    //   })
-
+    //Assemble all urls for the axios get requests
     let urls = []
     payload.forEach(function(item) {
-      let url = `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&gen=9&jsonattributes=1&prox=${
-        item.lat
-      },${item.lon}&mode=retrieveAddresses`
+      let fromLat = item.from.lat
+      let fromLon = item.from.lon
 
-      urls.push(url)
+      let toLat = item.to.lat
+      let toLon = item.to.lon
+
+      let fromUrl = `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&gen=9&jsonattributes=1&prox=${fromLat},${fromLon}&mode=retrieveAddresses`
+
+      let toUrl = `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&gen=9&jsonattributes=1&prox=${toLat},${toLon}&mode=retrieveAddresses`
+      urls.push(fromUrl)
+      urls.push(toUrl)
     })
-    async function getAllData(URLs) {
-      let URLPromises = URLs.map(URL => {
-        return getData(URL)
-      })
-      let response = await Promise.all(URLPromises)
-      console.log(response)
-    }
 
     function getData(URL) {
       return axios
@@ -198,7 +185,34 @@ export default {
         })
     }
 
-    getAllData(urls)
+    let URLPromises = urls.map(URL => {
+      return getData(URL)
+    })
+
+    // let newPayload = []
+
+    Promise.all(URLPromises)
+      .then(values => {
+        console.log(values)
+        for (let i = 0; i < payload.length; i++) {
+          // Object.assign(newLeg, payload[i])
+          // newLeg.from.name = values[i * 2].data
+          // newLeg.to.name = values[i * 2 + 1].data
+          // newPayload.push(newLeg)
+          let newLegProps = {
+            index: i,
+            fromName: values[i * 2].data,
+            toName: values[i * 2 + 1].data,
+          }
+          context.commit('setNameForLegInSelectedItinerary', newLegProps)
+        }
+
+        // console.log('whole new payload : ', newPayload)
+        // context.commit('setNameForLegInSelectedItinerary', newPayload) //gaf eerst newPayload mee....
+      })
+      .catch(error => {
+        console.log(error)
+      })
   },
 
   fetchMultiReverseGeocoderLocation: (context, payload) => {

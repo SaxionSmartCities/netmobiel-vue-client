@@ -50,4 +50,7 @@ export default {
   getReviewsOptions: state => {
     return state.user.reviews
   },
+  itineraryLegs: state => {
+    return state.selectedItinerary.legs
+  },
 }
