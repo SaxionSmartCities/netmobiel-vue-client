@@ -59,7 +59,7 @@ export default {
     state.searchedLocation = payload
   },
   setDate: (state, payload) => {
-    state.searchRide.date = payload
+    state.searchRide.dateTime = payload
   },
   setPrivacySecurityValue: (state, payload) => {
     state.user.privacySecurity.filter(function(item) {

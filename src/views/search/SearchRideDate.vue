@@ -29,7 +29,11 @@
       <v-flex mt-3>
         <v-layout justify-center>
           <v-flex shrink>
-            <v-time-picker v-mode="time" color="blue"></v-time-picker>
+            <v-time-picker
+              v-model="time"
+              format="24hr"
+              color="blue"
+            ></v-time-picker>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -67,11 +71,12 @@ export default {
       )
     },
     submitForm: function(event) {
-      var myDate = this.setTime(this.toggle_exclusive)
       event.preventDefault()
-      console.log(myDate)
-      this.$router.push({ name: 'searchRide' })
-      this.$store.commit('setDate', myDate)
+
+      let departureMoment = moment(this.date + ' ' + this.time)
+
+      this.$store.commit('setDate', departureMoment)
+      this.$router.push('/search')
     },
   },
 }

@@ -71,7 +71,9 @@ export default new Vuex.Store({
       },
     },
     searchRide: {
-      date: undefined,
+      dateTime: undefined,
+      fromLocation: undefined,
+      toLocation: undefined,
     },
     searchedLocation: { name: '', type: '' },
     locations: [

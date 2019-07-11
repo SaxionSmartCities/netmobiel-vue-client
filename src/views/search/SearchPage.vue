@@ -22,7 +22,7 @@
                   <v-layout column>
                     <v-flex id="van">
                       <v-layout row>
-                        <v-flex xs3 sm2>
+                        <v-flex xs4 sm2>
                           <v-subheader class="font-weight-bold">
                             Van
                           </v-subheader>
@@ -34,7 +34,7 @@
                     </v-flex>
                     <v-flex id="naar">
                       <v-layout row>
-                        <v-flex xs3 sm2>
+                        <v-flex xs4 sm2>
                           <v-subheader class="font-weight-bold">
                             Naar
                           </v-subheader>
@@ -70,14 +70,7 @@
                       </v-subheader>
                     </v-flex>
                     <v-flex>
-                      <p
-                        v-if="dateRide === undefined"
-                        class="ma-0 mt-3"
-                        @click="toSearchRideDate"
-                      >
-                        Kies uw aankomst tijd
-                      </p>
-                      <p v-else class="ma-0 mt-3" @click="toSearchRideDate">
+                      <p class="ma-0 mt-3" @click="toSearchRideDate">
                         {{ dateRide }}
                       </p>
                     </v-flex>
@@ -117,10 +110,10 @@ export default {
   },
   computed: {
     dateRide: function() {
-      let date = this.$store.getters.getSearchRideDate
+      let dateTime = this.$store.getters.getSearchRideDateTime
 
-      if (date !== undefined) {
-        return moment(date)
+      if (dateTime !== undefined) {
+        return moment(dateTime)
           .locale('nl')
           .format('dddd, DD MMMM HH:mm')
       } else {
