@@ -1,5 +1,5 @@
 <template>
-  <v-container class="background-green">
+  <v-container class="background-green" fluid>
     <v-layout justify-center align-center column>
       <v-flex xs11 sm9 md6>
         <v-layout column shrink>
@@ -80,7 +80,7 @@
               <v-layout v-if="step === 4" justify-center align-center my-1>
                 <v-flex>
                   <v-layout row>
-                    <v-flex xs5 sm2>
+                    <v-flex>
                       <v-subheader class="font-weight-bold">
                         Kenteken
                       </v-subheader>
@@ -105,6 +105,7 @@
                     <v-flex>
                       <v-text-field
                         :value="this.$store.getters.getCarInfo.brand"
+                        readonly
                         label="Merk "
                         class="pb-0 pt-1 body-2"
                       ></v-text-field>
@@ -112,6 +113,7 @@
                     <v-flex>
                       <v-text-field
                         :value="this.$store.getters.getCarInfo.model"
+                        readonly
                         label="Model "
                         class="pb-0 pt-1 body-2"
                       ></v-text-field>
@@ -119,6 +121,7 @@
                     <v-flex>
                       <v-text-field
                         :value="this.$store.getters.getCarInfo.color"
+                        readonly
                         label="Kleur"
                         class="pb-0 pt-1 body-2"
                       ></v-text-field>
@@ -134,7 +137,7 @@
                 fill-height
                 class="ma-2"
               >
-                <v-flex shrink @click="goStepBack()">
+                <v-flex shrink @click="goStepBack()" mr-3>
                   <v-layout row>
                     <v-flex>
                       <v-icon class="icon-grey">arrow_back</v-icon>
