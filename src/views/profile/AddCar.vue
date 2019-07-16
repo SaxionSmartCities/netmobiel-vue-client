@@ -76,7 +76,7 @@ export default {
     },
     saveCar() {
       this.$store.commit('addCar', this.getTempCar)
-        this.$router.go(-1)
+      this.$router.go(-1)
     },
   },
 }
