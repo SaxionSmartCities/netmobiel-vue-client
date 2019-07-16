@@ -84,9 +84,9 @@ export default {
       }
     },
     description: function() {
+      console.log(this.leg)
       switch (this.leg.mode) {
         case 'WALK':
-          console.log(this.leg)
           // return 'Lopen van ergens, naar ergens anders'
           return 'Vanaf ' + this.leg.from.name + ' naar ' + this.leg.to.name
         case 'CAR':
@@ -97,11 +97,13 @@ export default {
         case 'BUS':
           return 'Reizen met de bus'
         case 'RAIL':
-          return 'Reizen met iets op rails'
+          return 'Vanaf ' + this.leg.from.name + ' naar ' + this.leg.to.name
         case 'WAIT':
           return ''
         case 'FINISH':
-          return 'Aangekomen op ' + this.leg.to.lat + ' ' + this.leg.to.lon
+          return (
+            'Aangekomen op ' + this.leg.to.name + ' naar ' + this.leg.to.name
+          )
         default:
           return 'DESCRIPTION_NOT_DEFINED'
       }

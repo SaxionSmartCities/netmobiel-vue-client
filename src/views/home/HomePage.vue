@@ -35,14 +35,6 @@ export default {
       return this.$store.getters.getUser
     },
   },
-  mounted() {
-    let array = [
-      { lat: '52.21514', lon: '6.89321' },
-      { lat: '52.21514', lon: '6.89321' },
-      { lat: '52.21514', lon: '6.89321' },
-    ]
-    this.$store.dispatch('fetchMoreReverseGeocoderLocation', array)
-  },
 }
 </script>
 
