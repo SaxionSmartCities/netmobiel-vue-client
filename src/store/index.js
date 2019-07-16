@@ -84,6 +84,7 @@ export default new Vuex.Store({
         drivingTime: null,
       },
       cars: [],
+      offeredRides: [],
       privacySecurity: [
         { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
         { name: 'Deel reisdata met NetMobiel', value: false },

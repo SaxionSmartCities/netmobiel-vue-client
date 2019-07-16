@@ -137,6 +137,9 @@ export default {
       }
     }
   },
+  setRideOffer: (state, payload) => {
+    state.user.offeredRides.push(payload)
+  },
   setCarInfo: (state, payload) => {
     state.user.cars.push(payload)
   },

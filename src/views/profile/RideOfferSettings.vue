@@ -14,6 +14,14 @@
           </v-flex>
           <v-flex xs8>
             <v-text-field
+              v-if="option === 'repeat'"
+              :id="option"
+              class="pb-0 pt-1 body-2"
+              :value="extraOptions[option]"
+              @click="$router.push('repeatSelection')"
+            ></v-text-field>
+            <v-text-field
+              v-else
               :id="option"
               class="pb-0 pt-1 body-2"
               :value="extraOptions[option]"
@@ -29,6 +37,9 @@
 <script>
 export default {
   name: 'RideOfferSettings',
+  data() {
+    return {}
+  },
   computed: {
     extraOptions() {
       return this.$store.getters.getRideOfferPreferences

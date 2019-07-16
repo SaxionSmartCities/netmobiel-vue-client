@@ -72,7 +72,7 @@
                     :key="drive"
                     :label="drive"
                     :value="drive"
-                    @change="radioChangeDriveTime(drive)"
+                    @change="radioDetour(drive)"
                   ></v-radio>
                 </v-radio-group>
               </v-layout>
@@ -214,6 +214,8 @@ export default {
         v => /^[A-Z 0-9]*$/.test(v) || 'Kenteken moet geldig zijn!',
         v => (v && v.length === 6) || 'Een kenteken bevat 6 tekens',
       ],
+      chosenLuggage: null,
+      chosenDetour: null,
     }
   },
   methods: {
@@ -231,15 +233,7 @@ export default {
         this.$router.push({ name: 'offerPage' })
       }
     },
-    setData() {
-      if (this.step === 1) {
-        this.$store.commit('setRideOfferPreferencesRepeat', {
-          persons: this.personen,
-        })
-      }
-    },
     setNextStep() {
-      this.setData()
       this.step++
       if (this.step === 4) {
         this.buttonText = 'Zoek'
@@ -251,14 +245,22 @@ export default {
           this.step--
         }
       } else if (this.step === 6) {
+        this.$store.commit('setRideOffer', {
+          toLocation: 'toLocation',
+          fromLocation: 'fromLocation',
+          departureTime: 'departure',
+          arrivalTime: 'arrivalTime',
+          persons: this.personen,
+          luggage: this.chosenLuggage,
+          detour: this.detour,
+          car: {},
+        })
         this.$router.push('ridePlanned')
       }
     },
-    radioChangeDriveTime: function(drive) {
+    radioDetour: function(drive) {
       this.timeDrivePicked = true
-      this.$store.commit('setRideOfferPreferencesRepeat', {
-        drivingTime: drive,
-      })
+      this.chosenDetour = drive
     },
     checkboxLuggageOnClick: function() {
       let result = ''
@@ -268,7 +270,7 @@ export default {
           result += ', '
         }
       }
-      this.$store.commit('setRideOfferPreferencesRepeat', { luggage: result })
+      this.chosenLuggage = result
     },
     setDisabled() {
       if (this.step === 3) {

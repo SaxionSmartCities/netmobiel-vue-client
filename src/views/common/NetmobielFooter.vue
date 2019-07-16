@@ -12,12 +12,12 @@
         </v-btn>
 
         <v-btn flat value="plan-trip" to="/savedRidesPassenger">
-          <span>Reizen</span>
+          <span>Reiziger</span>
           <v-icon>commute</v-icon>
         </v-btn>
 
         <v-btn flat value="saved" to="/savedRidesDriver">
-          <span>Ritten</span>
+          <span>Chauffeur</span>
           <v-icon>drive_eta</v-icon>
         </v-btn>
 
