@@ -93,17 +93,20 @@ export default {
     getChauffeur() {
       return this.$store.getters.isChauffeur
     },
-    extraOptions() {
-      let list = this.$store.getters.getRideOfferPreferences
-      return list['repeat']
-    },
   },
   mounted: function() {
     this.$store.commit('showBackButton')
   },
   methods: {
     rideOptions(ride) {
-      return ride['detour'] + ', ' + ride['persons']
+      return (
+        (ride['detour'] === 0
+          ? 'Nee, ik rijd niet om'
+          : 'Ja, maximaal ' + ride['detour'] + ' minuten') +
+        ', ' +
+        ride['persons'] +
+        ' perso(o)n(en)'
+      )
     },
     carOptions(car) {
       return (

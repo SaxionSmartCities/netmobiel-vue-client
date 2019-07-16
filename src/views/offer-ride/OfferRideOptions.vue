@@ -68,9 +68,13 @@
               <v-layout v-if="step === 3" justify-center align-center ma-1>
                 <v-radio-group v-model="radioGroup">
                   <v-radio
-                    v-for="drive in timeDriveList"
+                    v-for="drive in detourList"
                     :key="drive"
-                    :label="drive"
+                    :label="
+                      drive === 0
+                        ? 'Nee, ik rijd niet om'
+                        : 'Ja, maximaal ' + drive + ' minuten'
+                    "
                     :value="drive"
                     @change="radioDetour(drive)"
                   ></v-radio>
@@ -199,12 +203,7 @@ export default {
         'Huisdier',
       ],
       timeDrivePicked: false,
-      timeDriveList: [
-        'Nee, ik rijd niet om.',
-        'Ja, maximaal 5 minuten.',
-        'Ja, maximaal 10 minuten.',
-        'Ja, maximaal 20 minuten.',
-      ],
+      detourList: [0, 5, 10, 20],
       kenteken: '',
       brand: null,
       model: null,
