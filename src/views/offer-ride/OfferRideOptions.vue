@@ -214,7 +214,7 @@ export default {
         v => /^[A-Z 0-9]*$/.test(v) || 'Kenteken moet geldig zijn!',
         v => (v && v.length === 6) || 'Een kenteken bevat 6 tekens',
       ],
-      chosenLuggage: null,
+      chosenLuggage: '',
       chosenDetour: null,
     }
   },
@@ -249,14 +249,13 @@ export default {
         }
       } else if (this.step === 6) {
         this.$store.commit('setRideOffer', {
-          toLocation: 'toLocation',
-          fromLocation: 'fromLocation',
-          departureTime: 'departure',
-          arrivalTime: 'arrivalTime',
+          toLocation: this.$route.params.toLocation,
+          fromLocation: this.$route.params.fromLocation,
+          departureTime: this.$route.params.departureTime,
           persons: this.personen,
           luggage: this.chosenLuggage,
-          detour: this.detour,
-          car: {},
+          detour: this.chosenDetour,
+          car: this.$store.getters.getCars[0],
         })
         this.$router.push('ridePlanned')
       }

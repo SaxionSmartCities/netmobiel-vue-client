@@ -6,7 +6,7 @@
       </v-flex>
     </v-layout>
     <v-layout column>
-      <v-flex v-for="option in Object.keys(extraOptions)" :key="option">
+      <v-flex v-for="option in Object.keys(ride)" :key="option">
         <v-divider></v-divider>
         <v-layout align-center mr-3>
           <v-flex>
@@ -17,14 +17,20 @@
               v-if="option === 'repeat'"
               :id="option"
               class="pb-0 pt-1 body-2"
-              :value="extraOptions[option]"
+              :value="ride[option]"
               @click="$router.push('repeatSelection')"
+            ></v-text-field>
+            <v-text-field
+              v-else-if="option === 'car'"
+              :id="option"
+              class="pb-0 pt-1 body-2"
+              :value="carOptions(ride.car)"
             ></v-text-field>
             <v-text-field
               v-else
               :id="option"
               class="pb-0 pt-1 body-2"
-              :value="extraOptions[option]"
+              :value="ride[option]"
               @change="setDataExtraOptions(option, $event)"
             ></v-text-field>
           </v-flex>
@@ -38,12 +44,9 @@
 export default {
   name: 'RideOfferSettings',
   data() {
-    return {}
-  },
-  computed: {
-    extraOptions() {
-      return this.$store.getters.getRideOfferPreferences
-    },
+    return {
+      ride: this.$route.params.ride,
+    }
   },
   mounted: function() {
     this.$store.commit('showBackButton')
@@ -53,6 +56,17 @@ export default {
       let object = {}
       object[key] = value
       this.$store.commit('setRideOfferPreferencesRepeat', object)
+    },
+    carOptions(car) {
+      return (
+        car['license'] +
+        ', ' +
+        car['brand'] +
+        ', ' +
+        car['model'] +
+        ', ' +
+        car['color']
+      )
     },
   },
 }

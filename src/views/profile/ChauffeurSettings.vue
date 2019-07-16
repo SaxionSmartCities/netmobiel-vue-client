@@ -49,13 +49,18 @@
               <v-flex>
                 <p class="text-primary-uppercase">Ritten</p>
               </v-flex>
+              <v-flex shrink>
+                <v-btn class="size" fab :to="{ name: 'offerPage' }">
+                  <v-icon small>add</v-icon>
+                </v-btn>
+              </v-flex>
             </v-layout>
             <v-layout column>
-              <v-flex>
+              <v-flex v-for="ride in getRides" :key="ride.detour">
                 <v-divider></v-divider>
                 <v-layout align-center mr-3>
-                  <v-flex @click="toRideOfferSettings">
-                    <p>{{ extraOptions }}</p>
+                  <v-flex @click="toRideOfferSettings(ride)">
+                    <p>{{ rideOptions(ride) }}</p>
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -82,6 +87,9 @@ export default {
     getCars() {
       return this.$store.getters.getCars
     },
+    getRides() {
+      return this.$store.getters.getOfferedRides
+    },
     getChauffeur() {
       return this.$store.getters.isChauffeur
     },
@@ -94,6 +102,9 @@ export default {
     this.$store.commit('showBackButton')
   },
   methods: {
+    rideOptions(ride) {
+      return ride['detour'] + ', ' + ride['persons']
+    },
     carOptions(car) {
       return (
         car['license'] +
@@ -111,8 +122,8 @@ export default {
     toCarSettings(car) {
       this.$router.push({ name: 'carSettings', params: { car: car } })
     },
-    toRideOfferSettings() {
-      this.$router.push({ name: 'rideOfferSettings' })
+    toRideOfferSettings(ride) {
+      this.$router.push({ name: 'rideOfferSettings', params: { ride: ride } })
     },
   },
 }

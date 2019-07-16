@@ -68,4 +68,7 @@ export default {
   isChauffeur: state => {
     return state.user.chauffeur
   },
+  getOfferedRides: state => {
+    return state.user.offeredRides
+  },
 }

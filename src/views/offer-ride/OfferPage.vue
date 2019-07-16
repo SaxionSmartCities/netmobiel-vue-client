@@ -29,7 +29,7 @@
                         </v-flex>
                         <v-flex>
                           <v-text-field
-                            v-model="this.$store.getters.getFromOfferLocation"
+                            :v-model="getOfferFromLocation"
                             readonly
                             placeholder="Zoek locatie"
                           ></v-text-field>
@@ -45,7 +45,7 @@
                         </v-flex>
                         <v-flex>
                           <v-text-field
-                            v-model="this.$store.getters.getToOfferLocation"
+                            :v-model="getOfferToLocation"
                             readonly
                             placeholder="Zoek locatie"
                           ></v-text-field>
@@ -115,7 +115,7 @@
                     large
                     round
                     block
-                    :to="{ name: 'offerRideOptions' }"
+                    @click="toOfferRideOptions"
                   >
                     Verder
                   </v-btn>
@@ -137,15 +137,37 @@ export default {
       waiting: null,
       departureTime: '',
       repeat: '',
+      toOfferLocation: null,
+      fromOfferLocation: null,
     }
   },
   methods: {
+    getOfferFromLocation() {
+      let fromLocation = this.$store.getters.getFromOfferLocation
+      this.fromOfferLocation = fromLocation
+      return fromLocation
+    },
+    getOfferToLocation() {
+      let toLocation = this.$store.getters.getToOfferLocation
+      this.toOfferLocation = toLocation
+      return toLocation
+    },
     swapLocations() {
-      let to = this.$store.getters.getToOfferLocation
+      let to = this.toOfferLocation
       this.$store.commit('setToOfferLocation', {
-        name: this.$store.getters.getFromOfferLocation,
+        name: this.fromOfferLocation,
       })
       this.$store.commit('setFromOfferLocation', { name: to })
+    },
+    toOfferRideOptions() {
+      this.$router.push({
+        name: 'offerRideOptions',
+        params: {
+          toOfferLocation: this.toOfferLocation,
+          fromOfferLocation: this.fromOfferLocation,
+          departureTime: this.departureTime,
+        },
+      })
     },
   },
 }
