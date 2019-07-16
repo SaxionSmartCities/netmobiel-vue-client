@@ -138,14 +138,18 @@ export default {
     }
   },
   setCarInfo: (state, payload) => {
-    const storeKeys = Object.keys(state.user.rideOfferPreferences.carInfo)
-
-    for (let i = 0; i < storeKeys.length; i++) {
-      if (payload[storeKeys[i]]) {
-        state.user.rideOfferPreferences.carInfo[storeKeys[i]] =
-          payload[storeKeys[i]]
-      }
-    }
+    state.user.cars.push(payload)
+  },
+  updateCarInfo: (state, payload) => {
+    let oldLicense = payload.oldLicense
+    Object.assign(
+      state.user.cars.find(car => car.license === oldLicense),
+      payload.result
+    )
+  },
+  updateCarColor: (state, payload) => {
+    state.user.cars.find(car => car.license === payload.license).color =
+      payload.color
   },
   setChauffeurValue: (state, payload) => {
     state.user.chauffeur = payload

@@ -6,7 +6,7 @@
       </v-flex>
     </v-layout>
     <v-layout column>
-      <v-flex v-for="option in Object.keys(carOptions)" :key="option">
+      <v-flex v-for="option in Object.keys(car)" :key="option">
         <v-divider></v-divider>
         <v-layout align-center mr-3>
           <v-flex>
@@ -18,7 +18,7 @@
               :id="option"
               class="pb-0 pt-1 body-2"
               :rules="licenseRules"
-              :value="carOptions[option]"
+              :value="car[option]"
               placeholder="Geef uw kenteken op"
               @change="getNewCarData($event)"
             >
@@ -27,15 +27,15 @@
               v-else-if="option === 'color'"
               :id="option"
               class="pb-0 pt-1 body-2"
-              :value="carOptions[option]"
-              @change="setDataCar(option, $event)"
+              :value="car[option]"
+              @change="updateCarColor"
             ></v-text-field>
             <v-text-field
               v-else
               :id="option"
               class="pb-0 pt-1 body-2"
               readonly
-              :value="carOptions[option]"
+              :value="car[option]"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -54,6 +54,7 @@ export default {
         v => /^[A-Z 0-9]*$/.test(v) || 'Kenteken moet geldig zijn!',
         v => (v && v.length === 6) || 'Een kenteken bevat 6 tekens',
       ],
+      car: this.$route.params.car,
     }
   },
   computed: {
@@ -65,13 +66,18 @@ export default {
     this.$store.commit('showBackButton')
   },
   methods: {
-    setDataCar(key, value) {
-      let object = {}
-      object[key] = value
-      this.$store.commit('setCarInfo', object)
+    updateCarColor(value) {
+      console.log('newColor: ', value)
+      this.$store.commit('updateCarColor', {
+        license: this.$route.params.car.license,
+        color: value,
+      })
     },
     getNewCarData(license) {
-      this.$store.dispatch('getLicenseInfo', license)
+      this.$store.dispatch('getNewLicenseInfo', {
+        newLicense: license,
+        oldLicense: this.$route.params.car.license,
+      })
     },
   },
 }

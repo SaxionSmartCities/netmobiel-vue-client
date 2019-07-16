@@ -99,12 +99,17 @@
                 </v-flex>
               </v-layout>
 
-              <v-layout v-if="step > 4" justify-center align-center my-1>
+              <v-layout
+                v-if="step > 4 && getCarInfo()"
+                justify-center
+                align-center
+                my-1
+              >
                 <v-flex>
                   <v-layout column>
                     <v-flex>
                       <v-text-field
-                        :value="this.$store.getters.getCarInfo.brand"
+                        :value="getCarInfo().brand"
                         readonly
                         label="Merk"
                         class="pb-0 pt-1 body-2"
@@ -112,7 +117,7 @@
                     </v-flex>
                     <v-flex>
                       <v-text-field
-                        :value="this.$store.getters.getCarInfo.model"
+                        :value="getCarInfo().model"
                         readonly
                         label="Model"
                         class="pb-0 pt-1 body-2"
@@ -120,7 +125,7 @@
                     </v-flex>
                     <v-flex>
                       <v-text-field
-                        :value="this.$store.getters.getCarInfo.color"
+                        :value="getCarInfo().color"
                         label="Kleur"
                         class="pb-0 pt-1 body-2"
                         @change="setColorCar($event)"
@@ -275,6 +280,9 @@ export default {
       let object = {}
       object['color'] = value
       this.$store.commit('setCarInfo', object)
+    },
+    getCarInfo() {
+      return this.$store.getters.getCarInfo(this.kenteken)
     },
   },
 }

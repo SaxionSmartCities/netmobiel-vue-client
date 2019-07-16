@@ -56,8 +56,11 @@ export default {
   getRideOfferPreferences: state => {
     return state.user.rideOfferPreferences
   },
-  getCarInfo: state => {
-    return state.user.rideOfferPreferences.carInfo
+  getCarInfo: state => license =>{
+    return state.user.cars.find(car => car.license === license)
+  },
+  getCars: state => {
+    return state.user.cars
   },
   isChauffeur: state => {
     return state.user.chauffeur

@@ -30,11 +30,11 @@
               </v-flex>
             </v-layout>
             <v-layout column>
-              <v-flex>
+              <v-flex v-for="car in getCars" :key="car.license">
                 <v-divider></v-divider>
                 <v-layout>
-                  <v-flex @click="toCarSettings">
-                    <p>{{ carOptions }}</p>
+                  <v-flex @click="toCarSettings(car)">
+                    <p>{{ carOptions(car) }}</p>
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -74,20 +74,11 @@ export default {
     }
   },
   computed: {
+    getCars() {
+      return this.$store.getters.getCars
+    },
     getChauffeur() {
       return this.$store.getters.isChauffeur
-    },
-    carOptions() {
-      let list = this.$store.getters.getCarInfo
-      return (
-        list['license'] +
-        ', ' +
-        list['brand'] +
-        ', ' +
-        list['model'] +
-        ', ' +
-        list['color']
-      )
     },
     extraOptions() {
       let list = this.$store.getters.getRideOfferPreferences
@@ -98,11 +89,22 @@ export default {
     this.$store.commit('showBackButton')
   },
   methods: {
+    carOptions(car) {
+      return (
+        car['license'] +
+        ', ' +
+        car['brand'] +
+        ', ' +
+        car['model'] +
+        ', ' +
+        car['color']
+      )
+    },
     setChauffeur(value) {
       this.$store.commit('setChauffeurValue', value)
     },
-    toCarSettings() {
-      this.$router.push({ name: 'carSettings' })
+    toCarSettings(car) {
+      this.$router.push({ name: 'carSettings', params: { car: car } })
     },
     toRideOfferSettings() {
       this.$router.push({ name: 'rideOfferSettings' })

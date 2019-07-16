@@ -140,7 +140,7 @@ const router = new Router({
       name: 'chauffeurSettings',
     },
     {
-      path: '/carSettings',
+      path: '/carSettings/:car',
       component: CarSettings,
       name: 'carSettings',
     },
