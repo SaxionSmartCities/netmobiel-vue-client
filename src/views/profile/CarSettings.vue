@@ -14,11 +14,28 @@
           </v-flex>
           <v-flex xs8>
             <v-text-field
-              class="pb-0 pt-1 body-2"
+              v-if="option === 'license'"
               :id="option"
-              :readonly="setReadOnly(option)"
+              class="pb-0 pt-1 body-2"
+              :rules="licenseRules"
+              :value="carOptions[option]"
+              placeholder="Geef uw kenteken op"
+              @change="getNewCarData($event)"
+            >
+            </v-text-field>
+            <v-text-field
+              v-else-if="option === 'color'"
+              :id="option"
+              class="pb-0 pt-1 body-2"
               :value="carOptions[option]"
               @change="setDataCar(option, $event)"
+            ></v-text-field>
+            <v-text-field
+              v-else
+              :id="option"
+              class="pb-0 pt-1 body-2"
+              readonly
+              :value="carOptions[option]"
             ></v-text-field>
           </v-flex>
         </v-layout>
@@ -30,10 +47,22 @@
 <script>
 export default {
   name: 'CarSettings',
+  data() {
+    return {
+      licenseRules: [
+        v => !!v || 'Kenteken moet worden ingevuld!',
+        v => /^[A-Z 0-9]*$/.test(v) || 'Kenteken moet geldig zijn!',
+        v => (v && v.length === 6) || 'Een kenteken bevat 6 tekens',
+      ],
+    }
+  },
   computed: {
     carOptions() {
       return this.$store.getters.getCarInfo
     },
+  },
+  mounted: function() {
+    this.$store.commit('showBackButton')
   },
   methods: {
     setDataCar(key, value) {
@@ -41,15 +70,9 @@ export default {
       object[key] = value
       this.$store.commit('setCarInfo', object)
     },
-    setReadOnly(option) {
-      if (option === 'color' || option === 'license') {
-        return false
-      }
-      return true
+    getNewCarData(license) {
+      this.$store.dispatch('getLicenseInfo', license)
     },
-  },
-  mounted: function() {
-    this.$store.commit('showBackButton')
   },
 }
 </script>

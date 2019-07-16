@@ -14,8 +14,8 @@
           </v-flex>
           <v-flex xs8>
             <v-text-field
-              class="pb-0 pt-1 body-2"
               :id="option"
+              class="pb-0 pt-1 body-2"
               :value="extraOptions[option]"
               @change="setDataExtraOptions(option, $event)"
             ></v-text-field>
@@ -34,15 +34,15 @@ export default {
       return this.$store.getters.getRideOfferPreferences
     },
   },
+  mounted: function() {
+    this.$store.commit('showBackButton')
+  },
   methods: {
     setDataExtraOptions(key, value) {
       let object = {}
       object[key] = value
       this.$store.commit('setRideOfferPreferencesRepeat', object)
     },
-  },
-  mounted: function() {
-    this.$store.commit('showBackButton')
   },
 }
 </script>

@@ -137,7 +137,7 @@
                 fill-height
                 class="ma-2"
               >
-                <v-flex shrink @click="goStepBack()" mr-3>
+                <v-flex shrink mr-3 @click="goStepBack()">
                   <v-layout row>
                     <v-flex>
                       <v-icon class="icon-grey">arrow_back</v-icon>

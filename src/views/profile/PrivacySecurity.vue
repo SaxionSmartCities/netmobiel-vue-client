@@ -53,6 +53,9 @@ export default {
       return this.$store.getters.getPrivacySecurity
     },
   },
+  mounted: function() {
+    this.$store.commit('showBackButton')
+  },
   methods: {
     toPrivacyStatement() {
       this.$router.push({ name: 'privacyStatement' })
@@ -60,9 +63,6 @@ export default {
     setPrivacyValue(key, state) {
       this.$store.commit('setPrivacySecurityValue', { key: key, value: state })
     },
-  },
-  mounted: function() {
-    this.$store.commit('showBackButton')
   },
 }
 </script>

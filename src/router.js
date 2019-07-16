@@ -26,9 +26,9 @@ import OfferRideOptions from './views/offer-ride/OfferRideOptions'
 import OfferPage from './views/offer-ride/OfferPage'
 import RepeatSelection from './views/offer-ride/RepeatSelection'
 import RidePlanned from './views/offer-ride/RidePlanned'
-import ChauffeurSettings from "./views/profile/ChauffeurSettings";
-import CarSettings from "./views/profile/CarSettings";
-import RideOfferSettings from "./views/profile/RideOfferSettings";
+import ChauffeurSettings from './views/profile/ChauffeurSettings'
+import CarSettings from './views/profile/CarSettings'
+import RideOfferSettings from './views/profile/RideOfferSettings'
 
 const router = new Router({
   mode: 'history',

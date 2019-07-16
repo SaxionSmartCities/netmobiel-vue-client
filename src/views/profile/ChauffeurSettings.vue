@@ -94,6 +94,9 @@ export default {
       return list['repeat']
     },
   },
+  mounted: function() {
+    this.$store.commit('showBackButton')
+  },
   methods: {
     setChauffeur(value) {
       this.$store.commit('setChauffeurValue', value)
@@ -104,9 +107,6 @@ export default {
     toRideOfferSettings() {
       this.$router.push({ name: 'rideOfferSettings' })
     },
-  },
-  mounted: function() {
-    this.$store.commit('showBackButton')
   },
 }
 </script>
