@@ -29,6 +29,7 @@ import RidePlanned from './views/offer-ride/RidePlanned'
 import ChauffeurSettings from './views/profile/ChauffeurSettings'
 import CarSettings from './views/profile/CarSettings'
 import RideOfferSettings from './views/profile/RideOfferSettings'
+import AddCar from './views/profile/AddCar'
 
 const router = new Router({
   mode: 'history',
@@ -148,6 +149,11 @@ const router = new Router({
       path: '/rideOfferSettings',
       component: RideOfferSettings,
       name: 'rideOfferSettings',
+    },
+    {
+      path: '/addCar',
+      component: AddCar,
+      name: 'addCar',
     },
   ],
 })

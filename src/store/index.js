@@ -103,6 +103,7 @@ export default new Vuex.Store({
         { name: 'Deel mijn reviews met anderen', value: false },
       ],
       chauffeur: true,
+      tempCar: {},
     },
     ui: {
       registrationStep: 1,

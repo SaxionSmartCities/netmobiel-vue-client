@@ -131,7 +131,7 @@ export default {
     const BASE_URL = 'https://opendata.rdw.nl/resource/m9d7-ebf2.json?kenteken='
     var axiosConfig = {
       method: 'GET',
-      url: BASE_URL + payload,
+      url: BASE_URL + payload.license,
     }
     axios(axiosConfig)
       .then(function(response) {
@@ -151,8 +151,12 @@ export default {
             color: 'niet gevonden',
           }
         }
-        console.log('fetching')
-        context.commit('setCarInfo', filteredResult)
+
+        if (payload.temp) {
+          context.commit('setTempCar', filteredResult)
+        } else {
+          context.commit('addCar', filteredResult)
+        }
       })
       .catch(function(error) {
         console.log(error)
