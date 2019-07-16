@@ -154,4 +154,10 @@ export default {
   setChauffeurValue: (state, payload) => {
     state.user.chauffeur = payload
   },
+  deleteCar: (state, payload) => {
+    let indexOfTheCar = state.user.cars.findIndex(
+      car => car.license === payload
+    )
+    state.user.cars.splice(indexOfTheCar, 1)
+  },
 }
