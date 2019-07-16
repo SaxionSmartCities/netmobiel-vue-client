@@ -89,14 +89,7 @@
               </v-layout>
               <v-layout mt-2 justify-center text-xs-center>
                 <v-flex v-if="getSubmitStatus.status === 'UNSUBMITTED'">
-                  <v-btn
-                    class="orange-white-button"
-                    :disabled="!locationsPicked"
-                    large
-                    round
-                    block
-                    @click="submitForm()"
-                  >
+                  <v-btn large round block @click="submitForm()">
                     Plan je reis!
                   </v-btn>
                 </v-flex>

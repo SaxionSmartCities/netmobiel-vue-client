@@ -94,7 +94,7 @@ export default {
       return this.$store.getters.getReviewsOptions
     },
   },
-  mounted: function() {
+  created: function() {
     this.$store.commit('showBackButton')
   },
   methods: {
