@@ -166,6 +166,7 @@ export default {
           toOfferLocation: this.toOfferLocation,
           fromOfferLocation: this.fromOfferLocation,
           departureTime: this.departureTime,
+          repeatSelection: this.$store.getters.getRideOfferPreferences.repeat,
         },
       })
     },

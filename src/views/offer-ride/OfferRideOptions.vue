@@ -251,6 +251,7 @@ export default {
           toLocation: this.$route.params.toLocation,
           fromLocation: this.$route.params.fromLocation,
           departureTime: this.$route.params.departureTime,
+          repeatSelection: this.$route.params.repeatSelection,
           persons: this.personen,
           luggage: this.chosenLuggage,
           detour: this.chosenDetour,
