@@ -42,6 +42,9 @@ export default {
       ],
     }
   },
+  mounted: function() {
+    this.$store.commit('showBackButton')
+  },
 }
 </script>
 

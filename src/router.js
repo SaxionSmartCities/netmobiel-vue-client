@@ -27,6 +27,8 @@ import OfferPage from './views/offer-ride/OfferPage'
 import RepeatSelection from './views/offer-ride/RepeatSelection'
 import RidePlanned from './views/offer-ride/RidePlanned'
 import ChauffeurSettings from "./views/profile/ChauffeurSettings";
+import CarSettings from "./views/profile/CarSettings";
+import RideOfferSettings from "./views/profile/RideOfferSettings";
 
 const router = new Router({
   mode: 'history',
@@ -136,6 +138,16 @@ const router = new Router({
       path: '/chauffeurSettings',
       component: ChauffeurSettings,
       name: 'chauffeurSettings',
+    },
+    {
+      path: '/carSettings',
+      component: CarSettings,
+      name: 'carSettings',
+    },
+    {
+      path: '/rideOfferSettings',
+      component: RideOfferSettings,
+      name: 'rideOfferSettings',
     },
   ],
 })

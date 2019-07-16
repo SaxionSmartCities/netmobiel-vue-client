@@ -74,6 +74,10 @@ export default new Vuex.Store({
         },
       },
       rideOfferPreferences: {
+        fromLocation: null,
+        toLocation: null,
+        departure: null,
+        arrival: null,
         repeat: 'Eenmalig',
         persons: null,
         luggage: null,

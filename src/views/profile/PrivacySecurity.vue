@@ -61,6 +61,9 @@ export default {
       this.$store.commit('setPrivacySecurityValue', { key: key, value: state })
     },
   },
+  mounted: function() {
+    this.$store.commit('showBackButton')
+  },
 }
 </script>
 

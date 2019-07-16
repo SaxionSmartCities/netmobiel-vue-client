@@ -30,6 +30,9 @@ export default {
         ' Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.',
     }
   },
+  mounted: function() {
+    this.$store.commit('showBackButton')
+  },
 }
 </script>
 
