@@ -11,14 +11,14 @@ $font-family: "Lato", sans-serif;
 
 // Color definitions
 $color-white: #FFFFFF;
-$color-inputGray: #737373;
-$color-headerGray: #9B9B9B;
-$color-optionsGray: #BEBEBE;
-$color-labelGray: #4A4A4A;
 $color-green: #2E8997;
 $color-orange: #FF8500;
 $color-alertRed: #D0021B;
-$color-borderGray: #E9E9E9;
+
+$color-white-grey: #E9E9E9; // Dividers, secondary lines, footer border
+$color-light-grey: #CCCCCC; // Card outlines, card trip line, input outlines
+$color-mid-grey: #9B9B9B; //  Footer icons, card chevron-icon, body sub text
+$color-dark-grey: #4A4A4A; // Headings, body text
 
 $color-primary: $color-green;
 $color-primary-light: $color-primary;

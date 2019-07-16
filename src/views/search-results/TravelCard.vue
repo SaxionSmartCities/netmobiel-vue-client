@@ -160,6 +160,6 @@ export default {
 <style lang="scss">
 .travel-card {
   border-radius: 10px;
-  border: 1px $color-inputGray solid;
+  border: 1px $color-light-grey solid;
 }
 </style>

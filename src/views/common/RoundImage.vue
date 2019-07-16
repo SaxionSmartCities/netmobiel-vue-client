@@ -27,6 +27,6 @@ export default {
 
 <style lang="scss">
 .v-avatar {
-  border: 1px solid $color-headerGray;
+  border: 1px solid $color-light-grey;
 }
 </style>

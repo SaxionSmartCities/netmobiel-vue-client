@@ -103,3 +103,13 @@ body {
 .border-radius-input{
   border-radius: $form-border-radius;
 }
+
+.form-label {
+  color: $color-dark-grey;
+  font-size: 16px;
+}
+
+.thumb-grey {
+  background-color: $color-mid-grey;
+  border-color: $color-mid-grey;
+}

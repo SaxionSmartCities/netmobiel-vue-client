@@ -93,7 +93,7 @@ export default {
 
 <style lang="scss">
 .progressbar {
-  background-color: $color-optionsGray;
+  background-color: $color-dark-grey;
   border-radius: 10px;
   margin: 0;
   .v-progress-linear__bar__determinate {
@@ -101,10 +101,10 @@ export default {
   }
 }
 .arrow-right {
-  color: $color-optionsGray !important;
+  color: $color-dark-grey !important;
 }
 .grey-text {
-  color: $color-optionsGray;
+  color: $color-dark-grey;
 }
 .rounded-image {
   border-radius: 10px;

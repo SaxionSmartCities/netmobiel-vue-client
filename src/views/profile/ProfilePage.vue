@@ -150,6 +150,6 @@ export default {
   padding: 0px;
 }
 .no-route {
-  color: $color-optionsGray;
+  color: $color-light-grey;
 }
 </style>

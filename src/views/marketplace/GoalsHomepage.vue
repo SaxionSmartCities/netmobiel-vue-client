@@ -174,9 +174,7 @@ export default {
     max-width: 400px; /* or whatever width you want. */
   }
 }
-.v-list__tile {
-  padding: 0 0px;
-}
+
 .goal-homepage-img {
   border: gray 2px;
   padding: 3px;

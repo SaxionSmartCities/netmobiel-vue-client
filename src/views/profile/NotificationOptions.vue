@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-layout>
-      <p class="headline font-weight-medium">{{ title }}</p>
+      <h5 class="headline font-weight-medium">{{ title }}</h5>
     </v-layout>
 
     <v-layout pt-3>
