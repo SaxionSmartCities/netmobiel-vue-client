@@ -89,13 +89,7 @@
               </v-layout>
               <v-layout mt-2 justify-center text-xs-center>
                 <v-flex v-if="getSubmitStatus.status === 'UNSUBMITTED'">
-                  <v-btn
-                    :disabled="!locationsPicked"
-                    large
-                    round
-                    block
-                    @click="submitForm()"
-                  >
+                  <v-btn large round block @click="submitForm()">
                     Plan je reis!
                   </v-btn>
                 </v-flex>
@@ -160,6 +154,9 @@ export default {
           .format('dddd, DD MMMM HH:mm')
       }
     },
+    getSubmitStatus() {
+      return this.$store.getters.getPlanningStatus
+    },
   },
   watch: {
     getSubmitStatus(newValue) {
@@ -180,9 +177,6 @@ export default {
     },
   },
   methods: {
-    getSubmitStatus() {
-      return this.$store.getters.getPlanningStatus
-    },
     fromLocationLabel() {
       let location = this.$store.getters.getFromLocation
 

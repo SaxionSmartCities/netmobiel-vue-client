@@ -94,6 +94,9 @@ export default {
       return this.$store.getters.getReviewsOptions
     },
   },
+  created: function() {
+    this.$store.commit('showBackButton')
+  },
   methods: {
     setNotificationValue(key, state) {
       this.$store.commit('setNotificationOptionsValue', {
