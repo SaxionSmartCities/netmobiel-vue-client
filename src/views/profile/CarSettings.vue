@@ -41,6 +41,15 @@
         </v-layout>
       </v-flex>
     </v-layout>
+    <v-layout justify-center>
+      <v-flex shrink>
+        <v-btn @click="deleteCar">
+          <v-icon>
+            delete
+          </v-icon>
+        </v-btn>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
@@ -78,6 +87,10 @@ export default {
         newLicense: license,
         oldLicense: this.$route.params.car.license,
       })
+    },
+    deleteCar() {
+      this.$store.commit('deleteCar', this.car.license)
+      this.$router.go(-1)
     },
   },
 }
