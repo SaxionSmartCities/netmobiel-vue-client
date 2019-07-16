@@ -24,9 +24,14 @@
               </v-flex>
             </v-layout>
 
-            <v-layout pt-3>
-              <v-flex>
+            <v-layout pt-3 justify-space-between>
+              <v-flex shrink>
                 <p class="text-primary-uppercase">Mijn auto's</p>
+              </v-flex>
+              <v-flex shrink>
+                <v-btn class="size" fab :to="{ name: 'addCar' }">
+                  <v-icon small>add</v-icon>
+                </v-btn>
               </v-flex>
             </v-layout>
             <v-layout column>
@@ -113,4 +118,9 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.size {
+  max-height: 25px;
+  max-width: 25px;
+}
+</style>

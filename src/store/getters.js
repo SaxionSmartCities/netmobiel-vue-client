@@ -59,6 +59,9 @@ export default {
   getCarInfo: state => license => {
     return state.user.cars.find(car => car.license === license)
   },
+  getTempCar: state => {
+    return state.user.tempCar
+  },
   getCars: state => {
     return state.user.cars
   },

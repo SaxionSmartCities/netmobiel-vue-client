@@ -245,7 +245,10 @@ export default {
         this.buttonText = 'Zoek'
       } else if (this.step === 5) {
         if (this.$refs.form.validate()) {
-          this.$store.dispatch('getLicenseInfo', this.kenteken)
+          this.$store.dispatch('getLicenseInfo', {
+            license: this.kenteken,
+            temp: false,
+          })
           this.buttonText = 'Bevestig en plan rit!'
         } else {
           this.step--
@@ -279,7 +282,7 @@ export default {
     setColorCar(value) {
       let object = {}
       object['color'] = value
-      this.$store.commit('setCarInfo', object)
+      this.$store.commit('addCar', object)
     },
     getCarInfo() {
       return this.$store.getters.getCarInfo(this.kenteken)

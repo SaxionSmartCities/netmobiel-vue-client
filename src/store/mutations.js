@@ -137,7 +137,7 @@ export default {
       }
     }
   },
-  setCarInfo: (state, payload) => {
+  addCar: (state, payload) => {
     state.user.cars.push(payload)
   },
   updateCarInfo: (state, payload) => {
@@ -159,5 +159,8 @@ export default {
       car => car.license === payload
     )
     state.user.cars.splice(indexOfTheCar, 1)
+  },
+  setTempCar: (state, payload) => {
+    state.user.tempCar = payload
   },
 }
