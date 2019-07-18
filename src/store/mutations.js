@@ -47,8 +47,8 @@ export default {
       },
     }
   },
-  setRideSearchPreferences: (state, payload) => {
-    state.user.rideSearchPreferences = payload
+  setRidePreferences: (state, payload) => {
+    state.user.ridePreferences = payload
   },
   setSearchedLocation: (state, payload) => {
     state.searchedLocation = payload

@@ -54,24 +54,12 @@ export default new Vuex.Store({
       dateOfBirth: Date.now(),
       biography: '',
 
-      rideSearchPreferences: {
-        passengersSelected: 1,
-        switchSelected: 'Ja',
-        bagagePrefs: {
-          buggy: false,
-          handbagage: false,
-          animal: false,
-          walker: false,
-          wheelchair: false,
-        },
-        switchVehicle: false,
-        sortSelected: 'Bekenden',
-        avoidSelected: {
-          bus: false,
-          train: false,
-          walk: false,
-          bike: false,
-        },
+      ridePreferences: {
+        luggage: [],
+        avoidTravelModes: [],
+        nrOfPersons: 1,
+        transferAllowed: true,
+        maxMinutesWalking: 5,
       },
       privacySecurity: [
         { name: 'Gebruik mijn locatie tijdens het reizen', value: false },

@@ -42,8 +42,11 @@
                 </v-flex>
                 <v-flex>
                   <v-layout pr-3>
-                    <v-flex v-for="luggage in luggageSelected" :key="luggage">
-                      <v-icon>{{ luggage }}</v-icon>
+                    <v-flex
+                      v-for="luggage in luggageSelected"
+                      :key="luggage.type"
+                    >
+                      <v-icon>{{ luggage.icon }}</v-icon>
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -54,14 +57,14 @@
                 <v-layout row wrap>
                   <v-flex
                     v-for="luggage in luggageTypes"
-                    :key="luggage.key"
+                    :key="luggage.type"
                     xs6
                   >
                     <v-checkbox
                       v-model="luggageSelected"
                       hide-details
-                      :label="luggage.key"
-                      :value="luggage.value"
+                      :label="luggage.label"
+                      :value="luggage"
                     ></v-checkbox>
                   </v-flex>
                 </v-layout>
@@ -110,10 +113,10 @@
                 <v-flex>
                   <v-layout pr-3>
                     <v-flex
-                      v-for="(travelTypeIcon, index) in avoidTravelTypeIcons"
-                      :key="index"
+                      v-for="travelMode in avoidTravelModes"
+                      :key="travelMode.mode"
                     >
-                      <v-icon>{{ travelTypeIcon }}</v-icon>
+                      <v-icon>{{ travelMode.icon }}</v-icon>
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -123,15 +126,15 @@
               <v-flex px-4>
                 <v-layout row wrap>
                   <v-flex
-                    v-for="travelType in travelTypes"
-                    :key="travelType"
+                    v-for="travelMode in travelModes"
+                    :key="travelMode.mode"
                     xs6
                   >
                     <v-checkbox
-                      v-model="avoidTravelTypes"
+                      v-model="avoidTravelModes"
                       hide-details
-                      :label="travelType"
-                      :value="travelType"
+                      :label="travelMode.label"
+                      :value="travelMode"
                     ></v-checkbox>
                   </v-flex>
                 </v-layout>
@@ -175,172 +178,31 @@
       </v-flex>
     </v-layout>
   </v-container>
-
-  <!-- <v-layout my-4 ml-2 column>
-      <v-divider></v-divider>
-
-      <v-flex id="personen" my-3>
-        <v-layout align-center>
-          <v-flex xs9><span class="form-label py-2">Personen</span></v-flex>
-          <v-flex id="incdecvalue">
-            <v-layout align-center>
-              <v-flex id="dec">
-                <v-btn small fab @click="incrementPersons(-1)">-</v-btn>
-              </v-flex>
-              <v-flex mx-3>
-                <span>{{ nrOfPersons }}</span>
-              </v-flex>
-              <v-flex>
-                <v-btn small fab @click="incrementPersons(1)">+</v-btn>
-              </v-flex></v-layout
-            ></v-flex
-          >
-        </v-layout>
-      </v-flex>
-      <v-divider></v-divider>
-
-      <v-flex id="bagage" my-3>
-        <v-layout>
-          <v-flex xs9><span class="form-label py-2">Bagage</span></v-flex>
-          <v-flex> </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-divider></v-divider>
-
-      <v-flex id="overstappen" my-2>
-        <v-layout align-center>
-          <v-flex xs9><span class="form-label py-2">Overstappen</span></v-flex>
-          <v-flex>
-            <v-select
-              v-model="switchSelected"
-              hide-details="true"
-              attach
-              :items="overstappen"
-            ></v-select>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-divider></v-divider>
-
-      <v-flex id="sorteren" my-3>
-        <v-flex xs9><span class="form-label py-2">Sorteren</span></v-flex>
-        <v-flex> </v-flex>
-      </v-flex>
-      <v-divider></v-divider>
-
-      <v-flex id="vermijden" my-3>
-        <v-flex xs9><span class="form-label py-2">Vermijden</span></v-flex>
-        <v-flex> </v-flex>
-      </v-flex>
-      <v-divider></v-divider>
-    </v-layout> -->
-
-  <!-- <v-layout>
-      <v-flex xs11>
-        <v-subheader class="font-weight-bold">Personen</v-subheader>
-      </v-flex>
-      <v-flex>
-        <v-btn small fab @click="incrementPersons(-1)">-</v-btn>
-      </v-flex>
-      <v-flex xs1>
-        <v-text-field
-          v-model="personen"
-          type="number"
-          max="10"
-          read-only
-          value="1"
-        ></v-text-field>
-      </v-flex>
-      <v-flex>
-        <v-btn small fab @click="incrementPersons(1)">+</v-btn>
-      </v-flex>
-    </v-layout>
-    <v-divider></v-divider>
-
-    <v-layout align-center>
-      <v-flex>
-        <v-subheader class="font-weight-bold">Bagage</v-subheader>
-      </v-flex>
-      <v-flex xs8 pt-1>
-        <v-select
-          v-model="bagageSelected"
-          :items="bagage"
-          attach
-          multiple
-        ></v-select>
-      </v-flex>
-    </v-layout>
-    <v-divider></v-divider>
-
-    <v-layout>
-      <v-flex>
-        <v-subheader class="font-weight-bold">Overstappen</v-subheader>
-      </v-flex>
-      <v-flex xs8 pt-1>
-        <v-select
-          v-model="switchSelected"
-          attach
-          :items="overstappen"
-        ></v-select>
-      </v-flex>
-    </v-layout>
-    <v-divider></v-divider>
-
-    <v-layout>
-      <v-flex>
-        <v-subheader class="font-weight-bold">Sorteren</v-subheader>
-      </v-flex>
-      <v-flex xs8 pt-1>
-        <v-select v-model="sortSelected" attach :items="sorteren"></v-select>
-      </v-flex>
-    </v-layout>
-    <v-divider></v-divider>
-
-    <v-layout justify-space-between>
-      <v-flex>
-        <v-subheader class="font-weight-bold">Vermijden</v-subheader>
-      </v-flex>
-      <v-flex xs8 pt-1>
-        <v-select
-          v-model="avoidSelected"
-          :items="vermijden"
-          attach
-          multiple
-        ></v-select>
-      </v-flex>
-    </v-layout>
-    <v-divider></v-divider>
-    -->
 </template>
 
 <script>
-import { getIcon } from '@/utils/Utils.js'
+import travelModes from '@/config/travel-modes.js'
+import luggageTypes from '@/config/luggage-types.js'
 
 export default {
   name: 'RidePreferences',
   data: function() {
     return {
-      //hardcoded lists, must be changed later
-      luggageTypes: [
-        { key: 'Buggy', value: 'child_friendly' },
-        { key: 'Handbagage', value: 'work' },
-        { key: 'Huisdier', value: 'pets' },
-        { key: 'Rollator', value: 'fa-crutch' },
-        { key: 'Rolstoel', value: 'accessible_forward' },
-      ],
-      travelTypes: ['WALK', 'CAR', 'NETMOBIEL', 'TRAIN', 'BUS', 'RAIL'],
-      avoidTravelTypes: [],
+      maxNrOfPersons: 4,
 
       luggageSelected: [],
+      avoidTravelModes: [],
       nrOfPersons: 1,
-      maxNrOfPersons: 4,
       transferAllowed: true,
       maxMinutesWalking: 0,
     }
   },
   computed: {
-    avoidTravelTypeIcons: function() {
-      return this.avoidTravelTypes.map(element => getIcon(element))
+    travelModes: function() {
+      return travelModes
+    },
+    luggageTypes: function() {
+      return luggageTypes
     },
     generatePersonRange: function() {
       let result = []
@@ -363,48 +225,27 @@ export default {
     this.$store.commit('showBackButton')
   },
   mounted() {
-    // let prefs = this.$store.getters.getRideSearchPreferences
-    // this.passengersSelected = prefs.passengersSelected
-    // this.sortSelected = prefs.sortSelected
-    // this.switchSelected = prefs.switchSelected
-    // for (let i = 0; i < this.bagage.length; i++) {
-    //   if (Object.values(prefs.bagagePrefs)[i]) {
-    //     this.bagageSelected.push(this.bagage[i])
-    //   }
-    // }
-    // for (let i = 0; i < this.vermijden.length; i++) {
-    //   if (Object.values(prefs.avoidSelected)[i]) {
-    //     this.avoidSelected.push(this.vermijden[i])
-    //   }
-    // }
+    let prefs = this.$store.getters.getRidePreferences
+    this.luggageSelected = prefs.luggage
+    this.avoidTravelModes = prefs.avoidTravelModes
+    this.nrOfPersons = prefs.nrOfPersons
+    this.transferAllowed = prefs.transferAllowed
+    this.maxMinutesWalking = prefs.maxMinutesWalking
   },
   methods: {
     save: function() {
-      this.$store.commit('setRideSearchPreferences', {
-        passengersSelected: this.passengersSelected,
-        bagagePrefs: {
-          buggy: this.bagageSelected.indexOf(this.bagage[0]) > -1,
-          handbagage: this.bagageSelected.indexOf(this.bagage[1]) > -1,
-          animal: this.bagageSelected.indexOf(this.bagage[2]) > -1,
-          walker: this.bagageSelected.indexOf(this.bagage[3]) > -1,
-          wheelchair: this.bagageSelected.indexOf(this.bagage[4]) > -1,
-        },
-        switchSelected: this.switchSelected,
-        sortSelected: this.sortSelected,
-        avoidSelected: {
-          bus: this.avoidSelected.indexOf(this.vermijden[0]) > -1,
-          train: this.avoidSelected.indexOf(this.vermijden[1]) > -1,
-          walk: this.avoidSelected.indexOf(this.vermijden[2]) > -1,
-          bike: this.avoidSelected.indexOf(this.vermijden[3]) > -1,
-        },
-      })
-      this.$router.push('search')
-    },
-    incrementPersons(i) {
-      if (i === 1 && this.personen < 8) {
-        this.personen = this.personen + i
-      } else if (i === -1 && this.personen > 1)
-        this.personen = this.personen + i
+      let payload = {
+        luggage: this.luggageSelected,
+        avoidTravelModes: this.avoidTravelModes,
+        nrOfPersons: this.nrOfPersons,
+        transferAllowed: this.transferAllowed,
+        maxMinutesWalking: this.maxMinutesWalking,
+      }
+
+      console.log(payload)
+
+      this.$store.commit('setRidePreferences', payload)
+      this.$router.go(-1)
     },
   },
 }
