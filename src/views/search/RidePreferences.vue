@@ -242,8 +242,6 @@ export default {
         maxMinutesWalking: this.maxMinutesWalking,
       }
 
-      console.log(payload)
-
       this.$store.commit('setRidePreferences', payload)
       this.$router.go(-1)
     },
