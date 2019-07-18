@@ -49,16 +49,20 @@ export default {
 
     let params = {
       fromPlace: encodeURIComponent(
-        context.state.planningRequest.fromPlace.lat +
+        payload.from.displayPosition.latitude +
           ',' +
-          context.state.planningRequest.fromPlace.lon
+          payload.from.displayPosition.longitude
       ),
       toPlace: encodeURIComponent(
-        context.state.planningRequest.toPlace.lat +
+        payload.to.displayPosition.latitude +
           ',' +
-          context.state.planningRequest.toPlace.lon
+          payload.to.displayPosition.longitude
       ),
+      selectedTime: payload.selectedTime,
+      ridePreferences: payload.ridePreferences,
     }
+
+    console.log(params)
     var axiosConfig = {
       method: 'GET',
       url: BASE_URL + '/plans',

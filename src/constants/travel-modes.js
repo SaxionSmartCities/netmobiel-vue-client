@@ -9,11 +9,11 @@ module.exports = [
     label: 'Auto',
     icon: 'directions_car',
   },
-  {
-    mode: 'NETMOBIEL',
-    label: 'Netmobiel meerijden',
-    icon: 'directions_car',
-  },
+  // {
+  //   mode: 'NETMOBIEL',
+  //   label: 'Netmobiel meerijden',
+  //   icon: 'directions_car',
+  // },
   {
     mode: 'TRAIN',
     label: 'Trein',

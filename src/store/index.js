@@ -5,6 +5,8 @@ import actions from './actions'
 import mutations from './mutations'
 import getters from './getters'
 
+import travelModes from '@/constants/travel-modes.js'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -56,10 +58,10 @@ export default new Vuex.Store({
 
       ridePreferences: {
         luggage: [],
-        avoidTravelModes: [],
+        allowedTravelModes: travelModes,
         nrOfPersons: 1,
         transferAllowed: true,
-        maxMinutesWalking: 5,
+        maxMinutesWalking: 15,
       },
       privacySecurity: [
         { name: 'Gebruik mijn locatie tijdens het reizen', value: false },

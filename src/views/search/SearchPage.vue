@@ -23,17 +23,13 @@
                   <v-layout column>
                     <v-flex id="van">
                       <v-layout row>
-                        <v-flex xs4 sm2>
-                          <v-subheader class="font-weight-bold">
+                        <v-flex pl-4 xs4 sm2>
+                          <span class="form-label">
                             Van
-                          </v-subheader>
+                          </span>
                         </v-flex>
-                        <v-flex>
-                          <v-text-field
-                            :value="fromLocationLabel()"
-                            @click="toLocationSuggestionsPage('from')"
-                          >
-                          </v-text-field>
+                        <v-flex @click="toLocationSuggestionsPage('from')">
+                          {{ fromLocationLabel() }}
                         </v-flex>
                       </v-layout>
                     </v-flex>
@@ -213,16 +209,14 @@ export default {
       let pickedGeoLocations = this.$store.getters.getGeocoderPickedLocations
       let from = pickedGeoLocations.from
       let to = pickedGeoLocations.to
+      let ridePreferences = this.$store.getters.getRidePreferences
+      let selectedTime = this.$store.getters.getSearchRideDateTime
 
       var searchQuery = {
-        fromPlace: {
-          lat: from.displayPosition.latitude,
-          lon: from.displayPosition.longitude,
-        },
-        toPlace: {
-          lat: to.displayPosition.latitude,
-          lon: to.displayPosition.longitude,
-        },
+        from: from,
+        to: to,
+        ridePreferences: ridePreferences,
+        selectedTime: selectedTime,
       }
 
       this.$store.dispatch('submitPlanningsRequest', searchQuery)
