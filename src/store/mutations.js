@@ -50,11 +50,8 @@ export default {
   setRidePreferences: (state, payload) => {
     state.user.ridePreferences = payload
   },
-  setSearchedLocation: (state, payload) => {
-    state.searchedLocation = payload
-  },
   setDate: (state, payload) => {
-    state.searchRide.dateTime = payload
+    state.planningRequest.dateTime = payload
   },
   setPrivacySecurityValue: (state, payload) => {
     state.user.privacySecurity.filter(function(item) {
@@ -127,5 +124,10 @@ export default {
         return item
       }
     })
+  },
+  swapLocations: state => {
+    let tmp = state.geocoder.pickedLocations.to
+    state.geocoder.pickedLocations.to = state.geocoder.pickedLocations.from
+    state.geocoder.pickedLocations.from = tmp
   },
 }

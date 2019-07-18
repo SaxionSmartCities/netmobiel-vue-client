@@ -108,12 +108,12 @@
             <div slot="header">
               <v-layout>
                 <v-flex xs10>
-                  <span class="form-label py-2">Vermijden</span>
+                  <span class="form-label py-2">Toestaan</span>
                 </v-flex>
                 <v-flex>
                   <v-layout pr-3>
                     <v-flex
-                      v-for="travelMode in avoidTravelModes"
+                      v-for="travelMode in allowedTravelModes"
                       :key="travelMode.mode"
                     >
                       <v-icon>{{ travelMode.icon }}</v-icon>
@@ -131,7 +131,7 @@
                     xs6
                   >
                     <v-checkbox
-                      v-model="avoidTravelModes"
+                      v-model="allowedTravelModes"
                       hide-details
                       :label="travelMode.label"
                       :value="travelMode"
@@ -181,8 +181,8 @@
 </template>
 
 <script>
-import travelModes from '@/config/travel-modes.js'
-import luggageTypes from '@/config/luggage-types.js'
+import travelModes from '@/constants/travel-modes.js'
+import luggageTypes from '@/constants/luggage-types.js'
 
 export default {
   name: 'RidePreferences',
@@ -191,7 +191,7 @@ export default {
       maxNrOfPersons: 4,
 
       luggageSelected: [],
-      avoidTravelModes: [],
+      allowedTravelModes: [],
       nrOfPersons: 1,
       transferAllowed: true,
       maxMinutesWalking: 0,
@@ -227,7 +227,7 @@ export default {
   mounted() {
     let prefs = this.$store.getters.getRidePreferences
     this.luggageSelected = prefs.luggage
-    this.avoidTravelModes = prefs.avoidTravelModes
+    this.allowedTravelModes = prefs.allowedTravelModes
     this.nrOfPersons = prefs.nrOfPersons
     this.transferAllowed = prefs.transferAllowed
     this.maxMinutesWalking = prefs.maxMinutesWalking
@@ -236,7 +236,7 @@ export default {
     save: function() {
       let payload = {
         luggage: this.luggageSelected,
-        avoidTravelModes: this.avoidTravelModes,
+        allowedTravelModes: this.allowedTravelModes,
         nrOfPersons: this.nrOfPersons,
         transferAllowed: this.transferAllowed,
         maxMinutesWalking: this.maxMinutesWalking,

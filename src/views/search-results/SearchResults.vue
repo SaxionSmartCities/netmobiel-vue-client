@@ -3,11 +3,88 @@
     <v-layout column>
       <v-flex><h1>Reisopties</h1></v-flex>
       <v-flex mt-2>
-        <v-layout>
-          <v-flex text-uppercase xs8>datum</v-flex>
-          <v-flex @click="changeSort()">{{
-            sortModi[selectedModus].name
-          }}</v-flex>
+        <v-divider />
+        <v-expansion-panel>
+          <v-expansion-panel-content class="no-padding">
+            <div slot="header">
+              Reisvoorkeuren tonen
+            </div>
+            <v-layout>
+              <v-flex>
+                <v-layout column>
+                  <v-flex id="personen" my-2>
+                    <v-layout>
+                      <v-flex>Aantal personen:</v-flex>
+                      <v-flex text-xs-right pr-3>{{
+                        getRidePreferences.nrOfPersons
+                      }}</v-flex>
+                    </v-layout>
+                  </v-flex>
+                  <v-flex id="bagage" my-2>
+                    <v-layout>
+                      <v-flex>Bagage:</v-flex>
+                      <v-flex text-xs-right pr-3>
+                        <v-icon
+                          v-for="selectedLuggage in luggage"
+                          :key="selectedLuggage.type"
+                          >{{ selectedLuggage.icon }}</v-icon
+                        >
+                      </v-flex>
+                    </v-layout>
+                  </v-flex>
+                  <v-flex id="overstappen" my-2>
+                    <v-layout>
+                      <v-flex>Overstappen:</v-flex>
+                      <v-flex
+                        v-if="getRidePreferences.transferAllowed"
+                        pr-3
+                        text-xs-right
+                      >
+                        <v-icon>check</v-icon>
+                      </v-flex>
+                      <v-flex v-else pr-3 text-xs-right>
+                        <v-icon color="red">close</v-icon>
+                      </v-flex>
+                    </v-layout>
+                  </v-flex>
+                  <v-flex id="toestaan" my-2>
+                    <v-layout>
+                      <v-flex>Toegestaan:</v-flex>
+                      <v-flex pr-3 text-xs-right>
+                        <v-icon
+                          v-for="travelMode in getRidePreferences.allowedTravelModes"
+                          :key="travelMode.mode"
+                          >{{ travelMode.icon }}</v-icon
+                        >
+                      </v-flex>
+                    </v-layout>
+                  </v-flex>
+                  <v-flex id="loopafstand" my-2>
+                    <v-layout>
+                      <v-flex>Aantal minuten lopen:</v-flex>
+                      <v-flex text-xs-right pr-3>{{
+                        getRidePreferences.maxMinutesWalking
+                      }}</v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+            </v-layout>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-divider />
+        <v-layout align-center mt-3>
+          <v-flex xs8>{{ date }}</v-flex>
+          <v-flex>
+            <v-layout align-center @click="changeSort()">
+              <v-flex text-xs-right>
+                {{ sortModi[selectedModus].name }}
+              </v-flex>
+              <v-flex text-xs-right shrink>
+                <v-icon>unfold_more</v-icon>
+              </v-flex>
+            </v-layout>
+          </v-flex>
         </v-layout>
       </v-flex>
       <v-flex v-for="(itinerary, index) in getItineraries" :key="index">
@@ -39,6 +116,7 @@
 
 <script>
 import TravelCard from '@/views/search-results/TravelCard.vue'
+import moment from 'moment'
 
 export default {
   name: 'SearchResults',
@@ -58,6 +136,14 @@ export default {
   computed: {
     getItineraries() {
       return this.$store.getters.getItineraries
+    },
+    date() {
+      return moment(this.$store.getters.getSearchRideDateTime).format(
+        'DD-MM-YYYY'
+      )
+    },
+    getRidePreferences() {
+      return this.$store.getters.getRidePreferences
     },
   },
   methods: {
@@ -81,4 +167,9 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.no-padding .v-expansion-panel__header {
+  padding-left: 0;
+  padding-right: 0;
+}
+</style>
