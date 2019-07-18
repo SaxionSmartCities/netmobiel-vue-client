@@ -22,9 +22,9 @@
                 <v-flex id="vannaar" xs11>
                   <v-layout column>
                     <v-flex id="van">
-                      <v-layout row>
-                        <v-flex pl-4 xs4 sm2>
-                          <span class="form-label">
+                      <v-layout my-1 row>
+                        <v-flex pl-4 xs5 sm2>
+                          <span class="form-label font-weight-bold">
                             Van
                           </span>
                         </v-flex>
@@ -34,32 +34,26 @@
                       </v-layout>
                     </v-flex>
                     <v-flex id="naar">
-                      <v-layout row>
-                        <v-flex xs4 sm2>
-                          <v-subheader class="font-weight-bold">
+                      <v-layout my-1 row>
+                        <v-flex pl-4 xs5 sm2>
+                          <span class="form-label font-weight-bold">
                             Naar
-                          </v-subheader>
+                          </span>
                         </v-flex>
-                        <v-flex>
-                          <v-text-field
-                            readonly
-                            :value="toLocationLabel()"
-                            @click="toLocationSuggestionsPage('to')"
-                          >
-                          </v-text-field>
+                        <v-flex @click="toLocationSuggestionsPage('to')">
+                          {{ toLocationLabel() }}
                         </v-flex>
                       </v-layout>
                     </v-flex>
                   </v-layout>
                 </v-flex>
                 <v-flex d-flex>
-                  <v-layout column justify-center>
+                  <v-layout column justify-center @click="swapLocations()">
                     <v-flex
                       id="heenweericoon"
                       text-xs-center
                       justify-center
                       shrink
-                      @click="swapLocations()"
                     >
                       <v-icon>import_export</v-icon>
                     </v-flex>
@@ -68,20 +62,19 @@
               </v-layout>
 
               <v-layout>
-                <v-flex id="aankomsttijd" xs11>
-                  <v-layout row>
-                    <v-flex xs4 sm2>
-                      <v-subheader class="font-weight-bold">
+                <v-flex id="aankomsttijd">
+                  <v-layout my-2 row>
+                    <v-flex pl-4 xs4 sm2>
+                      <span class="form-label font-weight-bold">
                         Aankomst
-                      </v-subheader>
+                      </span>
                     </v-flex>
-                    <v-flex>
-                      <p class="ma-0 mt-3" @click="toSearchRideDate">
-                        {{ dateRide }}
-                      </p>
+                    <v-flex @click="toSearchRideDate">
+                      {{ dateRide }}
                     </v-flex>
                   </v-layout>
                 </v-flex>
+                <v-flex> </v-flex>
               </v-layout>
               <v-layout mt-2 justify-center text-xs-center>
                 <v-flex v-if="getSubmitStatus.status === 'UNSUBMITTED'">
@@ -126,6 +119,7 @@
 
 <script>
 import moment from 'moment'
+import { upperCaseFirst } from '@/utils/Utils.js'
 
 export default {
   data: function() {
@@ -141,13 +135,18 @@ export default {
       let dateTime = this.$store.getters.getSearchRideDateTime
 
       if (dateTime !== undefined) {
-        return moment(dateTime)
-          .locale('nl')
-          .format('dddd, DD MMMM HH:mm')
+        return upperCaseFirst(
+          moment(dateTime)
+            .locale('nl')
+            .format('dddd, DD MMMM HH:mm')
+        )
       } else {
-        return moment()
-          .locale('nl')
-          .format('dddd, DD MMMM HH:mm')
+        this.$store.commit('setDate', moment())
+        return upperCaseFirst(
+          moment()
+            .locale('nl')
+            .format('dddd, DD MMMM HH:mm')
+        )
       }
     },
     getSubmitStatus() {
@@ -200,10 +199,7 @@ export default {
       this.$router.push({ name: 'searchLocation', params: { field: field } })
     },
     swapLocations() {
-      var tempLocation = this.fromLocation
-
-      this.fromLocation = this.toLocation
-      this.toLocation = tempLocation
+      this.$store.commit('swapLocations')
     },
     submitForm() {
       let pickedGeoLocations = this.$store.getters.getGeocoderPickedLocations

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from '@/config/config'
+import moment from 'moment'
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_PLAN_SERVICE_API_KEY = config.GRAVITEE_PLAN_SERVICE_API_KEY
@@ -46,27 +47,37 @@ export default {
   },
   submitPlanningsRequest: (context, payload) => {
     context.commit('storePlanningRequest', payload)
+    let time = moment(payload.selectedTime).format('HH:mm')
+    let date = moment(payload.selectedTime).format('YYYY-MM-DD')
 
-    let params = {
-      fromPlace: encodeURIComponent(
+    let data = {
+      fromPlace:
         payload.from.displayPosition.latitude +
-          ',' +
-          payload.from.displayPosition.longitude
-      ),
-      toPlace: encodeURIComponent(
+        ',' +
+        payload.from.displayPosition.longitude,
+      toPlace:
         payload.to.displayPosition.latitude +
-          ',' +
-          payload.to.displayPosition.longitude
-      ),
-      selectedTime: payload.selectedTime,
-      ridePreferences: payload.ridePreferences,
+        ',' +
+        payload.to.displayPosition.longitude,
+      selectedTime: {
+        date: date,
+        time: time,
+      },
+      ridePreferences: {
+        luggage: payload.ridePreferences.luggage.map(element => element.type),
+        allowedTravelModes: payload.ridePreferences.allowedTravelModes.map(
+          element => element.mode
+        ),
+        maxMinutesWalking: payload.ridePreferences.maxMinutesWalking,
+        transferAllowed: payload.ridePreferences.transferAllowed,
+        nrOfPersons: payload.ridePreferences.nrOfPersons,
+      },
     }
 
-    console.log(params)
     var axiosConfig = {
-      method: 'GET',
+      method: 'POST',
       url: BASE_URL + '/plans',
-      params: params,
+      data: data,
       headers: generateHeader(GRAVITEE_PLAN_SERVICE_API_KEY, context),
     }
 

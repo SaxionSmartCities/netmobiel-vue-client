@@ -99,12 +99,11 @@ export default new Vuex.Store({
         from: { address: undefined, displayPosition: undefined },
       },
     },
-    searchRide: {
-      dateTime: undefined,
-      fromLocation: undefined,
-      toLocation: undefined,
-    },
-    searchedLocation: { name: '', type: '' },
+    // searchRide: {
+    //   dateTime: undefined,
+    //   fromLocation: undefined,
+    //   toLocation: undefined,
+    // },
     locations: [
       { name: 'Vorden', type: 'train' },
       { name: 'Vorden Station', type: 'train' },
