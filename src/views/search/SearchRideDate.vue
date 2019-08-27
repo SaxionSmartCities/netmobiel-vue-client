@@ -56,8 +56,8 @@ export default {
   name: 'SearchRideDate',
   data() {
     return {
-      date: undefined,
-      time: undefined,
+      date: moment().format('YYYY-MM-DD'),
+      time: moment().format('HH:mm'),
     }
   },
   methods: {
