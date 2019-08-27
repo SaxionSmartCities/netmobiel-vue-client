@@ -33,6 +33,6 @@ export default {
 
 #backButton {
   color: $color-white;
-  font-size: 10vw;
+  font-size: 30px;
 }
 </style>
