@@ -100,7 +100,6 @@ export default new Vuex.Store({
         from: { address: undefined, displayPosition: undefined },
       },
     },
-  },
   getters,
   mutations,
   actions,

@@ -120,6 +120,7 @@
 <script>
 import TravelCard from '@/views/search-results/TravelCard.vue'
 import luggageTypes from '@/constants/luggage-types.js'
+
 import moment from 'moment'
 
 export default {
