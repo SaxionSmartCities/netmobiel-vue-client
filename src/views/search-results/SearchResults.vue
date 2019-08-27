@@ -25,7 +25,7 @@
                       <v-flex>Bagage:</v-flex>
                       <v-flex text-xs-right pr-3>
                         <v-icon
-                          v-for="selectedLuggage in luggage"
+                          v-for="selectedLuggage in luggageTypes"
                           :key="selectedLuggage.type"
                           >{{ selectedLuggage.icon }}</v-icon
                         >
@@ -116,6 +116,7 @@
 
 <script>
 import TravelCard from '@/views/search-results/TravelCard.vue'
+import luggageTypes from '@/constants/luggage-types.js'
 import moment from 'moment'
 
 export default {
@@ -134,6 +135,9 @@ export default {
     }
   },
   computed: {
+    luggageTypes() {
+      return luggageTypes
+    },
     getItineraries() {
       return this.$store.getters.getItineraries
     },
