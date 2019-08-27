@@ -26,7 +26,7 @@ export default {
 .header {
   background: $color-green;
   background-image: url('../../assets/logo_header.png');
-  background-size: 40% auto;
+  background-size: 200px;
   background-repeat: no-repeat;
   background-position: center center;
 }
