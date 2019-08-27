@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import SearchSuggestionInput from '../common/SearchSuggestionInput'
+import SearchSuggestionInput from '@/components/SearchSuggestionInput'
 export default {
   name: 'SearchLocation',
   components: { SearchSuggestionInput },
@@ -19,8 +19,8 @@ export default {
     locations() {
       return this.$store.getters.getGeocoderSuggestions
     },
-    getGeocoderPickedLocations() {
-      return this.$store.getters.getGeocoderPickedLocations
+    getPickedLocation() {
+      return this.$store.getters['gs/getPickedLocation']
     },
   },
   watch: {
@@ -32,16 +32,16 @@ export default {
         }
       }
     },
-    getGeocoderPickedLocations: function() {
+    getPickedLocation: function() {
       this.$router.go(-1)
     },
   },
   mounted: function() {
-    this.$store.commit('showBackButton')
+    this.$store.commit('ui/showBackButton')
   },
   methods: {
     completeSearch(location) {
-      this.$store.dispatch('fetchGeocoderLocation', location.locationId)
+      this.$store.dispatch('gs/fetchGeocoderLocation', location.locationId)
       // this.$router.go(-1)
     },
     clearSearchInput() {

@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import NetmobielHeader from '@/views/common/NetmobielHeader.vue'
-import NetmobielFooter from '@/views/common/NetmobielFooter.vue'
+import NetmobielHeader from '@/components/common/NetmobielHeader.vue'
+import NetmobielFooter from '@/components/common/NetmobielFooter.vue'
 
 export default {
   name: 'App',
@@ -28,10 +28,10 @@ export default {
   },
   computed: {
     isHeaderVisible: function() {
-      return this.$store.getters.isHeaderVisible
+      return this.$store.getters['ui/isHeaderVisible']
     },
     isFooterVisible: function() {
-      return this.$store.getters.isFooterVisible
+      return this.$store.getters['ui/isFooterVisible']
     },
   },
 }

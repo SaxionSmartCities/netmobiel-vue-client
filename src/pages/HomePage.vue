@@ -19,11 +19,6 @@
           Ik wil een reis aanbieden!
         </v-btn>
       </v-flex>
-      <v-flex xs12 md6>
-        <v-btn round large block :to="{ name: 'searchLocation' }">
-          Locatie zoeken
-        </v-btn>
-      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -32,7 +27,7 @@
 export default {
   computed: {
     user() {
-      return this.$store.getters.getUser
+      return this.$store.getters['ps/getUser']
     },
   },
 }

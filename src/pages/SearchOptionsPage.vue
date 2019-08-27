@@ -222,7 +222,7 @@ export default {
     },
   },
   created: function() {
-    this.$store.commit('showBackButton')
+    this.$store.commit('ui/showBackButton')
   },
   mounted() {
     let prefs = this.$store.getters.getRidePreferences

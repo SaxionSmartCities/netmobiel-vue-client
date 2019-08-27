@@ -3,6 +3,7 @@ import mutations from './mutations'
 import actions from './actions'
 
 export default {
+  namespaced: true,
   state: {
     selectedItinerary: {},
 
@@ -22,6 +23,7 @@ export default {
       result: {
         data: '',
       },
+      dateTime: undefined,
     },
   },
   getters,

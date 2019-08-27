@@ -132,7 +132,7 @@ export default {
   },
   computed: {
     dateRide: function() {
-      let dateTime = this.$store.getters.getSearchRideDateTime
+      let dateTime = this.$store.getters['is/getSearchRideDateTime']
 
       if (dateTime !== undefined) {
         return upperCaseFirst(
@@ -141,7 +141,7 @@ export default {
             .format('dddd, DD MMMM HH:mm')
         )
       } else {
-        this.$store.commit('setDate', moment())
+        this.$store.commit('is/setDate', moment())
         return upperCaseFirst(
           moment()
             .locale('nl')
@@ -150,7 +150,7 @@ export default {
       }
     },
     getSubmitStatus() {
-      return this.$store.getters.getPlanningStatus
+      return this.$store.getters['is/getPlanningStatus']
     },
   },
   watch: {
@@ -162,7 +162,7 @@ export default {
         }, 1500)
       }
     },
-    getGeocoderPickedLocations: {
+    getPickedLocation: {
       handler: function(newValue) {
         if (newValue.from !== undefined && newValue.to !== undefined) {
           this.locationsPicked = true
@@ -173,17 +173,17 @@ export default {
   },
   methods: {
     fromLocationLabel() {
-      let location = this.$store.getters.getFromLocation
+      let location = this.$store.getters['gs/getPickedLocation'].from
 
       return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
     },
     toLocationLabel() {
-      let location = this.$store.getters.getToLocation
+      let location = this.$store.getters['gs/getPickedLocation'].to
 
       return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
     },
-    getGeocoderPickedLocations() {
-      return this.$store.getters.getGeocoderPickedLocations
+    getPickedLocation() {
+      return this.$store.getters.getPickedLocation
     },
     showPickLocationView(fieldPressed) {
       this.showPicklocation = true
@@ -193,7 +193,7 @@ export default {
       this.$router.push({ name: 'ridePreferences' })
     },
     toSearchRideDate() {
-      this.$router.push({ name: 'searchRideDate' })
+      this.$router.push({ name: 'searchDateTime' })
     },
     toLocationSuggestionsPage(field) {
       this.$router.push({ name: 'searchLocation', params: { field: field } })
@@ -202,7 +202,7 @@ export default {
       this.$store.commit('swapLocations')
     },
     submitForm() {
-      let pickedGeoLocations = this.$store.getters.getGeocoderPickedLocations
+      let pickedGeoLocations = this.$store.getters['gs/getPickedLocation']
       let from = pickedGeoLocations.from
       let to = pickedGeoLocations.to
       let ridePreferences = this.$store.getters.getRidePreferences
@@ -215,7 +215,7 @@ export default {
         selectedTime: selectedTime,
       }
 
-      this.$store.dispatch('submitPlanningsRequest', searchQuery)
+      this.$store.dispatch('is/submitPlanningsRequest', searchQuery)
     },
   },
 }

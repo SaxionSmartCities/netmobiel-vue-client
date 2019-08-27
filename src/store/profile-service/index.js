@@ -2,7 +2,10 @@ import getters from './getters'
 import mutations from './mutations'
 import actions from './actions'
 
+import travelModes from '@/constants/travel-modes.js'
+
 export default {
+  namespaced: true,
   state: {
     user: {
       // Access token

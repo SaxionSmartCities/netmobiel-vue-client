@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import roundimg from '@/views/common/RoundImage'
+import roundimg from '@/components/common/RoundImage'
 
 export default {
   components: {
@@ -129,7 +129,7 @@ export default {
     },
     logOut: function() {
       this.$keycloak.logoutFn()
-      this.$store.commit('deleteAccessToken')
+      this.$store.commit('ui/deleteAccessToken')
     },
   },
 }

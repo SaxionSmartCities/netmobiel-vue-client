@@ -7,7 +7,7 @@ const GRAVITEE_PROFILE_SERVICE_API_KEY = config.GRAVITEE_PROFILE_SERVICE_API_KEY
 function generateHeader(key, context) {
   return {
     'X-Gravitee-Api-Key': key,
-    Authorization: context.state.user.accessToken,
+    Authorization: context.state.ui.user.accessToken,
   }
 }
 

@@ -39,8 +39,8 @@
 </template>
 
 <script>
-import ItinerarySummary from '@/views/itinerary-details/ItinerarySummary.vue'
-import ItineraryLeg from '@/views/itinerary-details/ItineraryLeg.vue'
+import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
+import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 
 export default {
   name: 'ItineraryDetailPage',

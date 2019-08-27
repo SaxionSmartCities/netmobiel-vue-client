@@ -11,7 +11,7 @@ export default {
   name: 'Header',
   computed: {
     isBackButtonVisible: function() {
-      return this.$store.getters.isBackButtonVisible
+      return this.$store.getters['ui/isBackButtonVisible']
     },
   },
   methods: {

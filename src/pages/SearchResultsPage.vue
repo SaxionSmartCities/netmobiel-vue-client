@@ -115,11 +115,11 @@
 </template>
 
 <script>
-import TravelCard from '@/views/search-results/TravelCard.vue'
+import TravelCard from '@/components/search-results/TravelCard.vue'
 import moment from 'moment'
 
 export default {
-  name: 'SearchResults',
+  name: 'SearchResultsPage',
   components: {
     TravelCard,
   },

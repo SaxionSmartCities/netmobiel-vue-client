@@ -1,11 +1,11 @@
 export default {
   isHeaderVisible: state => {
-    return state.ui.header.visible
+    return state.header.visible
   },
   isFooterVisible: state => {
-    return state.ui.footer.visible
+    return state.footer.visible
   },
   isBackButtonVisible: state => {
-    return state.ui.backButtonVisible
+    return state.backButtonVisible
   },
 }

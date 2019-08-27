@@ -45,7 +45,7 @@
 
 <script>
 import moment from 'moment'
-import TravelLeg from '@/views/search-results/TravelLeg.vue'
+import TravelLeg from '@/components/search-results/TravelLeg.vue'
 
 export default {
   name: 'TravelCard',

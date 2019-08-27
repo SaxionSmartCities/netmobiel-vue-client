@@ -23,12 +23,12 @@
 <script>
 export default {
   beforeCreate() {
-    this.$store.commit('disableHeader')
-    this.$store.commit('disableFooter')
+    this.$store.commit('ui/disableHeader')
+    this.$store.commit('ui/disableFooter')
   },
   mounted() {
     if (this.$keycloak.authenticated) {
-      this.$store.commit('setUserToken', this.$keycloak.token)
+      this.$store.commit('ps/setUserToken', this.$keycloak.token)
 
       this.$router.push('/home')
     }

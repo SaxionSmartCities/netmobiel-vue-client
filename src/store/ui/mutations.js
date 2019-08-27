@@ -1,23 +1,23 @@
 export default {
   enableHeader: state => {
-    state.ui.header.visible = true
+    state.header.visible = true
   },
   disableHeader: state => {
-    state.ui.header.visible = false
+    state.header.visible = false
   },
   enableFooter: state => {
-    state.ui.footer.visible = true
+    state.footer.visible = true
   },
   disableFooter: state => {
-    state.ui.footer.visible = false
+    state.footer.visible = false
   },
   //   incrementRegistrationStep: (state, payload) => {
   //     state.ui.registrationStep += payload
   //   },
   hideBackButton: state => {
-    state.ui.backButtonVisible = false
+    state.backButtonVisible = false
   },
   showBackButton: state => {
-    state.ui.backButtonVisible = true
+    state.backButtonVisible = true
   },
 }

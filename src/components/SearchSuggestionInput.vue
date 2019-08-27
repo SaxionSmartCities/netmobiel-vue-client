@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     locations() {
-      return this.$store.getters.getGeocoderSuggestions
+      return this.$store.getters['gs/getGeocoderSuggestions']
     },
   },
   watch: {
@@ -59,14 +59,14 @@ export default {
       if (val) {
         if (val.length > 3) {
           this.showSuggestionsList = true
-          this.$store.dispatch('fetchGeocoderSuggestions', val)
+          this.$store.dispatch('gs/fetchGeocoderSuggestions', val)
         }
       }
     },
   },
   methods: {
     completeSearch(location) {
-      this.$store.dispatch('fetchGeocoderLocation', {
+      this.$store.dispatch('gs/fetchGeocoderLocation', {
         locationId: location.locationId,
         field: this.$route.params.field,
       })

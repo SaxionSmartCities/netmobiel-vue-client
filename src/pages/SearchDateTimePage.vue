@@ -56,8 +56,8 @@ export default {
   name: 'SearchRideDate',
   data() {
     return {
-      date: undefined,
-      time: undefined,
+      date: moment().format('YYYY-MM-DD'),
+      time: moment().format('HH:mm'),
     }
   },
   methods: {
@@ -75,7 +75,7 @@ export default {
 
       let departureMoment = moment(this.date + ' ' + this.time)
 
-      this.$store.commit('setDate', departureMoment)
+      this.$store.commit('is/setDate', departureMoment)
       this.$router.push('/search')
     },
   },
