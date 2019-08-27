@@ -38,6 +38,7 @@ export default new Vuex.Store({
       result: {
         data: '',
       },
+      dateTime: undefined,
     },
     user: {
       // Access token
