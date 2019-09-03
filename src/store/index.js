@@ -38,6 +38,7 @@ export default new Vuex.Store({
       result: {
         data: '',
       },
+      dateTime: undefined,
     },
     user: {
       // Access token
@@ -99,21 +100,8 @@ export default new Vuex.Store({
         from: { address: undefined, displayPosition: undefined },
       },
     },
-    // searchRide: {
-    //   dateTime: undefined,
-    //   fromLocation: undefined,
-    //   toLocation: undefined,
-    // },
-    locations: [
-      { name: 'Vorden', type: 'train' },
-      { name: 'Vorden Station', type: 'train' },
-      { name: 'Vorden Centrum', type: 'train' },
-      { name: 'Vordensebeek, Zwolle', type: 'train' },
-      { name: 'Vordensebeek, Warnsveld', type: 'train' },
-      { name: 'Vorden, Kasteel Hackfort', type: 'home' },
-    ],
+    getters,
+    mutations,
+    actions,
   },
-  getters,
-  mutations,
-  actions,
 })
