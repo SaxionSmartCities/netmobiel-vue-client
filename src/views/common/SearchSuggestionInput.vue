@@ -25,7 +25,7 @@
                 <v-icon class="mr-3">{{ location.type }}</v-icon>
                 <v-list-tile-content class="grey--text">
                   <v-list-tile-title>
-                    <div v-html="location.label"></div>
+                    <div v-html="parseLabel(location.label)"></div>
                   </v-list-tile-title>
                   <v-list-tile-sub-title></v-list-tile-sub-title>
                 </v-list-tile-content>
@@ -65,6 +65,16 @@ export default {
     },
   },
   methods: {
+    parseLabel(label) {
+      let splitLabel = label.split(',').reverse()
+      let result = splitLabel[0]
+
+      for (let i = 1; i < splitLabel.length; i++) {
+        result += ', ' + splitLabel[i]
+      }
+
+      return result
+    },
     completeSearch(location) {
       this.$store.dispatch('fetchGeocoderLocation', {
         locationId: location.locationId,
