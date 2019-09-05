@@ -47,8 +47,8 @@ export default {
   getNotificationOptions: state => {
     return state.user.notificationOptions
   },
-  getNotifcationProfileOptions: state => {
-    return state.user.profile
+  getTripOptions: state => {
+    return state.user.tripOptions
   },
   getReviewsOptions: state => {
     return state.user.reviews

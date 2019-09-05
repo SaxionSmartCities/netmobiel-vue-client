@@ -6,11 +6,11 @@
 
     <v-layout pt-3>
       <v-flex>
-        <p class="text-primary-uppercase">Profiel</p>
+        <p class="text-primary-uppercase">Reizen</p>
       </v-flex>
     </v-layout>
     <v-layout column>
-      <v-flex v-for="option in profileOptions" :key="option.name">
+      <v-flex v-for="option in tripOptions" :key="option.name">
         <v-divider></v-divider>
         <v-layout align-center mr-3>
           <v-flex>
@@ -20,7 +20,7 @@
             <v-switch
               :input-value="option.value"
               color="#2E8997"
-              @change="setProfileValue(option.name, $event)"
+              @change="setTripValue(option.name, $event)"
             ></v-switch>
           </v-flex>
         </v-layout>
@@ -87,8 +87,8 @@ export default {
     notificationOptions() {
       return this.$store.getters.getNotificationOptions
     },
-    profileOptions() {
-      return this.$store.getters.getNotifcationProfileOptions
+    tripOptions() {
+      return this.$store.getters.getTripOptions
     },
     reviewOptions() {
       return this.$store.getters.getReviewsOptions
@@ -104,8 +104,8 @@ export default {
         value: state,
       })
     },
-    setProfileValue(key, state) {
-      this.$store.commit('setProfileOptionsValue', {
+    setTripValue(key, state) {
+      this.$store.commit('setTripOptionsValue', {
         key: key,
         value: state,
       })
