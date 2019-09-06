@@ -152,35 +152,27 @@ export default {
 
       if (nextNotification.timeout > 0) {
         setTimeout(() => {
-          console.log('setting timeout for event', nextNotification.timeout)
           context.dispatch('finishNotification')
         }, nextNotification.timeout)
       }
     }
   },
   finishNotification: context => {
-    console.log('notification finished! hiding bar..')
     context.commit('hideNotificationBar')
-    context.commit('popNotificationFromQueue')
+    context.commit('removeFirstNotificationFromQueue')
 
-    // Kick off next notification if there are others to do.
-    if (context.state.ui.notificationQueue.length > 0) {
-      console.log(
-        'there are notifications left: ',
-        context.state.ui.notificationQueue.length
-      )
-      console.log('showing notification bar')
-      context.commit('showNotificationBar')
-      let nextNotification = context.state.ui.notificationQueue[0]
-      console.log('next notification', nextNotification)
+    setTimeout(() => {
+      // Kick off next notification if there are others to do.
+      if (context.state.ui.notificationQueue.length > 0) {
+        context.commit('showNotificationBar')
+        let nextNotification = context.state.ui.notificationQueue[0]
 
-      if (nextNotification.timeout > 0) {
-        setTimeout(() => {
-          context.dispatch('finishNotification')
-        }, nextNotification.timeout)
-      } else {
-        console.log('nothing to set!')
+        if (nextNotification.timeout > 0) {
+          setTimeout(() => {
+            context.dispatch('finishNotification')
+          }, nextNotification.timeout)
+        }
       }
-    }
+    }, 250)
   },
 }

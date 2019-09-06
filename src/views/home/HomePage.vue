@@ -37,14 +37,33 @@ export default {
   },
   methods: {
     addNotification: function() {
-      console.log('queueing notifications')
       this.$store.dispatch('queueNotification', {
-        message: 'This is a test',
+        message: 'This is a test1',
         timeout: 3000,
       })
 
       this.$store.dispatch('queueNotification', {
-        message: 'This is another test',
+        message: 'This is a test2',
+        timeout: 3000,
+      })
+
+      this.$store.dispatch('queueNotification', {
+        message: 'This is a test3',
+        timeout: 3000,
+      })
+
+      this.$store.dispatch('queueNotification', {
+        message: 'This is another test4',
+        timeout: 0,
+      })
+
+      this.$store.dispatch('queueNotification', {
+        message: 'This is a test5',
+        timeout: 3000,
+      })
+
+      this.$store.dispatch('queueNotification', {
+        message: 'This is another test6',
         timeout: 0,
       })
     },

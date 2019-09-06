@@ -52,10 +52,6 @@ export default {
       return this.$store.getters.getNotificationQueue
     },
     isNotificationBarVisible: function() {
-      console.log(
-        'should bar show?',
-        this.$store.getters.isNotificationBarVisible
-      )
       return this.$store.getters.isNotificationBarVisible
     },
     currentNotification: function() {

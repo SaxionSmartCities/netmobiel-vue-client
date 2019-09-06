@@ -132,11 +132,9 @@ export default {
   },
   pushNotificationToQueue: (state, payload) => {
     state.ui.notificationQueue.push(payload)
-    console.log('ADDING', state.ui.notificationQueue)
   },
-  popNotificationFromQueue: state => {
-    state.ui.notificationQueue.pop()
-    console.log('POPPING', state.ui.notificationQueue)
+  removeFirstNotificationFromQueue: state => {
+    state.ui.notificationQueue = state.ui.notificationQueue.slice(1)
   },
   showNotificationBar: state => {
     state.ui.notificationBarVisible = true
