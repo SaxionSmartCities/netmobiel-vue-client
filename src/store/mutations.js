@@ -130,4 +130,18 @@ export default {
     state.geocoder.pickedLocations.to = state.geocoder.pickedLocations.from
     state.geocoder.pickedLocations.from = tmp
   },
+  pushNotificationToQueue: (state, payload) => {
+    state.ui.notificationQueue.push(payload)
+    console.log('ADDING', state.ui.notificationQueue)
+  },
+  popNotificationFromQueue: state => {
+    state.ui.notificationQueue.pop()
+    console.log('POPPING', state.ui.notificationQueue)
+  },
+  showNotificationBar: state => {
+    state.ui.notificationBarVisible = true
+  },
+  hideNotificationBar: state => {
+    state.ui.notificationBarVisible = false
+  },
 }

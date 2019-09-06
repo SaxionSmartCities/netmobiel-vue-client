@@ -20,8 +20,8 @@
         </v-btn>
       </v-flex>
       <v-flex xs12 md6>
-        <v-btn round large block :to="{ name: 'searchLocation' }">
-          Locatie zoeken
+        <v-btn round large block @click="addNotification">
+          Snackbar tonen
         </v-btn>
       </v-flex>
     </v-layout>
@@ -33,6 +33,20 @@ export default {
   computed: {
     user() {
       return this.$store.getters.getUser
+    },
+  },
+  methods: {
+    addNotification: function() {
+      console.log('queueing notifications')
+      this.$store.dispatch('queueNotification', {
+        message: 'This is a test',
+        timeout: 3000,
+      })
+
+      this.$store.dispatch('queueNotification', {
+        message: 'This is another test',
+        timeout: 0,
+      })
     },
   },
 }

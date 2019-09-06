@@ -142,4 +142,45 @@ export default {
         console.log(error)
       })
   },
+  queueNotification: (context, payload) => {
+    context.commit('pushNotificationToQueue', payload)
+
+    // If the notification that was just pushed is the first (in a while), set the timeout and call finishNotification after it's done.
+    if (context.state.ui.notificationQueue.length == 1) {
+      context.commit('showNotificationBar')
+      let nextNotification = context.state.ui.notificationQueue[0]
+
+      if (nextNotification.timeout > 0) {
+        setTimeout(() => {
+          console.log('setting timeout for event', nextNotification.timeout)
+          context.dispatch('finishNotification')
+        }, nextNotification.timeout)
+      }
+    }
+  },
+  finishNotification: context => {
+    console.log('notification finished! hiding bar..')
+    context.commit('hideNotificationBar')
+    context.commit('popNotificationFromQueue')
+
+    // Kick off next notification if there are others to do.
+    if (context.state.ui.notificationQueue.length > 0) {
+      console.log(
+        'there are notifications left: ',
+        context.state.ui.notificationQueue.length
+      )
+      console.log('showing notification bar')
+      context.commit('showNotificationBar')
+      let nextNotification = context.state.ui.notificationQueue[0]
+      console.log('next notification', nextNotification)
+
+      if (nextNotification.timeout > 0) {
+        setTimeout(() => {
+          context.dispatch('finishNotification')
+        }, nextNotification.timeout)
+      } else {
+        console.log('nothing to set!')
+      }
+    }
+  },
 }
