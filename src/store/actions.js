@@ -145,15 +145,16 @@ export default {
   queueNotification: (context, payload) => {
     context.commit('pushNotificationToQueue', payload)
 
-    // If the notification that was just pushed is the first (in a while), set the timeout and call finishNotification after it's done.
+    // If the notification that was just pushed is the first (in a while),
+    // set the timeout and call finishNotification after it's done.
     if (context.state.ui.notificationQueue.length == 1) {
+      // Explicitly show notification so we can hide and show between transitions.
       context.commit('showNotificationBar')
-      let nextNotification = context.state.ui.notificationQueue[0]
-
-      if (nextNotification.timeout > 0) {
+      let currentNotification = context.state.ui.notificationQueue[0]
+      if (currentNotification.timeout > 0) {
         setTimeout(() => {
           context.dispatch('finishNotification')
-        }, nextNotification.timeout)
+        }, currentNotification.timeout)
       }
     }
   },
@@ -161,18 +162,19 @@ export default {
     context.commit('hideNotificationBar')
     context.commit('removeFirstNotificationFromQueue')
 
-    setTimeout(() => {
-      // Kick off next notification if there are others to do.
-      if (context.state.ui.notificationQueue.length > 0) {
+    // Kick off next notification if there are others to do.
+    if (context.state.ui.notificationQueue.length > 0) {
+      // Delay showing the next notification in order for the UI
+      // transitions to work properly.
+      setTimeout(() => {
         context.commit('showNotificationBar')
-        let nextNotification = context.state.ui.notificationQueue[0]
-
-        if (nextNotification.timeout > 0) {
+        let currentNotification = context.state.ui.notificationQueue[0]
+        if (currentNotification.timeout > 0) {
           setTimeout(() => {
             context.dispatch('finishNotification')
-          }, nextNotification.timeout)
+          }, currentNotification.timeout)
         }
-      }
-    }, 250)
+      }, 250)
+    }
   },
 }
