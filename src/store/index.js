@@ -91,6 +91,8 @@ export default new Vuex.Store({
         visible: true,
       },
       backButtonVisible: false,
+      notificationQueue: [], // { message: '', timeout: '' } <-- use 0 for closeable!
+      notificationBarVisible: false,
     },
     geocoder: {
       query: '',

@@ -53,4 +53,10 @@ export default {
   getReviewsOptions: state => {
     return state.user.reviews
   },
+  getNotificationQueue: state => {
+    return state.ui.notificationQueue
+  },
+  isNotificationBarVisible: state => {
+    return state.ui.notificationBarVisible
+  },
 }
