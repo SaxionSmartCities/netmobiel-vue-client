@@ -44,6 +44,19 @@ export default {
         })
       })
   },
+  fetchProfile: context => {
+    const URL = BASE_URL + '/profiles'
+    axios
+      .get(URL, { headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY) })
+      .then(response => {
+        if (response.status == 200 && response.data.profiles.length > 0) {
+          context.commit('setProfile', response.data.profiles[0])
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  },
   submitPlanningsRequest: (context, payload) => {
     context.commit('storePlanningRequest', payload)
     let time = moment(payload.selectedTime).format('HH:mm')
