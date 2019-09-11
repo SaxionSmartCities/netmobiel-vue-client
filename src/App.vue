@@ -26,6 +26,9 @@ export default {
     NetmobielHeader,
     NetmobielFooter,
   },
+  mounted() {
+    this.$store.dispatch('fetchProfile')
+  },
   computed: {
     isHeaderVisible: function() {
       return this.$store.getters.isHeaderVisible
