@@ -44,6 +44,9 @@ export default new Vuex.Store({
       // Access token
       accessToken: undefined,
 
+      // Profile as stored in profile service.
+      profile: {},
+
       // Credentials provided by identity provider.
       givenName: undefined,
       familyName: undefined,

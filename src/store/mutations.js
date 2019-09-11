@@ -47,6 +47,9 @@ export default {
       },
     }
   },
+  setProfile: (state, payload) => {
+    state.user.profile = payload
+  },
   setRidePreferences: (state, payload) => {
     state.user.ridePreferences = payload
   },

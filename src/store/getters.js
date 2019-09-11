@@ -20,6 +20,7 @@ export default {
   getRidePreferences: state => {
     return state.user.ridePreferences
   },
+  getProfile: state => state.user.profile,
   getPlanningStatus: state => {
     return state.planningRequest.submitStatus
   },
