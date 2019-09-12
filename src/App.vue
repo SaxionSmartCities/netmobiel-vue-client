@@ -32,8 +32,8 @@
 </template>
 
 <script>
-import NetmobielHeader from '@/views/common/NetmobielHeader.vue'
-import NetmobielFooter from '@/views/common/NetmobielFooter.vue'
+import NetmobielHeader from '@/components/common/NetmobielHeader.vue'
+import NetmobielFooter from '@/components/common/NetmobielFooter.vue'
 
 export default {
   name: 'App',
@@ -43,10 +43,27 @@ export default {
   },
   computed: {
     isHeaderVisible: function() {
-      return this.$store.getters.isHeaderVisible
+      return this.$store.getters['ui/isHeaderVisible']
     },
     isFooterVisible: function() {
-      return this.$store.getters.isFooterVisible
+      return this.$store.getters['ui/isFooterVisible']
+    },
+    notificationQueue: function() {
+      return this.$store.getters['ui/getNotificationQueue']
+    },
+    isNotificationBarVisible: function() {
+      return this.$store.getters['ui/isNotificationBarVisible']
+    },
+    currentNotification: function() {
+      return this.$store.getters['ui/getNotificationQueue'][0]
+    },
+  },
+  mounted() {
+    this.$store.dispatch('ps/fetchProfile')
+  },
+  methods: {
+    finishNotification: function() {
+      this.$store.dispatch('ui/finishNotification')
     },
     notificationQueue: function() {
       return this.$store.getters.getNotificationQueue

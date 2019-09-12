@@ -1,0 +1,30 @@
+export default {
+  setDate: (state, payload) => {
+    state.planningRequest.dateTime = payload
+  },
+  storePlanningRequest: (state, payload) => {
+    state.planningRequest.fromPlace = payload.fromPlace
+    state.planningRequest.toPlace = payload.toPlace
+  },
+  setPlanningStatus: (state, payload) => {
+    state.planningRequest.submitStatus = payload
+  },
+  setPlanningResults: (state, payload) => {
+    state.planningRequest.result = payload
+  },
+  clearPlanningResults: state => {
+    state.planningRequest.result.data = ''
+  },
+  clearPlanningRequest: state => {
+    state.planningRequest.submitStatus = {
+      status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
+      message: '',
+    }
+  },
+  sortItineraries: (state, payload) => {
+    state.planningRequest.result.data.itineraries.sort(payload)
+  },
+  setSelectedItinerary: (state, payload) => {
+    state.selectedItinerary = payload
+  },
+}
