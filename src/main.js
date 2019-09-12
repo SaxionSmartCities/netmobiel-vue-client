@@ -16,7 +16,6 @@ function tokenInterceptor() {
   axios.interceptors.request.use(
     config => {
       config.headers.Authorization = `Bearer ${Vue.prototype.$keycloak.token}`
-      console.log(config)
       return config
     },
     error => {
