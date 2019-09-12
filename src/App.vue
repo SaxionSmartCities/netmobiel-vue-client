@@ -41,9 +41,6 @@ export default {
     NetmobielHeader,
     NetmobielFooter,
   },
-  mounted() {
-    this.$store.dispatch('fetchProfile')
-  },
   computed: {
     isHeaderVisible: function() {
       return this.$store.getters.isHeaderVisible
@@ -60,6 +57,9 @@ export default {
     currentNotification: function() {
       return this.$store.getters.getNotificationQueue[0]
     },
+  },
+  mounted() {
+    this.$store.dispatch('fetchProfile')
   },
   methods: {
     finishNotification: function() {
