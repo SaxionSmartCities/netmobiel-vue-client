@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-layout>
-      <p class="headline font-weight-medium">{{ title }}</p>
+      <h1 class="headline">{{ title }}</h1>
     </v-layout>
     <v-divider></v-divider>
     <v-layout align-center ma-3 @click="toPrivacyStatement">
@@ -17,7 +17,7 @@
     </v-layout>
     <v-layout pt-3>
       <v-flex>
-        <p class="text-primary-uppercase">locatie</p>
+        <h2 class="text-primary-uppercase">locatie</h2>
       </v-flex>
     </v-layout>
     <v-layout column>
@@ -52,6 +52,9 @@ export default {
     privacySecurity() {
       return this.$store.getters.getPrivacySecurity
     },
+  },
+  created: function() {
+    this.$store.commit('showBackButton')
   },
   methods: {
     toPrivacyStatement() {

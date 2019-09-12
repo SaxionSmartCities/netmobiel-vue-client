@@ -2,18 +2,18 @@
   <v-container>
     <v-layout column>
       <v-flex>
-        <p class="headline">{{ title }}</p>
+        <h1 class="headline">{{ title }}</h1>
       </v-flex>
       <v-flex>
-        <h1 class="font-weight-bold subheading mt-2 text-primary">
+        <h2 class="font-weight-bold subheading mt-2 text-primary">
           {{ subTitle[0] }}
-        </h1>
+        </h2>
         <p class="font-weight-light">{{ text[0] }}</p>
       </v-flex>
       <v-flex>
-        <h1 class="font-weight-bold subheading mt-2 text-primary">
+        <h2 class="font-weight-bold subheading mt-2 text-primary">
           {{ subTitle[1] }}
-        </h1>
+        </h2>
         <p class="font-weight-light">{{ text[1] }}</p>
       </v-flex>
     </v-layout>
@@ -42,7 +42,9 @@ export default {
       ],
     }
   },
+  created: function() {
+    this.$store.commit('showBackButton')
+  },
 }
 </script>
-
 <style lang="scss"></style>
