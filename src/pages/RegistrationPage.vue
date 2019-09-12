@@ -86,7 +86,7 @@ export default {
   },
   computed: {
     getRegistrationStatus() {
-      return this.$store.getters.getRegistrationStatus
+      return this.$store.getters['rs/getRegistrationStatus']
     },
   },
   watch: {
@@ -95,7 +95,7 @@ export default {
         this.showSubmitButton = false
 
         this.waiting = setTimeout(() => {
-          this.$store.commit('clearRegistrationRequest')
+          this.$store.commit('rs/clearRegistrationRequest')
           this.$router.push('/')
         }, 2500)
       }
@@ -109,7 +109,7 @@ export default {
       event.preventDefault()
 
       this.$store.dispatch(
-        'submitRegistrationRequest',
+        'rs/submitRegistrationRequest',
         this.registrationRequest
       )
     },

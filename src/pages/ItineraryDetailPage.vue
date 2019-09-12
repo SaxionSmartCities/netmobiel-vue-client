@@ -47,7 +47,7 @@ export default {
   components: { ItinerarySummary, ItineraryLeg },
   computed: {
     journey: function() {
-      return this.$store.getters.getSelectedItinerary
+      return this.$store.getters['is/getSelectedItinerary']
     },
     generateSteps: function() {
       let result = []

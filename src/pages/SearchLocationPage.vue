@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import SearchSuggestionInput from '@/components/SearchSuggestionInput'
+import SearchSuggestionInput from '@/components/search/SearchSuggestionInput'
 export default {
   name: 'SearchLocation',
   components: { SearchSuggestionInput },

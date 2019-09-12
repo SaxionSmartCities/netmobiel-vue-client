@@ -22,7 +22,7 @@
 
 <script>
 export default {
-  name: 'TermsOfUse',
+  name: 'TermsOfUsePage',
   data() {
     return {
       title: 'Gebruiksvoorwaarden',

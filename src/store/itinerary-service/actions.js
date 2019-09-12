@@ -8,7 +8,7 @@ const GRAVITEE_PLAN_SERVICE_API_KEY = config.GRAVITEE_PLAN_SERVICE_API_KEY
 function generateHeader(key, context) {
   return {
     'X-Gravitee-Api-Key': key,
-    Authorization: context.state.ui.user.accessToken,
+    Authorization: context.rootState.ps.user.accessToken,
   }
 }
 

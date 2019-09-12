@@ -16,7 +16,7 @@
           <v-icon>commute</v-icon>
         </v-btn>
 
-        <v-btn flat value="saved" to="/savedRides">
+        <v-btn flat value="saved">
           <span>Bewaard</span>
           <v-icon>favorite</v-icon>
         </v-btn>

@@ -85,13 +85,13 @@ export default {
   },
   computed: {
     notificationOptions() {
-      return this.$store.getters.getNotificationOptions
+      return this.$store.getters['ps/getUser'].notificationOptions
     },
     profileOptions() {
-      return this.$store.getters.getNotifcationProfileOptions
+      return this.$store.getters['ps/getUser'].profile
     },
     reviewOptions() {
-      return this.$store.getters.getReviewsOptions
+      return this.$store.getters['ps/getUser'].reviews
     },
   },
   created: function() {
@@ -99,19 +99,19 @@ export default {
   },
   methods: {
     setNotificationValue(key, state) {
-      this.$store.commit('setNotificationOptionsValue', {
+      this.$store.commit('ps/setNotificationOptionsValue', {
         key: key,
         value: state,
       })
     },
     setProfileValue(key, state) {
-      this.$store.commit('setProfileOptionsValue', {
+      this.$store.commit('ps/setProfileOptionsValue', {
         key: key,
         value: state,
       })
     },
     setReviewValue(key, state) {
-      this.$store.commit('setReviewOptionsValue', {
+      this.$store.commit('ps/setReviewOptionsValue', {
         key: key,
         value: state,
       })

@@ -225,7 +225,8 @@ export default {
     this.$store.commit('ui/showBackButton')
   },
   mounted() {
-    let prefs = this.$store.getters.getRidePreferences
+    let prefs = this.$store.getters['ps/getUser'].ridePreferences
+
     this.luggageSelected = prefs.luggage
     this.allowedTravelModes = prefs.allowedTravelModes
     this.nrOfPersons = prefs.nrOfPersons
@@ -242,7 +243,7 @@ export default {
         maxMinutesWalking: this.maxMinutesWalking,
       }
 
-      this.$store.commit('setRidePreferences', payload)
+      this.$store.commit('ps/setRidePreferences', payload)
       this.$router.go(-1)
     },
   },

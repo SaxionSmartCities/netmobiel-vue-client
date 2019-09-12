@@ -25,7 +25,7 @@
                       <v-flex>Bagage:</v-flex>
                       <v-flex text-xs-right pr-3>
                         <v-icon
-                          v-for="selectedLuggage in luggage"
+                          v-for="selectedLuggage in getRidePreferences.luggage"
                           :key="selectedLuggage.type"
                           >{{ selectedLuggage.icon }}</v-icon
                         >
@@ -135,15 +135,15 @@ export default {
   },
   computed: {
     getItineraries() {
-      return this.$store.getters.getItineraries
+      return this.$store.getters['is/getItineraries']
     },
     date() {
-      return moment(this.$store.getters.getSearchRideDateTime).format(
+      return moment(this.$store.getters['is/getSearchRideDateTime']).format(
         'DD-MM-YYYY'
       )
     },
     getRidePreferences() {
-      return this.$store.getters.getRidePreferences
+      return this.$store.getters['ps/getUser'].ridePreferences
     },
   },
   methods: {
@@ -159,7 +159,7 @@ export default {
     changeSort: function() {
       this.selectedModus = (this.selectedModus + 1) % this.sortModi.length
       this.$store.commit(
-        'sortItineraries',
+        'is/sortItineraries',
         this.sortModi[this.selectedModus].function
       )
     },

@@ -149,7 +149,7 @@ export default {
       return this.journey.legs.filter(leg => leg.mode === 'CAR').length > 0
     },
     openDetails: function() {
-      this.$store.commit('setSelectedItinerary', this.journey)
+      this.$store.commit('is/setSelectedItinerary', this.journey)
 
       this.$router.push('/itineraryDetailPage')
     },

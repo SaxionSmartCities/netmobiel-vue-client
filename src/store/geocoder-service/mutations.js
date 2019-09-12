@@ -1,9 +1,6 @@
 export default {
   setGeocoderSuggestions: (state, payload) =>
     (state.geocoder.suggestions = payload),
-  setSelectedItinerary: (state, payload) => {
-    state.selectedItinerary = payload
-  },
   setGeoLocationPicked: (state, payload) => {
     if (payload.field === 'to') {
       state.geocoder.pickedLocations.to = payload.pos

@@ -144,6 +144,7 @@ export default {
         this.$store.commit('is/setDate', moment())
         return upperCaseFirst(
           moment()
+            .add(30, 'minutes')
             .locale('nl')
             .format('dddd, DD MMMM HH:mm')
         )
@@ -157,7 +158,7 @@ export default {
     getSubmitStatus(newValue) {
       if (newValue.status === 'SUCCESS') {
         this.waiting = setTimeout(() => {
-          this.$store.commit('clearPlanningRequest')
+          this.$store.commit('is/clearPlanningRequest')
           this.$router.push('/searchResults')
         }, 1500)
       }
@@ -175,12 +176,12 @@ export default {
     fromLocationLabel() {
       let location = this.$store.getters['gs/getPickedLocation'].from
 
-      return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
+      return !location.address ? '' : location.address.label
     },
     toLocationLabel() {
       let location = this.$store.getters['gs/getPickedLocation'].to
 
-      return !location.address ? 'UNDEFINED' : location.address.label // todo: remove UNDEFINED message
+      return !location.address ? '' : location.address.label
     },
     getPickedLocation() {
       return this.$store.getters.getPickedLocation
@@ -190,7 +191,7 @@ export default {
       this.pickedLocationState = fieldPressed
     },
     toRidePrefrences() {
-      this.$router.push({ name: 'ridePreferences' })
+      this.$router.push({ name: 'searchOptions' })
     },
     toSearchRideDate() {
       this.$router.push({ name: 'searchDateTime' })
@@ -199,14 +200,14 @@ export default {
       this.$router.push({ name: 'searchLocation', params: { field: field } })
     },
     swapLocations() {
-      this.$store.commit('swapLocations')
+      this.$store.commit('gs/swapLocations')
     },
     submitForm() {
       let pickedGeoLocations = this.$store.getters['gs/getPickedLocation']
       let from = pickedGeoLocations.from
       let to = pickedGeoLocations.to
-      let ridePreferences = this.$store.getters.getRidePreferences
-      let selectedTime = this.$store.getters.getSearchRideDateTime
+      let ridePreferences = this.$store.getters['ps/getUser'].ridePreferences
+      let selectedTime = this.$store.getters['is/getSearchRideDateTime']
 
       var searchQuery = {
         from: from,

@@ -4,7 +4,7 @@
       <v-flex>
         <v-layout row my-3 mr-3>
           <v-flex lg1 sm2 xs4>
-            <roundimg></roundimg>
+            <round-user-image></round-user-image>
           </v-flex>
 
           <v-flex>
@@ -39,18 +39,18 @@
       </v-flex>
       <v-flex>
         <v-layout row mb-2>
-          <v-flex travel-card mr-2
-            ><v-layout column align-center my-2 @click="$router.push('/goals')"
-              ><v-flex><v-icon>control_point</v-icon></v-flex
-              ><v-flex>Doelen</v-flex></v-layout
-            ></v-flex
-          >
-          <v-flex travel-card ml-2
-            ><v-layout column align-center my-2
-              ><v-flex><v-icon>star_border</v-icon></v-flex
-              ><v-flex>Reviews</v-flex></v-layout
-            ></v-flex
-          >
+          <v-flex travel-card mr-2>
+            <v-layout column align-center my-2>
+              <v-flex><v-icon>control_point</v-icon></v-flex>
+              <v-flex>Doelen</v-flex>
+            </v-layout>
+          </v-flex>
+          <v-flex travel-card ml-2>
+            <v-layout column align-center my-2>
+              <v-flex><v-icon>star_border</v-icon></v-flex>
+              <v-flex>Reviews</v-flex>
+            </v-layout>
+          </v-flex>
         </v-layout>
       </v-flex>
       <v-flex>
@@ -88,11 +88,11 @@
 </template>
 
 <script>
-import roundimg from '@/components/common/RoundImage'
+import roundUserImage from '@/components/common/RoundUserImage'
 
 export default {
   components: {
-    roundimg,
+    roundUserImage,
   },
   data: function() {
     return {
@@ -125,7 +125,7 @@ export default {
       this.$router.push('/')
     },
     getUserData() {
-      return this.$store.getters.getUser
+      return this.$store.getters['ps/getUser']
     },
     logOut: function() {
       this.$keycloak.logoutFn()

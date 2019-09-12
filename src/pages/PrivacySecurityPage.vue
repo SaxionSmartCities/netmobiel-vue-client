@@ -50,7 +50,7 @@ export default {
   },
   computed: {
     privacySecurity() {
-      return this.$store.getters.getPrivacySecurity
+      return this.$store.getters['ps/getUser'].privacySecurity
     },
   },
   methods: {
@@ -58,7 +58,10 @@ export default {
       this.$router.push({ name: 'privacyStatement' })
     },
     setPrivacyValue(key, state) {
-      this.$store.commit('setPrivacySecurityValue', { key: key, value: state })
+      this.$store.commit('ps/setPrivacySecurityValue', {
+        key: key,
+        value: state,
+      })
     },
   },
 }

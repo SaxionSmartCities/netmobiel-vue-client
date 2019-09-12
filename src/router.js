@@ -4,23 +4,21 @@ import store from './store'
 
 Vue.use(Router)
 
+import ItineraryDetailPage from './pages/ItineraryDetailPage.vue'
 import LandingPage from './pages/LandingPage.vue'
 import HomePage from './pages/HomePage.vue'
-import SearchPage from './pages/SearchPage.vue'
-import SearchOptionsPage from './pages/SearchOptionsPage'
+import NotificationOptionsPage from './pages/NotificationOptionsPage.vue'
+import PrivacySecurityPage from './pages/PrivacySecurityPage.vue'
+import PrivacyStatementPage from './pages/PrivacyStatementPage.vue'
+import ProfilePage from './pages/ProfilePage.vue'
 import SearchDateTimePage from './pages/SearchDateTimePage'
 import SearchLocationPage from './pages/SearchLocationPage'
-import ItineraryDetailPage from './pages/ItineraryDetailPage.vue'
+import SearchOptionsPage from './pages/SearchOptionsPage'
+import SearchPage from './pages/SearchPage.vue'
 import SearchResultsPage from './pages/SearchResultsPage.vue'
+import TermsOfUsePage from './pages/TermsOfUsePage.vue'
 
-import SavedRides from './views/saved/SavedRides'
-import TermsOfUse from './views/profile/TermsOfUse'
-import PrivacyStatement from './views/profile/PrivacyStatement'
-import PrivacySecurity from './views/profile/PrivacySecurity'
-import GoalsHomepage from './views/marketplace/GoalsHomepage'
-import NotificationOptions from './views/profile/NotificationOptions'
-import ProfilePage from './views/profile/ProfilePage.vue'
-import StartRegistrationForm from './views/registration/StartRegistrationForm.vue'
+import RegistrationPage from './pages/RegistrationPage.vue'
 
 const router = new Router({
   mode: 'history',
@@ -35,7 +33,8 @@ const router = new Router({
     },
     {
       path: '/createUser',
-      component: StartRegistrationForm,
+      component: RegistrationPage,
+      name: 'createUser',
     },
     {
       path: '/profile',
@@ -62,34 +61,24 @@ const router = new Router({
       name: 'searchLocation',
     },
     {
-      path: '/savedRides',
-      component: SavedRides,
-      name: 'savedRides',
-    },
-    {
       path: '/searchResults',
       component: SearchResultsPage,
       name: 'searchResults',
     },
     {
       path: '/termsOfUse',
-      component: TermsOfUse,
+      component: TermsOfUsePage,
       name: 'termsOfUse',
     },
     {
       path: '/privacyStatement',
-      component: PrivacyStatement,
+      component: PrivacyStatementPage,
       name: 'privacyStatement',
     },
     {
       path: '/privacySecurity',
-      component: PrivacySecurity,
+      component: PrivacySecurityPage,
       name: 'privacySecurity',
-    },
-    {
-      path: '/goals',
-      component: GoalsHomepage,
-      name: 'goals',
     },
     {
       path: '/itineraryDetailPage',
@@ -98,7 +87,7 @@ const router = new Router({
     },
     {
       path: '/profileNotificationOptions',
-      component: NotificationOptions,
+      component: NotificationOptionsPage,
       name: 'notificationOptions',
     },
   ],

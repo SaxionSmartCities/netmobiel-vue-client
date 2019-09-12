@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'RoundImage',
+  name: 'RoundUserImage',
   data() {
     return {
       sizeImg: 70,
@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     getUserData() {
-      return this.$store.getters.getUser
+      return this.$store.getters['ps/getUser']
     },
   },
 }
