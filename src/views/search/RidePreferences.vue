@@ -225,25 +225,82 @@ export default {
     this.$store.commit('showBackButton')
   },
   mounted() {
-    let prefs = this.$store.getters.getRidePreferences
-    this.luggageSelected = prefs.luggage
-    this.allowedTravelModes = prefs.allowedTravelModes
-    this.nrOfPersons = prefs.nrOfPersons
-    this.transferAllowed = prefs.transferAllowed
-    this.maxMinutesWalking = prefs.maxMinutesWalking
+    let profile = this.$store.getters.getProfile
+    this.luggageSelected = profile.ridePreferences.luggageOptions.map(option =>
+      this.parseLuggageOption(option)
+    )
+    this.allowedTravelModes = profile.ridePreferences.allowedTravelModes.map(
+      mode => this.parseTravelMode(mode)
+    )
+    this.nrOfPersons = profile.ridePreferences.numPassengers
+    this.transferAllowed = profile.ridePreferences.allowTransfer
+    this.maxMinutesWalking = profile.ridePreferences.maximumTransferTime
   },
   methods: {
     save: function() {
       let payload = {
-        luggage: this.luggageSelected,
-        allowedTravelModes: this.allowedTravelModes,
-        nrOfPersons: this.nrOfPersons,
-        transferAllowed: this.transferAllowed,
-        maxMinutesWalking: this.maxMinutesWalking,
+        luggageOptions: this.luggageSelected.map(x => x.type),
+        allowedTravelModes: this.allowedTravelModes.map(x => x.mode),
+        numPassengers: this.nrOfPersons,
+        allowTransfer: this.transferAllowed,
+        maximumTransferTime: this.maxMinutesWalking,
       }
-
-      this.$store.commit('setRidePreferences', payload)
+      this.$store.dispatch('storeRidePreferences', payload)
       this.$router.go(-1)
+    },
+    parseLuggageOption: function(luggage) {
+      //TODO: Rename ROLLATOR to WALKER
+      const luggageOptions = {
+        STROLLER: {
+          type: 'STROLLER',
+          label: 'Buggy',
+          icon: 'child_friendly',
+        },
+        HANDLUGGAGE: {
+          type: 'HANDLUGGAGE',
+          label: 'Handbagage',
+          icon: 'work',
+        },
+        PET: {
+          type: 'PET',
+          label: 'Huisdier',
+          icon: 'pets',
+        },
+        ROLLATOR: {
+          type: 'ROLLATOR',
+          label: 'Rollator',
+          icon: 'fa-crutch',
+        },
+        WHEELCHAIR: {
+          type: 'WHEELCHAIR',
+          label: 'Rolstoel',
+          icon: 'accessible_forward',
+        },
+      }
+      return luggageOptions[luggage]
+    },
+    parseTravelMode: function(mode) {
+      const icons = {
+        WALK: 'directions_walk',
+        CAR: 'directions_car',
+        TRAIN: 'train',
+        BUS: 'directions_bus',
+        RAIL: 'directions_railway',
+        BIKE: 'directions_bike',
+      }
+      const labels = {
+        WALK: 'Lopen',
+        CAR: 'Auto',
+        TRAIN: 'Trein',
+        BUS: 'Bus',
+        RAIL: 'Tram',
+        BIKE: 'Fiets',
+      }
+      return {
+        icon: icons[mode],
+        label: labels[mode],
+        mode: mode,
+      }
     },
   },
 }

@@ -54,6 +54,33 @@ export default {
         }
       })
       .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
+  storeRidePreferences: (context, payload) => {
+    // Convert payload to a profile object.
+    let profile = { ...context.state.user.profile }
+    profile.ridePreferences = {
+      numPassengers: payload.numPassengers,
+      allowTransfer: payload.allowTransfer,
+      maximumTransferTime: payload.maximumTransferTime,
+      luggageOptions: payload.luggageOptions,
+      allowedTravelModes: payload.allowedTravelModes,
+    }
+    const URL = BASE_URL + '/profiles/' + context.state.user.profile.id
+    axios
+      .put(URL, profile, {
+        headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      })
+      .then(response => {
+        console.log(response)
+        if (response.status == 200 && response.data.profiles.length > 0) {
+          context.commit('setProfile', response.data.profiles[0])
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
         console.log(error)
       })
   },
