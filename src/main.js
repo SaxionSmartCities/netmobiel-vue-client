@@ -3,6 +3,7 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 
 import App from './App.vue'
+import axios from 'axios'
 import store from './store'
 import router from './router'
 import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
@@ -10,6 +11,19 @@ import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
 Vue.use(Vuetify, { theme: false })
 
 Vue.config.productionTip = false
+
+function tokenInterceptor() {
+  axios.interceptors.request.use(
+    config => {
+      config.headers.Authorization = `Bearer ${Vue.prototype.$keycloak.token}`
+      console.log(config)
+      return config
+    },
+    error => {
+      return Promise.reject(error)
+    }
+  )
+}
 
 Vue.use(VueKeyCloak, {
   config: {
@@ -21,6 +35,7 @@ Vue.use(VueKeyCloak, {
     onLoad: 'check-sso',
   },
   onReady: function() {
+    tokenInterceptor()
     /* eslint-disable no-new */
     new Vue({
       store,

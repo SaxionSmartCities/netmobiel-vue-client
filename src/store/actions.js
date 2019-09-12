@@ -6,10 +6,9 @@ const BASE_URL = config.BASE_URL
 const GRAVITEE_PLAN_SERVICE_API_KEY = config.GRAVITEE_PLAN_SERVICE_API_KEY
 const GRAVITEE_PROFILE_SERVICE_API_KEY = config.GRAVITEE_PROFILE_SERVICE_API_KEY
 
-function generateHeader(key, context) {
+function generateHeader(key) {
   return {
     'X-Gravitee-Api-Key': key,
-    Authorization: context.state.user.accessToken,
   }
 }
 
@@ -21,7 +20,7 @@ export default {
       method: 'POST',
       url: BASE_URL + '/profiles',
       data: context.state.registrationRequest,
-      headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY, context),
+      headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
     }
 
     axios(axiosConfig)
@@ -32,7 +31,7 @@ export default {
         const status = error.response.status
         var errorMsg = ''
         if (status === 422) {
-          errorMsg = 'Ontbrekende data (email, voornaam of achternaam'
+          errorMsg = 'Ontbrekende data (email, voornaam of achternaam)'
         } else if (status === 500) {
           errorMsg = error.response.data.message // No clue what is going on, but the server should report something about it
         } else if (status === 409) {
@@ -43,6 +42,46 @@ export default {
           success: false,
           message: errorMsg,
         })
+      })
+  },
+  fetchProfile: context => {
+    const URL = BASE_URL + '/profiles'
+    axios
+      .get(URL, { headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY) })
+      .then(response => {
+        if (response.status == 200 && response.data.profiles.length > 0) {
+          context.commit('setProfile', response.data.profiles[0])
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
+  storeRidePreferences: (context, payload) => {
+    // Convert payload to a profile object.
+    let profile = { ...context.state.user.profile }
+    profile.ridePreferences = {
+      numPassengers: payload.numPassengers,
+      allowTransfer: payload.allowTransfer,
+      maximumTransferTime: payload.maximumTransferTime,
+      luggageOptions: payload.luggageOptions,
+      allowedTravelModes: payload.allowedTravelModes,
+    }
+    const URL = BASE_URL + '/profiles/' + context.state.user.profile.id
+    axios
+      .put(URL, profile, {
+        headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      })
+      .then(response => {
+        console.log(response)
+        if (response.status == 200 && response.data.profiles.length > 0) {
+          context.commit('setProfile', response.data.profiles[0])
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
       })
   },
   submitPlanningsRequest: (context, payload) => {
@@ -78,7 +117,7 @@ export default {
       method: 'POST',
       url: BASE_URL + '/plans',
       data: data,
-      headers: generateHeader(GRAVITEE_PLAN_SERVICE_API_KEY, context),
+      headers: generateHeader(GRAVITEE_PLAN_SERVICE_API_KEY),
     }
 
     context.commit('setPlanningStatus', {

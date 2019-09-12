@@ -47,8 +47,8 @@ export default {
       },
     }
   },
-  setRidePreferences: (state, payload) => {
-    state.user.ridePreferences = payload
+  setProfile: (state, payload) => {
+    state.user.profile = payload
   },
   setDate: (state, payload) => {
     state.planningRequest.dateTime = payload
@@ -109,8 +109,8 @@ export default {
       }
     })
   },
-  setProfileOptionsValue: (state, payload) => {
-    state.user.profile.filter(function(item) {
+  setTripOptionsValue: (state, payload) => {
+    state.user.tripOptions.filter(function(item) {
       if (item.name === payload.key) {
         item.value = payload.value
         return item

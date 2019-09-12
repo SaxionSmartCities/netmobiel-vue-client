@@ -31,7 +31,7 @@ module.exports = [
   },
   {
     mode: 'BIKE',
-    label: 'Bike',
+    label: 'Fiets',
     icon: 'directions_bike',
   },
 ]

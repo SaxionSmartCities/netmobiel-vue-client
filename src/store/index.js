@@ -44,6 +44,9 @@ export default new Vuex.Store({
       // Access token
       accessToken: undefined,
 
+      // Profile as stored in profile service.
+      profile: {},
+
       // Credentials provided by identity provider.
       givenName: undefined,
       familyName: undefined,
@@ -69,7 +72,7 @@ export default new Vuex.Store({
         { name: 'Deel reisdata met NetMobiel', value: false },
         { name: 'Verberg mijn gegevens voor anderen', value: false },
       ],
-      profile: [{ name: 'Ik bied ritten aan', value: false }],
+      tripOptions: [{ name: 'Ik bied ritten aan', value: false }],
       notificationOptions: [
         { name: 'Bevestiging nieuwe reis', value: true },
         { name: 'Wijziging bewaarde reis', value: true },
