@@ -4,7 +4,7 @@ import config from '@/config/config'
 const BASE_URL = config.BASE_URL
 const GRAVITEE_PROFILE_SERVICE_API_KEY = config.GRAVITEE_PROFILE_SERVICE_API_KEY
 
-function generateHeader(key, context) {
+function generateHeader(key) {
   return {
     'X-Gravitee-Api-Key': key,
   }
@@ -18,7 +18,7 @@ export default {
       method: 'POST',
       url: BASE_URL + '/profiles',
       data: context.state.registrationRequest,
-      headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY, context),
+      headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
     }
 
     axios(axiosConfig)

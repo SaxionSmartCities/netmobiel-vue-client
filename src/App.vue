@@ -65,23 +65,6 @@ export default {
     finishNotification: function() {
       this.$store.dispatch('ui/finishNotification')
     },
-    notificationQueue: function() {
-      return this.$store.getters.getNotificationQueue
-    },
-    isNotificationBarVisible: function() {
-      return this.$store.getters.isNotificationBarVisible
-    },
-    currentNotification: function() {
-      return this.$store.getters.getNotificationQueue[0]
-    },
-  },
-  mounted() {
-    this.$store.dispatch('fetchProfile')
-  },
-  methods: {
-    finishNotification: function() {
-      this.$store.dispatch('finishNotification')
-    },
   },
 }
 </script>
