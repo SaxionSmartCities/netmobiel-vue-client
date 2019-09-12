@@ -23,24 +23,24 @@
                   <v-layout column>
                     <v-flex id="van">
                       <v-layout my-1 row>
-                        <v-flex pl-4 xs5 sm2>
+                        <v-flex pl-4 xs5 sm3>
                           <span class="form-label font-weight-bold">
                             Van
                           </span>
                         </v-flex>
-                        <v-flex @click="toLocationSuggestionsPage('from')">
+                        <v-flex xs11 @click="toLocationSuggestionsPage('from')">
                           {{ fromLocationLabel() }}
                         </v-flex>
                       </v-layout>
                     </v-flex>
                     <v-flex id="naar">
                       <v-layout my-1 row>
-                        <v-flex pl-4 xs5 sm2>
+                        <v-flex pl-4 xs5 sm3>
                           <span class="form-label font-weight-bold">
                             Naar
                           </span>
                         </v-flex>
-                        <v-flex @click="toLocationSuggestionsPage('to')">
+                        <v-flex xs11 @click="toLocationSuggestionsPage('to')">
                           {{ toLocationLabel() }}
                         </v-flex>
                       </v-layout>
@@ -62,15 +62,19 @@
               </v-layout>
 
               <v-layout>
-                <v-flex id="aankomsttijd">
-                  <v-layout my-2 row>
-                    <v-flex pl-4 xs4 sm2>
-                      <span class="form-label font-weight-bold">
-                        Aankomst
-                      </span>
-                    </v-flex>
-                    <v-flex @click="toSearchRideDate">
-                      {{ dateRide }}
+                <v-flex xs11>
+                  <v-layout column>
+                    <v-flex id="aankomsttijd">
+                      <v-layout my-2 row>
+                        <v-flex pl-4 sm3>
+                          <span class="form-label font-weight-bold">
+                            Aankomst
+                          </span>
+                        </v-flex>
+                        <v-flex xs11 @click="toSearchRideDate">
+                          {{ dateRide }}
+                        </v-flex>
+                      </v-layout>
                     </v-flex>
                   </v-layout>
                 </v-flex>

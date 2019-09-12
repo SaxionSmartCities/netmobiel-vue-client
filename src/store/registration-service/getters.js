@@ -1,5 +1,3 @@
 export default {
-  getRegistrationStatus: state => {
-    return state.registrationRequest.submitStatus
-  },
+  getRegistrationStatus: state => state.registrationRequest.submitStatus,
 }

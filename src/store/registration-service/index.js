@@ -15,7 +15,7 @@ export default {
       },
     },
   },
+  actions,
   getters,
   mutations,
-  actions,
 }

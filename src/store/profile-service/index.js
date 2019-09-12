@@ -20,6 +20,17 @@ export default {
       rating: 2,
       maxRating: 3,
 
+      // Profile as stored in profile service.
+      profile: {
+        ridePreferences: {
+          numPassengers: 0,
+          allowTransfer: true,
+          maximumTransferTime: 0,
+          luggageOptions: [],
+          allowedTravelModes: [],
+        },
+      },
+
       // Other attributes
       dateOfBirth: Date.now(),
       biography: '',
@@ -36,7 +47,7 @@ export default {
         { name: 'Deel reisdata met NetMobiel', value: false },
         { name: 'Verberg mijn gegevens voor anderen', value: false },
       ],
-      profile: [{ name: 'Ik bied ritten aan', value: false }],
+      tripOptions: [{ name: 'Ik bied ritten aan', value: false }],
       notificationOptions: [
         { name: 'Bevestiging nieuwe reis', value: true },
         { name: 'Wijziging bewaarde reis', value: true },
@@ -50,7 +61,7 @@ export default {
       ],
     },
   },
+  actions,
   getters,
   mutations,
-  actions,
 }

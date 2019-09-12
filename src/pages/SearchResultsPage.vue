@@ -4,7 +4,10 @@
       <v-flex><h1>Reisopties</h1></v-flex>
       <v-flex mt-2>
         <v-divider />
-        <v-expansion-panel>
+        <v-flex v-if="getItineraries == undefined" my-4>
+          Helaas, er zijn geen ritten gevonden!
+        </v-flex>
+        <v-expansion-panel v-if="getItineraries != undefined">
           <v-expansion-panel-content class="no-padding">
             <div slot="header">
               Reisvoorkeuren tonen
@@ -25,7 +28,7 @@
                       <v-flex>Bagage:</v-flex>
                       <v-flex text-xs-right pr-3>
                         <v-icon
-                          v-for="selectedLuggage in getRidePreferences.luggage"
+                          v-for="selectedLuggage in luggageTypes"
                           :key="selectedLuggage.type"
                           >{{ selectedLuggage.icon }}</v-icon
                         >
@@ -73,7 +76,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-divider />
-        <v-layout align-center mt-3>
+        <v-layout v-if="getItineraries != undefined" align-center mt-3>
           <v-flex xs8>{{ date }}</v-flex>
           <v-flex>
             <v-layout align-center @click="changeSort()">
@@ -116,6 +119,8 @@
 
 <script>
 import TravelCard from '@/components/search-results/TravelCard.vue'
+import luggageTypes from '@/constants/luggage-types.js'
+
 import moment from 'moment'
 
 export default {
@@ -134,6 +139,9 @@ export default {
     }
   },
   computed: {
+    luggageTypes() {
+      return luggageTypes
+    },
     getItineraries() {
       return this.$store.getters['is/getItineraries']
     },

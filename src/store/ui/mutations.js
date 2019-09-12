@@ -11,13 +11,22 @@ export default {
   disableFooter: state => {
     state.footer.visible = false
   },
-  //   incrementRegistrationStep: (state, payload) => {
-  //     state.ui.registrationStep += payload
-  //   },
   hideBackButton: state => {
     state.backButtonVisible = false
   },
   showBackButton: state => {
     state.backButtonVisible = true
+  },
+  showNotificationBar: state => {
+    state.notificationBarVisible = true
+  },
+  hideNotificationBar: state => {
+    state.notificationBarVisible = false
+  },
+  pushNotificationToQueue: (state, payload) => {
+    state.notificationQueue.push(payload)
+  },
+  removeFirstNotificationFromQueue: state => {
+    state.notificationQueue = state.notificationQueue.slice(1)
   },
 }

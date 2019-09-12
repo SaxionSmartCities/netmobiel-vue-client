@@ -9,6 +9,21 @@
         <router-view></router-view>
       </v-flex>
 
+      <v-snackbar
+        v-if="isNotificationBarVisible"
+        v-model="isNotificationBarVisible"
+        :timeout="0"
+      >
+        {{ notificationQueue[0].message }}
+        <v-btn
+          v-if="notificationQueue[0].timeout === 0"
+          text
+          @click="finishNotification"
+        >
+          Close
+        </v-btn>
+      </v-snackbar>
+
       <div v-if="isFooterVisible" id="footer">
         <netmobiel-footer />
       </div>
@@ -32,6 +47,23 @@ export default {
     },
     isFooterVisible: function() {
       return this.$store.getters['ui/isFooterVisible']
+    },
+    notificationQueue: function() {
+      return this.$store.getters['ui/getNotificationQueue']
+    },
+    isNotificationBarVisible: function() {
+      return this.$store.getters['ui/isNotificationBarVisible']
+    },
+    currentNotification: function() {
+      return this.$store.getters['ui/getNotificationQueue'][0]
+    },
+  },
+  mounted() {
+    this.$store.dispatch('ps/fetchProfile')
+  },
+  methods: {
+    finishNotification: function() {
+      this.$store.dispatch('ui/finishNotification')
     },
   },
 }

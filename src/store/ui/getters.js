@@ -1,11 +1,7 @@
 export default {
-  isHeaderVisible: state => {
-    return state.header.visible
-  },
-  isFooterVisible: state => {
-    return state.footer.visible
-  },
-  isBackButtonVisible: state => {
-    return state.backButtonVisible
-  },
+  isHeaderVisible: state => state.header.visible,
+  isFooterVisible: state => state.footer.visible,
+  isBackButtonVisible: state => state.backButtonVisible,
+  getNotificationQueue: state => state.notificationQueue,
+  isNotificationBarVisible: state => state.notificationBarVisible,
 }

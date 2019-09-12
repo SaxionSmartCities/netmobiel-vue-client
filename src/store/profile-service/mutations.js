@@ -13,6 +13,9 @@ export default {
   deleteAccessToken: state => {
     state.user.accessToken = null
   },
+  setProfile: (state, payload) => {
+    state.user.profile = payload
+  },
   setNotificationOptionsValue: (state, payload) => {
     state.user.notificationOptions.filter(function(item) {
       if (item.name === payload.key) {
@@ -21,7 +24,7 @@ export default {
       }
     })
   },
-  setProfileOptionsValue: (state, payload) => {
+  setTripOptionsValue: (state, payload) => {
     state.user.profile.filter(function(item) {
       if (item.name === payload.key) {
         item.value = payload.value
