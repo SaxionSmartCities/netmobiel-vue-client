@@ -10,7 +10,7 @@
           class="border-radius-input"
           outline
           single-line
-          autofocus="true"
+          :autofocus="true"
           @click:clear="clearSearchInput"
         >
         </v-text-field>

@@ -44,8 +44,8 @@
                 </v-layout>
               </v-flex>
               <v-flex>
-                {{ ride.from }} <br />
-                {{ ride.to }}
+                {{ ride.from.address.label }} <br />
+                {{ ride.to.address.label }}
               </v-flex>
             </v-layout>
           </v-flex>

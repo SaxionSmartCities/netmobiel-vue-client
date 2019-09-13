@@ -27,10 +27,9 @@
                             Van
                           </span>
                         </v-flex>
-                        <!-- <v-flex xs11 @click="toLocationSuggestionsPage('to')">
-                          {{ toLocationLabel }}
-                        </v-flex> -->
-                        <v-flex xs11> Warenveldehoek 22, Enschede</v-flex>
+                        <v-flex xs11 @click="toLocationSuggestionsPage('from')">
+                          {{ fromLocationLabel }}
+                        </v-flex>
                       </v-layout>
                     </v-flex>
                     <v-flex>
@@ -40,8 +39,8 @@
                             Naar
                           </span>
                         </v-flex>
-                        <v-flex xs11>
-                          Van Galenstraat 19, Enschede
+                        <v-flex xs11 @click="toLocationSuggestionsPage('to')">
+                          {{ toLocationLabel }}
                         </v-flex>
                       </v-layout>
                     </v-flex>
@@ -145,19 +144,20 @@ export default {
       this.$router.push('/planOptions')
     },
     submitForm() {
-      // let pickedGeoLocations = this.$store.getters['gs/getPickedLocation']
-      // let from = pickedGeoLocations.from
-      // let to = pickedGeoLocations.to
+      let pickedGeoLocations = this.$store.getters['gs/getPickedLocation']
+      let from = pickedGeoLocations.from
+      let to = pickedGeoLocations.to
       let ridePlanOptions = this.$store.getters['ps/getProfile'].ridePlanOptions
       let selectedTime = moment(this.date + ' ' + this.time, 'YYYY-MM-DD HH:mm')
 
       var rideDetails = {
-        from: 'Warenveldhoek 22',
-        to: 'van Galenstraat 19',
+        from: from,
+        to: to,
         ridePlanOptions: ridePlanOptions,
         selectedTime: selectedTime,
       }
 
+      console.log(rideDetails)
       this.$store.dispatch('cs/submitRide', rideDetails)
       this.$router.push('/planSubmitted')
     },
