@@ -187,9 +187,6 @@ export default {
 
       return !location.address ? '' : location.address.label
     },
-    getPickedLocation() {
-      return this.$store.getters.getPickedLocation
-    },
     showPickLocationView(fieldPressed) {
       this.showPicklocation = true
       this.pickedLocationState = fieldPressed

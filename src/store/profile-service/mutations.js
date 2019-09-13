@@ -43,6 +43,10 @@ export default {
   setRidePreferences: (state, payload) => {
     state.user.ridePreferences = payload
   },
+  setRidePlanOptions: (state, payload) => {
+    console.log('payload', payload)
+    state.user.profile.ridePlanOptions = payload
+  },
   setPrivacySecurityValue: (state, payload) => {
     state.user.privacySecurity.filter(function(item) {
       if (item.name === payload.key) {

@@ -8,6 +8,57 @@
         <p>Welkom bij Netmobiel!</p>
       </v-flex>
     </v-layout>
+    <v-layout column>
+      <h5>Mijn geplande ritten</h5>
+      <v-flex
+        v-for="(ride, index) in rides"
+        :key="index"
+        my-1
+        xs12
+        class="travel-card"
+      >
+        <v-layout>
+          <v-flex pa-3 xs11>
+            <v-layout column>
+              <v-flex>
+                <v-layout>
+                  <v-flex>
+                    <h3>Vertrek</h3>
+                    <span>{{ formatTime(ride.selectedTime) }}</span>
+                  </v-flex>
+                  <v-flex grow>
+                    <v-layout shrink justify-end>
+                      <v-flex>
+                        Geen passagiers
+                      </v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+              <v-flex>
+                <v-layout column>
+                  <v-flex pa-0>
+                    <v-icon>fa-car</v-icon>
+                  </v-flex>
+                  <v-flex><div class="travel-line"></div></v-flex>
+                </v-layout>
+              </v-flex>
+              <v-flex>
+                {{ ride.from }} <br />
+                {{ ride.to }}
+              </v-flex>
+            </v-layout>
+          </v-flex>
+          <v-flex d-flex>
+            <v-layout justify-center align-center column>
+              <v-flex shrink>
+                <v-icon @click="openDetails()">keyboard_arrow_right</v-icon>
+              </v-flex>
+            </v-layout>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+    </v-layout>
     <v-layout row wrap>
       <v-flex xs12 md6>
         <v-btn round large block to="/search">
@@ -15,7 +66,7 @@
         </v-btn>
       </v-flex>
       <v-flex xs12 md6>
-        <v-btn round large block>
+        <v-btn round large block to="/plan">
           Ik wil een reis aanbieden!
         </v-btn>
       </v-flex>
@@ -29,10 +80,15 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   computed: {
     user() {
       return this.$store.getters['ps/getUser']
+    },
+    rides() {
+      return this.$store.getters['cs/getRides']
     },
   },
   methods: {
@@ -66,6 +122,9 @@ export default {
         message: 'This is another test6',
         timeout: 0,
       })
+    },
+    formatTime: function(time) {
+      return moment(time).format('HH:mm')
     },
   },
 }

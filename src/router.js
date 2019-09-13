@@ -17,8 +17,10 @@ import SearchOptionsPage from './pages/SearchOptionsPage'
 import SearchPage from './pages/SearchPage.vue'
 import SearchResultsPage from './pages/SearchResultsPage.vue'
 import TermsOfUsePage from './pages/TermsOfUsePage.vue'
-
+import RidePlanPage from './pages/RidePlanPage.vue'
 import RegistrationPage from './pages/RegistrationPage.vue'
+import RidePlanOptionsPage from './pages/RidePlanOptionsPage.vue'
+import RidePlanSubmitted from './pages/RidePlanSubmitted.vue'
 
 const router = new Router({
   mode: 'history',
@@ -44,6 +46,21 @@ const router = new Router({
       path: '/search',
       component: SearchPage,
       name: 'searchRide',
+    },
+    {
+      path: '/plan',
+      component: RidePlanPage,
+      name: 'planRide',
+    },
+    {
+      path: '/planOptions',
+      component: RidePlanOptionsPage,
+      name: 'planOptions',
+    },
+    {
+      path: '/planSubmitted',
+      component: RidePlanSubmitted,
+      name: 'planSubmitted',
     },
     {
       path: '/searchOptions',

@@ -29,6 +29,12 @@ export default {
           luggageOptions: [],
           allowedTravelModes: [],
         },
+        ridePlanOptions: {
+          numPassengers: 0,
+          luggageOptions: [],
+          maxMinutesDetour: 0,
+          car: {},
+        },
       },
 
       // Other attributes
