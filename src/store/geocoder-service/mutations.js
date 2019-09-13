@@ -8,7 +8,6 @@ export default {
       state.geocoder.pickedLocations.from = payload.pos
     }
   },
-
   swapLocations: state => {
     let tmp = state.geocoder.pickedLocations.to
     state.geocoder.pickedLocations.to = state.geocoder.pickedLocations.from

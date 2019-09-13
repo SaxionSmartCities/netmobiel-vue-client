@@ -1,16 +1,23 @@
 import axios from 'axios'
+import config from '@/config/config'
 
-const HERE_APP_ID = process.env.VUE_APP_HERE_APP_ID
-const HERE_APP_CODE = process.env.VUE_APP_HERE_APP_CODE
+const GRAVITEE_GEO_SERVICE_API_KEY = config.GRAVITEE_GEO_SERVICE_API_KEY
+
+function generateHeaders() {
+  return {
+    'X-Gravitee-Api-Key': GRAVITEE_GEO_SERVICE_API_KEY,
+  }
+}
 
 export default {
   fetchGeocoderSuggestions: (context, place) => {
-    const GEOCODER_BASE_URL = `https://autocomplete.geocoder.api.here.com/6.2/suggest.json?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&query=${place}&country=NLD&beginHighlight=<b>&endHighlight=</b>`
-
+    const GEOCODER_BASE_URL = `https://dev.netmobiel.eu/gwapi/geo/suggest?place=${place}`
     axios
-      .get(GEOCODER_BASE_URL)
+      .get(GEOCODER_BASE_URL, { headers: generateHeaders() })
       .then(function(resp) {
-        context.commit('setGeocoderSuggestions', resp.data.suggestions)
+        if (resp.status == 200 && resp.data.suggestions.length > 0) {
+          context.commit('setGeocoderSuggestions', resp.data.suggestions)
+        }
       })
       .catch(function(error) {
         // TODO: Proper error handling.
@@ -19,23 +26,24 @@ export default {
       })
   },
   fetchGeocoderLocation: (context, payload) => {
-    const GEOCODER_BASE_URL = `https://geocoder.api.here.com/6.2/geocode.json?app_id=${HERE_APP_ID}&app_code=${HERE_APP_CODE}&locationid=${
+    const GEOCODER_BASE_URL = `https://dev.netmobiel.eu/gwapi/geo/locations/${
       payload.locationId
-    }&gen=9&jsonattributes=1`
-
+    }`
     axios
-      .get(GEOCODER_BASE_URL)
+      .get(GEOCODER_BASE_URL, { headers: generateHeaders() })
       .then(function(resp) {
-        let pos = resp.data.response.view[0].result[0].location
-        context.commit('setGeoLocationPicked', {
-          pos: pos,
-          field: payload.field,
-        })
+        if (resp.status == 200 && resp.data.locations.length > 0) {
+          let pos = resp.data.locations[0].response.view[0].result[0].location
+          context.commit('setGeoLocationPicked', {
+            pos: pos,
+            field: payload.field,
+          })
+        }
       })
       .catch(function(error) {
         // TODO: Proper error handling.
         // eslint-disable-next-line
-            console.log(error)
+        console.log(error)
       })
   },
 }
