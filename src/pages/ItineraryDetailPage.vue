@@ -4,24 +4,20 @@
       <v-flex mb-3>
         <h3>Reisdetails</h3>
       </v-flex>
-
       <v-flex>
         <v-divider />
       </v-flex>
-
       <v-flex my-2>
         <itinerary-summary
-          :date="journey.startTime"
+          :date="selectedTrip.itinerary.startTime"
           :cost="5"
-          :duration="journey.duration"
+          :duration="selectedTrip.itinerary.duration"
         >
         </itinerary-summary>
       </v-flex>
-
       <v-flex>
         <v-divider />
       </v-flex>
-
       <v-flex mt-4>
         <v-layout column>
           <v-flex v-for="(leg, index) in generateSteps" :key="index">
@@ -46,16 +42,14 @@ export default {
   name: 'ItineraryDetailPage',
   components: { ItinerarySummary, ItineraryLeg },
   computed: {
-    journey: function() {
-      return this.$store.getters['is/getSelectedItinerary']
+    selectedTrip: function() {
+      return this.$store.getters['is/getSelectedTrip']
     },
     generateSteps: function() {
       let result = []
-
-      for (let i = 0; i < this.journey.legs.length - 1; i++) {
-        let currentLeg = this.journey.legs[i]
-        let nextLeg = this.journey.legs[i + 1]
-
+      for (let i = 0; i < this.selectedTrip.itinerary.legs.length - 1; i++) {
+        let currentLeg = this.selectedTrip.itinerary.legs[i]
+        let nextLeg = this.selectedTrip.itinerary.legs[i + 1]
         result.push(currentLeg)
 
         // We won't show any waiting times < 60 sec -- should be made a config
@@ -69,9 +63,9 @@ export default {
           })
         }
       }
-
-      let lastLeg = this.journey.legs[this.journey.legs.length - 1]
-
+      let lastLeg = this.selectedTrip.itinerary.legs[
+        this.selectedTrip.itinerary.legs.length - 1
+      ]
       result.push(lastLeg)
 
       // Finally, we push the "FINISH" element (not from OTP)
@@ -80,7 +74,6 @@ export default {
         startTime: lastLeg.endTime,
         to: lastLeg.to,
       })
-
       return result
     },
   },
