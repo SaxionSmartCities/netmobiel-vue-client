@@ -26,7 +26,7 @@
         </v-layout>
       </v-flex>
       <v-flex my-4>
-        <v-btn large round block mb-4>
+        <v-btn large round block mb-4 @click="saveTrip">
           Deze reis bevestigen
         </v-btn>
       </v-flex>
@@ -75,6 +75,12 @@ export default {
         to: lastLeg.to,
       })
       return result
+    },
+  },
+  methods: {
+    saveTrip: function() {
+      const selectedTrip = this.$store.getters['is/getSelectedTrip']
+      this.$store.dispatch('is/storeSelectedTrip', selectedTrip)
     },
   },
 }
