@@ -11,14 +11,14 @@ import NotificationOptionsPage from './pages/NotificationOptionsPage.vue'
 import PrivacySecurityPage from './pages/PrivacySecurityPage.vue'
 import PrivacyStatementPage from './pages/PrivacyStatementPage.vue'
 import ProfilePage from './pages/ProfilePage.vue'
+import RegistrationPage from './pages/RegistrationPage.vue'
 import SearchDateTimePage from './pages/SearchDateTimePage'
 import SearchLocationPage from './pages/SearchLocationPage'
 import SearchOptionsPage from './pages/SearchOptionsPage'
 import SearchPage from './pages/SearchPage.vue'
 import SearchResultsPage from './pages/SearchResultsPage.vue'
 import TermsOfUsePage from './pages/TermsOfUsePage.vue'
-
-import RegistrationPage from './pages/RegistrationPage.vue'
+import TripsOverviewPage from './pages/TripsOverviewPage.vue'
 
 const router = new Router({
   mode: 'history',
@@ -89,6 +89,11 @@ const router = new Router({
       path: '/profileNotificationOptions',
       component: NotificationOptionsPage,
       name: 'notificationOptions',
+    },
+    {
+      path: '/tripsOverviewPage',
+      component: TripsOverviewPage,
+      name: 'tripsOverviewPage',
     },
   ],
 })
