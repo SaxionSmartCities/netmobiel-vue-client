@@ -41,8 +41,8 @@ export default {
   methods: {
     formatDate(date) {
       return moment(date).format('DD-MM-YYYY')
-    }
-  }
+    },
+  },
 }
 </script>
 
