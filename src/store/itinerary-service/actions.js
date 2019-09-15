@@ -69,7 +69,6 @@ export default {
       })
   },
   storeSelectedTrip: (context, payload) => {
-    console.log(payload)
     const URL = BASE_URL + '/trips'
     axios
       .post(URL, payload, {
@@ -86,7 +85,7 @@ export default {
         } else {
           context.dispatch(
             'ui/queueNotification',
-            { message: reponse.data.message, timeout: 0 },
+            { message: response.data.message, timeout: 0 },
             { root: true }
           )
         }
@@ -97,6 +96,26 @@ export default {
         context.dispatch(
           'ui/queueNotification',
           { message: 'Reis is niet opgeslagen', timeout: 0 },
+          { root: true }
+        )
+      })
+  },
+  fetchTrips: (context, payload) => {
+    const URL = BASE_URL + '/trips'
+    axios
+      .get(URL, { headers: generateHeader(GRAVITEE_TRIP_SERVICE_API_KEY) })
+      .then(response => {
+        console.log(response)
+        if (response.status == 200 && response.data.trips.length > 0) {
+          context.commit('setPlannedTrips', response.data.trips)
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          { message: 'Fout bij het ophalen reizen', timeout: 0 },
           { root: true }
         )
       })
