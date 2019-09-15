@@ -11,6 +11,7 @@ export default {
       date: undefined,
       itinerary: {},
     },
+    plannedTrips: [],
     planningRequest: {
       fromPlace: { lat: 0.0, lon: 0.0 },
       toPlace: { lat: 0.0, lon: 0.0 },
