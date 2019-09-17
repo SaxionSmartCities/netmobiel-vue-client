@@ -25,7 +25,13 @@
         </v-btn>
       </v-flex>
       <v-flex xs12 md6>
-        <v-btn round large block :disabled="!user.profile.fcmToken" @click="sendPushNotification">
+        <v-btn
+          round
+          large
+          block
+          :disabled="!user.profile.fcmToken"
+          @click="sendPushNotification"
+        >
           Stuur mij push notificatie
         </v-btn>
       </v-flex>
@@ -73,7 +79,7 @@ export default {
       })
     },
     sendPushNotification: function() {
-      console.log("Push it real good");
+      console.log('Push it real good')
     },
   },
 }
