@@ -9,7 +9,7 @@ export default {
   },
   clearRegistrationRequest: state => {
     state.registrationRequest = {
-      lastName: '',
+      firstName: '',
       lastName: '',
       email: '',
       submitStatus: {
