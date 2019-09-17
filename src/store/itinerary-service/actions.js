@@ -100,7 +100,7 @@ export default {
         )
       })
   },
-  fetchTrips: (context, payload) => {
+  fetchTrips: context => {
     const URL = BASE_URL + '/trips'
     axios
       .get(URL, { headers: generateHeader(GRAVITEE_TRIP_SERVICE_API_KEY) })
