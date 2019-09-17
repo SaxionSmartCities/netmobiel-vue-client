@@ -102,7 +102,7 @@ export default {
     },
   },
   beforeCreate() {
-    this.$store.commit('disableFooter')
+    this.$store.commit('ui/disableFooter')
   },
   methods: {
     submitForm: function(event) {

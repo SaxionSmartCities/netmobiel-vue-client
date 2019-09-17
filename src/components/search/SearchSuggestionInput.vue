@@ -4,13 +4,13 @@
       <v-layout>
         <v-text-field
           v-model="searchInput"
+          autofocus
           clearable
           placeholder="Zoek..."
           prepend-inner-icon="search"
           class="border-radius-input"
           outline
           single-line
-          autofocus="true"
           @click:clear="clearSearchInput"
         >
         </v-text-field>

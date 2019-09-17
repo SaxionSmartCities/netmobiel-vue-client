@@ -32,7 +32,7 @@ export default {
         const status = error.response.status
         var errorMsg = ''
         if (status === 422) {
-          errorMsg = 'Ontbrekende data (email, voornaam of achternaam'
+          errorMsg = 'Ontbrekende data (email, voornaam of achternaam)'
         } else if (status === 500) {
           errorMsg = error.response.data.message // No clue what is going on, but the server should report something about it
         } else if (status === 409) {
