@@ -24,6 +24,11 @@
           Snackbar tonen
         </v-btn>
       </v-flex>
+      <v-flex xs12 md6>
+        <v-btn round large block :disabled="!user.profile.fcmToken" @click="sendPushNotification">
+          Stuur mij push notificatie
+        </v-btn>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -66,6 +71,9 @@ export default {
         message: 'This is another test6',
         timeout: 0,
       })
+    },
+    sendPushNotification: function() {
+      console.log("Push it real good");
     },
   },
 }
