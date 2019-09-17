@@ -59,7 +59,10 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('ps/fetchProfile')
+    // Only fetch profile of user has been authenticated
+    if (this.$keycloak.authenticated) {
+      this.$store.dispatch('ps/fetchProfile')
+    }
   },
   methods: {
     finishNotification: function() {
