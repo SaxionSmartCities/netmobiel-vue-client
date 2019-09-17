@@ -6,8 +6,8 @@ export default {
   namespaced: true,
   state: {
     registrationRequest: {
-      first_name: '',
-      last_name: '',
+      firstName: '',
+      lastName: '',
       email: '',
       submitStatus: {
         success: undefined,

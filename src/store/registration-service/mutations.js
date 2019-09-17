@@ -1,7 +1,7 @@
 export default {
   storeRegistrationRequest: (state, payload) => {
-    state.registrationRequest.first_name = payload.firstName
-    state.registrationRequest.last_name = payload.lastName
+    state.registrationRequest.firstName = payload.firstName
+    state.registrationRequest.lastName = payload.lastName
     state.registrationRequest.email = payload.email
   },
   setRegistrationStatus: (state, payload) => {
@@ -9,8 +9,8 @@ export default {
   },
   clearRegistrationRequest: state => {
     state.registrationRequest = {
-      first_name: '',
-      last_name: '',
+      lastName: '',
+      lastName: '',
       email: '',
       submitStatus: {
         success: undefined,
