@@ -59,9 +59,15 @@ export default {
     },
   },
   mounted() {
+    let passedFcmToken = this.$route.query.fcm
     // Only fetch profile of user has been authenticated
     if (this.$keycloak.authenticated) {
-      this.$store.dispatch('ps/fetchProfile')
+      this.$store.dispatch('ps/fetchProfile').then(() => {
+        let profile = this.$store.getters['ps/getProfile']
+        if (passedFcmToken && passedFcmToken !== profile.fcmToken) {
+          console.log('TODO: Update profile')
+        }
+      })
     }
   },
   methods: {
