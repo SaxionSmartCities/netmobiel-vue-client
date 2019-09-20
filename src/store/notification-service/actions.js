@@ -2,7 +2,8 @@ import axios from 'axios'
 import config from '@/config/config'
 
 const BASE_URL = config.BASE_URL
-const GRAVITEE_NOTIFICATION_SERVICE_API_KEY = config.GRAVITEE_NOTIFICATION_SERVICE_API_KEY
+const GRAVITEE_NOTIFICATION_SERVICE_API_KEY =
+  config.GRAVITEE_NOTIFICATION_SERVICE_API_KEY
 
 function generateHeader(key) {
   return {
