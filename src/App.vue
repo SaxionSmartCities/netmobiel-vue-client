@@ -57,17 +57,24 @@ export default {
     currentNotification: function() {
       return this.$store.getters['ui/getNotificationQueue'][0]
     },
+    getProfile() {
+      return this.$store.getters['ps/getProfile']
+    },
+  },
+  watch: {
+    getProfile(newProfile) {
+      // Update profile if the passed FCM token is different compared
+      // to the one in the profile.
+      let passedFcmToken = this.$route.query.fcm
+      if (passedFcmToken && passedFcmToken !== newProfile.fcmToken) {
+        this.$store.dispatch('ps/storeFcmToken', { fcmToken: passedFcmToken })
+      }
+    },
   },
   mounted() {
-    let passedFcmToken = this.$route.query.fcm
     // Only fetch profile of user has been authenticated
     if (this.$keycloak.authenticated) {
-      this.$store.dispatch('ps/fetchProfile').then(() => {
-        let profile = this.$store.getters['ps/getProfile']
-        if (passedFcmToken && passedFcmToken !== profile.fcmToken) {
-          console.log('TODO: Update profile')
-        }
-      })
+      this.$store.dispatch('ps/fetchProfile')
     }
   },
   methods: {
