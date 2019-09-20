@@ -41,7 +41,7 @@
                   <span class="form-label py-2">Bagage</span>
                 </v-flex>
                 <v-flex>
-                  <v-layout pr-3>
+                  <v-layout v-if="luggageSelected.length > 0" pr-3>
                     <v-flex
                       v-for="luggage in luggageSelected"
                       :key="luggage.type"
@@ -173,8 +173,8 @@ export default {
     return {
       maxNrOfPersons: 4,
       numPassengers: 1,
-      luggageSelected: [],
       maxMinutesDetour: 0,
+      luggageSelected: [],
       image: require('@/assets/placeholder_car.png'),
       cars: [
         {
@@ -218,11 +218,12 @@ export default {
     this.$store.commit('ui/showBackButton')
   },
   mounted() {
-    let ridePlanOptions = this.$store.getters['ps/getProfile'].ridePlanOptions
-
+    let ridePlanOptions = this.$store.getters['ps/getUser'].ridePlanOptions
     this.luggageSelected = ridePlanOptions.luggageOptions.map(option =>
       this.parseLuggageOption(option)
     )
+
+    console.log(this.luggageSelected)
     this.numPassengers = ridePlanOptions.numPassengers
     this.maxMinutesDetour = ridePlanOptions.maxMinutesDetour
     this.selectedCar = ridePlanOptions.car

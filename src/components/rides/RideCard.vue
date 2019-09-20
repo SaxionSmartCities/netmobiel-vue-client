@@ -1,6 +1,7 @@
 <template>
   <v-layout>
-    <v-flex pa-3 xs11>
+    <v-flex pa-3>
+      <!-- REMOVED XS11 CLASS FROM FLEX ABOVE FOR ALPHA RELEAES -->
       <v-layout column>
         <v-flex>
           <v-layout>
@@ -31,13 +32,14 @@
         </v-flex>
       </v-layout>
     </v-flex>
+    <!-- DISABLED FOR ALPHA RELEASE
     <v-flex d-flex>
       <v-layout justify-center align-center column>
         <v-flex shrink>
           <v-icon @click="openDetails()">keyboard_arrow_right</v-icon>
         </v-flex>
       </v-layout>
-    </v-flex>
+    </v-flex> -->
   </v-layout>
 </template>
 
