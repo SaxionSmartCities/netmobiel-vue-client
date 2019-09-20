@@ -79,7 +79,11 @@ export default {
       })
     },
     sendPushNotification: function() {
-      console.log('Push it real good')
+      let recipientId = this.user.profile.fcmToken
+      this.$store.dispatch('pn/sendNotification', {
+        recipientId: recipientId,
+        messageType: 'TBD',
+      })
     },
   },
 }
