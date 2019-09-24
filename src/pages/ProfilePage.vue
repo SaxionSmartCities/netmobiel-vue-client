@@ -73,7 +73,7 @@
           </v-flex>
         </v-layout>
       </v-flex>
-      <v-flex travel-card mr-2 @click="logOut">
+      <v-flex travel-card mt-2 mr-2 @click="logOut">
         <v-layout column align-center my-2>
           <v-flex>
             <v-icon>exit_to_app</v-icon>
@@ -138,13 +138,6 @@ export default {
 <style lang="scss">
 .theme--light.v-icon {
   color: $color-green;
-}
-#container {
-  background: #ffffff;
-  border-radius: $form-border-radius;
-  height: calc(100% - 50px - 40px);
-  width: 100%;
-  margin-top: calc(50px + 20px);
 }
 .v-rating .v-icon {
   padding: 0px;

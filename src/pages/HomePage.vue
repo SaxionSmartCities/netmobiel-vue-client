@@ -72,12 +72,9 @@ export default {
 </script>
 
 <style lang="scss">
-.v-btn {
-  text-transform: none;
-}
-
 .theme--light.v-btn:not(.v-btn--icon):not(.v-btn--flat) {
   background-color: $color-orange;
   color: white;
+  text-transform: none;
 }
 </style>

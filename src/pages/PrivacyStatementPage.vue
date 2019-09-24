@@ -1,8 +1,11 @@
 <template>
   <v-container>
-    <v-layout>
-      <v-flex>
-        <p class="headline">{{ title }}</p>
+    <v-layout column>
+      <v-flex mb-3>
+        <h3>{{ title }}</h3>
+      </v-flex>
+      <v-flex mb-3>
+        <v-divider />
       </v-flex>
     </v-layout>
     <v-layout>

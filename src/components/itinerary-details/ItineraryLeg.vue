@@ -128,13 +128,13 @@ export default {
 
 .border {
   width: 1px;
-  border: 2px #222 solid;
+  border: 2px $color-primary solid;
   height: 100%;
 }
 
 .borderstopped {
   width: 1px;
-  border: 2px #ccc dotted;
+  border: 2px $color-primary-light dotted;
   height: 100%;
 }
 </style>

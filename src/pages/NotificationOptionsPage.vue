@@ -1,11 +1,13 @@
 <template>
   <v-container>
-    <v-layout>
-      <v-flex>
-        <h1 class="headline">{{ title }}</h1>
+    <v-layout column>
+      <v-flex mb-3>
+        <h3>{{ title }}</h3>
+      </v-flex>
+      <v-flex mb-2>
+        <v-divider />
       </v-flex>
     </v-layout>
-
     <v-layout pt-3>
       <v-flex>
         <h2 class="text-primary-uppercase">Reizen</h2>
@@ -121,5 +123,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss"></style>

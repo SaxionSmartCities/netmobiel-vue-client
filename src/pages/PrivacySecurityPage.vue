@@ -1,7 +1,9 @@
 <template>
   <v-container>
     <v-layout>
-      <h1 class="headline">{{ title }}</h1>
+      <v-flex mb-3>
+        <h3>{{ title }}</h3>
+      </v-flex>
     </v-layout>
     <v-divider></v-divider>
     <v-layout align-center ma-3 @click="toPrivacyStatement">
@@ -69,5 +71,3 @@ export default {
   },
 }
 </script>
-
-<style scoped></style>

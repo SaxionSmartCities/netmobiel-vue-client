@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-layout column>
-      <v-flex><h1>Bewaard</h1></v-flex>
+      <v-flex><h3>Bewaarde ritten</h3></v-flex>
       <v-flex mt-2>
         <v-divider />
         <v-flex v-if="getPlannedTrips.length == 0" my-4>
