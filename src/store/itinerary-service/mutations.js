@@ -24,7 +24,10 @@ export default {
   sortItineraries: (state, payload) => {
     state.planningRequest.result.data.itineraries.sort(payload)
   },
-  setSelectedItinerary: (state, payload) => {
-    state.selectedItinerary = payload
+  setSelectedTrip: (state, payload) => {
+    state.selectedTrip = payload
+  },
+  setPlannedTrips: (state, payload) => {
+    state.plannedTrips = payload
   },
 }
