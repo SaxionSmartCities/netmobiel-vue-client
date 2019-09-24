@@ -39,6 +39,9 @@ export default {
   mounted: function() {
     this.$store.commit('ui/showBackButton')
   },
+  created: function() {
+    this.$store.commit('ui/showBackButton')
+  },
   methods: {
     completeSearch(location) {
       this.$store.dispatch('gs/fetchGeocoderLocation', location.locationId)
