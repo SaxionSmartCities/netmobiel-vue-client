@@ -5,15 +5,11 @@
 npm install
 ```
 ## Configuration
-Configure geocoder so location suggestions can be retrieved. The geocoding
-service which is used is [HERE](https://developer.here.com).
-
-For local testing, set the following variables in your .env.local file:
+Configure the Google Analytics Tracking ID if you want to enable google
+analytics. For local testing, set the following variables in your .env.local file:
 ```
-VUE_APP_HERE_APP_ID=<app_id here>
-VUE_APP_HERE_APP_CODE=<app_code_here>
+VUE_APP_GA_ID=<tracking here, i.e. UA-999999999-1 >
 ```
-
 
 ### Compiles and hot-reloads for development
 ```
