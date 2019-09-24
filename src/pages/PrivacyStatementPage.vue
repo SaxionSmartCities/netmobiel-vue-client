@@ -34,7 +34,7 @@ export default {
     }
   },
   created: function() {
-    this.$store.commit('showBackButton')
+    this.$store.commit('ui/showBackButton')
   },
 }
 </script>
