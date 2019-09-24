@@ -24,14 +24,16 @@ function tokenInterceptor() {
     }
   )
 }
-
-Vue.use(VueAnalytics, {
-  id: 'UA-148605229-1', //Should this be added as an ENV var?
-  router, //auto tracks all the page changes
-  autoTracking: {
-    exception: true, //reports exception errors to Google Analytics
-  },
-})
+let googleAnalyticsTrackingId = process.env.VUE_APP_GA_ID
+if (googleAnalyticsTrackingId) {
+  Vue.use(VueAnalytics, {
+    id: googleAnalyticsTrackingId,
+    router, //auto tracks all the page changes
+    autoTracking: {
+      exception: true, //reports exception errors to Google Analytics
+    },
+  })
+}
 
 Vue.use(VueKeyCloak, {
   config: {
