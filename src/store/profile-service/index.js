@@ -22,6 +22,8 @@ export default {
 
       // Profile as stored in profile service.
       profile: {
+        id: undefined,
+        fcmToken: undefined,
         ridePreferences: {
           numPassengers: 0,
           allowTransfer: true,

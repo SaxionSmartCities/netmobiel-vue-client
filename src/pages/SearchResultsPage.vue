@@ -91,7 +91,14 @@
         </v-layout>
       </v-flex>
       <v-flex v-for="(itinerary, index) in getItineraries" :key="index">
-        <travel-card class="mt-2" :journey="itinerary"></travel-card>
+        <travel-card
+          class="mt-2"
+          :from="getPlanningResult.from"
+          :to="getPlanningResult.to"
+          :date="getPlanningResult.date"
+          :journey="itinerary"
+        >
+        </travel-card>
       </v-flex>
       <v-flex mt-3>
         <v-layout column>
@@ -142,8 +149,11 @@ export default {
     luggageTypes() {
       return luggageTypes
     },
+    getPlanningResult() {
+      return this.$store.getters['is/getPlanningResult']
+    },
     getItineraries() {
-      return this.$store.getters['is/getItineraries']
+      return this.getPlanningResult.itineraries
     },
     date() {
       return moment(this.$store.getters['is/getSearchRideDateTime']).format(
