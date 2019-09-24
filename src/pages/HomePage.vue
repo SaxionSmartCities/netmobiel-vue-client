@@ -37,6 +37,8 @@ export default {
   },
   methods: {
     addNotification: function() {
+      this.$ga.event('test', 'snackbar test', 'home snackbartest', 1) //Google Analytics test event
+
       this.$store.dispatch('ui/queueNotification', {
         message: 'This is a test1',
         timeout: 3000,
