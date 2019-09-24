@@ -16,7 +16,7 @@
     <v-flex>
       <v-layout row>
         <v-flex xs2 my-3>
-          <v-icon my-6> {{ icon }}</v-icon>
+          <v-icon my-6>{{ icon }}</v-icon>
         </v-flex>
         <v-flex xs1>
           <v-layout v-if="leg.mode !== 'FINISH'" justify-center fill-height>
@@ -27,7 +27,7 @@
           </v-layout>
         </v-flex>
         <v-flex caption>
-          <v-icon v-if="leg.mode !== 'WAIT'" size="15">map</v-icon>
+          <v-icon v-if="leg.mode !== 'WAIT' && leg.mode !== 'FINISH'" size="15">map</v-icon>
           {{ description }}
         </v-flex>
       </v-layout>
@@ -38,15 +38,14 @@
 <script>
 import moment from 'moment'
 import { getIcon } from '@/utils/Utils.js'
+import delegation from '@/utils/delegation'
 
 export default {
   name: 'ItineraryLeg',
   props: {
     leg: {
       type: Object,
-      default: function() {
-        return {}
-      },
+      required: true,
     },
   },
   computed: {
@@ -58,63 +57,72 @@ export default {
         .locale('nl')
         .format('LT')
     },
-    header: function() {
-      switch (this.leg.mode) {
-        case 'WALK':
-          // return 'Lopen' naar ' + this.leg.to.lat + ' ' + this.leg.to.lon'
-          return 'Lopen'
-        case 'CAR':
-        case 'NETMOBIEL':
-          return 'Meerijden met NETMOBIEL gebruiker'
-        case 'RAIL':
-          return 'Trein'
-        case 'BUS':
-          return 'Reizen met bus ' + this.leg.routeShortName
-        case 'WAIT':
-          return (
-            'Even wachten..' +
-            ' (' +
-            Math.round(this.leg.duration / 60) +
-            ' minuten)'
-          )
-        case 'FINISH':
-          return 'Aangekomen op bestemming'
-        default:
-          return 'HEADER_NOT_DEFINED'
-      }
+    header() {
+      return delegation(this, this.leg.mode, headers)
     },
-    description: function() {
-      switch (this.leg.mode) {
-        case 'WALK':
-          return 'Lopen van ergens, naar ergens anders'
-        // return (
-        //   'Vanaf ' +
-        //   this.leg.from.lat +
-        //   ' ' +
-        //   this.leg.from.lon +
-        //   ' naar ' +
-        //   this.leg.to.lat +
-        //   ' ' +
-        //   this.leg.to.lon
-        // )
-        case 'CAR':
-        case 'NETMOBIEL':
-          return 'Meerijden met een NETMOBIEL gebruiker'
-        case 'TRAIN':
-          return 'Reizen met de trein'
-        case 'BUS':
-          return 'Reizen met de bus'
-        case 'RAIL':
-          return 'Reizen met iets op rails'
-        case 'WAIT':
-          return ''
-        case 'FINISH':
-          return 'Aangekomen op ' + this.leg.to.lat + ' ' + this.leg.to.lon
-        default:
-          return 'DESCRIPTION_NOT_DEFINED'
-      }
+    description() {
+      return delegation(this, this.leg.mode, descriptions)
     },
   },
+}
+
+const headers = {
+  WALK() {
+    return `Lopen (${humanDistance(this.leg.distance)})`
+  },
+  CAR: 'Meerijden met een NETMOBIEL gebruiker',
+  NETMOBIEL: 'Meerijden met een NETMOBIEL gebruiker',
+  RAIL() {
+    return `${this.leg.routeShortName} naar ${this.leg.to.name}`
+  },
+  BUS() {
+    return `Reizen met bus ${this.leg.routeShortName}`
+  },
+  WAIT() {
+    return `Even wachten.. (${Math.round(this.leg.duration / 60)} minuten)`
+  },
+  FINISH: 'Aangekomen op bestemming',
+  default: 'HEADER NOT DEFINED FOR THIS LEG MODE!',
+}
+const descriptions = {
+  WALK() {
+    // use first and last step with proper street name
+    const departureName = this.leg.steps.find(step => !step.bogusName)
+      .streetName
+    const arrivalName = this.leg.steps
+      .slice(0)
+      .reverse()
+      .find(step => !step.bogusName).streetName
+    return `${departureName} - ${arrivalName}`
+  },
+  CAR: 'Meerijden met een NETMOBIEL gebruiker',
+  NETMOBIEL: 'Meerijden met een NETMOBIEL gebruiker',
+  RAIL() {
+    // add platform to departure and arrival
+    return `${this.leg.from.name} perron ${this.leg.from.platformCode} - ${
+      this.leg.to.name
+    } perron ${this.leg.to.platformCode}`
+  },
+  BUS() {
+    return `${this.leg.from.name} - ${this.leg.to.name}`
+  },
+  WAIT: '',
+  FINISH: '',
+  default: 'DESCRIPTION NOT DEFINED FOR THIS LEG MODE!',
+}
+
+// TODO common utility?
+function humanDistance(meters) {
+  if (meters < 1000) {
+    // 10m accuracy if less than 1 km
+    return `${Math.floor(meters / 10) * 10} m`
+  } else if (meters < 10000) {
+    // 100m accuracy if less than 10 km
+    return `${Math.floor(meters / 100) / 10} km`
+  } else {
+    // km accuracy if more than 10 km
+    return `${Math.floor(meters / 1000)} km`
+  }
 }
 </script>
 
