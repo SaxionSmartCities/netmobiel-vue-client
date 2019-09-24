@@ -75,7 +75,6 @@ export default {
         headers: generateHeader(GRAVITEE_TRIP_SERVICE_API_KEY),
       })
       .then(response => {
-        console.log(response)
         if (response.status == 201) {
           context.dispatch(
             'ui/queueNotification',
@@ -105,7 +104,6 @@ export default {
     axios
       .get(URL, { headers: generateHeader(GRAVITEE_TRIP_SERVICE_API_KEY) })
       .then(response => {
-        console.log(response)
         if (response.status == 200 && response.data.trips.length > 0) {
           context.commit('setPlannedTrips', response.data.trips)
         }
