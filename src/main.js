@@ -7,6 +7,7 @@ import axios from 'axios'
 import store from './store'
 import router from './router'
 import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
+import VueAnalytics from 'vue-analytics'
 
 Vue.use(Vuetify, {
   themes: {
@@ -31,6 +32,16 @@ function tokenInterceptor() {
       return Promise.reject(error)
     }
   )
+}
+let googleAnalyticsTrackingId = process.env.VUE_APP_GA_ID
+if (googleAnalyticsTrackingId) {
+  Vue.use(VueAnalytics, {
+    id: googleAnalyticsTrackingId,
+    router, //auto tracks all the page changes
+    autoTracking: {
+      exception: true, //reports exception errors to Google Analytics
+    },
+  })
 }
 
 Vue.use(VueKeyCloak, {
