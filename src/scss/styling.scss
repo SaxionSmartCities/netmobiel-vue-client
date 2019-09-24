@@ -113,3 +113,8 @@ body {
   background-color: $color-mid-grey;
   border-color: $color-mid-grey;
 }
+
+// Vuetify expansion panel
+.v-expansion-panel {
+  box-shadow: none;
+}

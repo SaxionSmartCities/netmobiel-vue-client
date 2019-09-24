@@ -8,7 +8,16 @@ import store from './store'
 import router from './router'
 import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
 
-Vue.use(Vuetify, { theme: false })
+Vue.use(Vuetify, {
+  themes: {
+    light: {
+      primary: '#2E8997',
+      secondary: '#FF8500',
+      accent: '#FFFFFF',
+      error: '#D0021B',
+    },
+  },
+})
 
 Vue.config.productionTip = false
 

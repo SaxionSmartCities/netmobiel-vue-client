@@ -1,11 +1,13 @@
 <template>
   <v-container data-app>
     <v-layout column>
-      <v-flex>
-        <h5 class="headline font-weight-medium">Reisvoorkeuren</h5>
+      <v-flex mb-3>
+        <h3>Reisvoorkeuren</h3>
       </v-flex>
-
-      <v-flex my-3>
+      <v-flex mb-3>
+        <v-divider />
+      </v-flex>
+      <v-flex mb-3>
         <v-expansion-panel>
           <v-expansion-panel-content>
             <div slot="header">
@@ -305,12 +307,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.v-text-field > .v-input__control > .v-input__slot:before {
-  border-style: none;
-}
-
-.v-expansion-panel {
-  box-shadow: none;
-}
-</style>
+<style lang="scss"></style>
