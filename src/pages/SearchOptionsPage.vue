@@ -11,7 +11,7 @@
         <v-expansion-panel>
           <v-expansion-panel-content>
             <div slot="header">
-              <v-layout>
+              <v-layout class="menu-item">
                 <v-flex xs10>
                   <span class="form-label py-2">Personen</span>
                 </v-flex>
@@ -38,7 +38,7 @@
           </v-expansion-panel-content>
           <v-expansion-panel-content>
             <div slot="header">
-              <v-layout>
+              <v-layout class="menu-item">
                 <v-flex xs10>
                   <span class="form-label py-2">Bagage</span>
                 </v-flex>
@@ -76,7 +76,7 @@
 
           <v-expansion-panel-content>
             <div slot="header">
-              <v-layout>
+              <v-layout class="menu-item">
                 <v-flex xs10>
                   <span class="form-label py-2">Overstappen</span>
                 </v-flex>
@@ -108,7 +108,7 @@
 
           <v-expansion-panel-content>
             <div slot="header">
-              <v-layout>
+              <v-layout class="menu-item">
                 <v-flex xs10>
                   <span class="form-label py-2">Toestaan</span>
                 </v-flex>
@@ -146,7 +146,7 @@
 
           <v-expansion-panel-content>
             <div slot="header">
-              <v-layout>
+              <v-layout class="menu-item">
                 <v-flex xs9>
                   <span class="form-label py-2">Maximale loopafstand</span>
                 </v-flex>
@@ -267,10 +267,15 @@ export default {
           label: 'Huisdier',
           icon: 'pets',
         },
-        ROLLATOR: {
-          type: 'ROLLATOR',
+        WALKER: {
+          type: 'WALKER',
           label: 'Rollator',
           icon: 'fa-crutch',
+        },
+        GROCERIES: {
+          type: 'GROCERIES',
+          label: 'Boodschappen',
+          icon: 'fa-shopping-bag',
         },
         WHEELCHAIR: {
           type: 'WHEELCHAIR',
@@ -307,4 +312,12 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.v-expansion-panel {
+  box-shadow: none;
+}
+
+.menu-item {
+  height: 25px;
+}
+</style>
