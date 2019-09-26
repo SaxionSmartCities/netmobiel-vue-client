@@ -36,9 +36,6 @@ export default {
       this.$router.go(-1)
     },
   },
-  mounted: function() {
-    this.$store.commit('ui/showBackButton')
-  },
   created: function() {
     this.$store.commit('ui/showBackButton')
   },
