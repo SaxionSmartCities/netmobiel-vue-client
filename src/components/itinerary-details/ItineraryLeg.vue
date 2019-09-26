@@ -27,7 +27,9 @@
           </v-layout>
         </v-flex>
         <v-flex caption>
-          <v-icon v-if="leg.mode !== 'WAIT' && leg.mode !== 'FINISH'" size="15">map</v-icon>
+          <v-icon v-if="leg.mode !== 'WAIT' && leg.mode !== 'FINISH'" size="15">
+            map
+          </v-icon>
           {{ description }}
         </v-flex>
       </v-layout>
