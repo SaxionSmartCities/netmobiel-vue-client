@@ -20,12 +20,13 @@ $color-light-grey: #CCCCCC; // Card outlines, card trip line, input outlines
 $color-mid-grey: #9B9B9B; //  Footer icons, card chevron-icon, body sub text
 $color-dark-grey: #4A4A4A; // Headings, body text
 
+
 $color-primary: $color-green;
-$color-primary-light: $color-primary;
-$color-primary-dark: $color-primary;
+$color-primary-light: lighten( $color-green, 20% );
+$color-primary-dark: darken( $color-green, 20% );
 $color-secondary: $color-orange;
-$color-secondary-light: $color-secondary;
-$color-secondary-dark: $color-secondary;
+$color-secondary-light: lighten( $color-secondary, 20%);
+$color-secondary-dark: darken( $color-secondary, 20%);
 
 // Default form configuration
 $form-border-radius: 25px;

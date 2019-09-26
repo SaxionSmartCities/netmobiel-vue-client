@@ -37,6 +37,8 @@ export default {
   },
   methods: {
     addNotification: function() {
+      this.$ga.event('test', 'snackbar test', 'home snackbartest', 1) //Google Analytics test event
+
       this.$store.dispatch('ui/queueNotification', {
         message: 'This is a test1',
         timeout: 3000,
@@ -72,12 +74,9 @@ export default {
 </script>
 
 <style lang="scss">
-.v-btn {
-  text-transform: none;
-}
-
 .theme--light.v-btn:not(.v-btn--icon):not(.v-btn--flat) {
   background-color: $color-orange;
   color: white;
+  text-transform: none;
 }
 </style>

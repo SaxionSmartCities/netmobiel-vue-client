@@ -34,9 +34,9 @@
       </v-layout>
     </v-flex>
     <v-flex d-flex>
-      <v-layout justify-center align-center column>
+      <v-layout justify-center align-center column @click="openDetails()">
         <v-flex shrink>
-          <v-icon @click="openDetails()">keyboard_arrow_right</v-icon>
+          <v-icon>keyboard_arrow_right</v-icon>
         </v-flex>
       </v-layout>
     </v-flex>
