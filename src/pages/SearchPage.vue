@@ -274,8 +274,6 @@ export default {
       let ridePreferences = this.$store.getters['ps/getUser'].ridePreferences
       let selectedTime = this.$store.getters['is/getSearchRideDateTime']
 
-      console.log('submit form', from)
-
       var searchQuery = {
         from: from,
         to: to,
