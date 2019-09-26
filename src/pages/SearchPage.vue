@@ -126,28 +126,23 @@
             <v-expand-transition>
               <v-flex v-if="getSubmitStatus.status !== 'UNSUBMITTED'">
                 <v-expand-transition>
-                  <v-flex v-if="getSubmitStatus.status === 'PENDING'" shrink>
-                    <v-layout>
-                      <v-flex xs-3 mt-2>
-                        <v-progress-circular indeterminate color="blue">
-                        </v-progress-circular>
-                      </v-flex>
-                      <v-flex>
-                        <h3>Zoekopdracht wordt verstuurd!</h3>
-                        <p>Even geduld...</p>
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-expand-transition>
-                <v-expand-transition>
-                  <v-flex v-if="getSubmitStatus.status === 'SUCCESS'" shrink>
+                  <v-flex
+                    v-if="
+                      getSubmitStatus.status === 'PENDING' ||
+                        getSubmitStatus.status === 'SUCCESS'
+                    "
+                    shrink
+                  >
                     <v-layout>
                       <v-flex xs-3 mt-2>
                         <v-progress-circular
                           indeterminate
-                          rotate
-                          color="#FF8500"
-                        ></v-progress-circular>
+                          :class="{
+                            makeBlue: getSubmitStatus.status === 'PENDING',
+                            rotate: getSubmitStatus.status === 'SUCCESS',
+                          }"
+                        >
+                        </v-progress-circular>
                       </v-flex>
                       <v-flex>
                         <h3>Zoekopdracht is verstuurd!</h3>
@@ -287,4 +282,11 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style scoped lang="scss">
+.makeBlue {
+  color: blue;
+}
+.rotate {
+  color: #ff8500;
+}
+</style>
