@@ -183,21 +183,13 @@ export default {
       const fromLoc = this.$store.getters['gs/getPickedLocation'].from
       const toLoc = this.$store.getters['gs/getPickedLocation'].to
 
-      if (fromLoc.address !== undefined && toLoc.address !== undefined) {
-        return true
-      } else {
-        return false
-      }
+      return fromLoc.address !== undefined && toLoc.address !== undefined
     },
     showForm: function() {
-      if (
+      return (
         this.getSubmitStatus.status === 'UNSUBMITTED' ||
         this.getSubmitStatus.status === 'FAILED'
-      ) {
-        return true
-      } else {
-        return false
-      }
+      )
     },
     dateRide: function() {
       let dateTime = this.$store.getters['is/getSearchRideDateTime']

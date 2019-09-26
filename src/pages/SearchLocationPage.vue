@@ -42,7 +42,6 @@ export default {
   methods: {
     completeSearch(location) {
       this.$store.dispatch('gs/fetchGeocoderLocation', location.locationId)
-      // this.$router.go(-1)
     },
     clearSearchInput() {
       this.searchInput = ''
