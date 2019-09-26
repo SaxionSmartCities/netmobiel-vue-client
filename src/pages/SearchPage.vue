@@ -13,7 +13,7 @@
         <v-layout column shrink>
           <v-flex class="box-widget background-white">
             <v-expand-transition>
-              <v-flex v-if="getSubmitStatus.status === 'UNSUBMITTED'">
+              <v-flex v-if="showForm">
                 <v-form>
                   <v-layout>
                     <v-flex text-xs-center xs12>
@@ -101,6 +101,15 @@
                       </v-btn>
                     </v-flex>
                   </v-layout>
+                  <v-layout>
+                    <v-expand-transition>
+                      <v-flex v-if="getSubmitStatus.status === 'FAILED'">
+                        <v-alert :value="true" type="error" color="red">
+                          {{ getSubmitStatus.message }}
+                        </v-alert>
+                      </v-flex>
+                    </v-expand-transition>
+                  </v-layout>
                   <v-layout mt-2 justify-center>
                     <v-flex
                       shrink
@@ -117,29 +126,34 @@
             <v-expand-transition>
               <v-flex v-if="getSubmitStatus.status !== 'UNSUBMITTED'">
                 <v-expand-transition>
-                  <v-flex v-if="getSubmitStatus.status === 'FAILED'">
-                    <v-alert :value="true" type="error" color="red">
-                      {{ getSubmitStatus.message }}
-                    </v-alert>
-                  </v-flex>
-                </v-expand-transition>
-                <v-expand-transition>
                   <v-flex v-if="getSubmitStatus.status === 'PENDING'" shrink>
-                    <v-progress-circular indeterminate color="blue">
-                    </v-progress-circular>
-                    <h3>Zoekopdracht wordt verstuurd!</h3>
-                    <p>Even geduld...</p>
+                    <v-layout>
+                      <v-flex xs-3 mt-2>
+                        <v-progress-circular indeterminate color="blue">
+                        </v-progress-circular>
+                      </v-flex>
+                      <v-flex>
+                        <h3>Zoekopdracht wordt verstuurd!</h3>
+                        <p>Even geduld...</p>
+                      </v-flex>
+                    </v-layout>
                   </v-flex>
                 </v-expand-transition>
                 <v-expand-transition>
                   <v-flex v-if="getSubmitStatus.status === 'SUCCESS'" shrink>
-                    <v-progress-circular
-                      indeterminate
-                      rotate
-                      color="#FF8500"
-                    ></v-progress-circular>
-                    <h3>Zoekopdracht is verstuurd!</h3>
-                    <p>Even geduld...</p>
+                    <v-layout>
+                      <v-flex xs-3 mt-2>
+                        <v-progress-circular
+                          indeterminate
+                          rotate
+                          color="#FF8500"
+                        ></v-progress-circular>
+                      </v-flex>
+                      <v-flex>
+                        <h3>Zoekopdracht is verstuurd!</h3>
+                        <p>Even geduld...</p>
+                      </v-flex>
+                    </v-layout>
                   </v-flex>
                 </v-expand-transition>
               </v-flex>
@@ -170,6 +184,16 @@ export default {
       const toLoc = this.$store.getters['gs/getPickedLocation'].to
 
       if (fromLoc.address !== undefined && toLoc.address !== undefined) {
+        return true
+      } else {
+        return false
+      }
+    },
+    showForm: function() {
+      if (
+        this.getSubmitStatus.status === 'UNSUBMITTED' ||
+        this.getSubmitStatus.status === 'FAILED'
+      ) {
         return true
       } else {
         return false
