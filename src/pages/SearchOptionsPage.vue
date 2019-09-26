@@ -311,10 +311,6 @@ export default {
 </script>
 
 <style lang="scss">
-.v-text-field > .v-input__control > .v-input__slot:before {
-  border-style: none;
-}
-
 .v-expansion-panel {
   box-shadow: none;
 }
