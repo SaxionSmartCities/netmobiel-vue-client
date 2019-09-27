@@ -16,9 +16,10 @@
             <v-flex text-xs-right pr-3>
               <v-icon
                 v-for="selectedLuggage in luggageOptions"
-                :key="selectedLuggage.type"
-                >{{ selectedLuggage.icon }}</v-icon
+                :key="selectedLuggage.label"
               >
+                {{ selectedLuggage.icon }}
+              </v-icon>
             </v-flex>
           </v-layout>
         </v-flex>
@@ -39,9 +40,10 @@
             <v-flex pr-3 text-xs-right>
               <v-icon
                 v-for="travelMode in allowedTravelModes"
-                :key="travelMode.mode"
-                >{{ travelMode.icon }}</v-icon
+                :key="travelMode.label"
               >
+                {{ travelMode.icon }}
+              </v-icon>
             </v-flex>
           </v-layout>
         </v-flex>

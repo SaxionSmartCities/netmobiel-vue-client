@@ -23,4 +23,8 @@ export default {
     label: 'Fiets',
     icon: 'directions_bike',
   },
+  NETMOBIEL: {
+    label: 'Netmobiel meerijden',
+    icon: 'local_taxi',
+  },
 }
