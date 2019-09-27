@@ -183,8 +183,8 @@
 </template>
 
 <script>
-import travelModes from '@/constants/travel-modes.js'
-import luggageTypes from '@/constants/luggage-types.js'
+import travelModes from '@/constants/travel-modes-new.js'
+import luggageTypes from '@/constants/luggage-types-new.js'
 
 export default {
   name: 'RidePreferences',
@@ -227,11 +227,11 @@ export default {
   },
   mounted() {
     let profile = this.$store.getters['ps/getProfile']
-    this.luggageSelected = profile.ridePreferences.luggageOptions.map(option =>
-      this.parseLuggageOption(option)
+    this.luggageSelected = profile.ridePreferences.luggageOptions.map(
+      option => luggageTypes[option]
     )
     this.allowedTravelModes = profile.ridePreferences.allowedTravelModes.map(
-      mode => this.parseTravelMode(mode)
+      mode => travelModes[mode]
     )
     this.nrOfPersons = profile.ridePreferences.numPassengers
     this.transferAllowed = profile.ridePreferences.allowTransfer
@@ -248,65 +248,6 @@ export default {
       }
       this.$store.dispatch('ps/storeRidePreferences', payload)
       this.$router.go(-1)
-    },
-    parseLuggageOption: function(luggage) {
-      //TODO: Rename ROLLATOR to WALKER
-      const luggageOptions = {
-        STROLLER: {
-          type: 'STROLLER',
-          label: 'Buggy',
-          icon: 'child_friendly',
-        },
-        HANDLUGGAGE: {
-          type: 'HANDLUGGAGE',
-          label: 'Handbagage',
-          icon: 'work',
-        },
-        PET: {
-          type: 'PET',
-          label: 'Huisdier',
-          icon: 'pets',
-        },
-        WALKER: {
-          type: 'WALKER',
-          label: 'Rollator',
-          icon: 'fa-crutch',
-        },
-        GROCERIES: {
-          type: 'GROCERIES',
-          label: 'Boodschappen',
-          icon: 'fa-shopping-bag',
-        },
-        WHEELCHAIR: {
-          type: 'WHEELCHAIR',
-          label: 'Rolstoel',
-          icon: 'accessible_forward',
-        },
-      }
-      return luggageOptions[luggage]
-    },
-    parseTravelMode: function(mode) {
-      const icons = {
-        WALK: 'directions_walk',
-        CAR: 'directions_car',
-        TRAIN: 'train',
-        BUS: 'directions_bus',
-        RAIL: 'directions_railway',
-        BIKE: 'directions_bike',
-      }
-      const labels = {
-        WALK: 'Lopen',
-        CAR: 'Auto',
-        TRAIN: 'Trein',
-        BUS: 'Bus',
-        RAIL: 'Tram',
-        BIKE: 'Fiets',
-      }
-      return {
-        icon: icons[mode],
-        label: labels[mode],
-        mode: mode,
-      }
     },
   },
 }
