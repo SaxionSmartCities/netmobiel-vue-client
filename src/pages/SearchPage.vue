@@ -71,8 +71,9 @@
                             Aankomst
                           </span>
                         </v-flex>
-                        <v-flex xs11 @click="toSearchRideDate">
-                          {{ dateRide }}
+                        <v-flex xs11>
+                          <input v-model="date" type="date" required />
+                          <input v-model="time" type="time" required />
                         </v-flex>
                       </v-layout>
                     </v-flex>
@@ -132,28 +133,16 @@ export default {
       showPicklocation: false,
       waiting: null,
       locationsPicked: false,
+      date: moment()
+        .locale('nl')
+        .format('YYYY-MM-DD'),
+      time: moment()
+        .add(30, 'minutes')
+        .locale('nl')
+        .format('HH:mm'),
     }
   },
   computed: {
-    dateRide: function() {
-      let dateTime = this.$store.getters['is/getSearchRideDateTime']
-
-      if (dateTime !== undefined) {
-        return upperCaseFirst(
-          moment(dateTime)
-            .locale('nl')
-            .format('dddd, DD MMMM HH:mm')
-        )
-      } else {
-        this.$store.commit('is/setDate', moment())
-        return upperCaseFirst(
-          moment()
-            .add(30, 'minutes')
-            .locale('nl')
-            .format('dddd, DD MMMM HH:mm')
-        )
-      }
-    },
     getSubmitStatus() {
       return this.$store.getters['is/getPlanningStatus']
     },
@@ -194,9 +183,6 @@ export default {
     toRidePrefrences() {
       this.$router.push({ name: 'searchOptions' })
     },
-    toSearchRideDate() {
-      this.$router.push({ name: 'searchDateTime' })
-    },
     toLocationSuggestionsPage(field) {
       this.$router.push({ name: 'searchLocation', params: { field: field } })
     },
@@ -208,7 +194,7 @@ export default {
       let from = pickedGeoLocations.from
       let to = pickedGeoLocations.to
       let ridePreferences = this.$store.getters['ps/getUser'].ridePreferences
-      let selectedTime = this.$store.getters['is/getSearchRideDateTime']
+      let selectedTime = moment(this.date + ' ' + this.time, 'YYYY-MM-DD HH:mm')
 
       var searchQuery = {
         from: from,

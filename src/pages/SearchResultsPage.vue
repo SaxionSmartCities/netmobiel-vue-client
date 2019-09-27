@@ -146,9 +146,7 @@ export default {
       return this.$store.getters['is/getItineraries']
     },
     date() {
-      return moment(this.$store.getters['is/getSearchRideDateTime']).format(
-        'DD-MM-YYYY'
-      )
+      return 'INVALID'
     },
     getRidePreferences() {
       return this.$store.getters['ps/getUser'].ridePreferences

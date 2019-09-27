@@ -11,7 +11,6 @@ import NotificationOptionsPage from './pages/NotificationOptionsPage.vue'
 import PrivacySecurityPage from './pages/PrivacySecurityPage.vue'
 import PrivacyStatementPage from './pages/PrivacyStatementPage.vue'
 import ProfilePage from './pages/ProfilePage.vue'
-import SearchDateTimePage from './pages/SearchDateTimePage'
 import SearchLocationPage from './pages/SearchLocationPage'
 import SearchOptionsPage from './pages/SearchOptionsPage'
 import SearchPage from './pages/SearchPage.vue'
@@ -66,11 +65,6 @@ const router = new Router({
       path: '/searchOptions',
       component: SearchOptionsPage,
       name: 'searchOptions',
-    },
-    {
-      path: '/searchDateTime',
-      component: SearchDateTimePage,
-      name: 'searchDateTime',
     },
     {
       path: '/searchLocation/:field',
