@@ -40,9 +40,6 @@ export default {
       }
     })
   },
-  setRidePreferences: (state, payload) => {
-    state.user.ridePreferences = payload
-  },
   setPrivacySecurityValue: (state, payload) => {
     state.user.privacySecurity.filter(function(item) {
       if (item.name === payload.key) {

@@ -37,7 +37,7 @@ export default {
         ),
         maxMinutesWalking: payload.ridePreferences.maxMinutesWalking,
         transferAllowed: payload.ridePreferences.transferAllowed,
-        nrOfPersons: payload.ridePreferences.nrOfPersons,
+        numPassengers: payload.ridePreferences.numPassengers,
       },
     }
     var axiosConfig = {

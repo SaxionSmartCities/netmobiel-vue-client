@@ -12,67 +12,7 @@
             <div slot="header">
               Reisvoorkeuren tonen
             </div>
-            <v-layout>
-              <v-flex>
-                <v-layout column>
-                  <v-flex id="personen" my-2>
-                    <v-layout>
-                      <v-flex>Aantal personen:</v-flex>
-                      <v-flex text-xs-right pr-3>{{
-                        getRidePreferences.nrOfPersons
-                      }}</v-flex>
-                    </v-layout>
-                  </v-flex>
-                  <v-flex id="bagage" my-2>
-                    <v-layout>
-                      <v-flex>Bagage:</v-flex>
-                      <v-flex text-xs-right pr-3>
-                        <v-icon
-                          v-for="selectedLuggage in luggageTypes"
-                          :key="selectedLuggage.type"
-                          >{{ selectedLuggage.icon }}</v-icon
-                        >
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                  <v-flex id="overstappen" my-2>
-                    <v-layout>
-                      <v-flex>Overstappen:</v-flex>
-                      <v-flex
-                        v-if="getRidePreferences.transferAllowed"
-                        pr-3
-                        text-xs-right
-                      >
-                        <v-icon>check</v-icon>
-                      </v-flex>
-                      <v-flex v-else pr-3 text-xs-right>
-                        <v-icon color="red">close</v-icon>
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                  <v-flex id="toestaan" my-2>
-                    <v-layout>
-                      <v-flex>Toegestaan:</v-flex>
-                      <v-flex pr-3 text-xs-right>
-                        <v-icon
-                          v-for="travelMode in getRidePreferences.allowedTravelModes"
-                          :key="travelMode.mode"
-                          >{{ travelMode.icon }}</v-icon
-                        >
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                  <v-flex id="loopafstand" my-2>
-                    <v-layout>
-                      <v-flex>Aantal minuten lopen:</v-flex>
-                      <v-flex text-xs-right pr-3>{{
-                        getRidePreferences.maxMinutesWalking
-                      }}</v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-            </v-layout>
+            <search-options-summary-card />
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-divider />
@@ -126,6 +66,8 @@
 
 <script>
 import TravelCard from '@/components/search-results/TravelCard.vue'
+import SearchOptionsSummaryCard from '@/components/search-results/SearchOptionsSummaryCard.vue'
+
 import luggageTypes from '@/constants/luggage-types.js'
 
 import moment from 'moment'
@@ -134,6 +76,7 @@ export default {
   name: 'SearchResultsPage',
   components: {
     TravelCard,
+    SearchOptionsSummaryCard,
   },
   data: function() {
     return {
@@ -161,7 +104,7 @@ export default {
       )
     },
     getRidePreferences() {
-      return this.$store.getters['ps/getUser'].ridePreferences
+      return this.$store.getters['ps/getProfile'].ridePreferences
     },
   },
   methods: {

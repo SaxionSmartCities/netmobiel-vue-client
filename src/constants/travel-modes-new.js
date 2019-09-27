@@ -1,38 +1,26 @@
-// DEPRECATED: USE -new.js instead!
-module.exports = [
-  {
-    mode: 'WALK',
+export default {
+  WALK: {
     label: 'Lopen',
     icon: 'directions_walk',
   },
-  {
-    mode: 'CAR',
+  CAR: {
     label: 'Auto',
     icon: 'directions_car',
   },
-  // {
-  //   mode: 'NETMOBIEL',
-  //   label: 'Netmobiel meerijden',
-  //   icon: 'directions_car',
-  // },
-  {
-    mode: 'TRAIN',
+  TRAIN: {
     label: 'Trein',
     icon: 'train',
   },
-  {
-    mode: 'BUS',
+  BUS: {
     label: 'Bus',
     icon: 'directions_bus',
   },
-  {
-    mode: 'RAIL',
+  RAIL: {
     label: 'Tram',
     icon: 'directions_railway',
   },
-  {
-    mode: 'BIKE',
+  BIKE: {
     label: 'Fiets',
     icon: 'directions_bike',
   },
-]
+}

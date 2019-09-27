@@ -1,3 +1,4 @@
+// DEPRECATED: USE -new.js instead!
 module.exports = [
   { type: 'STROLLER', label: 'Buggy', icon: 'child_friendly' },
   { type: 'HANDLUGGAGE', label: 'Handbagage', icon: 'work' },
