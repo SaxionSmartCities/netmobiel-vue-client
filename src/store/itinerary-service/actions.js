@@ -31,7 +31,9 @@ export default {
         time: time,
       },
       ridePreferences: {
-        luggage: payload.ridePreferences.luggage.map(element => element.type),
+        luggage: payload.ridePreferences.luggageOptions.map(
+          element => element.type
+        ),
         allowedTravelModes: payload.ridePreferences.allowedTravelModes.map(
           element => element.mode
         ),

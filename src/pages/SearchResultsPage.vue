@@ -68,8 +68,6 @@
 import TravelCard from '@/components/search-results/TravelCard.vue'
 import SearchOptionsSummaryCard from '@/components/search-results/SearchOptionsSummaryCard.vue'
 
-import luggageTypes from '@/constants/luggage-types.js'
-
 import moment from 'moment'
 
 export default {
@@ -89,9 +87,6 @@ export default {
     }
   },
   computed: {
-    luggageTypes() {
-      return luggageTypes
-    },
     getPlanningResult() {
       return this.$store.getters['is/getPlanningResult']
     },

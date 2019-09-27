@@ -266,7 +266,7 @@ export default {
 
       let from = pickedGeoLocations.from
       let to = pickedGeoLocations.to
-      let ridePreferences = this.$store.getters['ps/getUser'].ridePreferences
+      let ridePreferences = this.$store.getters['ps/getProfile'].ridePreferences
       let selectedTime = this.$store.getters['is/getSearchRideDateTime']
 
       var searchQuery = {

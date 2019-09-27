@@ -183,8 +183,8 @@
 </template>
 
 <script>
-import travelModes from '@/constants/travel-modes-new.js'
-import luggageTypes from '@/constants/luggage-types-new.js'
+import travelModes from '@/constants/travel-modes.js'
+import luggageTypes from '@/constants/luggage-types.js'
 
 export default {
   name: 'RidePreferences',

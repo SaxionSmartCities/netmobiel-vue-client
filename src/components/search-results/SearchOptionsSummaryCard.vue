@@ -61,8 +61,8 @@
 </template>
 
 <script>
-import luggageTypes from '@/constants/luggage-types-new.js'
-import travelModes from '@/constants/travel-modes-new.js'
+import luggageTypes from '@/constants/luggage-types.js'
+import travelModes from '@/constants/travel-modes.js'
 
 export default {
   name: 'SearchOptionsSummaryCard',
