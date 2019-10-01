@@ -40,13 +40,13 @@
       <v-flex>
         <v-layout row mb-2>
           <v-flex travel-card mr-2>
-            <v-layout column align-center my-2>
+            <v-layout column align-center my-2 class="disabled">
               <v-flex><v-icon>control_point</v-icon></v-flex>
               <v-flex>Doelen</v-flex>
             </v-layout>
           </v-flex>
           <v-flex travel-card ml-2>
-            <v-layout column align-center my-2>
+            <v-layout column align-center my-2 class="disabled">
               <v-flex><v-icon>star_border</v-icon></v-flex>
               <v-flex>Reviews</v-flex>
             </v-layout>
@@ -101,18 +101,21 @@ export default {
         {
           icon: 'settings',
           name: 'Instellingen',
-          route: '/profileNotificationOptions',
+          route: '',
+          // route: '/profileNotificationOptions',
         },
         { icon: 'help_outline', name: 'Veel gestelde vragen', route: '' },
         {
           icon: 'lock',
           name: 'Privacy & beveiliging',
-          route: '/privacySecurity',
+          route: '',
+          // route: '/privacySecurity',
         },
         {
           icon: 'chrome_reader_mode',
           name: 'Gebruiksvoorwaarden',
-          route: '/termsOfUse',
+          route: '',
+          // route: '/termsOfUse',
         },
         { icon: 'error_outline', name: 'Over deze app', route: '' },
         { icon: 'cancel', name: 'Verwijder mijn account', route: '' },
@@ -151,5 +154,13 @@ export default {
 }
 .no-route {
   color: $color-light-grey;
+}
+
+.disabled {
+  color: #ccc;
+}
+//TEMP: Just to pretend disabled buttons
+.disabled .v-icon {
+  color: #ccc;
 }
 </style>

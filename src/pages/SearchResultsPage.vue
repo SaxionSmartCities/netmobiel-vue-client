@@ -96,19 +96,19 @@
       <v-flex mt-3>
         <v-layout column>
           <v-flex>
-            <v-layout pa-2>
+            <!-- <v-layout pa-2>
               <v-flex xs2>
                 <v-icon>fa-volume-up</v-icon>
               </v-flex>
               <v-flex>Plaats oproep in de community</v-flex>
-            </v-layout>
+            </v-layout> -->
           </v-flex>
           <v-flex mt-3 mb-3>
             <v-layout pa-2>
               <v-flex xs2>
                 <v-icon>phone_in_talk</v-icon>
               </v-flex>
-              <v-flex>Bel de ZOOV regiotaxi</v-flex>
+              <v-flex><a href="tel:0900-9874">Bel de ZOOV regiotaxi</a></v-flex>
             </v-layout>
           </v-flex>
         </v-layout>
@@ -146,7 +146,8 @@ export default {
       return this.$store.getters['is/getItineraries']
     },
     date() {
-      return 'INVALID'
+      return ''
+      // return 'INVALID'
     },
     getRidePreferences() {
       return this.$store.getters['ps/getUser'].ridePreferences

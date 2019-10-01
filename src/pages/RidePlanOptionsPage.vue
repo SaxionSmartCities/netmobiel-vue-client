@@ -128,11 +128,10 @@
                     @click="selectCar(car)"
                   >
                     <v-layout>
-                      <v-flex xs5 pa-2>
-                        <!-- <v-img :src="car.image" height="100%" /> -->
+                      <!-- <v-flex xs5 pa-2>
                         <v-img :src="image" height="100%" />
-                      </v-flex>
-                      <v-flex>
+                      </v-flex> -->
+                      <v-flex pa-3>
                         <v-layout
                           column
                           justify-center
@@ -147,9 +146,9 @@
                       </v-flex>
                     </v-layout>
                   </v-flex>
-                  <v-btn class="mt-3" block outline color="blue"
+                  <!-- <v-btn class="mt-3" block outline color="blue"
                     >Andere auto toevoegen?</v-btn
-                  >
+                  > -->
                 </v-layout>
               </v-flex>
             </v-layout>

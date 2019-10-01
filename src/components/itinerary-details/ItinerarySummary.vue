@@ -15,10 +15,10 @@
           </v-layout>
         </v-flex>
         <v-flex>
-          <v-layout py-2>
+          <!-- <v-layout py-2>
             <v-flex xs3>Kosten</v-flex>
             <v-flex>{{ cost }} credits</v-flex>
-          </v-layout>
+          </v-layout> -->
         </v-flex>
       </v-layout>
     </v-flex>

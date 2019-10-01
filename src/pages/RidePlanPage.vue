@@ -125,12 +125,16 @@ export default {
     fromLocationLabel() {
       let location = this.$store.getters['gs/getPickedLocation'].from
 
-      return !location.address ? '' : location.address.label
+      return !location.address
+        ? 'Klik hier voor vertreklocatie'
+        : location.address.label
     },
     toLocationLabel() {
       let location = this.$store.getters['gs/getPickedLocation'].to
 
-      return !location.address ? '' : location.address.label
+      return !location.address
+        ? 'Klik hier voor bestemming'
+        : location.address.label
     },
   },
   methods: {
