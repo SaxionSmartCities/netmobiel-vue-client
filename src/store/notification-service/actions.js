@@ -19,6 +19,7 @@ export default {
         headers: generateHeader(GRAVITEE_NOTIFICATION_SERVICE_API_KEY),
       })
       .then(response => {
+        // eslint-disable-next-line
         console.log(response)
       })
       .catch(error => {
