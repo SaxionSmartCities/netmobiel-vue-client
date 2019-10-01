@@ -4,6 +4,7 @@ import moment from 'moment'
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_PLAN_SERVICE_API_KEY = config.GRAVITEE_PLAN_SERVICE_API_KEY
+const GRAVITEE_TRIP_SERVICE_API_KEY = config.GRAVITEE_TRIP_SERVICE_API_KEY
 
 function generateHeader(key) {
   return {
@@ -16,7 +17,6 @@ export default {
     context.commit('storePlanningRequest', payload)
     let time = moment(payload.selectedTime).format('HH:mm')
     let date = moment(payload.selectedTime).format('YYYY-MM-DD')
-
     let data = {
       fromPlace:
         payload.from.displayPosition.latitude +
@@ -30,17 +30,18 @@ export default {
         date: date,
         time: time,
       },
-      ridePreferences: {
-        luggage: payload.ridePreferences.luggage.map(element => element.type),
-        allowedTravelModes: payload.ridePreferences.allowedTravelModes.map(
+      searchPreferences: {
+        luggage: payload.searchPreferences.luggageOptions.map(
+          element => element.type
+        ),
+        allowedTravelModes: payload.searchPreferences.allowedTravelModes.map(
           element => element.mode
         ),
-        maxMinutesWalking: payload.ridePreferences.maxMinutesWalking,
-        transferAllowed: payload.ridePreferences.transferAllowed,
-        nrOfPersons: payload.ridePreferences.nrOfPersons,
+        maxMinutesWalking: payload.searchPreferences.maxMinutesWalking,
+        transferAllowed: payload.searchPreferences.transferAllowed,
+        numPassengers: payload.searchPreferences.numPassengers,
       },
     }
-
     var axiosConfig = {
       method: 'POST',
       url: BASE_URL + '/plans',
@@ -57,18 +58,66 @@ export default {
         context.commit('setPlanningStatus', {
           status: 'SUCCESS',
         })
-
         context.commit('setPlanningResults', {
           data: res.data.plan,
         })
       })
       .catch(function(error) {
         var errorMsg = error.response.data.message
-
         context.commit('setPlanningStatus', {
           status: 'FAILED',
           message: errorMsg,
         })
+      })
+  },
+  storeSelectedTrip: (context, payload) => {
+    const URL = BASE_URL + '/trips'
+    axios
+      .post(URL, payload, {
+        headers: generateHeader(GRAVITEE_TRIP_SERVICE_API_KEY),
+      })
+      .then(response => {
+        if (response.status == 201) {
+          context.dispatch(
+            'ui/queueNotification',
+            { message: 'Reis bevestigd', timeout: 3000 },
+            { root: true }
+          )
+        } else {
+          context.dispatch(
+            'ui/queueNotification',
+            { message: response.data.message, timeout: 0 },
+            { root: true }
+          )
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          { message: 'Reis is niet opgeslagen', timeout: 0 },
+          { root: true }
+        )
+      })
+  },
+  fetchTrips: context => {
+    const URL = BASE_URL + '/trips'
+    axios
+      .get(URL, { headers: generateHeader(GRAVITEE_TRIP_SERVICE_API_KEY) })
+      .then(response => {
+        if (response.status == 200 && response.data.trips.length > 0) {
+          context.commit('setPlannedTrips', response.data.trips)
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          { message: 'Fout bij het ophalen reizen', timeout: 0 },
+          { root: true }
+        )
       })
   },
 }

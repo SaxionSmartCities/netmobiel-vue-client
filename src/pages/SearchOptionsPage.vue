@@ -1,15 +1,17 @@
 <template>
   <v-container data-app>
     <v-layout column>
-      <v-flex>
-        <h5 class="headline font-weight-medium">Reisvoorkeuren</h5>
+      <v-flex mb-3>
+        <h3>Reisvoorkeuren</h3>
       </v-flex>
-
-      <v-flex my-3>
+      <v-flex mb-3>
+        <v-divider />
+      </v-flex>
+      <v-flex mb-3>
         <v-expansion-panel>
           <v-expansion-panel-content>
             <div slot="header">
-              <v-layout>
+              <v-layout class="menu-item">
                 <v-flex xs10>
                   <span class="form-label py-2">Personen</span>
                 </v-flex>
@@ -36,7 +38,7 @@
           </v-expansion-panel-content>
           <v-expansion-panel-content>
             <div slot="header">
-              <v-layout>
+              <v-layout class="menu-item">
                 <v-flex xs10>
                   <span class="form-label py-2">Bagage</span>
                 </v-flex>
@@ -74,7 +76,7 @@
 
           <v-expansion-panel-content>
             <div slot="header">
-              <v-layout>
+              <v-layout class="menu-item">
                 <v-flex xs10>
                   <span class="form-label py-2">Overstappen</span>
                 </v-flex>
@@ -106,7 +108,7 @@
 
           <v-expansion-panel-content>
             <div slot="header">
-              <v-layout>
+              <v-layout class="menu-item">
                 <v-flex xs10>
                   <span class="form-label py-2">Toestaan</span>
                 </v-flex>
@@ -144,7 +146,7 @@
 
           <v-expansion-panel-content>
             <div slot="header">
-              <v-layout>
+              <v-layout class="menu-item">
                 <v-flex xs9>
                   <span class="form-label py-2">Maximale loopafstand</span>
                 </v-flex>
@@ -185,7 +187,7 @@ import travelModes from '@/constants/travel-modes.js'
 import luggageTypes from '@/constants/luggage-types.js'
 
 export default {
-  name: 'RidePreferences',
+  name: 'SearchOptions',
   data: function() {
     return {
       maxNrOfPersons: 4,
@@ -225,15 +227,15 @@ export default {
   },
   mounted() {
     let profile = this.$store.getters['ps/getProfile']
-    this.luggageSelected = profile.ridePreferences.luggageOptions.map(option =>
-      this.parseLuggageOption(option)
+    this.luggageSelected = profile.searchPreferences.luggageOptions.map(
+      option => luggageTypes[option]
     )
-    this.allowedTravelModes = profile.ridePreferences.allowedTravelModes.map(
-      mode => this.parseTravelMode(mode)
+    this.allowedTravelModes = profile.searchPreferences.allowedTravelModes.map(
+      mode => travelModes[mode]
     )
-    this.nrOfPersons = profile.ridePreferences.numPassengers
-    this.transferAllowed = profile.ridePreferences.allowTransfer
-    this.maxMinutesWalking = profile.ridePreferences.maximumTransferTime
+    this.nrOfPersons = profile.searchPreferences.numPassengers
+    this.transferAllowed = profile.searchPreferences.allowTransfer
+    this.maxMinutesWalking = profile.searchPreferences.maximumTransferTime
   },
   methods: {
     save: function() {
@@ -244,73 +246,19 @@ export default {
         allowTransfer: this.transferAllowed,
         maximumTransferTime: this.maxMinutesWalking,
       }
-      this.$store.dispatch('ps/storeRidePreferences', payload)
+      this.$store.dispatch('ps/storeSearchPreferences', payload)
       this.$router.go(-1)
-    },
-    parseLuggageOption: function(luggage) {
-      //TODO: Rename ROLLATOR to WALKER
-      const luggageOptions = {
-        STROLLER: {
-          type: 'STROLLER',
-          label: 'Buggy',
-          icon: 'child_friendly',
-        },
-        HANDLUGGAGE: {
-          type: 'HANDLUGGAGE',
-          label: 'Handbagage',
-          icon: 'work',
-        },
-        PET: {
-          type: 'PET',
-          label: 'Huisdier',
-          icon: 'pets',
-        },
-        ROLLATOR: {
-          type: 'ROLLATOR',
-          label: 'Rollator',
-          icon: 'fa-crutch',
-        },
-        WHEELCHAIR: {
-          type: 'WHEELCHAIR',
-          label: 'Rolstoel',
-          icon: 'accessible_forward',
-        },
-      }
-      return luggageOptions[luggage]
-    },
-    parseTravelMode: function(mode) {
-      const icons = {
-        WALK: 'directions_walk',
-        CAR: 'directions_car',
-        TRAIN: 'train',
-        BUS: 'directions_bus',
-        RAIL: 'directions_railway',
-        BIKE: 'directions_bike',
-      }
-      const labels = {
-        WALK: 'Lopen',
-        CAR: 'Auto',
-        TRAIN: 'Trein',
-        BUS: 'Bus',
-        RAIL: 'Tram',
-        BIKE: 'Fiets',
-      }
-      return {
-        icon: icons[mode],
-        label: labels[mode],
-        mode: mode,
-      }
     },
   },
 }
 </script>
 
 <style lang="scss">
-.v-text-field > .v-input__control > .v-input__slot:before {
-  border-style: none;
-}
-
 .v-expansion-panel {
   box-shadow: none;
+}
+
+.menu-item {
+  height: 25px;
 }
 </style>

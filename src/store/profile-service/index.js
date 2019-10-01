@@ -2,8 +2,6 @@ import getters from './getters'
 import mutations from './mutations'
 import actions from './actions'
 
-import travelModes from '@/constants/travel-modes.js'
-
 export default {
   namespaced: true,
   state: {
@@ -22,8 +20,9 @@ export default {
 
       // Profile as stored in profile service.
       profile: {
-        dateOfBirth: undefined,
-        ridePreferences: {
+        id: undefined,
+        fcmToken: undefined,
+        searchPreferences: {
           numPassengers: 0,
           allowTransfer: true,
           maximumTransferTime: 0,

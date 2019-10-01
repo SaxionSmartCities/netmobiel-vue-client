@@ -16,6 +16,11 @@
           <v-icon>commute</v-icon>
         </v-btn>
 
+        <v-btn flat value="saved" to="/tripsOverviewPage">
+          <span>Bewaard</span>
+          <v-icon>favorite</v-icon>
+        </v-btn>
+
         <v-btn flat value="plan-trip" to="/plan">
           <span>Ritten</span>
           <v-icon>directions_car</v-icon>
@@ -26,8 +31,7 @@
           <v-icon>chat</v-icon>
         </v-btn>
         -->
-
-        <v-btn flat value="profile" @click="$router.push('/profile')">
+        <v-btn flat value="profile" to="/profile">
           <span>Profiel</span>
           <v-icon>person</v-icon>
         </v-btn>

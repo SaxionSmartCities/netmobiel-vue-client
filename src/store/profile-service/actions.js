@@ -25,16 +25,25 @@ export default {
         console.log(error)
       })
   },
-  storeRidePreferences: (context, payload) => {
+  storeSearchPreferences: (context, payload) => {
     // Convert payload to a profile object.
     let profile = { ...context.state.user.profile }
-    profile.ridePreferences = {
+    profile.searchPreferences = {
       numPassengers: payload.numPassengers,
       allowTransfer: payload.allowTransfer,
       maximumTransferTime: payload.maximumTransferTime,
       luggageOptions: payload.luggageOptions,
       allowedTravelModes: payload.allowedTravelModes,
     }
+    context.dispatch('updateProfile', profile)
+  },
+  storeFcmToken: (context, payload) => {
+    let profile = { ...context.state.user.profile }
+    profile.fcmToken = payload.fcmToken
+    profile.firstName = 'Test'
+    context.dispatch('updateProfile', profile)
+  },
+  updateProfile: (context, profile) => {
     const URL = BASE_URL + '/profiles/' + context.state.user.profile.id
     axios
       .put(URL, profile, {

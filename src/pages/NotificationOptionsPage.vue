@@ -1,12 +1,16 @@
 <template>
   <v-container>
-    <v-layout>
-      <h5 class="headline font-weight-medium">{{ title }}</h5>
+    <v-layout column>
+      <v-flex mb-3>
+        <h3>{{ title }}</h3>
+      </v-flex>
+      <v-flex mb-2>
+        <v-divider />
+      </v-flex>
     </v-layout>
-
     <v-layout pt-3>
       <v-flex>
-        <p class="text-primary-uppercase">Reizen</p>
+        <h2 class="text-primary-uppercase">Reizen</h2>
       </v-flex>
     </v-layout>
     <v-layout column>
@@ -29,7 +33,7 @@
 
     <v-layout pt-3>
       <v-flex>
-        <p class="text-primary-uppercase">Notificaties</p>
+        <h2 class="text-primary-uppercase">Notificaties</h2>
       </v-flex>
     </v-layout>
     <v-layout column>
@@ -52,7 +56,7 @@
 
     <v-layout pt-3>
       <v-flex>
-        <p class="text-primary-uppercase">Reviews</p>
+        <h2 class="text-primary-uppercase">Reviews</h2>
       </v-flex>
     </v-layout>
     <v-layout column>
@@ -119,5 +123,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss"></style>

@@ -34,9 +34,9 @@
       </v-layout>
     </v-flex>
     <v-flex d-flex>
-      <v-layout justify-center align-center column>
+      <v-layout justify-center align-center column @click="openDetails()">
         <v-flex shrink>
-          <v-icon @click="openDetails()">keyboard_arrow_right</v-icon>
+          <v-icon>keyboard_arrow_right</v-icon>
         </v-flex>
       </v-layout>
     </v-flex>
@@ -53,10 +53,10 @@ export default {
     TravelLeg,
   },
   props: {
-    journey: {
-      type: Object,
-      required: true,
-    },
+    from: { type: Object, required: true },
+    to: { type: Object, required: true },
+    date: { type: Number, required: true },
+    journey: { type: Object, required: true },
   },
   data: function() {
     return {
@@ -75,25 +75,19 @@ export default {
 
       for (let i = 0; i < this.journey.legs.length; i++) {
         let currentLeg = this.journey.legs[i]
-
         if (currentLeg.mode === 'NETMOBIEL') {
           result.push(currentLeg.mode.driver.name)
         }
       }
-
       if (drivers.length === 1) {
         return drivers[0]
       }
-
       let result = ''
-
       for (var i = 0; i < drivers.length - 1; i++) {
         result += drivers[i]
         result += ', '
       }
-
       result += drivers[i]
-
       return result
     },
   },
@@ -157,8 +151,13 @@ export default {
       return this.journey.legs.filter(leg => leg.mode === 'CAR').length > 0
     },
     openDetails: function() {
-      this.$store.commit('is/setSelectedItinerary', this.journey.agencyName)
-
+      const selectedTrip = {
+        from: this.from,
+        to: this.from,
+        date: this.date,
+        itinerary: this.journey,
+      }
+      this.$store.commit('is/setSelectedTrip', selectedTrip)
       this.$router.push('/itineraryDetailPage')
     },
   },

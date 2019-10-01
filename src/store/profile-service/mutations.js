@@ -40,9 +40,6 @@ export default {
       }
     })
   },
-  setRidePreferences: (state, payload) => {
-    state.user.ridePreferences = payload
-  },
   setRidePlanOptions: (state, payload) => {
     console.log('payload', payload)
     state.user.profile.ridePlanOptions = payload
