@@ -104,12 +104,14 @@
             </v-layout> -->
           </v-flex>
           <v-flex mt-3 mb-3>
-            <v-layout pa-2>
-              <v-flex xs2>
-                <v-icon>phone_in_talk</v-icon>
-              </v-flex>
-              <v-flex><a href="tel:0900-9874">Bel de ZOOV regiotaxi</a></v-flex>
-            </v-layout>
+            <a href="tel:0900-9874">
+              <v-layout pa-2>
+                <v-flex xs2>
+                  <v-icon>phone_in_talk</v-icon>
+                </v-flex>
+                <v-flex>Bel de ZOOV regiotaxi</v-flex>
+              </v-layout>
+            </a>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -178,5 +180,10 @@ export default {
 .no-padding .v-expansion-panel__header {
   padding-left: 0;
   padding-right: 0;
+}
+
+a {
+  text-decoration: none;
+  color: #2e8997;
 }
 </style>
