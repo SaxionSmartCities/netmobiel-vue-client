@@ -6,7 +6,7 @@
           <v-layout>
             <v-flex>Aantal personen:</v-flex>
             <v-flex text-xs-right pr-3>{{
-              getRidePreferences.numPassengers
+              getSearchPreferences.numPassengers
             }}</v-flex>
           </v-layout>
         </v-flex>
@@ -26,7 +26,11 @@
         <v-flex id="overstappen" my-2>
           <v-layout>
             <v-flex>Overstappen:</v-flex>
-            <v-flex v-if="getRidePreferences.allowTransfer" pr-3 text-xs-right>
+            <v-flex
+              v-if="getSearchPreferences.allowTransfer"
+              text-xs-right
+              pr-3
+            >
               <v-icon>check</v-icon>
             </v-flex>
             <v-flex v-else pr-3 text-xs-right>
@@ -51,7 +55,7 @@
           <v-layout>
             <v-flex>Aantal minuten lopen:</v-flex>
             <v-flex text-xs-right pr-3>
-              {{ getRidePreferences.maximumTransferTime }}
+              {{ getSearchPreferences.maximumTransferTime }}
             </v-flex>
           </v-layout>
         </v-flex>
@@ -71,14 +75,16 @@ export default {
     return {}
   },
   computed: {
-    getRidePreferences() {
-      return this.$store.getters['ps/getProfile'].ridePreferences
+    getSearchPreferences() {
+      return this.$store.getters['ps/getProfile'].searchPreferences
     },
     luggageOptions() {
-      return this.getRidePreferences.luggageOptions.map(x => luggageTypes[x])
+      return this.getSearchPreferences.luggageOptions.map(x => luggageTypes[x])
     },
     allowedTravelModes() {
-      return this.getRidePreferences.allowedTravelModes.map(x => travelModes[x])
+      return this.getSearchPreferences.allowedTravelModes.map(
+        x => travelModes[x]
+      )
     },
   },
 }

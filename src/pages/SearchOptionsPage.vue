@@ -187,7 +187,7 @@ import travelModes from '@/constants/travel-modes.js'
 import luggageTypes from '@/constants/luggage-types.js'
 
 export default {
-  name: 'RidePreferences',
+  name: 'SearchOptions',
   data: function() {
     return {
       maxNrOfPersons: 4,
@@ -227,15 +227,15 @@ export default {
   },
   mounted() {
     let profile = this.$store.getters['ps/getProfile']
-    this.luggageSelected = profile.ridePreferences.luggageOptions.map(
+    this.luggageSelected = profile.searchPreferences.luggageOptions.map(
       option => luggageTypes[option]
     )
-    this.allowedTravelModes = profile.ridePreferences.allowedTravelModes.map(
+    this.allowedTravelModes = profile.searchPreferences.allowedTravelModes.map(
       mode => travelModes[mode]
     )
-    this.nrOfPersons = profile.ridePreferences.numPassengers
-    this.transferAllowed = profile.ridePreferences.allowTransfer
-    this.maxMinutesWalking = profile.ridePreferences.maximumTransferTime
+    this.nrOfPersons = profile.searchPreferences.numPassengers
+    this.transferAllowed = profile.searchPreferences.allowTransfer
+    this.maxMinutesWalking = profile.searchPreferences.maximumTransferTime
   },
   methods: {
     save: function() {
@@ -246,7 +246,7 @@ export default {
         allowTransfer: this.transferAllowed,
         maximumTransferTime: this.maxMinutesWalking,
       }
-      this.$store.dispatch('ps/storeRidePreferences', payload)
+      this.$store.dispatch('ps/storeSearchPreferences', payload)
       this.$router.go(-1)
     },
   },

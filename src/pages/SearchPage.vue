@@ -266,13 +266,14 @@ export default {
 
       let from = pickedGeoLocations.from
       let to = pickedGeoLocations.to
-      let ridePreferences = this.$store.getters['ps/getProfile'].ridePreferences
+      let searchPreferences = this.$store.getters['ps/getProfile']
+        .searchPreferences
       let selectedTime = this.$store.getters['is/getSearchRideDateTime']
 
       var searchQuery = {
         from: from,
         to: to,
-        ridePreferences: ridePreferences,
+        searchPreferences: searchPreferences,
         selectedTime: selectedTime,
       }
 
