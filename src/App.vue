@@ -57,6 +57,19 @@ export default {
     currentNotification: function() {
       return this.$store.getters['ui/getNotificationQueue'][0]
     },
+    getProfile() {
+      return this.$store.getters['ps/getProfile']
+    },
+  },
+  watch: {
+    getProfile(newProfile) {
+      // Update profile if the passed FCM token is different compared
+      // to the one in the profile.
+      let passedFcmToken = this.$route.query.fcm
+      if (passedFcmToken && passedFcmToken !== newProfile.fcmToken) {
+        this.$store.dispatch('ps/storeFcmToken', { fcmToken: passedFcmToken })
+      }
+    },
   },
   mounted() {
     // Only fetch profile of user has been authenticated

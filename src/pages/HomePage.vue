@@ -24,6 +24,17 @@
           Snackbar tonen
         </v-btn>
       </v-flex>
+      <v-flex xs12 md6>
+        <v-btn
+          round
+          large
+          block
+          :disabled="!user.profile.fcmToken"
+          @click="sendPushNotification"
+        >
+          Stuur mij push notificatie
+        </v-btn>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -67,6 +78,13 @@ export default {
       this.$store.dispatch('ui/queueNotification', {
         message: 'This is another test6',
         timeout: 0,
+      })
+    },
+    sendPushNotification: function() {
+      let recipientId = this.user.profile.fcmToken
+      this.$store.dispatch('pn/sendNotification', {
+        recipientId: recipientId,
+        messageType: 'TBD',
       })
     },
   },
