@@ -102,7 +102,7 @@ export default {
           icon: 'settings',
           name: 'Instellingen',
           route: '',
-          // route: '/profileNotificationOptions',
+          route: '/profileNotificationOptions',
         },
         { icon: 'help_outline', name: 'Veel gestelde vragen', route: '' },
         {
