@@ -22,6 +22,7 @@ export default {
 
       // Profile as stored in profile service.
       profile: {
+        dateOfBirth: undefined,
         ridePreferences: {
           numPassengers: 0,
           allowTransfer: true,
@@ -29,8 +30,11 @@ export default {
           luggageOptions: [],
           allowedTravelModes: [],
         },
+        ridePlanOptions: {
+          cars: []
+        }
       },
-
+      //TODO: Move ridePlanOptions to profile
       ridePlanOptions: {
         numPassengers: 0,
         luggageOptions: [
@@ -43,18 +47,6 @@ export default {
         ],
         maxMinutesDetour: 0,
         car: {},
-      },
-
-      // Other attributes
-      dateOfBirth: Date.now(),
-      biography: '',
-
-      ridePreferences: {
-        luggage: [],
-        allowedTravelModes: travelModes,
-        nrOfPersons: 1,
-        transferAllowed: true,
-        maxMinutesWalking: 15,
       },
       privacySecurity: [
         { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
