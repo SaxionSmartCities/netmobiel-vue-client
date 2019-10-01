@@ -114,7 +114,7 @@
                     <v-flex
                       shrink
                       transition="slide-x-transition"
-                      @click="toRidePrefrences"
+                      @click="toRidePreferences"
                     >
                       <v-icon>settings</v-icon>
                       <span class="ml-1">Reisvoorkeuren</span>
@@ -249,7 +249,7 @@ export default {
       this.showPicklocation = true
       this.pickedLocationState = fieldPressed
     },
-    toRidePrefrences() {
+    toRidePreferences() {
       this.$router.push({ name: 'searchOptions' })
     },
     toSearchRideDate() {
@@ -266,13 +266,14 @@ export default {
 
       let from = pickedGeoLocations.from
       let to = pickedGeoLocations.to
-      let ridePreferences = this.$store.getters['ps/getProfile'].ridePreferences
+      let searchPreferences = this.$store.getters['ps/getProfile']
+        .searchPreferences
       let selectedTime = this.$store.getters['is/getSearchRideDateTime']
 
       var searchQuery = {
         from: from,
         to: to,
-        ridePreferences: ridePreferences,
+        searchPreferences: searchPreferences,
         selectedTime: selectedTime,
       }
 

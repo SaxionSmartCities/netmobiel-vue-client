@@ -2,8 +2,6 @@ import getters from './getters'
 import mutations from './mutations'
 import actions from './actions'
 
-import travelModes from '@/constants/travel-modes.js'
-
 export default {
   namespaced: true,
   state: {
@@ -24,7 +22,7 @@ export default {
       profile: {
         id: undefined,
         fcmToken: undefined,
-        ridePreferences: {
+        searchPreferences: {
           numPassengers: 0,
           allowTransfer: true,
           maximumTransferTime: 0,
@@ -37,13 +35,6 @@ export default {
       dateOfBirth: Date.now(),
       biography: '',
 
-      ridePreferences: {
-        luggage: [],
-        allowedTravelModes: travelModes,
-        nrOfPersons: 1,
-        transferAllowed: true,
-        maxMinutesWalking: 15,
-      },
       privacySecurity: [
         { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
         { name: 'Deel reisdata met NetMobiel', value: false },

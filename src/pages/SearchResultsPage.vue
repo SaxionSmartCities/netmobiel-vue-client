@@ -98,9 +98,6 @@ export default {
         'DD-MM-YYYY'
       )
     },
-    getRidePreferences() {
-      return this.$store.getters['ps/getProfile'].ridePreferences
-    },
   },
   methods: {
     sortByDuration: function(a, b) {

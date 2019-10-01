@@ -30,16 +30,16 @@ export default {
         date: date,
         time: time,
       },
-      ridePreferences: {
-        luggage: payload.ridePreferences.luggageOptions.map(
+      searchPreferences: {
+        luggage: payload.searchPreferences.luggageOptions.map(
           element => element.type
         ),
-        allowedTravelModes: payload.ridePreferences.allowedTravelModes.map(
+        allowedTravelModes: payload.searchPreferences.allowedTravelModes.map(
           element => element.mode
         ),
-        maxMinutesWalking: payload.ridePreferences.maxMinutesWalking,
-        transferAllowed: payload.ridePreferences.transferAllowed,
-        numPassengers: payload.ridePreferences.numPassengers,
+        maxMinutesWalking: payload.searchPreferences.maxMinutesWalking,
+        transferAllowed: payload.searchPreferences.transferAllowed,
+        numPassengers: payload.searchPreferences.numPassengers,
       },
     }
     var axiosConfig = {

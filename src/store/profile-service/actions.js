@@ -25,10 +25,10 @@ export default {
         console.log(error)
       })
   },
-  storeRidePreferences: (context, payload) => {
+  storeSearchPreferences: (context, payload) => {
     // Convert payload to a profile object.
     let profile = { ...context.state.user.profile }
-    profile.ridePreferences = {
+    profile.searchPreferences = {
       numPassengers: payload.numPassengers,
       allowTransfer: payload.allowTransfer,
       maximumTransferTime: payload.maximumTransferTime,
