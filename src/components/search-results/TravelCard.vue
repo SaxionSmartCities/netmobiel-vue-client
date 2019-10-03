@@ -33,7 +33,12 @@
         </v-flex>
       </v-layout>
     </v-flex>
-    <v-flex d-flex>
+    <v-flex
+      d-flex
+      :class="{
+        'hide-details': journey.legs.length == 0
+      }"
+    >
       <v-layout justify-center align-center column @click="openDetails()">
         <v-flex shrink>
           <v-icon>keyboard_arrow_right</v-icon>
@@ -102,8 +107,11 @@ export default {
   methods: {
     // Function to pre-determine the divions of column per leg
     calculateLegDivison: function() {
+      // Skip calculation if we have no legs.
+      if (this.journey.legs.length == 0) {
+        return
+      }
       // Calculate total travel time
-
       this.totalTime = this.journey.legs
         .map(leg => leg.duration)
         .reduce((a, b) => a + b)
@@ -135,11 +143,9 @@ export default {
             highestIndex = i
           }
         }
-
         // Adjust the widest column visually..
         ratios[highestIndex] += difference
       }
-
       this.layoutRatios = ratios
     },
     calculateClass: function(index) {
@@ -166,5 +172,8 @@ export default {
 .travel-card {
   border-radius: 10px;
   border: 1px $color-light-grey solid;
+}
+.hide-details {
+  display: none !important;
 }
 </style>
