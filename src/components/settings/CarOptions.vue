@@ -90,7 +90,6 @@ export default {
   computed: {
     getAvailableCars() {
       const profile = this.$store.getters['ps/getUser'].profile
-      console.log(profile)
       return this.$store.getters['ps/getUser'].profile.ridePlanOptions.cars
     },
     getSearchResult() {

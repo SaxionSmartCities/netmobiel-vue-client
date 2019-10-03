@@ -77,8 +77,6 @@ export default {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       })
       .then(function(resp) {
-        // eslint-disable-next-line
-        console.log(resp)
         context.commit('saveRides', resp.data)
       })
       .catch(function(error) {
