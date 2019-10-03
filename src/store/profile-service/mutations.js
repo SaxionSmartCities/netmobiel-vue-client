@@ -48,6 +48,19 @@ export default {
       car => car.licensePlate !== payload.licensePlate
     )
   },
+  addRidePlanOptionsCar: (state, payload) => {
+    let isPresent = false
+    const currentCars = state.user.profile.ridePlanOptions.cars
+    for (let i = 0; i < currentCars.length; i++) {
+      if (payload.licensePlate === currentCars[i].licensePlate) {
+        isPresent = true
+        break;
+      }
+    }
+    if (!isPresent) {
+      state.user.profile.ridePlanOptions.cars.push(payload)      
+    }
+  },
   setPrivacySecurityValue: (state, payload) => {
     state.user.privacySecurity.filter(function(item) {
       if (item.name === payload.key) {
