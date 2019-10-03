@@ -162,7 +162,6 @@
 
 <script>
 import moment from 'moment'
-import { upperCaseFirst } from '@/utils/Utils.js'
 
 export default {
   data: function() {
