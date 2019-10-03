@@ -30,14 +30,10 @@ export default {
           allowedTravelModes: [],
         },
         ridePlanOptions: {
-          numPassengers: 2,
-          maxMinutesDetour: 100,
+          numPassengers: 0,
+          maxMinutesDetour: 10,
           luggageOptions: [
-            'STROLLER',
             'HANDLUGGAGE',
-            'PET',
-            'WALKER',
-            'WHEELCHAIR',
             'GROCERIES',
           ],
           cars: [
