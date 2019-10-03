@@ -222,7 +222,6 @@ export default {
       this.parseLuggageOption(option)
     )
 
-    console.log(this.luggageSelected)
     this.numPassengers = ridePlanOptions.numPassengers
     this.maxMinutesDetour = ridePlanOptions.maxMinutesDetour
     this.selectedCar = ridePlanOptions.car
