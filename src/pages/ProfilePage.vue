@@ -10,13 +10,13 @@
           <v-flex>
             <v-layout class="mt-2">
               <v-flex>
-                <p class="ma-0">{{ getUserData().fullName }}</p>
+                <p class="ma-0">{{ user.fullName }}</p>
                 <p class="ma-0">{{ address }}</p>
                 <v-layout row>
                   <v-flex>
                     <v-rating
-                      v-model="getUserData().rating"
-                      :length="getUserData().maxRating"
+                      v-model="user.rating"
+                      :length="user.maxRating"
                       background-color="yellow darken-3"
                       color="yellow darken-3"
                       small
@@ -122,12 +122,14 @@ export default {
       address: 'Gasthuisstraat 9, Bredevoort',
     }
   },
+  computed: {
+    user() {
+      return this.$store.getters['ps/getUser']
+    },
+  },
   methods: {
     navToHome: function() {
       this.$router.push('/')
-    },
-    getUserData() {
-      return this.$store.getters['ps/getUser']
     },
     logOut: function() {
       this.$keycloak.logoutFn()
