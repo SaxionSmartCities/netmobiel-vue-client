@@ -32,10 +32,7 @@ export default {
         ridePlanOptions: {
           numPassengers: 0,
           maxMinutesDetour: 10,
-          luggageOptions: [
-            'HANDLUGGAGE',
-            'GROCERIES',
-          ],
+          luggageOptions: ['HANDLUGGAGE', 'GROCERIES'],
           cars: [
             {
               brand: 'VOLKSWAGEN',
