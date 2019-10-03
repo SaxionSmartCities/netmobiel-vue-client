@@ -91,6 +91,11 @@ export default {
       return result
     },
   },
+  watch: {
+    journey: function() {
+      this.calculateLegDivison()
+    },
+  },
   mounted: function() {
     this.calculateLegDivison()
   },
@@ -98,7 +103,6 @@ export default {
     // Function to pre-determine the divions of column per leg
     calculateLegDivison: function() {
       // Calculate total travel time
-      // console.log(this.journey.legs.length, this.journey)
 
       this.totalTime = this.journey.legs
         .map(leg => leg.duration)
@@ -139,12 +143,6 @@ export default {
       this.layoutRatios = ratios
     },
     calculateClass: function(index) {
-      // console.log(
-      //   index,
-      //   this.layoutRatios.length,
-      //   this.layoutRatios[index],
-      //   this.totalTime
-      // )
       return 'xs' + this.layoutRatios[index]
     },
     hasCarLeg: function() {
