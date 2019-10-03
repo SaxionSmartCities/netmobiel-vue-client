@@ -20,6 +20,7 @@ import RidePlanPage from './pages/RidePlanPage.vue'
 import RegistrationPage from './pages/RegistrationPage.vue'
 import RidePlanOptionsPage from './pages/RidePlanOptionsPage.vue'
 import RidePlanSubmitted from './pages/RidePlanSubmitted.vue'
+import TripsOverviewPage from './pages/TripsOverviewPage.vue'
 
 const router = new Router({
   mode: 'history',
@@ -100,6 +101,11 @@ const router = new Router({
       path: '/profileNotificationOptions',
       component: NotificationOptionsPage,
       name: 'notificationOptions',
+    },
+    {
+      path: '/tripsOverviewPage',
+      component: TripsOverviewPage,
+      name: 'tripsOverviewPage',
     },
   ],
 })

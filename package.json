@@ -14,6 +14,7 @@
     "moment": "^2.24.0",
     "npm": "^6.11.3",
     "vue": "^2.5.21",
+    "vue-analytics": "^5.17.2",
     "vue-jwt-decode": "^0.1.0",
     "vue-router": "^3.0.2",
     "vuetify": "^1.5.11",

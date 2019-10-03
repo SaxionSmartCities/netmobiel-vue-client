@@ -36,13 +36,12 @@ export default {
       this.$router.go(-1)
     },
   },
-  mounted: function() {
+  created: function() {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
     completeSearch(location) {
       this.$store.dispatch('gs/fetchGeocoderLocation', location.locationId)
-      // this.$router.go(-1)
     },
     clearSearchInput() {
       this.searchInput = ''

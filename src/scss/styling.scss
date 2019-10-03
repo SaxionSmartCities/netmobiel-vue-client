@@ -114,6 +114,7 @@ body {
   border-color: $color-mid-grey;
 }
 
-.faded {
-  color: $color-mid-grey
+// Vuetify expansion panel
+.v-expansion-panel {
+  box-shadow: none;
 }

@@ -2,8 +2,6 @@ import getters from './getters'
 import mutations from './mutations'
 import actions from './actions'
 
-import travelModes from '@/constants/travel-modes.js'
-
 export default {
   namespaced: true,
   state: {
@@ -22,39 +20,55 @@ export default {
 
       // Profile as stored in profile service.
       profile: {
-        ridePreferences: {
+        id: undefined,
+        fcmToken: undefined,
+        searchPreferences: {
           numPassengers: 0,
           allowTransfer: true,
           maximumTransferTime: 0,
           luggageOptions: [],
           allowedTravelModes: [],
         },
-      },
-
-      ridePlanOptions: {
-        numPassengers: 0,
-        luggageOptions: [
-          'STROLLER',
-          'HANDLUGGAGE',
-          'PET',
-          'ROLLATOR',
-          'WHEELCHAIR',
-          'GROCERIES',
-        ],
-        maxMinutesDetour: 0,
-        car: {},
-      },
-
-      // Other attributes
-      dateOfBirth: Date.now(),
-      biography: '',
-
-      ridePreferences: {
-        luggage: [],
-        allowedTravelModes: travelModes,
-        nrOfPersons: 1,
-        transferAllowed: true,
-        maxMinutesWalking: 15,
+        ridePlanOptions: {
+          numPassengers: 2,
+          maxMinutesDetour: 100,
+          luggageOptions: [
+            'STROLLER',
+            'HANDLUGGAGE',
+            'PET',
+            'WALKER',
+            'WHEELCHAIR',
+            'GROCERIES',
+          ],
+          cars: [
+            {
+              brand: 'VOLKSWAGEN',
+              co2Emission: 107,
+              color: 'ZWART',
+              licensePlate: '17-THF-2',
+              model: 'GOLF',
+              nrDoors: 0,
+              nrSeats: 5,
+              registrationCountry: 'NL',
+              registrationYear: 2012,
+              type: 'ESTATE',
+              typeRegistrationId: 'e1*2001/116*0242*42',
+            },
+            {
+              brand: 'VOLKSWAGEN',
+              co2Emission: 107,
+              color: 'ZWART',
+              licensePlate: '17-THF-3',
+              model: 'GOLFY',
+              nrDoors: 0,
+              nrSeats: 2,
+              registrationCountry: 'NL',
+              registrationYear: 2012,
+              type: 'ESTATE',
+              typeRegistrationId: 'e1*2001/116*0242*43',
+            },
+          ],
+        },
       },
       privacySecurity: [
         { name: 'Gebruik mijn locatie tijdens het reizen', value: false },

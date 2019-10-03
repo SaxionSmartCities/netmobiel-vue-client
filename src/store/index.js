@@ -6,6 +6,7 @@ import registrationService from './registration-service'
 import itineraryService from './itinerary-service'
 import geocoderService from './geocoder-service'
 import carpoolService from './carpool-service'
+import notificationService from './notification-service'
 import ui from './ui'
 
 Vue.use(Vuex)
@@ -18,6 +19,7 @@ export default new Vuex.Store({
     rs: registrationService,
     is: itineraryService,
     gs: geocoderService,
+    pn: notificationService,
     cs: carpoolService,
   },
 })

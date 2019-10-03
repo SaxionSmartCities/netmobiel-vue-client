@@ -29,8 +29,8 @@ export default {
   mounted() {
     if (this.$keycloak.authenticated) {
       this.$store.commit('ps/setUserToken', this.$keycloak.token)
-
-      this.$router.push('/home')
+      // Preserve query string when routing to home.
+      this.$router.push({ path: '/home', query: this.$route.query })
     }
   },
 }
