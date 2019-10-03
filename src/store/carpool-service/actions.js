@@ -46,7 +46,7 @@ export default {
     //       "latitude": 52.221609,
     //       "longitude": 6.887536
     //   },
-    //   "maxDetourMeters": 1000
+    //   "maxDetourSeconds": 1000
     // }
   },
 }
