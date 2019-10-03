@@ -112,7 +112,7 @@ export default {
             trip.date = moment(trip.date).valueOf()
             return trip
           })
-          context.commit('setPlannedTrips', response.data.trips)
+          context.commit('setPlannedTrips', parsedTrips)
         }
       })
       .catch(error => {
