@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from '@/config/config'
+import moment from 'moment'
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_RIDESHARE_SERVICE_API_KEY =
@@ -31,22 +32,44 @@ export default {
   },
   submitRide: (context, payload) => {
     context.commit('addRideToList', payload)
-    // {
-    //   "carRef": "urn:nb:rs:car:5",
-    //   "departureTime": "2019-10-02T09:30:00.733Z[UTC]",
-    //   "fromPlace": {
-    //       "label": "Station Borne",
-    //       "latitude": 52.298417,
-    //       "longitude": 6.749157
-    //   },
-    //   "nrSeatsAvailable": 2,
-    //   "remarks": "A test ride from Borne to Enschede",
-    //   "toPlace": {
-    //       "label": "Station Enschede",
-    //       "latitude": 52.221609,
-    //       "longitude": 6.887536
-    //   },
-    //   "maxDetourSeconds": 1000
-    // }
+    console.log('payload', payload)
+
+    let request = {
+      carRef: 'urn:nb:rs:car:50',
+      departureTime: moment(payload.selectedTime)
+        .utc()
+        .format(),
+      fromPlace: {
+        label: payload.from.address.label,
+        latitude: payload.from.displayPosition.latitude,
+        longitude: payload.from.displayPosition.longitude,
+      },
+      toPlace: {
+        label: payload.to.address.label,
+        latitude: payload.to.displayPosition.latitude,
+        longitude: payload.to.displayPosition.longitude,
+      },
+      remarks: 'What does this do?',
+      nrSeatsAvailable: 2, // TODO: Get this from ridePlanOptions
+      maxDetourSeconds: 15 * 60, // TODO: Get this from ridePlanOptions
+    }
+
+    var axiosConfig = {
+      method: 'POST',
+      url: BASE_URL + `/rideshare/rides`,
+      data: request,
+      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+    }
+
+    axios(axiosConfig)
+      .then(function(res) {
+        // eslint-disable-next-line
+        console.log(res)
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+      })
   },
 }
