@@ -43,6 +43,11 @@ export default {
   setRidePlanOptions: (state, payload) => {
     state.user.profile.ridePlanOptions = payload
   },
+  deleteRidePlanOptionsCar: (state, payload) => {
+    state.user.profile.ridePlanOptions.cars = state.user.profile.ridePlanOptions.cars.filter(
+      car => car.licensePlate !== payload.licensePlate
+    )
+  },
   setPrivacySecurityValue: (state, payload) => {
     state.user.privacySecurity.filter(function(item) {
       if (item.name === payload.key) {
