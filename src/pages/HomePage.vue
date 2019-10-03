@@ -1,28 +1,47 @@
 <template>
-  <v-container>
+  <v-container class="carBackground">
     <v-layout column>
-      <v-flex text-xs-right xs12 mb-5>
-        <h4 class="faded">
-          Ingelogd als: {{ user.givenName }} {{ user.familyName }} ({{
-            user.email
-          }})
-        </h4>
+      <v-flex text-xs xs12 mb-2>
+        <h3>Goededag, {{ user.fullName }}</h3>
       </v-flex>
-      <v-flex v-if="rides.length > 0">
-        <h5>Mijn geplande ritten</h5>
+      <v-divider class="mb-2"></v-divider>
+      <v-flex v-if="rides.length > 0" mt-2>
+        <h2 class="text-primary-uppercase">Mijn aangeboden ritten</h2>
         <v-flex
           v-for="(ride, index) in rides"
           :key="index"
-          my-1
+          my-2
           xs12
           class="travel-card"
         >
           <ride-card :ride="ride"></ride-card>
         </v-flex>
       </v-flex>
-      <v-flex v-else>
-        <h3>Hier staat nog niets!</h3>
-        <p>Gebruik onderstaande knoppen om verder te gaan.</p>
+      <v-flex v-else mt-2>
+        <p>
+          Welkom bij Netmobiel, dé mobiliteitsapp van de Achterhoek en
+          omstreken.
+        </p>
+        <p>
+          Het menu onderin is de manier om door de app heen te navigeren, hier
+          kun je:
+        </p>
+        <p>
+          <v-icon class="mr-2 negMarIcon">commute</v-icon>
+          <span>Een reis plannen</span>
+        </p>
+        <p>
+          <v-icon class="mr-2 negMarIcon">favorite</v-icon> Je bewaarde reizen
+          zien
+        </p>
+        <p>
+          <v-icon class="mr-2 negMarIcon">directions_car</v-icon> Een reis
+          plannen
+        </p>
+        <p>
+          <v-icon class="mr-2 negMarIcon">person</v-icon> Je profielinstellingen
+          wijzigen
+        </p>
       </v-flex>
     </v-layout>
   </v-container>
@@ -51,5 +70,14 @@ export default {
   background-color: $color-orange;
   color: white;
   text-transform: none;
+}
+.negMarIcon {
+  margin-bottom: -3px;
+}
+.carBackground {
+  background: url('../assets/autoscooter.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position-y: bottom;
 }
 </style>

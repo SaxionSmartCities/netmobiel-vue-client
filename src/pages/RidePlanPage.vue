@@ -11,99 +11,104 @@
       <v-flex xs11 sm9 md6>
         <v-layout column shrink>
           <v-flex class="box-widget background-white">
-            <v-form>
-              <v-layout>
-                <v-flex text-xs-center xs12>
-                  <h1>Waar rijd je heen?</h1>
-                </v-flex>
-              </v-layout>
-              <v-layout>
-                <v-flex id="vannaar" xs11>
-                  <v-layout column>
-                    <v-flex id="van">
-                      <v-layout my-1 row>
-                        <v-flex pl-4 xs5 sm3>
-                          <span class="form-label font-weight-bold">
-                            Van
-                          </span>
-                        </v-flex>
-                        <v-flex xs11 @click="toLocationSuggestionsPage('from')">
-                          {{ fromLocationLabel }}
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                    <v-flex>
-                      <v-layout my-1 row>
-                        <v-flex pl-4 xs5 sm3>
-                          <span class="form-label font-weight-bold">
-                            Naar
-                          </span>
-                        </v-flex>
-                        <v-flex xs11 @click="toLocationSuggestionsPage('to')">
-                          {{ toLocationLabel }}
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-                <v-flex d-flex>
-                  <v-layout column justify-center>
-                    <v-flex
-                      id="heenweericoon"
-                      text-xs-center
-                      justify-center
-                      shrink
-                    >
-                      <v-icon>import_export</v-icon>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-              </v-layout>
+            <v-flex>
+              <v-form>
+                <v-layout>
+                  <v-flex text-xs-center xs12>
+                    <h1>Waar rijd je heen?</h1>
+                  </v-flex>
+                </v-layout>
+                <v-layout>
+                  <v-flex id="vannaar" xs11>
+                    <v-layout column>
+                      <v-flex id="van">
+                        <v-layout my-1 row>
+                          <v-flex pl-4 xs5 sm3>
+                            <span class="form-label font-weight-bold">
+                              Van
+                            </span>
+                          </v-flex>
+                          <v-flex
+                            xs11
+                            @click="toLocationSuggestionsPage('from')"
+                          >
+                            {{ fromLocationLabel }}
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                      <v-flex>
+                        <v-layout my-1 row>
+                          <v-flex pl-4 xs5 sm3>
+                            <span class="form-label font-weight-bold">
+                              Naar
+                            </span>
+                          </v-flex>
+                          <v-flex xs11 @click="toLocationSuggestionsPage('to')">
+                            {{ toLocationLabel }}
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                    </v-layout>
+                  </v-flex>
+                  <v-flex d-flex>
+                    <v-layout column justify-center>
+                      <v-flex
+                        id="heenweericoon"
+                        text-xs-center
+                        justify-center
+                        shrink
+                      >
+                        <v-icon>import_export</v-icon>
+                      </v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
 
-              <v-layout>
-                <v-flex xs11>
-                  <v-layout column>
-                    <v-flex id="aankomsttijd">
-                      <v-layout my-2 row>
-                        <v-flex pl-4 sm3>
-                          <span class="form-label font-weight-bold">
-                            Aankomst
-                          </span>
-                        </v-flex>
-                        <v-flex xs11>
-                          <input v-model="date" type="date" required />
-                          <input v-model="time" type="time" required />
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-                <v-flex> </v-flex>
-              </v-layout>
-              <v-layout mt-2 justify-center text-xs-center>
-                <v-flex>
-                  <v-btn
-                    large
-                    round
-                    block
-                    :disabled="!locationsPickedCheck"
-                    @click="submitForm()"
+                <v-layout>
+                  <v-flex xs11>
+                    <v-layout column>
+                      <v-flex id="aankomsttijd">
+                        <v-layout my-2 row>
+                          <v-flex pl-4 sm3>
+                            <span class="form-label font-weight-bold">
+                              Aankomst
+                            </span>
+                          </v-flex>
+                          <v-flex xs11>
+                            <input v-model="date" type="date" required />
+                            <input v-model="time" type="time" required />
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                    </v-layout>
+                  </v-flex>
+                  <v-flex> </v-flex>
+                </v-layout>
+                <v-layout mt-2 justify-center text-xs-center>
+                  <v-flex>
+                    <v-btn
+                      large
+                      round
+                      block
+                      :disabled="!locationsPickedCheck"
+                      @click="submitForm()"
+                    >
+                      Voeg rit toe!
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+                <v-layout mt-2 justify-center>
+                  <v-flex
+                    shrink
+                    transition="slide-x-transition"
+                    @click="toRidePlanOptions()"
                   >
-                    Voeg rit toe!
-                  </v-btn>
-                </v-flex>
-              </v-layout>
-              <v-layout mt-2 justify-center>
-                <v-flex
-                  shrink
-                  transition="slide-x-transition"
-                  @click="toRidePlanOptions()"
-                >
-                  <v-icon>settings</v-icon>
-                  <span class="ml-1">Riteigenschappen</span>
-                </v-flex>
-              </v-layout>
-            </v-form>
+                    <v-icon>settings</v-icon>
+                    <span class="ml-1">Riteigenschappen</span>
+                  </v-flex>
+                </v-layout>
+              </v-form>
+            </v-flex>
           </v-flex>
         </v-layout>
       </v-flex>
