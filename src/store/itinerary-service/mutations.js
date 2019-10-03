@@ -1,7 +1,4 @@
 export default {
-  setDate: (state, payload) => {
-    state.planningRequest.dateTime = payload
-  },
   storePlanningRequest: (state, payload) => {
     state.planningRequest.fromPlace = payload.fromPlace
     state.planningRequest.toPlace = payload.toPlace

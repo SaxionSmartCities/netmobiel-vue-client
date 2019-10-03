@@ -89,12 +89,19 @@ const headers = {
 const descriptions = {
   WALK() {
     // use first and last step with proper street name
-    const departureName = this.leg.steps.find(step => !step.bogusName)
-      .streetName
-    const arrivalName = this.leg.steps
+    const validDepartureStep = this.leg.steps.find(step => !step.bogusName)
+    const departureName =
+      validDepartureStep !== undefined
+        ? validDepartureStep.streetName
+        : 'onbekend'
+
+    const validArrivalStep = this.leg.steps
       .slice(0)
       .reverse()
-      .find(step => !step.bogusName).streetName
+      .find(step => !step.bogusName)
+    const arrivalName =
+      validArrivalStep !== undefined ? validArrivalStep.streetName : 'onbekend'
+
     return `${departureName} - ${arrivalName}`
   },
   CAR: 'Meerijden met een NETMOBIEL gebruiker',

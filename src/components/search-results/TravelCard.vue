@@ -28,7 +28,7 @@
         <v-flex mt-2>
           <v-layout>
             <v-flex> {{ Math.round(journey.duration / 60) }} minuten </v-flex>
-            <v-flex text-xs-right pr-1> {{ journey.cost }} credits </v-flex>
+            <!-- <v-flex text-xs-right pr-1> {{ journey.cost }} credits </v-flex> -->
           </v-layout>
         </v-flex>
       </v-layout>
@@ -91,6 +91,11 @@ export default {
       return result
     },
   },
+  watch: {
+    journey: function() {
+      this.calculateLegDivison()
+    },
+  },
   mounted: function() {
     this.calculateLegDivison()
   },
@@ -98,6 +103,7 @@ export default {
     // Function to pre-determine the divions of column per leg
     calculateLegDivison: function() {
       // Calculate total travel time
+
       this.totalTime = this.journey.legs
         .map(leg => leg.duration)
         .reduce((a, b) => a + b)

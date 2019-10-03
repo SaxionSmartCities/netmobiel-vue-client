@@ -25,10 +25,10 @@ export default {
     })
   },
   setTripOptionsValue: (state, payload) => {
-    state.user.profile.filter(function(item) {
+    state.user.tripOptions.filter(function(item) {
       if (item.name === payload.key) {
         item.value = payload.value
-        return item
+        return
       }
     })
   },
@@ -39,6 +39,10 @@ export default {
         return item
       }
     })
+  },
+  setRidePlanOptions: (state, payload) => {
+    console.log('payload', payload)
+    state.user.profile.ridePlanOptions = payload
   },
   setPrivacySecurityValue: (state, payload) => {
     state.user.privacySecurity.filter(function(item) {

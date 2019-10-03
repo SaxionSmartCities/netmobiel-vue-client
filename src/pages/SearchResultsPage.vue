@@ -43,20 +43,22 @@
       <v-flex mt-3>
         <v-layout column>
           <v-flex>
-            <v-layout pa-2>
+            <!-- <v-layout pa-2>
               <v-flex xs2>
                 <v-icon>fa-volume-up</v-icon>
               </v-flex>
               <v-flex>Plaats oproep in de community</v-flex>
-            </v-layout>
+            </v-layout> -->
           </v-flex>
           <v-flex mt-3 mb-3>
-            <v-layout pa-2>
-              <v-flex xs2>
-                <v-icon>phone_in_talk</v-icon>
-              </v-flex>
-              <v-flex>Bel de ZOOV regiotaxi</v-flex>
-            </v-layout>
+            <a href="tel:0900-9874">
+              <v-layout pa-2>
+                <v-flex xs2>
+                  <v-icon>phone_in_talk</v-icon>
+                </v-flex>
+                <v-flex>Bel de ZOOV regiotaxi</v-flex>
+              </v-layout>
+            </a>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -67,8 +69,6 @@
 <script>
 import TravelCard from '@/components/search-results/TravelCard.vue'
 import SearchOptionsSummaryCard from '@/components/search-results/SearchOptionsSummaryCard.vue'
-
-import moment from 'moment'
 
 export default {
   name: 'SearchResultsPage',
@@ -94,9 +94,8 @@ export default {
       return this.getPlanningResult.itineraries
     },
     date() {
-      return moment(this.$store.getters['is/getSearchRideDateTime']).format(
-        'DD-MM-YYYY'
-      )
+      return ''
+      // return 'INVALID'
     },
   },
   methods: {
@@ -124,5 +123,10 @@ export default {
 .no-padding .v-expansion-panel__header {
   padding-left: 0;
   padding-right: 0;
+}
+
+a {
+  text-decoration: none;
+  color: #2e8997;
 }
 </style>

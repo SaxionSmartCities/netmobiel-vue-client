@@ -17,7 +17,11 @@ export default {
       .get(URL, { headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY) })
       .then(response => {
         if (response.status == 200 && response.data.profiles.length > 0) {
-          context.commit('setProfile', response.data.profiles[0])
+          let profile = {
+            ...context.state.user.profile,
+            ...response.data.profiles[0],
+          }
+          context.commit('setProfile', profile)
         }
       })
       .catch(error => {
@@ -58,5 +62,8 @@ export default {
         // eslint-disable-next-line
         console.log(error)
       })
+  },
+  storeRidePlanOptions: (context, payload) => {
+    context.commit('setRidePlanOptions', payload)
   },
 }

@@ -11,13 +11,15 @@ import NotificationOptionsPage from './pages/NotificationOptionsPage.vue'
 import PrivacySecurityPage from './pages/PrivacySecurityPage.vue'
 import PrivacyStatementPage from './pages/PrivacyStatementPage.vue'
 import ProfilePage from './pages/ProfilePage.vue'
-import RegistrationPage from './pages/RegistrationPage.vue'
-import SearchDateTimePage from './pages/SearchDateTimePage'
 import SearchLocationPage from './pages/SearchLocationPage'
 import SearchOptionsPage from './pages/SearchOptionsPage'
 import SearchPage from './pages/SearchPage.vue'
 import SearchResultsPage from './pages/SearchResultsPage.vue'
 import TermsOfUsePage from './pages/TermsOfUsePage.vue'
+import RidePlanPage from './pages/RidePlanPage.vue'
+import RegistrationPage from './pages/RegistrationPage.vue'
+import RidePlanOptionsPage from './pages/RidePlanOptionsPage.vue'
+import RidePlanSubmitted from './pages/RidePlanSubmitted.vue'
 import TripsOverviewPage from './pages/TripsOverviewPage.vue'
 
 const router = new Router({
@@ -46,14 +48,24 @@ const router = new Router({
       name: 'searchRide',
     },
     {
+      path: '/plan',
+      component: RidePlanPage,
+      name: 'planRide',
+    },
+    {
+      path: '/planOptions',
+      component: RidePlanOptionsPage,
+      name: 'planOptions',
+    },
+    {
+      path: '/planSubmitted',
+      component: RidePlanSubmitted,
+      name: 'planSubmitted',
+    },
+    {
       path: '/searchOptions',
       component: SearchOptionsPage,
       name: 'searchOptions',
-    },
-    {
-      path: '/searchDateTime',
-      component: SearchDateTimePage,
-      name: 'searchDateTime',
     },
     {
       path: '/searchLocation/:field',

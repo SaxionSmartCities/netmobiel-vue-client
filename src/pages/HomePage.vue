@@ -1,91 +1,46 @@
 <template>
-  <v-container grid-list-lg>
-    <v-layout>
-      <v-flex text-xs-center xs12>
-        <h3>
-          Hoi {{ user.givenName }} ({{ user.familyName }}, {{ user.email }})
-        </h3>
-        <p>Welkom bij Netmobiel!</p>
+  <v-container>
+    <v-layout column>
+      <v-flex text-xs-right xs12 mb-5>
+        <h4 class="faded">
+          Ingelogd als: {{ user.givenName }} {{ user.familyName }} ({{
+            user.email
+          }})
+        </h4>
       </v-flex>
-    </v-layout>
-    <v-layout row wrap>
-      <v-flex xs12 md6>
-        <v-btn round large block to="/search">
-          Ik wil een reis zoeken!
-        </v-btn>
-      </v-flex>
-      <v-flex xs12 md6>
-        <v-btn round large block>
-          Ik wil een reis aanbieden!
-        </v-btn>
-      </v-flex>
-      <v-flex xs12 md6>
-        <v-btn round large block @click="addNotification">
-          Snackbar tonen
-        </v-btn>
-      </v-flex>
-      <v-flex xs12 md6>
-        <v-btn
-          round
-          large
-          block
-          :disabled="!user.profile.fcmToken"
-          @click="sendPushNotification"
+      <v-flex v-if="rides.length > 0">
+        <h5>Mijn geplande ritten</h5>
+        <v-flex
+          v-for="(ride, index) in rides"
+          :key="index"
+          my-1
+          xs12
+          class="travel-card"
         >
-          Stuur mij push notificatie
-        </v-btn>
+          <ride-card :ride="ride"></ride-card>
+        </v-flex>
+      </v-flex>
+      <v-flex v-else>
+        <h3>Hier staat nog niets!</h3>
+        <p>Gebruik onderstaande knoppen om verder te gaan.</p>
       </v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
+import RideCard from '@/components/rides/RideCard.vue'
+
 export default {
+  components: {
+    RideCard,
+  },
   computed: {
     user() {
       return this.$store.getters['ps/getUser']
     },
-  },
-  methods: {
-    addNotification: function() {
-      this.$ga.event('test', 'snackbar test', 'home snackbartest', 1) //Google Analytics test event
-
-      this.$store.dispatch('ui/queueNotification', {
-        message: 'This is a test1',
-        timeout: 3000,
-      })
-
-      this.$store.dispatch('ui/queueNotification', {
-        message: 'This is a test2',
-        timeout: 3000,
-      })
-
-      this.$store.dispatch('ui/queueNotification', {
-        message: 'This is a test3',
-        timeout: 3000,
-      })
-
-      this.$store.dispatch('ui/queueNotification', {
-        message: 'This is another test4',
-        timeout: 0,
-      })
-
-      this.$store.dispatch('ui/queueNotification', {
-        message: 'This is a test5',
-        timeout: 3000,
-      })
-
-      this.$store.dispatch('ui/queueNotification', {
-        message: 'This is another test6',
-        timeout: 0,
-      })
-    },
-    sendPushNotification: function() {
-      let recipientId = this.user.profile.fcmToken
-      this.$store.dispatch('pn/sendNotification', {
-        recipientId: recipientId,
-        messageType: 'TBD',
-      })
+    rides() {
+      return this.$store.getters['cs/getRides']
     },
   },
 }

@@ -22,7 +22,6 @@ export default {
       result: {
         data: '',
       },
-      dateTime: undefined,
     },
   },
   getters,

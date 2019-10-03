@@ -79,14 +79,14 @@
                                 Aankomst
                               </span>
                             </v-flex>
-                            <v-flex xs11 @click="toSearchRideDate">
-                              {{ dateRide }}
+                            <v-flex xs11>
+                              <input v-model="date" type="date" required />
+                              <input v-model="time" type="time" required />
                             </v-flex>
                           </v-layout>
                         </v-flex>
                       </v-layout>
                     </v-flex>
-                    <v-flex> </v-flex>
                   </v-layout>
                   <v-layout mt-2 justify-center text-xs-center>
                     <v-flex>
@@ -171,6 +171,13 @@ export default {
       showPicklocation: false,
       waiting: null,
       locationsPicked: false,
+      date: moment()
+        .locale('nl')
+        .format('YYYY-MM-DD'),
+      time: moment()
+        .add(30, 'minutes')
+        .locale('nl')
+        .format('HH:mm'),
     }
   },
   computed: {
@@ -242,18 +249,12 @@ export default {
         ? 'Klik hier voor bestemming'
         : location.address.label
     },
-    getPickedLocation() {
-      return this.$store.getters.getPickedLocation
-    },
     showPickLocationView(fieldPressed) {
       this.showPicklocation = true
       this.pickedLocationState = fieldPressed
     },
     toRidePreferences() {
       this.$router.push({ name: 'searchOptions' })
-    },
-    toSearchRideDate() {
-      this.$router.push({ name: 'searchDateTime' })
     },
     toLocationSuggestionsPage(field) {
       this.$router.push({ name: 'searchLocation', params: { field: field } })

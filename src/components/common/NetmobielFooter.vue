@@ -10,14 +10,22 @@
           <span>Home</span>
           <v-icon>home</v-icon>
         </v-btn>
-        <v-btn flat value="plan-trip" to="/search">
-          <span>Reis plannen</span>
+
+        <v-btn flat value="search-trip" to="/search">
+          <span>Planner</span>
           <v-icon>commute</v-icon>
         </v-btn>
+
         <v-btn flat value="saved" to="/tripsOverviewPage">
           <span>Bewaard</span>
           <v-icon>favorite</v-icon>
         </v-btn>
+
+        <v-btn flat value="plan-trip" to="/plan">
+          <span>Ritten</span>
+          <v-icon>directions_car</v-icon>
+        </v-btn>
+
         <!-- <v-btn flat value="community">
           <span>Community</span>
           <v-icon>chat</v-icon>
