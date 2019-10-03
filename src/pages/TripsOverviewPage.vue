@@ -14,7 +14,7 @@
           class="mt-2"
           :from="trip.from"
           :to="trip.to"
-          :date="formatDate(trip.date)"
+          :date="trip.date"
           :journey="trip.itinerary"
         >
         </travel-card>
@@ -25,7 +25,6 @@
 
 <script>
 import TravelCard from '@/components/search-results/TravelCard.vue'
-import moment from 'moment'
 
 export default {
   name: 'TripsOverviewPage',
@@ -37,11 +36,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch('is/fetchTrips')
-  },
-  methods: {
-    formatDate(date) {
-      return moment(date).format('DD-MM-YYYY')
-    },
   },
 }
 </script>

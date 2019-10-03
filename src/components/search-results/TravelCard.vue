@@ -55,7 +55,7 @@ export default {
   props: {
     from: { type: Object, required: true },
     to: { type: Object, required: true },
-    date: { type: String, required: true },
+    date: { type: Number, required: true },
     journey: { type: Object, required: true },
   },
   data: function() {
