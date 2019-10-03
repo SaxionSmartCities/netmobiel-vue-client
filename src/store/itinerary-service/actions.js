@@ -96,7 +96,7 @@ export default {
         console.log(error)
         context.dispatch(
           'ui/queueNotification',
-          { message: 'Reis is niet opgeslagen', timeout: 0 },
+          { message: 'Fout bij het opslaan van de gekozen reis.', timeout: 0 },
           { root: true }
         )
       })
@@ -120,7 +120,10 @@ export default {
         console.log(error)
         context.dispatch(
           'ui/queueNotification',
-          { message: 'Fout bij het ophalen reizen', timeout: 0 },
+          {
+            message: 'Fout bij het ophalen van opgeslagen reizen.',
+            timeout: 0,
+          },
           { root: true }
         )
       })

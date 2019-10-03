@@ -13,7 +13,7 @@ function generateHeaders(key) {
 }
 
 export default {
-  fetchLicense: () => {
+  fetchLicense: context => {
     const plate = '17-THF-2'
     const URL = BASE_URL + `/rideshare/carLicenses?country=NL&plate=${plate}`
     axios
@@ -28,6 +28,15 @@ export default {
         // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
+
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het ophalen van kentekendata.',
+            timeout: 0,
+          },
+          { root: true }
+        )
       })
   },
   submitRide: (context, payload) => {
@@ -68,6 +77,15 @@ export default {
         // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
+
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het versturen van uw rit-aanbod.',
+            timeout: 0,
+          },
+          { root: true }
+        )
       })
   },
 }

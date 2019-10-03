@@ -25,6 +25,15 @@ export default {
       .catch(error => {
         // eslint-disable-next-line
         console.log(error)
+
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het versturen van een gebruikersnotificatie.',
+            timeout: 0,
+          },
+          { root: true }
+        )
       })
   },
 }
