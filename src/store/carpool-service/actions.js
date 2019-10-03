@@ -28,6 +28,15 @@ export default {
         // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
+
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het ophalen van kentekendata.',
+            timeout: 0,
+          },
+          { root: true }
+        )
       })
   },
   submitRide: (context, payload) => {
@@ -68,6 +77,15 @@ export default {
         // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
+
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het versturen van uw rit-aanbod.',
+            timeout: 0,
+          },
+          { root: true }
+        )
       })
   },
   fetchRides: context => {

@@ -23,6 +23,15 @@ export default {
         // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
+
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het ophalen van locatiesuggesties.',
+            timeout: 0,
+          },
+          { root: true }
+        )
       })
   },
   fetchGeocoderLocation: (context, payload) => {
@@ -44,6 +53,15 @@ export default {
         // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message:
+              'Fout bij het ophalen van de geodata van de gekozen locatie.',
+            timeout: 0,
+          },
+          { root: true }
+        )
       })
   },
 }
