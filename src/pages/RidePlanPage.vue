@@ -165,15 +165,12 @@ export default {
       let to = pickedGeoLocations.to
       let ridePlanOptions = this.$store.getters['ps/getProfile'].ridePlanOptions
       let selectedTime = moment(this.date + ' ' + this.time, 'YYYY-MM-DD HH:mm')
-
-      var rideDetails = {
+      let rideDetails = {
         from: from,
         to: to,
         ridePlanOptions: ridePlanOptions,
         selectedTime: selectedTime,
       }
-
-      console.log(rideDetails)
       this.$store.dispatch('cs/submitRide', rideDetails)
       this.$router.push('/planSubmitted')
     },

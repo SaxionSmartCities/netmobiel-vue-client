@@ -41,7 +41,6 @@ export default {
     })
   },
   setRidePlanOptions: (state, payload) => {
-    console.log('payload', payload)
     state.user.profile.ridePlanOptions = payload
   },
   setPrivacySecurityValue: (state, payload) => {
