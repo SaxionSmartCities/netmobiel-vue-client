@@ -36,7 +36,7 @@
     <v-flex
       d-flex
       :class="{
-        'hide-details': journey.legs.length == 0
+        'hide-details': journey.legs.length == 0,
       }"
     >
       <v-layout justify-center align-center column @click="openDetails()">

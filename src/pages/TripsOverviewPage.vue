@@ -25,8 +25,8 @@
     <v-container>
       <v-layout v-if="selectedTab == 0" column>
         <v-flex v-if="getPlannedTrips.length == 0" my-4>
-          U heeft geen bewaarde reizen.
-          Ga naar de planner om uw reis te plannen.
+          U heeft geen bewaarde reizen. Ga naar de planner om uw reis te
+          plannen.
         </v-flex>
         <v-flex v-for="(trip, index) in getPlannedTrips" :key="index">
           <travel-card
@@ -41,8 +41,8 @@
       </v-layout>
       <v-layout v-if="selectedTab == 1" column>
         <v-flex v-if="getPlannedRides.length == 0" my-4>
-          U heeft geen bewaarde ritten.
-          Ga naar ritten om een nieuwe rit te plannen.
+          U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
+          plannen.
         </v-flex>
         <v-flex v-for="(ride, index) in getPlannedRides" :key="index">
           <travel-card
@@ -50,7 +50,7 @@
             :from="ride.fromPlace"
             :to="ride.toPlace"
             :date="parseDate(ride.departureTime)"
-            :journey="{ legs:[], duration: 1800 }"
+            :journey="{ legs: [], duration: 1800 }"
           >
           </travel-card>
         </v-flex>
@@ -86,8 +86,8 @@ export default {
   methods: {
     parseDate(dateString) {
       return moment(dateString).valueOf()
-    }
-  }
+    },
+  },
 }
 </script>
 
