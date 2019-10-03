@@ -7,7 +7,11 @@
 
       <v-flex my-3>
         <v-expansion-panel>
-          <v-expansion-panel-content>
+          <v-expansion-panel-content
+            :class="{
+              'disable-icon-rotate': maxNrOfPersons <= 1,
+            }"
+          >
             <div slot="header">
               <v-layout>
                 <v-flex xs7>
@@ -21,6 +25,7 @@
             <v-layout>
               <v-flex mt-3>
                 <v-slider
+                  v-if="maxNrOfPersons > 1"
                   v-model="numPassengers"
                   class="px-4"
                   thumb-color="thumb-grey"
@@ -175,20 +180,7 @@ export default {
       maxMinutesDetour: 0,
       luggageSelected: [],
       image: require('@/assets/placeholder_car.png'),
-      cars: [
-        {
-          image: 'some/nonexistant.png',
-          model: 'Ford Fiesta',
-          licensePlate: '1-ABC-30',
-          nrOfSeats: 4,
-        },
-        {
-          image: 'some/nonexistant.png',
-          model: 'Dacia Duster',
-          licensePlate: '2-DEF-50',
-          nrOfSeats: 2,
-        },
-      ],
+      cars: [],
       selectedCar: undefined,
     }
   },
@@ -201,7 +193,6 @@ export default {
       for (let i = 1; i <= this.maxNrOfPersons; i++) {
         result.push(i)
       }
-
       return result
     },
     generateMinuteRange: function() {
@@ -209,7 +200,6 @@ export default {
       for (let i = 0; i <= 20; i += 5) {
         result.push(i)
       }
-
       return result
     },
   },
@@ -217,19 +207,25 @@ export default {
     this.$store.commit('ui/showBackButton')
   },
   mounted() {
-    let ridePlanOptions = this.$store.getters['ps/getUser'].ridePlanOptions
-    this.luggageSelected = ridePlanOptions.luggageOptions.map(option =>
-      this.parseLuggageOption(option)
+    let profile = this.$store.getters['ps/getProfile']
+    this.numPassengers = profile.ridePlanOptions.numPassengers
+    this.luggageSelected = profile.ridePlanOptions.luggageOptions.map(
+      option => luggageTypes[option]
     )
-
-    this.numPassengers = ridePlanOptions.numPassengers
-    this.maxMinutesDetour = ridePlanOptions.maxMinutesDetour
-    this.selectedCar = ridePlanOptions.car
+    this.maxMinutesDetour = profile.ridePlanOptions.maxMinutesDetour
+    this.cars = profile.ridePlanOptions.cars
+    //TODO: Add selected car to state, now the first is used by default.
+    if(this.cars.length > 0) {
+      this.selectCar(profile.ridePlanOptions.cars[0])
+    }
   },
   methods: {
     selectCar: function(car) {
       this.selectedCar = car
-      this.maxNrOfPersons = car.nrOfSeats
+      this.maxNrOfPersons = car.nrSeats - 1
+      if (this.numPassengers > this.maxNrOfPersons) {
+        this.numPassengers = this.maxNrOfPersons
+      }
     },
     save: function() {
       let payload = {
@@ -241,60 +237,6 @@ export default {
 
       this.$store.dispatch('ps/storeRidePlanOptions', payload)
       this.$router.go(-1)
-    },
-    parseLuggageOption: function(luggage) {
-      //TODO: Rename ROLLATOR to WALKER
-      const luggageOptions = {
-        STROLLER: {
-          type: 'STROLLER',
-          label: 'Buggy',
-          icon: 'child_friendly',
-        },
-        HANDLUGGAGE: {
-          type: 'HANDLUGGAGE',
-          label: 'Handbagage',
-          icon: 'work',
-        },
-        PET: {
-          type: 'PET',
-          label: 'Huisdier',
-          icon: 'pets',
-        },
-        ROLLATOR: {
-          type: 'ROLLATOR',
-          label: 'Rollator',
-          icon: 'fa-crutch',
-        },
-        WHEELCHAIR: {
-          type: 'WHEELCHAIR',
-          label: 'Rolstoel',
-          icon: 'accessible_forward',
-        },
-      }
-      return luggageOptions[luggage]
-    },
-    parseTravelMode: function(mode) {
-      const icons = {
-        WALK: 'directions_walk',
-        CAR: 'directions_car',
-        TRAIN: 'train',
-        BUS: 'directions_bus',
-        RAIL: 'directions_railway',
-        BIKE: 'directions_bike',
-      }
-      const labels = {
-        WALK: 'Lopen',
-        CAR: 'Auto',
-        TRAIN: 'Trein',
-        BUS: 'Bus',
-        RAIL: 'Tram',
-        BIKE: 'Fiets',
-      }
-      return {
-        icon: icons[mode],
-        label: labels[mode],
-        mode: mode,
-      }
     },
   },
 }
@@ -312,5 +254,9 @@ export default {
 .active {
   background-color: $color-green;
   color: $color-white;
+}
+
+.disable-icon-rotate * .v-expansion-panel__header__icon {
+  display: none;
 }
 </style>

@@ -30,22 +30,45 @@ export default {
           allowedTravelModes: [],
         },
         ridePlanOptions: {
-          cars: []
-        }
-      },
-      //TODO: Move ridePlanOptions to profile
-      ridePlanOptions: {
-        numPassengers: 0,
-        luggageOptions: [
-          'STROLLER',
-          'HANDLUGGAGE',
-          'PET',
-          'ROLLATOR',
-          'WHEELCHAIR',
-          'GROCERIES',
-        ],
-        maxMinutesDetour: 0,
-        car: {},
+          numPassengers: 2,
+          maxMinutesDetour: 100,
+          luggageOptions: [
+            'STROLLER',
+            'HANDLUGGAGE',
+            'PET',
+            'WALKER',
+            'WHEELCHAIR',
+            'GROCERIES',
+          ],
+          cars: [
+            {
+              brand: 'VOLKSWAGEN',
+              co2Emission: 107,
+              color: 'ZWART',
+              licensePlate: '17-THF-2',
+              model: 'GOLF',
+              nrDoors: 0,
+              nrSeats: 5,
+              registrationCountry: 'NL',
+              registrationYear: 2012,
+              type: 'ESTATE',
+              typeRegistrationId: 'e1*2001/116*0242*42',
+            },
+            {
+              brand: 'VOLKSWAGEN',
+              co2Emission: 107,
+              color: 'ZWART',
+              licensePlate: '17-THF-3',
+              model: 'GOLFY',
+              nrDoors: 0,
+              nrSeats: 2,
+              registrationCountry: 'NL',
+              registrationYear: 2012,
+              type: 'ESTATE',
+              typeRegistrationId: 'e1*2001/116*0242*43',
+            },
+          ],
+        },
       },
       privacySecurity: [
         { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
