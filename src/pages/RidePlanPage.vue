@@ -88,7 +88,7 @@
                     block
                     :disabled="!locationsPickedCheck"
                     @click="submitForm()">
-                    Voeg reis toe!
+                    Voeg rit toe!
                   </v-btn>
                 </v-flex>
               </v-layout>
