@@ -13,8 +13,8 @@ function generateHeaders(key) {
 }
 
 export default {
-  fetchLicense: () => {
-    const plate = '17-THF-2'
+  fetchLicense: (context, payload) => {
+    const plate = payload
     const URL = BASE_URL + `/rideshare/carLicenses?country=NL&plate=${plate}`
     axios
       .get(URL, {
@@ -63,6 +63,23 @@ export default {
       .then(function(res) {
         // eslint-disable-next-line
         console.log(res)
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
+  fetchRides: context => {
+    const URL = BASE_URL + `/rideshare/rides`
+    axios
+      .get(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        // eslint-disable-next-line
+        console.log(resp)
+        context.commit('saveRides', resp.data)
       })
       .catch(function(error) {
         // TODO: Proper error handling.
