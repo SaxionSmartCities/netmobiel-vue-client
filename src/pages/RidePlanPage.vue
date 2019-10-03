@@ -82,7 +82,12 @@
               </v-layout>
               <v-layout mt-2 justify-center text-xs-center>
                 <v-flex>
-                  <v-btn large round block @click="submitForm()">
+                  <v-btn
+                    large
+                    round
+                    block
+                    :disabled="!locationsPickedCheck"
+                    @click="submitForm()">
                     Voeg reis toe!
                   </v-btn>
                 </v-flex>
@@ -122,6 +127,12 @@ export default {
     }
   },
   computed: {
+    locationsPickedCheck: function() {
+      const fromLoc = this.$store.getters['gs/getPickedLocation'].from
+      const toLoc = this.$store.getters['gs/getPickedLocation'].to
+
+      return fromLoc.address !== undefined && toLoc.address !== undefined
+    },
     fromLocationLabel() {
       let location = this.$store.getters['gs/getPickedLocation'].from
 
