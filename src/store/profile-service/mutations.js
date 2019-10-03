@@ -54,11 +54,11 @@ export default {
     for (let i = 0; i < currentCars.length; i++) {
       if (payload.licensePlate === currentCars[i].licensePlate) {
         isPresent = true
-        break;
+        break
       }
     }
     if (!isPresent) {
-      state.user.profile.ridePlanOptions.cars.push(payload)      
+      state.user.profile.ridePlanOptions.cars.push(payload)
     }
   },
   setPrivacySecurityValue: (state, payload) => {
