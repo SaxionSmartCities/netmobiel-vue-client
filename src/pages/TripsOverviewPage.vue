@@ -3,7 +3,8 @@
     <v-tabs id="tabs" grow centered slider-color="#bddade">
       <v-tab class="white--text no-caps saved">
         <v-icon color="white">commute</v-icon>
-        <span>Reizen</span></v-tab>
+        <span>Reizen</span>
+      </v-tab>
       <v-tab class="white--text no-caps saved">
         <v-icon color="white">directions_car</v-icon>
         <span>Ritten</span>

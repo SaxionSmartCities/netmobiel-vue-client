@@ -87,7 +87,8 @@
                     round
                     block
                     :disabled="!locationsPickedCheck"
-                    @click="submitForm()">
+                    @click="submitForm()"
+                  >
                     Voeg rit toe!
                   </v-btn>
                 </v-flex>

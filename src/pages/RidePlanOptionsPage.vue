@@ -215,7 +215,7 @@ export default {
     this.maxMinutesDetour = profile.ridePlanOptions.maxMinutesDetour
     this.cars = profile.ridePlanOptions.cars
     //TODO: Add selected car to state, now the first is used by default.
-    if(this.cars.length > 0) {
+    if (this.cars.length > 0) {
       this.selectCar(profile.ridePlanOptions.cars[0])
     }
   },
