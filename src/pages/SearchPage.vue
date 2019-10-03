@@ -193,25 +193,6 @@ export default {
         this.getSubmitStatus.status === 'FAILED'
       )
     },
-    dateRide: function() {
-      let dateTime = this.$store.getters['is/getSearchRideDateTime']
-
-      if (dateTime !== undefined) {
-        return upperCaseFirst(
-          moment(dateTime)
-            .locale('nl')
-            .format('dddd, DD MMMM HH:mm')
-        )
-      } else {
-        this.$store.commit('is/setDate', moment())
-        return upperCaseFirst(
-          moment()
-            .add(30, 'minutes')
-            .locale('nl')
-            .format('dddd, DD MMMM HH:mm')
-        )
-      }
-    },
     getSubmitStatus() {
       return this.$store.getters['is/getPlanningStatus']
     },
