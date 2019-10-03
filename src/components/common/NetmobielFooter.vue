@@ -12,7 +12,7 @@
         </v-btn>
 
         <v-btn flat value="search-trip" to="/search">
-          <span>Reis plannen</span>
+          <span>Planner</span>
           <v-icon>commute</v-icon>
         </v-btn>
 
