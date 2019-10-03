@@ -107,7 +107,12 @@ export default {
       .get(URL, { headers: generateHeader(GRAVITEE_TRIP_SERVICE_API_KEY) })
       .then(response => {
         if (response.status == 200 && response.data.trips.length > 0) {
-          context.commit('setPlannedTrips', response.data.trips)
+          // Convert date to epochs.
+          let parsedTrips = response.data.trips.map(trip => {
+            trip.date = moment(trip.date).valueOf()
+            return trip
+          })
+          context.commit('setPlannedTrips', parsedTrips)
         }
       })
       .catch(error => {
