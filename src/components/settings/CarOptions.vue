@@ -87,6 +87,9 @@ export default {
       searchLicensePlate: '',
     }
   },
+  mounted() {
+    this.$store.commit('cs/clearSearchResult')
+  },
   computed: {
     getAvailableCars() {
       return this.$store.getters['ps/getUser'].profile.ridePlanOptions.cars
