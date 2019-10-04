@@ -33,7 +33,7 @@
             <v-flex>
               <v-layout pl-3>
                 <span
-                  v-if="getSearchResult && getSearchResult.length > 0"
+                  v-if="getSearchResult"
                   class="search-results"
                 >
                   {{ getSearchResult.brand }},&nbsp;
