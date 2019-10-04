@@ -63,7 +63,4 @@ export default {
         console.log(error)
       })
   },
-  storeRidePlanOptions: (context, payload) => {
-    context.commit('setRidePlanOptions', payload)
-  },
 }
