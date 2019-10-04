@@ -31,6 +31,17 @@
       </v-flex>
     </v-layout>
 
+    <v-layout v-if="isDriver" pt-3>
+      <v-flex>
+        <p class="text-primary-uppercase">Auto's</p>
+        <v-divider></v-divider>
+      </v-flex>
+    </v-layout>
+    <v-layout column>
+      <v-flex>
+        <car-options v-if="isDriver"></car-options>
+      </v-flex>
+    </v-layout>
     <v-layout pt-3>
       <v-flex>
         <h2 class="text-primary-uppercase">Notificaties</h2>
@@ -80,8 +91,13 @@
 </template>
 
 <script>
+import CarOptions from '@/components/settings/CarOptions.vue'
+
 export default {
   name: 'NotificationOptions',
+  components: {
+    CarOptions,
+  },
   data() {
     return {
       title: 'Instellingen',
@@ -93,6 +109,9 @@ export default {
     },
     tripOptions() {
       return this.$store.getters['ps/getUser'].tripOptions
+    },
+    isDriver() {
+      return this.$store.getters['ps/getUser'].tripOptions[0].value
     },
     reviewOptions() {
       return this.$store.getters['ps/getUser'].reviews
@@ -123,3 +142,8 @@ export default {
   },
 }
 </script>
+<style scoped>
+.v-input__control {
+  height: 32px !important;
+}
+</style>

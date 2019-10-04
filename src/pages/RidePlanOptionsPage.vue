@@ -232,10 +232,11 @@ export default {
         luggageOptions: this.luggageSelected.map(x => x.type),
         numPassengers: this.numPassengers,
         maxMinutesDetour: this.maxMinutesDetour,
-        car: this.selectedCar,
+        cars: this.cars,
       }
-
-      this.$store.dispatch('ps/storeRidePlanOptions', payload)
+      this.$store.commit('ps/setRidePlanOptions', payload)
+      let profile = this.$store.getters['ps/getProfile']
+      this.$store.dispatch('ps/updateProfile', profile)
       this.$router.go(-1)
     },
   },
