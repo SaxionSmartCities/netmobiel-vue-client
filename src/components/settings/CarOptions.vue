@@ -33,7 +33,7 @@
             <v-flex>
               <v-layout pl-3>
                 <span
-                  v-if="searchLicensePlate.length == 8"
+                  v-if="getSearchResult && getSearchResult.length > 0"
                   class="search-results"
                 >
                   {{ getSearchResult.brand }},&nbsp;
