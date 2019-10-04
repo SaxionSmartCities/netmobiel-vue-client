@@ -32,10 +32,7 @@
             </v-flex>
             <v-flex>
               <v-layout pl-3>
-                <span
-                  v-if="getSearchResult"
-                  class="search-results"
-                >
+                <span v-if="getSearchResult" class="search-results">
                   {{ getSearchResult.brand }},&nbsp;
                   {{ getSearchResult.model }}&nbsp;(
                   {{ getSearchResult.registrationYear }}
@@ -87,9 +84,6 @@ export default {
       searchLicensePlate: '',
     }
   },
-  mounted() {
-    this.$store.commit('cs/clearSearchResult')
-  },
   computed: {
     getAvailableCars() {
       return this.$store.getters['ps/getUser'].profile.ridePlanOptions.cars
@@ -106,6 +100,9 @@ export default {
         this.$store.commit('cs/clearSearchResult')
       }
     },
+  },
+  mounted() {
+    this.$store.commit('cs/clearSearchResult')
   },
   methods: {
     removeCar(car) {
