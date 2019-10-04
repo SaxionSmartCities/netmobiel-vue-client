@@ -232,7 +232,7 @@ export default {
         luggageOptions: this.luggageSelected.map(x => x.type),
         numPassengers: this.numPassengers,
         maxMinutesDetour: this.maxMinutesDetour,
-        car: this.cars,
+        cars: this.cars,
       }
       this.$store.commit('ps/setRidePlanOptions', payload)
       let profile = this.$store.getters['ps/getProfile']
