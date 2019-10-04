@@ -7,11 +7,13 @@
           <v-layout>
             <v-flex>
               <h3>Vertrek</h3>
-              <span>{{ formatTime(ride.selectedTime) }}</span>
+              <p class="first-letter-caps">
+                {{ formatTime(ride.departureTime) }}
+              </p>
             </v-flex>
             <v-flex grow>
               <v-layout shrink justify-end>
-                <v-flex>
+                <v-flex class="align-right">
                   Geen passagiers
                 </v-flex>
               </v-layout>
@@ -21,14 +23,14 @@
         <v-flex>
           <v-layout column>
             <v-flex pa-0>
-              <v-icon>fa-car</v-icon>
+              <v-icon>directions_car</v-icon>
             </v-flex>
             <v-flex><div class="travel-line"></div></v-flex>
+            <v-flex mt-1 mb-1>
+              {{ formatPlace(ride.fromPlace.label) }} -
+              {{ formatPlace(ride.toPlace.label) }}
+            </v-flex>
           </v-layout>
-        </v-flex>
-        <v-flex>
-          {{ ride.from.address.label }} <br />
-          {{ ride.to.address.label }}
         </v-flex>
       </v-layout>
     </v-flex>
@@ -54,10 +56,22 @@ export default {
   },
   methods: {
     formatTime: function(time) {
-      return moment(time).format('HH:mm')
+      //HACK: Remove [UTC] from the date string for correct parseing.
+      // Should be fixed in the backend.
+      return moment(time.replace('[UTC]', ''))
+        .locale('nl')
+        .calendar()
+    },
+    //HACK: Very dangerous function. Can embarass you at a cocktail party.
+    formatPlace(placeString) {
+      return placeString.split(',')[0]
     },
   },
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.align-right {
+  text-align: right;
+}
+</style>

@@ -170,16 +170,25 @@ export default {
       showPicklocation: false,
       waiting: null,
       locationsPicked: false,
-      date: moment()
-        .locale('nl')
-        .format('YYYY-MM-DD'),
-      time: moment()
-        .add(30, 'minutes')
-        .locale('nl')
-        .format('HH:mm'),
     }
   },
   computed: {
+    date: {
+      get: function() {
+        return this.$store.getters['ui/getTempValue']('searchDate')
+      },
+      set: function(value) {
+        this.$store.commit('ui/setTempValue', { searchDate: value })
+      },
+    },
+    time: {
+      get: function() {
+        return this.$store.getters['ui/getTempValue']('searchTime')
+      },
+      set: function(value) {
+        this.$store.commit('ui/setTempValue', { searchTime: value })
+      },
+    },
     locationsPickedCheck: function() {
       const fromLoc = this.$store.getters['gs/getPickedLocation'].from
       const toLoc = this.$store.getters['gs/getPickedLocation'].to
@@ -249,7 +258,7 @@ export default {
       let to = pickedGeoLocations.to
       let searchPreferences = this.$store.getters['ps/getProfile']
         .searchPreferences
-      let selectedTime = this.$store.getters['is/getSearchRideDateTime']
+      let selectedTime = moment(this.date + ' ' + this.time, 'YYYY-MM-DD HH:mm')
 
       var searchQuery = {
         from: from,

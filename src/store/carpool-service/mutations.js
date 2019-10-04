@@ -11,4 +11,7 @@ export default {
   clearSearchResult: state => {
     state.search.result = undefined
   },
+  saveRides: (state, payload) => {
+    state.rides = payload
+  },
 }

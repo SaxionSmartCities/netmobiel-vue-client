@@ -59,7 +59,7 @@ export default {
           status: 'SUCCESS',
         })
         context.commit('setPlanningResults', {
-          data: res.data.plan,
+          data: res.data,
         })
       })
       .catch(function(error) {

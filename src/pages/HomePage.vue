@@ -59,7 +59,8 @@ export default {
       return this.$store.getters['ps/getUser']
     },
     rides() {
-      return this.$store.getters['cs/getRides']
+      //HACK: Only display first 3 rides.
+      return this.$store.getters['cs/getRides'].slice(0, 3)
     },
   },
 }

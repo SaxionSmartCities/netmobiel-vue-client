@@ -1,6 +1,6 @@
 export default {
   getPlanningStatus: state => state.planningRequest.submitStatus,
-  getPlanningResult: state => state.planningRequest.result.data,
+  getPlanningResults: state => state.planningRequest.result,
   getSelectedTrip: state => state.selectedTrip,
   getPlannedTrips: state => state.plannedTrips,
 }

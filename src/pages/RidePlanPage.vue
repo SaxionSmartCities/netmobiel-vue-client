@@ -121,18 +121,24 @@ import moment from 'moment'
 
 export default {
   name: 'RidePlanPage',
-  data: function() {
-    return {
-      date: moment()
-        .locale('nl')
-        .format('YYYY-MM-DD'),
-      time: moment()
-        .add(30, 'minutes')
-        .locale('nl')
-        .format('HH:mm'),
-    }
-  },
   computed: {
+    date: {
+      get: function() {
+        return this.$store.getters['ui/getTempValue']('rideDate')
+      },
+      set: function(value) {
+        this.$store.commit('ui/setTempValue', { rideDate: value })
+      },
+    },
+    time: {
+      get: function() {
+        return this.$store.getters['ui/getTempValue']('rideTime')
+      },
+      set: function(value) {
+        this.$store.commit('ui/setTempValue', { rideTime: value })
+      },
+    },
+
     locationsPickedCheck: function() {
       const fromLoc = this.$store.getters['gs/getPickedLocation'].from
       const toLoc = this.$store.getters['gs/getPickedLocation'].to
