@@ -45,14 +45,14 @@
           plannen.
         </v-flex>
         <v-flex v-for="(ride, index) in getPlannedRides" :key="index">
-          <travel-card
+          <direct-ride-card
             class="mt-2 mb-2"
             :from="ride.fromPlace"
             :to="ride.toPlace"
             :date="parseDate(ride.departureTime)"
-            :journey="{ legs: [], duration: 1800 }"
+            :ride="ride"
           >
-          </travel-card>
+          </direct-ride-card>
         </v-flex>
       </v-layout>
     </v-container>
@@ -62,10 +62,11 @@
 <script>
 import moment from 'moment'
 import TravelCard from '@/components/search-results/TravelCard.vue'
+import DirectRideCard from '@/components/search-results/DirectRideCard.vue'
 
 export default {
   name: 'TripsOverviewPage',
-  components: { TravelCard },
+  components: { TravelCard, DirectRideCard },
   data() {
     return {
       selectedTab: 0,
@@ -85,7 +86,9 @@ export default {
   },
   methods: {
     parseDate(dateString) {
-      return moment(dateString).valueOf()
+      //HACK: Remove [UTC] from the date string for correct parseing.
+      // Should be fixed in the backend.
+      return moment(dateString.replace('[UTC]', '')).valueOf()
     },
   },
 }
