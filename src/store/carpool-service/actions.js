@@ -39,8 +39,7 @@ export default {
         )
       })
   },
-  submitRide: (context, payload) => {
-    context.commit('addRideToList', payload)
+  submitRide: (_, payload) => {
     let request = {
       carRef: 'urn:nb:rs:car:50',
       departureTime: moment(payload.selectedTime)
@@ -86,6 +85,23 @@ export default {
           },
           { root: true }
         )
+      })
+  },
+  fetchRides: context => {
+    const URL = BASE_URL + `/rideshare/rides`
+    axios
+      .get(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        // eslint-disable-next-line
+        console.log(resp)
+        context.commit('saveRides', resp.data)
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
       })
   },
 }
