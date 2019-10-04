@@ -40,7 +40,6 @@ export default {
       })
   },
   submitRide: (context, payload) => {
-    context.commit('addRideToList', payload)
     let request = {
       carRef: 'urn:nb:rs:car:50',
       departureTime: moment(payload.selectedTime)
