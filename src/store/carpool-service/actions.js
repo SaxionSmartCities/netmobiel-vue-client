@@ -39,7 +39,7 @@ export default {
         )
       })
   },
-  submitRide: (_, payload) => {
+  submitRide: (context, payload) => {
     let request = {
       carRef: 'urn:nb:rs:car:50',
       departureTime: moment(payload.selectedTime)
