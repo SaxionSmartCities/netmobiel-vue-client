@@ -21,7 +21,8 @@ export default {
         message: '',
       },
       result: {
-        data: '',
+        rides: [],
+        plan: [],
       },
     },
   },

@@ -2,12 +2,12 @@
   <v-container>
     <v-layout column>
       <v-flex><h1>Reisopties</h1></v-flex>
-      <v-flex mt-2>
+      <v-flex my-2>
         <v-divider />
-        <v-flex v-if="getItineraries == undefined" my-4>
+        <v-flex v-if="itineraries == undefined" my-4>
           Helaas, er zijn geen ritten gevonden!
         </v-flex>
-        <v-expansion-panel v-if="getItineraries != undefined">
+        <v-expansion-panel v-if="itineraries != undefined">
           <v-expansion-panel-content class="no-padding">
             <div slot="header">
               Reisvoorkeuren tonen
@@ -16,7 +16,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-divider />
-        <v-layout v-if="getItineraries != undefined" align-center mt-3>
+        <!-- <v-layout v-if="itineraries != undefined" align-center mt-3>
           <v-flex xs8>{{ date }}</v-flex>
           <v-flex>
             <v-layout align-center @click="changeSort()">
@@ -28,18 +28,35 @@
               </v-flex>
             </v-layout>
           </v-flex>
-        </v-layout>
+        </v-layout> -->
       </v-flex>
-      <v-flex v-for="(itinerary, index) in getItineraries" :key="index">
-        <travel-card
-          class="mt-2"
-          :from="getPlanningResult.from"
-          :to="getPlanningResult.to"
-          :date="getPlanningResult.date"
-          :journey="itinerary"
-        >
-        </travel-card>
-      </v-flex>
+      <v-layout row wrap>
+        <v-flex v-if="rides.length > 0" xs12 mb-3>
+          <v-flex my-2><h4>Directe ritten</h4></v-flex>
+          <v-flex v-for="ride in rides" :key="ride.id" xs12>
+            <direct-ride-card
+              :from="OVPlanningResults.from"
+              :to="OVPlanningResults.to"
+              :date="OVPlanningResults.date"
+              :ride="ride"
+            >
+            </direct-ride-card>
+          </v-flex>
+        </v-flex>
+        <v-flex xs12>
+          <v-flex my-2><h4>Ritten op basis van OV</h4></v-flex>
+          <v-flex v-for="(itinerary, index) in itineraries" :key="index" xs12>
+            <travel-card
+              class="mt-2"
+              :from="OVPlanningResults.from"
+              :to="OVPlanningResults.to"
+              :date="OVPlanningResults.date"
+              :journey="itinerary"
+            >
+            </travel-card>
+          </v-flex>
+        </v-flex>
+      </v-layout>
       <v-flex mt-3>
         <v-layout column>
           <v-flex>
@@ -69,12 +86,15 @@
 <script>
 import TravelCard from '@/components/search-results/TravelCard.vue'
 import SearchOptionsSummaryCard from '@/components/search-results/SearchOptionsSummaryCard.vue'
+import DirectRideCard from '@/components/search-results/DirectRideCard.vue'
+import moment from 'moment'
 
 export default {
   name: 'SearchResultsPage',
   components: {
     TravelCard,
     SearchOptionsSummaryCard,
+    DirectRideCard,
   },
   data: function() {
     return {
@@ -87,14 +107,20 @@ export default {
     }
   },
   computed: {
-    getPlanningResult() {
-      return this.$store.getters['is/getPlanningResult']
+    planningResults: function() {
+      return this.$store.getters['is/getPlanningResults']
     },
-    getItineraries() {
-      return this.getPlanningResult.itineraries
+    OVPlanningResults: function() {
+      return this.planningResults.plan
+    },
+    itineraries() {
+      return this.OVPlanningResults.itineraries
+    },
+    rides() {
+      return this.planningResults.rides
     },
     date() {
-      return ''
+      return moment(this.OVPlanningResults.date).format('DD-MM-YYYY')
       // return 'INVALID'
     },
   },

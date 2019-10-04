@@ -16,6 +16,7 @@ import SearchOptionsPage from './pages/SearchOptionsPage'
 import SearchPage from './pages/SearchPage.vue'
 import SearchResultsPage from './pages/SearchResultsPage.vue'
 import TermsOfUsePage from './pages/TermsOfUsePage.vue'
+import RideDetailPage from './pages/RideDetailPage.vue'
 import RidePlanPage from './pages/RidePlanPage.vue'
 import RegistrationPage from './pages/RegistrationPage.vue'
 import RidePlanOptionsPage from './pages/RidePlanOptionsPage.vue'
@@ -106,6 +107,11 @@ const router = new Router({
       path: '/tripsOverviewPage',
       component: TripsOverviewPage,
       name: 'tripsOverviewPage',
+    },
+    {
+      path: '/rideDetailPage',
+      component: RideDetailPage,
+      name: 'rideDetailPage',
     },
   ],
 })

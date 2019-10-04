@@ -8,7 +8,8 @@ export default {
     state.planningRequest.submitStatus = payload
   },
   setPlanningResults: (state, payload) => {
-    state.planningRequest.result = payload
+    state.planningRequest.result.plan = payload.data.plan
+    state.planningRequest.result.rides = payload.data.rides
   },
   clearPlanningResults: state => {
     state.planningRequest.result.data = ''
