@@ -6,7 +6,7 @@
           <v-layout>
             <v-flex>
               <h4>Vertrek</h4>
-              {{ parsedDepature }}
+              <p class="first-letter-caps">{{ parsedDepature }}</p>
             </v-flex>
             <v-flex text-xs-right pr-1>
               <h4>Reizen met</h4>
@@ -91,5 +91,13 @@ export default {
 .travel-card {
   border-radius: 10px;
   border: 1px $color-light-grey solid;
+}
+
+p.first-letter-caps {
+  text-transform: lowercase;
+  margin-bottom: 0;
+}
+p.first-letter-caps::first-letter {
+  text-transform: uppercase;
 }
 </style>
