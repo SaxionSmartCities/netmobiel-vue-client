@@ -15,6 +15,7 @@ export default {
     planningRequest: {
       fromPlace: { lat: 0.0, lon: 0.0 },
       toPlace: { lat: 0.0, lon: 0.0 },
+      selectedTime: {},
       submitStatus: {
         status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
         message: '',
