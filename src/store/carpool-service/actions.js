@@ -22,6 +22,7 @@ export default {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       })
       .then(function(resp) {
+        console.log(resp.data)
         context.commit('setSearchResult', resp.data)
       })
       .catch(function(error) {
@@ -39,9 +40,38 @@ export default {
         )
       })
   },
+  submitCar: (context, payload) => {
+    const URL = BASE_URL + `/rideshare/cars`
+    axios
+      .post(URL, payload, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        // eslint-disable-next-line
+        console.log(resp)
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
   submitRide: (context, payload) => {
+    if (payload.ridePlanOptions.cars.length == 0) {
+      context.dispatch(
+        'ui/queueNotification',
+        {
+          message: 'Voeg eerst een auto toe.',
+          timeout: 0,
+        },
+        { root: true }
+      )
+      return
+    }
+    //HACK: We will take the first car for now.
+    //State should have a selectedCar element.
     let request = {
-      carRef: 'urn:nb:rs:car:50',
+      carRef: 'urn:nb:rs:car:'+payload.ridePlanOptions.cars[0].id,
       departureTime: moment(payload.selectedTime)
         .utc()
         .format(),
@@ -56,8 +86,8 @@ export default {
         longitude: payload.to.displayPosition.longitude,
       },
       remarks: 'What does this do?',
-      nrSeatsAvailable: 2, // TODO: Get this from ridePlanOptions
-      maxDetourSeconds: 15 * 60, // TODO: Get this from ridePlanOptions
+      nrSeatsAvailable: payload.ridePlanOptions.numPassengers,
+      maxDetourSeconds: payload.ridePlanOptions.maxMinutesDetour,
     }
 
     var axiosConfig = {
