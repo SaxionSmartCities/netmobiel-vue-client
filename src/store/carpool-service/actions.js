@@ -71,7 +71,7 @@ export default {
     //HACK: We will take the first car for now.
     //State should have a selectedCar element.
     let request = {
-      carRef: 'urn:nb:rs:car:'+payload.ridePlanOptions.cars[0].id,
+      carRef: 'urn:nb:rs:car:' + payload.ridePlanOptions.cars[0].id,
       departureTime: moment(payload.selectedTime)
         .utc()
         .format(),

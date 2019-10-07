@@ -114,14 +114,16 @@ export default {
     addCar(car) {
       const profile = this.$store.getters['ps/getUser'].profile
       let storedCar = profile.ridePlanOptions.cars.find(
-        (c) => c.licensePlate === car.licensePlate)
+        c => c.licensePlate === car.licensePlate
+      )
       if (storedCar) {
         this.$store.dispatch('ui/queueNotification', {
           message: 'Auto is al opgeslagen aan uw profiel.',
           timeout: 3000,
         })
       } else {
-        this.$store.dispatch('cs/submitCar', car)
+        this.$store
+          .dispatch('cs/submitCar', car)
           .then(() => this.$store.dispatch('ps/fetchProfile'))
       }
     },
