@@ -18,7 +18,7 @@
                 </v-flex>
                 <v-flex xs3>
                   <v-btn
-                    :disabled="searchLicensePlate.length !== 8"
+                    :disabled="!getSearchResult"
                     small
                     round
                     block
@@ -106,14 +106,26 @@ export default {
   },
   methods: {
     removeCar(car) {
+      //TODO: Remove car from user profile in the backend.
       this.$store.commit('ps/deleteRidePlanOptionsCar', car)
       const profile = this.$store.getters['ps/getUser'].profile
       this.$store.dispatch('ps/updateProfile', profile)
     },
     addCar(car) {
-      this.$store.commit('ps/addRidePlanOptionsCar', car)
       const profile = this.$store.getters['ps/getUser'].profile
-      this.$store.dispatch('ps/updateProfile', profile)
+      let storedCar = profile.ridePlanOptions.cars.find(
+        c => c.licensePlate === car.licensePlate
+      )
+      if (storedCar) {
+        this.$store.dispatch('ui/queueNotification', {
+          message: 'Auto is al opgeslagen aan uw profiel.',
+          timeout: 3000,
+        })
+      } else {
+        this.$store
+          .dispatch('cs/submitCar', car)
+          .then(() => this.$store.dispatch('ps/fetchProfile'))
+      }
     },
   },
 }
