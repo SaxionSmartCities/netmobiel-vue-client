@@ -63,6 +63,9 @@ export default {
       return this.$store.getters['cs/getRides'].slice(0, 3)
     },
   },
+  mounted() {
+    this.$store.dispatch('cs/fetchRides')
+  },
 }
 </script>
 
