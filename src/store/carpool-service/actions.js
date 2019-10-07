@@ -22,7 +22,6 @@ export default {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       })
       .then(function(resp) {
-        console.log(resp.data)
         context.commit('setSearchResult', resp.data)
       })
       .catch(function(error) {
