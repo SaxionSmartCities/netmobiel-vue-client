@@ -21,11 +21,20 @@ export default {
       .then(response => {
         // eslint-disable-next-line
         console.log(response)
+        if (response.status == 200) {
+          context.dispatch(
+            'ui/queueNotification',
+            {
+              message: 'Er is een bericht naar de chauffeur verstuurd.',
+              timeout: 3000,
+            },
+            { root: true }
+          )
+        }
       })
       .catch(error => {
         // eslint-disable-next-line
         console.log(error)
-
         context.dispatch(
           'ui/queueNotification',
           {

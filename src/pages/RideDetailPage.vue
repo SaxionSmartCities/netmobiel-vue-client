@@ -68,7 +68,11 @@ export default {
     notifyDriver: function() {
       // eslint-disable-next-line
       console.log('Notify driver ', this.selectedTrip.ride.driverRef)
-      // WORK SOME MAGIC HERE
+      // WORK SOME MAGIC HERE. TSE01: TADAA
+      this.$store.dispatch('pn/sendNotification', {
+        recipientId: this.selectedTrip.ride.driverRef,
+        messageType: '001',
+      })
     },
   },
 }
