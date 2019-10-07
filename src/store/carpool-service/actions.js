@@ -86,7 +86,7 @@ export default {
       },
       remarks: 'What does this do?',
       nrSeatsAvailable: payload.ridePlanOptions.numPassengers,
-      maxDetourSeconds: payload.ridePlanOptions.maxMinutesDetour,
+      maxDetourSeconds: payload.ridePlanOptions.maxMinutesDetour * 60,
     }
 
     var axiosConfig = {
