@@ -10,7 +10,7 @@ body {
 
 // Box widget
 .box-widget {
-  border-radius: $form-border-radius;
+  border-radius: $border-radius;
   padding: $box-widget-padding;
   font-weight: $font-light;
 }
@@ -101,7 +101,7 @@ body {
 }
 
 .border-radius-input{
-  border-radius: $form-border-radius;
+  border-radius: $border-radius;
 }
 
 .form-label {
