@@ -1,0 +1,77 @@
+<template>
+  <v-layout>
+    <v-flex pa-3>
+      <!-- REMOVED XS11 CLASS FROM FLEX ABOVE FOR ALPHA RELEAES -->
+      <v-layout column>
+        <v-flex>
+          <v-layout>
+            <v-flex>
+              <h3>Vertrek</h3>
+              <p class="first-letter-caps">
+                {{ formatTime(ride.departureTime) }}
+              </p>
+            </v-flex>
+            <v-flex grow>
+              <v-layout shrink justify-end>
+                <v-flex class="align-right">
+                  Geen passagiers
+                </v-flex>
+              </v-layout>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+        <v-flex>
+          <v-layout column>
+            <v-flex pa-0>
+              <v-icon>directions_car</v-icon>
+            </v-flex>
+            <v-flex><div class="travel-line"></div></v-flex>
+            <v-flex mt-1 mb-1>
+              {{ formatPlace(ride.fromPlace.label) }} -
+              {{ formatPlace(ride.toPlace.label) }}
+            </v-flex>
+          </v-layout>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+    <!-- DISABLED FOR ALPHA RELEASE
+    <v-flex d-flex>
+      <v-layout justify-center align-center column>
+        <v-flex shrink>
+          <v-icon @click="openDetails()">keyboard_arrow_right</v-icon>
+        </v-flex>
+      </v-layout>
+    </v-flex> -->
+  </v-layout>
+</template>
+
+<script>
+import moment from 'moment'
+export default {
+  props: {
+    ride: {
+      type: Object,
+      required: true,
+    },
+  },
+  methods: {
+    formatTime: function(time) {
+      //HACK: Remove [UTC] from the date string for correct parseing.
+      // Should be fixed in the backend.
+      return moment(time.replace('[UTC]', ''))
+        .locale('nl')
+        .calendar()
+    },
+    //HACK: Very dangerous function. Can embarass you at a cocktail party.
+    formatPlace(placeString) {
+      return placeString.split(',')[0]
+    },
+  },
+}
+</script>
+
+<style lang="scss">
+.align-right {
+  text-align: right;
+}
+</style>

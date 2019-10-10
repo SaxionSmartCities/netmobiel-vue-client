@@ -1,83 +1,111 @@
 <template>
-  <div id="app">
-    <netmobiel-header/>
+  <v-container id="app" fluid ma-0 pa-0>
+    <v-layout fill-height column>
+      <v-flex v-if="isHeaderVisible" id="header" xs1>
+        <netmobiel-header />
+      </v-flex>
 
-    <div id="content">
-      <router-view></router-view>
-    </div>
+      <v-flex id="content" fill-height scroll>
+        <router-view></router-view>
+      </v-flex>
 
-    <netmobiel-footer/>
+      <v-snackbar
+        v-if="isNotificationBarVisible"
+        v-model="isNotificationBarVisible"
+        :timeout="0"
+      >
+        {{ notificationQueue[0].message }}
+        <v-btn
+          v-if="notificationQueue[0].timeout === 0"
+          text
+          @click="finishNotification"
+        >
+          Close
+        </v-btn>
+      </v-snackbar>
 
-  </div>
+      <div v-if="isFooterVisible" id="footer">
+        <netmobiel-footer />
+      </div>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
-import NetmobielHeader from '@/views/common/NetmobielHeader.vue';
-import NetmobielFooter from '@/views/common/NetmobielFooter.vue';
+import NetmobielHeader from '@/components/common/NetmobielHeader.vue'
+import NetmobielFooter from '@/components/common/NetmobielFooter.vue'
 
 export default {
-  name: 'app',
+  name: 'App',
   components: {
     NetmobielHeader,
-    NetmobielFooter
-  }
+    NetmobielFooter,
+  },
+  computed: {
+    isHeaderVisible: function() {
+      return this.$store.getters['ui/isHeaderVisible']
+    },
+    isFooterVisible: function() {
+      return this.$store.getters['ui/isFooterVisible']
+    },
+    notificationQueue: function() {
+      return this.$store.getters['ui/getNotificationQueue']
+    },
+    isNotificationBarVisible: function() {
+      return this.$store.getters['ui/isNotificationBarVisible']
+    },
+    currentNotification: function() {
+      return this.$store.getters['ui/getNotificationQueue'][0]
+    },
+    getProfile() {
+      return this.$store.getters['ps/getProfile']
+    },
+  },
+  watch: {
+    getProfile(newProfile) {
+      // Update profile if the passed FCM token is different compared
+      // to the one in the profile.
+      let passedFcmToken = this.$route.query.fcm
+      if (passedFcmToken && passedFcmToken !== newProfile.fcmToken) {
+        this.$store.dispatch('ps/storeFcmToken', { fcmToken: passedFcmToken })
+      }
+    },
+  },
+  mounted() {
+    // Only fetch profile of user has been authenticated
+    if (this.$keycloak.authenticated) {
+      this.$store.dispatch('ps/fetchProfile')
+    }
+  },
+  methods: {
+    finishNotification: function() {
+      this.$store.dispatch('ui/finishNotification')
+    },
+  },
 }
 </script>
 
 <style lang="scss">
-#app {
-  font-family: $font-family;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: $font-color;
-}
-
-.site-footer {
-  position: absolute;
-  bottom: 0;
-}
-
+html,
 body {
-  background: $color-green;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
 }
 
-small {
-  color: $form-placeholder-font-color
+#app {
+  height: 100vh;
 }
 
-.white-box-widget {
-    background: #ffffff;
-    border-radius: $form-border-radius;
-    width:100%;
-    padding: 20px;
-    margin-top:calc(50px + 20px);
-    font-weight: $font-light;
-    text-align: center;
+#header {
+  height: 10vmax;
 }
 
-.btn-netmobiel-white {
-  width: 100%;
-  height: 40px;
-  margin: auto;
-  margin-top:15px;
-  background-color: $color-white;
-  color: $color-green;
+#footer {
+  height: 56px;
 }
 
-.btn-netmobiel-white {
-  width: 100%;
-  height: 40px;
-  margin: auto;
-  margin-top:15px;
-  background-color: $color-green;
-  color: $color-white;
-}
-
-.left-align {
-    text-align: left;
-}
-
-.right-align {
-  text-align: right;
+.scroll {
+  overflow-y: scroll;
 }
 </style>

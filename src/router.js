@@ -4,47 +4,132 @@ import store from './store'
 
 Vue.use(Router)
 
-import SplashScreen from './views/splashscreen/SplashScreen.vue'
-import ProfilePage from './views/profile/ProfilePage.vue'
-import SignUpForm from './views/signup/SignUpComponent.vue'
-import HomePage from './views/home/HomePage.vue'
-import SearchPage from './views/search/SearchPage.vue'
+import ItineraryDetailPage from './pages/ItineraryDetailPage.vue'
+import LandingPage from './pages/LandingPage.vue'
+import HomePage from './pages/HomePage.vue'
+import NotificationOptionsPage from './pages/NotificationOptionsPage.vue'
+import PrivacySecurityPage from './pages/PrivacySecurityPage.vue'
+import PrivacyStatementPage from './pages/PrivacyStatementPage.vue'
+import ProfilePage from './pages/ProfilePage.vue'
+import SearchLocationPage from './pages/SearchLocationPage'
+import SearchOptionsPage from './pages/SearchOptionsPage'
+import SearchPage from './pages/SearchPage.vue'
+import SearchResultsPage from './pages/SearchResultsPage.vue'
+import TermsOfUsePage from './pages/TermsOfUsePage.vue'
+import RideDetailPage from './pages/RideDetailPage.vue'
+import RidePlanPage from './pages/RidePlanPage.vue'
+import RegistrationPage from './pages/RegistrationPage.vue'
+import RidePlanOptionsPage from './pages/RidePlanOptionsPage.vue'
+import RidePlanSubmitted from './pages/RidePlanSubmitted.vue'
+import TripsOverviewPage from './pages/TripsOverviewPage.vue'
 
 const router = new Router({
   mode: 'history',
   routes: [
     {
       path: '/',
-      component: SplashScreen,
+      component: LandingPage,
     },
     {
       path: '/home',
-      component: HomePage
+      component: HomePage,
     },
     {
       path: '/createUser',
-      component: SignUpForm
+      component: RegistrationPage,
+      name: 'createUser',
     },
     {
       path: '/profile',
-      component: ProfilePage
+      component: ProfilePage,
     },
     {
       path: '/search',
-      component: SearchPage
-    }
-  ]
+      component: SearchPage,
+      name: 'searchRide',
+    },
+    {
+      path: '/plan',
+      component: RidePlanPage,
+      name: 'planRide',
+    },
+    {
+      path: '/planOptions',
+      component: RidePlanOptionsPage,
+      name: 'planOptions',
+    },
+    {
+      path: '/planSubmitted',
+      component: RidePlanSubmitted,
+      name: 'planSubmitted',
+    },
+    {
+      path: '/searchOptions',
+      component: SearchOptionsPage,
+      name: 'searchOptions',
+    },
+    {
+      path: '/searchLocation/:field',
+      component: SearchLocationPage,
+      name: 'searchLocation',
+    },
+    {
+      path: '/searchResults',
+      component: SearchResultsPage,
+      name: 'searchResults',
+    },
+    {
+      path: '/termsOfUse',
+      component: TermsOfUsePage,
+      name: 'termsOfUse',
+    },
+    {
+      path: '/privacyStatement',
+      component: PrivacyStatementPage,
+      name: 'privacyStatement',
+    },
+    {
+      path: '/privacySecurity',
+      component: PrivacySecurityPage,
+      name: 'privacySecurity',
+    },
+    {
+      path: '/itineraryDetailPage',
+      component: ItineraryDetailPage,
+      name: 'itineraryDetailPage',
+    },
+    {
+      path: '/profileNotificationOptions',
+      component: NotificationOptionsPage,
+      name: 'notificationOptions',
+    },
+    {
+      path: '/tripsOverviewPage',
+      component: TripsOverviewPage,
+      name: 'tripsOverviewPage',
+    },
+    {
+      path: '/rideDetailPage',
+      component: RideDetailPage,
+      name: 'rideDetailPage',
+    },
+  ],
 })
 
 router.beforeEach((to, from, next) => {
-  console.log('BeforeEach reached', store.state.user.name)
-  if (to.path !== '/' && store.getters.getUser.name === undefined) {
-    console.log('Unauth: redirect to root')
+  store.commit('ui/hideBackButton')
+  store.commit('ui/enableFooter')
+  store.commit('ui/enableHeader')
+
+  if (
+    to.path !== '/' &&
+    to.path !== '/createUser' &&
+    store.getters['ps/getUser'].accessToken === undefined
+  ) {
     next('/')
   } else {
-    console.log('Auth: Nothing to see here')
     next()
   }
 })
 
-export default router;
+export default router
