@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <v-flex pa-3>
+    <v-flex travel-card pa-3>
       <!-- REMOVED XS11 CLASS FROM FLEX ABOVE FOR ALPHA RELEAES -->
       <v-layout column>
         <v-flex>

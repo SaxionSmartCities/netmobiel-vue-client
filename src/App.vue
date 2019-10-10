@@ -9,24 +9,26 @@
         <router-view></router-view>
       </v-flex>
 
-      <v-snackbar
-        v-if="isNotificationBarVisible"
-        v-model="isNotificationBarVisible"
-        :timeout="0"
-      >
-        {{ notificationQueue[0].message }}
-        <v-btn
-          v-if="notificationQueue[0].timeout === 0"
-          text
-          @click="finishNotification"
+      <v-flex>
+        <v-snackbar
+          v-if="isNotificationBarVisible"
+          v-model="isNotificationBarVisible"
+          :timeout="0"
         >
-          Close
-        </v-btn>
-      </v-snackbar>
+          {{ notificationQueue[0].message }}
+          <v-btn
+            v-if="notificationQueue[0].timeout === 0"
+            text
+            @click="finishNotification"
+          >
+            Close
+          </v-btn>
+        </v-snackbar>
+      </v-flex>
 
-      <div v-if="isFooterVisible" id="footer">
+      <v-flex v-if="isFooterVisible" id="footer">
         <netmobiel-footer />
-      </div>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -99,6 +101,8 @@ body {
 
 #content {
   background: white;
+  position: relative;
+  padding-bottom: $footer-height;
 }
 #app {
   height: 100vh;
@@ -106,10 +110,6 @@ body {
 
 #header {
   height: 10vmax;
-}
-
-#footer {
-  height: 56px;
 }
 
 .scroll {
@@ -127,5 +127,9 @@ body {
 .homepage #content {
   margin-top: 30vmin;
   border-radius: $border-radius $border-radius 0 0;
+}
+
+.homepage #footer {
+  padding-top: $footer-height;
 }
 </style>

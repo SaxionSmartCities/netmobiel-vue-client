@@ -4,15 +4,28 @@
 // App-specific configuration
 body {
   font-family: $font-family;
+  font-weight: $font-light;
+  font-size: $font-size;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1 {
+  font-size: $h1-font-size;
+}
+
+h2 {
+  font-size: $h2-font-size;
+}
+
+h3 {
+  font-size: $h3-font-size;
 }
 
 // Box widget
 .box-widget {
   border-radius: $border-radius;
   padding: $box-widget-padding;
-  font-weight: $font-light;
 }
 
 .background-primary {
@@ -86,6 +99,8 @@ body {
 // TPO: Dunno why...
 .v-btn {
   margin: 0px;
+  font-weight: $font-weight-button;
+  font-family: $font-family-button;
 }
 
 .v-text-field {
@@ -102,6 +117,22 @@ body {
 
 .border-radius-input{
   border-radius: $border-radius;
+}
+
+.white-grey {
+  color: $color-white-grey;
+}
+
+.light-grey {
+  color: $color-light-grey;
+}
+
+.mid-grey {
+  color: $color-mid-grey;
+}
+
+.dark-grey {
+  color: $color-dark-grey;
 }
 
 .form-label {

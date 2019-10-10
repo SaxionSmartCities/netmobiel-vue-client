@@ -1,45 +1,49 @@
 <template>
   <v-container>
-    <v-layout>
+    <v-layout column>
       <v-flex>
-        <v-img
-          class="profileimage"
-          :src="require('@/assets/profile_img.png')"
-        />
-      </v-flex>
-    </v-layout>
-    <v-layout mt-5 pt-3 column>
-      <v-flex text-xs xs12 mb-2>
-        <h3>{{ timeOfDayGreeting }}, {{ user.fullName }}</h3>
+        <v-layout row pb-3>
+          <v-flex>
+            <v-img
+              class="profileimage"
+              :src="require('@/assets/profile_img.png')"
+            />
+          </v-flex>
+          <v-flex text-xs-right>
+            <v-layout fill-height justify-end column>
+              <v-flex shrink>
+                <h2>{{ timeOfDayGreeting }}, {{ user.fullName }}</h2>
+              </v-flex>
+            </v-layout>
+          </v-flex>
+        </v-layout>
       </v-flex>
       <v-divider class="mb-2"></v-divider>
-      <v-flex v-if="rides.length > 0" mt-2>
-        <h2 class="text-primary-uppercase">Mijn aangeboden ritten</h2>
-        <v-flex
-          v-for="(ride, index) in rides"
-          :key="index"
-          my-2
-          xs12
-          class="travel-card"
-        >
-          <ride-card :ride="ride"></ride-card>
-        </v-flex>
-      </v-flex>
-      <v-flex v-else mt-2>
+      <v-flex mt-2>
         <p>
           Welkom bij Netmobiel, dé mobiliteitsapp van de Achterhoek en
           omstreken.
         </p>
       </v-flex>
-      <v-flex>
-        <v-btn class="mt-3" round block outline color="blue" to="/howTo">
+      <v-flex mt-3>
+        <v-btn round block outline color="blue" to="/howTo">
           Hoe werkt het?
         </v-btn>
       </v-flex>
-      <v-flex>
-        <v-btn class="mt-3" large round block to="/modeSelection">
+      <v-flex mt-3 mb-4>
+        <v-btn large round block to="/modeSelection">
           Direct aan de slag!
         </v-btn>
+      </v-flex>
+      <v-flex v-if="rides.length > 0">
+        <v-layout column>
+          <v-flex>
+            <h2 class="text-primary-uppercase">Jouw activiteiten</h2>
+          </v-flex>
+          <v-flex v-for="(ride, index) in rides" :key="index" xs12>
+            <ride-card class="my-2" :ride="ride"></ride-card>
+          </v-flex>
+        </v-layout>
       </v-flex>
     </v-layout>
   </v-container>
@@ -91,14 +95,14 @@ export default {
 }
 
 .profileimage {
-  margin-top: -100px;
-  position: absolute;
-  height: 15vmax;
-  width: 15vmax;
-  margin-left: -7.5vmax;
-  left: 50%;
+  // margin-top: -100px;
+  // position: absolute;
+  height: 10vmax;
+  width: 10vmax;
+  // margin-left: -7.5vmax;
+  // left: 50%;
   border-radius: 1000px;
-  margin-top: -10vmax;
+  // margin-top: -10vmax;
   border: 2px solid white;
 }
 </style>

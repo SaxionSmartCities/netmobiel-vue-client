@@ -4,6 +4,7 @@
       <v-bottom-nav
         :active.sync="selectedNav"
         :value="true"
+        fixed
         color="transparant"
       >
         <v-btn flat value="home" to="/home">

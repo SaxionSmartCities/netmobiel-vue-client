@@ -24,25 +24,25 @@
                     <v-layout column>
                       <v-flex>
                         <v-btn large round block to="/search">
-                          Een rit plannen!
+                          Een reis plannen
                         </v-btn>
                       </v-flex>
-                      <v-flex>
-                        <span class="form-label">
+                      <v-flex py-0>
+                        <span class="mid-grey">
                           Met iemand meerijden of via het OV.
                         </span>
                       </v-flex>
                     </v-layout>
                   </v-flex>
-                  <v-flex mt-3>
+                  <v-flex mt-4>
                     <v-layout column>
                       <v-flex>
                         <v-btn large round block to="/plan">
-                          Een rit aanbieden!
+                          Een rit aanbieden
                         </v-btn>
                       </v-flex>
-                      <v-flex>
-                        <span class="form-label">
+                      <v-flex py-0>
+                        <span class="mid-grey">
                           Zelf rijden en iemand meenemen.
                         </span>
                       </v-flex>
