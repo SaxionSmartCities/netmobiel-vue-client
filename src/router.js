@@ -8,6 +8,7 @@ import ItineraryDetailPage from './pages/ItineraryDetailPage.vue'
 import LandingPage from './pages/LandingPage.vue'
 import HomePage from './pages/HomePage.vue'
 import HowToPage from './pages/HowToPage.vue'
+import ModeSelectionPage from './pages/ModeSelectionPage.vue'
 import NotificationOptionsPage from './pages/NotificationOptionsPage.vue'
 import PrivacySecurityPage from './pages/PrivacySecurityPage.vue'
 import PrivacyStatementPage from './pages/PrivacyStatementPage.vue'
@@ -118,6 +119,11 @@ const router = new Router({
       path: '/howTo',
       component: HowToPage,
       name: 'howToPage',
+    },
+    {
+      path: '/modeSelection',
+      component: ModeSelectionPage,
+      name: 'modeSelectionPage',
     },
   ],
 })

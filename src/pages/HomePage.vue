@@ -37,7 +37,7 @@
         </v-btn>
       </v-flex>
       <v-flex>
-        <v-btn class="mt-3" large round block>
+        <v-btn class="mt-3" large round block to="/modeSelection">
           Direct aan de slag!
         </v-btn>
       </v-flex>
