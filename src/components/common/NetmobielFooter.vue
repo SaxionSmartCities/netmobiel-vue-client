@@ -11,7 +11,7 @@
           <v-icon>home</v-icon>
         </v-btn>
 
-        <v-btn flat value="search-trip" to="/search">
+        <v-btn flat value="search-trip" @click="routeToMode()">
           <span>Planner</span>
           <v-icon>commute</v-icon>
         </v-btn>
@@ -21,16 +21,11 @@
           <v-icon>favorite</v-icon>
         </v-btn>
 
-        <v-btn flat value="plan-trip" to="/plan">
-          <span>Ritten</span>
-          <v-icon>directions_car</v-icon>
-        </v-btn>
-
-        <!-- <v-btn flat value="community">
+        <v-btn flat value="community" disabled>
           <span>Community</span>
           <v-icon>chat</v-icon>
         </v-btn>
-        -->
+
         <v-btn flat value="profile" to="/profile">
           <span>Profiel</span>
           <v-icon>person</v-icon>
@@ -47,6 +42,12 @@ export default {
     return {
       selectedNav: '',
     }
+  },
+  methods: {
+    routeToMode: function() {
+      // TODO: Link this to profile so we know where to route!
+      this.$router.push('/modeSelection')
+    },
   },
 }
 </script>

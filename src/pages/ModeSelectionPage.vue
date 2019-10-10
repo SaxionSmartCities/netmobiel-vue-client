@@ -23,7 +23,7 @@
                   <v-flex>
                     <v-layout column>
                       <v-flex>
-                        <v-btn large round block>
+                        <v-btn large round block to="/search">
                           Een rit plannen!
                         </v-btn>
                       </v-flex>
@@ -37,7 +37,7 @@
                   <v-flex mt-3>
                     <v-layout column>
                       <v-flex>
-                        <v-btn large round block>
+                        <v-btn large round block to="/plan">
                           Een rit aanbieden!
                         </v-btn>
                       </v-flex>
