@@ -64,6 +64,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.commit('ui/setAppClasses', 'homepage')
     this.$store.dispatch('cs/fetchRides')
   },
 }

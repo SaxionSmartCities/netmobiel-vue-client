@@ -1,5 +1,5 @@
 <template>
-  <v-container id="app" fluid ma-0 pa-0>
+  <v-container id="app" :class="appClasses" fluid ma-0 pa-0>
     <v-layout fill-height column>
       <v-flex v-if="isHeaderVisible" id="header" xs1>
         <netmobiel-header />
@@ -42,6 +42,9 @@ export default {
     NetmobielFooter,
   },
   computed: {
+    appClasses: function() {
+      return this.$store.getters['ui/getAppClasses']
+    },
     isHeaderVisible: function() {
       return this.$store.getters['ui/isHeaderVisible']
     },
@@ -88,11 +91,15 @@ export default {
 <style lang="scss">
 html,
 body {
+  background: $color-green;
   height: 100%;
   margin: 0;
   overflow: hidden;
 }
 
+#content {
+  background: white;
+}
 #app {
   height: 100vh;
 }

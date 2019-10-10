@@ -36,4 +36,10 @@ export default {
         state.temp[key] = payload[key]
       })
   },
+  setAppClasses: (state, payload) => {
+    state.app.classes = payload
+  },
+  clearAppClasses: state => {
+    state.app.classes = []
+  },
 }

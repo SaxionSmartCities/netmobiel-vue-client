@@ -4,5 +4,6 @@ export default {
   isBackButtonVisible: state => state.backButtonVisible,
   getNotificationQueue: state => state.notificationQueue,
   isNotificationBarVisible: state => state.notificationBarVisible,
+  getAppClasses: state => state.app.classes,
   getTempValue: state => identifier => state.temp[identifier],
 }

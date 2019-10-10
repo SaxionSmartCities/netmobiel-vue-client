@@ -12,6 +12,9 @@ export default {
     footer: {
       visible: true,
     },
+    app: {
+      classes: [],
+    },
     backButtonVisible: false,
     notificationBarVisible: false,
     notificationQueue: [],

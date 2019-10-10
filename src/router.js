@@ -120,6 +120,7 @@ router.beforeEach((to, from, next) => {
   store.commit('ui/hideBackButton')
   store.commit('ui/enableFooter')
   store.commit('ui/enableHeader')
+  store.commit('ui/clearAppClasses')
 
   if (
     to.path !== '/' &&
