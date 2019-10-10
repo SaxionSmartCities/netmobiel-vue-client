@@ -115,4 +115,17 @@ body {
 .scroll {
   overflow-y: scroll;
 }
+
+.homepage {
+  background-image: url('assets/achterhoek_background.jpg');
+  background-size: contain;
+  background-position: top;
+  background-repeat: no-repeat;
+  overflow-y: visible;
+}
+
+.homepage #content {
+  margin-top: 30vmin;
+  border-radius: $border-radius $border-radius 0 0;
+}
 </style>

@@ -1,8 +1,16 @@
 <template>
-  <v-container class="carBackground">
-    <v-layout column>
+  <v-container>
+    <v-layout>
+      <v-flex>
+        <v-img
+          class="profileimage"
+          :src="require('@/assets/profile_img.png')"
+        />
+      </v-flex>
+    </v-layout>
+    <v-layout mt-5 pt-3 column>
       <v-flex text-xs xs12 mb-2>
-        <h3>Goededag, {{ user.fullName }}</h3>
+        <h3>{{ timeOfDayGreeting }}, {{ user.fullName }}</h3>
       </v-flex>
       <v-divider class="mb-2"></v-divider>
       <v-flex v-if="rides.length > 0" mt-2>
@@ -49,6 +57,7 @@
 
 <script>
 import RideCard from '@/components/rides/RideCard.vue'
+import moment from 'moment'
 
 export default {
   components: {
@@ -61,6 +70,17 @@ export default {
     rides() {
       //HACK: Only display first 3 rides.
       return this.$store.getters['cs/getRides'].slice(0, 3)
+    },
+    timeOfDayGreeting() {
+      let currentHour = moment().format('HH')
+
+      if (currentHour < 12) {
+        return 'Goedemorgen'
+      } else if (currentHour < 18) {
+        return 'Goedemiddag'
+      } else {
+        return 'Goedeavond'
+      }
     },
   },
   mounted() {
@@ -79,10 +99,16 @@ export default {
 .negMarIcon {
   margin-bottom: -3px;
 }
-.carBackground {
-  background: url('../assets/autoscooter.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position-y: bottom;
+
+.profileimage {
+  margin-top: -100px;
+  position: absolute;
+  height: 15vmax;
+  width: 15vmax;
+  margin-left: -7.5vmax;
+  left: 50%;
+  border-radius: 1000px;
+  margin-top: -10vmax;
+  border: 2px solid white;
 }
 </style>

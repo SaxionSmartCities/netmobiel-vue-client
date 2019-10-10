@@ -28,6 +28,8 @@ $color-secondary: $color-orange;
 $color-secondary-light: lighten( $color-secondary, 20%);
 $color-secondary-dark: darken( $color-secondary, 20%);
 
+$border-radius: 10px;
+
 // Default form configuration
 $form-border-radius: 25px;
 $form-border-radius-input: 15px;
