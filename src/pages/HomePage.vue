@@ -30,26 +30,16 @@
           Welkom bij Netmobiel, dé mobiliteitsapp van de Achterhoek en
           omstreken.
         </p>
-        <p>
-          Het menu onderin is de manier om door de app heen te navigeren, hier
-          kun je:
-        </p>
-        <p>
-          <v-icon class="mr-2 negMarIcon">commute</v-icon>
-          <span>Een reis plannen</span>
-        </p>
-        <p>
-          <v-icon class="mr-2 negMarIcon">favorite</v-icon> Je bewaarde reizen
-          zien
-        </p>
-        <p>
-          <v-icon class="mr-2 negMarIcon">directions_car</v-icon> Een reis
-          plannen
-        </p>
-        <p>
-          <v-icon class="mr-2 negMarIcon">person</v-icon> Je profielinstellingen
-          wijzigen
-        </p>
+      </v-flex>
+      <v-flex>
+        <v-btn class="mt-3" round block outline color="blue" to="/howTo">
+          Hoe werkt het?
+        </v-btn>
+      </v-flex>
+      <v-flex>
+        <v-btn class="mt-3" large round block>
+          Direct aan de slag!
+        </v-btn>
       </v-flex>
     </v-layout>
   </v-container>
