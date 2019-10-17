@@ -19,6 +19,16 @@ export default {
     backButtonVisible: false,
     notificationBarVisible: false,
     notificationQueue: [],
+    updateMessages: [
+      {
+        title: 'Gepland onderhoud',
+        content: 'Van maandag 24 oktober tot 9 november',
+      },
+      {
+        title: 'Belangrijke mededeling',
+        content: 'We zijn erg blij met je als gebruiker, ga aub niet weg',
+      },
+    ],
     temp: {
       searchDate: moment()
         .startOf('day')

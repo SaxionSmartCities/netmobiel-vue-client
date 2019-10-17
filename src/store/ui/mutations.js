@@ -48,4 +48,7 @@ export default {
   setSelectedNav: (state, payload) => {
     state.footer.selectedNav = payload
   },
+  shiftUpdateMessage: state => {
+    state.updateMessages.shift()
+  },
 }

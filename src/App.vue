@@ -90,7 +90,7 @@ export default {
     },
     onScroll(e) {
       this.offsetTop = e.target.scrollTop
-      if (this.offsetTop != 0) {
+      if (this.offsetTop > 50) {
         this.$store.commit('ui/addAppClass', 'small')
       } else {
         this.$store.commit('ui/removeAppClass', 'small')
@@ -133,9 +133,9 @@ body {
 .homepage #content {
   margin-top: 30vmin;
   border-radius: $border-radius $border-radius 0 0;
-  -webkit-transition: all 500ms linear;
-  -moz-transition: all 500ms linear;
-  -o-transition: all 500ms linear;
+  -webkit-transition: all 100ms linear;
+  -moz-transition: all 100ms linear;
+  -o-transition: all 100ms linear;
 }
 
 .homepage #footer {

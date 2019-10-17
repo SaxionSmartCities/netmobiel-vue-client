@@ -33,18 +33,31 @@
           Hoe werkt het?
         </v-btn>
       </v-flex>
-      <v-flex mb-4>
-        <v-btn large round block to="/modeSelection">
-          Direct aan de slag!
-        </v-btn>
+      <v-flex v-if="updateMessages.length > 0">
+        <v-layout column mb-3>
+          <v-flex>
+            <h2 class="text-primary-uppercase">Updates</h2>
+          </v-flex>
+          <v-flex>
+            <update-card :update-message="updateMessages[0]"></update-card>
+          </v-flex>
+        </v-layout>
       </v-flex>
-      <v-flex v-if="rides.length > 0">
+      <v-flex>
         <v-layout column mb-3>
           <v-flex>
             <h2 class="text-primary-uppercase">Jouw activiteiten</h2>
           </v-flex>
           <v-flex v-for="(ride, index) in rides" :key="index" xs12>
             <ride-card class="my-2" :ride="ride"></ride-card>
+          </v-flex>
+          <v-flex v-if="rides.length === 0">
+            Je hebt nog geen activiteiten gepland.
+          </v-flex>
+          <v-flex mb-4>
+            <v-btn large round block to="/modeSelection">
+              Direct aan de slag!
+            </v-btn>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -54,11 +67,13 @@
 
 <script>
 import RideCard from '@/components/rides/RideCard.vue'
+import UpdateCard from '@/components/home/UpdateCard.vue'
 import moment from 'moment'
 
 export default {
   components: {
     RideCard,
+    UpdateCard,
   },
   computed: {
     user() {
@@ -66,7 +81,7 @@ export default {
     },
     rides() {
       //HACK: Only display first 3 rides.
-      return this.$store.getters['cs/getRides'].slice(0, 3)
+      return this.$store.getters['cs/getRides'].slice(0, 2)
     },
     timeOfDayGreeting() {
       let currentHour = moment().format('HH')
@@ -78,6 +93,10 @@ export default {
       } else {
         return 'Goedeavond'
       }
+    },
+    updateMessages() {
+      console.log(this.$store.getters['ui/getUpdateMessages'])
+      return this.$store.getters['ui/getUpdateMessages']
     },
   },
   mounted() {
