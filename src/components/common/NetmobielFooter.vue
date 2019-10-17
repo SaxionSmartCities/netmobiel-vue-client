@@ -39,11 +39,6 @@
 <script>
 export default {
   name: 'Footer',
-  data: function() {
-    return {
-      // selectedNav: '',
-    }
-  },
   computed: {
     selectedNav: {
       get: function() {
