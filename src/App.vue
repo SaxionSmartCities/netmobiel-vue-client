@@ -4,7 +4,13 @@
       <v-flex v-if="isHeaderVisible" id="header" xs1>
         <netmobiel-header />
       </v-flex>
-      <v-flex id="content" v-scroll:#content="onScroll" fill-height scroll-y>
+      <v-flex
+        id="content"
+        v-scroll:#content="onScroll"
+        :class="{ footerPadding: isFooterVisible }"
+        fill-height
+        scroll-y
+      >
         <router-view></router-view>
       </v-flex>
 
@@ -91,7 +97,9 @@ export default {
     onScroll(e) {
       this.offsetTop = e.target.scrollTop
       if (this.offsetTop > 30) {
-        this.$store.commit('ui/addAppClass', 'small')
+        if (this.appClasses.slice(-1)[0] !== 'small') {
+          this.$store.commit('ui/addAppClass', 'small')
+        }
       } else {
         this.$store.commit('ui/removeAppClass', 'small')
       }
@@ -112,7 +120,6 @@ body {
 #content {
   background: white;
   position: relative;
-  padding-bottom: $footer-height;
 }
 #app {
   height: 100vh;
@@ -144,5 +151,13 @@ body {
 
 .small #content {
   margin-top: 0px;
+}
+
+.footerPadding {
+  padding-bottom: $footer-height;
+}
+
+.modeSelectPage #content {
+  background: transparent;
 }
 </style>
