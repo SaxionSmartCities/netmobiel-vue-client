@@ -25,7 +25,7 @@
           omstreken.
         </p>
       </v-flex>
-      <v-flex mt-3>
+      <v-flex v-if="rides.length == 0" mt-3>
         <v-btn round block outline color="blue" to="/howTo">
           Hoe werkt het?
         </v-btn>
