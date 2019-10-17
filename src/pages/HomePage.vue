@@ -28,12 +28,12 @@
           omstreken.
         </p>
       </v-flex>
-      <v-flex v-if="rides.length == 0" mt-3>
+      <v-flex v-if="rides.length == 0" my-3>
         <v-btn round block outline color="blue" to="/howTo">
           Hoe werkt het?
         </v-btn>
       </v-flex>
-      <v-flex mt-3 mb-4>
+      <v-flex mb-4>
         <v-btn large round block to="/modeSelection">
           Direct aan de slag!
         </v-btn>
