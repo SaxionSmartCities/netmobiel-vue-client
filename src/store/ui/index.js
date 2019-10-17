@@ -11,6 +11,7 @@ export default {
     },
     footer: {
       visible: true,
+      selectedNav: 'home',
     },
     app: {
       classes: [],

@@ -12,7 +12,7 @@
           <v-icon>home</v-icon>
         </v-btn>
 
-        <v-btn flat value="search-trip" @click="routeToMode()">
+        <v-btn flat value="commute" @click="routeToMode()">
           <span>Planner</span>
           <v-icon>commute</v-icon>
         </v-btn>
@@ -41,8 +41,18 @@ export default {
   name: 'Footer',
   data: function() {
     return {
-      selectedNav: '',
+      // selectedNav: '',
     }
+  },
+  computed: {
+    selectedNav: {
+      get: function() {
+        return this.$store.getters['ui/getSelectedNav']
+      },
+      set: function(value) {
+        this.$store.commit('ui/setSelectedNav', value)
+      },
+    },
   },
   methods: {
     routeToMode: function() {

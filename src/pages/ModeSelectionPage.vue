@@ -61,6 +61,9 @@
 <script>
 export default {
   name: 'ModeSelectionPage',
+  mounted: function() {
+    this.$store.commit('ui/setSelectedNav', 'commute')
+  },
 }
 </script>
 

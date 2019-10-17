@@ -6,4 +6,5 @@ export default {
   isNotificationBarVisible: state => state.notificationBarVisible,
   getAppClasses: state => state.app.classes,
   getTempValue: state => identifier => state.temp[identifier],
+  getSelectedNav: state => state.footer.selectedNav,
 }

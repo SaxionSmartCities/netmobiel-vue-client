@@ -42,4 +42,7 @@ export default {
   clearAppClasses: state => {
     state.app.classes = []
   },
+  setSelectedNav: (state, payload) => {
+    state.footer.selectedNav = payload
+  },
 }
