@@ -54,7 +54,18 @@
           <v-flex v-if="rides.length === 0">
             Je hebt nog geen activiteiten gepland.
           </v-flex>
-          <v-flex mb-4>
+          <v-flex v-else my-2>
+            <v-btn
+              large
+              round
+              block
+              outline
+              color="#2E8997"
+              to="/tripsOverviewPage"
+              >Bekijk alle activiteiten</v-btn
+            >
+          </v-flex>
+          <v-flex v-if="rides.length === 0" mb-4>
             <v-btn large round block to="/modeSelection">
               Direct aan de slag!
             </v-btn>
@@ -95,7 +106,6 @@ export default {
       }
     },
     updateMessages() {
-      console.log(this.$store.getters['ui/getUpdateMessages'])
       return this.$store.getters['ui/getUpdateMessages']
     },
   },
