@@ -4,8 +4,6 @@
       <v-flex v-if="isHeaderVisible" id="header" xs1>
         <netmobiel-header />
       </v-flex>
-
-      <div>{{ offsetTop }}</div>
       <v-flex id="content" v-scroll:#content="onScroll" fill-height scroll-y>
         <router-view></router-view>
       </v-flex>
@@ -92,6 +90,11 @@ export default {
     },
     onScroll(e) {
       this.offsetTop = e.target.scrollTop
+      if (this.offsetTop != 0) {
+        this.$store.commit('ui/addAppClass', 'small')
+      } else {
+        this.$store.commit('ui/removeAppClass', 'small')
+      }
     },
   },
 }
@@ -130,9 +133,16 @@ body {
 .homepage #content {
   margin-top: 30vmin;
   border-radius: $border-radius $border-radius 0 0;
+  -webkit-transition: all 500ms linear;
+  -moz-transition: all 500ms linear;
+  -o-transition: all 500ms linear;
 }
 
 .homepage #footer {
   padding-top: $footer-height;
+}
+
+.small #content {
+  margin-top: 0px;
 }
 </style>

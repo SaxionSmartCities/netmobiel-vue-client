@@ -12,7 +12,10 @@
           <v-flex text-xs-right>
             <v-layout fill-height justify-end column>
               <v-flex shrink>
-                <h2>{{ timeOfDayGreeting }}, {{ user.fullName }}</h2>
+                <h2>
+                  {{ timeOfDayGreeting }},<br />
+                  {{ user.fullName }}
+                </h2>
               </v-flex>
             </v-layout>
           </v-flex>
@@ -78,7 +81,7 @@ export default {
     },
   },
   mounted() {
-    this.$store.commit('ui/setAppClasses', 'homepage')
+    this.$store.commit('ui/addAppClass', 'homepage')
     this.$store.dispatch('cs/fetchRides')
   },
 }
