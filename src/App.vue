@@ -5,7 +5,8 @@
         <netmobiel-header />
       </v-flex>
 
-      <v-flex id="content" fill-height scroll>
+      <div>{{ offsetTop }}</div>
+      <v-flex id="content" v-scroll:#content="onScroll" fill-height scroll-y>
         <router-view></router-view>
       </v-flex>
 
@@ -43,6 +44,9 @@ export default {
     NetmobielHeader,
     NetmobielFooter,
   },
+  data: () => ({
+    offsetTop: 0,
+  }),
   computed: {
     appClasses: function() {
       return this.$store.getters['ui/getAppClasses']
@@ -86,6 +90,9 @@ export default {
     finishNotification: function() {
       this.$store.dispatch('ui/finishNotification')
     },
+    onScroll(e) {
+      this.offsetTop = e.target.scrollTop
+    },
   },
 }
 </script>
@@ -110,10 +117,6 @@ body {
 
 #header {
   height: 10vmax;
-}
-
-.scroll {
-  overflow-y: scroll;
 }
 
 .homepage {

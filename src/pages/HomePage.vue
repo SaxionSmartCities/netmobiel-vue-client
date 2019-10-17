@@ -36,7 +36,7 @@
         </v-btn>
       </v-flex>
       <v-flex v-if="rides.length > 0">
-        <v-layout column>
+        <v-layout column mb-3>
           <v-flex>
             <h2 class="text-primary-uppercase">Jouw activiteiten</h2>
           </v-flex>
