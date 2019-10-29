@@ -50,7 +50,6 @@ export default {
   components: { ItinerarySummary, ItineraryLeg },
   computed: {
     selectedTrip: function() {
-      console.log(this.$store.getters['is/getSelectedTrip'])
       return this.$store.getters['is/getSelectedTrip']
     },
     generateSteps: function() {
@@ -104,7 +103,6 @@ export default {
       return results
     },
     printableDate: function() {
-      console.log(this.selectedTrip)
       return moment(this.selectedTrip.date).format('DD-MM-YYYY')
     },
     printableDriverName: function() {
