@@ -36,4 +36,19 @@ export default {
         state.temp[key] = payload[key]
       })
   },
+  addAppClass: (state, payload) => {
+    state.app.classes.push(payload)
+  },
+  removeAppClass: (state, payload) => {
+    state.app.classes = state.app.classes.filter(x => x !== payload)
+  },
+  clearAppClasses: state => {
+    state.app.classes = []
+  },
+  setSelectedNav: (state, payload) => {
+    state.footer.selectedNav = payload
+  },
+  shiftUpdateMessage: state => {
+    state.updateMessages.shift()
+  },
 }

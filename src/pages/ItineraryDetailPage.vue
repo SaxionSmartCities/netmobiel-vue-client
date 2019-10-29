@@ -1,37 +1,35 @@
 <template>
-  <v-container>
-    <v-layout column>
-      <v-flex mb-3>
-        <h3>Reisdetails</h3>
-      </v-flex>
-      <v-flex>
-        <v-divider />
-      </v-flex>
-      <v-flex my-2>
-        <itinerary-summary
-          :date="selectedTrip.itinerary.startTime"
-          :cost="5"
-          :duration="selectedTrip.itinerary.duration"
-        >
-        </itinerary-summary>
-      </v-flex>
-      <v-flex>
-        <v-divider />
-      </v-flex>
-      <v-flex mt-4>
-        <v-layout column>
-          <v-flex v-for="(leg, index) in generateSteps" :key="index">
-            <itinerary-leg :leg="leg" />
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-flex my-4>
-        <v-btn large round block mb-4 @click="saveTrip">
-          Deze reis bevestigen
-        </v-btn>
-      </v-flex>
-    </v-layout>
-  </v-container>
+  <v-layout pa-2 column>
+    <v-flex mb-3>
+      <h3>Reisdetails</h3>
+    </v-flex>
+    <v-flex>
+      <v-divider />
+    </v-flex>
+    <v-flex my-2>
+      <itinerary-summary
+        :date="selectedTrip.itinerary.startTime"
+        :cost="5"
+        :duration="selectedTrip.itinerary.duration"
+      >
+      </itinerary-summary>
+    </v-flex>
+    <v-flex>
+      <v-divider />
+    </v-flex>
+    <v-flex mt-4>
+      <v-layout column>
+        <v-flex v-for="(leg, index) in generateSteps" :key="index">
+          <itinerary-leg :leg="leg" />
+        </v-flex>
+      </v-layout>
+    </v-flex>
+    <v-flex my-4>
+      <v-btn large round block mb-4 @click="saveTrip">
+        Deze reis bevestigen
+      </v-btn>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
@@ -76,6 +74,9 @@ export default {
       })
       return result
     },
+  },
+  created: function() {
+    this.$store.commit('ui/showBackButton')
   },
   methods: {
     saveTrip: function() {

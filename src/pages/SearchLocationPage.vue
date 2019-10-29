@@ -53,6 +53,6 @@ export default {
 
 <style lang="scss">
 .border-radius-input > .v-input__control > .v-input__slot {
-  border-radius: $form-border-radius-input;
+  border-radius: $border-radius;
 }
 </style>

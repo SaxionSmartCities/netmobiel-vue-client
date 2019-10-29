@@ -1,32 +1,39 @@
 <template>
-  <v-container id="app" fluid ma-0 pa-0>
+  <v-container id="app" :class="appClasses" fluid ma-0 pa-0>
     <v-layout fill-height column>
       <v-flex v-if="isHeaderVisible" id="header" xs1>
         <netmobiel-header />
       </v-flex>
-
-      <v-flex id="content" fill-height scroll>
+      <v-flex
+        id="content"
+        v-scroll:#content="onScroll"
+        :class="{ footerPadding: isFooterVisible }"
+        fill-height
+        scroll-y
+      >
         <router-view></router-view>
       </v-flex>
 
-      <v-snackbar
-        v-if="isNotificationBarVisible"
-        v-model="isNotificationBarVisible"
-        :timeout="0"
-      >
-        {{ notificationQueue[0].message }}
-        <v-btn
-          v-if="notificationQueue[0].timeout === 0"
-          text
-          @click="finishNotification"
+      <v-flex>
+        <v-snackbar
+          v-if="isNotificationBarVisible"
+          v-model="isNotificationBarVisible"
+          :timeout="0"
         >
-          Close
-        </v-btn>
-      </v-snackbar>
+          {{ notificationQueue[0].message }}
+          <v-btn
+            v-if="notificationQueue[0].timeout === 0"
+            text
+            @click="finishNotification"
+          >
+            Close
+          </v-btn>
+        </v-snackbar>
+      </v-flex>
 
-      <div v-if="isFooterVisible" id="footer">
+      <v-flex v-if="isFooterVisible" id="footer">
         <netmobiel-footer />
-      </div>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -41,7 +48,13 @@ export default {
     NetmobielHeader,
     NetmobielFooter,
   },
+  data: () => ({
+    offsetTop: 0,
+  }),
   computed: {
+    appClasses: function() {
+      return this.$store.getters['ui/getAppClasses']
+    },
     isHeaderVisible: function() {
       return this.$store.getters['ui/isHeaderVisible']
     },
@@ -84,6 +97,16 @@ export default {
     finishNotification: function() {
       this.$store.dispatch('ui/finishNotification')
     },
+    onScroll(e) {
+      this.offsetTop = e.target.scrollTop
+      if (this.offsetTop > 30) {
+        if (this.appClasses.slice(-1)[0] !== 'small') {
+          this.$store.commit('ui/addAppClass', 'small')
+        }
+      } else {
+        this.$store.commit('ui/removeAppClass', 'small')
+      }
+    },
   },
 }
 </script>
@@ -91,11 +114,16 @@ export default {
 <style lang="scss">
 html,
 body {
+  background: $color-green;
   height: 100%;
   margin: 0;
   overflow: hidden;
 }
 
+#content {
+  background: white;
+  position: relative;
+}
 #app {
   height: 100vh;
 }
@@ -104,11 +132,35 @@ body {
   height: 10vmax;
 }
 
-#footer {
-  height: 56px;
+.homepage {
+  background-image: url('assets/achterhoek_background.jpg');
+  background-size: contain;
+  background-position: top;
+  background-repeat: no-repeat;
+  overflow-y: visible;
 }
 
-.scroll {
-  overflow-y: scroll;
+.homepage #content {
+  margin-top: 30vmin;
+  border-radius: $border-radius $border-radius 0 0;
+  -webkit-transition: all 250ms linear;
+  -moz-transition: all 250ms linear;
+  -o-transition: all 250ms linear;
+}
+
+.homepage #footer {
+  padding-top: $footer-height;
+}
+
+.small #content {
+  margin-top: 0px;
+}
+
+.footerPadding {
+  padding-bottom: $footer-height;
+}
+
+.modeSelectPage #content {
+  background: transparent;
 }
 </style>

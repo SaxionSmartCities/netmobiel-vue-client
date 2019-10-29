@@ -5,12 +5,31 @@
         <v-flex xs2>{{ time }}</v-flex>
         <v-flex xs1>
           <v-layout column align-center full-height>
-            <v-flex>
+            <v-flex class="border">
               <div class="open-dot"></div>
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex>{{ header }}</v-flex>
+        <v-flex v-if="leg.mode == 'CAR'" xs9 class="neg-margin-top">
+          <v-layout>
+            <v-flex
+              ><v-img
+                class="driverImage"
+                :src="require('@/assets/profile_img.png')"
+            /></v-flex>
+            <v-flex xs12 pl-2>
+              <span>{{ header }}</span
+              ><br />
+              <span class="caption"
+                ><v-icon size="15">
+                  map
+                </v-icon>
+                {{ description }}</span
+              >
+            </v-flex>
+          </v-layout>
+        </v-flex>
+        <v-flex v-else xs9>{{ header }}</v-flex>
       </v-layout>
     </v-flex>
     <v-flex>
@@ -21,12 +40,15 @@
         <v-flex xs1>
           <v-layout v-if="leg.mode !== 'FINISH'" justify-center fill-height>
             <v-flex shrink>
-              <div v-if="leg.mode === 'WAIT'" class="borderstopped"></div>
-              <div v-else class="border"></div>
+              <div
+                v-if="leg.mode === 'WAIT'"
+                class="borderstopped borderwidth"
+              ></div>
+              <div v-else class="border borderwidth"></div>
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex caption>
+        <v-flex v-if="leg.mode !== 'CAR'" xs8 caption>
           <v-icon v-if="leg.mode !== 'WAIT' && leg.mode !== 'FINISH'" size="15">
             map
           </v-icon>
@@ -72,7 +94,9 @@ const headers = {
   WALK() {
     return `Lopen (${humanDistance(this.leg.distance)})`
   },
-  CAR: 'Meerijden met een NETMOBIEL gebruiker',
+  CAR() {
+    return `Meerijden met ${this.leg.agencyName}`
+  },
   NETMOBIEL: 'Meerijden met een NETMOBIEL gebruiker',
   RAIL() {
     return `${this.leg.routeShortName} naar ${this.leg.to.name}`
@@ -104,7 +128,10 @@ const descriptions = {
 
     return `${departureName} - ${arrivalName}`
   },
-  CAR: 'Meerijden met een NETMOBIEL gebruiker',
+  CAR() {
+    const dest = this.leg.to.name
+    return 'vanaf ' + dest
+  },
   NETMOBIEL: 'Meerijden met een NETMOBIEL gebruiker',
   RAIL() {
     // add platform to departure and arrival
@@ -144,14 +171,28 @@ function humanDistance(meters) {
 }
 
 .border {
-  width: 1px;
-  border: 2px $color-primary solid;
+  background: url('../../assets/itinerarysolidline.gif');
+  background-position: center;
+  background-repeat-x: no-repeat;
+  height: 100%;
+}
+.borderwidth {
+  width: 5px;
+}
+.borderstopped {
+  background: url('../../assets/itinerarystripedline.gif');
+  background-position: center;
+  background-repeat-x: no-repeat;
   height: 100%;
 }
 
-.borderstopped {
-  width: 1px;
-  border: 2px $color-primary-light dotted;
-  height: 100%;
+.driverImage {
+  border-radius: 1000px;
+  border: 1px solid #ccc;
+  height: 40px;
+  width: 40px;
+}
+.neg-margin-top {
+  margin-top: -10px;
 }
 </style>
