@@ -21,7 +21,12 @@ export default {
             ...context.state.user.profile,
             ...response.data.profiles[0],
           }
-          context.commit('setProfile', profile)
+          if (!!localStorage.fcm && localStorage.fcm !== profile.fcmToken) {
+            profile.fcmToken = localStorage.fcm
+            context.dispatch('updateProfile', profile)
+          } else {
+            context.commit('setProfile', profile)
+          }
         }
       })
       .catch(error => {
@@ -48,7 +53,7 @@ export default {
     context.dispatch('updateProfile', profile)
   },
   updateProfile: (context, profile) => {
-    const URL = BASE_URL + '/profiles/' + context.state.user.profile.id
+    const URL = BASE_URL + '/profiles/' + profile.id
     axios
       .put(URL, profile, {
         headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),

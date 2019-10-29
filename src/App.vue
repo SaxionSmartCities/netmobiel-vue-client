@@ -65,13 +65,16 @@ export default {
     getProfile(newProfile) {
       // Update profile if the passed FCM token is different compared
       // to the one in the profile.
-      let passedFcmToken = this.$route.query.fcm
+      let passedFcmToken = localStorage.fcm
       if (passedFcmToken && passedFcmToken !== newProfile.fcmToken) {
         this.$store.dispatch('ps/storeFcmToken', { fcmToken: passedFcmToken })
       }
     },
   },
   mounted() {
+    if (this.$route.query.fcm) {
+      localStorage.fcm = this.$route.query.fcm
+    }
     // Only fetch profile of user has been authenticated
     if (this.$keycloak.authenticated) {
       this.$store.dispatch('ps/fetchProfile')
