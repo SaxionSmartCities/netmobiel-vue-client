@@ -24,17 +24,7 @@ export default {
         date: date,
         time: time,
       },
-      searchPreferences: {
-        luggage: payload.searchPreferences.luggageOptions.map(
-          element => element.type
-        ),
-        allowedTravelModes: payload.searchPreferences.allowedTravelModes.map(
-          element => element.mode
-        ),
-        maxMinutesWalking: payload.searchPreferences.maxMinutesWalking,
-        transferAllowed: payload.searchPreferences.transferAllowed,
-        numPassengers: payload.searchPreferences.numPassengers,
-      },
+      searchPreferences: payload.searchPreferences,
     }
     var axiosConfig = {
       method: 'POST',
@@ -60,7 +50,9 @@ export default {
         console.log(error)
         context.commit('setPlanningStatus', {
           status: 'FAILED',
-          message: error.response ? error.response.data.message : 'Network failure'
+          message: error.response
+            ? error.response.data.message
+            : 'Network failure',
         })
       })
   },
