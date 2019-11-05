@@ -29,7 +29,7 @@
         </p>
       </v-flex>
       <v-flex v-if="rides.length == 0" my-3>
-        <v-btn round block outline color="blue" to="/howTo">
+        <v-btn rounded block outlined color="blue" to="/howTo">
           Hoe werkt het?
         </v-btn>
       </v-flex>
@@ -57,16 +57,16 @@
           <v-flex v-else my-2>
             <v-btn
               large
-              round
+              rounded
               block
-              outline
-              color="#2E8997"
+              outlined
+              color="primary"
               to="/tripsOverviewPage"
               >Bekijk alle activiteiten</v-btn
             >
           </v-flex>
           <v-flex v-if="rides.length === 0" mb-4>
-            <v-btn large round block to="/modeSelection">
+            <v-btn large rounded block to="/modeSelection">
               Direct aan de slag!
             </v-btn>
           </v-flex>

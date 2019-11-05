@@ -92,7 +92,7 @@
                     <v-flex>
                       <v-btn
                         large
-                        round
+                        rounded
                         block
                         :disabled="!locationsPickedCheck"
                         @click="submitForm()"

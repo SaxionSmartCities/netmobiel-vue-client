@@ -25,7 +25,7 @@
       </v-layout>
     </v-flex>
     <v-flex my-4>
-      <v-btn large round block mb-4 @click="saveTrip">
+      <v-btn large rounded block mb-4 @click="saveTrip">
         Deze reis bevestigen
       </v-btn>
     </v-flex>

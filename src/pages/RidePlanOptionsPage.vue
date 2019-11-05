@@ -162,7 +162,7 @@
       </v-flex>
 
       <v-flex>
-        <v-btn large round block @click="save">Save</v-btn>
+        <v-btn large rounded block @click="save">Save</v-btn>
       </v-flex>
     </v-layout>
   </v-container>
