@@ -1,8 +1,9 @@
 module.exports = {
+  transpileDependencies: ['vuetify'],
   css: {
     loaderOptions: {
-      sass: {
-        data: `
+      scss: {
+        prependData: `
                 @import "@/scss/styling.scss";
                 `,
       },

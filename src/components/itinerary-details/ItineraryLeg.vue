@@ -61,7 +61,7 @@
 
 <script>
 import moment from 'moment'
-import { getIcon } from '@/utils/Utils.js'
+import travelModes from '@/constants/travel-modes.js'
 import delegation from '@/utils/delegation'
 
 export default {
@@ -74,7 +74,7 @@ export default {
   },
   computed: {
     icon: function() {
-      return getIcon(this.leg.mode)
+      return travelModes[this.leg.mode]
     },
     time: function() {
       return moment(this.leg.startTime)
