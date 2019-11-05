@@ -51,7 +51,7 @@
                     </v-layout>
                   </v-flex>
                   <v-flex d-flex>
-                    <v-layout column justify-center>
+                    <v-layout column justify-center @click="swapLocations()">
                       <v-flex
                         id="heenweericoon"
                         text-xs-center
@@ -82,8 +82,48 @@
                       </v-flex>
                     </v-layout>
                   </v-flex>
-                  <v-flex> </v-flex>
                 </v-layout>
+
+                <v-layout>
+                  <v-flex xs11>
+                    <v-layout column>
+                      <v-flex>
+                        <v-layout my-2 row>
+                          <v-flex pl-4 sm3>
+                            <span class="form-label font-weight-bold">
+                              Auto
+                            </span>
+                          </v-flex>
+                          <v-flex xs11>
+                            <router-link
+                              v-if="availableCars.length === 0"
+                              to="/profileCars"
+                            >
+                              <span>Invoeren</span>
+                            </router-link>
+                            <div v-else>
+                              <span> {{ availableCars[0].licensePlate }}</span>
+                              <div class="car-model">
+                                {{ availableCars[0].brand }}
+                                {{ availableCars[0].model }}
+                                {{ availableCars[0].color }}
+                              </div>
+                              <router-link to="profileCars">
+                                <span v-if="availableCars.length > 1">
+                                  Alternatief selecteren
+                                </span>
+                                <span v-else>
+                                  Nieuwe invoeren
+                                </span>
+                              </router-link>
+                            </div>
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+
                 <v-layout mt-2 justify-center text-xs-center>
                   <v-flex>
                     <v-btn
@@ -93,7 +133,7 @@
                       :disabled="!locationsPickedCheck"
                       @click="submitForm()"
                     >
-                      Voeg rit toe!
+                      Rit aabieden
                     </v-btn>
                   </v-flex>
                 </v-layout>
@@ -104,7 +144,7 @@
                     @click="toRidePlanOptions()"
                   >
                     <v-icon>settings</v-icon>
-                    <span class="ml-1">Riteigenschappen</span>
+                    <span class="ml-1">Ritvoorkeuren</span>
                   </v-flex>
                 </v-layout>
               </v-form>
@@ -138,12 +178,15 @@ export default {
         this.$store.commit('ui/setTempValue', { rideTime: value })
       },
     },
-
     locationsPickedCheck: function() {
       const fromLoc = this.$store.getters['gs/getPickedLocation'].from
       const toLoc = this.$store.getters['gs/getPickedLocation'].to
-
-      return fromLoc.address !== undefined && toLoc.address !== undefined
+      const cars = this.$store.getters['ps/getProfile'].ridePlanOptions.cars
+      return (
+        fromLoc.address !== undefined &&
+        toLoc.address !== undefined &&
+        cars.length > 0
+      )
     },
     fromLocationLabel() {
       let location = this.$store.getters['gs/getPickedLocation'].from
@@ -158,6 +201,9 @@ export default {
       return !location.address
         ? 'Klik hier voor bestemming'
         : location.address.label
+    },
+    availableCars() {
+      return this.$store.getters['ps/getProfile'].ridePlanOptions.cars
     },
   },
   methods: {
@@ -176,12 +222,7 @@ export default {
       let to = pickedGeoLocations.to
       let ridePlanOptions = this.$store.getters['ps/getProfile'].ridePlanOptions
       let selectedTime = moment(this.date + ' ' + this.time, 'YYYY-MM-DD HH:mm')
-      let rideDetails = {
-        from: from,
-        to: to,
-        ridePlanOptions: ridePlanOptions,
-        selectedTime: selectedTime,
-      }
+      let rideDetails = { from, to, ridePlanOptions, selectedTime }
       this.$store.dispatch('cs/submitRide', rideDetails)
       this.$router.push('/planSubmitted')
     },
@@ -189,4 +230,10 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.car-model {
+  font-style: italic;
+  color: #9b9b9b;
+  font-size: 80%;
+}
+</style>
