@@ -67,7 +67,7 @@ export default {
       return result
     },
     getIcon: function() {
-      return travelModes[this.leg.mode]
+      return travelModes[this.leg.mode].icon
     },
   },
   methods: {},

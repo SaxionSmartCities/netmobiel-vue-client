@@ -1,26 +1,29 @@
 <template>
-  <v-container grid-list-lg fluid class="background-green">
-    <v-layout>
-      <v-flex xs12>
+  <v-container fluid class="background-primary fill-height">
+    <v-layout column>
+      <v-flex xs6>
         <v-img id="logo" :src="require('@/assets/logo_splash.png')"></v-img>
       </v-flex>
-    </v-layout>
-    <v-layout row wrap mt-5>
-      <v-flex xs12 md6>
-        <v-btn
-          color="secondary"
-          rounded
-          large
-          block
-          @click="$keycloak.loginFn()"
-        >
-          Login
-        </v-btn>
-      </v-flex>
-      <v-flex xs12 md6>
-        <v-btn color="secondary" rounded large block to="/createUser">
-          Registreren
-        </v-btn>
+
+      <v-flex>
+        <v-layout wrap>
+          <v-flex xs12>
+            <v-btn
+              color="secondary"
+              rounded
+              large
+              block
+              @click="$keycloak.loginFn()"
+            >
+              Login
+            </v-btn>
+          </v-flex>
+          <v-flex xs12 mt-3>
+            <v-btn color="secondary" rounded large block to="/createUser">
+              Registreren
+            </v-btn>
+          </v-flex>
+        </v-layout>
       </v-flex>
     </v-layout>
   </v-container>

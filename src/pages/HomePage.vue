@@ -54,7 +54,7 @@
           <v-flex v-if="rides.length === 0">
             Je hebt nog geen activiteiten gepland.
           </v-flex>
-          <v-flex v-else my-2>
+          <v-flex v-else mt-2>
             <v-btn
               large
               rounded
@@ -62,11 +62,19 @@
               outlined
               color="primary"
               to="/tripsOverviewPage"
-              >Bekijk alle activiteiten</v-btn
             >
+              Bekijk alle activiteiten
+            </v-btn>
           </v-flex>
-          <v-flex v-if="rides.length === 0" mb-4>
-            <v-btn large rounded block to="/modeSelection">
+          <v-flex v-if="rides.length === 0" mt-4>
+            <v-btn
+              large
+              depressed
+              color="button"
+              rounded
+              block
+              to="/modeSelection"
+            >
               Direct aan de slag!
             </v-btn>
           </v-flex>
