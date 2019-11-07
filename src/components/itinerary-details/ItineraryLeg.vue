@@ -1,10 +1,10 @@
 <template>
   <v-layout column>
-    <v-flex>
+    <v-flex body-1>
       <v-layout row>
         <v-flex xs2>{{ time }}</v-flex>
         <v-flex xs1>
-          <v-layout column align-center full-height>
+          <v-layout column align-center fill-height>
             <v-flex class="border">
               <div class="open-dot"></div>
             </v-flex>
@@ -62,6 +62,7 @@
 <script>
 import moment from 'moment'
 import travelModes from '@/constants/travel-modes.js'
+import travelModesSurrogates from '@/constants/travel-modes-surrogates.js'
 import delegation from '@/utils/delegation'
 
 export default {
@@ -74,7 +75,11 @@ export default {
   },
   computed: {
     icon: function() {
-      return travelModes[this.leg.mode]
+      if (travelModes[this.leg.mode] == undefined) {
+        return travelModesSurrogates[this.leg.mode].icon
+      } else {
+        return travelModes[this.leg.mode].icon
+      }
     },
     time: function() {
       return moment(this.leg.startTime)
@@ -165,9 +170,11 @@ function humanDistance(meters) {
 <style lang="scss">
 .open-dot {
   background: url('../../assets/travel_details_dot.gif');
-  height: 21px;
-  width: 21px;
+  height: 24px;
+  width: 24px;
   background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
 }
 
 .border {
