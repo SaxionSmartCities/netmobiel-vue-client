@@ -13,76 +13,16 @@
           <v-flex class="box-widget background-white">
             <v-flex>
               <v-form>
-                <v-layout>
+                <v-layout column>
                   <v-flex text-xs-center xs12>
                     <h1>Waar rijd je heen?</h1>
                   </v-flex>
-                </v-layout>
-                <v-layout>
-                  <v-flex id="vannaar" xs11>
-                    <v-layout column>
-                      <v-flex id="van">
-                        <v-layout my-1 row>
-                          <v-flex pl-4 xs5 sm3>
-                            <span class="form-label font-weight-bold">
-                              Van
-                            </span>
-                          </v-flex>
-                          <v-flex
-                            xs11
-                            @click="toLocationSuggestionsPage('from')"
-                          >
-                            {{ fromLocationLabel }}
-                          </v-flex>
-                        </v-layout>
-                      </v-flex>
-                      <v-flex>
-                        <v-layout my-1 row>
-                          <v-flex pl-4 xs5 sm3>
-                            <span class="form-label font-weight-bold">
-                              Naar
-                            </span>
-                          </v-flex>
-                          <v-flex xs11 @click="toLocationSuggestionsPage('to')">
-                            {{ toLocationLabel }}
-                          </v-flex>
-                        </v-layout>
-                      </v-flex>
-                    </v-layout>
+                  <v-flex>
+                    <from-to-fields />
                   </v-flex>
-                  <v-flex d-flex>
-                    <v-layout column justify-center>
-                      <v-flex
-                        id="heenweericoon"
-                        text-xs-center
-                        justify-center
-                        shrink
-                      >
-                        <v-icon>import_export</v-icon>
-                      </v-flex>
-                    </v-layout>
+                  <v-flex>
+                    <date-time-selector />
                   </v-flex>
-                </v-layout>
-
-                <v-layout>
-                  <v-flex xs11>
-                    <v-layout column>
-                      <v-flex id="aankomsttijd">
-                        <v-layout my-2 row>
-                          <v-flex pl-4 sm3>
-                            <span class="form-label font-weight-bold">
-                              Aankomst
-                            </span>
-                          </v-flex>
-                          <v-flex xs11>
-                            <input v-model="date" type="date" required />
-                            <input v-model="time" type="time" required />
-                          </v-flex>
-                        </v-layout>
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                  <v-flex> </v-flex>
                 </v-layout>
                 <v-layout mt-2 justify-center text-xs-center>
                   <v-flex>
@@ -118,9 +58,15 @@
 
 <script>
 import moment from 'moment'
+import FromToFields from '@/components/common/FromToFields.vue'
+import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
 
 export default {
   name: 'RidePlanPage',
+  components: {
+    FromToFields,
+    DateTimeSelector,
+  },
   computed: {
     date: {
       get: function() {
