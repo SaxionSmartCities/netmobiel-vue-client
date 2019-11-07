@@ -18,7 +18,7 @@
         <v-icon>home</v-icon>
       </v-btn>
 
-      <v-btn text value="commute">
+      <v-btn text value="planner" to="/modeSelection">
         <span>Planner</span>
         <v-icon>commute</v-icon>
       </v-btn>

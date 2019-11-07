@@ -28,9 +28,7 @@
                           <v-layout>
                             <v-flex>
                               <v-dialog
-                                ref="dialog"
                                 v-model="dateModal"
-                                :return-value.sync="date"
                                 persistent
                                 width="290px"
                               >
@@ -42,7 +40,8 @@
                                     prepend-icon="event"
                                     hide-details
                                     v-on="on"
-                                  ></v-text-field>
+                                  >
+                                  </v-text-field>
                                 </template>
                                 <v-date-picker v-model="date" scrollable>
                                   <v-spacer></v-spacer>
@@ -56,7 +55,10 @@
                                   <v-btn
                                     text
                                     color="primary"
-                                    @click="$refs.dialog.save(date)"
+                                    @click="
+                                      saveDate(date)
+                                      dateModal = false
+                                    "
                                   >
                                     OK
                                   </v-btn>
@@ -201,6 +203,7 @@ export default {
       selectedMode: 0,
       dateModal: false,
       timeModal: false,
+      tmp: '',
     }
   },
   computed: {
@@ -258,6 +261,9 @@ export default {
     showPickLocationView(fieldPressed) {
       this.showPicklocation = true
       this.pickedLocationState = fieldPressed
+    },
+    saveDate(date) {
+      this.date = date
     },
     toRidePreferences() {
       this.$router.push({ name: 'searchOptions' })
