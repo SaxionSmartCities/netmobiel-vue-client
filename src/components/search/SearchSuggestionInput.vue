@@ -19,20 +19,15 @@
         <v-flex xs12>
           <v-list v-if="showSuggestionsList" pt-0>
             <template v-for="(location, index) in locations">
-              <v-list-tile
+              <v-list-item
                 :key="location.name"
                 @click="completeSearch(location)"
               >
-                <v-icon class="mr-3">{{ location.type }}</v-icon>
-                <v-list-tile-content class="grey--text">
-                  <v-list-tile-title>
-                    <div v-html="parseLabel(location.label)"></div>
-                  </v-list-tile-title>
-                  <v-list-tile-sub-title></v-list-tile-sub-title>
-                </v-list-tile-content>
-              </v-list-tile>
-              <v-divider v-if="index + 1 < locations.length" :key="index">
-              </v-divider>
+                <v-list-item-title>
+                  <div v-html="parseLabel(location.label)"></div>
+                </v-list-item-title>
+              </v-list-item>
+              <v-divider v-if="index + 1 < locations.length" :key="index" />
             </template>
           </v-list>
         </v-flex>
