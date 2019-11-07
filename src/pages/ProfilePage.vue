@@ -2,28 +2,24 @@
   <v-container>
     <v-layout pa-2 column>
       <v-flex>
-        <v-layout row my-3 mr-3>
+        <v-layout row mb-3>
           <v-flex lg1 sm2 xs4>
             <round-user-image></round-user-image>
           </v-flex>
 
-          <v-flex>
-            <v-layout class="mt-2">
+          <v-flex body-2 mt-2>
+            <v-layout>
               <v-flex>
                 <p class="ma-0">{{ user.fullName }}</p>
                 <p class="ma-0">{{ address }}</p>
-                <v-layout row>
-                  <v-flex>
-                    <v-rating
-                      v-model="user.rating"
-                      :length="user.maxRating"
-                      background-color="yellow darken-3"
-                      color="yellow darken-3"
-                      small
-                      readonly
-                    ></v-rating>
-                  </v-flex>
-                </v-layout>
+                <v-rating
+                  v-model="user.rating"
+                  :length="user.maxRating"
+                  background-color="yellow darken-3"
+                  color="yellow darken-3"
+                  small
+                  readonly
+                ></v-rating>
               </v-flex>
             </v-layout>
           </v-flex>
