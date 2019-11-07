@@ -70,13 +70,14 @@
                                 ref="dialog"
                                 v-model="timeModal"
                                 :return-value.sync="time"
-                                persistent
                                 width="290px"
                               >
                                 <template v-slot:activator="{ on }">
                                   <v-text-field
                                     v-model="time"
-                                    label="Vertrektijd"
+                                    :label="
+                                      selectedMode == 0 ? 'Aankomst' : 'Vertrek'
+                                    "
                                     prepend-icon="access_time"
                                     readonly
                                     hide-details
@@ -88,15 +89,12 @@
                                   v-if="timeModal"
                                   v-model="time"
                                   full-width
+                                  format="24hr"
                                 >
-                                  <v-spacer></v-spacer>
-                                  <v-btn
-                                    text
-                                    color="primary"
-                                    @click="timeModal = false"
-                                  >
-                                    Cancel
-                                  </v-btn>
+                                  <v-tabs v-model="selectedMode" grow>
+                                    <v-tab>Aankomst</v-tab>
+                                    <v-tab>Vertrek</v-tab>
+                                  </v-tabs>
                                   <v-btn
                                     text
                                     color="primary"
