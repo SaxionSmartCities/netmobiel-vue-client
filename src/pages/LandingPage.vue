@@ -9,7 +9,7 @@
         <v-layout wrap>
           <v-flex xs12>
             <v-btn
-              color="secondary"
+              color="button"
               rounded
               large
               block
@@ -19,7 +19,7 @@
             </v-btn>
           </v-flex>
           <v-flex xs12 mt-3>
-            <v-btn color="secondary" rounded large block to="/createUser">
+            <v-btn color="button" rounded large block to="/createUser">
               Registreren
             </v-btn>
           </v-flex>

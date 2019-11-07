@@ -23,13 +23,7 @@
                   <v-flex>
                     <v-layout column>
                       <v-flex>
-                        <v-btn
-                          large
-                          rounded
-                          color="secondary"
-                          block
-                          to="/search"
-                        >
+                        <v-btn large rounded color="button" block to="/search">
                           Een reis plannen
                         </v-btn>
                       </v-flex>
@@ -43,7 +37,7 @@
                   <v-flex mt-4>
                     <v-layout column>
                       <v-flex>
-                        <v-btn large rounded color="secondary" block to="/plan">
+                        <v-btn large rounded color="button" block to="/plan">
                           Een rit aanbieden
                         </v-btn>
                       </v-flex>

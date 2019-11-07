@@ -30,7 +30,7 @@
                         large
                         rounded
                         block
-                        color="secondary"
+                        color="button"
                         :disabled="!locationsPickedCheck"
                         @click="submitForm()"
                       >
