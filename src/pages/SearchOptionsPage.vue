@@ -8,7 +8,7 @@
         <v-divider />
       </v-flex>
       <v-flex mb-3>
-        <v-expansion-panels>
+        <v-expansion-panels accordion>
           <v-expansion-panel>
             <v-expansion-panel-header>
               <v-layout class="menu-item">

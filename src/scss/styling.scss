@@ -15,6 +15,10 @@
   background:#ffffff;
 }
 
+.v-expansion-panel:before{
+  box-shadow: none !important;
+}
+
 h1 {
   font-size: $h1-font-size;
 }
