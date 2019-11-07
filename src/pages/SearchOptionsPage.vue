@@ -8,9 +8,9 @@
         <v-divider />
       </v-flex>
       <v-flex mb-3>
-        <v-expansion-panel>
-          <v-expansion-panel-content>
-            <div slot="header">
+        <v-expansion-panels>
+          <v-expansion-panel>
+            <v-expansion-panel-header>
               <v-layout class="menu-item">
                 <v-flex xs10>
                   <span class="form-label py-2">Personen</span>
@@ -19,25 +19,27 @@
                   {{ nrOfPersons }}
                 </v-flex>
               </v-layout>
-            </div>
-            <v-layout>
-              <v-flex mt-3>
-                <v-slider
-                  v-model="nrOfPersons"
-                  class="px-4"
-                  thumb-color="thumb-grey"
-                  thumb-label
-                  ticks="always"
-                  tick-size="2"
-                  :tick-labels="generatePersonRange"
-                  :min="1"
-                  :max="maxNrOfPersons"
-                />
-              </v-flex>
-            </v-layout>
-          </v-expansion-panel-content>
-          <v-expansion-panel-content>
-            <div slot="header">
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-layout>
+                <v-flex mt-3>
+                  <v-slider
+                    v-model="nrOfPersons"
+                    class="px-4"
+                    thumb-color="thumb-grey"
+                    thumb-label
+                    ticks="always"
+                    tick-size="2"
+                    :tick-labels="generatePersonRange"
+                    :min="1"
+                    :max="maxNrOfPersons"
+                  />
+                </v-flex>
+              </v-layout>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <v-expansion-panel-header>
               <v-layout class="menu-item">
                 <v-flex xs10>
                   <span class="form-label py-2">Bagage</span>
@@ -53,29 +55,30 @@
                   </v-layout>
                 </v-flex>
               </v-layout>
-            </div>
-            <v-layout pb-4>
-              <v-flex px-4>
-                <v-layout row wrap>
-                  <v-flex
-                    v-for="luggage in luggageTypes"
-                    :key="luggage.type"
-                    xs6
-                  >
-                    <v-checkbox
-                      v-model="luggageSelected"
-                      hide-details
-                      :label="luggage.label"
-                      :value="luggage"
-                    ></v-checkbox>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-            </v-layout>
-          </v-expansion-panel-content>
-
-          <v-expansion-panel-content>
-            <div slot="header">
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-layout pb-4>
+                <v-flex px-4>
+                  <v-layout row wrap>
+                    <v-flex
+                      v-for="luggage in luggageTypes"
+                      :key="luggage.type"
+                      xs6
+                    >
+                      <v-checkbox
+                        v-model="luggageSelected"
+                        hide-details
+                        :label="luggage.label"
+                        :value="luggage"
+                      ></v-checkbox>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <v-expansion-panel-header>
               <v-layout class="menu-item">
                 <v-flex xs10>
                   <span class="form-label py-2">Overstappen</span>
@@ -87,27 +90,29 @@
                   <v-icon color="red">close</v-icon>
                 </v-flex>
               </v-layout>
-            </div>
-            <v-layout row align-center px-4 wrap>
-              <v-flex xs12>
-                <v-alert type="warning" value="true" color="orange">
-                  Let op: Als overstappen wordt uitgeschakeld is het alleen
-                  mogelijk om u te matchen met een directe rit. In veel gevallen
-                  zal dit niet mogelijk zijn. Het uitzetten van deze optie zal
-                  resulteren in een sterk verminderd aantal reisopties.
-                </v-alert>
-              </v-flex>
-              <v-flex xs10>
-                Overstappen
-              </v-flex>
-              <v-flex>
-                <v-switch v-model="transferAllowed" color="green"></v-switch>
-              </v-flex>
-            </v-layout>
-          </v-expansion-panel-content>
-
-          <v-expansion-panel-content>
-            <div slot="header">
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-layout row align-center px-4 wrap>
+                <v-flex xs12>
+                  <v-alert type="warning" value="true" color="orange">
+                    Let op: Als overstappen wordt uitgeschakeld is het alleen
+                    mogelijk om u te matchen met een directe rit. In veel
+                    gevallen zal dit niet mogelijk zijn. Het uitzetten van deze
+                    optie zal resulteren in een sterk verminderd aantal
+                    reisopties.
+                  </v-alert>
+                </v-flex>
+                <v-flex xs10>
+                  Overstappen
+                </v-flex>
+                <v-flex>
+                  <v-switch v-model="transferAllowed" color="green"></v-switch>
+                </v-flex>
+              </v-layout>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <v-expansion-panel-header>
               <v-layout class="menu-item">
                 <v-flex xs10>
                   <span class="form-label py-2">Toestaan</span>
@@ -123,29 +128,30 @@
                   </v-layout>
                 </v-flex>
               </v-layout>
-            </div>
-            <v-layout pb-4>
-              <v-flex px-4>
-                <v-layout row wrap>
-                  <v-flex
-                    v-for="travelMode in travelModes"
-                    :key="travelMode.mode"
-                    xs6
-                  >
-                    <v-checkbox
-                      v-model="allowedTravelModes"
-                      hide-details
-                      :label="travelMode.label"
-                      :value="travelMode"
-                    ></v-checkbox>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-            </v-layout>
-          </v-expansion-panel-content>
-
-          <v-expansion-panel-content>
-            <div slot="header">
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-layout pb-4>
+                <v-flex px-4>
+                  <v-layout row wrap>
+                    <v-flex
+                      v-for="travelMode in travelModes"
+                      :key="travelMode.mode"
+                      xs6
+                    >
+                      <v-checkbox
+                        v-model="allowedTravelModes"
+                        hide-details
+                        :label="travelMode.label"
+                        :value="travelMode"
+                      ></v-checkbox>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <v-expansion-panel-header>
               <v-layout class="menu-item">
                 <v-flex xs9>
                   <span class="form-label py-2">Maximale loopafstand</span>
@@ -154,29 +160,33 @@
                   {{ maxMinutesWalking }} min
                 </v-flex>
               </v-layout>
-            </div>
-            <v-layout>
-              <v-flex mt-3>
-                <v-slider
-                  v-model="maxMinutesWalking"
-                  class="px-4"
-                  thumb-color="thumb-grey"
-                  thumb-label
-                  ticks="always"
-                  tick-size="2"
-                  :tick-labels="generateMinuteRange"
-                  min="0"
-                  max="30"
-                  step="5"
-                />
-              </v-flex>
-            </v-layout>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-layout>
+                <v-flex mt-3>
+                  <v-slider
+                    v-model="maxMinutesWalking"
+                    class="px-4"
+                    thumb-color="thumb-grey"
+                    thumb-label
+                    ticks="always"
+                    tick-size="2"
+                    :tick-labels="generateMinuteRange"
+                    min="0"
+                    max="30"
+                    step="5"
+                  />
+                </v-flex>
+              </v-layout>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-flex>
 
       <v-flex>
-        <v-btn large rounded block @click="save">Save</v-btn>
+        <v-btn large rounded depressed color="secondary" block @click="save"
+          >Save</v-btn
+        >
       </v-flex>
     </v-layout>
   </v-container>
