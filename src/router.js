@@ -12,8 +12,9 @@ import ModeSelectionPage from './pages/ModeSelectionPage.vue'
 import NotificationOptionsPage from './pages/NotificationOptionsPage.vue'
 import PrivacySecurityPage from './pages/PrivacySecurityPage.vue'
 import PrivacyStatementPage from './pages/PrivacyStatementPage.vue'
-import ProfileAddCarPage from './pages/ProfileAddCarPage.vue'
 import ProfileCarsPage from './pages/ProfileCarsPage.vue'
+import ProfileAddCarPage from './pages/ProfileAddCarPage.vue'
+import ProfileEditCarPage from './pages/ProfileEditCarPage.vue'
 import ProfilePage from './pages/ProfilePage.vue'
 import SearchLocationPage from './pages/SearchLocationPage'
 import SearchOptionsPage from './pages/SearchOptionsPage'
@@ -136,6 +137,11 @@ const router = new Router({
       path: '/profileAddCar',
       component: ProfileAddCarPage,
       name: 'profileAddCarPage',
+    },
+    {
+      path: '/profileEditCar',
+      component: ProfileEditCarPage,
+      name: 'profileEditCarPage',
     },
   ],
 })

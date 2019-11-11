@@ -1,91 +1,142 @@
 <template>
   <v-container>
     <v-layout column>
-      <v-flex v-for="option in tripOptions" :key="option.name">
-        <v-divider></v-divider>
-        <v-layout align-center mr-3>
-          <v-flex>
-            <p class="body-1 mb-0">{{ option.name }}</p>
-          </v-flex>
-          <v-flex xs1>
-            <v-switch
-              :input-value="option.value"
-              color="#2E8997"
-              @change="setTripValue(option.name, $event)"
-            ></v-switch>
-          </v-flex>
-        </v-layout>
+      <v-flex mb-3>
+        <h3>Mijn auto's</h3>
       </v-flex>
-    </v-layout>
-
-    <v-layout v-if="isDriver" pt-3>
       <v-flex>
-        <p class="text-primary-uppercase">Auto's</p>
-        <v-divider></v-divider>
+        <div v-for="car in availableCars" :key="car.id" class="car">
+          <div class="license">
+            {{ car.licensePlate }}
+          </div>
+          <div class="brand">
+            {{ car.brand }}&nbsp;{{ car.model }},&nbsp;{{ car.color }}
+          </div>
+          <v-layout row>
+            <v-flex xs3>
+              <span class="form-label font-weight-bold">
+                Bagage
+              </span>
+            </v-flex>
+            <v-flex xs9>
+              {{ luggageOptions }}
+            </v-flex>
+          </v-layout>
+          <v-layout row class="passengers">
+            <v-flex xs3>
+              <span class="form-label font-weight-bold">
+                Personen
+              </span>
+            </v-flex>
+            <v-flex xs9>
+              {{ passengerCount }}
+            </v-flex>
+          </v-layout>
+          <v-layout row class="actions">
+            <v-flex xs4>
+              <v-btn small round outline color="#2E8997" @click="editCar(car)">
+                Wijzigen
+              </v-btn>
+            </v-flex>
+            <v-flex xs8>
+              <v-btn small round block @click="selectAlternativeCar(car)">
+                Met deze auto rijden
+              </v-btn>
+            </v-flex>
+          </v-layout>
+        </div>
       </v-flex>
-    </v-layout>
-    <v-layout column>
-      <v-flex>
-        <car-options v-if="isDriver"></car-options>
+      <v-flex class="add-new-car">
+        <v-btn
+          large
+          round
+          outline
+          color="#2E8997"
+          @click="$router.push('/profileAddCar')"
+        >
+          Auto toevoegen
+        </v-btn>
       </v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import CarOptions from '@/components/settings/CarOptions.vue'
+import luggageTypes from '@/constants/luggage-types.js'
 
+function luggageLabel(option) {
+  return luggageTypes[option].label
+}
 export default {
-  name: 'NotificationOptions',
-  components: {
-    CarOptions,
-  },
-  data() {
-    return {
-      title: 'Instellingen',
-    }
-  },
   computed: {
-    notificationOptions() {
-      return this.$store.getters['ps/getUser'].notificationOptions
+    availableCars() {
+      return this.$store.getters['ps/getUser'].profile.ridePlanOptions.cars
     },
-    tripOptions() {
-      return this.$store.getters['ps/getUser'].tripOptions
+    luggageOptions() {
+      return this.$store.getters[
+        'ps/getUser'
+      ].profile.ridePlanOptions.luggageOptions
+        .map(luggageLabel)
+        .join(', ')
     },
-    isDriver() {
-      return this.$store.getters['ps/getUser'].tripOptions[0].value
+    passengerCount() {
+      return this.$store.getters['ps/getUser'].profile.ridePlanOptions
+        .numPassengers
     },
-    reviewOptions() {
-      return this.$store.getters['ps/getUser'].reviews
-    },
-  },
-  created: function() {
-    this.$store.commit('ui/showBackButton')
   },
   methods: {
-    setNotificationValue(key, state) {
-      this.$store.commit('ps/setNotificationOptionsValue', {
-        key: key,
-        value: state,
-      })
+    selectAlternativeCar(car) {
+      const profile = this.$store.getters['ps/getUser'].profile,
+        cars = profile.ridePlanOptions.cars.slice(),
+        index = cars.indexOf(car)
+      // if the alternative is already the first car (or a nonexistent car), don't bother swapping
+      if (index > 0) {
+        const formerFirstCar = cars[0]
+        cars[0] = car
+        cars[index] = formerFirstCar
+        this.$store.dispatch('ps/updateProfile', {
+          ...profile,
+          ridePlanOptions: { ...profile.ridePlanOptions, cars },
+        })
+      }
+      this.$router.push('/plan')
     },
-    setTripValue(key, state) {
-      this.$store.commit('ps/setTripOptionsValue', {
-        key: key,
-        value: state,
-      })
-    },
-    setReviewValue(key, state) {
-      this.$store.commit('ps/setReviewOptionsValue', {
-        key: key,
-        value: state,
-      })
+    editCar(car) {
+      console.log(car)
     },
   },
 }
 </script>
+
 <style scoped>
-.v-input__control {
-  height: 32px !important;
+.car {
+  border: 1px solid #9d9d9d;
+  border-radius: 7px;
+  padding: 0 1em;
+  margin-top: 1em;
+}
+.car:first-child {
+  margin-top: 0;
+}
+.license {
+  font-weight: bold;
+  margin: 0.5em 0 0.25em 0;
+}
+.brand {
+  color: #9d9d9d;
+  font-size: 80%;
+  margin: 0.25em 0 0.5em 0;
+  font-variant: super;
+}
+.passengers {
+  margin: 0.5em 0;
+}
+.actions {
+  margin: 1em 0;
+}
+.add-new-car {
+  margin-top: 1em;
+  padding-bottom: calc(56px + 1em);
+  text-align: right;
 }
 </style>

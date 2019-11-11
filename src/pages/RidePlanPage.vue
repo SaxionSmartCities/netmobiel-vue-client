@@ -133,7 +133,7 @@
                       :disabled="!locationsPickedCheck"
                       @click="submitForm()"
                     >
-                      Rit aabieden
+                      Rit aanbieden
                     </v-btn>
                   </v-flex>
                 </v-layout>
