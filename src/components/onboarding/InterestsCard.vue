@@ -5,38 +5,22 @@
       <v-row no-gutters>
         <v-col>
           <span class="text-uppercase text-color-primary ">
-            Wanneer ben je jarig?
+            Wat zijn je interesses?
           </span>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row no-gutters>
         <v-col>
-          <v-menu
-            ref="menu"
-            v-model="menu"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                hide-details
-                dense
-                :value="displayDate"
-                prepend-icon="event"
-                readonly
-                v-on="on"
-              >
-              </v-text-field>
-            </template>
-            <v-date-picker
-              ref="picker"
-              v-model="date"
-              :max="new Date().toISOString().substr(0, 10)"
-              min="1950-01-01"
-            ></v-date-picker>
-          </v-menu>
+          <v-chip-group v-model="selectedInterests" multiple column>
+            <v-chip
+              v-for="interest in interestsList"
+              :key="interest.interest"
+              :value="interest.interest"
+              active-class="selectedInterest"
+            >
+              {{ interest.label }}
+            </v-chip>
+          </v-chip-group>
         </v-col>
       </v-row>
     </v-card-text>
@@ -55,22 +39,30 @@
 
 <script>
 import moment from 'moment'
+import interests from '@/constants/interests.js'
 
 export default {
   data: function() {
     return {
       date: new Date().toISOString().substr(0, 10),
       menu: false,
+      selectedInterests: [],
     }
   },
   computed: {
     displayDate: function() {
       return moment(this.date).format('DD-MM-YYYY')
     },
+    interestsList: function() {
+      return interests
+    },
   },
   watch: {
     menu(val) {
       val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
+    },
+    selectedInterests(val) {
+      console.log(val)
     },
   },
   methods: {
@@ -79,7 +71,7 @@ export default {
     },
     nextStep: function() {
       let profile = this.$store.getters['ps/getProfile']
-      profile['age'] = this.age
+      profile['interests'] = this.selectedInterests
 
       this.$store.dispatch('ps/updateProfile', profile)
 
@@ -89,4 +81,8 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.selectedInterest {
+  background: #8bb7be;
+}
+</style>

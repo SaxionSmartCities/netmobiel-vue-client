@@ -3,7 +3,10 @@
     <v-row align="center" justify="center" class="pa-4">
       <v-col>
         <v-row>
-          <v-col> <age-card /></v-col>
+          <v-col v-if="step === 0"> <age-card @next-step="step++"/></v-col>
+          <v-col v-if="step === 1">
+            <interests-card />
+          </v-col>
         </v-row>
         <v-row justify="center">
           <v-col class="text-center">
@@ -19,10 +22,17 @@
 
 <script>
 import AgeCard from '@/components/onboarding/AgeCard.vue'
+import InterestsCard from '@/components/onboarding/InterestsCard.vue'
 
 export default {
   components: {
     AgeCard,
+    InterestsCard,
+  },
+  data: function() {
+    return {
+      step: 0,
+    }
   },
 }
 </script>
