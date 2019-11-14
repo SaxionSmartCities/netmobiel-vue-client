@@ -24,8 +24,8 @@ run development linter:
 
 run production linter:
   stage: lint
-  variables:
-    NODE_ENV: "production"
+  # variables:
+  #   NODE_ENV: "production"
   only:
     - master
     - dev
