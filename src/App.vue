@@ -170,6 +170,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/scss/styling.scss';
+
 .homepage {
   background-image: url('assets/achterhoek_background.jpg');
   background-size: contain;
@@ -203,5 +205,13 @@ export default {
 
 #backButton {
   color: $color-white;
+}
+
+.v-application .text-light-grey {
+  color: $color-light-grey;
+}
+
+.v-application .underlined {
+  text-decoration: underline;
 }
 </style>

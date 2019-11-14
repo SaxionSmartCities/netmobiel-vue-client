@@ -53,6 +53,7 @@ export default {
     context.dispatch('updateProfile', profile)
   },
   updateProfile: (context, profile) => {
+    console.log('updating profile')
     const URL = BASE_URL + '/profiles/' + profile.id
     axios
       .put(URL, profile, {
@@ -61,6 +62,7 @@ export default {
       .then(response => {
         if (response.status == 200 && response.data.profiles.length > 0) {
           context.commit('setProfile', response.data.profiles[0])
+          console.log(response.data.profiles[0])
         }
       })
       .catch(error => {

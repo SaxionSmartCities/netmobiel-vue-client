@@ -26,7 +26,7 @@ export default {
           'Maak jouw profiel compleet en verdien een gratis reis met Netmobiel!',
         link: {
           label: 'Profiel compleet maken',
-          to: '/updateProfile',
+          to: '/onboardingPage',
         },
       },
 
