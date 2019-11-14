@@ -34,8 +34,43 @@ run production linter:
   script:
     - npm run lint
 
-build site:
+build site acceptance:
   stage: build
+  environment:
+    name: acceptance
+    url: https://acc.netmobiel.eu
+  only:
+    - dev
+  script:
+    - echo $VUE_APP_API_BASE_URL
+    - npm run build
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - dist
+
+deploy site acceptance:
+  stage: deploy
+  environment:
+    name: acceptance
+    url: https://acc.netmobiel.eu
+  only:
+    - dev
+  cache: {}
+  script:
+    - apk add --no-cache openssh rsync
+    - mkdir -p ~/.ssh
+    - echo "$NETMOBIEL_ACC_SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - rsync -a --delete -e "ssh -o StrictHostKeyChecking=no" dist/* gitlab@vps1323.directvps.nl:/var/www/netmobiel-view-client
+
+build site production:
+  stage: build
+  environment:
+    name: production
+    url: https://app.netmobiel.eu
+  only:
+    - master
   script:
     - npm run build
   artifacts:
@@ -43,8 +78,12 @@ build site:
     paths:
       - dist
 
-deploy site:
+deploy site production:
   stage: deploy
+  environment:
+    name: production
+    url: https://app.netmobiel.eu
+  when: manual
   only:
     - master
   cache: {}
