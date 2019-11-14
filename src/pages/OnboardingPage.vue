@@ -5,7 +5,7 @@
         <v-row>
           <v-col v-if="step === 0"> <age-card @next-step="step++"/></v-col>
           <v-col v-if="step === 1">
-            <interests-card />
+            <interests-card @next-step="step++" />
           </v-col>
         </v-row>
         <v-row justify="center">
@@ -33,6 +33,13 @@ export default {
     return {
       step: 0,
     }
+  },
+  watch: {
+    step: function() {
+      if (this.step >= 2) {
+        this.$router.push('/onboardingComplete')
+      }
+    },
   },
 }
 </script>
