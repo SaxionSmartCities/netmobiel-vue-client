@@ -1,8 +1,7 @@
 import axios from 'axios'
 import config from '@/config/config'
 
-const GEOCODER_BASE_URL =
-  process.env.VUE_APP_BASE_URL || 'https://dev.netmobiel.eu/gwapi'
+const GEOCODER_BASE_URL = config.BASE_URL
 const GRAVITEE_GEO_SERVICE_API_KEY = config.GRAVITEE_GEO_SERVICE_API_KEY
 
 function generateHeaders(key) {
