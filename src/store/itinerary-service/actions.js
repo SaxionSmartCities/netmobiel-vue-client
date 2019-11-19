@@ -18,29 +18,13 @@ export default {
     let time = moment(payload.selectedTime).format('HH:mm')
     let date = moment(payload.selectedTime).format('YYYY-MM-DD')
     let data = {
-      fromPlace:
-        payload.from.displayPosition.latitude +
-        ',' +
-        payload.from.displayPosition.longitude,
-      toPlace:
-        payload.to.displayPosition.latitude +
-        ',' +
-        payload.to.displayPosition.longitude,
+      fromPlace: `${payload.from.position[0]},${payload.from.position[1]}`,
+      toPlace: `${payload.to.position[0]},${payload.to.position[1]}`,
       selectedTime: {
         date: date,
         time: time,
       },
-      searchPreferences: {
-        luggage: payload.searchPreferences.luggageOptions.map(
-          element => element.type
-        ),
-        allowedTravelModes: payload.searchPreferences.allowedTravelModes.map(
-          element => element.mode
-        ),
-        maxMinutesWalking: payload.searchPreferences.maxMinutesWalking,
-        transferAllowed: payload.searchPreferences.transferAllowed,
-        numPassengers: payload.searchPreferences.numPassengers,
-      },
+      searchPreferences: payload.searchPreferences,
     }
     var axiosConfig = {
       method: 'POST',
@@ -63,10 +47,13 @@ export default {
         })
       })
       .catch(function(error) {
-        var errorMsg = error.response.data.message
+        // eslint-disable-next-line
+        console.log(error)
         context.commit('setPlanningStatus', {
           status: 'FAILED',
-          message: errorMsg,
+          message: error.response
+            ? error.response.data.message
+            : 'Network failure',
         })
       })
   },
