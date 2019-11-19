@@ -143,21 +143,19 @@ export default {
       const fromLoc = this.$store.getters['gs/getPickedLocation'].from
       const toLoc = this.$store.getters['gs/getPickedLocation'].to
 
-      return fromLoc.address !== undefined && toLoc.address !== undefined
+      return fromLoc.title !== undefined && toLoc.title !== undefined
     },
     fromLocationLabel() {
-      let location = this.$store.getters['gs/getPickedLocation'].from
-
-      return !location.address
-        ? 'Klik hier voor vertreklocatie'
-        : location.address.label
+      const suggestion = this.$store.getters['gs/getPickedLocation'].from
+      return !suggestion.title
+        ? 'Klik hier voor vertrekplek'
+        : `${suggestion.title} ${suggestion.vicinity}`
     },
     toLocationLabel() {
-      let location = this.$store.getters['gs/getPickedLocation'].to
-
-      return !location.address
+      const suggestion = this.$store.getters['gs/getPickedLocation'].to
+      return !suggestion.title
         ? 'Klik hier voor bestemming'
-        : location.address.label
+        : `${suggestion.title} ${suggestion.vicinity}`
     },
   },
   methods: {
