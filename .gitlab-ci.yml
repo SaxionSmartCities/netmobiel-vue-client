@@ -40,7 +40,6 @@ build site acceptance:
   only:
     - dev
   script:
-    - echo $VUE_APP_API_BASE_URL
     - npm run build
   artifacts:
     expire_in: 1 week
