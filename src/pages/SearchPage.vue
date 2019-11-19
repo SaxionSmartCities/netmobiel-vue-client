@@ -162,18 +162,6 @@ export default {
     },
   },
   methods: {
-    fromLocationLabel() {
-      const suggestion = this.$store.getters['gs/getPickedLocation'].from
-      return !suggestion.title
-        ? 'Klik hier voor vertrekplek'
-        : `${suggestion.title} ${suggestion.vicinity}`
-    },
-    toLocationLabel() {
-      const suggestion = this.$store.getters['gs/getPickedLocation'].to
-      return !suggestion.title
-        ? 'Klik hier voor bestemming'
-        : `${suggestion.title} ${suggestion.vicinity}`
-    },
     showPickLocationView(fieldPressed) {
       this.showPicklocation = true
       this.pickedLocationState = fieldPressed

@@ -45,17 +45,15 @@ export default {
   methods: {
     fromLocationLabel() {
       let location = this.$store.getters['gs/getPickedLocation'].from
-
-      return !location.address
+      return !location.title
         ? 'Klik hier voor vertrekplek'
-        : location.address.label
+        : `${location.title} ${location.vicinity}`
     },
     toLocationLabel() {
       let location = this.$store.getters['gs/getPickedLocation'].to
-
-      return !location.address
+      return !location.title
         ? 'Klik hier voor bestemming'
-        : location.address.label
+        : `${location.title} ${location.vicinity}`
     },
     swapLocations() {
       this.$store.commit('gs/swapLocations')
