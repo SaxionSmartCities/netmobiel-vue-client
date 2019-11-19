@@ -47,6 +47,7 @@ export default {
         })
       })
       .catch(function(error) {
+        // eslint-disable-next-line
         console.log(error)
         context.commit('setPlanningStatus', {
           status: 'FAILED',
