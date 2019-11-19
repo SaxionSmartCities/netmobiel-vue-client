@@ -80,8 +80,10 @@ export default {
   },
   methods: {
     continueWithSelectedCar() {
-      // store license plate for to distinguish between add and edit in the next page
-      this.$store.commit('cs/setSearchLicensePlate', this.searchLicensePlate.toUpperCase())
+      this.$store.commit(
+        'cs/setSearchLicensePlate',
+        this.searchLicensePlate.toUpperCase()
+      )
       this.$router.push('/profileEditCar')
     },
   },

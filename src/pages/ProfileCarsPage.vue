@@ -102,7 +102,9 @@ export default {
       this.$router.push('/plan')
     },
     editCar(car) {
-      console.log(car)
+      // treat the car to edit as the search result
+      this.$store.commit('cs/setSearchResult', car)
+      this.$router.push('/profileEditCar')
     },
   },
 }
