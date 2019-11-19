@@ -109,7 +109,10 @@ export default {
     completeSearch(suggestion) {
       this.$store.commit('gs/setGeoLocationPicked', {
         field: this.$route.params.field,
-        suggestion,
+        suggestion: {
+          ...suggestion,
+          vicinity: suggestion.vicinity.replace('<br/>', ' '),
+        },
       })
       this.$router.go(-1)
     },
