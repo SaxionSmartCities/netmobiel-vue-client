@@ -1,12 +1,9 @@
 export default {
-  setGeocoderSuggestions: (state, payload) =>
-    (state.geocoder.suggestions = payload),
+  setGeocoderSuggestions: (state, payload) => {
+    state.geocoder.suggestions = payload
+  },
   setGeoLocationPicked: (state, payload) => {
-    if (payload.field === 'to') {
-      state.geocoder.pickedLocations.to = payload.pos
-    } else if (payload.field === 'from') {
-      state.geocoder.pickedLocations.from = payload.pos
-    }
+    state.geocoder.pickedLocations[payload.field] = payload.suggestion
   },
   swapLocations: state => {
     let tmp = state.geocoder.pickedLocations.to

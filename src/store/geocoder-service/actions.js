@@ -1,67 +1,39 @@
 import axios from 'axios'
 import config from '@/config/config'
 
+const GEOCODER_BASE_URL =
+  process.env.VUE_APP_BASE_URL || 'https://dev.netmobiel.eu/gwapi'
 const GRAVITEE_GEO_SERVICE_API_KEY = config.GRAVITEE_GEO_SERVICE_API_KEY
 
-function generateHeaders() {
+function generateHeaders(key) {
   return {
-    'X-Gravitee-Api-Key': GRAVITEE_GEO_SERVICE_API_KEY,
+    'X-Gravitee-Api-Key': key,
   }
 }
 
 export default {
-  fetchGeocoderSuggestions: (context, place) => {
-    const GEOCODER_BASE_URL = `https://dev.netmobiel.eu/gwapi/geo/suggest?place=${place}`
-    axios
-      .get(GEOCODER_BASE_URL, { headers: generateHeaders() })
-      .then(function(resp) {
-        if (resp.status == 200 && resp.data.suggestions.length > 0) {
-          context.commit('setGeocoderSuggestions', resp.data.suggestions)
-        }
+  fetchGeocoderSuggestions: async (
+    context,
+    { place, area, result_types, hlStart, hlEnd }
+  ) => {
+    try {
+      const resp = await axios.get(`${GEOCODER_BASE_URL}/geo/autosuggest`, {
+        params: { place, in: area, result_types, hlStart, hlEnd },
+        headers: generateHeaders(GRAVITEE_GEO_SERVICE_API_KEY),
       })
-      .catch(function(error) {
-        // TODO: Proper error handling.
-        // eslint-disable-next-line
-        console.log(error)
-
-        context.dispatch(
-          'ui/queueNotification',
-          {
-            message: 'Fout bij het ophalen van locatiesuggesties.',
-            timeout: 0,
-          },
-          { root: true }
-        )
-      })
-  },
-  fetchGeocoderLocation: (context, payload) => {
-    const GEOCODER_BASE_URL = `https://dev.netmobiel.eu/gwapi/geo/locations/${
-      payload.locationId
-    }`
-    axios
-      .get(GEOCODER_BASE_URL, { headers: generateHeaders() })
-      .then(function(resp) {
-        if (resp.status == 200 && resp.data.locations.length > 0) {
-          let pos = resp.data.locations[0].response.view[0].result[0].location
-          context.commit('setGeoLocationPicked', {
-            pos: pos,
-            field: payload.field,
-          })
-        }
-      })
-      .catch(function(error) {
-        // TODO: Proper error handling.
-        // eslint-disable-next-line
-        console.log(error)
-        context.dispatch(
-          'ui/queueNotification',
-          {
-            message:
-              'Fout bij het ophalen van de geodata van de gekozen locatie.',
-            timeout: 0,
-          },
-          { root: true }
-        )
-      })
+      context.commit('setGeocoderSuggestions', resp.data.suggestions)
+    } catch (problem) {
+      // TODO: Proper error handling.
+      // eslint-disable-next-line
+      console.error(problem)
+      context.dispatch(
+        'ui/queueNotification',
+        {
+          message: 'Fout bij het ophalen van locatiesuggesties.',
+          timeout: 0,
+        },
+        { root: true }
+      )
+    }
   },
 }
