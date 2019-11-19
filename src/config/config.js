@@ -1,6 +1,6 @@
 export default {
   BASE_URL:
-    process.env.VUE_APP_API_BASE_URL || 'https://dev.netmobiel.eu/gwapi',
+    process.env.VUE_APP_API_BASE_URL || 'https://dev.netmobiel.eu/gwapi/acc',
   GRAVITEE_PLAN_SERVICE_API_KEY: '58328a63-b55f-4cb3-9102-1d76291e55f9',
   GRAVITEE_PROFILE_SERVICE_API_KEY: process.env.VUE_APP_PROFILE_SERVICE_API_KEY,
   GRAVITEE_GEO_SERVICE_API_KEY: process.env.VUE_APP_GEO_SERVICE_API_KEY,
