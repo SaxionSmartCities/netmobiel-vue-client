@@ -1,19 +1,19 @@
 <template>
   <v-layout>
-    <v-flex pa-3>
+    <v-flex travel-card pa-3>
       <!-- REMOVED XS11 CLASS FROM FLEX ABOVE FOR ALPHA RELEAES -->
       <v-layout column>
         <v-flex>
           <v-layout>
             <v-flex>
               <h3>Vertrek</h3>
-              <p class="first-letter-caps">
+              <p class="first-letter-caps body-2 font-weight-light">
                 {{ formatTime(ride.departureTime) }}
               </p>
             </v-flex>
             <v-flex grow>
               <v-layout shrink justify-end>
-                <v-flex class="align-right">
+                <v-flex class="align-right body-2 font-weight-light">
                   Geen passagiers
                 </v-flex>
               </v-layout>
@@ -21,14 +21,13 @@
           </v-layout>
         </v-flex>
         <v-flex>
-          <v-layout column>
-            <v-flex pa-0>
+          <v-layout pt-2 column>
+            <v-flex pa-0 pb-1>
               <v-icon>directions_car</v-icon>
             </v-flex>
             <v-flex><div class="travel-line"></div></v-flex>
-            <v-flex mt-1 mb-1>
-              {{ formatPlace(ride.fromPlace.label) }} -
-              {{ formatPlace(ride.toPlace.label) }}
+            <v-flex mt-2 mb-2 body-2 font-weight-light>
+              Naar {{ formatPlace(ride.toPlace.label) }}
             </v-flex>
           </v-layout>
         </v-flex>

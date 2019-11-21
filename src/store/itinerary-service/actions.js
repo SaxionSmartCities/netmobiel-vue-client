@@ -3,7 +3,7 @@ import config from '@/config/config'
 import moment from 'moment'
 
 const BASE_URL = config.BASE_URL
-const GRAVITEE_PLAN_SERVICE_API_KEY = config.GRAVITEE_PLAN_SERVICE_API_KEY
+const GRAVITEE_PLANNER_SERVICE_API_KEY = config.GRAVITEE_PLANNER_SERVICE_API_KEY
 const GRAVITEE_TRIP_SERVICE_API_KEY = config.GRAVITEE_TRIP_SERVICE_API_KEY
 
 function generateHeader(key) {
@@ -17,36 +17,19 @@ export default {
     context.commit('storePlanningRequest', payload)
     let time = moment(payload.selectedTime).format('HH:mm')
     let date = moment(payload.selectedTime).format('YYYY-MM-DD')
-    let data = {
-      fromPlace:
-        payload.from.displayPosition.latitude +
-        ',' +
-        payload.from.displayPosition.longitude,
-      toPlace:
-        payload.to.displayPosition.latitude +
-        ',' +
-        payload.to.displayPosition.longitude,
-      selectedTime: {
-        date: date,
-        time: time,
-      },
-      searchPreferences: {
-        luggage: payload.searchPreferences.luggageOptions.map(
-          element => element.type
-        ),
-        allowedTravelModes: payload.searchPreferences.allowedTravelModes.map(
-          element => element.mode
-        ),
-        maxMinutesWalking: payload.searchPreferences.maxMinutesWalking,
-        transferAllowed: payload.searchPreferences.transferAllowed,
-        numPassengers: payload.searchPreferences.numPassengers,
-      },
+    let params = {
+      fromPlace: `${payload.from.position[0]},${payload.from.position[1]}`,
+      fromDate: `${date}T${time}`,
+      toPlace: `${payload.to.position[0]},${payload.to.position[1]}`,
+      toDate: `${date}T${time}`,
+      nrSeats: 1,
+      searchPreferences: payload.searchPreferences,
     }
     var axiosConfig = {
-      method: 'POST',
-      url: BASE_URL + '/plans',
-      data: data,
-      headers: generateHeader(GRAVITEE_PLAN_SERVICE_API_KEY),
+      method: 'GET',
+      url: BASE_URL + '/planner/api/search/plan',
+      params: params,
+      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
     }
 
     context.commit('setPlanningStatus', {
@@ -63,10 +46,13 @@ export default {
         })
       })
       .catch(function(error) {
-        var errorMsg = error.response.data.message
+        // eslint-disable-next-line
+        console.log(error)
         context.commit('setPlanningStatus', {
           status: 'FAILED',
-          message: errorMsg,
+          message: error.response
+            ? error.response.data.message
+            : 'Network failure',
         })
       })
   },

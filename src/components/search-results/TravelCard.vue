@@ -71,7 +71,11 @@ export default {
   },
   computed: {
     departureTime: function() {
-      return moment(this.journey.startTime)
+      let startTime = this.journey.startTime
+      if (typeof startTime === 'string') {
+        startTime = parseInt(startTime)
+      }
+      return moment(startTime)
         .locale('nl')
         .calendar()
     },

@@ -21,7 +21,7 @@
                 <v-flex>
                   <v-layout>
                     <v-flex shrink>
-                      <v-icon class="text-primary">local_taxi</v-icon>
+                      <v-icon class="text-primary">directions_car</v-icon>
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -35,7 +35,7 @@
       </v-layout>
     </v-flex>
     <v-flex d-flex>
-      <v-layout justify-center align-center column @click="openDetails()">
+      <v-layout justify-center align-center column disabled>
         <v-flex shrink>
           <v-icon>keyboard_arrow_right</v-icon>
         </v-flex>

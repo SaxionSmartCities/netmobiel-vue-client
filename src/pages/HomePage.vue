@@ -1,47 +1,76 @@
 <template>
-  <v-container class="carBackground">
+  <v-container>
     <v-layout column>
-      <v-flex text-xs xs12 mb-2>
-        <h3>Goededag, {{ user.fullName }}</h3>
+      <v-flex>
+        <v-layout row pb-3>
+          <v-flex>
+            <v-img
+              class="profileimage"
+              :src="require('@/assets/profile_img.png')"
+            />
+          </v-flex>
+          <v-flex text-xs-right>
+            <v-layout fill-height justify-end column>
+              <v-flex shrink>
+                <h2>
+                  {{ timeOfDayGreeting }},<br />
+                  {{ user.fullName }}
+                </h2>
+              </v-flex>
+            </v-layout>
+          </v-flex>
+        </v-layout>
       </v-flex>
       <v-divider class="mb-2"></v-divider>
-      <v-flex v-if="rides.length > 0" mt-2>
-        <h2 class="text-primary-uppercase">Mijn aangeboden ritten</h2>
-        <v-flex
-          v-for="(ride, index) in rides"
-          :key="index"
-          my-2
-          xs12
-          class="travel-card"
-        >
-          <ride-card :ride="ride"></ride-card>
-        </v-flex>
-      </v-flex>
-      <v-flex v-else mt-2>
+      <v-flex mt-2>
         <p>
           Welkom bij Netmobiel, dé mobiliteitsapp van de Achterhoek en
           omstreken.
         </p>
-        <p>
-          Het menu onderin is de manier om door de app heen te navigeren, hier
-          kun je:
-        </p>
-        <p>
-          <v-icon class="mr-2 negMarIcon">commute</v-icon>
-          <span>Een reis plannen</span>
-        </p>
-        <p>
-          <v-icon class="mr-2 negMarIcon">favorite</v-icon> Je bewaarde reizen
-          zien
-        </p>
-        <p>
-          <v-icon class="mr-2 negMarIcon">directions_car</v-icon> Een reis
-          plannen
-        </p>
-        <p>
-          <v-icon class="mr-2 negMarIcon">person</v-icon> Je profielinstellingen
-          wijzigen
-        </p>
+      </v-flex>
+      <v-flex v-if="rides.length == 0" my-3>
+        <v-btn round block outline color="blue" to="/howTo">
+          Hoe werkt het?
+        </v-btn>
+      </v-flex>
+      <v-flex v-if="updateMessages.length > 0">
+        <v-layout column mb-3>
+          <v-flex>
+            <h2 class="text-primary-uppercase">Updates</h2>
+          </v-flex>
+          <v-flex>
+            <update-card :update-message="updateMessages[0]"></update-card>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+      <v-flex>
+        <v-layout column mb-3>
+          <v-flex>
+            <h2 class="text-primary-uppercase">Jouw activiteiten</h2>
+          </v-flex>
+          <v-flex v-for="(ride, index) in rides" :key="index" xs12>
+            <ride-card class="my-2" :ride="ride"></ride-card>
+          </v-flex>
+          <v-flex v-if="rides.length === 0">
+            Je hebt nog geen activiteiten gepland.
+          </v-flex>
+          <v-flex v-else my-2>
+            <v-btn
+              large
+              round
+              block
+              outline
+              color="#2E8997"
+              to="/tripsOverviewPage"
+              >Bekijk alle activiteiten</v-btn
+            >
+          </v-flex>
+          <v-flex v-if="rides.length === 0" mb-4>
+            <v-btn large round block to="/modeSelection">
+              Direct aan de slag!
+            </v-btn>
+          </v-flex>
+        </v-layout>
       </v-flex>
     </v-layout>
   </v-container>
@@ -49,10 +78,13 @@
 
 <script>
 import RideCard from '@/components/rides/RideCard.vue'
+import UpdateCard from '@/components/home/UpdateCard.vue'
+import moment from 'moment'
 
 export default {
   components: {
     RideCard,
+    UpdateCard,
   },
   computed: {
     user() {
@@ -60,10 +92,25 @@ export default {
     },
     rides() {
       //HACK: Only display first 3 rides.
-      return this.$store.getters['cs/getRides'].slice(0, 3)
+      return this.$store.getters['cs/getRides'].slice(0, 2)
+    },
+    timeOfDayGreeting() {
+      let currentHour = moment().format('HH')
+
+      if (currentHour < 12) {
+        return 'Goedemorgen'
+      } else if (currentHour < 18) {
+        return 'Goedemiddag'
+      } else {
+        return 'Goedeavond'
+      }
+    },
+    updateMessages() {
+      return this.$store.getters['ui/getUpdateMessages']
     },
   },
   mounted() {
+    this.$store.commit('ui/addAppClass', 'homepage')
     this.$store.dispatch('cs/fetchRides')
   },
 }
@@ -78,10 +125,16 @@ export default {
 .negMarIcon {
   margin-bottom: -3px;
 }
-.carBackground {
-  background: url('../assets/autoscooter.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position-y: bottom;
+
+.profileimage {
+  // margin-top: -100px;
+  // position: absolute;
+  height: 10vmax;
+  width: 10vmax;
+  // margin-left: -7.5vmax;
+  // left: 50%;
+  border-radius: 1000px;
+  // margin-top: -10vmax;
+  border: 2px solid white;
 }
 </style>

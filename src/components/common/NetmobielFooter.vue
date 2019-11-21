@@ -4,6 +4,7 @@
       <v-bottom-nav
         :active.sync="selectedNav"
         :value="true"
+        fixed
         color="transparant"
       >
         <v-btn flat value="home" to="/home">
@@ -11,7 +12,7 @@
           <v-icon>home</v-icon>
         </v-btn>
 
-        <v-btn flat value="search-trip" to="/search">
+        <v-btn flat value="commute" @click="routeToMode()">
           <span>Planner</span>
           <v-icon>commute</v-icon>
         </v-btn>
@@ -21,16 +22,11 @@
           <v-icon>favorite</v-icon>
         </v-btn>
 
-        <v-btn flat value="plan-trip" to="/plan">
-          <span>Ritten</span>
-          <v-icon>directions_car</v-icon>
-        </v-btn>
-
-        <!-- <v-btn flat value="community">
+        <v-btn flat value="community" disabled>
           <span>Community</span>
           <v-icon>chat</v-icon>
         </v-btn>
-        -->
+
         <v-btn flat value="profile" to="/profile">
           <span>Profiel</span>
           <v-icon>person</v-icon>
@@ -43,10 +39,21 @@
 <script>
 export default {
   name: 'Footer',
-  data: function() {
-    return {
-      selectedNav: '',
-    }
+  computed: {
+    selectedNav: {
+      get: function() {
+        return this.$store.getters['ui/getSelectedNav']
+      },
+      set: function(value) {
+        this.$store.commit('ui/setSelectedNav', value)
+      },
+    },
+  },
+  methods: {
+    routeToMode: function() {
+      // TODO: Link this to profile so we know where to route!
+      this.$router.push('/modeSelection')
+    },
   },
 }
 </script>

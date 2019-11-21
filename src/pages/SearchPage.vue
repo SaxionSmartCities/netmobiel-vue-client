@@ -193,7 +193,7 @@ export default {
       const fromLoc = this.$store.getters['gs/getPickedLocation'].from
       const toLoc = this.$store.getters['gs/getPickedLocation'].to
 
-      return fromLoc.address !== undefined && toLoc.address !== undefined
+      return fromLoc.title !== undefined && toLoc.title !== undefined
     },
     showForm: function() {
       return (
@@ -225,18 +225,16 @@ export default {
   },
   methods: {
     fromLocationLabel() {
-      let location = this.$store.getters['gs/getPickedLocation'].from
-
-      return !location.address
+      const suggestion = this.$store.getters['gs/getPickedLocation'].from
+      return !suggestion.title
         ? 'Klik hier voor vertrekplek'
-        : location.address.label
+        : `${suggestion.title} ${suggestion.vicinity}`
     },
     toLocationLabel() {
-      let location = this.$store.getters['gs/getPickedLocation'].to
-
-      return !location.address
+      const suggestion = this.$store.getters['gs/getPickedLocation'].to
+      return !suggestion.title
         ? 'Klik hier voor bestemming'
-        : location.address.label
+        : `${suggestion.title} ${suggestion.vicinity}`
     },
     showPickLocationView(fieldPressed) {
       this.showPicklocation = true
