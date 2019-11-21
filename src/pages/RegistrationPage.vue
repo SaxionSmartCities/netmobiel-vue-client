@@ -1,44 +1,59 @@
 <template>
-  <v-form>
-    <v-container grid-list-xs>
-      <v-layout pa-3>
-        <v-flex text-xs-center><h1>Maak een account aan</h1> </v-flex>
-      </v-layout>
-      <v-layout pa-1 vertical-align-center>
-        <v-flex xs3>
-          <div>Voornaam</div>
-        </v-flex>
-        <v-flex xs9>
+  <v-card class="rounded-border">
+    <v-card-title>Maak een account aan</v-card-title>
+    <v-card-text class="py-0">
+      <v-row vertical-align-center>
+        <v-col>
           <v-text-field
             v-model="registrationRequest.firstName"
             required
+            hide-details
+            outlined
+            label="Voornaam"
           ></v-text-field>
-        </v-flex>
-      </v-layout>
-      <v-layout pa-1 vertical-align-center>
-        <v-flex xs3>
-          <span>Achternaam <small>(inc. tussenvoegsels)</small></span>
-        </v-flex>
-        <v-flex xs9>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
           <v-text-field
             v-model="registrationRequest.lastName"
             required
+            hide-details
+            outlined
+            label="Achternaam"
           ></v-text-field>
-        </v-flex>
-      </v-layout>
-      <v-layout pa-1 vertical-align-center>
-        <v-flex xs3>
-          <span>E-mailadres</span>
-        </v-flex>
-        <v-flex xs9>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
           <v-text-field
             v-model="registrationRequest.email"
             required
+            hide-details
+            outlined
+            label="E-mail"
           ></v-text-field>
-        </v-flex>
-      </v-layout>
-      <v-layout>
-        <v-flex text-xs-center>
+        </v-col>
+      </v-row>
+      <v-row no-gutters align="center">
+        <v-col cols="1">
+          <v-checkbox v-model="agreedAll"></v-checkbox>
+        </v-col>
+        <v-col cols="11">
+          Ik ga akkoord met de <a to="/">voorwaarden</a>, deelname aan het
+          <a to="/">onderzoek</a> en het <a to="/">privacystatement</a>
+        </v-col>
+      </v-row>
+      <v-row no-gutters align="center">
+        <v-col cols="1">
+          <v-checkbox v-model="ageCheck"></v-checkbox>
+        </v-col>
+        <v-col cols="11">
+          Ik ben 16 of ouder.
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col text-xs-center>
           <v-alert
             v-if="getRegistrationStatus.success === false"
             :value="true"
@@ -46,6 +61,14 @@
             color="red"
           >
             {{ getRegistrationStatus.message }}
+          </v-alert>
+          <v-alert
+            v-if="acceptError.success === false"
+            :value="true"
+            type="error"
+            color="red"
+          >
+            {{ acceptError.message }}
           </v-alert>
           <v-alert
             v-if="getRegistrationStatus.success === true"
@@ -56,17 +79,19 @@
             Profiel aangemaakt! <br />
             We sturen u terug naar het login-scherm.
           </v-alert>
-        </v-flex>
-      </v-layout>
-      <v-layout v-if="showSubmitButton" mt-5>
-        <v-flex text-xs-center>
-          <v-btn class="full-width" @click="submitForm($event)">
-            Maak een account aan!</v-btn
+        </v-col>
+      </v-row>
+    </v-card-text>
+    <v-card-actions>
+      <v-row no-gutters>
+        <v-col xs6 class="mx-2">
+          <v-btn block rounded color="button" @click="submitForm()"
+            >Account aanmaken</v-btn
           >
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-form>
+        </v-col>
+      </v-row>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
@@ -80,6 +105,12 @@ export default {
         firstName: '',
         lastName: '',
         email: '',
+      },
+      agreedAll: false,
+      ageCheck: false,
+      acceptError: {
+        success: undefined,
+        message: '',
       },
       showSubmitButton: true,
     }
@@ -105,13 +136,19 @@ export default {
     this.$store.commit('ui/disableFooter')
   },
   methods: {
-    submitForm: function(event) {
-      event.preventDefault()
-
-      this.$store.dispatch(
-        'rs/submitRegistrationRequest',
-        this.registrationRequest
-      )
+    submitForm: function() {
+      console.log('boep!')
+      if (this.agreedAll && this.ageCheck) {
+        this.$store.dispatch(
+          'rs/submitRegistrationRequest',
+          this.registrationRequest
+        )
+      } else {
+        this.acceptError.success = false
+        this.acceptError.message =
+          'U moet zowel akkoord gaan met de voorwaarden alsmede 16 jaar of ouder zijn.'
+        console.log(this.acceptError)
+      }
     },
   },
 }
