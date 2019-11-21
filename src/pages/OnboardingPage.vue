@@ -10,9 +10,11 @@
         </v-row>
         <v-row justify="center">
           <v-col class="text-center">
-            <a href="/" class="text-light-grey underlined">
-              Hulp bij Netmobiel
-            </a>
+            <v-btn to="/howTo" depressed color="primary">
+              <span class="text-light-grey underlined">
+                Hulp bij Netmobiel
+              </span>
+            </v-btn>
           </v-col>
         </v-row>
       </v-col>
