@@ -170,8 +170,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import '@/scss/styling.scss';
-
 .homepage {
   background-image: url('assets/achterhoek_background.jpg');
   background-size: contain;
