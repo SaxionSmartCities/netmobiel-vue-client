@@ -43,9 +43,6 @@
     <v-card-actions>
       <v-row>
         <v-col xs6 class="mx-2">
-          <v-btn block rounded outlined @click="skipStep()">Overslaan</v-btn>
-        </v-col>
-        <v-col xs6 class="mx-2">
           <v-btn block rounded color="button" @click="nextStep()">Verder</v-btn>
         </v-col>
       </v-row>
@@ -74,9 +71,6 @@ export default {
     },
   },
   methods: {
-    skipStep: function() {
-      this.$emit('next-step')
-    },
     nextStep: function() {
       let profile = this.$store.getters['ps/getProfile']
       profile['age'] = this.age
