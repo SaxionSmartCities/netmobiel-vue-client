@@ -23,6 +23,7 @@
   color: white;
 }
 
+
 h1 {
   font-size: $h1-font-size;
 }
@@ -163,3 +164,19 @@ h3 {
 // .v-expansion-panel {
 //   box-shadow: none;
 // }
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.text-color-primary {
+  color: $color-primary;
+}
+
+.rounded-border:not(.v-sheet--title):not(.v-card--shaped) {
+  border-radius: $border-radius;
+}
+
+.v-btn[href]:not(.v-btn--outlined) {
+  color: $color-white;
+}

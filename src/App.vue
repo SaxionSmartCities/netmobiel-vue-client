@@ -204,4 +204,20 @@ export default {
 #backButton {
   color: $color-white;
 }
+
+.v-application .text-light-grey {
+  color: $color-light-grey;
+}
+
+.v-application .underlined {
+  text-decoration: underline;
+}
+
+.capitalized {
+  text-transform: capitalize;
+}
+
+.text-bold {
+  font-weight: bold;
+}
 </style>

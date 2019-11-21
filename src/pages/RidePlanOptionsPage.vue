@@ -131,7 +131,7 @@
                       xs12
                       class="my-2 elevation-1"
                       :class="{
-                        active:
+                        selected:
                           selectedCar !== undefined &&
                           selectedCar.licensePlate === car.licensePlate,
                       }"
@@ -254,7 +254,7 @@ export default {
   box-shadow: none;
 }
 
-.active {
+.selected {
   background-color: $color-green;
   color: $color-white;
 }
