@@ -61,9 +61,6 @@ export default {
     menu(val) {
       val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
     },
-    selectedInterests(val) {
-      console.log(val)
-    },
   },
   methods: {
     skipStep: function() {
