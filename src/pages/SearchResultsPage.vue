@@ -17,19 +17,18 @@
         </v-expansion-panel>
         <v-divider />
       </v-flex>
-        <v-flex xs12>
-          <v-flex v-for="(itinerary, index) in itineraries" :key="index" xs12>
-            <travel-card
-              class="mt-2"
-              :from="OVPlanningResults.from"
-              :to="OVPlanningResults.to"
-              :date="parseInt(OVPlanningResults.date)"
-              :journey="itinerary"
-            >
-            </travel-card>
-          </v-flex>
+      <v-flex xs12>
+        <v-flex v-for="(itinerary, index) in itineraries" :key="index" xs12>
+          <travel-card
+            class="mt-2"
+            :from="OVPlanningResults.from"
+            :to="OVPlanningResults.to"
+            :date="parseInt(OVPlanningResults.date)"
+            :journey="itinerary"
+          >
+          </travel-card>
         </v-flex>
-      </v-layout>
+      </v-flex>
       <v-flex mt-3>
         <v-layout column>
           <v-flex>
@@ -59,7 +58,6 @@
 <script>
 import TravelCard from '@/components/search-results/TravelCard.vue'
 import SearchOptionsSummaryCard from '@/components/search-results/SearchOptionsSummaryCard.vue'
-import DirectRideCard from '@/components/search-results/DirectRideCard.vue'
 import moment from 'moment'
 
 export default {
@@ -67,7 +65,6 @@ export default {
   components: {
     TravelCard,
     SearchOptionsSummaryCard,
-    DirectRideCard,
   },
   data: function() {
     return {
