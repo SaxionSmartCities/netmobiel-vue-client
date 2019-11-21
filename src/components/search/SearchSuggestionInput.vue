@@ -17,26 +17,24 @@
       <v-layout>
         <v-flex xs12>
           <v-list v-if="showSuggestionsList" pt-0>
-            <template v-for="(suggestion, index) in suggestions">
-              <v-list-tile
-                :key="suggestion.name"
-                @click="completeSearch(suggestion)"
-              >
-                <v-icon class="mr-3">
-                  {{ iconicCategory(suggestion.category) }}
-                </v-icon>
-                <v-list-tile-content class="grey--text">
-                  <v-list-tile-title>
-                    <div v-html="parseHighlightedLabel(suggestion)"></div>
-                  </v-list-tile-title>
-                  <v-list-tile-sub-title></v-list-tile-sub-title>
-                </v-list-tile-content>
-              </v-list-tile>
-              <v-divider
-                v-if="index + 1 < suggestions.length"
-                :key="index"
-              ></v-divider>
-            </template>
+            <v-list-item-group>
+              <template v-for="(suggestion, index) in suggestions">
+                <v-list-item
+                  :key="suggestion.id"
+                  @click="completeSearch(suggestion)"
+                >
+                  <v-list-item-icon>
+                    <v-icon>{{ iconicCategory(suggestion.category) }}</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      <div v-html="parseHighlightedLabel(suggestion)"></div>
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-divider v-if="index + 1 < suggestions.length" :key="index" />
+              </template>
+            </v-list-item-group>
           </v-list>
         </v-flex>
       </v-layout>
@@ -81,6 +79,7 @@ export default {
   },
   computed: {
     suggestions() {
+      console.log(this.$store.getters['gs/getGeocoderSuggestions'])
       return improveSuggestions(
         this.$store.getters['gs/getGeocoderSuggestions']
       )
@@ -121,7 +120,7 @@ export default {
       this.showSuggestionsList = false
     },
     iconicCategory(category) {
-      return categoryIcons[category] || ''
+      return categoryIcons[category] || 'fa-map-marker-alt'
     },
   },
 }
