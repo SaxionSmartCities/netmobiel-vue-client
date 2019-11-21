@@ -79,7 +79,7 @@ export default {
   },
   computed: {
     suggestions() {
-      console.log(this.$store.getters['gs/getGeocoderSuggestions'])
+      this.$store.getters['gs/getGeocoderSuggestions']
       return improveSuggestions(
         this.$store.getters['gs/getGeocoderSuggestions']
       )
