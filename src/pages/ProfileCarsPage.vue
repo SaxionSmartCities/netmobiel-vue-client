@@ -34,7 +34,13 @@
           </v-layout>
           <v-layout row class="actions">
             <v-flex xs4>
-              <v-btn small round outline color="#2E8997" @click="editCar(car)">
+              <v-btn
+                small
+                rounded
+                outlined
+                color="#2E8997"
+                @click="editCar(car)"
+              >
                 Wijzigen
               </v-btn>
             </v-flex>
@@ -49,8 +55,8 @@
       <v-flex class="add-new-car">
         <v-btn
           large
-          round
-          outline
+          rounded
+          outlined
           color="#2E8997"
           @click="$router.push('/profileAddCar')"
         >

@@ -13,7 +13,7 @@
           <v-flex class="box-widget background-white">
             <v-flex>
               <v-form>
-                <v-layout>
+                <v-layout column>
                   <v-flex text-xs-center xs12>
                     <h1>Waar rijd je heen?</h1>
                   </v-flex>
@@ -62,25 +62,11 @@
                       </v-flex>
                     </v-layout>
                   </v-flex>
-                </v-layout>
-
-                <v-layout>
-                  <v-flex xs11>
-                    <v-layout column>
-                      <v-flex id="aankomsttijd">
-                        <v-layout my-2 row>
-                          <v-flex pl-4 sm3>
-                            <span class="form-label font-weight-bold">
-                              Aankomst
-                            </span>
-                          </v-flex>
-                          <v-flex xs11>
-                            <input v-model="date" type="date" required />
-                            <input v-model="time" type="time" required />
-                          </v-flex>
-                        </v-layout>
-                      </v-flex>
-                    </v-layout>
+                  <v-flex>
+                    <from-to-fields />
+                  </v-flex>
+                  <v-flex>
+                    <date-time-selector />
                   </v-flex>
                 </v-layout>
 
@@ -128,7 +114,7 @@
                   <v-flex>
                     <v-btn
                       large
-                      round
+                      rounded
                       block
                       :disabled="!locationsPickedCheck"
                       @click="submitForm()"
@@ -158,9 +144,15 @@
 
 <script>
 import moment from 'moment'
+import FromToFields from '@/components/common/FromToFields.vue'
+import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
 
 export default {
   name: 'RidePlanPage',
+  components: {
+    FromToFields,
+    DateTimeSelector,
+  },
   computed: {
     date: {
       get: function() {
@@ -182,6 +174,7 @@ export default {
       const fromLoc = this.$store.getters['gs/getPickedLocation'].from
       const toLoc = this.$store.getters['gs/getPickedLocation'].to
       const cars = this.$store.getters['ps/getProfile'].ridePlanOptions.cars
+      //return fromLoc.title !== undefined && toLoc.title !== undefined
       return (
         fromLoc.address !== undefined &&
         toLoc.address !== undefined &&
@@ -189,18 +182,16 @@ export default {
       )
     },
     fromLocationLabel() {
-      let location = this.$store.getters['gs/getPickedLocation'].from
-
-      return !location.address
-        ? 'Klik hier voor vertreklocatie'
-        : location.address.label
+      const suggestion = this.$store.getters['gs/getPickedLocation'].from
+      return !suggestion.title
+        ? 'Klik hier voor vertrekplek'
+        : `${suggestion.title} ${suggestion.vicinity}`
     },
     toLocationLabel() {
-      let location = this.$store.getters['gs/getPickedLocation'].to
-
-      return !location.address
+      const suggestion = this.$store.getters['gs/getPickedLocation'].to
+      return !suggestion.title
         ? 'Klik hier voor bestemming'
-        : location.address.label
+        : `${suggestion.title} ${suggestion.vicinity}`
     },
     availableCars() {
       return this.$store.getters['ps/getProfile'].ridePlanOptions.cars

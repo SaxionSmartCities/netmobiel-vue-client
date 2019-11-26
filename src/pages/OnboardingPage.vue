@@ -3,14 +3,9 @@
     <v-row align="center" justify="center" class="pa-4">
       <v-col>
         <v-row>
-          <v-col v-if="step === 0">
-            <new-account-card @next-step="step++"
-          /></v-col>
+          <v-col v-if="step === 0"> <age-card @next-step="step++"/></v-col>
           <v-col v-if="step === 1">
-            <home-town-card @next-step="step++" />
-          </v-col>
-          <v-col v-if="step === 2">
-            <user-type-card @next-step="step++" />
+            <interests-card @next-step="step++" />
           </v-col>
         </v-row>
         <v-row justify="center">
@@ -28,15 +23,13 @@
 </template>
 
 <script>
-import NewAccountCard from '@/components/onboarding/NewAccountCard.vue'
-import HomeTownCard from '@/components/onboarding/HomeTownCard.vue'
-import UserTypeCard from '@/components/onboarding/UserTypeCard.vue'
+import AgeCard from '@/components/onboarding/AgeCard.vue'
+import InterestsCard from '@/components/onboarding/InterestsCard.vue'
 
 export default {
   components: {
-    NewAccountCard,
-    HomeTownCard,
-    UserTypeCard,
+    AgeCard,
+    InterestsCard,
   },
   data: function() {
     return {
@@ -45,8 +38,8 @@ export default {
   },
   watch: {
     step: function() {
-      if (this.step >= 3) {
-        this.$router.push('/home')
+      if (this.step >= 2) {
+        this.$router.push('/onboardingComplete')
       }
     },
   },

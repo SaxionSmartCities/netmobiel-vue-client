@@ -15,109 +15,55 @@
             <v-expand-transition>
               <v-flex v-if="showForm">
                 <v-form>
-                  <v-layout>
-                    <v-flex text-xs-center xs12>
+                  <v-layout column>
+                    <v-flex text-xs-center>
                       <h1>Waar wil je heen?</h1>
                     </v-flex>
-                  </v-layout>
-                  <v-layout>
-                    <v-flex id="vannaar" xs11>
-                      <v-layout column>
-                        <v-flex id="van">
-                          <v-layout my-1 row>
-                            <v-flex pl-4 xs5 sm3>
-                              <span class="form-label font-weight-bold">
-                                Van
-                              </span>
-                            </v-flex>
-                            <v-flex
-                              xs11
-                              @click="toLocationSuggestionsPage('from')"
-                            >
-                              {{ fromLocationLabel() }}
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                        <v-flex id="naar">
-                          <v-layout my-1 row>
-                            <v-flex pl-4 xs5 sm3>
-                              <span class="form-label font-weight-bold">
-                                Naar
-                              </span>
-                            </v-flex>
-                            <v-flex
-                              xs11
-                              @click="toLocationSuggestionsPage('to')"
-                            >
-                              {{ toLocationLabel() }}
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                      </v-layout>
+                    <v-flex>
+                      <from-to-fields />
                     </v-flex>
-                    <v-flex d-flex>
-                      <v-layout column justify-center @click="swapLocations()">
-                        <v-flex
-                          id="heenweericoon"
-                          text-xs-center
-                          justify-center
-                          shrink
-                        >
-                          <v-icon>import_export</v-icon>
-                        </v-flex>
-                      </v-layout>
+                    <v-flex>
+                      <date-time-selector
+                        :allowed-dates="allowedDates"
+                        :initial-date="arrivalDate"
+                        :initial-time="arrivalTime"
+                        @dateValueUpdated="saveDate"
+                        @timeValueUpdated="saveTime"
+                      />
                     </v-flex>
-                  </v-layout>
-
-                  <v-layout>
-                    <v-flex xs11>
-                      <v-layout column>
-                        <v-flex id="aankomsttijd">
-                          <v-layout my-2 row>
-                            <v-flex pl-4 sm3>
-                              <span class="form-label font-weight-bold">
-                                Aankomst
-                              </span>
-                            </v-flex>
-                            <v-flex xs11>
-                              <input v-model="date" type="date" required />
-                              <input v-model="time" type="time" required />
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </v-layout>
-                  <v-layout mt-2 justify-center text-xs-center>
                     <v-flex>
                       <v-btn
                         large
-                        round
+                        rounded
                         block
+                        color="button"
                         :disabled="!locationsPickedCheck"
                         @click="submitForm()"
                       >
                         Plan je reis!
                       </v-btn>
                     </v-flex>
-                  </v-layout>
-                  <v-layout>
-                    <v-expand-transition>
-                      <v-flex v-if="getSubmitStatus.status === 'FAILED'">
-                        <v-alert :value="true" type="error" color="red">
-                          {{ getSubmitStatus.message }}
-                        </v-alert>
-                      </v-flex>
-                    </v-expand-transition>
-                  </v-layout>
-                  <v-layout mt-2 justify-center>
+                    <v-flex v-if="getSubmitStatus.status === 'FAILED'">
+                      <v-expand-transition>
+                        <v-flex>
+                          <v-alert :value="true" type="error" color="red">
+                            {{ getSubmitStatus.message }}
+                          </v-alert>
+                        </v-flex>
+                      </v-expand-transition>
+                    </v-flex>
                     <v-flex
-                      shrink
+                      body-2
+                      my-1
                       transition="slide-x-transition"
                       @click="toRidePreferences"
                     >
-                      <v-icon>settings</v-icon>
-                      <span class="ml-1">Reisvoorkeuren</span>
+                      <v-layout justify-center>
+                        <v-flex shrink>
+                          <v-icon>settings</v-icon>
+                          <span class="ml-1">Reisvoorkeuren</span>
+                        </v-flex>
+                      </v-layout>
                     </v-flex>
                   </v-layout>
                 </v-form>
@@ -161,34 +107,33 @@
 </template>
 
 <script>
+import FromToFields from '@/components/common/FromToFields.vue'
+import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
 import moment from 'moment'
 
 export default {
+  components: {
+    FromToFields,
+    DateTimeSelector,
+  },
   data: function() {
     return {
       pickedLocationState: 'NOTHING',
       showPicklocation: false,
       waiting: null,
       locationsPicked: false,
+      arrivalDate: moment().format('YYYY-MM-DD'),
+      arrivalTime: moment().format('HH:mm'),
+      allowedDates: function(val) {
+        let checkDate = moment(val)
+        return (
+          checkDate.isAfter(moment()) &&
+          checkDate.isBefore(moment().add(4, 'weeks'))
+        )
+      },
     }
   },
   computed: {
-    date: {
-      get: function() {
-        return this.$store.getters['ui/getTempValue']('searchDate')
-      },
-      set: function(value) {
-        this.$store.commit('ui/setTempValue', { searchDate: value })
-      },
-    },
-    time: {
-      get: function() {
-        return this.$store.getters['ui/getTempValue']('searchTime')
-      },
-      set: function(value) {
-        this.$store.commit('ui/setTempValue', { searchTime: value })
-      },
-    },
     locationsPickedCheck: function() {
       const fromLoc = this.$store.getters['gs/getPickedLocation'].from
       const toLoc = this.$store.getters['gs/getPickedLocation'].to
@@ -224,41 +169,30 @@ export default {
     },
   },
   methods: {
-    fromLocationLabel() {
-      const suggestion = this.$store.getters['gs/getPickedLocation'].from
-      return !suggestion.title
-        ? 'Klik hier voor vertrekplek'
-        : `${suggestion.title} ${suggestion.vicinity}`
-    },
-    toLocationLabel() {
-      const suggestion = this.$store.getters['gs/getPickedLocation'].to
-      return !suggestion.title
-        ? 'Klik hier voor bestemming'
-        : `${suggestion.title} ${suggestion.vicinity}`
-    },
     showPickLocationView(fieldPressed) {
       this.showPicklocation = true
       this.pickedLocationState = fieldPressed
     },
+    saveDate(value) {
+      this.arrivalDate = value
+    },
+    saveTime(value) {
+      this.arrivalTime = value
+    },
     toRidePreferences() {
       this.$router.push({ name: 'searchOptions' })
     },
-    toLocationSuggestionsPage(field) {
-      this.$router.push({ name: 'searchLocation', params: { field: field } })
-    },
-    swapLocations() {
-      this.$store.commit('gs/swapLocations')
-    },
     submitForm() {
       let pickedGeoLocations = this.$store.getters['gs/getPickedLocation']
-
       let from = pickedGeoLocations.from
       let to = pickedGeoLocations.to
       let searchPreferences = this.$store.getters['ps/getProfile']
         .searchPreferences
-      let selectedTime = moment(this.date + ' ' + this.time, 'YYYY-MM-DD HH:mm')
-
-      var searchQuery = {
+      let selectedTime = moment(
+        this.arrivalDate + ' ' + this.arrivalTime,
+        'YYYY-MM-DD HH:mm'
+      )
+      let searchQuery = {
         from: from,
         to: to,
         searchPreferences: searchPreferences,
