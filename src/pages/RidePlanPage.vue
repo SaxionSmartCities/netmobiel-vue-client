@@ -11,130 +11,67 @@
       <v-flex xs11 sm9 md6>
         <v-layout column shrink>
           <v-flex class="box-widget background-white">
-            <v-flex>
-              <v-form>
-                <v-layout column>
-                  <v-flex text-xs-center xs12>
-                    <h1>Waar rijd je heen?</h1>
-                  </v-flex>
-                </v-layout>
-                <v-layout>
-                  <v-flex id="vannaar" xs11>
-                    <v-layout column>
-                      <v-flex id="van">
-                        <v-layout my-1 row>
-                          <v-flex pl-4 xs5 sm3>
-                            <span class="form-label font-weight-bold">
-                              Van
-                            </span>
-                          </v-flex>
-                          <v-flex
-                            xs11
-                            @click="toLocationSuggestionsPage('from')"
-                          >
-                            {{ fromLocationLabel }}
-                          </v-flex>
-                        </v-layout>
-                      </v-flex>
-                      <v-flex>
-                        <v-layout my-1 row>
-                          <v-flex pl-4 xs5 sm3>
-                            <span class="form-label font-weight-bold">
-                              Naar
-                            </span>
-                          </v-flex>
-                          <v-flex xs11 @click="toLocationSuggestionsPage('to')">
-                            {{ toLocationLabel }}
-                          </v-flex>
-                        </v-layout>
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                  <v-flex d-flex>
-                    <v-layout column justify-center @click="swapLocations()">
-                      <v-flex
-                        id="heenweericoon"
-                        text-xs-center
-                        justify-center
-                        shrink
-                      >
-                        <v-icon>import_export</v-icon>
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                  <v-flex>
-                    <from-to-fields />
-                  </v-flex>
-                  <v-flex>
-                    <date-time-selector />
-                  </v-flex>
-                </v-layout>
+            <v-form>
+              <v-layout column>
+                <v-flex text-xs-center>
+                  <h1>Waar rijd je heen?</h1>
+                </v-flex>
+                <v-flex>
+                  <from-to-fields />
+                </v-flex>
+                <v-flex>
+                  <date-time-selector />
+                </v-flex>
+                <v-flex>
+                  <v-layout mt-1 row>
+                    <v-flex pl-2 shrink>
+                      <span class="form-label font-weight-bold">
+                        Auto
+                      </span>
+                      <!-- <v-icon>emoji_transportation</v-icon> -->
+                    </v-flex>
+                    <v-flex v-if="availableCars.length === 0">
+                      <router-link to="profileCars">
+                        <span>Invoeren</span>
+                      </router-link>
+                    </v-flex>
+                    <v-flex v-else>
+                      <router-link to="profileCars">
+                        <span> {{ availableCars[0].licensePlate }}</span>
+                      </router-link>
+                      <div class="car-model">
+                        {{ availableCars[0].brand }}
+                        {{ availableCars[0].model }}
+                      </div>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
 
-                <v-layout>
-                  <v-flex xs11>
-                    <v-layout column>
-                      <v-flex>
-                        <v-layout my-2 row>
-                          <v-flex pl-4 sm3>
-                            <span class="form-label font-weight-bold">
-                              Auto
-                            </span>
-                          </v-flex>
-                          <v-flex xs11>
-                            <router-link
-                              v-if="availableCars.length === 0"
-                              to="/profileCars"
-                            >
-                              <span>Invoeren</span>
-                            </router-link>
-                            <div v-else>
-                              <span> {{ availableCars[0].licensePlate }}</span>
-                              <div class="car-model">
-                                {{ availableCars[0].brand }}
-                                {{ availableCars[0].model }}
-                                {{ availableCars[0].color }}
-                              </div>
-                              <router-link to="profileCars">
-                                <span v-if="availableCars.length > 1">
-                                  Alternatief selecteren
-                                </span>
-                                <span v-else>
-                                  Nieuwe invoeren
-                                </span>
-                              </router-link>
-                            </div>
-                          </v-flex>
-                        </v-layout>
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-
-                <v-layout mt-2 justify-center text-xs-center>
-                  <v-flex>
-                    <v-btn
-                      large
-                      rounded
-                      block
-                      :disabled="!locationsPickedCheck"
-                      @click="submitForm()"
-                    >
-                      Rit aanbieden
-                    </v-btn>
-                  </v-flex>
-                </v-layout>
-                <v-layout mt-2 justify-center>
-                  <v-flex
-                    shrink
-                    transition="slide-x-transition"
-                    @click="toRidePlanOptions()"
+              <v-layout mt-2 justify-center text-xs-center>
+                <v-flex>
+                  <v-btn
+                    large
+                    rounded
+                    block
+                    :disabled="!locationsPickedCheck"
+                    @click="submitForm()"
                   >
-                    <v-icon>settings</v-icon>
-                    <span class="ml-1">Ritvoorkeuren</span>
-                  </v-flex>
-                </v-layout>
-              </v-form>
-            </v-flex>
+                    Rit aanbieden
+                  </v-btn>
+                </v-flex>
+              </v-layout>
+              <v-layout mt-2 justify-center>
+                <v-flex
+                  shrink
+                  transition="slide-x-transition"
+                  @click="toRidePlanOptions()"
+                >
+                  <v-icon>settings</v-icon>
+                  <span class="ml-1">Ritvoorkeuren</span>
+                </v-flex>
+              </v-layout>
+            </v-form>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -194,6 +131,7 @@ export default {
         : `${suggestion.title} ${suggestion.vicinity}`
     },
     availableCars() {
+      console.log(this.$store.getters['ps/getProfile'])
       return this.$store.getters['ps/getProfile'].ridePlanOptions.cars
     },
   },
