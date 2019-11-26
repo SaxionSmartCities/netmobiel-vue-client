@@ -40,7 +40,7 @@
             <v-btn
               :disabled="!searchResult"
               small
-              round
+              rounded
               block
               @click="continueWithSelectedCar()"
             >
