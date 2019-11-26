@@ -1,6 +1,5 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify'
-import 'vuetify/dist/vuetify.min.css'
+import vuetify from './plugins/vuetify'
 
 import App from './App.vue'
 import axios from 'axios'
@@ -9,17 +8,6 @@ import store from './store'
 import router from './router'
 import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
 import VueAnalytics from 'vue-analytics'
-
-Vue.use(Vuetify, {
-  themes: {
-    light: {
-      primary: '#2E8997',
-      secondary: '#FF8500',
-      accent: '#FFFFFF',
-      error: '#D0021B',
-    },
-  },
-})
 
 Vue.config.productionTip = false
 
@@ -60,6 +48,7 @@ Vue.use(VueKeyCloak, {
     new Vue({
       store,
       router,
+      vuetify,
       render: h => h(App),
     }).$mount('#app')
   },

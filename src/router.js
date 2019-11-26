@@ -10,6 +10,8 @@ import HomePage from './pages/HomePage.vue'
 import HowToPage from './pages/HowToPage.vue'
 import ModeSelectionPage from './pages/ModeSelectionPage.vue'
 import NotificationOptionsPage from './pages/NotificationOptionsPage.vue'
+import OnboardingComplete from './pages/OnboardingComplete.vue'
+import OnboardingPage from './pages/OnboardingPage.vue'
 import PrivacySecurityPage from './pages/PrivacySecurityPage.vue'
 import PrivacyStatementPage from './pages/PrivacyStatementPage.vue'
 import ProfilePage from './pages/ProfilePage.vue'
@@ -125,6 +127,16 @@ const router = new Router({
       path: '/modeSelection',
       component: ModeSelectionPage,
       name: 'modeSelectionPage',
+    },
+    {
+      path: '/onboardingPage',
+      component: OnboardingPage,
+      name: 'onboardingPage',
+    },
+    {
+      path: '/onboardingComplete',
+      component: OnboardingComplete,
+      name: 'onboardingComplete',
     },
     {
       path: '/rideRecurrence',
