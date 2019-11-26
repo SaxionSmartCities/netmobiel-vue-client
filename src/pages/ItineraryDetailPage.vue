@@ -9,7 +9,7 @@
       </v-flex>
       <v-flex my-2>
         <itinerary-summary
-          :date="selectedTrip.itinerary.startTime"
+          :date="parseInt(selectedTrip.itinerary.startTime)"
           :cost="5"
           :duration="selectedTrip.itinerary.duration"
         >

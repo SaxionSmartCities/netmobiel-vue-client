@@ -82,7 +82,7 @@ export default {
       }
     },
     time: function() {
-      return moment(this.leg.startTime)
+      return moment(parseInt(this.leg.startTime))
         .locale('nl')
         .format('LT')
     },
