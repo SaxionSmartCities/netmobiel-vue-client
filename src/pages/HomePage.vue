@@ -22,14 +22,14 @@
         </v-layout>
       </v-flex>
       <v-divider class="mb-2"></v-divider>
-      <v-flex mt-2>
+      <v-flex body-2 mt-2>
         <p>
           Welkom bij Netmobiel, dé mobiliteitsapp van de Achterhoek en
           omstreken.
         </p>
       </v-flex>
       <v-flex v-if="rides.length == 0" my-3>
-        <v-btn round block outline color="blue" to="/howTo">
+        <v-btn rounded block outlined color="blue" to="/howTo">
           Hoe werkt het?
         </v-btn>
       </v-flex>
@@ -54,19 +54,27 @@
           <v-flex v-if="rides.length === 0">
             Je hebt nog geen activiteiten gepland.
           </v-flex>
-          <v-flex v-else my-2>
+          <v-flex v-else mt-2>
             <v-btn
               large
-              round
+              rounded
               block
-              outline
-              color="#2E8997"
+              outlined
+              color="primary"
               to="/tripsOverviewPage"
-              >Bekijk alle activiteiten</v-btn
             >
+              Bekijk alle activiteiten
+            </v-btn>
           </v-flex>
-          <v-flex v-if="rides.length === 0" mb-4>
-            <v-btn large round block to="/modeSelection">
+          <v-flex v-if="rides.length === 0" mt-4>
+            <v-btn
+              large
+              depressed
+              color="button"
+              rounded
+              block
+              to="/modeSelection"
+            >
               Direct aan de slag!
             </v-btn>
           </v-flex>
@@ -117,11 +125,6 @@ export default {
 </script>
 
 <style lang="scss">
-.theme--light.v-btn:not(.v-btn--icon):not(.v-btn--flat) {
-  background-color: $color-orange;
-  color: white;
-  text-transform: none;
-}
 .negMarIcon {
   margin-bottom: -3px;
 }

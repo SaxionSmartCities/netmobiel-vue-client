@@ -32,7 +32,7 @@
         </v-alert>
       </v-flex>
       <v-flex my-4>
-        <v-btn large round block mb-4 @click="notifyDriver">
+        <v-btn large rounded block mb-4 @click="notifyDriver">
           Laat {{ printableDriverName }} weten dat je meerijdt!
         </v-btn>
       </v-flex>

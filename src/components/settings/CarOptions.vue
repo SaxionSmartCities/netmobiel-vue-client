@@ -20,7 +20,7 @@
                   <v-btn
                     :disabled="!getSearchResult"
                     small
-                    round
+                    rounded
                     block
                     mb-4
                     @click="addCar(getSearchResult)"

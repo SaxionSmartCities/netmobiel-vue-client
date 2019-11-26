@@ -1,5 +1,45 @@
 <template>
-  <v-container id="app" :class="appClasses" fluid ma-0 pa-0>
+  <v-app id="app">
+    <v-app-bar v-if="isHeaderVisible" flat app color="primary">
+      <v-layout header fill-height align-center>
+        <v-flex v-if="isBackButtonVisible" xs1 text-xs-center @click="goBack()">
+          <v-icon id="backButton">arrow_back</v-icon>
+        </v-flex>
+      </v-layout>
+    </v-app-bar>
+
+    <v-content>
+      <router-view></router-view>
+    </v-content>
+
+    <v-bottom-navigation v-if="isFooterVisible" v-model="selectedNav" app>
+      <v-btn text value="home" to="/home">
+        <span>Home</span>
+        <v-icon>home</v-icon>
+      </v-btn>
+
+      <v-btn text value="planner" to="/modeSelection">
+        <span>Planner</span>
+        <v-icon>commute</v-icon>
+      </v-btn>
+
+      <v-btn text value="saved" to="/tripsOverviewPage">
+        <span>Bewaard</span>
+        <v-icon>favorite</v-icon>
+      </v-btn>
+
+      <v-btn text value="community" disabled>
+        <span>Community</span>
+        <v-icon>chat</v-icon>
+      </v-btn>
+
+      <v-btn text value="profile" to="/profile">
+        <span>Profiel</span>
+        <v-icon>person</v-icon>
+      </v-btn>
+    </v-bottom-navigation>
+  </v-app>
+  <!-- <v-container id="app" :class="appClasses" fluid ma-0 pa-0>
     <v-layout fill-height column>
       <v-flex v-if="isHeaderVisible" id="header" xs1>
         <netmobiel-header />
@@ -35,18 +75,18 @@
         <netmobiel-footer />
       </v-flex>
     </v-layout>
-  </v-container>
+  </v-container> -->
 </template>
 
 <script>
-import NetmobielHeader from '@/components/common/NetmobielHeader.vue'
-import NetmobielFooter from '@/components/common/NetmobielFooter.vue'
+// import NetmobielHeader from '@/components/common/NetmobielHeader.vue'
+// import NetmobielFooter from '@/components/common/NetmobielFooter.vue'
 
 export default {
   name: 'App',
   components: {
-    NetmobielHeader,
-    NetmobielFooter,
+    // NetmobielHeader,
+    // NetmobielFooter,
   },
   data: () => ({
     offsetTop: 0,
@@ -54,6 +94,14 @@ export default {
   computed: {
     appClasses: function() {
       return this.$store.getters['ui/getAppClasses']
+    },
+    selectedNav: {
+      get: function() {
+        return this.$store.getters['ui/getSelectedNav']
+      },
+      set: function(value) {
+        this.$store.commit('ui/setSelectedNav', value)
+      },
     },
     isHeaderVisible: function() {
       return this.$store.getters['ui/isHeaderVisible']
@@ -72,6 +120,9 @@ export default {
     },
     getProfile() {
       return this.$store.getters['ps/getProfile']
+    },
+    isBackButtonVisible: function() {
+      return this.$store.getters['ui/isBackButtonVisible']
     },
   },
   watch: {
@@ -107,37 +158,24 @@ export default {
         this.$store.commit('ui/removeAppClass', 'small')
       }
     },
+    goBack: function() {
+      this.$router.go(-1)
+    },
+    routeToMode: function() {
+      // TODO: Link this to profile so we know where to route!
+      this.$router.push('/modeSelection')
+    },
   },
 }
 </script>
 
 <style lang="scss">
-html,
-body {
-  background: $color-green;
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-}
-
-#content {
-  background: white;
-  position: relative;
-}
-#app {
-  height: 100vh;
-}
-
-#header {
-  height: 10vmax;
-}
-
 .homepage {
   background-image: url('assets/achterhoek_background.jpg');
   background-size: contain;
   background-position: top;
   background-repeat: no-repeat;
-  overflow-y: visible;
+  // overflow-y: visible;
 }
 
 .homepage #content {
@@ -148,19 +186,38 @@ body {
   -o-transition: all 250ms linear;
 }
 
-.homepage #footer {
-  padding-top: $footer-height;
-}
-
 .small #content {
   margin-top: 0px;
 }
 
-.footerPadding {
-  padding-bottom: $footer-height;
-}
-
 .modeSelectPage #content {
   background: transparent;
+}
+
+.header {
+  background-image: url('./assets/logo_header.png');
+  background-size: 120px;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+#backButton {
+  color: $color-white;
+}
+
+.v-application .text-light-grey {
+  color: $color-light-grey;
+}
+
+.v-application .underlined {
+  text-decoration: underline;
+}
+
+.capitalized {
+  text-transform: capitalize;
+}
+
+.text-bold {
+  font-weight: bold;
 }
 </style>

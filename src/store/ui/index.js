@@ -21,6 +21,16 @@ export default {
     notificationQueue: [],
     updateMessages: [
       {
+        title: 'Verdien een gratis reis!',
+        content:
+          'Maak jouw profiel compleet en verdien een gratis reis met Netmobiel!',
+        link: {
+          label: 'Profiel compleet maken',
+          to: '/onboardingPage',
+        },
+      },
+
+      {
         title: 'Gepland onderhoud',
         content: 'Van maandag 24 oktober tot 9 november',
       },

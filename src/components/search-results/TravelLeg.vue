@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { getIcon } from '@/utils/Utils.js'
+import travelModes from '@/constants/travel-modes.js'
 
 export default {
   name: 'TravelLeg',
@@ -67,7 +67,7 @@ export default {
       return result
     },
     getIcon: function() {
-      return getIcon(this.leg.mode)
+      return travelModes[this.leg.mode].icon
     },
   },
   methods: {},
