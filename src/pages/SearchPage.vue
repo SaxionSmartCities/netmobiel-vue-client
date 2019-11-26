@@ -175,12 +175,9 @@ export default {
     },
     saveDate(value) {
       this.arrivalDate = value
-      console.log('saveDate: ' + value)
-      console.log('saveDate2: ' + this.arrivalDate)
     },
     saveTime(value) {
       this.arrivalTime = value
-      console.log('saveTime: ' + value)
     },
     toRidePreferences() {
       this.$router.push({ name: 'searchOptions' })
