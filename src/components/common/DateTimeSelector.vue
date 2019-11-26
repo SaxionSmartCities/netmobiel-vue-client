@@ -67,6 +67,8 @@
 export default {
   name: 'DateTimeSelector',
   props: {
+    initialDate: { type: String, default: '' },
+    initialTime: { type: String, default: '' },
     allowedDates: {
       type: Function,
       required: false,
@@ -87,6 +89,7 @@ export default {
       },
       set: function(value) {
         this.$store.commit('ui/setTempValue', { searchDate: value })
+        this.$emit('dateValueUpdated', value)
       },
     },
     time: {
@@ -95,8 +98,13 @@ export default {
       },
       set: function(value) {
         this.$store.commit('ui/setTempValue', { searchTime: value })
+        this.$emit('timeValueUpdated', value)
       },
     },
+  },
+  mounted() {
+    this.date = this.initialDate
+    this.time = this.initialTime
   },
   methods: {
     saveDate(date) {

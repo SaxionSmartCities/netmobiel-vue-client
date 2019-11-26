@@ -23,7 +23,13 @@
                       <from-to-fields />
                     </v-flex>
                     <v-flex>
-                      <date-time-selector :allowed-dates="allowedDates" />
+                      <date-time-selector
+                        :allowed-dates="allowedDates"
+                        :initial-date="arrivalDate"
+                        :initial-time="arrivalTime"
+                        @dateValueUpdated="saveDate"
+                        @timeValueUpdated="saveTime"
+                      />
                     </v-flex>
                     <v-flex>
                       <v-btn
@@ -116,9 +122,10 @@ export default {
       showPicklocation: false,
       waiting: null,
       locationsPicked: false,
+      arrivalDate: moment().format('YYYY-MM-DD'),
+      arrivalTime: moment().format('HH:mm'),
       allowedDates: function(val) {
         let checkDate = moment(val)
-
         return (
           checkDate.isAfter(moment()) &&
           checkDate.isBefore(moment().add(4, 'weeks'))
@@ -166,22 +173,29 @@ export default {
       this.showPicklocation = true
       this.pickedLocationState = fieldPressed
     },
-    saveDate(date) {
-      this.date = date
+    saveDate(value) {
+      this.arrivalDate = value
+      console.log('saveDate: ' + value)
+      console.log('saveDate2: ' + this.arrivalDate)
+    },
+    saveTime(value) {
+      this.arrivalTime = value
+      console.log('saveTime: ' + value)
     },
     toRidePreferences() {
       this.$router.push({ name: 'searchOptions' })
     },
     submitForm() {
       let pickedGeoLocations = this.$store.getters['gs/getPickedLocation']
-
       let from = pickedGeoLocations.from
       let to = pickedGeoLocations.to
       let searchPreferences = this.$store.getters['ps/getProfile']
         .searchPreferences
-      let selectedTime = moment(this.date + ' ' + this.time, 'YYYY-MM-DD HH:mm')
-
-      var searchQuery = {
+      let selectedTime = moment(
+        this.arrivalDate + ' ' + this.arrivalTime,
+        'YYYY-MM-DD HH:mm'
+      )
+      let searchQuery = {
         from: from,
         to: to,
         searchPreferences: searchPreferences,
