@@ -4,6 +4,7 @@ import 'vuetify/dist/vuetify.min.css'
 
 import App from './App.vue'
 import axios from 'axios'
+import moment from 'moment'
 import store from './store'
 import router from './router'
 import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
@@ -63,3 +64,6 @@ Vue.use(VueKeyCloak, {
     }).$mount('#app')
   },
 })
+
+// force dutch locale for names of weekdays, months, etc.
+moment.locale('nl')

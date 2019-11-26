@@ -16,7 +16,8 @@ export default {
   },
   methods: {
     goBack: function() {
-      this.$router.go(-1)
+      //this.$router.go(-1)
+      this.$router.push('/rideRecurrence')
     },
   },
 }

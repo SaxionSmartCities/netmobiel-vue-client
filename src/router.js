@@ -24,6 +24,7 @@ import RegistrationPage from './pages/RegistrationPage.vue'
 import RidePlanOptionsPage from './pages/RidePlanOptionsPage.vue'
 import RidePlanSubmitted from './pages/RidePlanSubmitted.vue'
 import TripsOverviewPage from './pages/TripsOverviewPage.vue'
+import RideRecurrencePage from './pages/RideRecurrencePage.vue'
 
 const router = new Router({
   mode: 'history',
@@ -124,6 +125,11 @@ const router = new Router({
       path: '/modeSelection',
       component: ModeSelectionPage,
       name: 'modeSelectionPage',
+    },
+    {
+      path: '/rideRecurrence',
+      component: RideRecurrencePage,
+      name: 'rideRecurrencePage',
     },
   ],
 })
