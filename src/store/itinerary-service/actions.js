@@ -27,7 +27,7 @@ export default {
     }
 
     if (payload.mode == 0) {
-      params['toDate'] = moment(payload.time).format()
+      params['toDate'] = moment(payload.time).format('YYYY-MM-DDTHH:mm')
     } else {
       params['fromDate'] = moment(payload.time).format()
     }
@@ -48,6 +48,7 @@ export default {
         context.commit('setPlanningStatus', {
           status: 'SUCCESS',
         })
+        console.log(res.data)
         context.commit('setPlanningResults', {
           data: res.data,
         })

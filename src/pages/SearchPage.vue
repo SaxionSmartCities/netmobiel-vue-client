@@ -201,11 +201,14 @@ export default {
         this.arrivalDate + ' ' + this.arrivalTime,
         'YYYY-MM-DD HH:mm'
       )
+      let mode = this.mode
+
       let searchQuery = {
         from: from,
         to: to,
         searchPreferences: searchPreferences,
         selectedTime: selectedTime,
+        mode: mode,
       }
 
       this.$store.dispatch('is/submitPlanningsRequest', searchQuery)
