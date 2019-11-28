@@ -25,6 +25,8 @@
                     <v-flex>
                       <date-time-selector
                         :allowed-dates="allowedDates"
+                        :initial-date="initialDate"
+                        :initial-time="initialTime"
                         @dateValueUpdated="saveDate"
                         @timeValueUpdated="saveTime"
                         @modeValueUpdated="saveMode"
@@ -121,13 +123,17 @@ export default {
       showPicklocation: false,
       waiting: null,
       locationsPicked: false,
+      initialDate: moment().format('YYYY-MM-DD'),
+      initialTime: moment()
+        .add(30, 'minutes')
+        .format('HH:mm'),
       date: '',
       time: '',
       mode: 0, // Represents arrival / departure
       allowedDates: function(val) {
         let checkDate = moment(val)
         return (
-          checkDate.isAfter(moment()) &&
+          checkDate.isSameOrAfter(moment().startOf('day')) &&
           checkDate.isBefore(moment().add(4, 'weeks'))
         )
       },

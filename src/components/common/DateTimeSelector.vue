@@ -67,6 +67,21 @@
 export default {
   name: 'DateTimeSelector',
   props: {
+    initialDate: {
+      type: String,
+      default: '',
+      required: false,
+    },
+    initialTime: {
+      type: String,
+      default: '',
+      required: false,
+    },
+    initialMode: {
+      type: Number,
+      default: 0,
+      required: false,
+    },
     allowedDates: {
       type: Function,
       required: false,
@@ -110,6 +125,11 @@ export default {
         this.$emit('modeValueUpdated', value)
       },
     },
+  },
+  mounted() {
+    this.localSearchDate = this.initialDate
+    this.localSearchtime = this.initialTime
+    this.localSelectedMode = this.initialMode
   },
   methods: {
     saveDate(date) {
