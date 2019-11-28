@@ -78,6 +78,9 @@ export default {
   mounted() {
     this.$store.commit('cs/clearSearchResult')
   },
+  created: function() {
+    this.$store.commit('ui/showBackButton')
+  },
   methods: {
     continueWithSelectedCar() {
       this.$store.commit(

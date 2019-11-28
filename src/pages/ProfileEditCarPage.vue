@@ -144,6 +144,9 @@ export default {
         result
     this.personCount = this.car.nrSeats > 1 ? this.car.nrSeats - 1 : 2
   },
+  created: function() {
+    this.$store.commit('ui/showBackButton')
+  },
 }
 </script>
 

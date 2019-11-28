@@ -87,6 +87,9 @@ export default {
         .numPassengers
     },
   },
+  created: function() {
+    this.$store.commit('ui/showBackButton')
+  },
   methods: {
     selectAlternativeCar(car) {
       const profile = this.$store.getters['ps/getUser'].profile,
