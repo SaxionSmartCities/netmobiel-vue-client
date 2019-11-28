@@ -79,12 +79,12 @@
       <v-flex>
         <v-layout row class="actions">
           <v-flex xs6>
-            <v-btn small round outline color="#2E8997" @click="cancelCar()">
+            <v-btn small rounded outlined color="#2E8997" @click="cancelCar()">
               {{ isEditing ? 'Auto verwijderen' : 'Annuleren' }}
             </v-btn>
           </v-flex>
           <v-flex xs6>
-            <v-btn small round block :disabled="!isValid" @click="saveCar()">
+            <v-btn small rounded block :disabled="!isValid" @click="saveCar()">
               Opslaan
             </v-btn>
           </v-flex>
