@@ -26,11 +26,14 @@ export default {
       searchPreferences: payload.searchPreferences,
     }
 
+    let formattedDate = moment(payload.time).format('YYYY-MM-DDTHH:mm')
     if (payload.mode == 0) {
-      params['toDate'] = moment(payload.time).format('YYYY-MM-DDTHH:mm')
+      params['toDate'] = formattedDate
     } else {
-      params['fromDate'] = moment(payload.time).format()
+      params['fromDate'] = formattedDate
     }
+
+    console.log(params)
 
     var axiosConfig = {
       method: 'GET',
