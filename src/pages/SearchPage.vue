@@ -25,10 +25,11 @@
                     <v-flex>
                       <date-time-selector
                         :allowed-dates="allowedDates"
-                        :initial-date="arrivalDate"
-                        :initial-time="arrivalTime"
+                        :initial-date="initialDate"
+                        :initial-time="initialTime"
                         @dateValueUpdated="saveDate"
                         @timeValueUpdated="saveTime"
+                        @modeValueUpdated="saveMode"
                       />
                     </v-flex>
                     <v-flex>
@@ -122,12 +123,17 @@ export default {
       showPicklocation: false,
       waiting: null,
       locationsPicked: false,
-      arrivalDate: moment().format('YYYY-MM-DD'),
-      arrivalTime: moment().format('HH:mm'),
+      initialDate: moment().format('YYYY-MM-DD'),
+      initialTime: moment()
+        .add(30, 'minutes')
+        .format('HH:mm'),
+      date: '',
+      time: '',
+      mode: 0, // Represents arrival / departure
       allowedDates: function(val) {
         let checkDate = moment(val)
         return (
-          checkDate.isAfter(moment()) &&
+          checkDate.isSameOrAfter(moment().startOf('day')) &&
           checkDate.isBefore(moment().add(4, 'weeks'))
         )
       },
@@ -174,10 +180,13 @@ export default {
       this.pickedLocationState = fieldPressed
     },
     saveDate(value) {
-      this.arrivalDate = value
+      this.date = value
     },
     saveTime(value) {
-      this.arrivalTime = value
+      this.time = value
+    },
+    saveMode(value) {
+      this.mode = value
     },
     toRidePreferences() {
       this.$router.push({ name: 'searchOptions' })
@@ -192,11 +201,14 @@ export default {
         this.arrivalDate + ' ' + this.arrivalTime,
         'YYYY-MM-DD HH:mm'
       )
+      let mode = this.mode
+
       let searchQuery = {
         from: from,
         to: to,
         searchPreferences: searchPreferences,
         selectedTime: selectedTime,
+        mode: mode,
       }
 
       this.$store.dispatch('is/submitPlanningsRequest', searchQuery)
