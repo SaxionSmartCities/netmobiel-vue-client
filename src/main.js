@@ -53,6 +53,3 @@ Vue.use(VueKeyCloak, {
     }).$mount('#app')
   },
 })
-
-// force dutch locale for names of weekdays, months, etc.
-moment.locale('nl')

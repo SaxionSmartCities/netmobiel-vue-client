@@ -2,33 +2,56 @@
   <div>
     <v-checkbox
       v-for="(day, index) of weekdays"
-      :key="day"
-      :label="capitalize(day)"
+      :key="index"
+      v-model="selections[index]"
+      :label="day"
       hide-details
-      @change="$emit('week-pattern', toggle(index))"
+      @change="$emit('input', toggle(index))"
     />
   </div>
 </template>
 
 <script>
-import { weekdays } from 'moment'
-import { upperCaseFirst } from '@/utils/Utils.js'
+const weekdays = [
+  'Maandag',
+  'Dinsdag',
+  'Woensdag',
+  'Donderdag',
+  'Vrijdag',
+  'Zaterdag',
+  'Zondag',
+]
+
+// compute initial array of booleans that serves as model for v-checkboxes
+function initializeSelections(mask) {
+  const selections = new Array(7)
+  for (let index = 0; index < 7; ++index) {
+    const bit = 1 << index
+    selections[index] = !!(mask & bit)
+  }
+  return selections
+}
 
 export default {
   name: 'WeekPatternEditor',
-  data: () => ({ mask: 0 }),
+  // custom input needs a value prop: https://vuejs.org/v2/guide/components.html#Using-v-model-on-Components
+  props: {
+    value: {
+      type: Number,
+      default: 0,
+    },
+  },
+  data() {
+    return { mask: this.value, selections: initializeSelections(this.value) }
+  },
   computed: {
     weekdays() {
-      // true parameter forces locale-specific order of weekdays (Monday comes first in nl locale)
-      return weekdays(true)
+      return weekdays
     },
   },
   methods: {
-    capitalize(weekday) {
-      return upperCaseFirst(weekday)
-    },
     toggle(index) {
-      const bit = 2 ** index
+      const bit = 1 << index
       if (this.mask & bit) {
         // clear bit in week mask
         this.mask &= ~bit
@@ -41,5 +64,3 @@ export default {
   },
 }
 </script>
-
-<style scoped></style>

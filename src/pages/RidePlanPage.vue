@@ -23,6 +23,9 @@
                   <v-flex>
                     <date-time-selector />
                   </v-flex>
+                  <v-flex>
+                    <recurrence-editor v-bind="recurrence" />
+                  </v-flex>
                 </v-layout>
                 <v-layout mt-2 justify-center text-xs-center>
                   <v-flex>
@@ -60,12 +63,24 @@
 import moment from 'moment'
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
+import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
 
 export default {
   name: 'RidePlanPage',
   components: {
     FromToFields,
     DateTimeSelector,
+    RecurrenceEditor,
+  },
+  data() {
+    return {
+      recurrence: {
+        daysOfWeek: 0,
+        horizon: 0,
+        interval: 0,
+        unit: 'DAY',
+      },
+    }
   },
   computed: {
     date: {
