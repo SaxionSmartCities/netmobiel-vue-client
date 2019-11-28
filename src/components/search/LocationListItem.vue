@@ -1,9 +1,9 @@
 <template>
-  <v-list-item two-line>
-    <v-list-item-icon>
+  <v-list-item>
+    <v-list-item-icon @click="submitSelection">
       <v-icon>{{ iconicCategory(suggestion.category) }}</v-icon>
     </v-list-item-icon>
-    <v-list-item-content>
+    <v-list-item-content @click="submitSelection">
       <v-list-item-title>
         <div class="text-truncate" v-html="suggestion.highlightedTitle"></div>
       </v-list-item-title>
@@ -14,8 +14,9 @@
         ></div>
       </v-list-item-subtitle>
     </v-list-item-content>
-    <v-list-item-icon>
-      <v-icon>favorite</v-icon>
+    <v-list-item-icon v-if="showFavoriteButton" @click="submitFavorite">
+      <v-icon v-if="!suggestionSaved">favorite_border</v-icon>
+      <v-icon v-else>favorite</v-icon>
     </v-list-item-icon>
   </v-list-item>
 </template>
@@ -40,11 +41,16 @@ export default {
       type: Object,
       required: true,
     },
-    hideFavorite: {
+    showFavoriteButton: {
       type: Boolean,
       required: false,
       default: false,
     },
+  },
+  data: function() {
+    return {
+      suggestionSaved: false,
+    }
   },
   methods: {
     iconicCategory(category) {
@@ -55,6 +61,12 @@ export default {
       let stripStageTwo = stripStageOne.replace('<br/>', '')
 
       return stripStageTwo
+    },
+    submitSelection() {
+      this.$emit('onItemClicked')
+    },
+    submitFavorite() {
+      this.$emit('onFavoriteClicked')
     },
   },
 }

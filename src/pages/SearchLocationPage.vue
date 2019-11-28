@@ -24,7 +24,9 @@
             <location-list-item
               :key="suggestion.id"
               :suggestion="suggestion"
-              @click="completeSearch(suggestion)"
+              show-favorite-button
+              @onItemClicked="completeSearch(suggestion)"
+              @onFavoriteClicked="toggleFavorite(suggestion)"
             />
             <v-divider v-if="index + 1 < suggestions.length" :key="index" />
           </template>
@@ -54,7 +56,6 @@ const highlightMarker = 'class="search-hit"'
 const skipCategories = new Set(['intersection'])
 const maxSuggestions = 8
 function improveSuggestions(suggestions) {
-  console.log(suggestions)
   const highlighted = suggestions.filter(
     suggestion =>
       suggestion.highlightedTitle.indexOf(highlightMarker) > 0 &&
@@ -122,6 +123,9 @@ export default {
     clearSearchInput() {
       this.searchInput = ''
       this.showSuggestionsList = false
+    },
+    toggleFavorite(suggestion) {
+      console.log('This should become a favorite!', suggestion)
     },
   },
 }
