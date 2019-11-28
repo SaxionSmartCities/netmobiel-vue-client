@@ -23,18 +23,18 @@
             </v-flex>
           </v-layout>
           <v-layout row class="actions">
-            <v-flex xs4>
+            <v-flex xs5>
               <v-btn
                 small
                 rounded
                 outlined
                 color="#2E8997"
-                @click="editCar(car)"
+                @click="removeCar(car)"
               >
-                Wijzigen
+                Verwijder
               </v-btn>
             </v-flex>
-            <v-flex xs8>
+            <v-flex xs7>
               <v-btn
                 small
                 rounded
@@ -107,10 +107,11 @@ export default {
       }
       this.$router.push('/plan')
     },
-    editCar(car) {
-      // treat the car to edit as the search result
-      this.$store.commit('cs/setSearchResult', car)
-      this.$router.push('/profileEditCar')
+    removeCar(car) {
+      //TODO: Remove car from user profile in the backend.
+      this.$store.commit('ps/deleteRidePlanOptionsCar', car)
+      const profile = this.$store.getters['ps/getUser'].profile
+      this.$store.dispatch('ps/updateProfile', profile)
     },
   },
 }

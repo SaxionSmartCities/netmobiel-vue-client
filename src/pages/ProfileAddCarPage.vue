@@ -7,10 +7,10 @@
       <v-divider />
       <v-flex>
         <v-layout align-center my-2>
-          <v-flex xs3>
-            Kenteken
+          <v-flex xs7>
+            Voer het kenteken in:
           </v-flex>
-          <v-flex xs9>
+          <v-flex xs2>
             <input
               v-model="searchLicensePlate"
               placeholder="__-___-_"
@@ -20,31 +20,55 @@
           </v-flex>
         </v-layout>
       </v-flex>
-      <v-flex>
+      <v-flex pl-2>
         <v-layout align-center my-1>
-          <v-flex xs3 />
-          <v-flex xs9 text-truncate>
+          <v-flex xs4 font-italic>
+            Merk:
+          </v-flex>
+          <v-flex xs8 text-truncate font-weight-medium>
             <span v-if="searchResult" class="search-results">
-              {{ searchResult.brand }}, {{ searchResult.model }} ({{
-                searchResult.registrationYear
-              }})
+              {{ searchResult.brand }}
             </span>
-            <span v-else>&nbsp;</span>
+            <span v-else>-</span>
+          </v-flex>
+        </v-layout>
+        <v-layout align-center my-1>
+          <v-flex xs4 font-italic>
+            Model:
+          </v-flex>
+          <v-flex xs8 text-truncate font-weight-medium>
+            <span v-if="searchResult" class="search-results">
+              {{ searchResult.model }}
+            </span>
+            <span v-else>-</span>
+          </v-flex>
+        </v-layout>
+        <v-layout align-center my-1>
+          <v-flex xs4 font-italic>
+            Bouwjaar:
+          </v-flex>
+          <v-flex xs8 text-truncate font-weight-medium>
+            <span v-if="searchResult" class="search-results">
+              {{ searchResult.registrationYear }}
+            </span>
+            <span v-else>-</span>
           </v-flex>
         </v-layout>
       </v-flex>
       <v-flex>
         <v-layout align-center my-2>
           <v-flex xs8 />
-          <v-flex xs4>
+          <v-flex xs5>
             <v-btn
               :disabled="!searchResult"
               small
               rounded
               block
-              @click="continueWithSelectedCar()"
+              depressed
+              class="button"
+              @click="addCar(searchResult)"
             >
-              Verder
+              Toevoegen
             </v-btn>
           </v-flex>
         </v-layout>
@@ -82,12 +106,23 @@ export default {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
-    continueWithSelectedCar() {
-      this.$store.commit(
-        'cs/setSearchLicensePlate',
-        this.searchLicensePlate.toUpperCase()
+    addCar(car) {
+      console.log(car)
+      const profile = this.$store.getters['ps/getUser'].profile
+      let storedCar = profile.ridePlanOptions.cars.find(
+        c => c.licensePlate === car.licensePlate
       )
-      this.$router.push('/profileEditCar')
+      if (storedCar) {
+        this.$store.dispatch('ui/queueNotification', {
+          message: 'Auto is al opgeslagen aan uw profiel.',
+          timeout: 3000,
+        })
+      } else {
+        this.$store.dispatch('cs/submitCar', car).then(() => {
+          this.$store.dispatch('ps/fetchProfile')
+          this.$router.go(-1)
+        })
+      }
     },
   },
 }
@@ -96,10 +131,6 @@ export default {
 <style lang="scss">
 .search-license-plate {
   text-transform: uppercase;
-}
-.search-results {
-  font-style: italic;
-  font-size: 80%;
-  color: $color-mid-grey;
+  width: 90px;
 }
 </style>
