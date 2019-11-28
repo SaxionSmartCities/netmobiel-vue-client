@@ -15,16 +15,23 @@ function generateHeader(key) {
 export default {
   submitPlanningsRequest: (context, payload) => {
     context.commit('storePlanningRequest', payload)
-    let time = moment(payload.selectedTime).format('HH:mm')
-    let date = moment(payload.selectedTime).format('YYYY-MM-DD')
     let params = {
-      fromPlace: `${payload.from.position[0]},${payload.from.position[1]}`,
-      fromDate: `${date}T${time}`,
-      toPlace: `${payload.to.position[0]},${payload.to.position[1]}`,
-      toDate: `${date}T${time}`,
+      fromPlace: `${payload.from.title}::${payload.from.position[0]},${
+        payload.from.position[1]
+      }`,
+      toPlace: `${payload.to.title}::${payload.to.position[0]},${
+        payload.to.position[1]
+      }`,
       nrSeats: 1,
       searchPreferences: payload.searchPreferences,
     }
+
+    if (payload.mode == 0) {
+      params['toDate'] = moment(payload.time).format()
+    } else {
+      params['fromDate'] = moment(payload.time).format()
+    }
+
     var axiosConfig = {
       method: 'GET',
       url: BASE_URL + '/planner/api/search/plan',
