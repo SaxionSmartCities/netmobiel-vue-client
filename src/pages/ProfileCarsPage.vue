@@ -6,30 +6,20 @@
       </v-flex>
       <v-flex>
         <div v-for="car in availableCars" :key="car.id" class="car">
-          <div class="license">
-            {{ car.licensePlate }}
-          </div>
-          <div class="brand">
-            {{ car.brand }}&nbsp;{{ car.model }},&nbsp;{{ car.color }}
-          </div>
-          <v-layout row>
-            <v-flex xs3>
-              <span class="form-label font-weight-bold">
-                Bagage
-              </span>
+          <v-layout columns>
+            <v-flex mt-4 xs4>
+              Kenteken:
             </v-flex>
-            <v-flex xs9>
-              {{ luggageOptions }}
+            <v-flex mt-4 font-weight-medium>
+              {{ car.licensePlate }}
             </v-flex>
           </v-layout>
-          <v-layout row class="passengers">
-            <v-flex xs3>
-              <span class="form-label font-weight-bold">
-                Personen
-              </span>
+          <v-layout columns>
+            <v-flex mt-1 xs4>
+              Model:
             </v-flex>
-            <v-flex xs9>
-              {{ passengerCount }}
+            <v-flex mt-1 font-italic>
+              {{ car.brand }}&nbsp;{{ car.model }},&nbsp;{{ car.color }}
             </v-flex>
           </v-layout>
           <v-layout row class="actions">
@@ -45,7 +35,14 @@
               </v-btn>
             </v-flex>
             <v-flex xs8>
-              <v-btn small round block @click="selectAlternativeCar(car)">
+              <v-btn
+                small
+                rounded
+                block
+                depressed
+                color="button"
+                @click="selectAlternativeCar(car)"
+              >
                 Met deze auto rijden
               </v-btn>
             </v-flex>
@@ -125,19 +122,6 @@ export default {
 }
 .car:first-child {
   margin-top: 0;
-}
-.license {
-  font-weight: bold;
-  margin: 0.5em 0 0.25em 0;
-}
-.brand {
-  color: #9d9d9d;
-  font-size: 80%;
-  margin: 0.25em 0 0.5em 0;
-  font-variant: super;
-}
-.passengers {
-  margin: 0.5em 0;
 }
 .actions {
   margin: 1em 0;
