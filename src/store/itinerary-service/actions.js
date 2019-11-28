@@ -33,8 +33,6 @@ export default {
       params['fromDate'] = formattedDate
     }
 
-    console.log(params)
-
     var axiosConfig = {
       method: 'GET',
       url: BASE_URL + '/planner/api/search/plan',
@@ -51,7 +49,6 @@ export default {
         context.commit('setPlanningStatus', {
           status: 'SUCCESS',
         })
-        console.log(res.data)
         context.commit('setPlanningResults', {
           data: res.data,
         })
