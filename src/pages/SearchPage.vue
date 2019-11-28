@@ -25,10 +25,9 @@
                     <v-flex>
                       <date-time-selector
                         :allowed-dates="allowedDates"
-                        :initial-date="arrivalDate"
-                        :initial-time="arrivalTime"
                         @dateValueUpdated="saveDate"
                         @timeValueUpdated="saveTime"
+                        @modeValueUpdated="saveMode"
                       />
                     </v-flex>
                     <v-flex>
@@ -122,8 +121,9 @@ export default {
       showPicklocation: false,
       waiting: null,
       locationsPicked: false,
-      arrivalDate: moment().format('YYYY-MM-DD'),
-      arrivalTime: moment().format('HH:mm'),
+      date: '',
+      time: '',
+      mode: 0, // Represents arrival / departure
       allowedDates: function(val) {
         let checkDate = moment(val)
         return (
@@ -174,10 +174,13 @@ export default {
       this.pickedLocationState = fieldPressed
     },
     saveDate(value) {
-      this.arrivalDate = value
+      this.date = value
     },
     saveTime(value) {
-      this.arrivalTime = value
+      this.time = value
+    },
+    saveMode(value) {
+      this.mode = value
     },
     toRidePreferences() {
       this.$router.push({ name: 'searchOptions' })

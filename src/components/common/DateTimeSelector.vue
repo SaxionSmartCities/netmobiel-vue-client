@@ -64,11 +64,11 @@
 </template>
 
 <script>
+// import moment from 'moment'
+
 export default {
   name: 'DateTimeSelector',
   props: {
-    initialDate: { type: String, default: '' },
-    initialTime: { type: String, default: '' },
     allowedDates: {
       type: Function,
       required: false,
@@ -77,7 +77,9 @@ export default {
   },
   data: function() {
     return {
-      selectedMode: 0,
+      localSelectedMode: 0,
+      localSearchDate: '',
+      localSearchtime: '',
       dateModal: false,
       timeModal: false,
     }
@@ -85,26 +87,31 @@ export default {
   computed: {
     date: {
       get: function() {
-        return this.$store.getters['ui/getTempValue']('searchDate')
+        return this.localSearchDate
       },
       set: function(value) {
-        this.$store.commit('ui/setTempValue', { searchDate: value })
+        this.localSearchDate = value
         this.$emit('dateValueUpdated', value)
       },
     },
     time: {
       get: function() {
-        return this.$store.getters['ui/getTempValue']('searchTime')
+        return this.localSearchtime
       },
       set: function(value) {
-        this.$store.commit('ui/setTempValue', { searchTime: value })
+        this.localSearchtime = value
         this.$emit('timeValueUpdated', value)
       },
     },
-  },
-  mounted() {
-    this.date = this.initialDate
-    this.time = this.initialTime
+    selectedMode: {
+      get: function() {
+        return this.localSelectedMode
+      },
+      set: function(value) {
+        this.localSelectedMode = value
+        this.$emit('modeValueUpdated', value)
+      },
+    },
   },
   methods: {
     saveDate(date) {
