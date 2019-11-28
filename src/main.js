@@ -3,7 +3,6 @@ import vuetify from './plugins/vuetify'
 
 import App from './App.vue'
 import axios from 'axios'
-import moment from 'moment'
 import store from './store'
 import router from './router'
 import VueKeyCloak from '@dsb-norge/vue-keycloak-js'

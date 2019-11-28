@@ -21,10 +21,13 @@
                     <from-to-fields />
                   </v-flex>
                   <v-flex>
-                    <date-time-selector />
+                    <date-time-selector @dateValueUpdated="dateChanged" />
                   </v-flex>
                   <v-flex>
-                    <recurrence-editor v-bind="recurrence" />
+                    <recurrence-editor
+                      :disabled="disableRecurrence"
+                      :value="recurrence"
+                    />
                   </v-flex>
                 </v-layout>
                 <v-layout mt-2 justify-center text-xs-center>
@@ -74,12 +77,8 @@ export default {
   },
   data() {
     return {
-      recurrence: {
-        daysOfWeek: 0,
-        horizon: 0,
-        interval: 0,
-        unit: 'DAY',
-      },
+      disableRecurrence: true,
+      recurrence: undefined,
     }
   },
   computed: {
@@ -99,7 +98,6 @@ export default {
         this.$store.commit('ui/setTempValue', { rideTime: value })
       },
     },
-
     locationsPickedCheck: function() {
       const fromLoc = this.$store.getters['gs/getPickedLocation'].from
       const toLoc = this.$store.getters['gs/getPickedLocation'].to
@@ -119,7 +117,17 @@ export default {
         : `${suggestion.title} ${suggestion.vicinity}`
     },
   },
+  watch: {
+    recurrence(value) {
+      console.log('new recurrence', value)
+      this.disableRecurrence = !value
+    },
+  },
   methods: {
+    dateChanged(date) {
+      console.log('date?', date)
+      this.disableRecurrence = !date
+    },
     swapLocations() {
       this.$store.commit('gs/swapLocations')
     },
