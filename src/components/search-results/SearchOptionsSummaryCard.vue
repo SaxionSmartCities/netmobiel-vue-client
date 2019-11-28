@@ -1,67 +1,47 @@
 <template>
-  <v-layout>
-    <v-flex>
-      <v-layout column>
-        <v-flex id="personen" my-2>
-          <v-layout>
-            <v-flex>Aantal personen:</v-flex>
-            <v-flex text-xs-right pr-3>{{
-              getSearchPreferences.numPassengers
-            }}</v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex id="bagage" my-2>
-          <v-layout>
-            <v-flex>Bagage:</v-flex>
-            <v-flex text-xs-right pr-3>
-              <v-icon
-                v-for="selectedLuggage in luggageOptions"
-                :key="selectedLuggage.label"
-              >
-                {{ selectedLuggage.icon }}
-              </v-icon>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex id="overstappen" my-2>
-          <v-layout>
-            <v-flex>Overstappen:</v-flex>
-            <v-flex
-              v-if="getSearchPreferences.allowTransfer"
-              text-xs-right
-              pr-3
-            >
-              <v-icon>check</v-icon>
-            </v-flex>
-            <v-flex v-else pr-3 text-xs-right>
-              <v-icon color="red">close</v-icon>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex id="toestaan" my-2>
-          <v-layout>
-            <v-flex>Toegestaan:</v-flex>
-            <v-flex pr-3 text-xs-right>
-              <v-icon
-                v-for="travelMode in allowedTravelModes"
-                :key="travelMode.label"
-              >
-                {{ travelMode.icon }}
-              </v-icon>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex id="loopafstand" my-2>
-          <v-layout>
-            <v-flex>Aantal minuten lopen:</v-flex>
-            <v-flex text-xs-right pr-3>
-              {{ getSearchPreferences.maximumTransferTime }}
-            </v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-  </v-layout>
+  <v-container class="body-2">
+    <v-row dense>
+      <v-col>Aantal personen</v-col>
+      <v-col class="text-right">
+        {{ getSearchPreferences.numPassengers }}</v-col
+      >
+    </v-row>
+    <v-row dense>
+      <v-col>Bagage </v-col>
+      <v-col class="text-right">
+        <v-icon
+          v-for="selectedLuggage in luggageOptions"
+          :key="selectedLuggage.label"
+        >
+          {{ selectedLuggage.icon }}
+        </v-icon>
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col>Overstappen </v-col>
+      <v-col class="text-right">
+        <v-icon v-if="getSearchPreferences.allowTransfer">check</v-icon>
+        <v-icon v-else color="red">close</v-icon>
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col>Toegestaan </v-col>
+      <v-col class="text-right">
+        <v-icon
+          v-for="travelMode in allowedTravelModes"
+          :key="travelMode.label"
+        >
+          {{ travelMode.icon }}
+        </v-icon>
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col>Max. looptijd</v-col>
+      <v-col class="text-right">
+        {{ getSearchPreferences.maximumTransferTime }} minuten
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

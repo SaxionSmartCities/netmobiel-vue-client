@@ -67,8 +67,21 @@
 export default {
   name: 'DateTimeSelector',
   props: {
-    initialDate: { type: String, default: '' },
-    initialTime: { type: String, default: '' },
+    initialDate: {
+      type: String,
+      default: '',
+      required: false,
+    },
+    initialTime: {
+      type: String,
+      default: '',
+      required: false,
+    },
+    initialMode: {
+      type: Number,
+      default: 0,
+      required: false,
+    },
     allowedDates: {
       type: Function,
       required: false,
@@ -77,7 +90,9 @@ export default {
   },
   data: function() {
     return {
-      selectedMode: 0,
+      localSelectedMode: 0,
+      localSearchDate: '',
+      localSearchtime: '',
       dateModal: false,
       timeModal: false,
     }
@@ -85,26 +100,36 @@ export default {
   computed: {
     date: {
       get: function() {
-        return this.$store.getters['ui/getTempValue']('searchDate')
+        return this.localSearchDate
       },
       set: function(value) {
-        this.$store.commit('ui/setTempValue', { searchDate: value })
+        this.localSearchDate = value
         this.$emit('dateValueUpdated', value)
       },
     },
     time: {
       get: function() {
-        return this.$store.getters['ui/getTempValue']('searchTime')
+        return this.localSearchtime
       },
       set: function(value) {
-        this.$store.commit('ui/setTempValue', { searchTime: value })
+        this.localSearchtime = value
         this.$emit('timeValueUpdated', value)
+      },
+    },
+    selectedMode: {
+      get: function() {
+        return this.localSelectedMode
+      },
+      set: function(value) {
+        this.localSelectedMode = value
+        this.$emit('modeValueUpdated', value)
       },
     },
   },
   mounted() {
-    this.date = this.initialDate
-    this.time = this.initialTime
+    this.localSearchDate = this.initialDate
+    this.localSearchtime = this.initialTime
+    this.localSelectedMode = this.initialMode
   },
   methods: {
     saveDate(date) {

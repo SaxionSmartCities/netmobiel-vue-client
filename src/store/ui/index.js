@@ -40,14 +40,6 @@ export default {
       },
     ],
     temp: {
-      searchDate: moment()
-        .startOf('day')
-        .locale('NL')
-        .format('YYYY-MM-DD'),
-      searchTime: moment()
-        .add(30, 'minutes')
-        .locale('nl')
-        .format('HH:mm'),
       rideDate: moment()
         .add(2, 'day')
         .startOf('day')
