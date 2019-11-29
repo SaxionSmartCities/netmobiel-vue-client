@@ -107,7 +107,6 @@ export default {
   },
   methods: {
     addCar(car) {
-      console.log(car)
       const profile = this.$store.getters['ps/getUser'].profile
       let storedCar = profile.ridePlanOptions.cars.find(
         c => c.licensePlate === car.licensePlate
