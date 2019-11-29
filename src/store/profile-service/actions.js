@@ -59,6 +59,9 @@ export default {
     context.dispatch('cs/removeCar', car, { root: true })
     // Update profile in the backend
     let profile = { ...context.state.user.profile }
+    if (profile.ridePlanOptions.selectedCarId === car.id) {
+      profile.ridePlanOptions.selectedCarId = -1
+    }
     context.dispatch('updateProfile', profile)
   },
   updateProfile: (context, profile) => {
