@@ -25,8 +25,7 @@ const weekdays = [
 // compute initial array of booleans that serves as model for v-checkboxes
 function initializeSelections(mask) {
   const selections = new Array(7)
-  for (let index = 0; index < 7; ++index) {
-    const bit = 1 << index
+  for (let index = 0, bit = 1; index < 7; ++index, bit <<= 1) {
     selections[index] = !!(mask & bit)
   }
   return selections

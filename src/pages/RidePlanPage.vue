@@ -25,8 +25,7 @@
                   </v-flex>
                   <v-flex>
                     <recurrence-editor
-                      :disabled="!date"
-                      :origin="date"
+                      :origin="selectedDate"
                       :value="recurrence"
                     />
                   </v-flex>
@@ -79,7 +78,8 @@ export default {
   data() {
     return {
       disableRecurrence: true,
-      recurrence: { origin: '' },
+      recurrence: undefined,
+      selectedDate: undefined,
     }
   },
   computed: {
@@ -124,6 +124,8 @@ export default {
   methods: {
     dateChanged(value) {
       console.log('date value', value)
+      this.selectedDate = value
+      this.date = value
       console.log('date getter', this.date)
     },
     swapLocations() {
