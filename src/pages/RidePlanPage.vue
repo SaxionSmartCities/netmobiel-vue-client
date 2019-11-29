@@ -11,44 +11,67 @@
       <v-flex xs11 sm9 md6>
         <v-layout column shrink>
           <v-flex class="box-widget background-white">
-            <v-flex>
-              <v-form>
-                <v-layout column>
-                  <v-flex text-xs-center xs12>
-                    <h1>Waar rijd je heen?</h1>
-                  </v-flex>
-                  <v-flex>
-                    <from-to-fields />
-                  </v-flex>
-                  <v-flex>
-                    <date-time-selector />
-                  </v-flex>
-                </v-layout>
-                <v-layout mt-2 justify-center text-xs-center>
-                  <v-flex>
-                    <v-btn
-                      large
-                      rounded
-                      block
-                      :disabled="!locationsPickedCheck"
-                      @click="submitForm()"
-                    >
-                      Voeg rit toe!
-                    </v-btn>
-                  </v-flex>
-                </v-layout>
-                <v-layout mt-2 justify-center>
-                  <v-flex
-                    shrink
-                    transition="slide-x-transition"
-                    @click="toRidePlanOptions()"
+            <v-form>
+              <v-layout column>
+                <v-flex text-xs-center>
+                  <h1>Waar rijd je heen?</h1>
+                </v-flex>
+                <v-flex>
+                  <from-to-fields />
+                </v-flex>
+                <v-flex>
+                  <date-time-selector />
+                </v-flex>
+                <v-flex>
+                  <v-layout mt-1 row>
+                    <v-flex pl-2 shrink>
+                      <span class="form-label font-weight-bold">
+                        Auto
+                      </span>
+                      <!-- <v-icon>emoji_transportation</v-icon> -->
+                    </v-flex>
+                    <v-flex v-if="!selectedCar">
+                      <router-link to="profileCars">
+                        <span>Invoeren</span>
+                      </router-link>
+                    </v-flex>
+                    <v-flex v-else>
+                      <router-link to="profileCars">
+                        <span> {{ selectedCar.licensePlate }}</span>
+                      </router-link>
+                      <div class="car-model">
+                        {{ selectedCar.brand }}
+                        {{ selectedCar.model }}
+                      </div>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+
+              <v-layout mt-2 justify-center text-xs-center>
+                <v-flex>
+                  <v-btn
+                    large
+                    rounded
+                    block
+                    :disabled="!locationsPickedCheck"
+                    @click="submitForm()"
                   >
-                    <v-icon>settings</v-icon>
-                    <span class="ml-1">Riteigenschappen</span>
-                  </v-flex>
-                </v-layout>
-              </v-form>
-            </v-flex>
+                    Rit aanbieden
+                  </v-btn>
+                </v-flex>
+              </v-layout>
+              <v-layout mt-2 justify-center>
+                <v-flex
+                  shrink
+                  transition="slide-x-transition"
+                  @click="toRidePlanOptions()"
+                >
+                  <v-icon>settings</v-icon>
+                  <span class="ml-1">Ritvoorkeuren</span>
+                </v-flex>
+              </v-layout>
+            </v-form>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -84,12 +107,16 @@ export default {
         this.$store.commit('ui/setTempValue', { rideTime: value })
       },
     },
-
     locationsPickedCheck: function() {
       const fromLoc = this.$store.getters['gs/getPickedLocation'].from
       const toLoc = this.$store.getters['gs/getPickedLocation'].to
-
-      return fromLoc.title !== undefined && toLoc.title !== undefined
+      const cars = this.$store.getters['ps/getProfile'].ridePlanOptions.cars
+      //return fromLoc.title !== undefined && toLoc.title !== undefined
+      return (
+        fromLoc.address !== undefined &&
+        toLoc.address !== undefined &&
+        cars.length > 0
+      )
     },
     fromLocationLabel() {
       const suggestion = this.$store.getters['gs/getPickedLocation'].from
@@ -102,6 +129,15 @@ export default {
       return !suggestion.title
         ? 'Klik hier voor bestemming'
         : `${suggestion.title} ${suggestion.vicinity}`
+    },
+    availableCars() {
+      return this.$store.getters['ps/getProfile'].ridePlanOptions.cars
+    },
+    selectedCar() {
+      const selectedCarId = this.$store.getters['ps/getProfile'].ridePlanOptions
+          .selectedCarId,
+        cars = this.$store.getters['ps/getProfile'].ridePlanOptions.cars
+      return cars.find(car => car.id === selectedCarId)
     },
   },
   methods: {
@@ -120,12 +156,7 @@ export default {
       let to = pickedGeoLocations.to
       let ridePlanOptions = this.$store.getters['ps/getProfile'].ridePlanOptions
       let selectedTime = moment(this.date + ' ' + this.time, 'YYYY-MM-DD HH:mm')
-      let rideDetails = {
-        from: from,
-        to: to,
-        ridePlanOptions: ridePlanOptions,
-        selectedTime: selectedTime,
-      }
+      let rideDetails = { from, to, ridePlanOptions, selectedTime }
       this.$store.dispatch('cs/submitRide', rideDetails)
       this.$router.push('/planSubmitted')
     },
@@ -133,4 +164,10 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.car-model {
+  font-style: italic;
+  color: #9b9b9b;
+  font-size: 80%;
+}
+</style>

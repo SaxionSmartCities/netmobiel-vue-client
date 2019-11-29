@@ -5,4 +5,7 @@ export default {
   getSearchResult: state => {
     return state.search.result
   },
+  getSearchLicensePlate: state => {
+    return state.search.licensePlate
+  },
 }

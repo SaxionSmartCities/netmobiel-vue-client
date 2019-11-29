@@ -28,21 +28,47 @@ export default {
         // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
-
-        context.dispatch(
-          'ui/queueNotification',
-          {
-            message: 'Fout bij het ophalen van kentekendata.',
-            timeout: 0,
-          },
-          { root: true }
-        )
+        if (!!error.response && error.response.status == 404) {
+          context.dispatch(
+            'ui/queueNotification',
+            {
+              message: `Geen auto gevonden voor kenteken ${plate}.`,
+              timeout: 3000,
+            },
+            { root: true }
+          )
+        } else {
+          context.dispatch(
+            'ui/queueNotification',
+            {
+              message: `Geen auto gevonden voor kenteken ${plate}.`,
+              timeout: 3000,
+            },
+            { root: true }
+          )
+        }
       })
   },
   submitCar: (context, payload) => {
     const URL = BASE_URL + `/rideshare/cars`
     axios
       .post(URL, payload, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        // eslint-disable-next-line
+        console.log(resp)
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
+  removeCar: (context, payload) => {
+    const URL = BASE_URL + `/rideshare/cars/${payload.id}`
+    axios
+      .delete(URL, {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       })
       .then(function(resp) {
