@@ -25,7 +25,8 @@
                   </v-flex>
                   <v-flex>
                     <recurrence-editor
-                      :disabled="disableRecurrence"
+                      :disabled="!date"
+                      :origin="date"
                       :value="recurrence"
                     />
                   </v-flex>
@@ -78,7 +79,7 @@ export default {
   data() {
     return {
       disableRecurrence: true,
-      recurrence: undefined,
+      recurrence: { origin: '' },
     }
   },
   computed: {
@@ -117,16 +118,13 @@ export default {
         : `${suggestion.title} ${suggestion.vicinity}`
     },
   },
-  watch: {
-    recurrence(value) {
-      console.log('new recurrence', value)
-      this.disableRecurrence = !value
-    },
+  mounted() {
+    this.$store.commit('ui/clearTempValue')
   },
   methods: {
-    dateChanged(date) {
-      console.log('date?', date)
-      this.disableRecurrence = !date
+    dateChanged(value) {
+      console.log('date value', value)
+      console.log('date getter', this.date)
     },
     swapLocations() {
       this.$store.commit('gs/swapLocations')

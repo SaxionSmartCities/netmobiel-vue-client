@@ -10,7 +10,8 @@
       <v-card class="pattern-editor">
         <v-card-title>Selecteer weekpatroon</v-card-title>
         <week-pattern-editor :value="weekpattern" />
-        <v-card-actions text-right>
+        <v-card-actions>
+          <v-spacer />
           <v-btn text color="primary" @click="cancelPatternEditor">
             Annuleren
           </v-btn>
@@ -24,18 +25,16 @@
 <script>
 import WeekPatternEditor from './WeekPatternEditor.vue'
 
-void WeekPatternEditor
-
 // according to JavaScript Date class (which differs from recurrence weekpattern that starts at Monday)
-const weekdays = [
-  'zondag',
-  'maandag',
-  'dinsdag',
-  'woensdag',
-  'donderdag',
-  'vrijdag',
-  'zaterdag',
-]
+// const weekdays = [
+//   'zondag',
+//   'maandag',
+//   'dinsdag',
+//   'woensdag',
+//   'donderdag',
+//   'vrijdag',
+//   'zaterdag',
+// ]
 
 export default {
   name: 'RecurrenceEditor',
@@ -46,6 +45,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false,
+    },
+    origin: {
+      type: String,
+      default: '',
     },
     value: {
       type: Object,
@@ -59,36 +62,21 @@ export default {
   },
   data() {
     return {
-      showCustom: false,
       selectedRepetition: 'ONCE',
-      today: new Date().getDay(),
+      showCustom: false,
       weekpattern: this.value.daysOfWeek,
     }
   },
   computed: {
     repetitions() {
-      return [
+      console.log('origin=', this.origin)
+      const repetitions = [
         {
           text: 'Niet herhaald',
           value: 'ONCE',
         },
-        {
-          text: 'Elke dag',
-          value: 'DAILY',
-        },
-        {
-          text: 'Elke werkdag (maandag t/m vrijdag)',
-          value: 'WORKDAY',
-        },
-        {
-          text: `Elke week op ${weekdays[this.today]}`,
-          value: 'WEEKLY',
-        },
-        {
-          text: 'Aangepast...',
-          value: 'CUSTOM',
-        },
       ]
+      return repetitions
     },
   },
   watch: {
@@ -101,6 +89,12 @@ export default {
           return
       }
     },
+    weekpattern(mask) {
+      console.log('week', mask)
+    },
+  },
+  mounted() {
+    console.log('mounted value', this.value)
   },
   methods: {
     cancelPatternEditor() {
