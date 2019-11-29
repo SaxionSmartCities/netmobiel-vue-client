@@ -108,10 +108,8 @@ export default {
       this.$router.push('/plan')
     },
     removeCar(car) {
-      //TODO: Remove car from user profile in the backend.
-      this.$store.commit('ps/deleteRidePlanOptionsCar', car)
-      const profile = this.$store.getters['ps/getUser'].profile
-      this.$store.dispatch('ps/updateProfile', profile)
+      // Remove car from user profile in the backend.
+      this.$store.dispatch('ps/deleteRidePlanOptionsCar', car)
     },
   },
 }

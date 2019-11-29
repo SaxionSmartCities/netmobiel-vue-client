@@ -55,6 +55,22 @@ export default {
         console.log(error)
       })
   },
+  removeCar: (context, payload) => {
+    const URL = BASE_URL + `/rideshare/cars/${payload.id}`
+    axios
+      .delete(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        // eslint-disable-next-line
+        console.log(resp)
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
   submitRide: (context, payload) => {
     if (payload.ridePlanOptions.cars.length == 0) {
       context.dispatch(
