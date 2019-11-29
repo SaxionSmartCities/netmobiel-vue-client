@@ -32,8 +32,8 @@ export default {
           context.dispatch(
             'ui/queueNotification',
             {
-              message: `Geen auto gevonden (${plate}).`,
-              timeout: 0,
+              message: `Geen auto gevonden voor kenteken ${plate}.`,
+              timeout: 3000,
             },
             { root: true }
           )
@@ -41,8 +41,8 @@ export default {
           context.dispatch(
             'ui/queueNotification',
             {
-              message: 'Fout bij het ophalen van kentekendata.',
-              timeout: 0,
+              message: `Geen auto gevonden voor kenteken ${plate}.`,
+              timeout: 3000,
             },
             { root: true }
           )
