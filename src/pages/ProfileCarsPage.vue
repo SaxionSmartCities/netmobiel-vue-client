@@ -35,7 +35,11 @@
               </v-btn>
             </v-flex>
             <v-flex xs7>
+              <v-btn v-if="car.id === selectedCarId" small rounded>
+                Geselecteerd
+              </v-btn>
               <v-btn
+                v-else
                 small
                 rounded
                 block
@@ -86,25 +90,21 @@ export default {
       return this.$store.getters['ps/getUser'].profile.ridePlanOptions
         .numPassengers
     },
+    selectedCarId() {
+      return this.$store.getters['ps/getUser'].profile.ridePlanOptions
+        .selectedCarId
+    },
   },
   created: function() {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
     selectAlternativeCar(car) {
-      const profile = this.$store.getters['ps/getUser'].profile,
-        cars = profile.ridePlanOptions.cars.slice(),
-        index = cars.indexOf(car)
-      // if the alternative is already the first car (or a nonexistent car), don't bother swapping
-      if (index > 0) {
-        const formerFirstCar = cars[0]
-        cars[0] = car
-        cars[index] = formerFirstCar
-        this.$store.dispatch('ps/updateProfile', {
-          ...profile,
-          ridePlanOptions: { ...profile.ridePlanOptions, cars },
-        })
-      }
+      const profile = this.$store.getters['ps/getUser'].profile
+      this.$store.dispatch('ps/updateProfile', {
+        ...profile,
+        ridePlanOptions: { ...profile.ridePlanOptions, selectedCarId: car.id },
+      })
       this.$router.push('/plan')
     },
     removeCar(car) {

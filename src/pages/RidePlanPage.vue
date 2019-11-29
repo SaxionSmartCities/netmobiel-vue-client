@@ -30,18 +30,18 @@
                       </span>
                       <!-- <v-icon>emoji_transportation</v-icon> -->
                     </v-flex>
-                    <v-flex v-if="availableCars.length === 0">
+                    <v-flex v-if="!selectedCar">
                       <router-link to="profileCars">
                         <span>Invoeren</span>
                       </router-link>
                     </v-flex>
                     <v-flex v-else>
                       <router-link to="profileCars">
-                        <span> {{ availableCars[0].licensePlate }}</span>
+                        <span> {{ selectedCar.licensePlate }}</span>
                       </router-link>
                       <div class="car-model">
-                        {{ availableCars[0].brand }}
-                        {{ availableCars[0].model }}
+                        {{ selectedCar.brand }}
+                        {{ selectedCar.model }}
                       </div>
                     </v-flex>
                   </v-layout>
@@ -131,8 +131,13 @@ export default {
         : `${suggestion.title} ${suggestion.vicinity}`
     },
     availableCars() {
-      console.log(this.$store.getters['ps/getProfile'])
       return this.$store.getters['ps/getProfile'].ridePlanOptions.cars
+    },
+    selectedCar() {
+      const selectedCarId = this.$store.getters['ps/getProfile'].ridePlanOptions
+          .selectedCarId,
+        cars = this.$store.getters['ps/getProfile'].ridePlanOptions.cars
+      return cars.find(car => car.id === selectedCarId)
     },
   },
   methods: {
