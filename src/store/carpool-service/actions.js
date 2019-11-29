@@ -28,15 +28,25 @@ export default {
         // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
-
-        context.dispatch(
-          'ui/queueNotification',
-          {
-            message: 'Fout bij het ophalen van kentekendata.',
-            timeout: 0,
-          },
-          { root: true }
-        )
+        if (!!error.response && error.response.status == 404) {
+          context.dispatch(
+            'ui/queueNotification',
+            {
+              message: `Geen auto gevonden (${plate}).`,
+              timeout: 0,
+            },
+            { root: true }
+          )
+        } else {
+          context.dispatch(
+            'ui/queueNotification',
+            {
+              message: 'Fout bij het ophalen van kentekendata.',
+              timeout: 0,
+            },
+            { root: true }
+          )
+        }
       })
   },
   submitCar: (context, payload) => {
