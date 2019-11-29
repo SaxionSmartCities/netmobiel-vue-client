@@ -33,6 +33,7 @@ export default {
           numPassengers: 0,
           maxMinutesDetour: 10,
           luggageOptions: ['HANDLUGGAGE', 'GROCERIES'],
+          selectedCarId: -1,
           cars: [],
         },
       },
