@@ -51,4 +51,7 @@ export default {
   shiftUpdateMessage: state => {
     state.updateMessages.shift()
   },
+  pushUpdate: (state, payload) => {
+    state.updateMessages.push(payload)
+  },
 }
