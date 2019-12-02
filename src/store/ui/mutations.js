@@ -51,4 +51,11 @@ export default {
   shiftUpdateMessage: state => {
     state.updateMessages.shift()
   },
+  pushUpdate: (state, payload) => {
+    state.updateMessages.push(payload)
+  },
+  removeUpdate: (state, update) => {
+    let indexOf = state.updateMessages.indexOf(update)
+    state.updateMessages.splice(indexOf, 1)
+  },
 }

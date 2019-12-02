@@ -60,6 +60,8 @@
 </template>
 
 <script>
+import constants from '@/constants/update-messages.js'
+
 export default {
   name: 'App',
   data: () => ({
@@ -101,6 +103,10 @@ export default {
   },
   watch: {
     getProfile(newProfile) {
+      if (!this.isProfileComplete(newProfile)) {
+        let update = constants.COMPLETE_PROFILE_UPDATE
+        this.$store.dispatch('ui/addUpdate', update)
+      }
       // Update profile if the passed FCM token is different compared
       // to the one in the profile.
       let passedFcmToken = localStorage.fcm
@@ -138,6 +144,13 @@ export default {
     routeToMode: function() {
       // TODO: Link this to profile so we know where to route!
       this.$router.push('/modeSelection')
+    },
+    isProfileComplete(profile) {
+      return (
+        !!profile.dateOfBirth &&
+        !!profile.interests &&
+        profile.interests.length > 0
+      )
     },
   },
 }
