@@ -19,26 +19,7 @@ export default {
     backButtonVisible: false,
     notificationBarVisible: false,
     notificationQueue: [],
-    updateMessages: [
-      {
-        title: 'Verdien een gratis reis!',
-        content:
-          'Maak jouw profiel compleet en verdien een gratis reis met Netmobiel!',
-        link: {
-          label: 'Profiel compleet maken',
-          to: '/onboardingPage',
-        },
-      },
-
-      {
-        title: 'Gepland onderhoud',
-        content: 'Van maandag 24 oktober tot 9 november',
-      },
-      {
-        title: 'Belangrijke mededeling',
-        content: 'We zijn erg blij met je als gebruiker, ga aub niet weg',
-      },
-    ],
+    updateMessages: [],
     temp: {
       rideDate: moment()
         .add(2, 'day')
