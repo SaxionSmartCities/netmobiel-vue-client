@@ -148,19 +148,15 @@ export default {
   },
   methods: {
     backupTime() {
-      console.log('backup time')
       this.backupTimeValue = this.localSearchTime
     },
     backupDate() {
-      console.log('backup date')
       this.backupDateValue = this.localSearchDate
     },
     restoreTime() {
-      console.log('restore time')
       this.localSearchTime = this.backupTimeValue
     },
     restoreDate() {
-      console.log('restore date')
       this.localSearchDate = this.backupDateValue
     },
   },
