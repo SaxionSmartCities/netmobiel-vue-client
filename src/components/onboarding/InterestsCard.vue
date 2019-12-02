@@ -67,11 +67,9 @@ export default {
       this.$emit('next-step')
     },
     nextStep: function() {
-      let profile = this.$store.getters['ps/getProfile']
-      profile['interests'] = this.selectedInterests
-
+      let profile = { ...this.$store.getters['ps/getProfile'] }
+      profile.interests = this.selectedInterests
       this.$store.dispatch('ps/updateProfile', profile)
-
       this.$emit('next-step')
     },
   },
