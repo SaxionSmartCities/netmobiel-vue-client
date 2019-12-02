@@ -60,6 +60,8 @@
 </template>
 
 <script>
+import constants from '@/constants/update-messages.js'
+
 export default {
   name: 'App',
   data: () => ({
@@ -102,15 +104,7 @@ export default {
   watch: {
     getProfile(newProfile) {
       if (!this.isProfileComplete(newProfile)) {
-        let update = {
-          title: 'Verdien een gratis reis!',
-          content:
-            'Maak jouw profiel compleet en verdien een gratis reis met Netmobiel!',
-          link: {
-            label: 'Profiel compleet maken',
-            to: '/onboardingPage',
-          },
-        }
+        let update = constants.COMPLETE_PROFILE_UPDATE
         this.$store.dispatch('ui/addUpdate', update)
       }
       // Update profile if the passed FCM token is different compared
