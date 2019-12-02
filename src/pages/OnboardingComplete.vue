@@ -29,10 +29,16 @@
 </template>
 
 <script>
+import constants from '@/constants/update-messages.js'
+
 export default {
   name: 'OnboardingComplete',
   data: function() {
     return {}
+  },
+  mounted() {
+    let update = constants.COMPLETE_PROFILE_UPDATE
+    this.$store.commit('ui/removeUpdate', update)
   },
 }
 </script>
