@@ -153,7 +153,9 @@ export default {
     },
     isProfileComplete(profile) {
       return (
-        !!profile.dateOfBirth && !!profile.interests && profile.interests > 0
+        !!profile.dateOfBirth &&
+        !!profile.interests &&
+        profile.interests.length > 0
       )
     },
   },
