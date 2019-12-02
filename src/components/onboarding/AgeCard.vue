@@ -5,7 +5,7 @@
       <v-row no-gutters>
         <v-col>
           <span class="text-uppercase text-color-primary ">
-            Wanneer ben je jarig?
+            Wat is je geboortedatum?
           </span>
         </v-col>
       </v-row>
@@ -34,7 +34,7 @@
               ref="picker"
               v-model="date"
               :max="new Date().toISOString().substr(0, 10)"
-              min="1950-01-01"
+              min="1900-01-01"
             ></v-date-picker>
           </v-menu>
         </v-col>
@@ -72,11 +72,9 @@ export default {
   },
   methods: {
     nextStep: function() {
-      let profile = this.$store.getters['ps/getProfile']
-      profile['age'] = this.age
-
+      let profile = { ...this.$store.getters['ps/getProfile'] }
+      profile.dateOfBirth = moment(this.date)
       this.$store.dispatch('ps/updateProfile', profile)
-
       this.$emit('next-step')
     },
   },
