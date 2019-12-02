@@ -101,6 +101,18 @@ export default {
   },
   watch: {
     getProfile(newProfile) {
+      if (!this.isProfileComplete(newProfile)) {
+        let update = {
+          title: 'Verdien een gratis reis!',
+          content:
+            'Maak jouw profiel compleet en verdien een gratis reis met Netmobiel!',
+          link: {
+            label: 'Profiel compleet maken',
+            to: '/onboardingPage',
+          },
+        }
+        this.$store.dispatch('ui/addUpdate', update)
+      }
       // Update profile if the passed FCM token is different compared
       // to the one in the profile.
       let passedFcmToken = localStorage.fcm
@@ -138,6 +150,11 @@ export default {
     routeToMode: function() {
       // TODO: Link this to profile so we know where to route!
       this.$router.push('/modeSelection')
+    },
+    isProfileComplete(profile) {
+      return (
+        !!profile.dateOfBirth && !!profile.interests && profile.interests > 0
+      )
     },
   },
 }
