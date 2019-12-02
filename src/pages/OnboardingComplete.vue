@@ -12,9 +12,17 @@
         <v-btn block rounded depressed class="my-3 button" to="/modeSelection">
           Plan een reis</v-btn
         >
-        <v-btn block rounded depressed outlined color="green" to="/profile">
-          Bekijk profiel</v-btn
+        <v-btn
+          block
+          disabled
+          rounded
+          depressed
+          outlined
+          color="green"
+          to="/profile"
         >
+          Bekijk profiel
+        </v-btn>
       </v-flex>
     </v-layout>
   </v-container>
