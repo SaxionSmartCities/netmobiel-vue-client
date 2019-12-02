@@ -15,17 +15,17 @@
         </template>
         <v-date-picker v-model="date" :allowed-dates="allowedDates" scrollable>
           <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="dateModal = false">
-            Cancel
-          </v-btn>
           <v-btn
             text
             color="primary"
             @click="
-              saveDate(date)
+              restoreDate()
               dateModal = false
             "
           >
+            Cancel
+          </v-btn>
+          <v-btn text color="primary" @click="dateModal = false">
             OK
           </v-btn>
         </v-date-picker>
@@ -46,6 +46,7 @@
             readonly
             hide-details
             v-on="on"
+            @click="backupTime"
           >
           </v-text-field>
         </template>
@@ -92,9 +93,11 @@ export default {
     return {
       localSelectedMode: 0,
       localSearchDate: '',
-      localSearchtime: '',
+      localSearchTime: '',
       dateModal: false,
       timeModal: false,
+      backupDateValue: '',
+      backupTimeValue: '',
     }
   },
   computed: {
@@ -109,10 +112,10 @@ export default {
     },
     time: {
       get: function() {
-        return this.localSearchtime
+        return this.localSearchTime
       },
       set: function(value) {
-        this.localSearchtime = value
+        this.localSearchTime = value
         this.$emit('timeValueUpdated', value)
       },
     },
@@ -126,14 +129,35 @@ export default {
       },
     },
   },
+  watch: {
+    dateModal(value) {
+      if (value === true) {
+        this.backupDate()
+      }
+    },
+    timeModal(value) {
+      if (value === true) {
+        this.backupTime()
+      }
+    },
+  },
   mounted() {
     this.localSearchDate = this.initialDate
-    this.localSearchtime = this.initialTime
+    this.localSearchTime = this.initialTime
     this.localSelectedMode = this.initialMode
   },
   methods: {
-    saveDate(date) {
-      this.date = date
+    backupTime() {
+      this.backupTimeValue = this.localSearchTime
+    },
+    backupDate() {
+      this.backupDateValue = this.localSearchDate
+    },
+    restoreTime() {
+      this.localSearchTime = this.backupTimeValue
+    },
+    restoreDate() {
+      this.localSearchDate = this.backupDateValue
     },
   },
 }
