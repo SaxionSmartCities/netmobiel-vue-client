@@ -4,13 +4,13 @@
       <v-col>
         <v-row>
           <v-col v-if="step === 0">
-            <new-account-card @next-step="step++"
-          /></v-col>
+            <new-account-card @prev-step="step--" @next-step="step++" />
+          </v-col>
           <v-col v-if="step === 1">
-            <home-town-card @next-step="step++" />
+            <home-town-card @prev-step="step--" @next-step="step++" />
           </v-col>
           <v-col v-if="step === 2">
-            <user-type-card @next-step="step++" />
+            <user-type-card @prev-step="step--" @next-step="step++" />
           </v-col>
         </v-row>
         <v-row justify="center">
@@ -45,9 +45,17 @@ export default {
   },
   watch: {
     step: function() {
-      if (this.step >= 3) {
-        this.$router.push('/home')
+      if (this.step < 0 || this.step >= 3) {
+        this.$router.push('/')
       }
+    },
+  },
+  methodes: {
+    submitForm: function() {
+      this.$store.dispatch(
+        'rs/submitRegistrationRequest',
+        this.registrationRequest
+      )
     },
   },
 }
