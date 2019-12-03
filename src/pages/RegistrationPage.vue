@@ -96,6 +96,10 @@ export default {
           locality: '',
         },
         userRole: '',
+        consent: {
+          olderThanSixteen: false,
+          acceptedTerms: false,
+        },
       },
     }
   },

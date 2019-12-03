@@ -37,7 +37,7 @@
       </v-row>
       <v-row no-gutters align="center">
         <v-col cols="1">
-          <v-checkbox v-model="agreedAll"></v-checkbox>
+          <v-checkbox v-model="value.consent.acceptedTerms"></v-checkbox>
         </v-col>
         <v-col cols="11">
           Ik ga akkoord met de <a to="/">voorwaarden</a>, deelname aan het
@@ -46,7 +46,7 @@
       </v-row>
       <v-row no-gutters align="center">
         <v-col cols="1">
-          <v-checkbox v-model="ageCheck"></v-checkbox>
+          <v-checkbox v-model="value.consent.olderThanSixteen"></v-checkbox>
         </v-col>
         <v-col cols="11">
           Ik ben 16 of ouder.
@@ -90,16 +90,17 @@ export default {
   props: ['value'],
   data: function() {
     return {
-      waiting: null,
-      agreedAll: false,
-      ageCheck: false,
       enableConsentCheck: false,
       showSubmitButton: true,
     }
   },
   computed: {
     showConsentError() {
-      return (!this.agreedAll || !this.ageCheck) && this.enableConsentCheck
+      return (
+        (!this.value.consent.acceptedTerms ||
+          !this.value.consent.olderThanSixteen) &&
+        this.enableConsentCheck
+      )
     },
   },
   beforeCreate() {
@@ -109,7 +110,10 @@ export default {
     submitForm: function() {
       // Only show consent error after the user has clicked on submit.
       this.enableConsentCheck = true
-      if (this.agreedAll && this.ageCheck) {
+      if (
+        this.value.consent.acceptedTerms &&
+        this.value.consent.olderThanSixteen
+      ) {
         this.$emit('next-step')
       }
     },
