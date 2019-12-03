@@ -77,6 +77,7 @@
 import NewAccountCard from '@/components/onboarding/NewAccountCard.vue'
 import HomeTownCard from '@/components/onboarding/HomeTownCard.vue'
 import UserTypeCard from '@/components/onboarding/UserTypeCard.vue'
+import { setTimeout } from 'timers'
 
 export default {
   components: {
@@ -112,10 +113,22 @@ export default {
         this.submitForm()
       }
     },
+    getRegistrationStatus(newValue) {
+      if (newValue.success === true) {
+        setTimeout(() => {
+          this.$store.commit('rs/clearRegistrationRequest')
+          this.$router.push('/')
+        }, 2500)
+      }
+    },
   },
   methods: {
     submitForm: function() {
       console.log(this.registrationRequest)
+      this.$store.commit('rs/setRegistrationStatus', {
+        success: undefined,
+        message: '',
+      })
       this.$store.dispatch(
         'rs/submitRegistrationRequest',
         this.registrationRequest
