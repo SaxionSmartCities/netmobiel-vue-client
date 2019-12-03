@@ -32,11 +32,14 @@ export default {
         const status = error.response.status
         var errorMsg = ''
         if (status === 422) {
-          errorMsg = 'Ontbrekende data (email, voornaam of achternaam)'
+          errorMsg = 'Ontbrekende data (email, voornaam of achternaam).'
+        } else if (status === 451) {
+          errorMsg =
+            'Ga akkoord gaan met de voorwaarden alsmede 16 jaar of ouder zijn.'
         } else if (status === 500) {
           errorMsg = error.response.data.message // No clue what is going on, but the server should report something about it
         } else if (status === 409) {
-          errorMsg = 'Het emailadres is al in gebruik'
+          errorMsg = 'Het emailadres is al in gebruik.'
         }
 
         context.commit('setRegistrationStatus', {

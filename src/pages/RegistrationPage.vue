@@ -4,15 +4,61 @@
       <v-col>
         <v-row>
           <v-col v-if="step === 0">
-            <new-account-card @next-step="step++"
-          /></v-col>
+            <new-account-card
+              v-model="registrationRequest"
+              @prev-step="step--"
+              @next-step="step++"
+            />
+          </v-col>
           <v-col v-if="step === 1">
-            <home-town-card @next-step="step++" />
+            <home-town-card
+              v-model="registrationRequest"
+              @prev-step="step--"
+              @next-step="step++"
+            />
           </v-col>
           <v-col v-if="step === 2">
-            <user-type-card @next-step="step++" />
+            <user-type-card
+              v-model="registrationRequest"
+              @prev-step="step--"
+              @next-step="step++"
+            />
           </v-col>
         </v-row>
+        <v-card v-if="step == 3" class="rounded-border">
+          <v-card-title class="justify-center">Aanmaken account</v-card-title>
+          <v-card-text>
+            <v-row no-gutters>
+              <v-alert
+                v-if="getRegistrationStatus.success === true"
+                :value="true"
+                type="success"
+                color="green"
+              >
+                Profiel aangemaakt! <br />
+                We sturen u terug naar het login-scherm.
+              </v-alert>
+              <v-alert
+                v-if="getRegistrationStatus.success === false"
+                :value="true"
+                type="error"
+                color="red"
+              >
+                {{ getRegistrationStatus.message }}
+              </v-alert>
+            </v-row>
+          </v-card-text>
+          <v-card-actions>
+            <v-row no-gutters class="mb-2">
+              <v-col xs6 class="mx-2">
+                <v-btn block text @click="step--">
+                  <v-icon>arrow_back</v-icon>
+                  Terug
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-actions>
+        </v-card>
         <v-row justify="center">
           <v-col class="text-center">
             <v-btn to="/howTo" depressed color="primary">
@@ -31,6 +77,7 @@
 import NewAccountCard from '@/components/onboarding/NewAccountCard.vue'
 import HomeTownCard from '@/components/onboarding/HomeTownCard.vue'
 import UserTypeCard from '@/components/onboarding/UserTypeCard.vue'
+import { setTimeout } from 'timers'
 
 export default {
   components: {
@@ -41,13 +88,54 @@ export default {
   data: function() {
     return {
       step: 0,
+      registrationRequest: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        address: {
+          locality: '',
+        },
+        userRole: '',
+        consent: {
+          olderThanSixteen: false,
+          acceptedTerms: false,
+        },
+      },
     }
+  },
+  computed: {
+    getRegistrationStatus() {
+      return this.$store.getters['rs/getRegistrationStatus']
+    },
   },
   watch: {
     step: function() {
-      if (this.step >= 3) {
-        this.$router.push('/home')
+      if (this.step < 0) {
+        this.$router.push('/')
       }
+      if (this.step == 3) {
+        this.submitForm()
+      }
+    },
+    getRegistrationStatus(newValue) {
+      if (newValue.success === true) {
+        setTimeout(() => {
+          this.$store.commit('rs/clearRegistrationRequest')
+          this.$router.push('/')
+        }, 2500)
+      }
+    },
+  },
+  methods: {
+    submitForm: function() {
+      this.$store.commit('rs/setRegistrationStatus', {
+        success: undefined,
+        message: '',
+      })
+      this.$store.dispatch(
+        'rs/submitRegistrationRequest',
+        this.registrationRequest
+      )
     },
   },
 }
