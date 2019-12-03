@@ -18,7 +18,7 @@
         <v-icon>home</v-icon>
       </v-btn>
 
-      <v-btn text value="planner" to="/modeSelection">
+      <v-btn text value="planner" @click="routeToMode()">
         <span>Planner</span>
         <v-icon>commute</v-icon>
       </v-btn>
@@ -142,8 +142,18 @@ export default {
       this.$router.go(-1)
     },
     routeToMode: function() {
-      // TODO: Link this to profile so we know where to route!
-      this.$router.push('/modeSelection')
+      let newRoute = ''
+      if (this.getProfile.userRole === 'passenger') {
+        newRoute = '/search'
+      } else if (this.getProfile.userRole === 'driver') {
+        newRoute = '/plan'
+      } else {
+        newRoute = '/modeSelection'
+      }
+      // We cannot route to the same page.
+      if (this.$router.currentRoute.path !== newRoute) {
+        this.$router.push(newRoute)
+      }
     },
     isProfileComplete(profile) {
       return (
