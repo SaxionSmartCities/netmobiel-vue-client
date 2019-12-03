@@ -9,7 +9,13 @@
       </v-row>
     </v-card-text>
     <v-card-actions>
-      <v-row no-gutters>
+      <v-row no-gutters class="mb-2">
+        <v-col xs6 class="mx-2">
+          <v-btn block text @click="back()">
+            <v-icon>arrow_back</v-icon>
+            Terug
+          </v-btn>
+        </v-col>
         <v-col xs6 class="mx-2">
           <v-btn block rounded color="button" @click="submitForm()">
             Verder
@@ -44,6 +50,9 @@ export default {
   methods: {
     submitForm: function() {
       this.$emit('next-step')
+    },
+    back: function() {
+      this.$emit('prev-step')
     },
   },
 }
