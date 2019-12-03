@@ -63,12 +63,13 @@
             {{ getRegistrationStatus.message }}
           </v-alert>
           <v-alert
-            v-if="acceptError.success === false"
+            v-if="showConsentError"
             :value="true"
             type="error"
             color="red"
           >
-            {{ acceptError.message }}
+            U moet zowel akkoord gaan met de voorwaarden alsmede 16 jaar of
+            ouder zijn.
           </v-alert>
           <v-alert
             v-if="getRegistrationStatus.success === true"
@@ -108,16 +109,16 @@ export default {
       },
       agreedAll: false,
       ageCheck: false,
-      acceptError: {
-        success: undefined,
-        message: '',
-      },
+      enableConsentCheck: false,
       showSubmitButton: true,
     }
   },
   computed: {
     getRegistrationStatus() {
       return this.$store.getters['rs/getRegistrationStatus']
+    },
+    showConsentError() {
+      return (!this.agreedAll || !this.ageCheck) && this.enableConsentCheck
     },
   },
   watch: {
@@ -137,15 +138,13 @@ export default {
   },
   methods: {
     submitForm: function() {
+      // Only show consent error after the user has clicked on submit.
+      this.enableConsentCheck = true
       if (this.agreedAll && this.ageCheck) {
         this.$store.dispatch(
           'rs/submitRegistrationRequest',
           this.registrationRequest
         )
-      } else {
-        this.acceptError.success = false
-        this.acceptError.message =
-          'U moet zowel akkoord gaan met de voorwaarden alsmede 16 jaar of ouder zijn.'
       }
     },
   },
