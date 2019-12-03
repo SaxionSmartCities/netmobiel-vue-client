@@ -5,7 +5,7 @@
       <v-row vertical-align-center>
         <v-col>
           <v-text-field
-            v-model="registrationRequest.firstName"
+            v-model="value.firstName"
             required
             hide-details
             outlined
@@ -16,7 +16,7 @@
       <v-row>
         <v-col>
           <v-text-field
-            v-model="registrationRequest.lastName"
+            v-model="value.lastName"
             required
             hide-details
             outlined
@@ -27,7 +27,7 @@
       <v-row>
         <v-col>
           <v-text-field
-            v-model="registrationRequest.email"
+            v-model="value.email"
             required
             hide-details
             outlined
@@ -87,14 +87,10 @@
 <script>
 export default {
   name: 'NewAccountCard',
+  props: ['value'],
   data: function() {
     return {
       waiting: null,
-      registrationRequest: {
-        firstName: '',
-        lastName: '',
-        email: '',
-      },
       agreedAll: false,
       ageCheck: false,
       enableConsentCheck: false,

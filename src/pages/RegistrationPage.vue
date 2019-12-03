@@ -4,13 +4,25 @@
       <v-col>
         <v-row>
           <v-col v-if="step === 0">
-            <new-account-card @prev-step="step--" @next-step="step++" />
+            <new-account-card
+              v-model="registrationRequest"
+              @prev-step="step--"
+              @next-step="step++"
+            />
           </v-col>
           <v-col v-if="step === 1">
-            <home-town-card @prev-step="step--" @next-step="step++" />
+            <home-town-card
+              v-model="registrationRequest"
+              @prev-step="step--"
+              @next-step="step++"
+            />
           </v-col>
           <v-col v-if="step === 2">
-            <user-type-card @prev-step="step--" @next-step="step++" />
+            <user-type-card
+              v-model="registrationRequest"
+              @prev-step="step--"
+              @next-step="step++"
+            />
           </v-col>
         </v-row>
         <v-row justify="center">
@@ -41,21 +53,30 @@ export default {
   data: function() {
     return {
       step: 0,
+      registrationRequest: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        address: {
+          locality: '',
+        },
+        userRole: '',
+      },
     }
   },
   watch: {
     step: function() {
-      if (this.step < 0 || this.step >= 3) {
+      if (this.step < 0) {
         this.$router.push('/')
+      }
+      if (this.step == 3) {
+        this.submitForm()
       }
     },
   },
-  methodes: {
+  methods: {
     submitForm: function() {
-      this.$store.dispatch(
-        'rs/submitRegistrationRequest',
-        this.registrationRequest
-      )
+      console.log(this.registrationRequest)
     },
   },
 }

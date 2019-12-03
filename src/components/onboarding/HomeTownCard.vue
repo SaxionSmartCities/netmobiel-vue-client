@@ -4,7 +4,13 @@
     <v-card-text class="py-0">
       <v-row vertical-align-center>
         <v-col class="d-flex" cols="12" sm="6">
-          <v-select :items="items" label="Woonplaats" outlined></v-select>
+          <v-select
+            v-model="value.address.locality"
+            :items="items"
+            label="Woonplaats"
+            outlined
+          >
+          </v-select>
         </v-col>
       </v-row>
     </v-card-text>
@@ -29,6 +35,7 @@
 <script>
 export default {
   name: 'HomeTownCard',
+  props: ['value'],
   data() {
     return {
       items: [

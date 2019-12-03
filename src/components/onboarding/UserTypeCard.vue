@@ -2,7 +2,7 @@
   <v-card class="rounded-border">
     <v-card-title>Hoe ga je netmobiel gebruiken?</v-card-title>
     <v-card-text class="py-0">
-      <v-radio-group v-model="usermode" :mandatory="false">
+      <v-radio-group v-model="value.userRole" :mandatory="false">
         <v-radio label="Meerijden of via het OV" value="passager"></v-radio>
         <v-radio label="Zelf ritten aanbieden" value="driver"></v-radio>
         <v-radio label="Meerijden én zelf ritten aanbieden" value="both">
@@ -22,7 +22,7 @@
             block
             rounded
             color="button"
-            :disabled="!usermode"
+            :disabled="!value.userRole"
             @click="submitForm()"
           >
             Aanmaken
@@ -36,9 +36,9 @@
 <script>
 export default {
   name: 'HomeTownCard',
+  props: ['value'],
   data() {
     return {
-      usermode: undefined,
       showSubmitButton: true,
     }
   },
