@@ -22,7 +22,11 @@
                   </v-flex>
                   <v-flex>
                     <!-- TODO: Use v-model to update JS object with { datetime: Date object, departure: boolean } -->
-                    <date-time-selector @dateValueUpdated="dateChanged" />
+                    <date-time-selector
+                      @dateValueUpdated="dateChanged"
+                      @timeValueUpdated="timeChanged"
+                      @modeValueUpdated="modeChanged"
+                    />
                   </v-flex>
                   <v-flex>
                     <recurrence-editor
@@ -37,7 +41,7 @@
                       large
                       rounded
                       block
-                      :disabled="!locationsPickedCheck"
+                      :disabled="disabledRideAddition()"
                       @click="submitForm()"
                     >
                       Voeg rit toe!
@@ -78,8 +82,10 @@ export default {
   },
   data() {
     return {
-      recurrence: undefined,
       selectedDate: undefined,
+      selectedTime: undefined,
+      selectedMode: undefined,
+      recurrence: undefined,
     }
   },
   computed: {
@@ -99,12 +105,6 @@ export default {
         this.$store.commit('ui/setTempValue', { rideTime: value })
       },
     },
-    locationsPickedCheck: function() {
-      const fromLoc = this.$store.getters['gs/getPickedLocation'].from
-      const toLoc = this.$store.getters['gs/getPickedLocation'].to
-
-      return fromLoc.title !== undefined && toLoc.title !== undefined
-    },
     fromLocationLabel() {
       const suggestion = this.$store.getters['gs/getPickedLocation'].from
       return !suggestion.title
@@ -118,18 +118,24 @@ export default {
         : `${suggestion.title} ${suggestion.vicinity}`
     },
   },
-  watch: {
-    recurrence(value, old) {
-      console.log('recurrence from ', old, ' to ', value)
-    },
-  },
   mounted() {
     this.$store.commit('ui/clearTempValue')
   },
   methods: {
     dateChanged(value) {
-      console.log('date value', value)
       this.selectedDate = value
+    },
+    timeChanged(value) {
+      this.selectedTime = value
+    },
+    modeChanged(value) {
+      this.selectedMode = value
+    },
+    disabledRideAddition() {
+      const { from, to } = this.$store.getters['gs/getPickedLocation']
+      return (
+        !from.title || !to.title || !this.selectedDate || !this.selectedTime
+      )
     },
     swapLocations() {
       this.$store.commit('gs/swapLocations')
@@ -141,18 +147,18 @@ export default {
       this.$router.push('/planOptions')
     },
     submitForm() {
-      let pickedGeoLocations = this.$store.getters['gs/getPickedLocation']
-      let from = pickedGeoLocations.from
-      let to = pickedGeoLocations.to
-      let ridePlanOptions = this.$store.getters['ps/getProfile'].ridePlanOptions
-      let selectedTime = moment(this.date + ' ' + this.time, 'YYYY-MM-DD HH:mm')
-      let rideDetails = {
-        from: from,
-        to: to,
-        ridePlanOptions: ridePlanOptions,
-        selectedTime: selectedTime,
-      }
-      this.$store.dispatch('cs/submitRide', rideDetails)
+      const { from, to } = this.$store.getters['gs/getPickedLocation'],
+        departure = moment(
+          this.selectedDate + ' ' + this.selectedTime,
+          'YYYY-MM-DDTHH:mm:ss'
+        )
+      this.$store.dispatch('cs/submitRide', {
+        from,
+        to,
+        ridePlanOptions: this.$store.getters['ps/getProfile'].ridePlanOptions,
+        recurrence: this.recurrence,
+        selectedTime: departure,
+      })
       this.$router.push('/planSubmitted')
     },
   },

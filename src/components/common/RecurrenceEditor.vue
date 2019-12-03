@@ -173,7 +173,7 @@ export default {
           this.weekpattern = 31
           this.horizon = ''
           // every week on monday (1), tuesday (2), wednesday (4), thursday (8), friday (16) = 31
-          this.$emit('input', { daysOfWeek: 31, interval: 1, unit: 'WEEK' })
+          this.$emit('input', { daysOfWeekMask: 31, interval: 1, unit: 'WEEK' })
           break
         }
         case 'WEEKLY': {
@@ -197,7 +197,7 @@ export default {
       this.weekpattern = 1 << index
       this.horizon = ''
       this.$emit('input', {
-        daysOfWeek: this.weekpattern,
+        daysOfWeekMask: this.weekpattern,
         interval: 1,
         unit: 'WEEK',
       })
@@ -227,7 +227,7 @@ export default {
       }
       this.selectedRepetition = undefined
       this.$emit('input', {
-        daysOfWeek: this.weekpattern,
+        daysOfWeekMask: this.weekpattern,
         interval: this.weeks === 'ONE_WEEK' ? 1 : 2,
         unit: 'WEEK',
         horizon: this.horizon || undefined,
