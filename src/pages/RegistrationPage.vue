@@ -25,6 +25,40 @@
             />
           </v-col>
         </v-row>
+        <v-card v-if="step == 3" class="rounded-border">
+          <v-card-title class="justify-center">Aanmaken account</v-card-title>
+          <v-card-text>
+            <v-row no-gutters>
+              <v-alert
+                v-if="getRegistrationStatus.success === true"
+                :value="true"
+                type="success"
+                color="green"
+              >
+                Profiel aangemaakt! <br />
+                We sturen u terug naar het login-scherm.
+              </v-alert>
+              <v-alert
+                v-if="getRegistrationStatus.success === false"
+                :value="true"
+                type="error"
+                color="red"
+              >
+                {{ getRegistrationStatus.message }}
+              </v-alert>
+            </v-row>
+          </v-card-text>
+          <v-card-actions>
+            <v-row no-gutters class="mb-2">
+              <v-col xs6 class="mx-2">
+                <v-btn block text @click="step--">
+                  <v-icon>arrow_back</v-icon>
+                  Terug
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-actions>
+        </v-card>
         <v-row justify="center">
           <v-col class="text-center">
             <v-btn to="/howTo" depressed color="primary">
@@ -64,6 +98,11 @@ export default {
       },
     }
   },
+  computed: {
+    getRegistrationStatus() {
+      return this.$store.getters['rs/getRegistrationStatus']
+    },
+  },
   watch: {
     step: function() {
       if (this.step < 0) {
@@ -77,6 +116,10 @@ export default {
   methods: {
     submitForm: function() {
       console.log(this.registrationRequest)
+      this.$store.dispatch(
+        'rs/submitRegistrationRequest',
+        this.registrationRequest
+      )
     },
   },
 }
