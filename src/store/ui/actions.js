@@ -34,4 +34,11 @@ export default {
       }, 250)
     }
   },
+  addUpdate: (context, update) => {
+    let updates = context.state.updateMessages
+    let found = updates.find(u => JSON.stringify(u) === JSON.stringify(update))
+    if (found === undefined) {
+      context.commit('pushUpdate', update)
+    }
+  },
 }
