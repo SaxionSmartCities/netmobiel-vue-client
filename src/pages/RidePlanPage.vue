@@ -21,12 +21,13 @@
                     <from-to-fields />
                   </v-flex>
                   <v-flex>
+                    <!-- TODO: Use v-model to update JS object with { datetime: Date object, departure: boolean } -->
                     <date-time-selector @dateValueUpdated="dateChanged" />
                   </v-flex>
                   <v-flex>
                     <recurrence-editor
+                      v-model="recurrence"
                       :origin="selectedDate"
-                      :value="recurrence"
                     />
                   </v-flex>
                 </v-layout>
@@ -77,7 +78,6 @@ export default {
   },
   data() {
     return {
-      disableRecurrence: true,
       recurrence: undefined,
       selectedDate: undefined,
     }
@@ -118,6 +118,11 @@ export default {
         : `${suggestion.title} ${suggestion.vicinity}`
     },
   },
+  watch: {
+    recurrence(value, old) {
+      console.log('recurrence from ', old, ' to ', value)
+    },
+  },
   mounted() {
     this.$store.commit('ui/clearTempValue')
   },
@@ -125,8 +130,6 @@ export default {
     dateChanged(value) {
       console.log('date value', value)
       this.selectedDate = value
-      this.date = value
-      console.log('date getter', this.date)
     },
     swapLocations() {
       this.$store.commit('gs/swapLocations')

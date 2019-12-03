@@ -48,6 +48,12 @@ export default {
       return weekdays
     },
   },
+  watch: {
+    value(value) {
+      this.mask = value
+      this.selections = initializeSelections(value)
+    },
+  },
   methods: {
     toggle(index) {
       const bit = 1 << index
