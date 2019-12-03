@@ -55,14 +55,6 @@
       <v-row no-gutters>
         <v-col text-xs-center>
           <v-alert
-            v-if="getRegistrationStatus.success === false"
-            :value="true"
-            type="error"
-            color="red"
-          >
-            {{ getRegistrationStatus.message }}
-          </v-alert>
-          <v-alert
             v-if="showConsentError"
             :value="true"
             type="error"
@@ -71,24 +63,21 @@
             U moet zowel akkoord gaan met de voorwaarden alsmede 16 jaar of
             ouder zijn.
           </v-alert>
-          <v-alert
-            v-if="getRegistrationStatus.success === true"
-            :value="true"
-            type="success"
-            color="green"
-          >
-            Profiel aangemaakt! <br />
-            We sturen u terug naar het login-scherm.
-          </v-alert>
         </v-col>
       </v-row>
     </v-card-text>
     <v-card-actions>
-      <v-row no-gutters>
+      <v-row no-gutters class="mb-2">
         <v-col xs6 class="mx-2">
-          <v-btn block rounded color="button" @click="submitForm()"
-            >Account aanmaken</v-btn
-          >
+          <v-btn block text @click="back()">
+            <v-icon>arrow_back</v-icon>
+            Terug
+          </v-btn>
+        </v-col>
+        <v-col xs6 class="mx-2">
+          <v-btn block rounded color="button" @click="submitForm()">
+            Verder
+          </v-btn>
         </v-col>
       </v-row>
     </v-card-actions>
@@ -96,7 +85,6 @@
 </template>
 
 <script>
-import { setTimeout } from 'timers'
 export default {
   name: 'NewAccountCard',
   data: function() {
@@ -114,23 +102,8 @@ export default {
     }
   },
   computed: {
-    getRegistrationStatus() {
-      return this.$store.getters['rs/getRegistrationStatus']
-    },
     showConsentError() {
       return (!this.agreedAll || !this.ageCheck) && this.enableConsentCheck
-    },
-  },
-  watch: {
-    getRegistrationStatus(newValue) {
-      if (newValue.success === true) {
-        this.showSubmitButton = false
-
-        this.waiting = setTimeout(() => {
-          this.$store.commit('rs/clearRegistrationRequest')
-          this.$emit('next-step')
-        }, 2500)
-      }
     },
   },
   beforeCreate() {
@@ -141,11 +114,11 @@ export default {
       // Only show consent error after the user has clicked on submit.
       this.enableConsentCheck = true
       if (this.agreedAll && this.ageCheck) {
-        this.$store.dispatch(
-          'rs/submitRegistrationRequest',
-          this.registrationRequest
-        )
+        this.$emit('next-step')
       }
+    },
+    back: function() {
+      this.$emit('prev-step')
     },
   },
 }
