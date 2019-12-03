@@ -23,7 +23,13 @@
           </v-btn>
         </v-col>
         <v-col xs6 class="mx-2">
-          <v-btn block rounded color="button" @click="submitForm()">
+          <v-btn
+            block
+            rounded
+            color="button"
+            :disabled="!value.address.locality"
+            @click="submitForm()"
+          >
             Verder
           </v-btn>
         </v-col>
