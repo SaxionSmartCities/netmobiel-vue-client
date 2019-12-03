@@ -26,7 +26,16 @@ export default {
   name: 'HomeTownCard',
   data: function() {
     return {
-      items: ['Goor', 'Enschede', 'Haaksbergen', 'Zieuwent'],
+      items: [
+        'Groenlo',
+        'Harreveld',
+        'Lievelde',
+        'Lichtenvoorde',
+        'Mariënvelde',
+        'Vragender',
+        'Zieuwent',
+        'Zwolle',
+      ],
       showSubmitButton: true,
     }
   },
