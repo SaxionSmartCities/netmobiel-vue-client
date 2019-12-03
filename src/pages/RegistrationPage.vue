@@ -128,7 +128,6 @@ export default {
   },
   methods: {
     submitForm: function() {
-      console.log(this.registrationRequest)
       this.$store.commit('rs/setRegistrationStatus', {
         success: undefined,
         message: '',
