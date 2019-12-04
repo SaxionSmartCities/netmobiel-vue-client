@@ -45,14 +45,14 @@
           plannen.
         </v-flex>
         <v-flex v-for="(ride, index) in getPlannedRides" :key="index">
-          <direct-ride-card
+          <ride-card
             class="mt-2 mb-2"
             :from="ride.fromPlace"
             :to="ride.toPlace"
             :date="parseDate(ride.departureTime)"
             :ride="ride"
           >
-          </direct-ride-card>
+          </ride-card>
         </v-flex>
       </v-layout>
     </v-container>
@@ -62,11 +62,11 @@
 <script>
 import moment from 'moment'
 import TravelCard from '@/components/search-results/TravelCard.vue'
-import DirectRideCard from '@/components/search-results/DirectRideCard.vue'
+import RideCard from '@/components/rides/RideCard.vue'
 
 export default {
   name: 'TripsOverviewPage',
-  components: { TravelCard, DirectRideCard },
+  components: { TravelCard, RideCard },
   data() {
     return {
       selectedTab: 0,
