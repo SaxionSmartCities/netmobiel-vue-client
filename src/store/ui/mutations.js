@@ -29,9 +29,6 @@ export default {
   removeFirstNotificationFromQueue: state => {
     state.notificationQueue = state.notificationQueue.slice(1)
   },
-  clearTempValue(state) {
-    state.temp = {}
-  },
   setTempValue: (state, payload) => {
     Object.keys(payload)
       .filter(key => payload.hasOwnProperty(key))
