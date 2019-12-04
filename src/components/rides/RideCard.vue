@@ -7,7 +7,7 @@
           <v-layout>
             <v-flex>
               <h3>Vertrek</h3>
-              <p class="first-letter-caps body-2 font-weight-light">
+              <p class="first-letter-caps mb-0 font-weight-light">
                 {{ formatTime(ride.departureTime) }}
               </p>
             </v-flex>

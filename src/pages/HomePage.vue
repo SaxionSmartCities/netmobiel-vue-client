@@ -22,7 +22,7 @@
         </v-layout>
       </v-flex>
       <v-divider class="mb-2"></v-divider>
-      <v-flex body-2 mt-2>
+      <v-flex mt-2>
         <p>
           Welkom bij Netmobiel, dé mobiliteitsapp van de Achterhoek en
           omstreken.
