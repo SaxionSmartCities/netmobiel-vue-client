@@ -20,7 +20,18 @@
                   <from-to-fields />
                 </v-flex>
                 <v-flex>
-                  <date-time-selector />
+                  <!-- TODO: Use v-model to update JS object with { datetime: Date object, departure: boolean } -->
+                  <date-time-selector
+                    @dateValueUpdated="dateChanged"
+                    @timeValueUpdated="timeChanged"
+                    @modeValueUpdated="modeChanged"
+                  />
+                </v-flex>
+                <v-flex>
+                  <recurrence-editor
+                    v-model="recurrence"
+                    :origin="selectedDate"
+                  />
                 </v-flex>
                 <v-flex>
                   <v-layout mt-1 row>
@@ -54,7 +65,8 @@
                     large
                     rounded
                     block
-                    :disabled="!locationsPickedCheck"
+                    color="button"
+                    :disabled="disabledRideAddition()"
                     @click="submitForm()"
                   >
                     Rit aanbieden
@@ -83,12 +95,22 @@
 import moment from 'moment'
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
+import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
 
 export default {
   name: 'RidePlanPage',
   components: {
     FromToFields,
     DateTimeSelector,
+    RecurrenceEditor,
+  },
+  data() {
+    return {
+      selectedDate: undefined,
+      selectedTime: undefined,
+      selectedMode: undefined,
+      recurrence: undefined,
+    }
   },
   computed: {
     date: {
@@ -106,17 +128,6 @@ export default {
       set: function(value) {
         this.$store.commit('ui/setTempValue', { rideTime: value })
       },
-    },
-    locationsPickedCheck: function() {
-      const fromLoc = this.$store.getters['gs/getPickedLocation'].from
-      const toLoc = this.$store.getters['gs/getPickedLocation'].to
-      const cars = this.$store.getters['ps/getProfile'].ridePlanOptions.cars
-      //return fromLoc.title !== undefined && toLoc.title !== undefined
-      return (
-        fromLoc.address !== undefined &&
-        toLoc.address !== undefined &&
-        cars.length > 0
-      )
     },
     fromLocationLabel() {
       const suggestion = this.$store.getters['gs/getPickedLocation'].from
@@ -140,7 +151,25 @@ export default {
       return cars.find(car => car.id === selectedCarId)
     },
   },
+  mounted() {
+    this.$store.commit('ui/clearTempValue')
+  },
   methods: {
+    dateChanged(value) {
+      this.selectedDate = value
+    },
+    timeChanged(value) {
+      this.selectedTime = value
+    },
+    modeChanged(value) {
+      this.selectedMode = value
+    },
+    disabledRideAddition() {
+      const { from, to } = this.$store.getters['gs/getPickedLocation']
+      return (
+        !from.title || !to.title || !this.selectedDate || !this.selectedTime
+      )
+    },
     swapLocations() {
       this.$store.commit('gs/swapLocations')
     },
@@ -151,13 +180,18 @@ export default {
       this.$router.push('/planOptions')
     },
     submitForm() {
-      let pickedGeoLocations = this.$store.getters['gs/getPickedLocation']
-      let from = pickedGeoLocations.from
-      let to = pickedGeoLocations.to
-      let ridePlanOptions = this.$store.getters['ps/getProfile'].ridePlanOptions
-      let selectedTime = moment(this.date + ' ' + this.time, 'YYYY-MM-DD HH:mm')
-      let rideDetails = { from, to, ridePlanOptions, selectedTime }
-      this.$store.dispatch('cs/submitRide', rideDetails)
+      const { from, to } = this.$store.getters['gs/getPickedLocation'],
+        departure = moment(
+          this.selectedDate + ' ' + this.selectedTime,
+          'YYYY-MM-DDTHH:mm:ss'
+        )
+      this.$store.dispatch('cs/submitRide', {
+        from,
+        to,
+        ridePlanOptions: this.$store.getters['ps/getProfile'].ridePlanOptions,
+        recurrence: this.recurrence,
+        selectedTime: departure,
+      })
       this.$router.push('/planSubmitted')
     },
   },
