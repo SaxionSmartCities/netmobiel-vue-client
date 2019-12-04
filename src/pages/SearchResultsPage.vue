@@ -7,14 +7,16 @@
         <v-flex v-if="itineraries == undefined" my-4>
           Helaas, er zijn geen ritten gevonden!
         </v-flex>
-        <v-expansion-panel v-else>
-          <v-expansion-panel-content class="no-padding">
-            <div slot="header">
+        <v-expansion-panels v-else>
+          <v-expansion-panel>
+            <v-expansion-panel-header>
               Reisvoorkeuren tonen
-            </div>
-            <search-options-summary-card />
-          </v-expansion-panel-content>
-        </v-expansion-panel>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <search-options-summary-card />
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
         <v-divider />
       </v-flex>
       <v-flex xs12>

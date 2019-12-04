@@ -9,10 +9,10 @@
         automatisch bericht als er iemand met je mee wil.
       </v-flex>
       <v-flex shrink>
-        <v-btn block round class="my-3" to="/home">
+        <v-btn block rounded depressed class="my-3 button" to="/home">
           Bekijk geplande ritten</v-btn
         >
-        <v-btn block round outline color="green" to="/plan">
+        <v-btn block rounded depressed outlined color="green" to="/plan">
           Plan een nieuwe rit</v-btn
         >
       </v-flex>

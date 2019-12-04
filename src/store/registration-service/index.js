@@ -9,6 +9,14 @@ export default {
       firstName: '',
       lastName: '',
       email: '',
+      address: {
+        locality: '',
+      },
+      userRole: '',
+      consent: {
+        olderThanSixteen: false,
+        acceptedTerms: false,
+      },
       submitStatus: {
         success: undefined,
         message: '',

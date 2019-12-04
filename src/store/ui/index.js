@@ -19,25 +19,8 @@ export default {
     backButtonVisible: false,
     notificationBarVisible: false,
     notificationQueue: [],
-    updateMessages: [
-      {
-        title: 'Gepland onderhoud',
-        content: 'Van maandag 24 oktober tot 9 november',
-      },
-      {
-        title: 'Belangrijke mededeling',
-        content: 'We zijn erg blij met je als gebruiker, ga aub niet weg',
-      },
-    ],
+    updateMessages: [],
     temp: {
-      searchDate: moment()
-        .startOf('day')
-        .locale('NL')
-        .format('YYYY-MM-DD'),
-      searchTime: moment()
-        .add(30, 'minutes')
-        .locale('nl')
-        .format('HH:mm'),
       rideDate: moment()
         .add(2, 'day')
         .startOf('day')
