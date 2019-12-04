@@ -110,60 +110,6 @@
               </v-layout>
             </v-expansion-panel-content>
           </v-expansion-panel>
-          <v-expansion-panel>
-            <v-expansion-panel-header>
-              <v-layout>
-                <v-flex xs7>
-                  <span class="form-label py-2">Auto</span>
-                </v-flex>
-                <v-flex v-if="selectedCar !== undefined" text-right pr-2>
-                  {{ selectedCar.model }}
-                </v-flex>
-              </v-layout>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-layout>
-                <v-flex px-4>
-                  <v-layout row wrap>
-                    <v-flex
-                      v-for="car in cars"
-                      :key="car.licensePlate"
-                      xs12
-                      class="my-2 elevation-1"
-                      :class="{
-                        selected:
-                          selectedCar !== undefined &&
-                          selectedCar.licensePlate === car.licensePlate,
-                      }"
-                      @click="selectCar(car)"
-                    >
-                      <v-layout>
-                        <!-- <v-flex xs5 pa-2>
-                        <v-img :src="image" height="100%" />
-                      </v-flex> -->
-                        <v-flex pa-3>
-                          <v-layout
-                            column
-                            justify-center
-                            align-center
-                            fill-height
-                          >
-                            <v-flex shrink>
-                              <h3>{{ car.model }}</h3>
-                            </v-flex>
-                            <v-flex shrink> {{ car.licensePlate }} </v-flex>
-                          </v-layout>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                    <!-- <v-btn class="mt-3" block outline color="blue"
-                    >Andere auto toevoegen?</v-btn
-                  > -->
-                  </v-layout>
-                </v-flex>
-              </v-layout>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
         </v-expansion-panels>
       </v-flex>
 
@@ -187,7 +133,7 @@ export default {
       luggageSelected: [],
       image: require('@/assets/placeholder_car.png'),
       cars: [],
-      selectedCar: undefined,
+      selectedCarId: undefined,
     }
   },
   computed: {
@@ -220,24 +166,25 @@ export default {
     )
     this.maxMinutesDetour = profile.ridePlanOptions.maxMinutesDetour
     this.cars = profile.ridePlanOptions.cars
-    //TODO: Add selected car to state, now the first is used by default.
-    if (this.cars.length > 0) {
-      this.selectCar(profile.ridePlanOptions.cars[0])
+    this.selectedCarId = profile.ridePlanOptions.selectedCarId
+    let car = this.cars.find(car => car.id === this.selectedCarId)
+    if (car) {
+      this.maxNrOfPersons = car.nrSeats - 1
+    } else {
+      // Some default.
+      this.maxNrOfPersons = 4
+    }
+    if (this.numPassengers > this.maxNrOfPersons) {
+      this.numPassengers = this.maxNrOfPersons
     }
   },
   methods: {
-    selectCar: function(car) {
-      this.selectedCar = car
-      this.maxNrOfPersons = car.nrSeats - 1
-      if (this.numPassengers > this.maxNrOfPersons) {
-        this.numPassengers = this.maxNrOfPersons
-      }
-    },
     save: function() {
       let payload = {
         luggageOptions: this.luggageSelected.map(x => x.type),
         numPassengers: this.numPassengers,
         maxMinutesDetour: this.maxMinutesDetour,
+        selectedCarId: this.selectedCarId,
         cars: this.cars,
       }
       this.$store.commit('ps/setRidePlanOptions', payload)

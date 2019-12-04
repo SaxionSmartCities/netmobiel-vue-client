@@ -1,30 +1,32 @@
 <template>
   <v-card class="rounded-border">
-    <v-card-title>Even voorstellen!</v-card-title>
+    <v-card-title>Hoe ga je netmobiel gebruiken?</v-card-title>
     <v-card-text class="py-0">
-      <v-row no-gutters align="center">
-        <v-col cols="1">
-          <v-checkbox v-model="driver"></v-checkbox>
-        </v-col>
-        <v-col cols="11">
-          Ik wil ritten aanbieden
-        </v-col>
-      </v-row>
-      <v-row no-gutters align="center">
-        <v-col cols="1">
-          <v-checkbox v-model="passenger"></v-checkbox>
-        </v-col>
-        <v-col cols="11">
-          Ik wil graag meerijden met andere bestuurders.
-        </v-col>
-      </v-row>
+      <v-radio-group v-model="value.userRole" :mandatory="false">
+        <v-radio label="Meerijden of via het OV" value="passager"></v-radio>
+        <v-radio label="Zelf ritten aanbieden" value="driver"></v-radio>
+        <v-radio label="Meerijden én zelf ritten aanbieden" value="both">
+        </v-radio>
+      </v-radio-group>
     </v-card-text>
     <v-card-actions>
-      <v-row no-gutters>
+      <v-row no-gutters class="mb-2">
         <v-col xs6 class="mx-2">
-          <v-btn block rounded color="button" @click="submitForm()"
-            >Verder</v-btn
+          <v-btn block text @click="back()">
+            <v-icon>arrow_back</v-icon>
+            Terug
+          </v-btn>
+        </v-col>
+        <v-col xs6 class="mx-2">
+          <v-btn
+            block
+            rounded
+            color="button"
+            :disabled="!value.userRole"
+            @click="submitForm()"
           >
+            Aanmaken
+          </v-btn>
         </v-col>
       </v-row>
     </v-card-actions>
@@ -32,48 +34,23 @@
 </template>
 
 <script>
-import { setTimeout } from 'timers'
 export default {
   name: 'HomeTownCard',
-  data: function() {
+  props: ['value'],
+  data() {
     return {
-      driver: false,
-      passenger: false,
       showSubmitButton: true,
     }
-  },
-  computed: {
-    getRegistrationStatus() {
-      return this.$store.getters['rs/getRegistrationStatus']
-    },
-  },
-  watch: {
-    getRegistrationStatus(newValue) {
-      if (newValue.success === true) {
-        this.showSubmitButton = false
-
-        this.waiting = setTimeout(() => {
-          //   this.$store.commit('rs/clearRegistrationRequest')
-          this.$emit('next-step')
-        }, 2500)
-      }
-    },
   },
   beforeCreate() {
     this.$store.commit('ui/disableFooter')
   },
   methods: {
     submitForm: function() {
-      if (this.agreedAll && this.ageCheck) {
-        this.$store.dispatch(
-          'rs/submitRegistrationRequest',
-          this.registrationRequest
-        )
-      } else {
-        this.acceptError.success = false
-        this.acceptError.message =
-          'U moet zowel akkoord gaan met de voorwaarden alsmede 16 jaar of ouder zijn.'
-      }
+      this.$emit('next-step')
+    },
+    back: function() {
+      this.$emit('prev-step')
     },
   },
 }

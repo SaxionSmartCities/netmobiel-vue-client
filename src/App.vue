@@ -18,7 +18,7 @@
         <v-icon>home</v-icon>
       </v-btn>
 
-      <v-btn text value="planner" to="/modeSelection">
+      <v-btn text value="planner" @click="routeToMode()">
         <span>Planner</span>
         <v-icon>commute</v-icon>
       </v-btn>
@@ -37,45 +37,26 @@
         <span>Profiel</span>
         <v-icon>person</v-icon>
       </v-btn>
+
+      <v-snackbar
+        v-if="isNotificationBarVisible"
+        v-model="isNotificationBarVisible"
+        :timeout="0"
+      >
+        {{ notificationQueue[0].message }}
+        <v-btn
+          v-if="notificationQueue[0].timeout === 0"
+          text
+          outlined
+          font-weight-medium
+          class="notification-close-button"
+          @click="finishNotification"
+        >
+          Close
+        </v-btn>
+      </v-snackbar>
     </v-bottom-navigation>
   </v-app>
-  <!-- <v-container id="app" :class="appClasses" fluid ma-0 pa-0>
-    <v-layout fill-height column>
-      <v-flex v-if="isHeaderVisible" id="header" xs1>
-        <netmobiel-header />
-      </v-flex>
-      <v-flex
-        id="content"
-        v-scroll:#content="onScroll"
-        :class="{ footerPadding: isFooterVisible }"
-        fill-height
-        scroll-y
-      >
-        <router-view></router-view>
-      </v-flex>
-
-      <v-flex>
-        <v-snackbar
-          v-if="isNotificationBarVisible"
-          v-model="isNotificationBarVisible"
-          :timeout="0"
-        >
-          {{ notificationQueue[0].message }}
-          <v-btn
-            v-if="notificationQueue[0].timeout === 0"
-            text
-            @click="finishNotification"
-          >
-            Close
-          </v-btn>
-        </v-snackbar>
-      </v-flex>
-
-      <v-flex v-if="isFooterVisible" id="footer">
-        <netmobiel-footer />
-      </v-flex>
-    </v-layout>
-  </v-container> -->
 </template>
 
 <script>
@@ -83,10 +64,6 @@ import constants from '@/constants/update-messages.js'
 
 export default {
   name: 'App',
-  components: {
-    // NetmobielHeader,
-    // NetmobielFooter,
-  },
   data: () => ({
     offsetTop: 0,
   }),
@@ -165,8 +142,18 @@ export default {
       this.$router.go(-1)
     },
     routeToMode: function() {
-      // TODO: Link this to profile so we know where to route!
-      this.$router.push('/modeSelection')
+      let newRoute = ''
+      if (this.getProfile.userRole === 'passenger') {
+        newRoute = '/search'
+      } else if (this.getProfile.userRole === 'driver') {
+        newRoute = '/plan'
+      } else {
+        newRoute = '/modeSelection'
+      }
+      // We cannot route to the same page.
+      if (this.$router.currentRoute.path !== newRoute) {
+        this.$router.push(newRoute)
+      }
     },
     isProfileComplete(profile) {
       return (
@@ -185,7 +172,6 @@ export default {
   background-size: contain;
   background-position: top;
   background-repeat: no-repeat;
-  // overflow-y: visible;
 }
 
 .homepage #content {
@@ -229,5 +215,14 @@ export default {
 
 .text-bold {
   font-weight: bold;
+}
+
+//HACK: Styling of the notification close button. Some should fix this.
+.notification-close-button {
+  border-color: rgba(255, 255, 255, 0.54) !important;
+  border-radius: 4px !important;
+}
+.notification-close-button span.v-btn__content {
+  color: white !important;
 }
 </style>
