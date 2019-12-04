@@ -41,6 +41,7 @@
                       large
                       rounded
                       block
+                      color="button"
                       :disabled="disabledRideAddition()"
                       @click="submitForm()"
                     >
