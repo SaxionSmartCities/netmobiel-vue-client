@@ -15,6 +15,7 @@ function generateHeader(key) {
 export default {
   submitPlanningsRequest: (context, payload) => {
     context.commit('storePlanningRequest', payload)
+    let formattedDate = moment(payload.selectedTime).format('YYYY-MM-DDTHH:mm')
     let params = {
       fromPlace: `${payload.from.title}::${payload.from.position[0]},${
         payload.from.position[1]
@@ -22,17 +23,16 @@ export default {
       toPlace: `${payload.to.title}::${payload.to.position[0]},${
         payload.to.position[1]
       }`,
+      toDate: formattedDate,
       nrSeats: 1,
       searchPreferences: payload.searchPreferences,
     }
-
-    let formattedDate = moment(payload.time).format('YYYY-MM-DDTHH:mm')
-    if (payload.mode == 0) {
-      params['toDate'] = formattedDate
-    } else {
-      params['fromDate'] = formattedDate
-    }
-
+    // Only arrival time is currently supported by the planner service.
+    // if (payload.mode == 0) {
+    //   params['toDate'] = formattedDate
+    // } else {
+    //   params['fromDate'] = formattedDate
+    // }
     var axiosConfig = {
       method: 'GET',
       url: BASE_URL + '/planner/api/search/plan',

@@ -24,12 +24,9 @@
                     </v-flex>
                     <v-flex>
                       <date-time-selector
-                        :allowed-dates="allowedDates"
-                        :initial-date="initialDate"
-                        :initial-time="initialTime"
-                        @dateValueUpdated="saveDate"
-                        @timeValueUpdated="saveTime"
-                        @modeValueUpdated="saveMode"
+                        @dateValueUpdated="dateChanged"
+                        @timeValueUpdated="timeChanged"
+                        @modeValueUpdated="modeChanged"
                       />
                     </v-flex>
                     <v-flex>
@@ -123,20 +120,9 @@ export default {
       showPicklocation: false,
       waiting: null,
       locationsPicked: false,
-      initialDate: moment().format('YYYY-MM-DD'),
-      initialTime: moment()
-        .add(30, 'minutes')
-        .format('HH:mm'),
-      date: '',
-      time: '',
-      mode: 0, // Represents arrival / departure
-      allowedDates: function(val) {
-        let checkDate = moment(val)
-        return (
-          checkDate.isSameOrAfter(moment().startOf('day')) &&
-          checkDate.isBefore(moment().add(4, 'weeks'))
-        )
-      },
+      selectedDate: undefined,
+      selectedTime: undefined,
+      selectedMode: undefined,
     }
   },
   computed: {
@@ -179,36 +165,32 @@ export default {
       this.showPicklocation = true
       this.pickedLocationState = fieldPressed
     },
-    saveDate(value) {
-      this.date = value
+    dateChanged(value) {
+      this.selectedDate = value
     },
-    saveTime(value) {
-      this.time = value
+    timeChanged(value) {
+      this.selectedTime = value
     },
-    saveMode(value) {
-      this.mode = value
+    modeChanged(value) {
+      this.selectedMode = value
     },
     toRidePreferences() {
       this.$router.push({ name: 'searchOptions' })
     },
     submitForm() {
-      let pickedGeoLocations = this.$store.getters['gs/getPickedLocation']
-      let from = pickedGeoLocations.from
-      let to = pickedGeoLocations.to
+      const { from, to } = this.$store.getters['gs/getPickedLocation']
       let searchPreferences = this.$store.getters['ps/getProfile']
         .searchPreferences
-      let selectedTime = moment(
-        this.arrivalDate + ' ' + this.arrivalTime,
-        'YYYY-MM-DD HH:mm'
-      )
-      let mode = this.mode
 
       let searchQuery = {
         from: from,
         to: to,
         searchPreferences: searchPreferences,
-        selectedTime: selectedTime,
-        mode: mode,
+        selectedTime: moment(
+          this.selectedDate + ' ' + this.selectedTime,
+          'YYYY-MM-DDTHH:mm:ss'
+        ),
+        mode: this.selectedMode,
       }
 
       this.$store.dispatch('is/submitPlanningsRequest', searchQuery)
