@@ -52,18 +52,6 @@ export default {
     profile.firstName = 'Test'
     context.dispatch('updateProfile', profile)
   },
-  deleteRidePlanOptionsCar: (context, car) => {
-    // Delete car from profile.
-    context.commit('deleteRidePlanOptionsCar', car)
-    // Remove car from rideshare.
-    context.dispatch('cs/removeCar', car, { root: true })
-    // Update profile in the backend
-    let profile = { ...context.state.user.profile }
-    if (profile.ridePlanOptions.selectedCarId === car.id) {
-      profile.ridePlanOptions.selectedCarId = -1
-    }
-    context.dispatch('updateProfile', profile)
-  },
   updateProfile: (context, profile) => {
     const URL = BASE_URL + '/profiles/' + profile.id
     axios

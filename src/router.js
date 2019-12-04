@@ -14,18 +14,15 @@ import OnboardingComplete from './pages/OnboardingComplete.vue'
 import OnboardingPage from './pages/OnboardingPage.vue'
 import PrivacySecurityPage from './pages/PrivacySecurityPage.vue'
 import PrivacyStatementPage from './pages/PrivacyStatementPage.vue'
-import ProfileCarsPage from './pages/ProfileCarsPage.vue'
-import ProfileAddCarPage from './pages/ProfileAddCarPage.vue'
-import ProfileEditCarPage from './pages/ProfileEditCarPage.vue'
 import ProfilePage from './pages/ProfilePage.vue'
 import SearchLocationPage from './pages/SearchLocationPage'
 import SearchOptionsPage from './pages/SearchOptionsPage'
 import SearchPage from './pages/SearchPage.vue'
 import SearchResultsPage from './pages/SearchResultsPage.vue'
 import TermsOfUsePage from './pages/TermsOfUsePage.vue'
-import RegistrationPage from './pages/RegistrationPage.vue'
 import RideDetailPage from './pages/RideDetailPage.vue'
 import RidePlanPage from './pages/RidePlanPage.vue'
+import RegistrationPage from './pages/RegistrationPage.vue'
 import RidePlanOptionsPage from './pages/RidePlanOptionsPage.vue'
 import RidePlanSubmitted from './pages/RidePlanSubmitted.vue'
 import TripsOverviewPage from './pages/TripsOverviewPage.vue'
@@ -129,21 +126,6 @@ const router = new Router({
       path: '/modeSelection',
       component: ModeSelectionPage,
       name: 'modeSelectionPage',
-    },
-    {
-      path: '/profileCars',
-      component: ProfileCarsPage,
-      name: 'profileCarsPage',
-    },
-    {
-      path: '/profileAddCar',
-      component: ProfileAddCarPage,
-      name: 'profileAddCarPage',
-    },
-    {
-      path: '/profileEditCar',
-      component: ProfileEditCarPage,
-      name: 'profileEditCarPage',
     },
     {
       path: '/onboardingPage',

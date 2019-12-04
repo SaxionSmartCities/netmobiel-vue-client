@@ -28,47 +28,21 @@ export default {
         // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
-        if (!!error.response && error.response.status == 404) {
-          context.dispatch(
-            'ui/queueNotification',
-            {
-              message: `Geen auto gevonden voor kenteken ${plate}.`,
-              timeout: 3000,
-            },
-            { root: true }
-          )
-        } else {
-          context.dispatch(
-            'ui/queueNotification',
-            {
-              message: `Geen auto gevonden voor kenteken ${plate}.`,
-              timeout: 3000,
-            },
-            { root: true }
-          )
-        }
+
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het ophalen van kentekendata.',
+            timeout: 0,
+          },
+          { root: true }
+        )
       })
   },
   submitCar: (context, payload) => {
     const URL = BASE_URL + `/rideshare/cars`
     axios
       .post(URL, payload, {
-        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
-      })
-      .then(function(resp) {
-        // eslint-disable-next-line
-        console.log(resp)
-      })
-      .catch(function(error) {
-        // TODO: Proper error handling.
-        // eslint-disable-next-line
-        console.log(error)
-      })
-  },
-  removeCar: (context, payload) => {
-    const URL = BASE_URL + `/rideshare/cars/${payload.id}`
-    axios
-      .delete(URL, {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       })
       .then(function(resp) {
@@ -97,19 +71,18 @@ export default {
     //State should have a selectedCar element.
     let request = {
       carRef: 'urn:nb:rs:car:' + payload.ridePlanOptions.cars[0].id,
-      departureTime: moment(payload.selectedTime)
-        .utc()
-        .format(),
+      departureTime: moment(payload.selectedTime).format('YYYY-MM-DDTHH:mm:ss'),
       fromPlace: {
-        label: payload.from.address.label,
-        latitude: payload.from.displayPosition.latitude,
-        longitude: payload.from.displayPosition.longitude,
+        label: `${payload.from.title} ${payload.from.vicinity}`,
+        latitude: payload.from.position[0],
+        longitude: payload.from.position[1],
       },
       toPlace: {
-        label: payload.to.address.label,
-        latitude: payload.to.displayPosition.latitude,
-        longitude: payload.to.displayPosition.longitude,
+        label: `${payload.to.title} ${payload.to.vicinity}`,
+        latitude: payload.to.position[0],
+        longitude: payload.to.position[1],
       },
+      recurrence: payload.recurrence,
       remarks: 'What does this do?',
       nrSeatsAvailable: payload.ridePlanOptions.numPassengers,
       maxDetourSeconds: payload.ridePlanOptions.maxMinutesDetour * 60,

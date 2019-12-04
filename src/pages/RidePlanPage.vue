@@ -11,67 +11,56 @@
       <v-flex xs11 sm9 md6>
         <v-layout column shrink>
           <v-flex class="box-widget background-white">
-            <v-form>
-              <v-layout column>
-                <v-flex text-xs-center>
-                  <h1>Waar rijd je heen?</h1>
-                </v-flex>
-                <v-flex>
-                  <from-to-fields />
-                </v-flex>
-                <v-flex>
-                  <date-time-selector />
-                </v-flex>
-                <v-flex>
-                  <v-layout mt-1 row>
-                    <v-flex pl-2 shrink>
-                      <span class="form-label font-weight-bold">
-                        Auto
-                      </span>
-                      <!-- <v-icon>emoji_transportation</v-icon> -->
-                    </v-flex>
-                    <v-flex v-if="!selectedCar">
-                      <router-link to="profileCars">
-                        <span>Invoeren</span>
-                      </router-link>
-                    </v-flex>
-                    <v-flex v-else>
-                      <router-link to="profileCars">
-                        <span> {{ selectedCar.licensePlate }}</span>
-                      </router-link>
-                      <div class="car-model">
-                        {{ selectedCar.brand }}
-                        {{ selectedCar.model }}
-                      </div>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-              </v-layout>
-
-              <v-layout mt-2 justify-center text-xs-center>
-                <v-flex>
-                  <v-btn
-                    large
-                    rounded
-                    block
-                    :disabled="!locationsPickedCheck"
-                    @click="submitForm()"
+            <v-flex>
+              <v-form>
+                <v-layout column>
+                  <v-flex text-xs-center xs12>
+                    <h1>Waar rijd je heen?</h1>
+                  </v-flex>
+                  <v-flex>
+                    <from-to-fields />
+                  </v-flex>
+                  <v-flex>
+                    <!-- TODO: Use v-model to update JS object with { datetime: Date object, departure: boolean } -->
+                    <date-time-selector
+                      @dateValueUpdated="dateChanged"
+                      @timeValueUpdated="timeChanged"
+                      @modeValueUpdated="modeChanged"
+                    />
+                  </v-flex>
+                  <v-flex>
+                    <recurrence-editor
+                      v-model="recurrence"
+                      :origin="selectedDate"
+                    />
+                  </v-flex>
+                </v-layout>
+                <v-layout mt-2 justify-center text-xs-center>
+                  <v-flex>
+                    <v-btn
+                      large
+                      rounded
+                      block
+                      color="button"
+                      :disabled="disabledRideAddition()"
+                      @click="submitForm()"
+                    >
+                      Voeg rit toe!
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+                <v-layout mt-2 justify-center>
+                  <v-flex
+                    shrink
+                    transition="slide-x-transition"
+                    @click="toRidePlanOptions()"
                   >
-                    Rit aanbieden
-                  </v-btn>
-                </v-flex>
-              </v-layout>
-              <v-layout mt-2 justify-center>
-                <v-flex
-                  shrink
-                  transition="slide-x-transition"
-                  @click="toRidePlanOptions()"
-                >
-                  <v-icon>settings</v-icon>
-                  <span class="ml-1">Ritvoorkeuren</span>
-                </v-flex>
-              </v-layout>
-            </v-form>
+                    <v-icon>settings</v-icon>
+                    <span class="ml-1">Riteigenschappen</span>
+                  </v-flex>
+                </v-layout>
+              </v-form>
+            </v-flex>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -83,12 +72,22 @@
 import moment from 'moment'
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
+import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
 
 export default {
   name: 'RidePlanPage',
   components: {
     FromToFields,
     DateTimeSelector,
+    RecurrenceEditor,
+  },
+  data() {
+    return {
+      selectedDate: undefined,
+      selectedTime: undefined,
+      selectedMode: undefined,
+      recurrence: undefined,
+    }
   },
   computed: {
     date: {
@@ -107,17 +106,6 @@ export default {
         this.$store.commit('ui/setTempValue', { rideTime: value })
       },
     },
-    locationsPickedCheck: function() {
-      const fromLoc = this.$store.getters['gs/getPickedLocation'].from
-      const toLoc = this.$store.getters['gs/getPickedLocation'].to
-      const cars = this.$store.getters['ps/getProfile'].ridePlanOptions.cars
-      //return fromLoc.title !== undefined && toLoc.title !== undefined
-      return (
-        fromLoc.address !== undefined &&
-        toLoc.address !== undefined &&
-        cars.length > 0
-      )
-    },
     fromLocationLabel() {
       const suggestion = this.$store.getters['gs/getPickedLocation'].from
       return !suggestion.title
@@ -130,17 +118,26 @@ export default {
         ? 'Klik hier voor bestemming'
         : `${suggestion.title} ${suggestion.vicinity}`
     },
-    availableCars() {
-      return this.$store.getters['ps/getProfile'].ridePlanOptions.cars
-    },
-    selectedCar() {
-      const selectedCarId = this.$store.getters['ps/getProfile'].ridePlanOptions
-          .selectedCarId,
-        cars = this.$store.getters['ps/getProfile'].ridePlanOptions.cars
-      return cars.find(car => car.id === selectedCarId)
-    },
+  },
+  mounted() {
+    this.$store.commit('ui/clearTempValue')
   },
   methods: {
+    dateChanged(value) {
+      this.selectedDate = value
+    },
+    timeChanged(value) {
+      this.selectedTime = value
+    },
+    modeChanged(value) {
+      this.selectedMode = value
+    },
+    disabledRideAddition() {
+      const { from, to } = this.$store.getters['gs/getPickedLocation']
+      return (
+        !from.title || !to.title || !this.selectedDate || !this.selectedTime
+      )
+    },
     swapLocations() {
       this.$store.commit('gs/swapLocations')
     },
@@ -151,23 +148,22 @@ export default {
       this.$router.push('/planOptions')
     },
     submitForm() {
-      let pickedGeoLocations = this.$store.getters['gs/getPickedLocation']
-      let from = pickedGeoLocations.from
-      let to = pickedGeoLocations.to
-      let ridePlanOptions = this.$store.getters['ps/getProfile'].ridePlanOptions
-      let selectedTime = moment(this.date + ' ' + this.time, 'YYYY-MM-DD HH:mm')
-      let rideDetails = { from, to, ridePlanOptions, selectedTime }
-      this.$store.dispatch('cs/submitRide', rideDetails)
+      const { from, to } = this.$store.getters['gs/getPickedLocation'],
+        departure = moment(
+          this.selectedDate + ' ' + this.selectedTime,
+          'YYYY-MM-DDTHH:mm:ss'
+        )
+      this.$store.dispatch('cs/submitRide', {
+        from,
+        to,
+        ridePlanOptions: this.$store.getters['ps/getProfile'].ridePlanOptions,
+        recurrence: this.recurrence,
+        selectedTime: departure,
+      })
       this.$router.push('/planSubmitted')
     },
   },
 }
 </script>
 
-<style lang="scss">
-.car-model {
-  font-style: italic;
-  color: #9b9b9b;
-  font-size: 80%;
-}
-</style>
+<style lang="scss"></style>
