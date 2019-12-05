@@ -8,9 +8,9 @@
           </v-list-item-icon>
           <v-list-item-content @click="$emit('onItemClicked', location)">
             <v-list-item-title v-if="location.label !== undefined">
-              {{ location.label }} ({{ location.title }})
+              {{ location.label }}
             </v-list-item-title>
-            <v-list-item-title v-if="showHighlightedText">
+            <v-list-item-title v-else-if="showHighlightedText">
               <div
                 class="text-truncate"
                 v-html="location.highlightedTitle"
@@ -27,10 +27,16 @@
             </v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-icon
-            v-if="showFavoriteButton"
+            v-if="showFavoriteIcon"
             @click="$emit('onFavoriteClicked', location)"
           >
             <v-icon>favorite_border</v-icon>
+          </v-list-item-icon>
+          <v-list-item-icon
+            v-else-if="showUnfavoriteIcon"
+            @click="$emit('onFavoriteClicked', location)"
+          >
+            <v-icon>favorite</v-icon>
           </v-list-item-icon>
         </v-list-item>
         <v-divider v-if="index + 1 < locations.length" :key="index" />
@@ -59,7 +65,12 @@ export default {
       type: Array,
       required: true,
     },
-    showFavoriteButton: {
+    showFavoriteIcon: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    showUnfavoriteIcon: {
       type: Boolean,
       required: false,
       default: false,

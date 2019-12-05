@@ -20,13 +20,13 @@
     <v-row v-if="showSuggestionsList">
       <locations-list
         :locations="suggestions"
-        show-favorite-button
+        show-favorite-icon
         show-highlighted-text
         @onItemClicked="completeSearch($event)"
         @onFavoriteClicked="promptFavorite($event)"
       />
     </v-row>
-    <v-row v-else dense>
+    <v-row v-if="favorites.length > 0" dense>
       <v-col>
         <v-row>
           <v-col>
@@ -38,7 +38,9 @@
         <v-row>
           <locations-list
             :locations="favorites"
+            show-unfavorite-icon
             @onItemClicked="completeSearch($event)"
+            @onFavoriteClicked="removeFavorite($event)"
           />
         </v-row>
       </v-col>
@@ -85,7 +87,7 @@ export default {
   },
   computed: {
     favorites() {
-      return this.$store.getters['ps/getUser'].favoriteLocations
+      return this.$store.getters['ps/getProfile'].favoriteLocations
     },
     suggestions() {
       this.$store.getters['gs/getGeocoderSuggestions']
@@ -136,11 +138,48 @@ export default {
     promptFavorite(suggestion) {
       this.selectedLocation = suggestion
     },
-    addFavorite(location) {
-      this.$store.commit('ps/addFavorite', location)
-      this.selectedLocation = undefined
+    addFavorite(favorite) {
+      let label = favorite.label
+      let location = favorite.location
 
+      // Introduce "label" as an attribute as well.
+      let newLocation = {
+        ...location,
+        label: label,
+      }
+
+      let profile = {
+        ...this.$store.getters['ps/getProfile'],
+      }
+
+      // Drop any items with the label
+      let favoriteLocations = profile.favoriteLocations.filter(
+        x => x.label !== label
+      )
+
+      favoriteLocations.push(newLocation)
+      profile.favoriteLocations = favoriteLocations
+
+      this.$store.dispatch('ps/updateProfile', profile)
+
+      this.selectedLocation = undefined
       this.clearSearchInput()
+    },
+    removeFavorite(favorite) {
+      console.log('favorite', favorite)
+
+      let profile = {
+        ...this.$store.getters['ps/getProfile'],
+      }
+
+      // Drop any items with the label
+      let filteredLocations = profile.favoriteLocations.filter(
+        x => x.label !== favorite.label
+      )
+
+      profile.favoriteLocations = filteredLocations
+
+      this.$store.dispatch('ps/updateProfile', profile)
     },
   },
 }

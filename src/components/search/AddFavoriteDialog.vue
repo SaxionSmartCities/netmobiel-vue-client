@@ -52,21 +52,15 @@ export default {
       favoriteModal: true,
     }
   },
-  watch: {
-    location(newValue) {
-      console.log('location changed!', newValue)
-    },
-  },
   mounted: function() {
     this.favoriteModal = location !== undefined
   },
   methods: {
     makeFavorite() {
-      let newLocation = {
-        ...this.location,
+      this.$emit('favoriteConfirmed', {
         label: this.favoriteLabel,
-      }
-      this.$emit('favoriteConfirmed', newLocation)
+        location: this.location,
+      })
     },
   },
 }

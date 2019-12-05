@@ -35,6 +35,7 @@ export default {
           luggageOptions: ['HANDLUGGAGE', 'GROCERIES'],
           cars: [],
         },
+        favoriteLocations: [],
       },
       privacySecurity: [
         { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
@@ -53,7 +54,6 @@ export default {
         { name: 'Beoordeel je reis', value: true },
         { name: 'Deel mijn reviews met anderen', value: false },
       ],
-      favoriteLocations: [],
     },
   },
   actions,
