@@ -73,7 +73,7 @@ function improveSuggestions(suggestions) {
 }
 
 export default {
-  name: 'SearchSuggestionInput',
+  name: 'SearchLocationPage',
   components: {
     LocationsList,
     AddFavoriteDialog,
@@ -87,6 +87,7 @@ export default {
   },
   computed: {
     favorites() {
+      console.log(this.$store.getters['ps/getProfile'])
       return this.$store.getters['ps/getProfile'].favoriteLocations
     },
     suggestions() {
@@ -166,8 +167,6 @@ export default {
       this.clearSearchInput()
     },
     removeFavorite(favorite) {
-      console.log('favorite', favorite)
-
       let profile = {
         ...this.$store.getters['ps/getProfile'],
       }
