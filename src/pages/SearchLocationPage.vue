@@ -18,7 +18,7 @@
       </v-col>
     </v-row>
     <v-row v-if="showSuggestionsList">
-      <v-list max-width="100%">
+      <v-list width="100%">
         <v-list-item-group>
           <template v-for="(suggestion, index) in suggestions">
             <location-list-item
