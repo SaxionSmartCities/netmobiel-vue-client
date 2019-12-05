@@ -87,7 +87,6 @@ export default {
   },
   computed: {
     favorites() {
-      console.log(this.$store.getters['ps/getProfile'])
       return this.$store.getters['ps/getProfile'].favoriteLocations
     },
     suggestions() {
