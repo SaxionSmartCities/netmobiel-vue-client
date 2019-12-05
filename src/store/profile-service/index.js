@@ -53,6 +53,7 @@ export default {
         { name: 'Beoordeel je reis', value: true },
         { name: 'Deel mijn reviews met anderen', value: false },
       ],
+      favoriteLocations: [],
     },
   },
   actions,

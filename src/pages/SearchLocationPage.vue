@@ -18,20 +18,13 @@
       </v-col>
     </v-row>
     <v-row v-if="showSuggestionsList">
-      <v-list width="100%">
-        <v-list-item-group>
-          <template v-for="(suggestion, index) in suggestions">
-            <location-list-item
-              :key="suggestion.id"
-              :suggestion="suggestion"
-              show-favorite-button
-              @onItemClicked="completeSearch(suggestion)"
-              @onFavoriteClicked="toggleFavorite(suggestion)"
-            />
-            <v-divider v-if="index + 1 < suggestions.length" :key="index" />
-          </template>
-        </v-list-item-group>
-      </v-list>
+      <locations-list
+        :locations="suggestions"
+        show-favorite-button
+        show-highlighted-text
+        @onItemClicked="completeSearch($event)"
+        @onFavoriteClicked="promptFavorite($event)"
+      />
     </v-row>
     <v-row v-else dense>
       <v-col>
@@ -42,14 +35,26 @@
             </span>
           </v-col>
         </v-row>
-        <v-row> <v-col> </v-col> </v-row>
+        <v-row>
+          <locations-list
+            :locations="favorites"
+            @onItemClicked="completeSearch($event)"
+          />
+        </v-row>
       </v-col>
     </v-row>
+    <add-favorite-dialog
+      v-if="selectedLocation !== undefined"
+      :location="selectedLocation"
+      @favoriteConfirmed="addFavorite($event)"
+    />
   </v-container>
 </template>
 
 <script>
-import LocationListItem from '@/components/search/LocationListItem.vue'
+import LocationsList from '@/components/search/LocationsList.vue'
+import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
+
 // map category to Material icon name (needs more work...)
 // show at most 8 suitable suggestions
 const highlightMarker = 'class="search-hit"'
@@ -68,16 +73,20 @@ function improveSuggestions(suggestions) {
 export default {
   name: 'SearchSuggestionInput',
   components: {
-    LocationListItem,
+    LocationsList,
+    AddFavoriteDialog,
   },
   data() {
     return {
       searchInput: '',
       showSuggestionsList: false,
-      favorites: [{}],
+      selectedLocation: undefined,
     }
   },
   computed: {
+    favorites() {
+      return this.$store.getters['ps/getUser'].favoriteLocations
+    },
     suggestions() {
       this.$store.getters['gs/getGeocoderSuggestions']
       return improveSuggestions(
@@ -124,8 +133,14 @@ export default {
       this.searchInput = ''
       this.showSuggestionsList = false
     },
-    toggleFavorite(suggestion) {
-      console.log('This should become a favorite!', suggestion)
+    promptFavorite(suggestion) {
+      this.selectedLocation = suggestion
+    },
+    addFavorite(location) {
+      this.$store.commit('ps/addFavorite', location)
+      this.selectedLocation = undefined
+
+      this.clearSearchInput()
     },
   },
 }

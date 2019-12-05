@@ -69,4 +69,7 @@ export default {
       }
     })
   },
+  addFavorite: (state, payload) => {
+    state.user.favoriteLocations.push(payload)
+  },
 }
