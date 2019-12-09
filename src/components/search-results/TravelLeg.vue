@@ -3,18 +3,23 @@
     <v-flex>
       <v-layout>
         <v-flex shrink>
-          <v-icon class="text-primary">{{ getIcon }}</v-icon>
+          <v-icon
+            class="text-primary"
+            :class="{ 'v-icon-ride': leg.mode === 'CAR' }"
+          >
+            {{ getIcon }}
+          </v-icon>
         </v-flex>
         <v-flex v-if="leg.mode === 'CAR'">
           <v-layout>
             <v-flex>
-              <span class="car-description">
+              <!-- <span class="car-description">
                 {{
                   leg.ride.car.brand.charAt(0).toUpperCase() +
                     leg.ride.car.brand.substring(1).toLowerCase()
                 }}
                 {{ leg.ride.car.model }}
-              </span>
+              </span> -->
             </v-flex>
           </v-layout>
         </v-flex>
@@ -82,5 +87,8 @@ export default {
 .car-description {
   padding-left: 8px;
   font-size: 0.9em !important;
+}
+.v-icon-ride {
+  color: $color-secondary !important;
 }
 </style>
