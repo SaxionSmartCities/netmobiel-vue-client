@@ -10,7 +10,7 @@
             </v-flex>
             <v-flex v-if="hasCarLeg()" text-xs-right pr-1>
               <h4>Reizen met</h4>
-              {{ driverString }}
+              <span>{{ driverString }}</span>
             </v-flex>
           </v-layout>
         </v-flex>
@@ -80,24 +80,17 @@ export default {
         .calendar()
     },
     driverString: function() {
-      let drivers = []
-
       for (let i = 0; i < this.journey.legs.length; i++) {
         let currentLeg = this.journey.legs[i]
-        if (currentLeg.mode === 'NETMOBIEL') {
-          result.push(currentLeg.mode.driver.name)
+        if (currentLeg.mode === 'CAR') {
+          return (
+            currentLeg.ride.driver.givenName +
+            ' ' +
+            currentLeg.ride.driver.familyName
+          )
         }
       }
-      if (drivers.length === 1) {
-        return drivers[0]
-      }
-      let result = ''
-      for (var i = 0; i < drivers.length - 1; i++) {
-        result += drivers[i]
-        result += ', '
-      }
-      result += drivers[i]
-      return result
+      return ''
     },
   },
   watch: {
