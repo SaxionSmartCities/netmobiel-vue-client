@@ -63,6 +63,16 @@ export default {
         // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
+        if (!!error.response && error.response.status == 409) {
+          context.dispatch(
+            'ui/queueNotification',
+            {
+              message: `Kenteken ${payload.licensePlate} is al geregistreerd.`,
+              timeout: 0,
+            },
+            { root: true }
+          )
+        }
       })
   },
   removeCar: (context, payload) => {
