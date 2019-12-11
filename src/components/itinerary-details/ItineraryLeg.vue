@@ -100,7 +100,8 @@ const headers = {
     return `Lopen (${humanDistance(this.leg.distance)})`
   },
   CAR() {
-    return `Meerijden met ${this.leg.agencyName}`
+    return `Meerijden met ${this.leg.ride.driver.givenName}
+      ${this.leg.ride.driver.familyName}`
   },
   NETMOBIEL: 'Meerijden met een NETMOBIEL gebruiker',
   RAIL() {

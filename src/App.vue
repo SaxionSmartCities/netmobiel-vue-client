@@ -225,4 +225,7 @@ export default {
 .notification-close-button span.v-btn__content {
   color: white !important;
 }
+.v-bottom-navigation {
+  padding-top: 10px !important;
+}
 </style>

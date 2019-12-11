@@ -3,14 +3,23 @@
     <v-flex>
       <v-layout>
         <v-flex shrink>
-          <v-icon class="text-primary">{{ getIcon }}</v-icon>
+          <v-icon
+            class="text-primary"
+            :class="{ 'v-icon-ride': leg.mode === 'CAR' }"
+          >
+            {{ getIcon }}
+          </v-icon>
         </v-flex>
-        <v-flex v-if="leg.mode === 'NETMOBIEL'">
+        <v-flex v-if="leg.mode === 'CAR'">
           <v-layout>
-            <v-flex v-for="(star, index) in starArray" :key="index" shrink>
-              <v-icon v-if="star === 0" class="star">star_border</v-icon>
-              <v-icon v-if="star === 1" class="star">star_half</v-icon>
-              <v-icon v-if="star === 2" class="star">star</v-icon>
+            <v-flex>
+              <!-- <span class="car-description">
+                {{
+                  leg.ride.car.brand.charAt(0).toUpperCase() +
+                    leg.ride.car.brand.substring(1).toLowerCase()
+                }}
+                {{ leg.ride.car.model }}
+              </span> -->
             </v-flex>
           </v-layout>
         </v-flex>
@@ -44,28 +53,10 @@ export default {
   },
   data: function() {
     return {
-      maxRating: 3,
       icon: 'directions_walk',
     }
   },
   computed: {
-    starArray() {
-      var result = []
-
-      for (var i = 0; i < Math.floor(this.currentRating); i++) {
-        result.push(2)
-      }
-
-      if (Math.round(this.currentRating % 1) === 1) {
-        result.push(1)
-      }
-
-      for (var j = result.length; j < this.maxRating; j++) {
-        result.push(0)
-      }
-
-      return result
-    },
     getIcon: function() {
       return travelModes[this.leg.mode].icon
     },
@@ -91,5 +82,13 @@ export default {
 .star {
   font-size: 0.6em;
   color: yellow;
+}
+
+.car-description {
+  padding-left: 8px;
+  font-size: 0.9em !important;
+}
+.v-icon-ride {
+  color: $color-secondary !important;
 }
 </style>
