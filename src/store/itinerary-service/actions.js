@@ -15,25 +15,22 @@ function generateHeader(key) {
 export default {
   submitPlanningsRequest: (context, payload) => {
     context.commit('storePlanningRequest', payload)
-    let formattedDate = moment(payload.selectedTime).format('YYYY-MM-DDTHH:mm')
-    let params = {
-      fromPlace: `${payload.from.title}::${payload.from.position[0]},${
-        payload.from.position[1]
-      }`,
-      toPlace: `${payload.to.title}::${payload.to.position[0]},${
-        payload.to.position[1]
-      }`,
-      toDate: formattedDate,
+    const { from, to, timestamp } = payload
+    const params = {
+      fromPlace: `${from.title}::${from.position[0]},${from.position[1]}`,
+      toPlace: `${to.title}::${to.position[0]},${to.position[1]}`,
       nrSeats: 1,
       searchPreferences: payload.searchPreferences,
     }
-    // Only arrival time is currently supported by the planner service.
-    // if (payload.mode == 0) {
+    // Uncomment this code when open trip planner supports departure timestamps!
+    // const formattedDate = timestamp.when.format('YYYY-MM-DDTHH:mm')
+    // if (timestamp.arriving) {
     //   params['toDate'] = formattedDate
     // } else {
     //   params['fromDate'] = formattedDate
     // }
-    var axiosConfig = {
+    params['toDate'] = timestamp.when.format('YYYY-MM-DDTHH:mm')
+    const axiosConfig = {
       method: 'GET',
       url: BASE_URL + '/planner/api/search/plan',
       params: params,

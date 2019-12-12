@@ -78,6 +78,9 @@ export default {
       selectedModus: 0,
     }
   },
+  created: function() {
+    this.$store.commit('ui/showBackButton')
+  },
   computed: {
     planningResults: function() {
       return this.$store.getters['is/getPlanningResults']

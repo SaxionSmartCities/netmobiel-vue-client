@@ -1,6 +1,5 @@
 <template>
   <v-container
-    v-if="!showPicklocation"
     align-center
     justify-center
     fill-height
@@ -23,11 +22,7 @@
                       <from-to-fields />
                     </v-flex>
                     <v-flex>
-                      <date-time-selector
-                        @dateValueUpdated="dateChanged"
-                        @timeValueUpdated="timeChanged"
-                        @modeValueUpdated="modeChanged"
-                      />
+                      <date-time-selector v-model="journeyMoment" />
                     </v-flex>
                     <v-flex>
                       <v-btn
@@ -35,7 +30,7 @@
                         rounded
                         block
                         color="button"
-                        :disabled="!locationsPickedCheck"
+                        :disabled="disabledSubmit"
                         @click="submitForm()"
                       >
                         Plan je reis!
@@ -107,7 +102,8 @@
 <script>
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
-import moment from 'moment'
+
+import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 
 export default {
   components: {
@@ -116,21 +112,15 @@ export default {
   },
   data: function() {
     return {
+      journeyMoment: undefined,
       pickedLocationState: 'NOTHING',
       showPicklocation: false,
-      waiting: null,
-      locationsPicked: false,
-      selectedDate: undefined,
-      selectedTime: undefined,
-      selectedMode: undefined,
     }
   },
   computed: {
-    locationsPickedCheck: function() {
-      const fromLoc = this.$store.getters['gs/getPickedLocation'].from
-      const toLoc = this.$store.getters['gs/getPickedLocation'].to
-
-      return fromLoc.title !== undefined && toLoc.title !== undefined
+    disabledSubmit: function() {
+      const { from, to } = this.$store.getters['gs/getPickedLocation']
+      return !from.title || !to.title || !this.journeyMoment
     },
     showForm: function() {
       return (
@@ -145,55 +135,30 @@ export default {
   watch: {
     getSubmitStatus(newValue) {
       if (newValue.status === 'SUCCESS') {
-        this.waiting = setTimeout(() => {
-          this.$store.commit('is/clearPlanningRequest')
-          this.$router.push('/searchResults')
-        }, 1500)
+        this.$router.push('/searchResults')
+        this.$store.commit('is/clearPlanningRequest')
       }
     },
-    getPickedLocation: {
-      handler: function(newValue) {
-        if (newValue.from !== undefined && newValue.to !== undefined) {
-          this.locationsPicked = true
-        }
-      },
-      deep: true,
-    },
   },
+  beforeRouteEnter: beforeRouteEnter({
+    journeyMoment: DateTimeSelector.restoreModel,
+  }),
+  beforeRouteLeave: beforeRouteLeave({
+    journeyMoment: DateTimeSelector.saveModel,
+  }),
   methods: {
-    showPickLocationView(fieldPressed) {
-      this.showPicklocation = true
-      this.pickedLocationState = fieldPressed
-    },
-    dateChanged(value) {
-      this.selectedDate = value
-    },
-    timeChanged(value) {
-      this.selectedTime = value
-    },
-    modeChanged(value) {
-      this.selectedMode = value
-    },
     toRidePreferences() {
       this.$router.push({ name: 'searchOptions' })
     },
     submitForm() {
       const { from, to } = this.$store.getters['gs/getPickedLocation']
-      let searchPreferences = this.$store.getters['ps/getProfile']
-        .searchPreferences
-
-      let searchQuery = {
-        from: from,
-        to: to,
-        searchPreferences: searchPreferences,
-        selectedTime: moment(
-          this.selectedDate + ' ' + this.selectedTime,
-          'YYYY-MM-DDTHH:mm:ss'
-        ),
-        mode: this.selectedMode,
-      }
-
-      this.$store.dispatch('is/submitPlanningsRequest', searchQuery)
+      const { searchPreferences } = this.$store.getters['ps/getProfile']
+      this.$store.dispatch('is/submitPlanningsRequest', {
+        from,
+        to,
+        searchPreferences,
+        timestamp: this.journeyMoment,
+      })
     },
   },
 }
