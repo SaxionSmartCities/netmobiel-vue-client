@@ -28,7 +28,7 @@
         <v-icon>favorite</v-icon>
       </v-btn>
 
-      <v-btn text value="community" disabled>
+      <v-btn text value="community" to="/community">
         <span>Community</span>
         <v-icon>chat</v-icon>
       </v-btn>

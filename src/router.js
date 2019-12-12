@@ -4,6 +4,7 @@ import store from './store'
 
 Vue.use(Router)
 
+import CommunityPage from './pages/CommunityPage.vue'
 import ItineraryDetailPage from './pages/ItineraryDetailPage.vue'
 import LandingPage from './pages/LandingPage.vue'
 import HomePage from './pages/HomePage.vue'
@@ -154,6 +155,11 @@ const router = new Router({
       path: '/onboardingComplete',
       component: OnboardingComplete,
       name: 'onboardingComplete',
+    },
+    {
+      path: '/community',
+      component: CommunityPage,
+      name: 'community',
     },
   ],
 })
