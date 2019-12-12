@@ -4,23 +4,16 @@
       <h1>Berichten</h1>
     </v-row>
     <v-row>
-      <v-col
-        v-for="conversation in conversations"
-        :key="conversation.id"
-        cols="12"
-      >
-        <conversation-card
-          :sender="conversation.sender"
-          :display-message="conversation.messages[0]"
-          :related-booking="
-            conversation.relatedBooking !== undefined
-              ? conversation.relatedBooking
-              : null
-          "
-          :unread-messages="computeUnreadMessages(conversation)"
-        >
-        </conversation-card>
-      </v-col>
+      <v-list width="100%">
+        <v-list-item-group>
+          <template v-for="conversation in conversations">
+            <conversation-list-item
+              :key="conversation.id"
+              :conversation="conversation"
+            ></conversation-list-item>
+          </template>
+        </v-list-item-group>
+      </v-list>
     </v-row>
     <v-row>
       EndOfLijstje
@@ -29,10 +22,10 @@
 </template>
 
 <script>
-import ConversationCard from '@/components/community/ConversationCard.vue'
+import ConversationListItem from '@/components/community/ConversationListItem.vue'
 export default {
   components: {
-    ConversationCard,
+    ConversationListItem,
   },
   data: function() {
     return {
@@ -57,7 +50,7 @@ export default {
           messages: [
             {
               content:
-                'Gepland onderhoud. Vanwege smurfen in het systeem moet er een nieuwe firewall uitgerold worden.',
+                'Gepland onderhoud. Vanwege smurfen in het systeem moet er een nieuwe firewall uitgerold worden. En toen gingen ze koffie drinken en leefden ze nog lang en gelukkig.',
               sender: 'Netmobiel',
               timeStamp: '12-12-2019 11:00',
             },
