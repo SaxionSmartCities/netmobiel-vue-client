@@ -120,7 +120,7 @@ export default {
   }),
   beforeRouteLeave: beforeRouteLeave({
     journeyMoment: DateTimeSelector.saveModel,
-    recurrence: model => ({ ...model }),
+    recurrence: model => model && { ...model },
   }),
   methods: {
     disabledRideAddition() {
