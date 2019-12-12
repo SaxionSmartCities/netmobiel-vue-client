@@ -48,7 +48,7 @@
     <add-favorite-dialog
       v-if="selectedLocation !== undefined"
       :location="selectedLocation"
-      @favoriteConfirmed="addFavorite($event)"
+      @onAddFavorite="addFavorite($event)"
     />
   </v-container>
 </template>

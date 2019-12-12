@@ -1,35 +1,45 @@
 <template>
   <v-dialog v-model="favoriteModal" persistent>
     <v-card>
-      <v-card-title>Locatie toevoegen</v-card-title>
+      <v-card-title>Favoriet toevoegen</v-card-title>
       <v-card-text>
         <v-row>
+          <v-col class="col-2">
+            <v-icon>{{ iconicCategory(location.category) }}</v-icon>
+          </v-col>
           <v-col>
-            Geef eventueel een andere naam voor
-            {{ location.title }}
+            <v-row>
+              <em>{{ location.title }}</em>
+            </v-row>
+            <v-row>{{ location.vicinity }}</v-row>
           </v-col>
         </v-row>
-
         <v-row>
           <v-col>
-            <v-text-field v-model="favoriteLabel" label="Locatienaam">
+            <v-text-field v-model="favoriteLabel" label="Naam favoriet">
             </v-text-field>
           </v-col>
         </v-row>
         <v-card-actions>
           <v-row justify="end">
-            <v-btn
-              text
-              @click="
-                makeFavorite()
-                favoriteModal = false
-              "
-            >
-              Bevestig
-            </v-btn>
-            <v-btn text @click="favoriteModal = false">
-              Annuleer
-            </v-btn>
+            <v-col>
+              <v-btn text block @click="favoriteModal = false">
+                Annuleer
+              </v-btn>
+            </v-col>
+            <v-col>
+              <v-btn
+                rounded
+                block
+                color="button"
+                @click="
+                  makeFavorite()
+                  favoriteModal = false
+                "
+              >
+                Opslaan
+              </v-btn>
+            </v-col>
           </v-row>
         </v-card-actions>
       </v-card-text>
@@ -38,6 +48,8 @@
 </template>
 
 <script>
+import suggestions from '@/constants/suggestions.js'
+
 export default {
   name: 'AddFavoriteDialog',
   props: {
@@ -46,21 +58,24 @@ export default {
       required: true,
     },
   },
-  data: function() {
+  data() {
     return {
       favoriteLabel: undefined,
       favoriteModal: true,
     }
   },
-  mounted: function() {
+  mounted() {
     this.favoriteModal = location !== undefined
   },
   methods: {
     makeFavorite() {
-      this.$emit('favoriteConfirmed', {
+      this.$emit('onAddFavorite', {
         label: this.favoriteLabel,
         location: this.location,
       })
+    },
+    iconicCategory(category) {
+      return suggestions.CATEGORY_ICONS[category] || 'fa-map-marker-alt'
     },
   },
 }
