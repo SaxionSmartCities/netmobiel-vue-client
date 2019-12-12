@@ -1,6 +1,5 @@
 <template>
   <v-container
-    v-if="!showPicklocation"
     align-center
     justify-center
     fill-height
@@ -31,7 +30,7 @@
                         rounded
                         block
                         color="button"
-                        :disabled="!locationsPickedCheck"
+                        :disabled="disabledSubmit"
                         @click="submitForm()"
                       >
                         Plan je reis!
@@ -103,7 +102,6 @@
 <script>
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
-import moment from 'moment'
 
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 
@@ -117,30 +115,12 @@ export default {
       journeyMoment: undefined,
       pickedLocationState: 'NOTHING',
       showPicklocation: false,
-      waiting: null,
-      locationsPicked: false,
-      initialDate: moment().format('YYYY-MM-DD'),
-      initialTime: moment()
-        .add(30, 'minutes')
-        .format('HH:mm'),
-      date: '',
-      time: '',
-      mode: 0, // Represents arrival / departure
-      allowedDates: function(val) {
-        let checkDate = moment(val)
-        return (
-          checkDate.isSameOrAfter(moment().startOf('day')) &&
-          checkDate.isBefore(moment().add(4, 'weeks'))
-        )
-      },
     }
   },
   computed: {
-    locationsPickedCheck: function() {
-      const fromLoc = this.$store.getters['gs/getPickedLocation'].from
-      const toLoc = this.$store.getters['gs/getPickedLocation'].to
-
-      return fromLoc.title !== undefined && toLoc.title !== undefined
+    disabledSubmit: function() {
+      const { from, to } = this.$store.getters['gs/getPickedLocation']
+      return !from.title || !to.title || !this.journeyMoment
     },
     showForm: function() {
       return (
@@ -155,19 +135,9 @@ export default {
   watch: {
     getSubmitStatus(newValue) {
       if (newValue.status === 'SUCCESS') {
-        this.waiting = setTimeout(() => {
-          this.$store.commit('is/clearPlanningRequest')
-          this.$router.push('/searchResults')
-        }, 1500)
+        this.$router.push('/searchResults')
+        this.$store.commit('is/clearPlanningRequest')
       }
-    },
-    getPickedLocation: {
-      handler: function(newValue) {
-        if (newValue.from !== undefined && newValue.to !== undefined) {
-          this.locationsPicked = true
-        }
-      },
-      deep: true,
     },
   },
   beforeRouteEnter: beforeRouteEnter({
@@ -177,19 +147,6 @@ export default {
     journeyMoment: DateTimeSelector.saveModel,
   }),
   methods: {
-    showPickLocationView(fieldPressed) {
-      this.showPicklocation = true
-      this.pickedLocationState = fieldPressed
-    },
-    saveDate(value) {
-      this.date = value
-    },
-    saveTime(value) {
-      this.time = value
-    },
-    saveMode(value) {
-      this.mode = value
-    },
     toRidePreferences() {
       this.$router.push({ name: 'searchOptions' })
     },

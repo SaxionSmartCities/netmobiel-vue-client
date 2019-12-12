@@ -89,4 +89,4 @@ deploy site production:
     - mkdir -p ~/.ssh
     - echo "$NETMOBIEL_SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - rsync -a --delete -e "ssh -o StrictHostKeyChecking=no" dist/* gitlab@dev.netmobiel.eu:/var/www/netmobiel-view-client
+    - rsync -a --delete -e "ssh -o StrictHostKeyChecking=no" dist/* gitlab@vps283.directvps.nl:/var/www/netmobiel-view-client
