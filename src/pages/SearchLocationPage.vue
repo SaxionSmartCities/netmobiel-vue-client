@@ -20,10 +20,10 @@
     <v-row v-if="showSuggestionsList">
       <locations-list
         :locations="suggestions"
-        show-favorite-icon
         show-highlighted-text
-        @onItemClicked="completeSearch($event)"
-        @onFavoriteClicked="promptFavorite($event)"
+        @onItemClicked="completeSearch"
+        @onFavoriteClicked="promptFavorite"
+        @onUnFavoriteClicked="removeFavorite"
       />
     </v-row>
     <v-row v-if="favorites.length > 0" dense>
@@ -38,17 +38,16 @@
         <v-row>
           <locations-list
             :locations="favorites"
-            show-unfavorite-icon
             @onItemClicked="completeSearch($event)"
-            @onFavoriteClicked="removeFavorite($event)"
+            @onUnFavoriteClicked="removeFavorite"
           />
         </v-row>
       </v-col>
     </v-row>
     <add-favorite-dialog
-      v-if="selectedLocation !== undefined"
+      v-if="selectedLocation"
       :location="selectedLocation"
-      @onAddFavorite="addFavorite($event)"
+      @onAddFavorite="addFavorite"
     />
   </v-container>
 </template>
@@ -62,15 +61,6 @@ import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
 const highlightMarker = 'class="search-hit"'
 const skipCategories = new Set(['intersection'])
 const maxSuggestions = 8
-function improveSuggestions(suggestions) {
-  const highlighted = suggestions.filter(
-    suggestion =>
-      suggestion.highlightedTitle.indexOf(highlightMarker) > 0 &&
-      !skipCategories.has(suggestion.category)
-  )
-  highlighted.length = Math.min(highlighted.length, maxSuggestions)
-  return highlighted
-}
 
 export default {
   name: 'SearchLocationPage',
@@ -90,10 +80,18 @@ export default {
       return this.$store.getters['ps/getProfile'].favoriteLocations
     },
     suggestions() {
-      this.$store.getters['gs/getGeocoderSuggestions']
-      return improveSuggestions(
-        this.$store.getters['gs/getGeocoderSuggestions']
+      let suggestions = this.$store.getters['gs/getGeocoderSuggestions']
+      const highlighted = suggestions.filter(
+        suggestion =>
+          suggestion.highlightedTitle.indexOf(highlightMarker) > 0 &&
+          !skipCategories.has(suggestion.category)
       )
+      highlighted.length = Math.min(highlighted.length, maxSuggestions)
+      const favorited = highlighted.map(suggestion => ({
+        ...suggestion,
+        favorite: !!this.favorites.find(fav => fav.id === suggestion.id),
+      }))
+      return favorited
     },
   },
   watch: {
@@ -139,45 +137,33 @@ export default {
       this.selectedLocation = suggestion
     },
     addFavorite(favorite) {
-      let label = favorite.label
-      let location = favorite.location
-
-      // Introduce "label" as an attribute as well.
-      let newLocation = {
-        ...location,
-        label: label,
-      }
-
-      let profile = {
-        ...this.$store.getters['ps/getProfile'],
-      }
-
-      // Drop any items with the label
-      let favoriteLocations = profile.favoriteLocations.filter(
-        x => x.label !== label
+      let profile = this.$store.getters['ps/getProfile']
+      let duplicate = profile.favoriteLocations.find(
+        x => x.label === favorite.label
       )
-
-      favoriteLocations.push(newLocation)
-      profile.favoriteLocations = favoriteLocations
-
-      this.$store.dispatch('ps/updateProfile', profile)
-
+      if (duplicate) {
+        //TODO: Check why this does not fire.
+        this.$store.dispatch('ui/queueNotification', {
+          message: 'Favoriet is al opgeslagen aan uw profiel.',
+          timeout: 3000,
+        })
+      } else {
+        let payload = {
+          favoriteLocations: profile.favoriteLocations.slice(0),
+        }
+        payload.favoriteLocations.push(favorite)
+        this.$store.dispatch('ps/storeFavoriteLocations', payload)
+      }
       this.selectedLocation = undefined
-      this.clearSearchInput()
     },
     removeFavorite(favorite) {
-      let profile = {
-        ...this.$store.getters['ps/getProfile'],
+      let profile = this.$store.getters['ps/getProfile']
+      let payload = {
+        favoriteLocations: profile.favoriteLocations.filter(
+          x => x.id !== favorite.id
+        ),
       }
-
-      // Drop any items with the label
-      let filteredLocations = profile.favoriteLocations.filter(
-        x => x.label !== favorite.label
-      )
-
-      profile.favoriteLocations = filteredLocations
-
-      this.$store.dispatch('ps/updateProfile', profile)
+      this.$store.dispatch('ps/storeFavoriteLocations', payload)
     },
   },
 }

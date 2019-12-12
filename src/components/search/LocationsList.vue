@@ -1,6 +1,6 @@
 <template>
   <v-list width="100%">
-    <v-list-item-group>
+    <v-list-item-group v-model="selectedListItem">
       <template v-for="(location, index) in locations">
         <v-list-item :key="location.id">
           <v-list-item-icon @click="$emit('onItemClicked', location)">
@@ -27,19 +27,19 @@
             </v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-icon
-            v-if="showFavoriteIcon"
-            @click="$emit('onFavoriteClicked', location)"
+            v-if="!location.favorite"
+            @click="onFavoriteClicked(location, $event)"
           >
             <v-icon>favorite_border</v-icon>
           </v-list-item-icon>
           <v-list-item-icon
-            v-else-if="showUnfavoriteIcon"
-            @click="$emit('onFavoriteClicked', location)"
+            v-else-if="location.favorite"
+            @click="onUnFavoriteClicked(location, $event)"
           >
             <v-icon>favorite</v-icon>
           </v-list-item-icon>
         </v-list-item>
-        <v-divider v-if="index + 1 < locations.length" :key="index" />
+        <v-divider v-if="index < locations.length" :key="index" class="mx-3" />
       </template>
     </v-list-item-group>
   </v-list>
@@ -51,25 +51,13 @@ import suggestions from '@/constants/suggestions.js'
 export default {
   name: 'LocationsList',
   props: {
-    locations: {
-      type: Array,
-      required: true,
-    },
-    showFavoriteIcon: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    showUnfavoriteIcon: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    showHighlightedText: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
+    locations: { type: Array, required: true },
+    showHighlightedText: { type: Boolean, default: false },
+  },
+  data() {
+    return {
+      selectedListItem: null,
+    }
   },
   methods: {
     iconicCategory(category) {
@@ -77,6 +65,16 @@ export default {
     },
     stripBreakLines(value) {
       return value.replace(/<br>/gi, '')
+    },
+    onFavoriteClicked(location, event) {
+      event.stopPropagation()
+      this.selectedListItem = null
+      this.$emit('onFavoriteClicked', location)
+    },
+    onUnFavoriteClicked(location, event) {
+      event.stopPropagation()
+      this.selectedListItem = null
+      this.$emit('onUnFavoriteClicked', location)
     },
   },
 }

@@ -71,8 +71,9 @@ export default {
   methods: {
     makeFavorite() {
       this.$emit('onAddFavorite', {
+        ...this.location,
         label: this.favoriteLabel,
-        location: this.location,
+        favorite: true,
       })
     },
     iconicCategory(category) {
