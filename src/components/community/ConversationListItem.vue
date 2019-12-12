@@ -1,32 +1,36 @@
 <template>
-  <v-list-item :key="conversation.id">
-    <v-list-item-avatar>
+  <v-row>
+    <v-col cols="2">
       <v-img class="profileimage" :src="require('@/assets/profile_img.png')" />
-    </v-list-item-avatar>
-    <v-list-item-content>
-      <v-list-item-title>
-        <span class="title"> {{ conversation.sender }}</span>
-      </v-list-item-title>
-      <v-list-item-subtitle class="py-2">
-        <span class="body-1">
+    </v-col>
+    <v-col cols="8">
+      <v-row dense>
+        <v-col>
+          {{ conversation.sender }}
+        </v-col>
+      </v-row>
+      <v-row dense>
+        <v-col class="text-truncate body-2">
           {{ conversation.messages[0].content }}
-        </span>
-        <!-- <round-badge :value="10"></round-badge> -->
-      </v-list-item-subtitle>
-    </v-list-item-content>
-    <v-list-item-content class="col-2">
-      <v-list-item-title>
-        12:45
-      </v-list-item-title>
-      <v-list-item-subtitle class="caption py-2">
-        <round-badge :value="10"></round-badge>
-      </v-list-item-subtitle>
-    </v-list-item-content>
-  </v-list-item>
+        </v-col>
+      </v-row>
+    </v-col>
+    <v-col cols="2" class="overline">
+      <v-row dense>
+        <v-col> {{ printableDate }}</v-col>
+      </v-row>
+      <v-row dense>
+        <v-col just>
+          <round-badge :value="10"></round-badge>
+        </v-col>
+      </v-row>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
 import RoundBadge from '@/components/common/RoundBadge.vue'
+import moment from 'moment'
 
 export default {
   name: 'ConversationList',
@@ -37,6 +41,13 @@ export default {
     conversation: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    printableDate: function() {
+      return moment(this.conversation.messages[0].timeStamp)
+        .locale('nl')
+        .calendar()
     },
   },
 }

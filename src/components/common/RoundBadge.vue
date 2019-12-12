@@ -1,5 +1,5 @@
 <template>
-  <span class="round-badge text-white background-primary ma-4">
+  <span class="round-badge text-white background-primary">
     {{ value }}
   </span>
 </template>
