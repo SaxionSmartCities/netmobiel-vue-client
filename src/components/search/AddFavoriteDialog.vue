@@ -29,6 +29,7 @@
             </v-col>
             <v-col>
               <v-btn
+                :disabled="!favoriteLabel"
                 rounded
                 block
                 color="button"
