@@ -82,7 +82,8 @@ export default {
       })
   },
   submitRide: (context, payload) => {
-    if (payload.ridePlanOptions.cars.length == 0) {
+    const { ridePlanOptions, selectedTime, from, to, recurrence } = payload
+    if (ridePlanOptions.cars.length == 0) {
       context.dispatch(
         'ui/queueNotification',
         {
@@ -93,27 +94,28 @@ export default {
       )
       return
     }
-    //HACK: We will take the first car for now.
-    //State should have a selectedCar element.
-    let request = {
-      carRef: 'urn:nb:rs:car:' + payload.ridePlanOptions.selectedCarId,
-      departureTime: moment(payload.selectedTime).format('YYYY-MM-DDTHH:mm:ss'),
+    const request = {
+      carRef: 'urn:nb:rs:car:' + ridePlanOptions.selectedCarId,
+      // only departure time possible?
+      // this conflicts with UI that supports departure or arrival time
+      departureTime: moment(selectedTime).format('YYYY-MM-DDTHH:mm:ss'),
+      recurrence,
       fromPlace: {
-        label: `${payload.from.title} ${payload.from.vicinity}`,
-        latitude: payload.from.position[0],
-        longitude: payload.from.position[1],
+        label: `${from.title} ${from.vicinity}`,
+        latitude: from.position[0],
+        longitude: from.position[1],
       },
       toPlace: {
-        label: `${payload.to.title} ${payload.to.vicinity}`,
-        latitude: payload.to.position[0],
-        longitude: payload.to.position[1],
+        label: `${to.title} ${to.vicinity}`,
+        latitude: to.position[0],
+        longitude: to.position[1],
       },
       remarks: 'What does this do?',
-      nrSeatsAvailable: payload.ridePlanOptions.numPassengers,
-      maxDetourSeconds: payload.ridePlanOptions.maxMinutesDetour * 60,
+      nrSeatsAvailable: ridePlanOptions.numPassengers,
+      maxDetourSeconds: ridePlanOptions.maxMinutesDetour * 60,
     }
 
-    var axiosConfig = {
+    const axiosConfig = {
       method: 'POST',
       url: BASE_URL + `/rideshare/rides`,
       data: request,

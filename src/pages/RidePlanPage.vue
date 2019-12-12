@@ -20,17 +20,12 @@
                   <from-to-fields />
                 </v-flex>
                 <v-flex>
-                  <!-- TODO: Use v-model to update JS object with { datetime: Date object, departure: boolean } -->
-                  <date-time-selector
-                    @dateValueUpdated="dateChanged"
-                    @timeValueUpdated="timeChanged"
-                    @modeValueUpdated="modeChanged"
-                  />
+                  <date-time-selector v-model="journeyMoment" />
                 </v-flex>
                 <v-flex>
                   <recurrence-editor
                     v-model="recurrence"
-                    :origin="selectedDate"
+                    :origin="journeyMoment ? journeyMoment.when : null"
                   />
                 </v-flex>
                 <v-flex>
@@ -92,10 +87,11 @@
 </template>
 
 <script>
-import moment from 'moment'
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
 import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
+
+import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 
 export default {
   name: 'RidePlanPage',
@@ -106,44 +102,11 @@ export default {
   },
   data() {
     return {
-      selectedDate: undefined,
-      selectedTime: undefined,
-      selectedMode: undefined,
+      journeyMoment: undefined,
       recurrence: undefined,
     }
   },
   computed: {
-    date: {
-      get: function() {
-        return this.$store.getters['ui/getTempValue']('rideDate')
-      },
-      set: function(value) {
-        this.$store.commit('ui/setTempValue', { rideDate: value })
-      },
-    },
-    time: {
-      get: function() {
-        return this.$store.getters['ui/getTempValue']('rideTime')
-      },
-      set: function(value) {
-        this.$store.commit('ui/setTempValue', { rideTime: value })
-      },
-    },
-    fromLocationLabel() {
-      const suggestion = this.$store.getters['gs/getPickedLocation'].from
-      return !suggestion.title
-        ? 'Klik hier voor vertrekplek'
-        : `${suggestion.title} ${suggestion.vicinity}`
-    },
-    toLocationLabel() {
-      const suggestion = this.$store.getters['gs/getPickedLocation'].to
-      return !suggestion.title
-        ? 'Klik hier voor bestemming'
-        : `${suggestion.title} ${suggestion.vicinity}`
-    },
-    availableCars() {
-      return this.$store.getters['ps/getProfile'].ridePlanOptions.cars
-    },
     selectedCar() {
       const selectedCarId = this.$store.getters['ps/getProfile'].ridePlanOptions
           .selectedCarId,
@@ -151,57 +114,33 @@ export default {
       return cars.find(car => car.id === selectedCarId)
     },
   },
-  mounted() {
-    this.$store.commit('ui/clearTempValue')
-  },
+  beforeRouteEnter: beforeRouteEnter({
+    journeyMoment: DateTimeSelector.restoreModel,
+    recurrence: json => json,
+  }),
+  beforeRouteLeave: beforeRouteLeave({
+    journeyMoment: DateTimeSelector.saveModel,
+    recurrence: model => ({ ...model }),
+  }),
   methods: {
-    dateChanged(value) {
-      this.selectedDate = value
-    },
-    timeChanged(value) {
-      this.selectedTime = value
-    },
-    modeChanged(value) {
-      this.selectedMode = value
-    },
     disabledRideAddition() {
       const { from, to } = this.$store.getters['gs/getPickedLocation']
-      return (
-        !from.title || !to.title || !this.selectedDate || !this.selectedTime
-      )
-    },
-    swapLocations() {
-      this.$store.commit('gs/swapLocations')
-    },
-    toLocationSuggestionsPage(field) {
-      this.$router.push({ name: 'searchLocation', params: { field: field } })
+      return !from.title || !to.title || !this.journeyMoment
     },
     toRidePlanOptions() {
       this.$router.push('/planOptions')
     },
     submitForm() {
-      const { from, to } = this.$store.getters['gs/getPickedLocation'],
-        departure = moment(
-          this.selectedDate + ' ' + this.selectedTime,
-          'YYYY-MM-DDTHH:mm:ss'
-        )
+      const { from, to } = this.$store.getters['gs/getPickedLocation']
       this.$store.dispatch('cs/submitRide', {
         from,
         to,
         ridePlanOptions: this.$store.getters['ps/getProfile'].ridePlanOptions,
         recurrence: this.recurrence,
-        selectedTime: departure,
+        selectedTime: this.journeyMoment.when,
       })
       this.$router.push('/planSubmitted')
     },
   },
 }
 </script>
-
-<style lang="scss">
-.car-model {
-  font-style: italic;
-  color: #9b9b9b;
-  font-size: 80%;
-}
-</style>

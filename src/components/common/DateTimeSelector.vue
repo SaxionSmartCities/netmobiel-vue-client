@@ -1,7 +1,7 @@
 <template>
   <v-layout>
     <v-flex>
-      <v-dialog v-model="dateModal" persistent width="290px">
+      <v-dialog v-model="showDatePicker" persistent>
         <template v-slot:activator="{ on }">
           <v-text-field
             v-model="date"
@@ -13,154 +13,182 @@
           >
           </v-text-field>
         </template>
-        <v-date-picker v-model="date" :allowed-dates="allowedDates" scrollable>
+        <!-- v-if forces initialization of date picker when dialog is reopened -->
+        <v-date-picker
+          v-if="showDatePicker"
+          v-model="pickedDate"
+          :allowed-dates="allowedDates"
+          locale="nl-NL"
+          scrollable
+        >
           <v-spacer></v-spacer>
+          <v-btn text color="primary" @click="cancelDate">
+            Annuleren
+          </v-btn>
           <v-btn
             text
             color="primary"
-            @click="
-              restoreDate()
-              dateModal = false
-            "
+            :disabled="!pickedDate"
+            @click="confirmDate"
           >
-            Cancel
-          </v-btn>
-          <v-btn text color="primary" @click="dateModal = false">
-            OK
+            Ok
           </v-btn>
         </v-date-picker>
       </v-dialog>
     </v-flex>
     <v-flex>
-      <v-dialog
-        ref="dialog"
-        v-model="timeModal"
-        :return-value.sync="time"
-        width="290px"
-      >
+      <v-dialog v-model="showTimePicker" persistent>
         <template v-slot:activator="{ on }">
           <v-text-field
             v-model="time"
-            :label="selectedMode == 0 ? 'Aankomst' : 'Vertrek'"
+            :label="arriving ? 'Aankomst' : 'Vertrek'"
             prepend-icon="access_time"
             readonly
             hide-details
             v-on="on"
-            @click="backupTime"
           >
           </v-text-field>
         </template>
-        <v-time-picker v-if="timeModal" v-model="time" full-width format="24hr">
-          <v-tabs v-model="selectedMode" grow>
-            <v-tab>Aankomst</v-tab>
-            <v-tab>Vertrek</v-tab>
+        <v-card>
+          <v-tabs :value="pickedArriving ? 0 : 1" grow>
+            <v-tab @click="pickedArriving = true">Aankomst</v-tab>
+            <v-tab @click="pickedArriving = false">Vertrek</v-tab>
           </v-tabs>
-          <v-btn text color="primary" @click="$refs.dialog.save(time)">
-            OK
-          </v-btn>
-        </v-time-picker>
+          <!-- v-if forces initialization of time picker when dialog is reopened -->
+          <v-time-picker
+            v-if="showTimePicker"
+            v-model="pickedTime"
+            full-width
+            scrollable
+            :allowed-minutes="allowedMinutes"
+            format="24hr"
+            class="time-picker"
+          />
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text color="primary" @click="cancelTime">
+              Annuleren
+            </v-btn>
+            <v-btn
+              text
+              color="primary"
+              :disabled="!pickedTime"
+              @click="confirmTime"
+            >
+              Ok
+            </v-btn>
+          </v-card-actions>
+        </v-card>
       </v-dialog>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
+import moment from 'moment'
+
+const DATE_FORMAT_INPUT = 'DD-MM-YYYY',
+  DATE_FORMAT_PICKER = 'YYYY-MM-DD',
+  TIME_FORMAT = 'HH:mm',
+  TIMESTAMP_FORMAT = `${DATE_FORMAT_INPUT} ${TIME_FORMAT}`
+
 export default {
   name: 'DateTimeSelector',
   props: {
-    initialDate: {
-      type: String,
-      default: '',
-      required: false,
-    },
-    initialTime: {
-      type: String,
-      default: '',
-      required: false,
-    },
-    initialMode: {
-      type: Number,
-      default: 0,
-      required: false,
+    value: {
+      type: Object,
+      default: () => undefined,
     },
     allowedDates: {
       type: Function,
-      required: false,
       default: () => true,
     },
+    allowedMinutes: {
+      type: Function,
+      default: m => m % 5 == 0,
+    },
   },
-  data: function() {
+  data() {
     return {
-      localSelectedMode: 0,
-      localSearchDate: '',
-      localSearchTime: '',
-      dateModal: false,
-      timeModal: false,
-      backupDateValue: '',
-      backupTimeValue: '',
+      showDatePicker: false,
+      showTimePicker: false,
+      pickedDate: null,
+      pickedTime: null,
+      pickedArriving: false,
+      date: null,
+      time: null,
+      arriving: false,
     }
   },
-  computed: {
-    date: {
-      get: function() {
-        return this.localSearchDate
-      },
-      set: function(value) {
-        this.localSearchDate = value
-        this.$emit('dateValueUpdated', value)
-      },
-    },
-    time: {
-      get: function() {
-        return this.localSearchTime
-      },
-      set: function(value) {
-        this.localSearchTime = value
-        this.$emit('timeValueUpdated', value)
-      },
-    },
-    selectedMode: {
-      get: function() {
-        return this.localSelectedMode
-      },
-      set: function(value) {
-        this.localSelectedMode = value
-        this.$emit('modeValueUpdated', value)
-      },
-    },
-  },
-  watch: {
-    dateModal(value) {
-      if (value === true) {
-        this.backupDate()
-      }
-    },
-    timeModal(value) {
-      if (value === true) {
-        this.backupTime()
-      }
-    },
-  },
+  watch: { value: 'initialize' },
   mounted() {
-    this.localSearchDate = this.initialDate
-    this.localSearchTime = this.initialTime
-    this.localSelectedMode = this.initialMode
+    this.initialize()
   },
   methods: {
-    backupTime() {
-      this.backupTimeValue = this.localSearchTime
+    initialize() {
+      const { when, arriving } = this.value || {}
+      if (when) {
+        this.pickedDate = when.format(DATE_FORMAT_PICKER)
+        this.date = when.format(DATE_FORMAT_INPUT)
+        this.time = this.pickedTime = when.format(TIME_FORMAT)
+      }
+      this.arriving = this.pickedArriving = arriving || false
     },
-    backupDate() {
-      this.backupDateValue = this.localSearchDate
+    emitInput() {
+      const { date, time } = this
+      if (date && time) {
+        this.$emit('input', {
+          when: moment(`${this.date} ${this.time}`, TIMESTAMP_FORMAT),
+          arriving: this.arriving,
+        })
+      }
     },
-    restoreTime() {
-      this.localSearchTime = this.backupTimeValue
+    cancelDate() {
+      this.showDatePicker = false
+      this.pickedDate =
+        this.date &&
+        moment(this.date, DATE_FORMAT_INPUT).format(DATE_FORMAT_PICKER)
     },
-    restoreDate() {
-      this.localSearchDate = this.backupDateValue
+    confirmDate() {
+      this.showDatePicker = false
+      this.date = moment(this.pickedDate, DATE_FORMAT_PICKER).format(
+        DATE_FORMAT_INPUT
+      )
+      this.emitInput()
     },
+    cancelTime() {
+      this.showTimePicker = false
+      this.pickedTime = this.time
+      this.pickedArriving = this.arriving
+    },
+    confirmTime() {
+      this.showTimePicker = false
+      this.time = this.pickedTime
+      this.arriving = this.pickedArriving
+      this.emitInput()
+    },
+  },
+  saveModel(model) {
+    if (model) {
+      return {
+        when: model.when.format(TIMESTAMP_FORMAT),
+        arriving: model.arriving,
+      }
+    }
+  },
+  restoreModel(json) {
+    if (json) {
+      return {
+        when: moment(json.when, TIMESTAMP_FORMAT),
+        arriving: json.arriving,
+      }
+    }
   },
 }
 </script>
 
-<style lang="scss"></style>
+<style scoped>
+.time-picker {
+  border-radius: 0px !important;
+}
+</style>

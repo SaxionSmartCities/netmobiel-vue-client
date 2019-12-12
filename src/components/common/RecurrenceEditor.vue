@@ -105,8 +105,7 @@ function computeRepetitions(origin) {
       value: 'WORKDAILY',
     },
     {
-      text:
-        'Elke week op ' + (origin ? weekdays[new Date(origin).getDay()] : ''),
+      text: 'Elke week op ' + (origin ? weekdays[origin.day()] : ''),
       value: 'WEEKLY',
     },
     {
@@ -114,6 +113,37 @@ function computeRepetitions(origin) {
       value: 'CUSTOM',
     },
   ]
+}
+
+// convert model and origin to component state
+function computeState(model, origin) {
+  const { interval, unit, daysOfWeekMask, horizon } = model || {}
+  // empty model?
+  if (!unit) {
+    return { selectedRepetition: 'ONCE' }
+  }
+  // only daily repetition uses DAY unit
+  if (unit === 'DAY') {
+    return { selectedRepetition: 'DAILY' }
+  }
+  // if horizon is unspecified and repetition follows weekly pattern
+  if (!horizon && interval === 1) {
+    // repeat weekly for every workday
+    if (daysOfWeekMask === 31) {
+      return { selectedRepetition: 'WORKDAILY' }
+    }
+    // repeat weekly for weekday of specified origin
+    if (daysOfWeekMask === 1 << (6 + new Date(origin).getDay()) % 7) {
+      return { selectedRepetition: 'WEEKLY' }
+    }
+  }
+  // custom repetition
+  return {
+    selectedRepetition: undefined,
+    weekpattern: daysOfWeekMask,
+    weeks: interval === 2 ? 'TWO_WEEKS' : 'ONE_WEEK',
+    horizon: horizon,
+  }
 }
 
 export default {
@@ -127,8 +157,9 @@ export default {
       default: false,
     },
     origin: {
-      type: String,
-      default: '',
+      // Moment instance
+      type: Object,
+      default: () => undefined,
     },
     value: {
       type: Object,
@@ -137,14 +168,14 @@ export default {
   },
   data() {
     return {
-      selectedRepetition: 'ONCE',
+      showCustom: false,
+      showHorizonPicker: false,
+      previousRepetition: 'ONCE',
       repetitions: computeRepetitions(this.origin),
       weekpattern: 0,
       weeks: 'ONE_WEEK',
       horizon: '',
-      showCustom: false,
-      showHorizonPicker: false,
-      previousRepetition: 'ONCE',
+      ...computeState(this.value, this.origin),
     }
   },
   watch: {
@@ -188,11 +219,18 @@ export default {
         this.emitWeekly()
       }
     },
+    value: 'initialize',
+  },
+  mounted() {
+    this.initialize()
   },
   methods: {
+    initialize() {
+      Object.assign(this, computeState(this.value, this.origin))
+    },
     emitWeekly() {
-      // convert from JavaScript convention (i.e. sunday = 0) to ISO8601 convention (i.e. monday = 0)
-      const index = (6 + new Date(this.origin).getDay()) % 7
+      // convert from Moment API convention (i.e. sunday = 0) to ISO8601 convention (i.e. monday = 0)
+      const index = (6 + this.origin.day()) % 7
       this.weeks = 'ONE_WEEK'
       this.weekpattern = 1 << index
       this.horizon = ''
