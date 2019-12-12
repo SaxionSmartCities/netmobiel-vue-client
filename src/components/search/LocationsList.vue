@@ -46,17 +46,7 @@
 </template>
 
 <script>
-const categoryIcons = {
-  airport: 'local_airport',
-  'city-town-village': 'location_city',
-  hotel: 'local_hotel',
-  'railway-station': 'train',
-  restaurant: 'restaurant',
-  'sights-museums': 'museum',
-  'sports-facility-venue': 'sports',
-  'taxi-stand': 'local_taxi',
-  'theatre-music-culture': 'theaters',
-}
+import suggestions from '@/constants/suggestions.js'
 
 export default {
   name: 'LocationsList',
@@ -83,7 +73,7 @@ export default {
   },
   methods: {
     iconicCategory(category) {
-      return categoryIcons[category] || 'fa-map-marker-alt'
+      return suggestions.CATEGORY_ICONS[category] || 'fa-map-marker-alt'
     },
     stripBreakLines(value) {
       return value.replace(/<br>/gi, '')
