@@ -8,7 +8,7 @@
   font-size: $font-size;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
+
 }
 .v-application--wrap{
   //Waarom moet dit?
@@ -19,8 +19,8 @@
   box-shadow: none !important;
 }
 
-.v-btn {
-  color: white;
+button.button {
+  color: white !important;
 }
 
 
@@ -128,10 +128,6 @@ h3 {
 
 // .container {
 //   height: 100%;
-// }
-
-// .border-radius-input{
-//   border-radius: $border-radius;
 // }
 
 // .white-grey {
