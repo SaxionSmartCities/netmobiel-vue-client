@@ -9,7 +9,7 @@ export default {
   name: 'RoundBadge',
   props: {
     value: {
-      type: String,
+      type: Number,
       required: true,
     },
   },
