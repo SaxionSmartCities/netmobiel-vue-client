@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row @click="$emit('click')">
     <v-col cols="2">
       <v-img class="profileimage" :src="require('@/assets/profile_img.png')" />
     </v-col>

@@ -8,10 +8,11 @@
     <v-divider />
     <template v-for="conversation in conversations">
       <conversation-list-item
-        :key="conversation.id"
+        :key="conversation.id + '-line'"
         :conversation="conversation"
+        @click="showConversation(conversation)"
       />
-      <v-divider :key="conversation.id" />
+      <v-divider :key="conversation.id + '-separator'" />
     </template>
   </v-container>
 </template>
@@ -67,9 +68,11 @@ export default {
     }
   },
   methods: {
-    computeUnreadMessages(conversation) {
-      console.log(conversation)
-      return 2
+    showConversation(conversation) {
+      console.log('click', conversation)
+      this.$router.push({
+        path: `/conversation/${conversation.id}`,
+      })
     },
   },
 }
