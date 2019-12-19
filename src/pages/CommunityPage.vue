@@ -1,13 +1,18 @@
 <template>
   <v-container>
     <v-row>
-      <h1>Berichten</h1>
+      <v-col>
+        <h1>Berichten</h1>
+      </v-col>
     </v-row>
-    <conversation-list-item
-      v-for="conversation in conversations"
-      :key="conversation.id"
-      :conversation="conversation"
-    />
+    <v-divider />
+    <template v-for="conversation in conversations">
+      <conversation-list-item
+        :key="conversation.id"
+        :conversation="conversation"
+      />
+      <v-divider :key="conversation.id" />
+    </template>
   </v-container>
 </template>
 

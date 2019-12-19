@@ -21,7 +21,7 @@
       </v-row>
       <v-row dense>
         <v-col just>
-          <round-badge :value="10"></round-badge>
+          <round-badge :value="unreadMessages"></round-badge>
         </v-col>
       </v-row>
     </v-col>
@@ -48,6 +48,9 @@ export default {
       return moment(this.conversation.messages[0].timeStamp)
         .locale('nl')
         .calendar()
+    },
+    unreadMessages: function() {
+      return 4
     },
   },
 }
