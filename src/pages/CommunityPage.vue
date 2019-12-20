@@ -49,6 +49,21 @@ export default {
               sender: 'You',
               timeStamp: moment(),
             },
+            {
+              content: 'ben je dr nog?',
+              sender: 'You',
+              timeStamp: moment(),
+            },
+            {
+              content: 'Henk??? HENK!!!! NEEEEEEEE',
+              sender: 'You',
+              timeStamp: moment(),
+            },
+            {
+              content: 'Jaja ff rustig..',
+              sender: 'Henk',
+              timeStamp: moment(),
+            },
           ],
         },
         {
