@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <div class="d-flex flex-column fill-height">
     <slot name="header"></slot>
     <v-container
+      class="fill-height"
       :class="{
         'container-non-scrollable': !scrollable,
         'container-scrollable': scrollable,
@@ -25,14 +26,12 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .container-non-scrollable {
   overflow: hidden;
 }
 
 .container-scrollable {
-  height: 100vh;
   overflow: scroll;
-  padding-bottom: 56px;
 }
 </style>

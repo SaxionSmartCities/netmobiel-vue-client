@@ -73,4 +73,8 @@ export default {
 .align-right {
   text-align: right;
 }
+.travel-card {
+  border-radius: 10px;
+  border: 1px $color-light-grey solid;
+}
 </style>
