@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <content-pane>
     <v-layout pa-2 column>
       <v-flex>
         <v-layout row mb-3>
@@ -80,14 +80,16 @@
         </v-layout>
       </v-flex>
     </v-layout>
-  </v-container>
+  </content-pane>
 </template>
 
 <script>
+import ContentPane from '@/components/common/ContentPane.vue'
 import roundUserImage from '@/components/common/RoundUserImage'
 
 export default {
   components: {
+    ContentPane,
     roundUserImage,
   },
   data: function() {

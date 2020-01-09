@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined>
+  <v-card outlined @click="openDetails()">
     <v-row no-gutters>
       <v-col>
         <v-card-title>
