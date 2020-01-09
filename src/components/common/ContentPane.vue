@@ -1,12 +1,16 @@
 <template>
-  <v-container
-    :class="{
-      'container-non-scrollable': !scrollable,
-      'container-scrollable': scrollable,
-    }"
-  >
-    <slot></slot>
-  </v-container>
+  <div>
+    <slot name="header"></slot>
+    <v-container
+      :class="{
+        'container-non-scrollable': !scrollable,
+        'container-scrollable': scrollable,
+      }"
+    >
+      <slot></slot>
+    </v-container>
+    <slot name="footer"></slot>
+  </div>
 </template>
 
 <script>
@@ -29,5 +33,6 @@ export default {
 .container-scrollable {
   height: 100vh;
   overflow: scroll;
+  padding-bottom: 56px;
 }
 </style>
