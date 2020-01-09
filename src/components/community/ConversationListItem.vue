@@ -16,9 +16,9 @@
       </v-row>
     </v-col>
     <v-col cols="2" class="overline">
-      <v-row dense>
+      <!-- <v-row dense>
         <v-col> {{ printableDate }}</v-col>
-      </v-row>
+      </v-row> -->
       <v-row dense>
         <v-col just>
           <round-badge :value="unreadMessages"></round-badge>
