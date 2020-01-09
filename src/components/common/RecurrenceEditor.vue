@@ -118,7 +118,7 @@ function computeRepetitions(origin) {
       value: 'WEEKLY',
     },
     {
-      text: 'Aanpassen...',
+      text: 'Anders...',
       value: 'CUSTOM',
     },
   ]
