@@ -22,7 +22,10 @@
                       <from-to-fields />
                     </v-flex>
                     <v-flex>
-                      <date-time-selector v-model="journeyMoment" />
+                      <date-time-selector
+                        v-model="journeyMoment"
+                        :allowed-dates="allowedDates"
+                      />
                     </v-flex>
                     <v-flex>
                       <v-btn
@@ -159,6 +162,9 @@ export default {
         searchPreferences,
         timestamp: this.journeyMoment,
       })
+    },
+    allowedDates(v) {
+      return new Date(v) > new Date()
     },
   },
 }

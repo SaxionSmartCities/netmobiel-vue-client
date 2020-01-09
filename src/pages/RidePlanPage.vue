@@ -20,7 +20,10 @@
                   <from-to-fields />
                 </v-flex>
                 <v-flex>
-                  <date-time-selector v-model="journeyMoment" />
+                  <date-time-selector
+                    v-model="journeyMoment"
+                    :allowed-dates="allowedDates"
+                  />
                 </v-flex>
                 <v-flex>
                   <recurrence-editor
@@ -140,6 +143,9 @@ export default {
         selectedTime: this.journeyMoment.when,
       })
       this.$router.push('/planSubmitted')
+    },
+    allowedDates(v) {
+      return new Date(v) > new Date()
     },
   },
 }
