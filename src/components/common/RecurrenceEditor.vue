@@ -8,32 +8,39 @@
       placeholder="Aangepaste herhaling"
     />
     <v-dialog v-model="showCustom" persistent>
-      <v-card class="pattern-editor">
+      <v-card class="px-5">
         <v-card-title>Aangepaste herhaling</v-card-title>
-        <v-layout row align-center>
+        <v-divider class="mb-3"></v-divider>
+        <v-layout row align-center ml-0>
           <v-flex xs3>
-            <span>Herhaal</span>
+            <span>Herhaal:</span>
           </v-flex>
-          <v-flex xs9>
+        </v-layout>
+        <v-layout row align-center ml-0>
+          <v-flex xs9 pl-7 py-2>
             <v-radio-group v-model="weeks" hide-details class="ma-0 pa-0">
-              <v-radio label="wekelijks" value="ONE_WEEK" />
-              <v-radio label="om de 2 weken" value="TWO_WEEKS" />
+              <v-radio label="Wekelijks" value="ONE_WEEK" />
+              <v-radio label="Om de 2 weken" value="TWO_WEEKS" />
             </v-radio-group>
           </v-flex>
         </v-layout>
-        <v-layout row align-center>
+        <v-layout row align-center ml-0>
           <v-flex xs3>
-            <span>Op</span>
+            <span>Op:</span>
           </v-flex>
-          <v-flex xs9>
+        </v-layout>
+        <v-layout row align-center ml-0>
+          <v-flex xs9 pl-7>
             <week-pattern-editor v-model="weekpattern" />
           </v-flex>
         </v-layout>
-        <v-layout row align-center>
+        <v-layout row align-center ml-0>
           <v-flex xs3>
-            <span>Tot</span>
+            <span>Tot:</span>
           </v-flex>
-          <v-flex xs9>
+        </v-layout>
+        <v-layout row align-center ml-0>
+          <v-flex xs9 pl-7>
             <v-menu
               v-model="showHorizonPicker"
               :close-on-content-click="false"
@@ -43,9 +50,10 @@
                 <v-text-field
                   v-model="horizon"
                   prepend-icon="event"
+                  class="pt-0"
                   readonly
                   clearable
-                  placeholder="Einde der tijden"
+                  placeholder="Geen einddatum"
                   v-on="on"
                   @click:clear="pickedHorizon = ''"
                 ></v-text-field>
