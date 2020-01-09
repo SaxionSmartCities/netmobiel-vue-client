@@ -167,6 +167,11 @@ export default {
 </script>
 
 <style lang="scss">
+.v-content {
+  height: 100vh;
+  overflow: hidden;
+}
+
 .homepage {
   background-image: url('assets/achterhoek_background.jpg');
   background-size: contain;
