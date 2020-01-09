@@ -79,6 +79,97 @@ export default {
             },
           ],
         },
+        {
+          id: 3,
+          sender: 'Netmobiel',
+          lastViewed: moment().subtract(5, 'hours'),
+          messages: [
+            {
+              content:
+                'Geplant onderhoud. Vanwege smurfen in het systeem moet er een nieuwe firewall uitgerold worden. En toen gingen ze koffie drinken en leefden ze nog lang en gelukkig.',
+              sender: 'Netmobiel',
+              timeStamp: moment().subtract(1, 'day'),
+            },
+          ],
+        },
+        {
+          id: 4,
+          sender: 'Netmobiel',
+          lastViewed: moment().subtract(5, 'hours'),
+          messages: [
+            {
+              content:
+                'Geplant onderhoud. Vanwege smurfen in het systeem moet er een nieuwe firewall uitgerold worden. En toen gingen ze koffie drinken en leefden ze nog lang en gelukkig.',
+              sender: 'Netmobiel',
+              timeStamp: moment().subtract(1, 'day'),
+            },
+          ],
+        },
+        {
+          id: 5,
+          sender: 'Netmobiel',
+          lastViewed: moment().subtract(5, 'hours'),
+          messages: [
+            {
+              content:
+                'Geplant onderhoud. Vanwege smurfen in het systeem moet er een nieuwe firewall uitgerold worden. En toen gingen ze koffie drinken en leefden ze nog lang en gelukkig.',
+              sender: 'Netmobiel',
+              timeStamp: moment().subtract(1, 'day'),
+            },
+          ],
+        },
+        {
+          id: 6,
+          sender: 'Netmobiel',
+          lastViewed: moment().subtract(5, 'hours'),
+          messages: [
+            {
+              content:
+                'Geplant onderhoud. Vanwege smurfen in het systeem moet er een nieuwe firewall uitgerold worden. En toen gingen ze koffie drinken en leefden ze nog lang en gelukkig.',
+              sender: 'Netmobiel',
+              timeStamp: moment().subtract(1, 'day'),
+            },
+          ],
+        },
+        {
+          id: 7,
+          sender: 'Netmobiel',
+          lastViewed: moment().subtract(5, 'hours'),
+          messages: [
+            {
+              content:
+                'Geplant onderhoud. Vanwege smurfen in het systeem moet er een nieuwe firewall uitgerold worden. En toen gingen ze koffie drinken en leefden ze nog lang en gelukkig.',
+              sender: 'Netmobiel',
+              timeStamp: moment().subtract(1, 'day'),
+            },
+          ],
+        },
+        {
+          id: 8,
+          sender: 'Netmobiel',
+          lastViewed: moment().subtract(5, 'hours'),
+          messages: [
+            {
+              content:
+                'Geplant onderhoud. Vanwege smurfen in het systeem moet er een nieuwe firewall uitgerold worden. En toen gingen ze koffie drinken en leefden ze nog lang en gelukkig.',
+              sender: 'Netmobiel',
+              timeStamp: moment().subtract(1, 'day'),
+            },
+          ],
+        },
+        {
+          id: 9,
+          sender: 'Netmobiel',
+          lastViewed: moment().subtract(5, 'hours'),
+          messages: [
+            {
+              content:
+                'Geplant onderhoud. Vanwege smurfen in het systeem moet er een nieuwe firewall uitgerold worden. En toen gingen ze koffie drinken en leefden ze nog lang en gelukkig.',
+              sender: 'Netmobiel',
+              timeStamp: moment().subtract(1, 'day'),
+            },
+          ],
+        },
       ],
     }
   },
