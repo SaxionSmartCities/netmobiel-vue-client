@@ -1,16 +1,33 @@
 <template>
-  <v-container>
+  <v-container class="flex-grow-0">
     <v-row>
-      <v-col>Henk van der laan TODO: object van maken</v-col>
+      <v-col cols="3">
+        <v-img
+          class="profileimage"
+          :src="require('@/assets/profile_img.png')"
+        />
+      </v-col>
+      <v-col>
+        <h2>Henk van der Laan</h2>
+      </v-col>
     </v-row>
     <v-divider />
-    <template v-for="(message, index) in messages">
-      <v-row :key="index">
-        <v-col>
-          <message-card :message="message" />
-        </v-col>
-      </v-row>
-    </template>
+    <v-row class="flex-grow-1">
+      <v-col>
+        <template v-for="(message, index) in messages">
+          <v-row :key="index">
+            <v-col>
+              <message-card :message="message" />
+            </v-col>
+          </v-row>
+        </template>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-text-field></v-text-field>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

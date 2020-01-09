@@ -1,6 +1,6 @@
 <template>
   <v-card
-    outlined
+    elevation="0"
     :class="{ mymessage: isMessageSendByMe, message: !isMessageSendByMe }"
   >
     <v-card-title>
@@ -36,14 +36,15 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .mymessage {
-  background-color: red !important;
+  background-color: #dae9eb !important;
+
   margin-left: 50px;
 }
 
 .message {
-  background-color: green !important;
+  background-color: $color-white-grey !important;
   margin-right: 50px;
 }
 </style>
