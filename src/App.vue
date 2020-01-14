@@ -226,6 +226,6 @@ export default {
   color: white !important;
 }
 .v-bottom-navigation {
-  padding-top: 10px !important;
+  align-items: center;
 }
 </style>
