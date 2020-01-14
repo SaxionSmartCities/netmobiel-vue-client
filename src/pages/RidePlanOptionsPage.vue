@@ -15,7 +15,7 @@
             >
               <v-layout>
                 <v-flex xs7>
-                  <span class="form-label py-2">Passagiers</span>
+                  <span class="form-label py-2">Max. aantal passagiers</span>
                 </v-flex>
                 <v-flex text-right pr-2>
                   {{ numPassengers }}
