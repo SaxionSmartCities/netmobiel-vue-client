@@ -55,12 +55,15 @@
                   clearable
                   placeholder="Geen einddatum"
                   v-on="on"
+                  @click:clear="pickedHorizon = ''"
                 ></v-text-field>
               </template>
               <v-date-picker
-                v-model="horizon"
+                v-if="showHorizonPicker"
+                v-model="pickedHorizon"
                 locale="nl-NL"
-                @input="showHorizonPicker = false"
+                scrollable
+                @input="selectHorizon"
               />
             </v-menu>
           </v-flex>
@@ -86,6 +89,7 @@
 
 <script>
 import WeekPatternEditor from './WeekPatternEditor.vue'
+import { formatDateInputFromPicker } from '@/utils/datetime.js'
 
 // weekdays according to JavaScript Date class (which differs from recurrence weekpattern that starts at Monday)
 const weekdays = [
@@ -183,6 +187,7 @@ export default {
       repetitions: computeRepetitions(this.origin),
       weekpattern: 0,
       weeks: 'ONE_WEEK',
+      pickedHorizon: '',
       horizon: '',
       ...computeState(this.value, this.origin),
     }
@@ -248,6 +253,10 @@ export default {
         interval: 1,
         unit: 'WEEK',
       })
+    },
+    selectHorizon() {
+      this.showHorizonPicker = false
+      this.horizon = formatDateInputFromPicker(this.pickedHorizon)
     },
     cancelPatternEditor() {
       this.showCustom = false
