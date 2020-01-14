@@ -90,6 +90,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
 import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
@@ -128,7 +130,12 @@ export default {
   methods: {
     disabledRideAddition() {
       const { from, to } = this.$store.getters['gs/getPickedLocation']
-      return !from.title || !to.title || !this.journeyMoment
+      return (
+        !from.title ||
+        !to.title ||
+        !this.journeyMoment ||
+        this.journeyMoment.when < moment().add(1, 'hour')
+      )
     },
     toRidePlanOptions() {
       this.$router.push('/planOptions')
@@ -145,7 +152,7 @@ export default {
       this.$router.push('/planSubmitted')
     },
     allowedDates(v) {
-      return new Date(v) > new Date()
+      return moment(v) >= moment().startOf('day')
     },
   },
 }
