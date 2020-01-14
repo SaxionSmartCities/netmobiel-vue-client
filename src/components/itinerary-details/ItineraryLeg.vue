@@ -5,31 +5,10 @@
         <v-flex xs2>{{ time }}</v-flex>
         <v-flex xs1>
           <v-layout column align-center fill-height>
-            <v-flex class="border">
-              <div class="open-dot"></div>
-            </v-flex>
+            <v-flex class="border"><div class="open-dot"/></v-flex>
           </v-layout>
         </v-flex>
-        <v-flex v-if="leg.mode == 'CAR'" xs9 class="neg-margin-top">
-          <v-layout>
-            <v-flex
-              ><v-img
-                class="driverImage"
-                :src="require('@/assets/profile_img.png')"
-            /></v-flex>
-            <v-flex xs12 pl-2>
-              <span>{{ header }}</span
-              ><br />
-              <span class="caption"
-                ><v-icon size="15">
-                  map
-                </v-icon>
-                {{ description }}</span
-              >
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex v-else xs9>{{ header }}</v-flex>
+        <v-flex xs9>{{ header }}</v-flex>
       </v-layout>
     </v-flex>
     <v-flex>
@@ -38,20 +17,21 @@
           <v-icon my-6>{{ icon }}</v-icon>
         </v-flex>
         <v-flex xs1>
-          <v-layout v-if="leg.mode !== 'FINISH'" justify-center fill-height>
+          <v-layout
+            v-if="leg.mode !== 'FINISH' && leg.mode !== 'ARRIVAL'"
+            justify-center
+            fill-height
+          >
             <v-flex shrink>
               <div
                 v-if="leg.mode === 'WAIT'"
                 class="borderstopped borderwidth"
-              ></div>
-              <div v-else class="border borderwidth"></div>
+              />
+              <div v-else class="border borderwidth" />
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex v-if="leg.mode !== 'CAR'" xs8 caption>
-          <v-icon v-if="leg.mode !== 'WAIT' && leg.mode !== 'FINISH'" size="15">
-            map
-          </v-icon>
+        <v-flex xs8 caption>
           {{ description }}
         </v-flex>
       </v-layout>
@@ -100,8 +80,7 @@ const headers = {
     return `Lopen (${humanDistance(this.leg.distance)})`
   },
   CAR() {
-    return `Meerijden met ${this.leg.ride.driver.givenName}
-      ${this.leg.ride.driver.familyName}`
+    return this.leg.from.name
   },
   NETMOBIEL: 'Meerijden met een NETMOBIEL gebruiker',
   RAIL() {
@@ -114,6 +93,10 @@ const headers = {
     return `Even wachten.. (${Math.round(this.leg.duration / 60)} minuten)`
   },
   FINISH: 'Aangekomen op bestemming',
+  ARRIVAL() {
+    // car arrival when sharing a ride
+    return this.leg.from.name
+  },
   default: 'HEADER NOT DEFINED FOR THIS LEG MODE!',
 }
 const descriptions = {
@@ -134,10 +117,7 @@ const descriptions = {
 
     return `${departureName} - ${arrivalName}`
   },
-  CAR() {
-    const dest = this.leg.to.name
-    return 'vanaf ' + dest
-  },
+  CAR: '',
   NETMOBIEL: 'Meerijden met een NETMOBIEL gebruiker',
   RAIL() {
     // add platform to departure and arrival
@@ -150,6 +130,7 @@ const descriptions = {
   },
   WAIT: '',
   FINISH: '',
+  ARRIVAL: '',
   default: 'DESCRIPTION NOT DEFINED FOR THIS LEG MODE!',
 }
 
@@ -192,15 +173,5 @@ function humanDistance(meters) {
   background-position: center;
   background-repeat-x: no-repeat;
   height: 100%;
-}
-
-.driverImage {
-  border-radius: 1000px;
-  border: 1px solid #ccc;
-  height: 40px;
-  width: 40px;
-}
-.neg-margin-top {
-  margin-top: -10px;
 }
 </style>

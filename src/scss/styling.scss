@@ -176,3 +176,9 @@ h3 {
 .v-btn[href]:not(.v-btn--outlined) {
   color: $color-white;
 }
+
+.text-overflow-with-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

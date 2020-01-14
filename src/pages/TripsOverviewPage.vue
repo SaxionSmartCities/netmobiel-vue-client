@@ -45,14 +45,7 @@
           plannen.
         </v-flex>
         <v-flex v-for="(ride, index) in getPlannedRides" :key="index">
-          <ride-card
-            class="mt-2 mb-2"
-            :from="ride.fromPlace"
-            :to="ride.toPlace"
-            :date="parseDate(ride.departureTime)"
-            :ride="ride"
-          >
-          </ride-card>
+          <ride-card class="mt-2 mb-2" :ride="ride" />
         </v-flex>
       </v-layout>
     </v-container>
