@@ -97,6 +97,9 @@ const headers = {
     // car arrival when sharing a ride
     return this.leg.from.name
   },
+  SUBWAY() {
+    return `${this.leg.routeShortName} naar ${this.leg.to.name}`
+  },
   default: 'HEADER NOT DEFINED FOR THIS LEG MODE!',
 }
 const descriptions = {
@@ -131,6 +134,9 @@ const descriptions = {
   WAIT: '',
   FINISH: '',
   ARRIVAL: '',
+  SUBWAY() {
+    return `${this.leg.from.name} - ${this.leg.to.name}`
+  },
   default: 'DESCRIPTION NOT DEFINED FOR THIS LEG MODE!',
 }
 
