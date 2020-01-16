@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <content-pane>
     <v-layout column>
       <v-flex><h1>Reisopties</h1></v-flex>
       <v-flex my-2>
@@ -54,10 +54,11 @@
         </v-layout>
       </v-flex>
     </v-layout>
-  </v-container>
+  </content-pane>
 </template>
 
 <script>
+import ContentPane from '@/components/common/ContentPane.vue'
 import TravelCard from '@/components/search-results/TravelCard.vue'
 import SearchOptionsSummaryCard from '@/components/search-results/SearchOptionsSummaryCard.vue'
 import moment from 'moment'
@@ -65,6 +66,7 @@ import moment from 'moment'
 export default {
   name: 'SearchResultsPage',
   components: {
+    ContentPane,
     TravelCard,
     SearchOptionsSummaryCard,
   },
@@ -77,9 +79,6 @@ export default {
       ],
       selectedModus: 0,
     }
-  },
-  created: function() {
-    this.$store.commit('ui/showBackButton')
   },
   computed: {
     planningResults: function() {
@@ -98,6 +97,9 @@ export default {
       return moment(this.OVPlanningResults.date).format('DD-MM-YYYY')
       // return 'INVALID'
     },
+  },
+  created: function() {
+    this.$store.commit('ui/showBackButton')
   },
   methods: {
     sortByDuration: function(a, b) {

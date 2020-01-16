@@ -86,11 +86,13 @@
 
 <script>
 import moment from 'moment'
-
-const DATE_FORMAT_INPUT = 'DD-MM-YYYY',
-  DATE_FORMAT_PICKER = 'YYYY-MM-DD',
-  TIME_FORMAT = 'HH:mm',
-  TIMESTAMP_FORMAT = `${DATE_FORMAT_INPUT} ${TIME_FORMAT}`
+import {
+  DATE_FORMAT_INPUT,
+  DATE_FORMAT_PICKER,
+  TIME_FORMAT,
+  TIMESTAMP_FORMAT,
+  formatDateInputFromPicker,
+} from '@/utils/datetime.js'
 
 export default {
   name: 'DateTimeSelector',
@@ -151,9 +153,7 @@ export default {
     },
     confirmDate() {
       this.showDatePicker = false
-      this.date = moment(this.pickedDate, DATE_FORMAT_PICKER).format(
-        DATE_FORMAT_INPUT
-      )
+      this.date = formatDateInputFromPicker(this.pickedDate)
       this.emitInput()
     },
     cancelTime() {

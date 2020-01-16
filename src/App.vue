@@ -10,6 +10,26 @@
 
     <v-content>
       <router-view></router-view>
+      <v-snackbar
+        v-if="isNotificationBarVisible"
+        v-model="isNotificationBarVisible"
+        :timeout="0"
+        :color="notificationColor"
+        bottom
+        absolute
+      >
+        {{ notificationQueue[0].message }}
+        <v-btn
+          v-if="notificationQueue[0].timeout === 0"
+          text
+          outlined
+          font-weight-medium
+          class="notification-close-button"
+          @click="finishNotification"
+        >
+          Sluiten
+        </v-btn>
+      </v-snackbar>
     </v-content>
 
     <v-bottom-navigation v-if="isFooterVisible" v-model="selectedNav" app>
@@ -37,25 +57,6 @@
         <span>Profiel</span>
         <v-icon>person</v-icon>
       </v-btn>
-
-      <v-snackbar
-        v-if="isNotificationBarVisible"
-        v-model="isNotificationBarVisible"
-        :timeout="0"
-        :color="notificationColor"
-      >
-        {{ notificationQueue[0].message }}
-        <v-btn
-          v-if="notificationQueue[0].timeout === 0"
-          text
-          outlined
-          font-weight-medium
-          class="notification-close-button"
-          @click="finishNotification"
-        >
-          Close
-        </v-btn>
-      </v-snackbar>
     </v-bottom-navigation>
   </v-app>
 </template>
@@ -172,6 +173,11 @@ export default {
 </script>
 
 <style lang="scss">
+.v-content {
+  height: 100vh;
+  overflow: hidden;
+}
+
 .homepage {
   background-image: url('assets/achterhoek_background.jpg');
   background-size: contain;
@@ -231,6 +237,6 @@ export default {
   color: white !important;
 }
 .v-bottom-navigation {
-  padding-top: 10px !important;
+  align-items: center;
 }
 </style>

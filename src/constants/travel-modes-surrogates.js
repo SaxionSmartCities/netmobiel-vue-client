@@ -9,4 +9,9 @@ export default {
     label: 'Eindpunt',
     icon: 'outlined_flag',
   },
+  ARRIVAL: {
+    mode: 'ARRIVAL',
+    label: 'Aankomst',
+    icon: 'outlined_flag',
+  },
 }

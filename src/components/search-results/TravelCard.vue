@@ -1,51 +1,31 @@
 <template>
-  <v-layout travel-card pt-3 pb-3 pl-3 pr-1>
-    <v-flex xs11>
-      <v-layout column>
-        <v-flex>
-          <v-layout>
-            <v-flex>
-              <h4>Vertrek</h4>
-              {{ departureTime }}
-            </v-flex>
-            <v-flex v-if="hasCarLeg()" text-xs-right pr-1>
-              <h4>Reizen met</h4>
-              <span>{{ driverString }}</span>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex mt-3>
-          <v-layout>
-            <v-flex
+  <v-card outlined @click="openDetails()">
+    <v-row no-gutters>
+      <v-col>
+        <v-card-title>
+          <h4>Vertrek</h4>
+        </v-card-title>
+        <v-card-subtitle>
+          {{ departureTime }}
+        </v-card-subtitle>
+        <v-card-text>
+          <v-row no-gutters>
+            <v-col
               v-for="(leg, index) in journey.legs"
               :key="index"
-              :class="calculateClass(index)"
+              :cols="calculateWidth(index)"
             >
               <travel-leg :leg="leg"> </travel-leg>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex mt-2>
-          <v-layout>
-            <v-flex> {{ Math.round(journey.duration / 60) }} minuten </v-flex>
-            <!-- <v-flex text-xs-right pr-1> {{ journey.cost }} credits </v-flex> -->
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    <v-flex
-      d-flex
-      :class="{
-        'hide-details': journey.legs.length == 0,
-      }"
-    >
-      <v-layout justify-center align-center column @click="openDetails()">
-        <v-flex shrink>
-          <v-icon>keyboard_arrow_right</v-icon>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-  </v-layout>
+            </v-col>
+          </v-row>
+          <div>{{ Math.round(journey.duration / 60) }} minuten</div>
+        </v-card-text>
+      </v-col>
+      <v-card-actions>
+        <v-icon>keyboard_arrow_right</v-icon>
+      </v-card-actions>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
@@ -145,11 +125,8 @@ export default {
       }
       this.layoutRatios = ratios
     },
-    calculateClass: function(index) {
-      return 'xs' + this.layoutRatios[index]
-    },
-    hasCarLeg: function() {
-      return this.journey.legs.filter(leg => leg.mode === 'CAR').length > 0
+    calculateWidth: function(index) {
+      return this.layoutRatios[index]
     },
     openDetails: function() {
       const selectedTrip = {
@@ -165,12 +142,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.travel-card {
-  border-radius: 10px;
-  border: 1px $color-light-grey solid;
-}
-.hide-details {
-  display: none !important;
-}
-</style>
+<style lang="scss"></style>

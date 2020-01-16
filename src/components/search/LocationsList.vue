@@ -2,6 +2,7 @@
   <v-list width="100%">
     <v-list-item-group v-model="selectedListItem">
       <template v-for="(location, index) in locations">
+        <v-divider v-if="index > 0" :key="index" class="mx-3" />
         <v-list-item :key="location.id">
           <v-list-item-icon @click="$emit('onItemClicked', location)">
             <v-icon>{{ iconicCategory(location.category) }}</v-icon>
@@ -39,7 +40,6 @@
             <v-icon>favorite</v-icon>
           </v-list-item-icon>
         </v-list-item>
-        <v-divider v-if="index < locations.length" :key="index" class="mx-3" />
       </template>
     </v-list-item-group>
   </v-list>
