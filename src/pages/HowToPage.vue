@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <content-pane>
     <v-layout column>
       <v-flex>
         <h1>Welkom bij Netmobiel!</h1>
@@ -50,11 +50,15 @@
         </p>
       </v-flex>
     </v-layout>
-  </v-container>
+  </content-pane>
 </template>
 
 <script>
+import ContentPane from '@/components/common/ContentPane.vue'
 export default {
+  components: {
+    ContentPane,
+  },
   mounted() {
     this.$store.commit('ui/showBackButton')
   },

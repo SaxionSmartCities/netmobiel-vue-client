@@ -1,12 +1,5 @@
 <template>
-  <v-container
-    align-center
-    justify-center
-    fill-height
-    fluid
-    grid-list-lg
-    class="background-primary"
-  >
+  <content-pane>
     <v-layout justify-center align-center>
       <v-flex xs11 sm9 md6>
         <v-layout column shrink>
@@ -83,10 +76,11 @@
         </v-layout>
       </v-flex>
     </v-layout>
-  </v-container>
+  </content-pane>
 </template>
 
 <script>
+import ContentPane from '@/components/common/ContentPane.vue'
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
 import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
@@ -96,6 +90,7 @@ import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 export default {
   name: 'RidePlanPage',
   components: {
+    ContentPane,
     FromToFields,
     DateTimeSelector,
     RecurrenceEditor,
