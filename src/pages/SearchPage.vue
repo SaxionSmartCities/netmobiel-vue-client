@@ -36,15 +36,6 @@
                         Plan je reis!
                       </v-btn>
                     </v-flex>
-                    <v-flex v-if="getSubmitStatus.status === 'FAILED'">
-                      <v-expand-transition>
-                        <v-flex>
-                          <v-alert :value="true" type="error" color="red">
-                            {{ getSubmitStatus.message }}
-                          </v-alert>
-                        </v-flex>
-                      </v-expand-transition>
-                    </v-flex>
                     <v-flex
                       body-2
                       my-1
