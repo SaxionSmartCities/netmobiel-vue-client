@@ -1,18 +1,20 @@
 <template>
-  <v-container class="flex-grow-0">
-    <v-row>
-      <v-col cols="3">
-        <v-img
-          class="profileimage"
-          :src="require('@/assets/profile_img.png')"
-        />
-      </v-col>
-      <v-col>
-        <h2>Henk van der Laan</h2>
-      </v-col>
-    </v-row>
-    <v-divider />
-    <v-row class="flex-grow-1">
+  <content-pane>
+    <template v-slot:header>
+      <v-row dense>
+        <v-col cols="3">
+          <v-img
+            class="profileimage"
+            :src="require('@/assets/profile_img.png')"
+          />
+        </v-col>
+        <v-col align-self="center">
+          <h2>Henk van der Laan</h2>
+        </v-col>
+      </v-row>
+      <v-divider />
+    </template>
+    <v-row dense>
       <v-col>
         <template v-for="(message, index) in messages">
           <v-row :key="index">
@@ -23,20 +25,33 @@
         </template>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col>
-        <v-text-field></v-text-field>
-      </v-col>
-    </v-row>
-  </v-container>
+    <template v-slot:footer>
+      <v-row dense class="px-4 pb-1">
+        <v-col>
+          <v-text-field
+            clearable
+            outlined
+            hide-details
+            dense
+            label="Stuur een bericht naar Henk van der Laan"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="1" align-self="center">
+          <v-icon>send</v-icon>
+        </v-col>
+      </v-row>
+    </template>
+  </content-pane>
 </template>
 
 <script>
 import moment from 'moment'
+import ContentPane from '@/components/common/ContentPane.vue'
 import MessageCard from '@/components/community/MessageCard.vue'
 
 export default {
   components: {
+    ContentPane,
     MessageCard,
   },
   props: {
@@ -79,7 +94,7 @@ export default {
     },
   },
   mounted: function() {
-    console.log(this.id)
+    this.$store.commit('ui/showBackButton')
   },
 }
 </script>
