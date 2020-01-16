@@ -1,13 +1,15 @@
 <template>
-  <v-container>
+  <content-pane>
     <v-layout column>
       <v-flex>
         <v-layout row pb-3>
           <v-flex>
-            <v-img
-              class="profileimage"
-              :src="require('@/assets/profile_img.png')"
-            />
+            <router-link to="/onboardingPage">
+              <v-img
+                class="profileimage"
+                :src="require('@/assets/profile_img.png')"
+              />
+            </router-link>
           </v-flex>
           <v-flex text-xs-right>
             <v-layout fill-height justify-end column>
@@ -81,16 +83,18 @@
         </v-layout>
       </v-flex>
     </v-layout>
-  </v-container>
+  </content-pane>
 </template>
 
 <script>
+import ContentPane from '@/components/common/ContentPane.vue'
 import RideCard from '@/components/rides/RideCard.vue'
 import UpdateCard from '@/components/home/UpdateCard.vue'
 import moment from 'moment'
 
 export default {
   components: {
+    ContentPane,
     RideCard,
     UpdateCard,
   },

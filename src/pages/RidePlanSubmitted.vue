@@ -5,7 +5,7 @@
         <h1>Rit gepland! 🎉</h1>
       </v-flex>
       <v-flex shrink>
-        Goed bezig, jouw rit wordt meegenomen in de zoekresultaten! Je krijgt
+        Dank je wel! Jouw rit wordt meegenomen in de zoekresultaten! Je krijgt
         automatisch bericht als er iemand met je mee wil.
       </v-flex>
       <v-flex shrink>

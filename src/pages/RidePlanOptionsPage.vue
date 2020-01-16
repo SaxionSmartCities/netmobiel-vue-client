@@ -1,5 +1,5 @@
 <template>
-  <v-container data-app>
+  <content-pane>
     <v-layout column>
       <v-flex>
         <h5 class="headline font-weight-medium">Riteigenschappen</h5>
@@ -15,7 +15,7 @@
             >
               <v-layout>
                 <v-flex xs7>
-                  <span class="form-label py-2">Passagiers</span>
+                  <span class="form-label py-2">Max. aantal passagiers</span>
                 </v-flex>
                 <v-flex text-right pr-2>
                   {{ numPassengers }}
@@ -117,14 +117,18 @@
         <v-btn large rounded block @click="save">Save</v-btn>
       </v-flex>
     </v-layout>
-  </v-container>
+  </content-pane>
 </template>
 
 <script>
+import ContentPane from '@/components/common/ContentPane.vue'
 import luggageTypes from '@/constants/luggage-types.js'
 
 export default {
   name: 'RidePreferences',
+  components: {
+    ContentPane,
+  },
   data: function() {
     return {
       maxNrOfPersons: 4,

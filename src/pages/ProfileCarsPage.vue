@@ -105,7 +105,7 @@ export default {
         ...profile,
         ridePlanOptions: { ...profile.ridePlanOptions, selectedCarId: car.id },
       })
-      this.$router.push('/plan')
+      this.$router.go(-1) // navigate back in history and restore models from history state
     },
     removeCar(car) {
       // Remove car from user profile in the backend.

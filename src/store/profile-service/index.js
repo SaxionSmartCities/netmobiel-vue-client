@@ -36,6 +36,7 @@ export default {
           selectedCarId: -1,
           cars: [],
         },
+        favoriteLocations: [],
       },
       privacySecurity: [
         { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
