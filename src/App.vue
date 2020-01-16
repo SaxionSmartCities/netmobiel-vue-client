@@ -14,6 +14,7 @@
         v-if="isNotificationBarVisible"
         v-model="isNotificationBarVisible"
         :timeout="0"
+        :color="notificationColor"
         bottom
         absolute
       >
@@ -26,7 +27,7 @@
           class="notification-close-button"
           @click="finishNotification"
         >
-          Close
+          Sluiten
         </v-btn>
       </v-snackbar>
     </v-content>
@@ -88,6 +89,10 @@ export default {
     },
     notificationQueue: function() {
       return this.$store.getters['ui/getNotificationQueue']
+    },
+    notificationColor: function() {
+      const queue = this.notificationQueue
+      return queue.length && !queue[0].timeout ? 'error' : 'inform'
     },
     isNotificationBarVisible: function() {
       return this.$store.getters['ui/isNotificationBarVisible']
