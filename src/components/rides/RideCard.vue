@@ -97,4 +97,8 @@ export default {
 .departure-time::first-letter {
   text-transform: uppercase;
 }
+.travel-card {
+  border-radius: 10px;
+  border: 1px $color-light-grey solid;
+}
 </style>

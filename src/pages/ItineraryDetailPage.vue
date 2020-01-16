@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <content-pane>
     <v-layout py-2 column>
       <v-flex mb-3>
         <h3>Reisdetails</h3>
@@ -31,16 +31,17 @@
         </v-btn>
       </v-flex>
     </v-layout>
-  </v-container>
+  </content-pane>
 </template>
 
 <script>
+import ContentPane from '@/components/common/ContentPane.vue'
 import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 
 export default {
   name: 'ItineraryDetailPage',
-  components: { ItinerarySummary, ItineraryLeg },
+  components: { ContentPane, ItinerarySummary, ItineraryLeg },
   computed: {
     selectedTrip: function() {
       return this.$store.getters['is/getSelectedTrip']

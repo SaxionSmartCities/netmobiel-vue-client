@@ -1,23 +1,22 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col>
-        <v-text-field
-          v-model="searchInput"
-          autofocus
-          clearable
-          outlined
-          placeholder="Zoek..."
-          prepend-inner-icon="search"
-          outline
-          single-line
-          hide-details
-          @click:clear="clearSearchInput"
-        >
-        </v-text-field>
-      </v-col>
-    </v-row>
-    <v-row v-if="showSuggestionsList">
+  <content-pane>
+    <template v-slot:header>
+      <v-text-field
+        v-model="searchInput"
+        autofocus
+        clearable
+        outlined
+        placeholder="Zoek..."
+        prepend-inner-icon="search"
+        outline
+        single-line
+        hide-details
+        @click:clear="clearSearchInput"
+      >
+      </v-text-field>
+    </template>
+
+    <v-row v-if="showSuggestionsList" class="align-self-start">
       <locations-list
         :locations="suggestions"
         show-highlighted-text
@@ -26,7 +25,7 @@
         @onUnFavoriteClicked="removeFavorite"
       />
     </v-row>
-    <v-row v-if="favorites.length > 0" dense>
+    <v-row v-if="favorites.length > 0" class="align-self-start" dense>
       <v-col>
         <v-row>
           <v-col>
@@ -49,10 +48,11 @@
       :location="selectedLocation"
       @onAddFavorite="addFavorite"
     />
-  </v-container>
+  </content-pane>
 </template>
 
 <script>
+import ContentPane from '@/components/common/ContentPane.vue'
 import LocationsList from '@/components/search/LocationsList.vue'
 import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
 
@@ -65,6 +65,7 @@ const maxSuggestions = 8
 export default {
   name: 'SearchLocationPage',
   components: {
+    ContentPane,
     LocationsList,
     AddFavoriteDialog,
   },
