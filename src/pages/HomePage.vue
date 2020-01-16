@@ -4,10 +4,12 @@
       <v-flex>
         <v-layout row pb-3>
           <v-flex>
-            <v-img
-              class="profileimage"
-              :src="require('@/assets/profile_img.png')"
-            />
+            <router-link to="/onboardingPage">
+              <v-img
+                class="profileimage"
+                :src="require('@/assets/profile_img.png')"
+              />
+            </router-link>
           </v-flex>
           <v-flex text-xs-right>
             <v-layout fill-height justify-end column>
