@@ -13,7 +13,10 @@
                   <from-to-fields />
                 </v-flex>
                 <v-flex>
-                  <date-time-selector v-model="journeyMoment" />
+                  <date-time-selector
+                    v-model="journeyMoment"
+                    :allowed-dates="allowedDates"
+                  />
                 </v-flex>
                 <v-flex>
                   <recurrence-editor
@@ -81,6 +84,8 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
+import moment from 'moment'
+
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
 import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
@@ -120,7 +125,12 @@ export default {
   methods: {
     disabledRideAddition() {
       const { from, to } = this.$store.getters['gs/getPickedLocation']
-      return !from.title || !to.title || !this.journeyMoment
+      return (
+        !from.title ||
+        !to.title ||
+        !this.journeyMoment ||
+        this.journeyMoment.when < moment().add(1, 'hour')
+      )
     },
     toRidePlanOptions() {
       this.$router.push('/planOptions')
@@ -135,6 +145,9 @@ export default {
         selectedTime: this.journeyMoment.when,
       })
       this.$router.push('/planSubmitted')
+    },
+    allowedDates(v) {
+      return moment(v) >= moment().startOf('day')
     },
   },
 }

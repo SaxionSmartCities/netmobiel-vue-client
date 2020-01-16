@@ -62,7 +62,7 @@
 export default {
   name: 'ModeSelectionPage',
   mounted: function() {
-    this.$store.commit('ui/setSelectedNav', 'commute')
+    this.$store.commit('ui/setSelectedNav', 'planner')
     this.$store.commit('ui/addAppClass', 'modeSelectPage')
   },
 }

@@ -116,9 +116,10 @@ const router = new Router({
       name: 'tripsOverviewPage',
     },
     {
-      path: '/rideDetailPage',
+      path: '/rideDetailPage/:id',
       component: RideDetailPage,
       name: 'rideDetailPage',
+      props: true,
     },
     {
       path: '/howTo',
