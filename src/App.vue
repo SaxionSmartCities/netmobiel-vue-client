@@ -1,11 +1,11 @@
 <template>
   <v-app id="app">
     <v-app-bar v-if="isHeaderVisible" flat app color="primary">
-      <v-layout header fill-height align-center>
-        <v-flex v-if="isBackButtonVisible" xs1 text-xs-center @click="goBack()">
-          <v-icon id="backButton">arrow_back</v-icon>
-        </v-flex>
-      </v-layout>
+      <v-btn v-if="isBackButtonVisible" icon @click="goBack()">
+        <v-icon color="white">arrow_back</v-icon>
+      </v-btn>
+      <v-spacer></v-spacer>
+      <span class="version">{{ commithash }}</span>
     </v-app-bar>
 
     <v-content>
@@ -63,11 +63,13 @@
 
 <script>
 import constants from '@/constants/update-messages.js'
+import hash from 'raw-loader!@/assets/current.hash'
 
 export default {
   name: 'App',
   data: () => ({
     offsetTop: 0,
+    commithash: hash,
   }),
   computed: {
     appClasses: function() {
@@ -173,6 +175,12 @@ export default {
 </script>
 
 <style lang="scss">
+.version {
+  font-style: italic;
+  font-size: 0.6em;
+  color: $color-white;
+}
+
 .v-content {
   height: 100vh;
   overflow: hidden;
@@ -201,15 +209,11 @@ export default {
   background: transparent;
 }
 
-.header {
+header {
   background-image: url('./assets/logo_header.png');
   background-size: 120px;
   background-repeat: no-repeat;
   background-position: center center;
-}
-
-#backButton {
-  color: $color-white;
 }
 
 .v-application .text-light-grey {
