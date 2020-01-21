@@ -40,6 +40,7 @@ build site acceptance:
   only:
     - dev
   script:
+    - apk update && apk add git
     - hash=`git describe --always`
     - echo "\"$hash\"" > src/assets/current.hash
     - npm run build
