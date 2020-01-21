@@ -18,13 +18,13 @@
         </v-flex>
         <v-flex xs1>
           <v-layout
-            v-if="leg.mode !== 'FINISH' && leg.mode !== 'ARRIVAL'"
+            v-if="travelMode !== 'FINISH' && travelMode !== 'ARRIVAL'"
             justify-center
             fill-height
           >
             <v-flex shrink>
               <div
-                v-if="leg.mode === 'WAIT'"
+                v-if="travelMode === 'WAIT'"
                 class="borderstopped borderwidth"
               />
               <div v-else class="border borderwidth" />
@@ -54,23 +54,28 @@ export default {
     },
   },
   computed: {
+    travelMode() {
+      //HACK: planner returns traverseMode except for FINISH leg :(
+      return this.leg.traverseMode || this.leg.mode
+    },
     icon: function() {
-      if (travelModes[this.leg.mode] == undefined) {
-        return travelModesSurrogates[this.leg.mode].icon
+      let mode = this.travelMode
+      if (travelModes[mode] == undefined) {
+        return travelModesSurrogates[mode].icon
       } else {
-        return travelModes[this.leg.mode].icon
+        return travelModes[mode].icon
       }
     },
     time: function() {
-      return moment(parseInt(this.leg.startTime))
+      return moment(this.leg.startTime)
         .locale('nl')
         .format('LT')
     },
     header() {
-      return delegation(this, this.leg.mode, headers)
+      return delegation(this, this.travelMode, headers)
     },
     description() {
-      return delegation(this, this.leg.mode, descriptions)
+      return delegation(this, this.travelMode, descriptions)
     },
   },
 }
@@ -84,7 +89,7 @@ const headers = {
   },
   NETMOBIEL: 'Meerijden met een NETMOBIEL gebruiker',
   RAIL() {
-    return `${this.leg.routeShortName} naar ${this.leg.to.name}`
+    return `${this.leg.routeShortName} naar ${this.leg.to.label}`
   },
   BUS() {
     return `Reizen met bus ${this.leg.routeShortName}`
@@ -98,34 +103,20 @@ const headers = {
     return this.leg.from.name
   },
   SUBWAY() {
-    return `${this.leg.routeShortName} naar ${this.leg.to.name}`
+    return `${this.leg.routeShortName} naar ${this.leg.to.label}`
   },
   default: 'HEADER NOT DEFINED FOR THIS LEG MODE!',
 }
 const descriptions = {
   WALK() {
-    // use first and last step with proper street name
-    const validDepartureStep = this.leg.steps.find(step => !step.bogusName)
-    const departureName =
-      validDepartureStep !== undefined
-        ? validDepartureStep.streetName
-        : 'onbekend'
-
-    const validArrivalStep = this.leg.steps
-      .slice(0)
-      .reverse()
-      .find(step => !step.bogusName)
-    const arrivalName =
-      validArrivalStep !== undefined ? validArrivalStep.streetName : 'onbekend'
-
-    return `${departureName} - ${arrivalName}`
+    return `${this.leg.from.label} - ${this.leg.to.label}`
   },
   CAR: '',
   NETMOBIEL: 'Meerijden met een NETMOBIEL gebruiker',
   RAIL() {
     // add platform to departure and arrival
-    return `${this.leg.from.name} perron ${this.leg.from.platformCode} - ${
-      this.leg.to.name
+    return `${this.leg.from.label} perron ${this.leg.from.platformCode} - ${
+      this.leg.to.label
     } perron ${this.leg.to.platformCode}`
   },
   BUS() {

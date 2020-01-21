@@ -25,7 +25,7 @@
             class="mt-2"
             :from="OVPlanningResults.from"
             :to="OVPlanningResults.to"
-            :date="parseInt(OVPlanningResults.date)"
+            :date="date"
             :journey="itinerary"
           >
           </travel-card>
@@ -94,8 +94,7 @@ export default {
       return this.planningResults.rides
     },
     date() {
-      return moment(this.OVPlanningResults.date).format('DD-MM-YYYY')
-      // return 'INVALID'
+      return moment(this.OVPlanningResults.arrivalTime)
     },
   },
   created: function() {
