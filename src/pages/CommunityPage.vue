@@ -1,21 +1,31 @@
 <template>
-  <content-pane>
+  <content-pane :clearpadding="true">
     <template v-slot:header>
-      <v-row dense>
-        <v-col>
-          <h1>Berichten</h1>
-        </v-col>
-      </v-row>
+      <v-tabs
+        id="tabs"
+        v-model="selectedTab"
+        grow
+        centered
+        slider-color="#bddade"
+      >
+        <v-tab class="white--text no-caps saved">
+          <span>Recent</span>
+        </v-tab>
+        <v-tab class="white--text no-caps saved">
+          <span>Archief</span>
+        </v-tab>
+      </v-tabs>
     </template>
-    <v-list three-line avatar>
-      <template v-for="(conversation, index) in conversations">
-        <v-divider v-if="index > 0" :key="conversation.id + '-divider'" />
+    <v-list three-line avatar class="pt-0">
+      <template v-for="conversation in conversations">
+        <v-divider :key="conversation.id + '-divider'" />
         <v-list-item
           :key="conversation.id"
+          class="px-0"
           @click="showConversation(conversation)"
         >
-          <v-list-item-avatar>
-            <v-img :src="require('@/assets/profile_img.png')"></v-img>
+          <v-list-item-avatar size="60">
+            <v-img :src="getUserData().image" />
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>
@@ -40,19 +50,16 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-// import RoundBadge from '@/components/common/RoundBadge.vue'
 
-// import ConversationListItem from '@/components/community/ConversationListItem.vue'
 import moment from 'moment'
 
 export default {
   components: {
     ContentPane,
-    // RoundBadge,
-    // ConversationListItem,
   },
-  data: function() {
+  data() {
     return {
+      selectedTab: 0,
       conversations: [
         {
           id: 1,
@@ -201,10 +208,12 @@ export default {
   },
   methods: {
     showConversation(conversation) {
-      console.log('click', conversation)
       this.$router.push({
         path: `/conversation/${conversation.id}`,
       })
+    },
+    getUserData() {
+      return this.$store.getters['ps/getUser']
     },
   },
 }
