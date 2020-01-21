@@ -40,6 +40,8 @@ build site acceptance:
   only:
     - dev
   script:
+    - hash=`git describe --always`
+    - echo "\"$hash\"" > src/assets/current.hash
     - npm run build
   artifacts:
     expire_in: 1 week
