@@ -3,10 +3,10 @@
     elevation="0"
     :class="{ mymessage: isMessageSendByMe, message: !isMessageSendByMe }"
   >
-    <v-card-title>
+    <v-card-title class="pa-2">
       {{ message.content }}
     </v-card-title>
-    <v-card-subtitle class="text-right">
+    <v-card-subtitle class="text-right px-2 py-1">
       {{ timeStamp }}
     </v-card-subtitle>
   </v-card>
@@ -38,13 +38,16 @@ export default {
 
 <style lang="scss">
 .mymessage {
-  background-color: #dae9eb !important;
-
+  background-color: rgb(225, 237, 239) !important;
   margin-left: 50px;
+  color: $color-dark-grey !important;
+  border: 1px solid rgba(46, 137, 151, 0.2) !important;
 }
 
 .message {
-  background-color: $color-white-grey !important;
+  background-color: rgb(245, 245, 245) !important;
   margin-right: 50px;
+  color: $color-dark-grey !important;
+  border: 1px solid rgba(74, 74, 74, 0.2) !important;
 }
 </style>
