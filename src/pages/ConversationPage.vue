@@ -1,24 +1,23 @@
 <template>
-  <content-pane>
+  <content-pane :clearpadding="true">
     <template v-slot:header>
-      <v-row dense>
-        <v-col cols="3">
-          <v-img
-            class="profileimage"
-            :src="require('@/assets/profile_img.png')"
-          />
-        </v-col>
-        <v-col align-self="center">
-          <h2>Henk van der Laan</h2>
-        </v-col>
-      </v-row>
-      <v-divider />
+      <v-container class="py-1">
+        <v-row dense>
+          <v-col cols="3">
+            <v-img class="profileimage" :src="getUserData().image" />
+          </v-col>
+          <v-col align-self="center">
+            <h2>Henk van der Laan</h2>
+          </v-col>
+        </v-row>
+        <v-divider class="mt-1" />
+      </v-container>
     </template>
     <v-row dense>
       <v-col>
         <template v-for="(message, index) in messages">
           <v-row :key="index">
-            <v-col>
+            <v-col class="py-1">
               <message-card :message="message" />
             </v-col>
           </v-row>
@@ -27,17 +26,17 @@
     </v-row>
     <template v-slot:footer>
       <v-row dense class="px-4 pb-1">
-        <v-col>
+        <v-col class="pl-0">
           <v-text-field
             clearable
             outlined
             hide-details
             dense
-            label="Stuur een bericht naar Henk van der Laan"
+            label="Typ een bericht"
           ></v-text-field>
         </v-col>
         <v-col cols="1" align-self="center">
-          <v-icon>send</v-icon>
+          <v-icon class="send-icon">send</v-icon>
         </v-col>
       </v-row>
     </template>
@@ -81,7 +80,7 @@ export default {
           timeStamp: moment(),
         },
         {
-          content: 'Henk??? HENK!!!! NEEEEEEEE',
+          content: 'Henk??? HENK!!!! NEEEEEEE',
           sender: 'You',
           timeStamp: moment(),
         },
@@ -96,7 +95,12 @@ export default {
   mounted: function() {
     this.$store.commit('ui/showBackButton')
   },
+  methods: {
+    getUserData() {
+      return this.$store.getters['ps/getUser']
+    },
+  },
 }
 </script>
 
-<style></style>
+<style lang="scss"></style>
