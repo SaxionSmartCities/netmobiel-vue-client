@@ -186,3 +186,7 @@ h3 {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.v-card {
+  border-radius: $border-radius !important;
+}
