@@ -87,7 +87,12 @@
 <script>
 export default {
   name: 'NewAccountCard',
-  props: ['value'],
+  props: {
+    value: {
+      type: Object,
+      default: () => undefined,
+    },
+  },
   data: function() {
     return {
       enableConsentCheck: false,

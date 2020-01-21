@@ -42,7 +42,7 @@ build site acceptance:
   script:
     - apk update && apk add git
     - hash=`git describe --always`
-    - echo "\"$hash\"" > src/assets/current.hash
+    - echo $hash > src/assets/current.hash
     - npm run build
   artifacts:
     expire_in: 1 week
@@ -62,7 +62,7 @@ deploy site acceptance:
     - mkdir -p ~/.ssh
     - echo "$NETMOBIEL_ACC_SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - rsync -a --delete -e "ssh -o StrictHostKeyChecking=no" dist/* gitlab@vps1323.directvps.nl:/var/www/netmobiel-view-client
+    - rsync -a --delete -e "ssh -o StrictHostKeyChecking=no" dist/* gitlab@acc.netmobiel.eu:/var/www/netmobiel-view-client
 
 build site production:
   stage: build
@@ -72,6 +72,9 @@ build site production:
   only:
     - master
   script:
+    - apk update && apk add git
+    - hash=`git describe --always`
+    - echo $hash > src/assets/current.hash
     - npm run build
   artifacts:
     expire_in: 1 week
@@ -92,4 +95,4 @@ deploy site production:
     - mkdir -p ~/.ssh
     - echo "$NETMOBIEL_SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - rsync -a --delete -e "ssh -o StrictHostKeyChecking=no" dist/* gitlab@vps283.directvps.nl:/var/www/netmobiel-view-client
+    - rsync -a --delete -e "ssh -o StrictHostKeyChecking=no" dist/* gitlab@app.netmobiel.eu:/var/www/netmobiel-view-client

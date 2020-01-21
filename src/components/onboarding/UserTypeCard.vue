@@ -36,7 +36,12 @@
 <script>
 export default {
   name: 'HomeTownCard',
-  props: ['value'],
+  props: {
+    value: {
+      type: Object,
+      default: () => undefined,
+    },
+  },
   data() {
     return {
       showSubmitButton: true,
