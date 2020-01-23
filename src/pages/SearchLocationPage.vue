@@ -37,6 +37,7 @@
         <v-row>
           <locations-list
             :locations="favorites"
+            :show-highlighted-text="false"
             @onItemClicked="completeSearch($event)"
             @onUnFavoriteClicked="removeFavorite"
           />
@@ -152,6 +153,7 @@ export default {
         let payload = {
           favoriteLocations: profile.favoriteLocations.slice(0),
         }
+
         payload.favoriteLocations.push(favorite)
         this.$store.dispatch('ps/storeFavoriteLocations', payload)
       }

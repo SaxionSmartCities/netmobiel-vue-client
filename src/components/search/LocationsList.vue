@@ -22,8 +22,14 @@
             </v-list-item-title>
             <v-list-item-subtitle>
               <div
+                v-if="showHighlightedText"
                 class="text-truncate"
                 v-html="stripBreakLines(location.highlightedVicinity)"
+              ></div>
+              <div
+                v-else
+                class="text-truncate"
+                v-html="stripBreakLines(location.vicinity)"
               ></div>
             </v-list-item-subtitle>
           </v-list-item-content>
@@ -52,7 +58,7 @@ export default {
   name: 'LocationsList',
   props: {
     locations: { type: Array, required: true },
-    showHighlightedText: { type: Boolean, default: false },
+    showHighlightedText: { type: Boolean, default: true },
   },
   data() {
     return {
