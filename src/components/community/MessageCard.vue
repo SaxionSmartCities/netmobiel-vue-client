@@ -30,9 +30,6 @@ export default {
       return this.message.sender === 'You'
     },
   },
-  mounted: function() {
-    console.log(this.message)
-  },
 }
 </script>
 
