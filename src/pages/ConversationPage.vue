@@ -4,10 +4,10 @@
       <v-container class="py-1">
         <v-row dense>
           <v-col cols="3">
-            <v-img class="profileimage" :src="getUserData().image" />
+            <v-img class="profileimage" :src="profile.image" />
           </v-col>
           <v-col align-self="center">
-            <h2>Henk van der Laan</h2>
+            <h2>{{ conversation.sender }}</h2>
           </v-col>
         </v-row>
         <v-divider class="mt-1" />
@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import MessageCard from '@/components/community/MessageCard.vue'
 
@@ -60,45 +59,20 @@ export default {
     },
   },
   computed: {
+    conversation: function() {
+      return this.$store.getters['ms/getConversations'].find(
+        conv => conv.id == this.id
+      )
+    },
     messages: function() {
-      return [
-        {
-          content: 'Hallo',
-          sender: 'Henk',
-          timeStamp: moment()
-            .subtract(1, 'day')
-            .add(2, 'hours'),
-        },
-        {
-          content: 'Hoi',
-          sender: 'You',
-          timeStamp: moment(),
-        },
-        {
-          content: 'ben je dr nog?',
-          sender: 'You',
-          timeStamp: moment(),
-        },
-        {
-          content: 'Henk??? HENK!!!! NEEEEEEE',
-          sender: 'You',
-          timeStamp: moment(),
-        },
-        {
-          content: 'Jaja ff rustig..',
-          sender: 'Henk',
-          timeStamp: moment(),
-        },
-      ]
+      return this.conversation.messages
+    },
+    profile() {
+      return this.$store.getters['ps/getUser']
     },
   },
   mounted: function() {
     this.$store.commit('ui/showBackButton')
-  },
-  methods: {
-    getUserData() {
-      return this.$store.getters['ps/getUser']
-    },
   },
 }
 </script>
