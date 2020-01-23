@@ -46,14 +46,18 @@
         U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
         plannen.
       </v-col>
-      <v-col v-for="(ride, index) in getPlannedRides" :key="index">
-        <ride-card
-          class="mt-2 mb-2"
-          :from="ride.fromPlace"
-          :to="ride.toPlace"
-          :date="parseDate(ride.departureTime)"
-          :ride="ride"
-        />
+      <v-col v-else>
+        <v-row v-for="(ride, index) in getPlannedRides" :key="index">
+          <v-col>
+            <ride-card
+              class="mt-2 mb-2"
+              :from="ride.fromPlace"
+              :to="ride.toPlace"
+              :date="parseDate(ride.departureTime)"
+              :ride="ride"
+            />
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </content-pane>
@@ -64,6 +68,8 @@ import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import TravelCard from '@/components/search-results/TravelCard.vue'
 import RideCard from '@/components/rides/RideCard.vue'
+
+import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 
 export default {
   name: 'TripsOverviewPage',
@@ -85,6 +91,12 @@ export default {
     this.$store.dispatch('is/fetchTrips')
     this.$store.dispatch('cs/fetchRides')
   },
+  beforeRouteEnter: beforeRouteEnter({
+    selectedTab: number => number,
+  }),
+  beforeRouteLeave: beforeRouteLeave({
+    selectedTab: number => number,
+  }),
   methods: {
     parseDate(dateString) {
       //HACK: Remove [UTC] from the date string for correct parseing.
