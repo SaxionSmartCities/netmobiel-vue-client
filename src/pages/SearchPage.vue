@@ -32,6 +32,7 @@
                         large
                         rounded
                         block
+                        depressed
                         color="button"
                         :disabled="disabledSubmit"
                         @click="submitForm()"

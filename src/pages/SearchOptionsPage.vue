@@ -2,7 +2,7 @@
   <content-pane>
     <v-layout column>
       <v-flex mb-3>
-        <h3>Reisvoorkeuren</h3>
+        <h1>Reisvoorkeuren</h1>
       </v-flex>
       <v-flex mb-3>
         <v-divider />
@@ -184,8 +184,8 @@
       </v-flex>
 
       <v-flex>
-        <v-btn large rounded depressed color="secondary" block @click="save"
-          >Save</v-btn
+        <v-btn large rounded depressed color="button" block @click="save"
+          >Voorkeuren opslaan</v-btn
         >
       </v-flex>
     </v-layout>

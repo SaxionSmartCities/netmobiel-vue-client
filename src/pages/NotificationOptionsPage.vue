@@ -2,7 +2,7 @@
   <v-container>
     <v-layout column>
       <v-flex mb-3>
-        <h3>{{ title }}</h3>
+        <h1>{{ title }}</h1>
       </v-flex>
       <v-flex mb-2>
         <v-divider />

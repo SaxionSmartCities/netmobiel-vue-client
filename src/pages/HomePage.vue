@@ -7,10 +7,10 @@
         </router-link>
       </v-col>
       <v-col>
-        <h2>
+        <h1>
           {{ timeOfDayGreeting }},
           {{ user.fullName }}
-        </h2>
+        </h1>
       </v-col>
     </v-row>
     <v-row>
@@ -32,7 +32,7 @@
       <v-col>
         <v-row>
           <v-col>
-            <h3 class="netmobiel">Updates ({{ updateMessages.length }})</h3>
+            <h4 class="netmobiel">Updates ({{ updateMessages.length }})</h4>
           </v-col>
         </v-row>
         <v-row>
@@ -44,7 +44,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <h3 class="netmobiel">Jouw activiteiten</h3>
+        <h4 class="netmobiel">Jouw activiteiten</h4>
       </v-col>
     </v-row>
     <v-row>
@@ -140,9 +140,8 @@ export default {
 </script>
 
 <style lang="scss">
-h3.netmobiel {
+h4.netmobiel {
   text-transform: uppercase;
   color: $color-primary;
-  font-size: 0.9em;
 }
 </style>
