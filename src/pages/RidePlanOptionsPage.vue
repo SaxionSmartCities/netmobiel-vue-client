@@ -1,11 +1,10 @@
 <template>
   <content-pane>
-    <v-layout column>
-      <v-flex>
-        <h5 class="headline font-weight-medium">Riteigenschappen</h5>
-      </v-flex>
-
-      <v-flex my-3>
+    <template v-slot:header>
+      <h5 class="headline font-weight-medium">Riteigenschappen</h5>
+    </template>
+    <v-row>
+      <v-col>
         <v-expansion-panels accordion>
           <v-expansion-panel>
             <v-expansion-panel-header
@@ -13,18 +12,18 @@
                 'disable-icon-rotate': maxNrOfPersons <= 1,
               }"
             >
-              <v-layout>
-                <v-flex xs7>
-                  <span class="form-label py-2">Max. aantal passagiers</span>
-                </v-flex>
-                <v-flex text-right pr-2>
+              <v-row dense>
+                <v-col>
+                  <span class="form-label">Max. aantal passagiers</span>
+                </v-col>
+                <v-col cols="1" class="text-right">
                   {{ numPassengers }}
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-layout>
-                <v-flex mt-3>
+              <v-row dense>
+                <v-col>
                   <v-slider
                     v-if="maxNrOfPersons > 1"
                     v-model="numPassengers"
@@ -37,63 +36,54 @@
                     :min="1"
                     :max="maxNrOfPersons"
                   />
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
             </v-expansion-panel-content>
           </v-expansion-panel>
           <v-expansion-panel>
             <v-expansion-panel-header>
-              <v-layout>
-                <v-flex xs10>
-                  <span class="form-label py-2">Bagage</span>
-                </v-flex>
-                <v-flex>
-                  <v-layout v-if="luggageSelected.length > 0" pr-3>
-                    <v-flex
-                      v-for="luggage in luggageSelected"
-                      :key="luggage.type"
-                    >
-                      <v-icon>{{ luggage.icon }}</v-icon>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-              </v-layout>
+              <v-row dense justify="space-between">
+                <v-col align-self="center">
+                  <span class="form-label">Bagage</span>
+                </v-col>
+                <v-col cols="7" class="text-right">
+                  <span v-for="luggage in luggageSelected" :key="luggage.type">
+                    <v-icon> {{ luggage.icon }}</v-icon>
+                  </span>
+                </v-col>
+              </v-row>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-layout pb-4>
-                <v-flex px-4>
-                  <v-layout row wrap>
-                    <v-flex
-                      v-for="luggage in luggageTypes"
-                      :key="luggage.type"
-                      xs6
-                    >
-                      <v-checkbox
-                        v-model="luggageSelected"
-                        hide-details
-                        :label="luggage.label"
-                        :value="luggage"
-                      ></v-checkbox>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-              </v-layout>
+              <v-row dense>
+                <v-col
+                  v-for="luggage in luggageTypes"
+                  :key="luggage.type"
+                  :cols="6"
+                >
+                  <v-checkbox
+                    v-model="luggageSelected"
+                    hide-details
+                    :label="luggage.label"
+                    :value="luggage"
+                  />
+                </v-col>
+              </v-row>
             </v-expansion-panel-content>
           </v-expansion-panel>
           <v-expansion-panel>
             <v-expansion-panel-header>
-              <v-layout>
-                <v-flex xs7>
+              <v-row dense>
+                <v-col>
                   <span class="form-label py-2">Maximale omrijtijd</span>
-                </v-flex>
-                <v-flex text-xs-right pr-2 text-right>
+                </v-col>
+                <v-col cols="3" class="text-right">
                   {{ maxMinutesDetour }} min
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-layout>
-                <v-flex mt-3>
+              <v-row dense>
+                <v-col>
                   <v-slider
                     v-model="maxMinutesDetour"
                     class="px-4"
@@ -106,17 +96,19 @@
                     max="20"
                     step="5"
                   />
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-      </v-flex>
+      </v-col>
+    </v-row>
 
-      <v-flex>
+    <v-row>
+      <v-col>
         <v-btn large rounded block @click="save">Save</v-btn>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 
@@ -142,6 +134,7 @@ export default {
   },
   computed: {
     luggageTypes: function() {
+      console.log('luggageTypes', luggageTypes)
       return luggageTypes
     },
     generatePersonRange: function() {
