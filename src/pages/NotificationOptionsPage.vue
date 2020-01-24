@@ -10,7 +10,7 @@
     </v-layout>
     <v-layout pt-3>
       <v-flex>
-        <h2 class="text-primary-uppercase">Reizen</h2>
+        <h3 class="text-primary-uppercase">Reizen</h3>
       </v-flex>
     </v-layout>
     <v-layout column>
@@ -44,7 +44,7 @@
     </v-layout>
     <v-layout pt-3>
       <v-flex>
-        <h2 class="text-primary-uppercase">Notificaties</h2>
+        <h3 class="text-primary-uppercase">Notificaties</h3>
       </v-flex>
     </v-layout>
     <v-layout column>
