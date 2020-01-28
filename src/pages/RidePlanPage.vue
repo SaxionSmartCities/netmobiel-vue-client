@@ -67,6 +67,7 @@
               <v-layout mt-2 justify-center>
                 <v-flex
                   shrink
+                  body-2
                   transition="slide-x-transition"
                   @click="toRidePlanOptions()"
                 >

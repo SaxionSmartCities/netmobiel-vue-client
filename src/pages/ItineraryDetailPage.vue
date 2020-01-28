@@ -2,7 +2,7 @@
   <content-pane>
     <v-layout py-2 column>
       <v-flex mb-3>
-        <h3>Reisdetails</h3>
+        <h1>Reisdetails</h1>
       </v-flex>
       <v-flex>
         <v-divider />
@@ -26,7 +26,15 @@
         </v-layout>
       </v-flex>
       <v-flex my-4>
-        <v-btn large rounded block mb-4 @click="saveTrip">
+        <v-btn
+          large
+          rounded
+          block
+          mb-4
+          depressed
+          color="button"
+          @click="saveTrip"
+        >
           Deze reis bevestigen
         </v-btn>
       </v-flex>
