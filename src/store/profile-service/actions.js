@@ -34,6 +34,11 @@ export default {
         console.log(error)
       })
   },
+  storeFavoriteLocations: (context, payload) => {
+    let profile = { ...context.state.user.profile }
+    profile.favoriteLocations = payload.favoriteLocations
+    context.dispatch('updateProfile', profile)
+  },
   storeSearchPreferences: (context, payload) => {
     // Convert payload to a profile object.
     let profile = { ...context.state.user.profile }

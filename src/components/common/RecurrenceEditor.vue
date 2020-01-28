@@ -8,32 +8,39 @@
       placeholder="Aangepaste herhaling"
     />
     <v-dialog v-model="showCustom" persistent>
-      <v-card class="pattern-editor">
+      <v-card class="px-5">
         <v-card-title>Aangepaste herhaling</v-card-title>
-        <v-layout row align-center>
+        <v-divider class="mb-3"></v-divider>
+        <v-layout row align-center ml-0>
           <v-flex xs3>
-            <span>Herhaal</span>
+            <span>Herhaal:</span>
           </v-flex>
-          <v-flex xs9>
+        </v-layout>
+        <v-layout row align-center ml-0>
+          <v-flex xs9 pl-7 py-2>
             <v-radio-group v-model="weeks" hide-details class="ma-0 pa-0">
-              <v-radio label="wekelijks" value="ONE_WEEK" />
-              <v-radio label="om de 2 weken" value="TWO_WEEKS" />
+              <v-radio label="Wekelijks" value="ONE_WEEK" />
+              <v-radio label="Om de 2 weken" value="TWO_WEEKS" />
             </v-radio-group>
           </v-flex>
         </v-layout>
-        <v-layout row align-center>
+        <v-layout row align-center ml-0>
           <v-flex xs3>
-            <span>Op</span>
+            <span>Op:</span>
           </v-flex>
-          <v-flex xs9>
+        </v-layout>
+        <v-layout row align-center ml-0>
+          <v-flex xs9 pl-7>
             <week-pattern-editor v-model="weekpattern" />
           </v-flex>
         </v-layout>
-        <v-layout row align-center>
+        <v-layout row align-center ml-0>
           <v-flex xs3>
-            <span>Tot</span>
+            <span>Tot:</span>
           </v-flex>
-          <v-flex xs9>
+        </v-layout>
+        <v-layout row align-center ml-0>
+          <v-flex xs9 pl-7>
             <v-menu
               v-model="showHorizonPicker"
               :close-on-content-click="false"
@@ -43,15 +50,20 @@
                 <v-text-field
                   v-model="horizon"
                   prepend-icon="event"
+                  class="pt-0"
                   readonly
                   clearable
-                  placeholder="Einde der tijden"
+                  placeholder="Geen einddatum"
                   v-on="on"
+                  @click:clear="pickedHorizon = ''"
                 ></v-text-field>
               </template>
               <v-date-picker
-                v-model="horizon"
-                @input="showHorizonPicker = false"
+                v-if="showHorizonPicker"
+                v-model="pickedHorizon"
+                locale="nl-NL"
+                scrollable
+                @input="selectHorizon"
               />
             </v-menu>
           </v-flex>
@@ -77,6 +89,7 @@
 
 <script>
 import WeekPatternEditor from './WeekPatternEditor.vue'
+import { formatDateInputFromPicker } from '@/utils/datetime.js'
 
 // weekdays according to JavaScript Date class (which differs from recurrence weekpattern that starts at Monday)
 const weekdays = [
@@ -105,15 +118,45 @@ function computeRepetitions(origin) {
       value: 'WORKDAILY',
     },
     {
-      text:
-        'Elke week op ' + (origin ? weekdays[new Date(origin).getDay()] : ''),
+      text: 'Elke week op ' + (origin ? weekdays[origin.day()] : ''),
       value: 'WEEKLY',
     },
     {
-      text: 'Aanpassen...',
+      text: 'Anders...',
       value: 'CUSTOM',
     },
   ]
+}
+
+// convert model and origin to component state
+function computeState(model, origin) {
+  const { interval, unit, daysOfWeekMask, horizon } = model || {}
+  // empty model?
+  if (!unit) {
+    return { selectedRepetition: 'ONCE' }
+  }
+  // only daily repetition uses DAY unit
+  if (unit === 'DAY') {
+    return { selectedRepetition: 'DAILY' }
+  }
+  // if horizon is unspecified and repetition follows weekly pattern
+  if (!horizon && interval === 1) {
+    // repeat weekly for every workday
+    if (daysOfWeekMask === 31) {
+      return { selectedRepetition: 'WORKDAILY' }
+    }
+    // repeat weekly for weekday of specified origin
+    if (daysOfWeekMask === 1 << (6 + new Date(origin).getDay()) % 7) {
+      return { selectedRepetition: 'WEEKLY' }
+    }
+  }
+  // custom repetition
+  return {
+    selectedRepetition: undefined,
+    weekpattern: daysOfWeekMask,
+    weeks: interval === 2 ? 'TWO_WEEKS' : 'ONE_WEEK',
+    horizon: horizon,
+  }
 }
 
 export default {
@@ -127,8 +170,9 @@ export default {
       default: false,
     },
     origin: {
-      type: String,
-      default: '',
+      // Moment instance
+      type: Object,
+      default: () => undefined,
     },
     value: {
       type: Object,
@@ -137,14 +181,15 @@ export default {
   },
   data() {
     return {
-      selectedRepetition: 'ONCE',
-      repetitions: computeRepetitions(this.origin),
-      weekpattern: 0,
-      weeks: 'ONE_WEEK',
-      horizon: '',
       showCustom: false,
       showHorizonPicker: false,
       previousRepetition: 'ONCE',
+      repetitions: computeRepetitions(this.origin),
+      weekpattern: 0,
+      weeks: 'ONE_WEEK',
+      pickedHorizon: '',
+      horizon: '',
+      ...computeState(this.value, this.origin),
     }
   },
   watch: {
@@ -188,11 +233,18 @@ export default {
         this.emitWeekly()
       }
     },
+    value: 'initialize',
+  },
+  mounted() {
+    this.initialize()
   },
   methods: {
+    initialize() {
+      Object.assign(this, computeState(this.value, this.origin))
+    },
     emitWeekly() {
-      // convert from JavaScript convention (i.e. sunday = 0) to ISO8601 convention (i.e. monday = 0)
-      const index = (6 + new Date(this.origin).getDay()) % 7
+      // convert from Moment API convention (i.e. sunday = 0) to ISO8601 convention (i.e. monday = 0)
+      const index = (6 + this.origin.day()) % 7
       this.weeks = 'ONE_WEEK'
       this.weekpattern = 1 << index
       this.horizon = ''
@@ -201,6 +253,10 @@ export default {
         interval: 1,
         unit: 'WEEK',
       })
+    },
+    selectHorizon() {
+      this.showHorizonPicker = false
+      this.horizon = formatDateInputFromPicker(this.pickedHorizon)
     },
     cancelPatternEditor() {
       this.showCustom = false

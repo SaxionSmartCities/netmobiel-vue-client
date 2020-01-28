@@ -4,6 +4,10 @@
     <v-card-text class="py-0">
       <v-row no-gutters>
         <v-col>
+          <p>
+            Laat weten wie je bent, zodat reizigers of chauffeurs vertrouwen in
+            jou krijgen.
+          </p>
           <span class="text-uppercase text-color-primary ">
             Wat zijn je interesses?
           </span>

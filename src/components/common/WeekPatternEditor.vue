@@ -1,11 +1,12 @@
 <template>
-  <div>
+  <div id="week-pattern-editor">
     <v-checkbox
       v-for="(day, index) of weekdays"
       :key="index"
       v-model="selections[index]"
       :label="day"
       hide-details
+      class="mt-0 mb-2"
       @change="$emit('input', toggle(index))"
     />
   </div>

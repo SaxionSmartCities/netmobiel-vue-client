@@ -1,5 +1,5 @@
 <template>
-  <v-container data-app>
+  <content-pane>
     <v-layout column>
       <v-flex mb-3>
         <h3>Reisvoorkeuren</h3>
@@ -189,15 +189,19 @@
         >
       </v-flex>
     </v-layout>
-  </v-container>
+  </content-pane>
 </template>
 
 <script>
+import ContentPane from '@/components/common/ContentPane.vue'
 import travelModes from '@/constants/travel-modes.js'
 import luggageTypes from '@/constants/luggage-types.js'
 
 export default {
   name: 'SearchOptions',
+  components: {
+    ContentPane,
+  },
   data: function() {
     return {
       maxNrOfPersons: 4,
