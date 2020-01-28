@@ -8,11 +8,11 @@
               <v-expansion-panel-header>
                 <v-row dense>
                   <v-col>
-                    <span class="form-label py-2">Personen</span>
+                    <span>Personen</span>
                   </v-col>
                 </v-row>
                 <v-row dense>
-                  <v-col>
+                  <v-col class="text-end pr-5">
                     {{ value.numPassengers }}
                   </v-col>
                 </v-row>
@@ -35,32 +35,7 @@
                 </v-row>
               </v-expansion-panel-content>
             </v-expansion-panel>
-            <v-expansion-panel>
-              <v-expansion-panel-header>
-                <v-row dense>
-                  <v-col>
-                    <span class="form-label py-2">Bagage</span>
-                  </v-col>
-                </v-row>
-                <v-row dense>
-                  <v-col v-for="luggage in luggageSelected" :key="luggage.type">
-                    <v-icon>{{ luggage.icon }}</v-icon>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <v-row dense>
-                  <v-col v-for="luggage in luggageTypes" :key="luggage.type">
-                    <v-checkbox
-                      v-model="luggageSelected"
-                      hide-details
-                      :label="luggage.label"
-                      :value="luggage"
-                    ></v-checkbox>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+            <search-options-icon-expansion-panel v-model="luggage" />
             <v-expansion-panel>
               <v-expansion-panel-header>
                 <v-row dense>
@@ -69,11 +44,9 @@
                   </v-col>
                 </v-row>
                 <v-row dense>
-                  <v-col v-if="value.allowTransfer">
-                    <v-icon>check</v-icon>
-                  </v-col>
-                  <v-col v-else>
-                    <v-icon color="red">close</v-icon>
+                  <v-col class="text-end pr-3">
+                    <v-icon v-if="value.allowTransfer">check</v-icon>
+                    <v-icon v-else color="red">close</v-icon>
                   </v-col>
                 </v-row>
               </v-expansion-panel-header>
@@ -104,38 +77,7 @@
                 </v-row>
               </v-expansion-panel-content>
             </v-expansion-panel>
-            <v-expansion-panel>
-              <v-expansion-panel-header>
-                <v-row dense>
-                  <v-col>
-                    <span class="form-label py-2">Toestaan</span>
-                  </v-col>
-                </v-row>
-                <v-row dense>
-                  <v-col
-                    v-for="travelMode in allowedTravelModes"
-                    :key="travelMode.mode"
-                  >
-                    <v-icon>{{ travelMode.icon }}</v-icon>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <v-row dense>
-                  <v-col
-                    v-for="travelMode in travelModes"
-                    :key="travelMode.mode"
-                  >
-                    <v-checkbox
-                      v-model="allowedTravelModes"
-                      hide-details
-                      :label="travelMode.label"
-                      :value="travelMode"
-                    ></v-checkbox>
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+            <search-options-icon-expansion-panel v-model="travel" />
             <v-expansion-panel>
               <v-expansion-panel-header>
                 <v-row dense>
@@ -144,7 +86,9 @@
                   </v-col>
                 </v-row>
                 <v-row dense>
-                  <v-col>{{ value.maximumTransferTime }} min</v-col>
+                  <v-col class="text-end pr-3">
+                    {{ value.maximumTransferTime }} meter
+                  </v-col>
                 </v-row>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -187,11 +131,15 @@
 </template>
 
 <script>
+import SearchOptionsIconExpansionPanel from './SearchOptionsIconExpansionPanel.vue'
 import travelModes from '@/constants/travel-modes.js'
 import luggageTypes from '@/constants/luggage-types.js'
 
 export default {
   name: 'SearchOptions',
+  components: {
+    SearchOptionsIconExpansionPanel,
+  },
   props: {
     value: {
       type: Object,
@@ -211,6 +159,32 @@ export default {
         result.push(i)
       }
       return result
+    },
+    travel: {
+      get() {
+        return {
+          title: 'Toestaan',
+          options: travelModes,
+          selected: this.value.allowedTravelModes
+            .map(mode => travelModes[mode])
+            .filter(x => !!x), // Filter out the undefined travel modes.
+        }
+      },
+      set(selection) {
+        console.log(selection)
+      },
+    },
+    luggage: {
+      get() {
+        return {
+          title: 'Bagage',
+          options: luggageTypes,
+          selected: this.value.luggageOptions.map(o => luggageTypes[o]),
+        }
+      },
+      set(selection) {
+        console.log(selection)
+      },
     },
     luggageSelected: {
       get() {
@@ -248,11 +222,8 @@ export default {
 </script>
 
 <style lang="scss">
-// .v-expansion-panel {
-//   box-shadow: none;
-// }
-//
-// .menu-item {
-//   height: 25px;
-// }
+.v-expansion-panel-header {
+  padding: 10px 0;
+  box-shadow: none;
+}
 </style>
