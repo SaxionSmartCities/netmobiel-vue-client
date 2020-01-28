@@ -1,43 +1,50 @@
 <template>
-  <content-pane>
-    <v-layout justify-center align-center>
-      <v-flex xs11 sm9 md6>
-        <v-layout column shrink>
-          <v-flex class="box-widget background-white">
+  <content-pane class="background-primary">
+    <v-row class="full-height justify-center align-center">
+      <v-col cols="11">
+        <v-row>
+          <v-col class="box-widget background-white">
             <v-form>
-              <v-layout column>
-                <v-flex text-xs-center>
+              <v-row dense>
+                <v-col>
                   <h1>Waar rijd je heen?</h1>
-                </v-flex>
-                <v-flex>
+                </v-col>
+              </v-row>
+              <v-row dense>
+                <v-col>
                   <from-to-fields />
-                </v-flex>
-                <v-flex>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
                   <date-time-selector
                     v-model="journeyMoment"
                     :allowed-dates="allowedDates"
                   />
-                </v-flex>
-                <v-flex>
+                </v-col>
+              </v-row>
+              <v-row dense>
+                <v-col>
                   <recurrence-editor
                     v-model="recurrence"
                     :origin="journeyMoment ? journeyMoment.when : null"
                   />
-                </v-flex>
-                <v-flex>
-                  <v-layout mt-1 row>
-                    <v-flex pl-2 shrink>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-row dense>
+                    <v-col cols="3">
                       <span class="form-label font-weight-bold">
                         Auto
                       </span>
-                      <!-- <v-icon>emoji_transportation</v-icon> -->
-                    </v-flex>
-                    <v-flex v-if="!selectedCar">
+                    </v-col>
+                    <v-col v-if="!selectedCar">
                       <router-link to="profileCars">
                         <span>Invoeren</span>
                       </router-link>
-                    </v-flex>
-                    <v-flex v-else>
+                    </v-col>
+                    <v-col v-else>
                       <router-link to="profileCars">
                         <span> {{ selectedCar.licensePlate }}</span>
                       </router-link>
@@ -45,13 +52,12 @@
                         {{ selectedCar.brand }}
                         {{ selectedCar.model }}
                       </div>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-              </v-layout>
-
-              <v-layout mt-2 justify-center text-xs-center>
-                <v-flex>
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-row>
+              <v-row dense>
+                <v-col>
                   <v-btn
                     large
                     rounded
@@ -62,24 +68,23 @@
                   >
                     Rit aanbieden
                   </v-btn>
-                </v-flex>
-              </v-layout>
-              <v-layout mt-2 justify-center>
-                <v-flex
-                  shrink
-                  body-2
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col
                   transition="slide-x-transition"
+                  class="text-center body-2"
                   @click="toRidePlanOptions()"
                 >
                   <v-icon>settings</v-icon>
                   <span class="ml-1">Ritvoorkeuren</span>
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
             </v-form>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 

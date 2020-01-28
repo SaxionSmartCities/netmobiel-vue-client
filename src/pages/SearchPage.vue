@@ -1,102 +1,98 @@
 <template>
-  <v-container
-    align-center
-    justify-center
-    fill-height
-    fluid
-    grid-list-lg
-    class="background-primary"
-  >
-    <v-layout justify-center align-center>
-      <v-flex xs11 sm9 md6>
-        <v-layout column shrink>
-          <v-flex class="box-widget background-white">
-            <v-expand-transition>
-              <v-flex v-if="showForm">
-                <v-form>
-                  <v-layout column>
-                    <v-flex text-xs-center>
-                      <h1>Waar wil je heen?</h1>
-                    </v-flex>
-                    <v-flex>
-                      <from-to-fields />
-                    </v-flex>
-                    <v-flex>
-                      <date-time-selector
-                        v-model="journeyMoment"
-                        :allowed-dates="allowedDates"
-                      />
-                    </v-flex>
-                    <v-flex>
-                      <v-btn
-                        large
-                        rounded
-                        block
-                        depressed
-                        color="button"
-                        :disabled="disabledSubmit"
-                        @click="submitForm()"
-                      >
-                        Plan je reis!
-                      </v-btn>
-                    </v-flex>
-                    <v-flex
-                      body-2
-                      my-1
-                      transition="slide-x-transition"
-                      @click="toRidePreferences"
+  <content-pane class="background-primary">
+    <v-row class="full-height justify-center align-center">
+      <v-col cols="11">
+        <v-expand-transition>
+          <v-row>
+            <v-col v-if="showForm" class="box-widget background-white">
+              <v-form>
+                <v-row dense>
+                  <v-col>
+                    <h1>Waar wil je heen?</h1>
+                  </v-col>
+                </v-row>
+                <v-row dense>
+                  <v-col>
+                    <from-to-fields />
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <date-time-selector
+                      v-model="journeyMoment"
+                      :allowed-dates="allowedDates"
+                    />
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <v-btn
+                      large
+                      rounded
+                      block
+                      depressed
+                      color="button"
+                      :disabled="disabledSubmit"
+                      @click="submitForm()"
                     >
-                      <v-layout justify-center>
-                        <v-flex shrink>
-                          <v-icon>settings</v-icon>
-                          <span class="ml-1">Reisvoorkeuren</span>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </v-layout>
-                </v-form>
-              </v-flex>
-            </v-expand-transition>
-            <v-expand-transition>
-              <v-flex v-if="getSubmitStatus.status !== 'UNSUBMITTED'">
-                <v-expand-transition>
-                  <v-flex
-                    v-if="
-                      getSubmitStatus.status === 'PENDING' ||
-                        getSubmitStatus.status === 'SUCCESS'
-                    "
-                    shrink
+                      Plan je reis!
+                    </v-btn>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col
+                    class="body-2 text-center"
+                    transition="slide-x-transition"
+                    @click="toRidePreferences"
                   >
-                    <v-layout>
-                      <v-flex xs-3 mt-2>
-                        <v-progress-circular
-                          indeterminate
-                          :class="{
-                            makeBlue: getSubmitStatus.status === 'PENDING',
-                            rotate: getSubmitStatus.status === 'SUCCESS',
-                          }"
-                        >
-                        </v-progress-circular>
-                      </v-flex>
-                      <v-flex>
-                        <h3>Zoekopdracht is verstuurd!</h3>
-                        <p>Even geduld...</p>
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-expand-transition>
-              </v-flex>
-            </v-expand-transition>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
-  </v-container>
+                    <v-icon>settings</v-icon>
+                    <span class="ml-1">Reisvoorkeuren</span>
+                  </v-col>
+                </v-row>
+              </v-form>
+            </v-col>
+          </v-row>
+        </v-expand-transition>
+        <v-expand-transition>
+          <v-row>
+            <v-col v-if="getSubmitStatus.status !== 'UNSUBMITTED'">
+              <v-expand-transition>
+                <v-col
+                  v-if="
+                    getSubmitStatus.status === 'PENDING' ||
+                      getSubmitStatus.status === 'SUCCESS'
+                  "
+                  shrink
+                >
+                  <v-row>
+                    <v-col xs-3 mt-2>
+                      <v-progress-circular
+                        indeterminate
+                        :class="{
+                          makeBlue: getSubmitStatus.status === 'PENDING',
+                          rotate: getSubmitStatus.status === 'SUCCESS',
+                        }"
+                      >
+                      </v-progress-circular>
+                    </v-col>
+                    <v-col>
+                      <h3>Zoekopdracht is verstuurd!</h3>
+                      <p>Even geduld...</p>
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-expand-transition>
+            </v-col>
+          </v-row>
+        </v-expand-transition>
+      </v-col>
+    </v-row>
+  </content-pane>
 </template>
 
 <script>
 import moment from 'moment'
-
+import ContentPane from '@/components/common/ContentPane.vue'
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
 
@@ -104,6 +100,7 @@ import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 
 export default {
   components: {
+    ContentPane,
     FromToFields,
     DateTimeSelector,
   },
