@@ -47,7 +47,7 @@
         <h4 class="netmobiel">Jouw activiteiten</h4>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="pt-0">
       <v-col v-if="rides.length === 0" class="pt-0">
         <v-row>
           <v-col class="pt-0">
@@ -71,23 +71,25 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col v-else>
-        <v-row>
-          <v-col v-for="(ride, index) in rides" :key="index" xs12>
+      <v-col v-else class="pt-0">
+        <v-row v-for="(ride, index) in rides" :key="index" xs12>
+          <v-col class="py-0">
             <ride-card class="my-2" :ride="ride"></ride-card>
           </v-col>
         </v-row>
         <v-row>
-          <v-btn
-            large
-            rounded
-            block
-            outlined
-            color="primary"
-            to="/tripsOverviewPage"
-          >
-            Bekijk alle activiteiten
-          </v-btn>
+          <v-col>
+            <v-btn
+              large
+              rounded
+              block
+              outlined
+              color="primary"
+              to="/tripsOverviewPage"
+            >
+              Bekijk alle activiteiten
+            </v-btn>
+          </v-col>
         </v-row>
       </v-col>
     </v-row>

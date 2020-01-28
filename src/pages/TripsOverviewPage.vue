@@ -30,7 +30,7 @@
       </v-col>
       <v-col v-else>
         <v-row v-for="(trip, index) in getPlannedTrips" :key="index">
-          <v-col>
+          <v-col class="py-1">
             <travel-card
               :from="trip.from"
               :to="trip.to"
@@ -48,9 +48,8 @@
       </v-col>
       <v-col v-else>
         <v-row v-for="(ride, index) in getPlannedRides" :key="index">
-          <v-col>
+          <v-col class="py-1">
             <ride-card
-              class="mt-2 mb-2"
               :from="ride.fromPlace"
               :to="ride.toPlace"
               :date="parseDate(ride.departureTime)"
