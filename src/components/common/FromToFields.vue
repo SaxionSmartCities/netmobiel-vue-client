@@ -1,41 +1,37 @@
 <template>
-  <v-layout>
-    <v-flex id="vannaar" xs11>
-      <v-layout column>
-        <v-flex id="van">
-          <v-layout column>
-            <v-flex @click="toLocationSuggestionsPage('from')">
-              <v-text-field
-                hide-details
-                outlined
-                readonly
-                label="Van"
-                :value="fromLocationLabel()"
-              >
-              </v-text-field>
-            </v-flex>
-            <v-flex @click="toLocationSuggestionsPage('to')">
-              <v-text-field
-                hide-details
-                outlined
-                readonly
-                label="Naar"
-                :value="toLocationLabel()"
-              >
-              </v-text-field>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    <v-flex d-flex>
-      <v-layout column justify-center @click="swapLocations()">
-        <v-flex id="heenweericoon" text-xs-center justify-center shrink>
-          <v-icon>import_export</v-icon>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-  </v-layout>
+  <v-row dense>
+    <v-col id="vannaar" cols="10">
+      <v-row dense>
+        <v-col id="van" @click="toLocationSuggestionsPage('from')">
+          <v-text-field
+            hide-details
+            outlined
+            readonly
+            dense
+            label="Van"
+            :value="fromLocationLabel()"
+          >
+          </v-text-field>
+        </v-col>
+      </v-row>
+      <v-row dense>
+        <v-col @click="toLocationSuggestionsPage('to')">
+          <v-text-field
+            hide-details
+            outlined
+            readonly
+            dense
+            label="Naar"
+            :value="toLocationLabel()"
+          >
+          </v-text-field>
+        </v-col>
+      </v-row>
+    </v-col>
+    <v-col id="heenweericoon" class="text-center align-self-center">
+      <v-icon>import_export</v-icon>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
