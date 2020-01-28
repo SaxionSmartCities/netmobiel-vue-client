@@ -1,7 +1,7 @@
 <template>
   <content-pane class="background-primary">
-    <v-row class="justify-center align-center">
-      <v-col cols="11" md6>
+    <v-row class="full-height justify-center align-center">
+      <v-col cols="11">
         <v-row>
           <v-col class="box-widget background-white">
             <v-form>
