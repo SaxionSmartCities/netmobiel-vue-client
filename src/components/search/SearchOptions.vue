@@ -212,16 +212,26 @@ export default {
       }
       return result
     },
-    luggageSelected() {
-      return this.value.luggageOptions.map(option => luggageTypes[option])
+    luggageSelected: {
+      get() {
+        return this.value.luggageOptions.map(option => luggageTypes[option])
+      },
+      set(selection) {
+        this.value.luggageOptions = selection.map(x => x.type)
+      },
     },
     luggageTypes() {
       return luggageTypes
     },
-    allowedTravelModes() {
-      return this.value.allowedTravelModes
-        .map(mode => travelModes[mode])
-        .filter(x => !!x) // Filter out the undefined travel modes.
+    allowedTravelModes: {
+      get() {
+        return this.value.allowedTravelModes
+          .map(mode => travelModes[mode])
+          .filter(x => !!x) // Filter out the undefined travel modes.
+      },
+      set(selection) {
+        this.value.allowedTravelModes = selection.map(x => x.mode)
+      },
     },
     travelModes() {
       return travelModes
