@@ -17,19 +17,17 @@ export default {
     context.commit('storePlanningRequest', payload)
     const { from, to, timestamp } = payload
     const params = {
-      fromPlace: `${from.title}::${from.position[0]},${from.position[1]}`,
-      toPlace: `${to.title}::${to.position[0]},${to.position[1]}`,
+      from: `${from.title}::${from.position[0]},${from.position[1]}`,
+      to: `${to.title}::${to.position[0]},${to.position[1]}`,
       nrSeats: 1,
       searchPreferences: payload.searchPreferences,
     }
-    // Uncomment this code when open trip planner supports departure timestamps!
-    // const formattedDate = timestamp.when.format('YYYY-MM-DDTHH:mm')
-    // if (timestamp.arriving) {
-    //   params['toDate'] = formattedDate
-    // } else {
-    //   params['fromDate'] = formattedDate
-    // }
-    params['toDate'] = timestamp.when.format('YYYY-MM-DDTHH:mm')
+    const formattedDate = timestamp.when.format()
+    if (timestamp.arriving) {
+      params['arrivalTime'] = formattedDate
+    } else {
+      params['departureTime'] = formattedDate
+    }
     const axiosConfig = {
       method: 'GET',
       url: BASE_URL + '/planner/api/search/plan',
@@ -51,14 +49,17 @@ export default {
         })
       })
       .catch(function(error) {
-        // eslint-disable-next-line
-        console.log(error)
-        context.commit('setPlanningStatus', {
-          status: 'FAILED',
-          message: error.response
-            ? error.response.data.message
-            : 'Network failure',
-        })
+        context.commit('setPlanningStatus', { status: 'FAILED' })
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: error.response
+              ? error.response.data.message
+              : 'Network failure',
+            timeout: 0,
+          },
+          { root: true }
+        )
       })
   },
   storeSelectedTrip: (context, payload) => {
