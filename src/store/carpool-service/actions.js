@@ -136,6 +136,7 @@ export default {
       .then(function(res) {
         // eslint-disable-next-line
         console.log(res)
+        context.dispatch('fetchRides')
       })
       .catch(function(error) {
         // TODO: Proper error handling.
@@ -165,6 +166,14 @@ export default {
         // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het ophalen van uw rit-aanbod.',
+            timeout: 0,
+          },
+          { root: true }
+        )
       })
   },
 }

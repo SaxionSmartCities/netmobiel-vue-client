@@ -63,6 +63,7 @@
               <v-date-picker
                 v-if="showHorizonPicker"
                 v-model="pickedHorizon"
+                :allowed-dates="allowedDates"
                 locale="nl-NL"
                 scrollable
                 @input="selectHorizon"
@@ -91,7 +92,10 @@
 
 <script>
 import WeekPatternEditor from './WeekPatternEditor.vue'
-import { formatDateInputFromPicker } from '@/utils/datetime.js'
+import {
+  formatDateInputFromPicker,
+  formatDatePickerFromInput,
+} from '@/utils/datetime.js'
 
 // weekdays according to JavaScript Date class (which differs from recurrence weekpattern that starts at Monday)
 const weekdays = [
@@ -260,6 +264,10 @@ export default {
       this.showHorizonPicker = false
       this.horizon = formatDateInputFromPicker(this.pickedHorizon)
     },
+    allowedDates(v) {
+      // at least tomorrow, or further in the future
+      return new Date(v) > new Date()
+    },
     cancelPatternEditor() {
       this.showCustom = false
       this.selectedRepetition = this.previousRepetition
@@ -288,7 +296,9 @@ export default {
         daysOfWeekMask: this.weekpattern,
         interval: this.weeks === 'ONE_WEEK' ? 1 : 2,
         unit: 'WEEK',
-        horizon: this.horizon || undefined,
+        horizon:
+          (this.horizon && formatDatePickerFromInput(this.horizon)) ||
+          undefined,
       })
     },
   },
