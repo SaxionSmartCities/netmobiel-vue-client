@@ -5,7 +5,7 @@
         <h1>Welkom bij Netmobiel!</h1>
       </v-flex>
       <v-flex mt-3>
-        <h3 class="text-primary">Lorem ipsum dolor</h3>
+        <h2 class="text-primary">Lorem ipsum dolor</h2>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
@@ -15,7 +15,7 @@
           pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
           culpa qui officia deserunt mollit anim id est laborum.
         </p>
-        <h3 class="text-primary">Molestie ac feugiat sed lectus.</h3>
+        <h2 class="text-primary">Molestie ac feugiat sed lectus.</h2>
         <p>
           Molestie ac feugiat sed lectus. At tempor commodo ullamcorper a lacus.
           Sit amet commodo nulla facilisi nullam vehicula. Bibendum neque
@@ -30,7 +30,7 @@
           sapien et ligula ullamcorper malesuada proin. Felis imperdiet proin
           fermentum leo vel orci. Nullam non nisi est sit.
         </p>
-        <h3 class="text-primary">Vulputate mi sit amet mauris.</h3>
+        <h2 class="text-primary">Vulputate mi sit amet mauris.</h2>
         <p>
           Vulputate mi sit amet mauris. Diam sit amet nisl suscipit adipiscing.
           Risus quis varius quam quisque id. Ultricies mi eget mauris pharetra.

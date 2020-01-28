@@ -2,7 +2,7 @@
   <content-pane>
     <v-layout column>
       <v-flex>
-        <h5 class="headline font-weight-medium">Riteigenschappen</h5>
+        <h1>Riteigenschappen</h1>
       </v-flex>
 
       <v-flex my-3>
@@ -114,7 +114,9 @@
       </v-flex>
 
       <v-flex>
-        <v-btn large rounded block @click="save">Save</v-btn>
+        <v-btn large rounded block depressed color="button" @click="save"
+          >Voorkeuren opslaan</v-btn
+        >
       </v-flex>
     </v-layout>
   </content-pane>
