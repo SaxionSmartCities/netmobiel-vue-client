@@ -15,12 +15,13 @@ function generateHeader(key) {
 export default {
   submitPlanningsRequest: (context, payload) => {
     context.commit('storePlanningRequest', payload)
+    const URL = BASE_URL + '/planner/api/search/plan'
     const { from, to, timestamp } = payload
     const params = {
       from: `${from.title}::${from.position[0]},${from.position[1]}`,
       to: `${to.title}::${to.position[0]},${to.position[1]}`,
-      nrSeats: 1,
-      searchPreferences: payload.searchPreferences,
+      nrSeats: payload.searchPreferences.numPassengers,
+      modalities: payload.searchPreferences.allowedTravelModes.toString(),
     }
     const formattedDate = timestamp.when.format()
     if (timestamp.arriving) {
@@ -28,25 +29,15 @@ export default {
     } else {
       params['departureTime'] = formattedDate
     }
-    const axiosConfig = {
-      method: 'GET',
-      url: BASE_URL + '/planner/api/search/plan',
-      params: params,
-      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
-    }
-
-    context.commit('setPlanningStatus', {
-      status: 'PENDING',
-    })
-
-    axios(axiosConfig)
+    context.commit('setPlanningStatus', { status: 'PENDING' })
+    axios
+      .get(URL, {
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+        params: params,
+      })
       .then(function(res) {
-        context.commit('setPlanningStatus', {
-          status: 'SUCCESS',
-        })
-        context.commit('setPlanningResults', {
-          data: res.data,
-        })
+        context.commit('setPlanningStatus', { status: 'SUCCESS' })
+        context.commit('setPlanningResults', { data: res.data })
       })
       .catch(function(error) {
         context.commit('setPlanningStatus', { status: 'FAILED' })
