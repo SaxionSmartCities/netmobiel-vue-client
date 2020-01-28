@@ -6,20 +6,21 @@
           <span>{{ value.title }}</span>
         </v-col>
       </v-row>
-      <v-row dense>
-        <v-col v-for="option in value.options" :key="option.key">
+      <v-row dense justify="end" class="pr-1">
+        <v-col v-for="(option, index) in value.selected" :key="index" cols="2">
           <v-icon>{{ option.icon }}</v-icon>
         </v-col>
       </v-row>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-row dense>
-        <v-col v-for="option in value.options" :key="option.key">
+        <v-col v-for="(option, index) in value.options" :key="index" cols="6">
           <v-checkbox
             v-model="value.selected"
             :label="option.label"
             :value="option"
             hide-details
+            class="mt-0"
           ></v-checkbox>
         </v-col>
       </v-row>
