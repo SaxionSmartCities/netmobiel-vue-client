@@ -35,8 +35,13 @@
                 type="success"
                 color="green"
               >
-                Profiel aangemaakt! <br />
-                We sturen u terug naar het login-scherm.
+                Profiel aangemaakt!
+                <br />
+                U ontvangt een e-mail waarmee U de registratie kunt voltooien.
+                Controleer de spamfolder als de e-mail niet verschijnt in de
+                inbox!
+                <br />
+                We sturen U over enkele seconden terug naar het login-scherm.
               </v-alert>
               <v-alert
                 v-if="getRegistrationStatus.success === false"
@@ -122,7 +127,7 @@ export default {
         setTimeout(() => {
           this.$store.commit('rs/clearRegistrationRequest')
           this.$router.push('/')
-        }, 2500)
+        }, 7000)
       }
     },
   },

@@ -110,7 +110,9 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-btn large rounded block @click="save">Save</v-btn>
+            <v-btn large rounded block depressed color="button" @click="save">
+              Voorkeuren opslaan
+            </v-btn>
           </v-col>
         </v-row>
       </v-col>

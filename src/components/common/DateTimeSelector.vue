@@ -1,6 +1,6 @@
 <template>
-  <v-layout>
-    <v-flex>
+  <v-row dense>
+    <v-col cols="6">
       <v-dialog v-model="showDatePicker" persistent>
         <template v-slot:activator="{ on }">
           <v-text-field
@@ -9,6 +9,7 @@
             readonly
             prepend-icon="event"
             hide-details
+            class="my-0 py-0"
             v-on="on"
           >
           </v-text-field>
@@ -21,7 +22,6 @@
           locale="nl-NL"
           scrollable
         >
-          <v-spacer></v-spacer>
           <v-btn text color="primary" @click="cancelDate">
             Annuleren
           </v-btn>
@@ -35,8 +35,8 @@
           </v-btn>
         </v-date-picker>
       </v-dialog>
-    </v-flex>
-    <v-flex>
+    </v-col>
+    <v-col cols="6">
       <v-dialog v-model="showTimePicker" persistent>
         <template v-slot:activator="{ on }">
           <v-text-field
@@ -45,6 +45,7 @@
             prepend-icon="access_time"
             readonly
             hide-details
+            class="my-0 py-0"
             v-on="on"
           >
           </v-text-field>
@@ -80,8 +81,8 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
