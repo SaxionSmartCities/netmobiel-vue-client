@@ -35,19 +35,25 @@ export default {
       })
   },
   storeFavoriteLocations: (context, payload) => {
-    let profile = { ...context.state.user.profile }
-    profile.favoriteLocations = payload.favoriteLocations
+    let profile = {
+      ...context.state.user.profile,
+      favoriteLocations: { ...payload },
+    }
     context.dispatch('updateProfile', profile)
   },
   storeSearchPreferences: (context, payload) => {
     // Convert payload to a profile object.
-    let profile = { ...context.state.user.profile }
-    profile.searchPreferences = {
-      numPassengers: payload.numPassengers,
-      allowTransfer: payload.allowTransfer,
-      maximumTransferTime: payload.maximumTransferTime,
-      luggageOptions: payload.luggageOptions,
-      allowedTravelModes: payload.allowedTravelModes,
+    let profile = {
+      ...context.state.user.profile,
+      searchPreferences: { ...payload },
+    }
+    context.dispatch('updateProfile', profile)
+  },
+  storeRidePreferences: (context, payload) => {
+    // Convert payload to a profile object.
+    let profile = {
+      ...context.state.user.profile,
+      ridePlanOptions: { ...payload },
     }
     context.dispatch('updateProfile', profile)
   },
