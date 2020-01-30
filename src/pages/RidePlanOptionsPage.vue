@@ -3,110 +3,116 @@
     <template v-slot:header>
       <h5 class="headline font-weight-medium">Riteigenschappen</h5>
     </template>
-    <v-row>
+    <v-row class="fill-height">
       <v-col>
-        <v-expansion-panels accordion>
-          <v-expansion-panel>
-            <v-expansion-panel-header
-              :class="{
-                'disable-icon-rotate': maxNrOfPersons <= 1,
-              }"
-            >
-              <v-row dense>
-                <v-col>
-                  <span class="form-label">Max. aantal passagiers</span>
-                </v-col>
-                <v-col cols="1" class="text-right">
-                  {{ numPassengers }}
-                </v-col>
-              </v-row>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-row dense>
-                <v-col>
-                  <v-slider
-                    v-if="maxNrOfPersons > 1"
-                    v-model="numPassengers"
-                    class="px-4"
-                    thumb-color="thumb-grey"
-                    thumb-label
-                    ticks="always"
-                    tick-size="2"
-                    :tick-labels="generatePersonRange"
-                    :min="1"
-                    :max="maxNrOfPersons"
-                  />
-                </v-col>
-              </v-row>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-          <v-expansion-panel>
-            <v-expansion-panel-header>
-              <v-row dense justify="space-between">
-                <v-col align-self="center">
-                  <span class="form-label">Bagage</span>
-                </v-col>
-                <v-col cols="7" class="text-right">
-                  <span v-for="luggage in luggageSelected" :key="luggage.type">
-                    <v-icon> {{ luggage.icon }}</v-icon>
-                  </span>
-                </v-col>
-              </v-row>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-row dense>
-                <v-col
-                  v-for="luggage in luggageTypes"
-                  :key="luggage.type"
-                  :cols="6"
+        <v-row>
+          <v-col>
+            <v-expansion-panels accordion>
+              <v-expansion-panel>
+                <v-expansion-panel-header
+                  :class="{
+                    'disable-icon-rotate': maxNrOfPersons <= 1,
+                  }"
                 >
-                  <v-checkbox
-                    v-model="luggageSelected"
-                    hide-details
-                    :label="luggage.label"
-                    :value="luggage"
-                  />
-                </v-col>
-              </v-row>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-          <v-expansion-panel>
-            <v-expansion-panel-header>
-              <v-row dense>
-                <v-col>
-                  <span class="form-label py-2">Maximale omrijtijd</span>
-                </v-col>
-                <v-col cols="3" class="text-right">
-                  {{ maxMinutesDetour }} min
-                </v-col>
-              </v-row>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-row dense>
-                <v-col>
-                  <v-slider
-                    v-model="maxMinutesDetour"
-                    class="px-4"
-                    thumb-color="thumb-grey"
-                    thumb-label
-                    ticks="always"
-                    tick-size="2"
-                    :tick-labels="generateMinuteRange"
-                    min="0"
-                    max="20"
-                    step="5"
-                  />
-                </v-col>
-              </v-row>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col>
-        <v-btn large rounded block @click="save">Save</v-btn>
+                  <v-row dense>
+                    <v-col>
+                      <span class="form-label">Max. aantal passagiers</span>
+                    </v-col>
+                    <v-col cols="1" class="text-right">
+                      {{ numPassengers }}
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-row dense>
+                    <v-col>
+                      <v-slider
+                        v-if="maxNrOfPersons > 1"
+                        v-model="numPassengers"
+                        class="px-4"
+                        thumb-color="thumb-grey"
+                        thumb-label
+                        ticks="always"
+                        tick-size="2"
+                        :tick-labels="generatePersonRange"
+                        :min="1"
+                        :max="maxNrOfPersons"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-header>
+                  <v-row dense justify="space-between">
+                    <v-col align-self="center">
+                      <span class="form-label">Bagage</span>
+                    </v-col>
+                    <v-col cols="7" class="text-right">
+                      <span
+                        v-for="luggage in luggageSelected"
+                        :key="luggage.type"
+                      >
+                        <v-icon> {{ luggage.icon }}</v-icon>
+                      </span>
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-row dense>
+                    <v-col
+                      v-for="luggage in luggageTypes"
+                      :key="luggage.type"
+                      :cols="6"
+                    >
+                      <v-checkbox
+                        v-model="luggageSelected"
+                        hide-details
+                        :label="luggage.label"
+                        :value="luggage"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-header>
+                  <v-row dense>
+                    <v-col>
+                      <span class="form-label py-2">Maximale omrijtijd</span>
+                    </v-col>
+                    <v-col cols="3" class="text-right">
+                      {{ maxMinutesDetour }} min
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-row dense>
+                    <v-col>
+                      <v-slider
+                        v-model="maxMinutesDetour"
+                        class="px-4"
+                        thumb-color="thumb-grey"
+                        thumb-label
+                        ticks="always"
+                        tick-size="2"
+                        :tick-labels="generateMinuteRange"
+                        min="0"
+                        max="20"
+                        step="5"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-btn large rounded block @click="save">Save</v-btn>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </content-pane>
