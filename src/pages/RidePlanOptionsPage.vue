@@ -1,11 +1,16 @@
 <template>
   <content-pane>
-    <template v-slot:header>
-      <h5 class="headline font-weight-medium">Riteigenschappen</h5>
-    </template>
-    <v-row class="fill-height">
+    <!-- <template v-slot:header>
+      <v-row>
+      </v-row>
+    </template> -->
+    <v-row no-gutters class="fill-height">
       <v-col>
         <v-row>
+          <v-col>
+            <h1>Riteigenschappen</h1>
+          </v-col>
+
           <v-col>
             <v-expansion-panels accordion>
               <v-expansion-panel>
