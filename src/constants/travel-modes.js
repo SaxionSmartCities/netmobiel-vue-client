@@ -19,6 +19,11 @@ export default {
     label: 'Fiets',
     icon: 'directions_bike',
   },
+  SUBWAY: {
+    mode: 'SUBWAY',
+    label: 'Metro',
+    icon: 'subway',
+  },
   RIDESHARE: {
     mode: 'RIDESHARE',
     label: 'Meerijden',
