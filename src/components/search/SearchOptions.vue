@@ -35,7 +35,14 @@
                 </v-row>
               </v-expansion-panel-content>
             </v-expansion-panel>
-            <search-options-icon-expansion-panel v-model="luggage" />
+            <search-options-icon-expansion-panel
+              v-model="luggage"
+              @onChanged="
+                newLugagge => {
+                  luggage = newLugagge
+                }
+              "
+            />
             <v-expansion-panel>
               <v-expansion-panel-header>
                 <v-row dense>
@@ -77,7 +84,14 @@
                 </v-row>
               </v-expansion-panel-content>
             </v-expansion-panel>
-            <search-options-icon-expansion-panel v-model="travel" />
+            <search-options-icon-expansion-panel
+              v-model="travel"
+              @onChanged="
+                newTravel => {
+                  travel = newTravel
+                }
+              "
+            />
             <v-expansion-panel>
               <v-expansion-panel-header>
                 <v-row dense>
@@ -171,7 +185,9 @@ export default {
         }
       },
       set(selection) {
-        console.log(selection)
+        this.value.allowedTravelModes = selection.selected.map(
+          mode => mode.mode
+        )
       },
     },
     luggage: {
@@ -183,7 +199,9 @@ export default {
         }
       },
       set(selection) {
-        console.log(selection)
+        this.value.luggageOptions = selection.selected.map(
+          option => option.type
+        )
       },
     },
     luggageSelected: {
