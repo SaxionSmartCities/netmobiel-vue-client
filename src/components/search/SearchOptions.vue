@@ -1,17 +1,17 @@
 <template>
   <v-row dense>
     <v-col>
-      <v-row dense>
+      <v-row no-gutters>
         <v-col>
           <v-expansion-panels accordion>
             <v-expansion-panel>
               <v-expansion-panel-header>
-                <v-row dense>
+                <v-row no-gutters>
                   <v-col>
                     <span>Personen</span>
                   </v-col>
                 </v-row>
-                <v-row dense>
+                <v-row no-gutters>
                   <v-col class="text-end pr-5">
                     {{ value.numPassengers }}
                   </v-col>
@@ -45,12 +45,12 @@
             />
             <v-expansion-panel>
               <v-expansion-panel-header>
-                <v-row dense>
+                <v-row no-gutters>
                   <v-col>
                     <span>Overstappen</span>
                   </v-col>
                 </v-row>
-                <v-row dense>
+                <v-row no-gutters>
                   <v-col class="text-end pr-3">
                     <v-icon v-if="value.allowTransfer">check</v-icon>
                     <v-icon v-else color="red">close</v-icon>
@@ -58,7 +58,7 @@
                 </v-row>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <v-row dense>
+                <v-row no-gutters>
                   <v-col>
                     <v-alert
                       :value="showOverstapAlert"
@@ -73,7 +73,7 @@
                     </v-alert>
                   </v-col>
                 </v-row>
-                <v-row dense>
+                <v-row no-gutters>
                   <v-col>
                     Overstappen
                   </v-col>
@@ -94,7 +94,7 @@
             />
             <v-expansion-panel>
               <v-expansion-panel-header>
-                <v-row dense>
+                <v-row no-gutters>
                   <v-col>
                     <span class="form-label py-2">Maximale loopafstand</span>
                   </v-col>

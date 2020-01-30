@@ -7,12 +7,7 @@
             <h1>Reisvoorkeuren</h1>
           </v-col>
         </v-row>
-        <v-row dense>
-          <v-col>
-            <v-divider />
-          </v-col>
-        </v-row>
-        <v-row dense>
+        <v-row no-gutters>
           <v-col>
             <search-options
               v-model="searchPreferences"
