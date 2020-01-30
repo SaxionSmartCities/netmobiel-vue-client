@@ -42,7 +42,6 @@
 <script>
 import moment from 'moment'
 import travelModes from '@/constants/travel-modes.js'
-import travelModesSurrogates from '@/constants/travel-modes-surrogates.js'
 import delegation from '@/utils/delegation'
 
 export default {
@@ -58,13 +57,8 @@ export default {
       //HACK: planner returns traverseMode except for FINISH leg :(
       return this.leg.traverseMode || this.leg.mode
     },
-    icon: function() {
-      let mode = this.travelMode
-      if (travelModes[mode] == undefined) {
-        return travelModesSurrogates[mode].icon
-      } else {
-        return travelModes[mode].icon
-      }
+    icon() {
+      return travelModes[this.travelMode].icon
     },
     time: function() {
       return moment(this.leg.startTime)

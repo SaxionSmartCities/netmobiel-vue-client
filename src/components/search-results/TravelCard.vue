@@ -62,7 +62,7 @@ export default {
     driverString: function() {
       for (let i = 0; i < this.journey.legs.length; i++) {
         let currentLeg = this.journey.legs[i]
-        if (currentLeg.mode === 'CAR') {
+        if (currentLeg.mode === 'RIDESHARE') {
           return (
             currentLeg.ride.driver.givenName +
             ' ' +
