@@ -144,7 +144,6 @@ export default {
   },
   computed: {
     luggageTypes: function() {
-      console.log('luggageTypes', luggageTypes)
       return luggageTypes
     },
     generatePersonRange: function() {
