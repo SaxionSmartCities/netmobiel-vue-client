@@ -22,6 +22,7 @@ export default {
       to: `${to.title}::${to.position[0]},${to.position[1]}`,
       nrSeats: payload.searchPreferences.numPassengers,
       modalities: payload.searchPreferences.allowedTravelModes.toString(),
+      maxWalkDistance: payload.searchPreferences.maximumTransferTime,
     }
     const formattedDate = timestamp.when.format()
     if (timestamp.arriving) {
