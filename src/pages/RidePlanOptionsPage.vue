@@ -1,16 +1,13 @@
 <template>
   <content-pane>
-    <!-- <template v-slot:header>
-      <v-row>
-      </v-row>
-    </template> -->
-    <v-row no-gutters class="fill-height">
+    <template v-slot:header>
+      <h1 class="pl-3 pt-3">
+        Riteigenschappen
+      </h1>
+    </template>
+    <v-row no-gutters>
       <v-col>
-        <v-row>
-          <v-col>
-            <h1>Riteigenschappen</h1>
-          </v-col>
-
+        <v-row no-gutters>
           <v-col>
             <v-expansion-panels accordion>
               <v-expansion-panel>
@@ -19,7 +16,7 @@
                     'disable-icon-rotate': maxNrOfPersons <= 1,
                   }"
                 >
-                  <v-row dense>
+                  <v-row no-gutters>
                     <v-col>
                       <span class="form-label">Max. aantal passagiers</span>
                     </v-col>
@@ -29,7 +26,7 @@
                   </v-row>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-row dense>
+                  <v-row no-gutters>
                     <v-col>
                       <v-slider
                         v-if="maxNrOfPersons > 1"
@@ -49,7 +46,7 @@
               </v-expansion-panel>
               <v-expansion-panel>
                 <v-expansion-panel-header>
-                  <v-row dense justify="space-between">
+                  <v-row no-gutters justify="space-between">
                     <v-col align-self="center">
                       <span class="form-label">Bagage</span>
                     </v-col>
@@ -82,7 +79,7 @@
               </v-expansion-panel>
               <v-expansion-panel>
                 <v-expansion-panel-header>
-                  <v-row dense>
+                  <v-row no-gutters>
                     <v-col>
                       <span class="form-label py-2">Maximale omrijtijd</span>
                     </v-col>
