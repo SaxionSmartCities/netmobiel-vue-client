@@ -2,20 +2,24 @@
   <content-pane>
     <v-row dense>
       <v-col>
-        <h1>Reisvoorkeuren</h1>
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col>
-        <v-divider />
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col>
-        <search-options
-          v-model="searchPreferences"
-          v-on:onSearchOptionsSave="saveSearchOptions"
-        />
+        <v-row dense>
+          <v-col>
+            <h1>Reisvoorkeuren</h1>
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col>
+            <v-divider />
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col>
+            <search-options
+              v-model="searchPreferences"
+              v-on:onSearchOptionsSave="saveSearchOptions"
+            />
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </content-pane>
