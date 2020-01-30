@@ -109,15 +109,15 @@
                 <v-row dense>
                   <v-col>
                     <v-slider
-                      v-model="value.maximumTransferTime"
+                      v-model="selectedWalkingDistance"
                       thumb-color="thumb-grey"
                       thumb-label
                       ticks="always"
                       tick-size="2"
-                      :tick-labels="generateMinuteRange"
+                      :tick-labels="transferDistanceOptions"
                       min="0"
-                      max="30"
-                      step="5"
+                      max="2000"
+                      step="500"
                     />
                   </v-col>
                 </v-row>
@@ -164,9 +164,20 @@ export default {
     return {
       maxNrOfPersons: 4,
       showOverstapAlert: true,
+      transferDistanceOptions: [250, 500, 1000, 1500, 2000],
     }
   },
   computed: {
+    selectedWalkingDistance: {
+      get() {
+        return this.value.maximumTransferTime == 250
+          ? 0
+          : this.value.maximumTransferTime
+      },
+      set(newValue) {
+        this.value.maximumTransferTime = newValue == 0 ? 250 : newValue
+      },
+    },
     generatePersonRange() {
       let result = []
       for (let i = 1; i <= this.maxNrOfPersons; i++) {
@@ -211,29 +222,6 @@ export default {
       set(selection) {
         this.value.luggageOptions = selection.map(x => x.type)
       },
-    },
-    luggageTypes() {
-      return luggageTypes
-    },
-    allowedTravelModes: {
-      get() {
-        return this.value.allowedTravelModes
-          .map(mode => travelModes[mode])
-          .filter(x => !!x) // Filter out the undefined travel modes.
-      },
-      set(selection) {
-        this.value.allowedTravelModes = selection.map(x => x.mode)
-      },
-    },
-    travelModes() {
-      return travelModes
-    },
-    generateMinuteRange: function() {
-      let result = []
-      for (let i = 0; i <= 30; i += 5) {
-        result.push(i)
-      }
-      return result
     },
   },
 }
