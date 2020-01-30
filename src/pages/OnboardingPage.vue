@@ -3,9 +3,11 @@
     <v-row align="center" justify="center" class="pa-4">
       <v-col>
         <v-row>
-          <v-col v-if="step === 0"> <age-card @next-step="step++"/></v-col>
+          <v-col v-if="step === 0">
+            <age-card @prev-step="goBack()" @next-step="step++" />
+          </v-col>
           <v-col v-if="step === 1">
-            <interests-card @next-step="step++" />
+            <interests-card @prev-step="step--" @next-step="step++" />
           </v-col>
         </v-row>
         <v-row justify="center">
@@ -41,6 +43,11 @@ export default {
       if (this.step >= 2) {
         this.$router.push('/onboardingComplete')
       }
+    },
+  },
+  methods: {
+    goBack() {
+      this.$router.go(-1)
     },
   },
 }

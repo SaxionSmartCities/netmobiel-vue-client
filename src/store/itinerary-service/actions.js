@@ -15,50 +15,43 @@ function generateHeader(key) {
 export default {
   submitPlanningsRequest: (context, payload) => {
     context.commit('storePlanningRequest', payload)
+    const URL = BASE_URL + '/planner/api/search/plan'
     const { from, to, timestamp } = payload
     const params = {
-      fromPlace: `${from.title}::${from.position[0]},${from.position[1]}`,
-      toPlace: `${to.title}::${to.position[0]},${to.position[1]}`,
-      nrSeats: 1,
-      searchPreferences: payload.searchPreferences,
+      from: `${from.title}::${from.position[0]},${from.position[1]}`,
+      to: `${to.title}::${to.position[0]},${to.position[1]}`,
+      nrSeats: payload.searchPreferences.numPassengers,
+      modalities: payload.searchPreferences.allowedTravelModes.toString(),
+      maxWalkDistance: payload.searchPreferences.maximumTransferTime,
     }
-    // Uncomment this code when open trip planner supports departure timestamps!
-    // const formattedDate = timestamp.when.format('YYYY-MM-DDTHH:mm')
-    // if (timestamp.arriving) {
-    //   params['toDate'] = formattedDate
-    // } else {
-    //   params['fromDate'] = formattedDate
-    // }
-    params['toDate'] = timestamp.when.format('YYYY-MM-DDTHH:mm')
-    const axiosConfig = {
-      method: 'GET',
-      url: BASE_URL + '/planner/api/search/plan',
-      params: params,
-      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+    const formattedDate = timestamp.when.format()
+    if (timestamp.arriving) {
+      params['arrivalTime'] = formattedDate
+    } else {
+      params['departureTime'] = formattedDate
     }
-
-    context.commit('setPlanningStatus', {
-      status: 'PENDING',
-    })
-
-    axios(axiosConfig)
+    context.commit('setPlanningStatus', { status: 'PENDING' })
+    axios
+      .get(URL, {
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+        params: params,
+      })
       .then(function(res) {
-        context.commit('setPlanningStatus', {
-          status: 'SUCCESS',
-        })
-        context.commit('setPlanningResults', {
-          data: res.data,
-        })
+        context.commit('setPlanningStatus', { status: 'SUCCESS' })
+        context.commit('setPlanningResults', { data: res.data })
       })
       .catch(function(error) {
-        // eslint-disable-next-line
-        console.log(error)
-        context.commit('setPlanningStatus', {
-          status: 'FAILED',
-          message: error.response
-            ? error.response.data.message
-            : 'Network failure',
-        })
+        context.commit('setPlanningStatus', { status: 'FAILED' })
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: error.response
+              ? error.response.data.message
+              : 'Network failure',
+            timeout: 0,
+          },
+          { root: true }
+        )
       })
   },
   storeSelectedTrip: (context, payload) => {

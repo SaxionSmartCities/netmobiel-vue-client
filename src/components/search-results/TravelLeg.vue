@@ -5,25 +5,11 @@
         <v-flex shrink>
           <v-icon
             class="text-primary"
-            :class="{ 'v-icon-ride': leg.mode === 'CAR' }"
+            :class="{ 'v-icon-ride': leg.mode === 'RIDESHARE' }"
           >
             {{ getIcon }}
           </v-icon>
         </v-flex>
-        <v-flex v-if="leg.mode === 'CAR'">
-          <v-layout>
-            <v-flex>
-              <!-- <span class="car-description">
-                {{
-                  leg.ride.car.brand.charAt(0).toUpperCase() +
-                    leg.ride.car.brand.substring(1).toLowerCase()
-                }}
-                {{ leg.ride.car.model }}
-              </span> -->
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <!-- <v-flex v-if="leg.mode === 'BUS'"> Lijn {{ leg.route }} </v-flex> -->
       </v-layout>
     </v-flex>
     <v-flex pt-1>
@@ -51,17 +37,11 @@ export default {
       },
     },
   },
-  data: function() {
-    return {
-      icon: 'directions_walk',
-    }
-  },
   computed: {
-    getIcon: function() {
+    getIcon() {
       return travelModes[this.leg.mode].icon
     },
   },
-  methods: {},
 }
 </script>
 

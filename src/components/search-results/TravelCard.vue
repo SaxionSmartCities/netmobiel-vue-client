@@ -40,7 +40,7 @@ export default {
   props: {
     from: { type: Object, required: true },
     to: { type: Object, required: true },
-    date: { type: Number, required: true },
+    date: { type: Object, required: true },
     journey: { type: Object, required: true },
   },
   data: function() {
@@ -62,7 +62,7 @@ export default {
     driverString: function() {
       for (let i = 0; i < this.journey.legs.length; i++) {
         let currentLeg = this.journey.legs[i]
-        if (currentLeg.mode === 'CAR') {
+        if (currentLeg.mode === 'RIDESHARE') {
           return (
             currentLeg.ride.driver.givenName +
             ' ' +

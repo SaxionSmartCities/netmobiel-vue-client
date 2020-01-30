@@ -1,46 +1,48 @@
 <template>
-  <div>
+  <v-row dense>
     <v-select
       v-model="selectedRepetition"
       :items="repetitions"
       prepend-icon="replay"
+      hide-details
       :disabled="disabled || !origin"
       placeholder="Aangepaste herhaling"
+      class="my-0 py-0"
     />
     <v-dialog v-model="showCustom" persistent>
       <v-card class="px-5">
         <v-card-title>Aangepaste herhaling</v-card-title>
         <v-divider class="mb-3"></v-divider>
-        <v-layout row align-center ml-0>
-          <v-flex xs3>
+        <v-row row align-center ml-0>
+          <v-col xs3>
             <span>Herhaal:</span>
-          </v-flex>
-        </v-layout>
-        <v-layout row align-center ml-0>
-          <v-flex xs9 pl-7 py-2>
+          </v-col>
+        </v-row>
+        <v-row row align-center ml-0>
+          <v-col xs9 pl-7 py-2>
             <v-radio-group v-model="weeks" hide-details class="ma-0 pa-0">
               <v-radio label="Wekelijks" value="ONE_WEEK" />
               <v-radio label="Om de 2 weken" value="TWO_WEEKS" />
             </v-radio-group>
-          </v-flex>
-        </v-layout>
-        <v-layout row align-center ml-0>
-          <v-flex xs3>
+          </v-col>
+        </v-row>
+        <v-row row align-center ml-0>
+          <v-col xs3>
             <span>Op:</span>
-          </v-flex>
-        </v-layout>
-        <v-layout row align-center ml-0>
-          <v-flex xs9 pl-7>
+          </v-col>
+        </v-row>
+        <v-row row align-center ml-0>
+          <v-col xs9 pl-7>
             <week-pattern-editor v-model="weekpattern" />
-          </v-flex>
-        </v-layout>
-        <v-layout row align-center ml-0>
-          <v-flex xs3>
+          </v-col>
+        </v-row>
+        <v-row row align-center ml-0>
+          <v-col xs3>
             <span>Tot:</span>
-          </v-flex>
-        </v-layout>
-        <v-layout row align-center ml-0>
-          <v-flex xs9 pl-7>
+          </v-col>
+        </v-row>
+        <v-row row align-center ml-0>
+          <v-col xs9 pl-7>
             <v-menu
               v-model="showHorizonPicker"
               :close-on-content-click="false"
@@ -61,13 +63,14 @@
               <v-date-picker
                 v-if="showHorizonPicker"
                 v-model="pickedHorizon"
+                :allowed-dates="allowedDates"
                 locale="nl-NL"
                 scrollable
                 @input="selectHorizon"
               />
             </v-menu>
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
         <v-card-actions>
           <v-spacer />
           <v-btn text color="primary" @click="cancelPatternEditor">
@@ -84,12 +87,15 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </div>
+  </v-row>
 </template>
 
 <script>
 import WeekPatternEditor from './WeekPatternEditor.vue'
-import { formatDateInputFromPicker } from '@/utils/datetime.js'
+import {
+  formatDateInputFromPicker,
+  formatDatePickerFromInput,
+} from '@/utils/datetime.js'
 
 // weekdays according to JavaScript Date class (which differs from recurrence weekpattern that starts at Monday)
 const weekdays = [
@@ -258,6 +264,10 @@ export default {
       this.showHorizonPicker = false
       this.horizon = formatDateInputFromPicker(this.pickedHorizon)
     },
+    allowedDates(v) {
+      // at least tomorrow, or further in the future
+      return new Date(v) > new Date()
+    },
     cancelPatternEditor() {
       this.showCustom = false
       this.selectedRepetition = this.previousRepetition
@@ -286,7 +296,9 @@ export default {
         daysOfWeekMask: this.weekpattern,
         interval: this.weeks === 'ONE_WEEK' ? 1 : 2,
         unit: 'WEEK',
-        horizon: this.horizon || undefined,
+        horizon:
+          (this.horizon && formatDatePickerFromInput(this.horizon)) ||
+          undefined,
       })
     },
   },

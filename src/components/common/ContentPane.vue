@@ -2,10 +2,11 @@
   <div class="d-flex flex-column fill-height">
     <slot name="header"></slot>
     <v-container
-      class="fill-height"
+      class="fill-height align-start"
       :class="{
         'container-non-scrollable': !scrollable,
         'container-scrollable': scrollable,
+        'no-padding': clearpadding,
       }"
     >
       <slot></slot>
@@ -22,6 +23,11 @@ export default {
       required: false,
       default: true,
     },
+    clearpadding: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 }
 </script>
@@ -33,5 +39,9 @@ export default {
 
 .container-scrollable {
   overflow: scroll;
+}
+.no-padding {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 </style>

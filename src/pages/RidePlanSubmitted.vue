@@ -12,7 +12,7 @@
         <v-btn block rounded depressed class="my-3 button" to="/home">
           Bekijk geplande ritten</v-btn
         >
-        <v-btn block rounded depressed outlined color="green" to="/plan">
+        <v-btn block rounded depressed outlined color="primary" to="/plan">
           Plan een nieuwe rit</v-btn
         >
       </v-flex>
