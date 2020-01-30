@@ -4,13 +4,8 @@ export default {
     label: 'Lopen',
     icon: 'directions_walk',
   },
-  CAR: {
-    mode: 'CAR',
-    label: 'Auto',
-    icon: 'directions_car',
-  },
-  TRAIN: {
-    mode: 'TRAIN',
+  RAIL: {
+    mode: 'RAIL',
     label: 'Trein',
     icon: 'train',
   },
@@ -19,24 +14,14 @@ export default {
     label: 'Bus',
     icon: 'directions_bus',
   },
-  RAIL: {
-    mode: 'RAIL',
-    label: 'Tram',
-    icon: 'directions_railway',
-  },
-  BIKE: {
-    mode: 'BIKE',
+  BICYCLE: {
+    mode: 'BICYCLE',
     label: 'Fiets',
     icon: 'directions_bike',
   },
-  SUBWAY: {
-    mode: 'SUBWAY',
-    label: 'Metro',
-    icon: 'subway',
-  },
-  NETMOBIEL: {
-    mode: 'NETMOBIEL',
-    label: 'Netmobiel meerijden',
+  RIDESHARE: {
+    mode: 'RIDESHARE',
+    label: 'Meerijden',
     icon: 'local_taxi',
   },
 }

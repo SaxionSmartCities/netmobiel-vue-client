@@ -32,7 +32,7 @@ export default {
   name: 'ItinerarySummary',
   components: {},
   props: {
-    date: { type: String },
+    date: { type: String, default: '' },
     duration: { type: Number, default: 0 },
     cost: { type: Number, default: 0 },
   },

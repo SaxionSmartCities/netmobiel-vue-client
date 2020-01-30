@@ -87,7 +87,7 @@ const headers = {
   CAR() {
     return this.leg.from.name
   },
-  NETMOBIEL: 'Meerijden met een NETMOBIEL gebruiker',
+  RIDESHARE: 'Meerijden met een Netmobiel gebruiker',
   RAIL() {
     return `${this.leg.routeShortName} naar ${this.leg.to.label}`
   },
@@ -112,7 +112,7 @@ const descriptions = {
     return `${this.leg.from.label} - ${this.leg.to.label}`
   },
   CAR: '',
-  NETMOBIEL: 'Meerijden met een NETMOBIEL gebruiker',
+  RIDESHARE: 'Meerijden met een Netmobiel gebruiker',
   RAIL() {
     // add platform to departure and arrival
     return `${this.leg.from.label} perron ${this.leg.from.platformCode} - ${
@@ -120,7 +120,7 @@ const descriptions = {
     } perron ${this.leg.to.platformCode}`
   },
   BUS() {
-    return `${this.leg.from.name} - ${this.leg.to.name}`
+    return `${this.leg.from.label} - ${this.leg.to.label}`
   },
   WAIT: '',
   FINISH: '',
