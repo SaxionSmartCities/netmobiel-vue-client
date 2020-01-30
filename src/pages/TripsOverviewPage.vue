@@ -34,7 +34,7 @@
             <travel-card
               :from="trip.from"
               :to="trip.to"
-              :date="trip.date"
+              :date="epochToDate(trip.date)"
               :journey="trip.itinerary"
             />
           </v-col>
@@ -97,6 +97,9 @@ export default {
     selectedTab: number => number,
   }),
   methods: {
+    epochToDate(epoch) {
+      return moment(epoch)
+    },
     parseDate(dateString) {
       //HACK: Remove [UTC] from the date string for correct parseing.
       // Should be fixed in the backend.
