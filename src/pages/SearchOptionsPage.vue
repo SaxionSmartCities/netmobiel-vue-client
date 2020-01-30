@@ -16,7 +16,7 @@
           <v-col>
             <search-options
               v-model="searchPreferences"
-              v-on:onSearchOptionsSave="saveSearchOptions"
+              @onSearchOptionsSave="saveSearchOptions"
             />
           </v-col>
         </v-row>
