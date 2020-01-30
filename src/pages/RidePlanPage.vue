@@ -34,17 +34,15 @@
               <v-row>
                 <v-col>
                   <v-row dense>
-                    <v-col cols="3">
-                      <span class="form-label font-weight-bold">
-                        Auto
-                      </span>
+                    <v-col cols="1">
+                      <v-icon>directions_car</v-icon>
                     </v-col>
-                    <v-col v-if="!selectedCar">
+                    <v-col v-if="!selectedCar" class="pl-3">
                       <router-link to="profileCars">
-                        <span>Invoeren</span>
+                        <span>Voer je auto in</span>
                       </router-link>
                     </v-col>
-                    <v-col v-else>
+                    <v-col v-else class="pl-3">
                       <router-link to="profileCars">
                         <span> {{ selectedCar.licensePlate }}</span>
                       </router-link>
