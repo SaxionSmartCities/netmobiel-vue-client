@@ -189,7 +189,9 @@ export default {
       get() {
         return {
           title: 'Toestaan',
-          options: travelModes,
+          options: Object.keys(travelModes)
+            .map(x => travelModes[x])
+            .filter(x => !!x && x.visible), // Filter only visible travel modes.
           selected: this.value.allowedTravelModes
             .map(mode => travelModes[mode])
             .filter(x => !!x), // Filter out the undefined travel modes.
