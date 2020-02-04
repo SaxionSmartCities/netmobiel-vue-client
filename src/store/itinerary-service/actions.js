@@ -15,7 +15,7 @@ function generateHeader(key) {
 export default {
   submitPlanningsRequest: (context, payload) => {
     context.commit('storePlanningRequest', payload)
-    const URL = BASE_URL + '/planner/api/search/plan'
+    const URL = BASE_URL + '/planner/search/plan'
     const { from, to, timestamp } = payload
     const params = {
       from: `${from.title}::${from.position[0]},${from.position[1]}`,

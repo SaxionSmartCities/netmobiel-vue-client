@@ -37,7 +37,7 @@ export default {
   storeFavoriteLocations: (context, payload) => {
     let profile = {
       ...context.state.user.profile,
-      favoriteLocations: { ...payload },
+      favoriteLocations: payload,
     }
     context.dispatch('updateProfile', profile)
   },
