@@ -4,7 +4,7 @@
       <v-flex><h1>Reisopties</h1></v-flex>
       <v-flex my-2>
         <v-divider />
-        <v-flex v-if="itineraries == undefined" my-4>
+        <v-flex v-if="plan.itineraries == undefined" my-4>
           Helaas, er zijn geen ritten gevonden!
         </v-flex>
         <v-expansion-panels v-else>
@@ -20,12 +20,16 @@
         <v-divider />
       </v-flex>
       <v-flex xs12>
-        <v-flex v-for="(itinerary, index) in itineraries" :key="index" xs12>
+        <v-flex
+          v-for="(itinerary, index) in plan.itineraries"
+          :key="index"
+          xs12
+        >
           <travel-card
             class="mt-2"
-            :from="OVPlanningResults.from"
-            :to="OVPlanningResults.to"
-            :date="date"
+            :from="plan.from"
+            :to="plan.to"
+            :date="toDate(plan.arrivalTime)"
             :journey="itinerary"
           >
           </travel-card>
@@ -33,14 +37,6 @@
       </v-flex>
       <v-flex mt-3>
         <v-layout column>
-          <v-flex>
-            <!-- <v-layout pa-2>
-              <v-flex xs2>
-                <v-icon>fa-volume-up</v-icon>
-              </v-flex>
-              <v-flex>Plaats oproep in de community</v-flex>
-            </v-layout> -->
-          </v-flex>
           <v-flex mt-3 mb-3>
             <a href="tel:0900-9874">
               <v-layout pa-2>
@@ -70,7 +66,7 @@ export default {
     TravelCard,
     SearchOptionsSummaryCard,
   },
-  data: function() {
+  data() {
     return {
       sortModi: [
         { name: 'Vertrektijd', function: this.sortByStartTime },
@@ -81,36 +77,27 @@ export default {
     }
   },
   computed: {
-    planningResults: function() {
-      return this.$store.getters['is/getPlanningResults']
-    },
-    OVPlanningResults: function() {
-      return this.planningResults.plan
-    },
-    itineraries() {
-      return this.OVPlanningResults.itineraries
-    },
-    rides() {
-      return this.planningResults.rides
-    },
-    date() {
-      return moment(this.OVPlanningResults.arrivalTime)
+    plan() {
+      return this.$store.getters['is/getPlanningResults'].plan
     },
   },
   created: function() {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
-    sortByDuration: function(a, b) {
+    toDate(string) {
+      return moment(string)
+    },
+    sortByDuration(a, b) {
       return a.duration - b.duration
     },
-    sortByTransfers: function(a, b) {
+    sortByTransfers(a, b) {
       return a.legs.length - b.legs.length
     },
-    sortByStartTime: function(a, b) {
+    sortByStartTime(a, b) {
       return a.startTime - b.startTime
     },
-    changeSort: function() {
+    changeSort() {
       this.selectedModus = (this.selectedModus + 1) % this.sortModi.length
       this.$store.commit(
         'is/sortItineraries',
