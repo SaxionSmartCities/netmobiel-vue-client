@@ -54,34 +54,29 @@
           </v-row>
         </v-expand-transition>
         <v-expand-transition>
-          <v-row>
-            <v-col v-if="getSubmitStatus.status !== 'UNSUBMITTED'">
-              <v-expand-transition>
-                <v-col
-                  v-if="
-                    getSubmitStatus.status === 'PENDING' ||
-                      getSubmitStatus.status === 'SUCCESS'
-                  "
-                  shrink
-                >
-                  <v-row>
-                    <v-col xs-3 mt-2>
-                      <v-progress-circular
-                        indeterminate
-                        :class="{
-                          makeBlue: getSubmitStatus.status === 'PENDING',
-                          rotate: getSubmitStatus.status === 'SUCCESS',
-                        }"
-                      >
-                      </v-progress-circular>
-                    </v-col>
-                    <v-col>
-                      <h3>Zoekopdracht is verstuurd!</h3>
-                      <p>Even geduld...</p>
-                    </v-col>
-                  </v-row>
+          <v-row
+            v-if="
+              getSubmitStatus.status === 'PENDING' ||
+                getSubmitStatus.status === 'SUCCESS'
+            "
+          >
+            <v-col class="box-widget background-white" shrink>
+              <v-row>
+                <v-col cols="3" xs-3 mt-2>
+                  <v-progress-circular
+                    indeterminate
+                    :class="{
+                      makeBlue: getSubmitStatus.status === 'PENDING',
+                      rotate: getSubmitStatus.status === 'SUCCESS',
+                    }"
+                  >
+                  </v-progress-circular>
                 </v-col>
-              </v-expand-transition>
+                <v-col>
+                  <h3>Zoekopdracht is verstuurd!</h3>
+                  <p>Even geduld...</p>
+                </v-col>
+              </v-row>
             </v-col>
           </v-row>
         </v-expand-transition>
