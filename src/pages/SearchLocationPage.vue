@@ -150,23 +150,18 @@ export default {
           timeout: 3000,
         })
       } else {
-        let payload = {
-          favoriteLocations: profile.favoriteLocations.slice(0),
-        }
-
-        payload.favoriteLocations.push(favorite)
-        this.$store.dispatch('ps/storeFavoriteLocations', payload)
+        let favoriteLocations = profile.favoriteLocations.slice(0)
+        favoriteLocations.push(favorite)
+        this.$store.dispatch('ps/storeFavoriteLocations', favoriteLocations)
       }
       this.selectedLocation = undefined
     },
     removeFavorite(favorite) {
       let profile = this.$store.getters['ps/getProfile']
-      let payload = {
-        favoriteLocations: profile.favoriteLocations.filter(
-          x => x.id !== favorite.id
-        ),
-      }
-      this.$store.dispatch('ps/storeFavoriteLocations', payload)
+      let favoriteLocations = profile.favoriteLocations.filter(
+        x => x.id !== favorite.id
+      )
+      this.$store.dispatch('ps/storeFavoriteLocations', favoriteLocations)
     },
   },
 }

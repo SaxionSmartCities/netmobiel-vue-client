@@ -4,7 +4,7 @@
       <v-col><h1>Reisopties</h1></v-col>
       <v-col my-2>
         <v-divider />
-        <v-col v-if="itineraries == undefined" my-4>
+        <v-col v-if="plan.itineraries == undefined" my-4>
           Helaas, er zijn geen ritten gevonden!
         </v-col>
         <v-expansion-panels v-else>
@@ -20,12 +20,12 @@
         <v-divider />
       </v-col>
       <v-col xs12>
-        <v-col v-for="(itinerary, index) in itineraries" :key="index" xs12>
+        <v-col v-for="(itinerary, index) in plan.itineraries" :key="index" xs12>
           <travel-card
             class="mt-2"
-            :from="OVPlanningResults.from"
-            :to="OVPlanningResults.to"
-            :date="date"
+            :from="plan.from"
+            :to="plan.to"
+            :date="toDate(plan.arrivalTime)"
             :journey="itinerary"
           >
           </travel-card>
@@ -78,7 +78,7 @@ export default {
     TravelCard,
     SearchOptionsSummaryCard,
   },
-  data: function() {
+  data() {
     return {
       sortModi: [
         { name: 'Vertrektijd', function: this.sortByStartTime },
@@ -89,20 +89,8 @@ export default {
     }
   },
   computed: {
-    planningResults: function() {
-      return this.$store.getters['is/getPlanningResults']
-    },
-    OVPlanningResults: function() {
-      return this.planningResults.plan
-    },
-    itineraries() {
-      return this.OVPlanningResults.itineraries
-    },
-    rides() {
-      return this.planningResults.rides
-    },
-    date() {
-      return moment(this.OVPlanningResults.arrivalTime)
+    plan() {
+      return this.$store.getters['is/getPlanningResults'].plan
     },
   },
   created: function() {
@@ -117,16 +105,19 @@ export default {
         planningRequest.plan
       )
     },
-    sortByDuration: function(a, b) {
+    toDate(string) {
+      return moment(string)
+    },
+    sortByDuration(a, b) {
       return a.duration - b.duration
     },
-    sortByTransfers: function(a, b) {
+    sortByTransfers(a, b) {
       return a.legs.length - b.legs.length
     },
-    sortByStartTime: function(a, b) {
+    sortByStartTime(a, b) {
       return a.startTime - b.startTime
     },
-    changeSort: function() {
+    changeSort() {
       this.selectedModus = (this.selectedModus + 1) % this.sortModi.length
       this.$store.commit(
         'is/sortItineraries',
