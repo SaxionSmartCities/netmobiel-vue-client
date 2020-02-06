@@ -19,24 +19,20 @@
         </v-expansion-panels>
         <v-divider />
       </v-col>
-      <v-col xs12>
-        <v-col v-for="(itinerary, index) in plan.itineraries" :key="index" xs12>
-          <travel-card
-            class="mt-2"
-            :from="plan.from"
-            :to="plan.to"
-            :date="toDate(plan.arrivalTime)"
-            :journey="itinerary"
-          >
-          </travel-card>
-        </v-col>
+      <v-col v-for="(itinerary, index) in plan.itineraries" :key="index">
+        <travel-card
+          :from="plan.from"
+          :to="plan.to"
+          :date="toDate(plan.arrivalTime)"
+          :journey="itinerary"
+        >
+        </travel-card>
       </v-col>
       <v-col mt-3>
         <v-row class="flex-column">
           <v-col class="py-0">
-            <v-divider></v-divider>
-            <div @click="shoutOut()">
-              <v-row class="pa-2">
+            <a href="#" @click="shoutOut()">
+              <v-row>
                 <v-col class="col-2 ml-2">
                   <v-icon>fa-volume-up</v-icon>
                 </v-col>
@@ -44,12 +40,11 @@
                   <span>Plaats oproep in de community</span>
                 </v-col>
               </v-row>
-            </div>
+            </a>
           </v-col>
           <v-col class="py-0">
-            <v-divider></v-divider>
             <a href="tel:0900-9874">
-              <v-row class="pa-2">
+              <v-row>
                 <v-col class="col-2 ml-2">
                   <v-icon>phone_in_talk</v-icon>
                 </v-col>
@@ -93,7 +88,7 @@ export default {
       return this.$store.getters['is/getPlanningResults'].plan
     },
   },
-  created: function() {
+  created() {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
