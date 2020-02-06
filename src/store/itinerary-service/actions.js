@@ -15,7 +15,7 @@ function generateHeader(key) {
 export default {
   submitPlanningsRequest: (context, payload) => {
     context.commit('storePlanningRequest', payload)
-    const URL = BASE_URL + '/planner/api/search/plan'
+    const URL = BASE_URL + '/planner/search/plan'
     const { from, to, timestamp } = payload
     const params = {
       from: `${from.title}::${from.position[0]},${from.position[1]}`,
@@ -110,6 +110,41 @@ export default {
           },
           { root: true }
         )
+      })
+  },
+  createTripWithoutItineraries: (context, payload) => {
+    const URL = BASE_URL + '/planner/trips'
+    const body = {
+      from: payload.from,
+      to: payload.to,
+    }
+    const config = {
+      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+    }
+
+    if (payload.arrivalTime) {
+      body.arrivalTime = payload.arrivalTime
+      const sameDayMidnight = moment(payload.arrivalTime)
+        .startOf('day')
+        .toString()
+      body.departureTime = sameDayMidnight //Set to midnight same day
+    } else {
+      body.departureTime = payload.departureTime
+      const nextDayMidnight = moment(payload.departureTime)
+        .add(1, 'day')
+        .startOf('day')
+        .toString()
+      body.arrivalTime = nextDayMidnight //Set to midnight next day
+    }
+
+    console.log('sending this body : ', body)
+    axios
+      .post(URL, body, config)
+      .then(resp => {
+        console.log('response from server: ', resp)
+      })
+      .catch(error => {
+        console.log('ERROR while createTripWithoutItineraries', error)
       })
   },
 }

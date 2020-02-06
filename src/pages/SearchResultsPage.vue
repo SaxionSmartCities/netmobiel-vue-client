@@ -1,12 +1,12 @@
 <template>
   <content-pane>
-    <v-layout column>
-      <v-flex><h1>Reisopties</h1></v-flex>
-      <v-flex my-2>
+    <v-row class="d-flex flex-column">
+      <v-col><h1>Reisopties</h1></v-col>
+      <v-col my-2>
         <v-divider />
-        <v-flex v-if="itineraries == undefined" my-4>
+        <v-col v-if="itineraries == undefined" my-4>
           Helaas, er zijn geen ritten gevonden!
-        </v-flex>
+        </v-col>
         <v-expansion-panels v-else>
           <v-expansion-panel>
             <v-expansion-panel-header>
@@ -18,9 +18,9 @@
           </v-expansion-panel>
         </v-expansion-panels>
         <v-divider />
-      </v-flex>
-      <v-flex xs12>
-        <v-flex v-for="(itinerary, index) in itineraries" :key="index" xs12>
+      </v-col>
+      <v-col xs12>
+        <v-col v-for="(itinerary, index) in itineraries" :key="index" xs12>
           <travel-card
             class="mt-2"
             :from="OVPlanningResults.from"
@@ -29,31 +29,39 @@
             :journey="itinerary"
           >
           </travel-card>
-        </v-flex>
-      </v-flex>
-      <v-flex mt-3>
-        <v-layout column>
-          <v-flex>
-            <!-- <v-layout pa-2>
-              <v-flex xs2>
-                <v-icon>fa-volume-up</v-icon>
-              </v-flex>
-              <v-flex>Plaats oproep in de community</v-flex>
-            </v-layout> -->
-          </v-flex>
-          <v-flex mt-3 mb-3>
+        </v-col>
+      </v-col>
+      <v-col mt-3>
+        <v-row class="flex-column">
+          <v-col class="py-0">
+            <v-divider></v-divider>
+            <div @click="shoutOut()">
+              <v-row class="pa-2">
+                <v-col class="col-2 ml-2">
+                  <v-icon>fa-volume-up</v-icon>
+                </v-col>
+                <v-col>
+                  <span>Plaats oproep in de community</span>
+                </v-col>
+              </v-row>
+            </div>
+          </v-col>
+          <v-col class="py-0">
+            <v-divider></v-divider>
             <a href="tel:0900-9874">
-              <v-layout pa-2>
-                <v-flex xs2>
+              <v-row class="pa-2">
+                <v-col class="col-2 ml-2">
                   <v-icon>phone_in_talk</v-icon>
-                </v-flex>
-                <v-flex>Bel de ZOOV regiotaxi</v-flex>
-              </v-layout>
+                </v-col>
+                <v-col>
+                  <span>Bel de ZOOV regiotaxi</span>
+                </v-col>
+              </v-row>
             </a>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 
@@ -101,6 +109,14 @@ export default {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
+    shoutOut() {
+      const planningRequest = this.$store.getters['is/getPlanningResults']
+
+      this.$store.dispatch(
+        'is/createTripWithoutItineraries',
+        planningRequest.plan
+      )
+    },
     sortByDuration: function(a, b) {
       return a.duration - b.duration
     },
@@ -130,5 +146,8 @@ export default {
 a {
   text-decoration: none;
   color: #2e8997;
+  span {
+    font-size: 1em;
+  }
 }
 </style>
