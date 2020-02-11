@@ -61,9 +61,13 @@ export default {
       })
       .then(response => {
         if (response.status == 201) {
+          let message = 'Oproep naar de community is geplaatst'
+          if (payload.legs && payload.legs.length > 0) {
+            message = 'Reis bevestigd'
+          }
           context.dispatch(
             'ui/queueNotification',
-            { message: 'Reis bevestigd', timeout: 3000 },
+            { message: message, timeout: 3000 },
             { root: true }
           )
         } else {
