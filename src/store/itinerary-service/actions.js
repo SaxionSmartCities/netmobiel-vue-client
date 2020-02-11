@@ -53,7 +53,6 @@ export default {
       })
   },
   storeSelectedTrip: (context, payload) => {
-    console.log(payload)
     const URL = BASE_URL + '/planner/trips'
     axios
       .post(URL, payload, {
@@ -93,7 +92,6 @@ export default {
     axios
       .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
       .then(response => {
-        console.log(response.data)
         if (response.status == 200 && response.data.length > 0) {
           context.commit('setPlannedTrips', response.data)
         }
