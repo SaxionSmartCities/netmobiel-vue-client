@@ -117,7 +117,11 @@ export default {
     },
     rides() {
       //HACK: Only display first 3 rides.
-      return this.$store.getters['cs/getRides'].slice(0, 2)
+      let sortedList = this.$store.getters['cs/getRides'].slice(0, 3)
+      sortedList.sort((a, b) => {
+        return new Date(a.departureTime) - new Date(b.departureTime)
+      })
+      return sortedList
     },
     timeOfDayGreeting() {
       let currentHour = moment().format('HH')
