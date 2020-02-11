@@ -1,12 +1,12 @@
 <template>
   <content-pane>
-    <v-layout column>
-      <v-flex><h1>Reisopties</h1></v-flex>
-      <v-flex my-2>
+    <v-row class="d-flex flex-column">
+      <v-col><h1>Reisopties</h1></v-col>
+      <v-col class="my-2">
         <v-divider />
-        <v-flex v-if="plan.itineraries == undefined" my-4>
+        <v-col class="my-2" v-if="plan.itineraries == undefined">
           Helaas, er zijn geen ritten gevonden!
-        </v-flex>
+        </v-col>
         <v-expansion-panels v-else>
           <v-expansion-panel>
             <v-expansion-panel-header>
@@ -18,26 +18,26 @@
           </v-expansion-panel>
         </v-expansion-panels>
         <v-divider />
-      </v-flex>
-      <v-flex xs12>
-        <v-flex
-          v-for="(itinerary, index) in plan.itineraries"
-          :key="index"
-          xs12
-        >
-          <travel-card
-            class="mt-2"
-            :from="plan.from"
-            :to="plan.to"
-            :date="toDate(plan.arrivalTime)"
-            :journey="itinerary"
-          >
-          </travel-card>
-        </v-flex>
-      </v-flex>
-      <v-flex mt-3>
-        <v-layout column>
-          <v-flex mt-3 mb-3>
+      </v-col>
+      <v-col cols="12">
+        <v-row>
+          <v-col cols="12">
+            <div v-for="(itinerary, index) in plan.itineraries" :key="index">
+              <travel-card
+                class="mt-2"
+                :from="plan.from"
+                :to="plan.to"
+                :date="toDate(plan.arrivalTime)"
+                :journey="itinerary"
+              >
+              </travel-card>
+            </div>
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col class="mt-3">
+        <v-row class="d-flex flex-column">
+          <v-col mt-3 mb-3>
             <a href="tel:0900-9874">
               <v-layout pa-2>
                 <v-flex xs2>
@@ -46,10 +46,10 @@
                 <v-flex>Bel de ZOOV regiotaxi</v-flex>
               </v-layout>
             </a>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 
