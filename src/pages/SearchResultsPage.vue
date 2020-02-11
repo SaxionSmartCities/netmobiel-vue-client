@@ -93,12 +93,22 @@ export default {
   },
   methods: {
     shoutOut() {
-      const planningRequest = this.$store.getters['is/getPlanningResults']
-
-      this.$store.dispatch(
-        'is/createTripWithoutItineraries',
-        planningRequest.plan
-      )
+      const shoutOutTrip = {
+        from: this.plan.from,
+        to: this.plan.to,
+        arrivalTime: this.plan.arrivalTime
+          ? this.plan.arrivalTime
+          : `${moment(this.plan.departureTime)
+              .startOf('day')
+              .format('YYYY-MM-DDTHH:mm:ss')}Z`,
+        departureTime: this.plan.departureTime
+          ? this.plan.departureTime
+          : `${moment(this.plan.arrivalTime)
+              .add(1, 'day')
+              .startOf('day')
+              .format('YYYY-MM-DDTHH:mm:ss')}Z`,
+      }
+      this.$store.dispatch('is/storeSelectedTrip', shoutOutTrip)
     },
     toDate(string) {
       return moment(string)

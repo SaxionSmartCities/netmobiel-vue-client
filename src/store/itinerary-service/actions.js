@@ -1,6 +1,5 @@
 import axios from 'axios'
 import config from '@/config/config'
-import moment from 'moment'
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_PLANNER_SERVICE_API_KEY = config.GRAVITEE_PLANNER_SERVICE_API_KEY
@@ -54,6 +53,7 @@ export default {
       })
   },
   storeSelectedTrip: (context, payload) => {
+    console.log(payload)
     const URL = BASE_URL + '/planner/trips'
     axios
       .post(URL, payload, {
@@ -89,13 +89,9 @@ export default {
     axios
       .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
       .then(response => {
+        console.log(response.data)
         if (response.status == 200 && response.data.length > 0) {
-          // Convert date to epochs.
-          let parsedTrips = response.data.trips.map(trip => {
-            trip.date = moment(trip.date).valueOf()
-            return trip
-          })
-          context.commit('setPlannedTrips', parsedTrips)
+          context.commit('setPlannedTrips', response.data)
         }
       })
       .catch(error => {
@@ -109,41 +105,6 @@ export default {
           },
           { root: true }
         )
-      })
-  },
-  createTripWithoutItineraries: (context, payload) => {
-    const URL = BASE_URL + '/planner/trips'
-    const body = {
-      from: payload.from,
-      to: payload.to,
-    }
-    const config = {
-      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
-    }
-
-    if (payload.arrivalTime) {
-      body.arrivalTime = payload.arrivalTime
-      const sameDayMidnight = moment(payload.arrivalTime)
-        .startOf('day')
-        .toString()
-      body.departureTime = sameDayMidnight //Set to midnight same day
-    } else {
-      body.departureTime = payload.departureTime
-      const nextDayMidnight = moment(payload.departureTime)
-        .add(1, 'day')
-        .startOf('day')
-        .toString()
-      body.arrivalTime = nextDayMidnight //Set to midnight next day
-    }
-
-    console.log('sending this body : ', body)
-    axios
-      .post(URL, body, config)
-      .then(resp => {
-        console.log('response from server: ', resp)
-      })
-      .catch(error => {
-        console.log('ERROR while createTripWithoutItineraries', error)
       })
   },
 }
