@@ -11,9 +11,9 @@
         <v-card-text>
           <v-row no-gutters class="pb-2">
             <v-col
-              v-for="(leg, index) in legs"
-              :key="index"
-              :cols="calculateWidth(index)"
+              v-for="(leg, indx) in legs"
+              :key="indx"
+              :cols="calculateWidth(indx)"
             >
               <travel-leg :leg="leg"> </travel-leg>
             </v-col>
