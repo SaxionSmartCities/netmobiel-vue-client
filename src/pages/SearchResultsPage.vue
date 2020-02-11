@@ -19,12 +19,16 @@
         </v-expansion-panels>
         <v-divider />
       </v-col>
-      <v-col v-for="(itinerary, index) in plan.itineraries" :key="index">
+      <v-col
+        v-for="(itinerary, index) in plan.itineraries"
+        :key="index"
+        class="pb-0"
+      >
         <travel-card
           :from="plan.from"
           :to="plan.to"
-          :arrivalTime="toDate(itinerary.arrivalTime)"
-          :departureTime="toDate(itinerary.departureTime)"
+          :arrival-time="toDate(itinerary.arrivalTime)"
+          :departure-time="toDate(itinerary.departureTime)"
           :duration="itinerary.duration"
           :legs="itinerary.legs"
         >
