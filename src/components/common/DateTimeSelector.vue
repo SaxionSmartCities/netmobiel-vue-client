@@ -135,7 +135,7 @@ export default {
         this.date = when.format(DATE_FORMAT_INPUT)
         this.time = this.pickedTime = when.format(TIME_FORMAT)
       }
-      this.arriving = this.pickedArriving = arriving || false
+      this.arriving = this.pickedArriving = arriving || true
     },
     emitInput() {
       const { date, time } = this
