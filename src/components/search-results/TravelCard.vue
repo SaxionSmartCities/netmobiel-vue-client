@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined @click="openDetails()">
+  <v-card outlined @click="$emit('onTripSelected', index)">
     <v-row no-gutters>
       <v-col>
         <v-card-title>
@@ -9,7 +9,7 @@
           {{ formatDateTime(departureTime) }}
         </v-card-subtitle>
         <v-card-text>
-          <v-row no-gutters>
+          <v-row no-gutters class="pb-2">
             <v-col
               v-for="(leg, index) in legs"
               :key="index"
@@ -18,7 +18,9 @@
               <travel-leg :leg="leg"> </travel-leg>
             </v-col>
           </v-row>
-          <div v-if="duration">{{ Math.round(duration / 60) }} minuten</div>
+          <div v-if="duration">
+            Reistijd: {{ Math.round(duration / 60) }} minuten
+          </div>
         </v-card-text>
       </v-col>
       <v-card-actions>
@@ -38,6 +40,7 @@ export default {
     TravelLeg,
   },
   props: {
+    index: { type: Number, required: true },
     from: { type: Object, required: true },
     to: { type: Object, required: true },
     arrivalTime: { type: Object, required: true },
@@ -105,16 +108,6 @@ export default {
     },
     calculateWidth(index) {
       return this.layoutRatios[index]
-    },
-    openDetails() {
-      const selectedTrip = {
-        from: this.from,
-        to: this.from,
-        date: this.date,
-        itinerary: this.journey,
-      }
-      this.$store.commit('is/setSelectedTrip', selectedTrip)
-      this.$router.push('/itineraryDetailPage')
     },
   },
 }
