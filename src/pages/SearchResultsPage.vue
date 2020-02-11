@@ -23,8 +23,10 @@
         <travel-card
           :from="plan.from"
           :to="plan.to"
-          :date="toDate(plan.arrivalTime)"
-          :journey="itinerary"
+          :arrivalTime="toDate(itinerary.arrivalTime)"
+          :departureTime="toDate(itinerary.departureTime)"
+          :duration="itinerary.duration"
+          :legs="itinerary.legs"
         >
         </travel-card>
       </v-col>
