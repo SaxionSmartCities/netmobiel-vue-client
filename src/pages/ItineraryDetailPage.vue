@@ -20,7 +20,10 @@
       </v-flex>
       <v-flex mt-4 mx-3>
         <v-layout column>
-          <v-flex v-for="(leg, index) in generateSteps" :key="index">
+          <v-flex v-if="generateSteps.length == 0">
+            Shoutout
+          </v-flex>
+          <v-flex v-for="(leg, index) in generateSteps" v-else :key="index">
             <itinerary-leg :leg="leg" />
           </v-flex>
         </v-layout>
@@ -55,6 +58,9 @@ export default {
       return this.$store.getters['is/getSelectedTrip']
     },
     generateSteps() {
+      if (!this.selectedTrip.legs || this.selectedTrip.legs.length == 0) {
+        return []
+      }
       let result = []
       for (let i = 0; i < this.selectedTrip.legs.length - 1; i++) {
         let currentLeg = this.selectedTrip.legs[i]
