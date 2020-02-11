@@ -1,6 +1,6 @@
 <template>
   <content-pane>
-    <v-row class="d-flex flex-column">
+    <v-row dense class="d-flex flex-column">
       <v-col><h1>Reisopties</h1></v-col>
       <v-col my-2>
         <v-divider />
@@ -19,18 +19,16 @@
         </v-expansion-panels>
         <v-divider />
       </v-col>
-      <v-col
-        v-for="(itinerary, index) in plan.itineraries"
-        :key="index"
-        class="pb-0"
-      >
+      <v-col v-for="(itinerary, index) in plan.itineraries" :key="index">
         <travel-card
+          :index="index"
           :from="plan.from"
           :to="plan.to"
           :arrival-time="toDate(itinerary.arrivalTime)"
           :departure-time="toDate(itinerary.departureTime)"
           :duration="itinerary.duration"
           :legs="itinerary.legs"
+          @onTripSelected="onTripSelected"
         >
         </travel-card>
       </v-col>
@@ -98,6 +96,15 @@ export default {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
+    onTripSelected(index) {
+      let selectedTrip = {
+        from: this.plan.from,
+        to: this.plan.to,
+        ...this.plan.itineraries[index],
+      }
+      this.$store.commit('is/setSelectedTrip', selectedTrip)
+      this.$router.push('/itineraryDetailPage')
+    },
     shoutOut() {
       const shoutOutTrip = {
         from: this.plan.from,

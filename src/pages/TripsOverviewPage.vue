@@ -32,11 +32,13 @@
         <v-row v-for="(trip, index) in getPlannedTrips" :key="index">
           <v-col class="py-1">
             <travel-card
+              :index="index"
               :from="trip.from"
               :to="trip.to"
               :arrival-time="parseDate(trip.arrivalTime)"
               :departure-time="parseDate(trip.departureTime)"
               :legs="trip.legs"
+              @onTripSelected="onTripSelected"
             />
           </v-col>
         </v-row>
@@ -99,6 +101,10 @@ export default {
   methods: {
     parseDate(dateString) {
       return moment(dateString)
+    },
+    onTripSelected(index) {
+      this.$store.commit('is/setSelectedTrip', this.getPlannedTrips[index])
+      this.$router.push('/itineraryDetailPage')
     },
   },
 }
