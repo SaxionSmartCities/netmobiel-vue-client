@@ -5,7 +5,7 @@
         <v-flex shrink>
           <v-icon
             class="text-primary"
-            :class="{ 'v-icon-ride': leg.mode === 'RIDESHARE' }"
+            :class="{ 'v-icon-ride': leg.traverseMode === 'RIDESHARE' }"
           >
             {{ getIcon }}
           </v-icon>
@@ -15,7 +15,7 @@
     <v-flex pt-1>
       <div
         class="travel-line"
-        :class="leg.mode === 'WALK' ? 'dotted' : ''"
+        :class="leg.traverseMode === 'WALK' ? 'dotted' : ''"
       ></div>
     </v-flex>
   </v-layout>
@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     getIcon() {
-      return travelModes[this.leg.mode].icon
+      return travelModes[this.leg.traverseMode].icon
     },
   },
 }
