@@ -1,9 +1,14 @@
 <template>
   <v-container>
     <div class="text-center">
-      <v-btn x-large outlined color="indigo">
+      <v-btn x-large outlined color="indigo" :to="forward">
         <div class="compact-form">
-          <v-badge color="green" :content="aantalBerichten">
+          <v-badge
+            overlap
+            color="red"
+            :value="aantalBerichten"
+            :content="aantalBerichten"
+          >
             <v-icon>{{ icon }}</v-icon>
           </v-badge>
           <div>{{ naam }}</div>
@@ -18,6 +23,7 @@ export default {
   props: {
     aantalBerichten: {
       type: Number,
+      default: 0,
       required: false,
     },
     icon: {
@@ -27,6 +33,10 @@ export default {
     naam: {
       type: String,
       required: true,
+    },
+    forward: {
+      type: String,
+      required: false,
     },
   },
 }
