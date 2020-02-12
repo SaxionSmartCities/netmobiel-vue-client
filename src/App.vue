@@ -48,7 +48,7 @@
         <v-icon>favorite</v-icon>
       </v-btn>
 
-      <v-btn text value="community" to="/community">
+      <v-btn text value="community" to="/communityOverview">
         <span>Community</span>
         <v-icon>chat</v-icon>
       </v-btn>

@@ -5,6 +5,7 @@ import store from './store'
 Vue.use(Router)
 
 import CommunityPage from './pages/CommunityPage.vue'
+import CommunityOverviewPage from './pages/CommunityOverviewPage.vue'
 import ConversationPage from './pages/ConversationPage.vue'
 import ItineraryDetailPage from './pages/ItineraryDetailPage.vue'
 import LandingPage from './pages/LandingPage.vue'
@@ -162,6 +163,11 @@ const router = new Router({
       path: '/community',
       component: CommunityPage,
       name: 'community',
+    },
+    {
+      path: '/communityOverview',
+      component: CommunityOverviewPage,
+      name: 'communityOverview',
     },
     {
       path: '/conversation/:id',
