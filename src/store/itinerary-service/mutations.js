@@ -28,4 +28,7 @@ export default {
   setPlannedTrips: (state, payload) => {
     state.plannedTrips = payload
   },
+  appendPlannedTrips: (state, payload) => {
+    state.plannedTrips.push(payload)
+  },
 }

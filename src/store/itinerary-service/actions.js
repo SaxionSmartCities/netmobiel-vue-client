@@ -87,13 +87,24 @@ export default {
         )
       })
   },
-  fetchTrips: context => {
-    const URL = BASE_URL + '/planner/trips'
+  fetchTrips: (context, payload) => {
+    const offset = payload.offset
+    const maxResults = payload.maxResults
+    const URL =
+      BASE_URL +
+      '/planner/trips/?maxResults=' +
+      maxResults +
+      '&offset=' +
+      offset
     axios
       .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
       .then(response => {
         if (response.status == 200 && response.data.length > 0) {
-          context.commit('setPlannedTrips', response.data)
+          if (offset == 0) {
+            context.commit('setPlannedTrips', response.data)
+          } else {
+            context.commit('appendPlannedTrips', response.data)
+          }
         }
       })
       .catch(error => {
