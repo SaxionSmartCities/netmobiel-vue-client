@@ -32,10 +32,13 @@
         <v-row v-for="(trip, index) in getPlannedTrips" :key="index">
           <v-col class="py-1">
             <travel-card
+              :index="index"
               :from="trip.from"
               :to="trip.to"
-              :date="epochToDate(trip.date)"
-              :journey="trip.itinerary"
+              :arrival-time="parseDate(trip.arrivalTime)"
+              :departure-time="parseDate(trip.departureTime)"
+              :legs="trip.legs"
+              @onTripSelected="onTripSelected"
             />
           </v-col>
         </v-row>
@@ -64,6 +67,7 @@
 
 <script>
 import moment from 'moment'
+import { mapGetters } from 'vuex'
 import ContentPane from '@/components/common/ContentPane.vue'
 import TravelCard from '@/components/search-results/TravelCard.vue'
 import RideCard from '@/components/rides/RideCard.vue'
@@ -79,12 +83,10 @@ export default {
     }
   },
   computed: {
-    getPlannedTrips() {
-      return this.$store.getters['is/getPlannedTrips']
-    },
-    getPlannedRides() {
-      return this.$store.getters['cs/getRides']
-    },
+    ...mapGetters({
+      getPlannedTrips: 'is/getPlannedTrips',
+      getPlannedRides: 'cs/getRides',
+    }),
   },
   mounted() {
     this.$store.dispatch('is/fetchTrips')
@@ -97,13 +99,12 @@ export default {
     selectedTab: number => number,
   }),
   methods: {
-    epochToDate(epoch) {
-      return moment(epoch)
-    },
     parseDate(dateString) {
-      //HACK: Remove [UTC] from the date string for correct parseing.
-      // Should be fixed in the backend.
-      return moment(dateString.replace('[UTC]', '')).valueOf()
+      return moment(dateString)
+    },
+    onTripSelected(index) {
+      this.$store.commit('is/setSelectedTrip', this.getPlannedTrips[index])
+      this.$router.push('/itineraryDetailPage')
     },
   },
 }

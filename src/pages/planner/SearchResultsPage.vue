@@ -1,10 +1,10 @@
 <template>
   <content-pane>
-    <v-row class="d-flex flex-column">
+    <v-row dense class="d-flex flex-column">
       <v-col><h1>Reisopties</h1></v-col>
-      <v-col class="my-2">
+      <v-col my-2>
         <v-divider />
-        <v-col class="my-2" v-if="plan.itineraries == undefined">
+        <v-col v-if="plan.itineraries == undefined" my-4>
           Helaas, er zijn geen ritten gevonden!
         </v-col>
         <v-expansion-panels v-else>
@@ -19,32 +19,43 @@
         </v-expansion-panels>
         <v-divider />
       </v-col>
-      <v-col cols="12">
-        <v-row>
-          <v-col cols="12">
-            <div v-for="(itinerary, index) in plan.itineraries" :key="index">
-              <travel-card
-                class="mt-2"
-                :from="plan.from"
-                :to="plan.to"
-                :date="toDate(plan.arrivalTime)"
-                :journey="itinerary"
-              >
-              </travel-card>
-            </div>
-          </v-col>
-        </v-row>
+      <v-col v-for="(itinerary, index) in plan.itineraries" :key="index">
+        <travel-card
+          :index="index"
+          :from="plan.from"
+          :to="plan.to"
+          :arrival-time="toDate(itinerary.arrivalTime)"
+          :departure-time="toDate(itinerary.departureTime)"
+          :duration="itinerary.duration"
+          :legs="itinerary.legs"
+          @onTripSelected="onTripSelected"
+        >
+        </travel-card>
       </v-col>
-      <v-col class="mt-3">
-        <v-row class="d-flex flex-column">
-          <v-col mt-3 mb-3>
+      <v-col mt-3>
+        <v-row class="flex-column">
+          <v-col class="py-0">
+            <a href="#" @click="shoutOut()">
+              <v-row>
+                <v-col class="col-2 ml-2">
+                  <v-icon>fa-volume-up</v-icon>
+                </v-col>
+                <v-col>
+                  <span>Plaats oproep in de community</span>
+                </v-col>
+              </v-row>
+            </a>
+          </v-col>
+          <v-col class="py-0">
             <a href="tel:0900-9874">
-              <v-layout pa-2>
-                <v-flex xs2>
+              <v-row>
+                <v-col class="col-2 ml-2">
                   <v-icon>phone_in_talk</v-icon>
-                </v-flex>
-                <v-flex>Bel de ZOOV regiotaxi</v-flex>
-              </v-layout>
+                </v-col>
+                <v-col>
+                  <span>Bel de ZOOV regiotaxi</span>
+                </v-col>
+              </v-row>
             </a>
           </v-col>
         </v-row>
@@ -81,10 +92,37 @@ export default {
       return this.$store.getters['is/getPlanningResults'].plan
     },
   },
-  created: function() {
+  created() {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
+    onTripSelected(index) {
+      let selectedTrip = {
+        from: this.plan.from,
+        to: this.plan.to,
+        ...this.plan.itineraries[index],
+      }
+      this.$store.commit('is/setSelectedTrip', selectedTrip)
+      this.$router.push('/itineraryDetailPage')
+    },
+    shoutOut() {
+      const shoutOutTrip = {
+        from: this.plan.from,
+        to: this.plan.to,
+        arrivalTime: this.plan.arrivalTime
+          ? this.plan.arrivalTime
+          : `${moment(this.plan.departureTime)
+              .startOf('day')
+              .format('YYYY-MM-DDTHH:mm:ss')}Z`,
+        departureTime: this.plan.departureTime
+          ? this.plan.departureTime
+          : `${moment(this.plan.arrivalTime)
+              .add(1, 'day')
+              .startOf('day')
+              .format('YYYY-MM-DDTHH:mm:ss')}Z`,
+      }
+      this.$store.dispatch('is/storeSelectedTrip', shoutOutTrip)
+    },
     toDate(string) {
       return moment(string)
     },
@@ -117,5 +155,8 @@ export default {
 a {
   text-decoration: none;
   color: #2e8997;
+  span {
+    font-size: 1em;
+  }
 }
 </style>
