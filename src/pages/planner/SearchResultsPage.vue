@@ -39,14 +39,18 @@
       </v-col>
       <v-col>
         <section
-          v-for="(day, index) in getAllDifferentDays(sortedItineraries())"
+          v-for="(date, index) in getAllDifferentDays(sortedItineraries())"
+          class="px-2"
           :key="index"
         >
-          <span class="pl-3">{{ day }}</span>
+          <span class="caption text-capitalize date-day-styling">{{
+            formatToCategoryDate(date)
+          }}</span>
           <v-col
+            class="px-0"
             v-for="(itinerary, index) in getItinerariesForThatDay(
               sortedItineraries(),
-              day
+              date
             )"
             :key="index"
           >
@@ -149,6 +153,11 @@ export default {
         )
       })
     },
+    formatToCategoryDate(date) {
+      return moment(date, 'LL')
+        .locale('NL')
+        .format('dddd DD MMMM')
+    },
     sortedItineraries() {
       const list = Object.assign([], this.plan.itineraries)
       if (this.selectedSortModus.value === 'fastest') {
@@ -204,6 +213,10 @@ export default {
 .no-padding .v-expansion-panel__header {
   padding-left: 0;
   padding-right: 0;
+}
+
+.date-day-styling {
+  color: $color-primary;
 }
 
 a {
