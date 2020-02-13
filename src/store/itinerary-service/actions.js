@@ -1,10 +1,8 @@
 import axios from 'axios'
 import config from '@/config/config'
-import moment from 'moment'
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_PLANNER_SERVICE_API_KEY = config.GRAVITEE_PLANNER_SERVICE_API_KEY
-const GRAVITEE_TRIP_SERVICE_API_KEY = config.GRAVITEE_TRIP_SERVICE_API_KEY
 
 function generateHeader(key) {
   return {
@@ -55,16 +53,20 @@ export default {
       })
   },
   storeSelectedTrip: (context, payload) => {
-    const URL = BASE_URL + '/trips'
+    const URL = BASE_URL + '/planner/trips'
     axios
       .post(URL, payload, {
-        headers: generateHeader(GRAVITEE_TRIP_SERVICE_API_KEY),
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
       })
       .then(response => {
         if (response.status == 201) {
+          let message = 'Oproep naar de community is geplaatst'
+          if (payload.legs && payload.legs.length > 0) {
+            message = 'Reis bevestigd'
+          }
           context.dispatch(
             'ui/queueNotification',
-            { message: 'Reis bevestigd', timeout: 3000 },
+            { message: message, timeout: 3000 },
             { root: true }
           )
         } else {
@@ -86,17 +88,12 @@ export default {
       })
   },
   fetchTrips: context => {
-    const URL = BASE_URL + '/trips'
+    const URL = BASE_URL + '/planner/trips'
     axios
-      .get(URL, { headers: generateHeader(GRAVITEE_TRIP_SERVICE_API_KEY) })
+      .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
       .then(response => {
-        if (response.status == 200 && response.data.trips.length > 0) {
-          // Convert date to epochs.
-          let parsedTrips = response.data.trips.map(trip => {
-            trip.date = moment(trip.date).valueOf()
-            return trip
-          })
-          context.commit('setPlannedTrips', parsedTrips)
+        if (response.status == 200 && response.data.length > 0) {
+          context.commit('setPlannedTrips', response.data)
         }
       })
       .catch(error => {

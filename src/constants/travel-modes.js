@@ -36,7 +36,7 @@ export default {
     icon: 'local_taxi',
   },
   CAR: {
-    visible: true,
+    visible: false,
     mode: 'CAR',
     label: 'Auto',
     icon: 'directions_car',

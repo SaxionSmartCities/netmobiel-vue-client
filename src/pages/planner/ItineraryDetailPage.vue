@@ -9,9 +9,9 @@
       </v-flex>
       <v-flex my-2>
         <itinerary-summary
-          :date="selectedTrip.itinerary.departureTime"
+          :date="selectedTrip.departureTime"
           :cost="5"
-          :duration="selectedTrip.itinerary.duration"
+          :duration="selectedTrip.duration"
         >
         </itinerary-summary>
       </v-flex>
@@ -20,7 +20,10 @@
       </v-flex>
       <v-flex mt-4 mx-3>
         <v-layout column>
-          <v-flex v-for="(leg, index) in generateSteps" :key="index">
+          <v-flex v-if="generateSteps.length == 0">
+            Shoutout
+          </v-flex>
+          <v-flex v-for="(leg, index) in generateSteps" v-else :key="index">
             <itinerary-leg :leg="leg" />
           </v-flex>
         </v-layout>
@@ -51,14 +54,17 @@ export default {
   name: 'ItineraryDetailPage',
   components: { ContentPane, ItinerarySummary, ItineraryLeg },
   computed: {
-    selectedTrip: function() {
+    selectedTrip() {
       return this.$store.getters['is/getSelectedTrip']
     },
-    generateSteps: function() {
+    generateSteps() {
+      if (!this.selectedTrip.legs || this.selectedTrip.legs.length == 0) {
+        return []
+      }
       let result = []
-      for (let i = 0; i < this.selectedTrip.itinerary.legs.length - 1; i++) {
-        let currentLeg = this.selectedTrip.itinerary.legs[i]
-        let nextLeg = this.selectedTrip.itinerary.legs[i + 1]
+      for (let i = 0; i < this.selectedTrip.legs.length - 1; i++) {
+        let currentLeg = this.selectedTrip.legs[i]
+        let nextLeg = this.selectedTrip.legs[i + 1]
         result.push(currentLeg)
 
         // We won't show any waiting times < 60 sec -- should be made a config
@@ -72,9 +78,7 @@ export default {
           })
         }
       }
-      let lastLeg = this.selectedTrip.itinerary.legs[
-        this.selectedTrip.itinerary.legs.length - 1
-      ]
+      let lastLeg = this.selectedTrip.legs[this.selectedTrip.legs.length - 1]
       result.push(lastLeg)
 
       // Finally, we push the "FINISH" element (not from OTP)
@@ -86,11 +90,11 @@ export default {
       return result
     },
   },
-  created: function() {
+  created() {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
-    saveTrip: function() {
+    saveTrip() {
       const selectedTrip = this.$store.getters['is/getSelectedTrip']
       this.$store.dispatch('is/storeSelectedTrip', selectedTrip)
     },
