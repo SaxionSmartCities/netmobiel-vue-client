@@ -3,23 +3,41 @@
     <v-row dense class="d-flex flex-column">
       <v-col><h1>Reisopties</h1></v-col>
       <v-col my-2>
-        <v-divider />
         <v-col v-if="plan.itineraries == undefined" my-4>
           Helaas, er zijn geen ritten gevonden!
         </v-col>
-        <v-expansion-panels v-else>
-          <v-expansion-panel>
-            <v-expansion-panel-header>
-              Reisvoorkeuren tonen
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <search-options-summary-card />
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-        <v-divider />
+        <v-col class="px-0 pb-0" v-else>
+          <v-divider />
+          <v-row>
+            <v-col class="py-0">
+              <v-expansion-panels>
+                <v-expansion-panel>
+                  <v-expansion-panel-header>
+                    Reisvoorkeuren tonen
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <search-options-summary-card />
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+            </v-col>
+          </v-row>
+          <v-divider />
+          <v-row justify="end">
+            <v-col class="shrink pb-0 mt-2">
+              <v-btn
+                @click="toggleSelectedSortModus()"
+                color="primary"
+                rounded
+                outlined
+              >
+                {{ selectedSortModus.title }}
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-col>
       </v-col>
-      <v-col v-for="(itinerary, index) in plan.itineraries" :key="index">
+      <v-col v-for="(itinerary, index) in sortedItineraries()" :key="index">
         <travel-card
           :index="index"
           :from="plan.from"
@@ -79,15 +97,17 @@ export default {
   },
   data() {
     return {
+      selectedSortModusIndex: 0,
       sortModi: [
-        { name: 'Vertrektijd', function: this.sortByStartTime },
-        { name: 'Tijdsduur', function: this.sortByDuration },
-        { name: 'Overstappen', function: this.sortByTransfers },
+        { title: 'Snelste', value: 'fastest' },
+        { title: 'Chronologisch', value: 'chronologically' },
       ],
-      selectedModus: 0,
     }
   },
   computed: {
+    selectedSortModus() {
+      return this.sortModi[this.selectedSortModusIndex]
+    },
     plan() {
       return this.$store.getters['is/getPlanningResults'].plan
     },
@@ -96,6 +116,19 @@ export default {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
+    sortedItineraries() {
+      const list = Object.assign([], this.plan.itineraries)
+      if (this.selectedSortModus.value === 'fastest') {
+        list.sort((a, b) => {
+          return new Date(a.duration) - new Date(b.duration)
+        })
+      } else {
+        list.sort((a, b) => {
+          return new Date(a.departureTime) - new Date(b.departureTime)
+        })
+      }
+      return list
+    },
     onTripSelected(index) {
       let selectedTrip = {
         from: this.plan.from,
@@ -126,21 +159,9 @@ export default {
     toDate(string) {
       return moment(string)
     },
-    sortByDuration(a, b) {
-      return a.duration - b.duration
-    },
-    sortByTransfers(a, b) {
-      return a.legs.length - b.legs.length
-    },
-    sortByStartTime(a, b) {
-      return a.startTime - b.startTime
-    },
-    changeSort() {
-      this.selectedModus = (this.selectedModus + 1) % this.sortModi.length
-      this.$store.commit(
-        'is/sortItineraries',
-        this.sortModi[this.selectedModus].function
-      )
+    toggleSelectedSortModus() {
+      this.selectedSortModusIndex =
+        (this.selectedSortModusIndex + 1) % this.sortModi.length
     },
   },
 }
