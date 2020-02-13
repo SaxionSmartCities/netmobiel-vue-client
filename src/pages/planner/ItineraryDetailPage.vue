@@ -27,6 +27,7 @@
       </v-flex>
       <v-flex my-4>
         <v-btn
+          v-show="!isRideConfirmed"
           large
           rounded
           block
@@ -38,6 +39,38 @@
           Deze reis bevestigen
         </v-btn>
       </v-flex>
+      <v-flex my-4>
+        <v-btn
+          large
+          rounded
+          outlined
+          block
+          mb-4
+          depressed
+          color="primairy"
+          @click="saveTrip"
+        >
+          Stuur bericht naar henk
+        </v-btn>
+      </v-flex>
+      <v-flex my-4>
+        <v-btn
+          large
+          rounded
+          outlined
+          block
+          mb-4
+          depressed
+          color="primairy"
+          @click="saveTrip"
+        >
+          bekijk op de kaart
+        </v-btn>
+      </v-flex>
+      <v-flex mb-3>
+        <h1>Wijzigen</h1>
+      </v-flex>
+      <itinerary-options></itinerary-options>
     </v-layout>
   </content-pane>
 </template>
@@ -46,10 +79,11 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 
 export default {
   name: 'ItineraryDetailPage',
-  components: { ContentPane, ItinerarySummary, ItineraryLeg },
+  components: { ContentPane, ItinerarySummary, ItineraryLeg, ItineraryOptions },
   computed: {
     selectedTrip: function() {
       return this.$store.getters['is/getSelectedTrip']
@@ -93,6 +127,10 @@ export default {
     saveTrip: function() {
       const selectedTrip = this.$store.getters['is/getSelectedTrip']
       this.$store.dispatch('is/storeSelectedTrip', selectedTrip)
+    },
+    isRideConfirmed: function() {
+      //todo if casted == true
+      return true // hide 'button'
     },
   },
 }
