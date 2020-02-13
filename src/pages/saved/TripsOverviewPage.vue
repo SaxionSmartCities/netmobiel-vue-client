@@ -82,8 +82,6 @@ export default {
       selectedTab: 0,
       bottom: false,
       maxResults: 5,
-      offsetTrips: 0,
-      offsetRides: 0,
     }
   },
   computed: {
@@ -96,47 +94,29 @@ export default {
     bottom(bottom) {
       if (bottom) {
         if (this.selectedTab == 0) {
-          console.log('nieuwe Trips laden!', this.offsetTrips)
-          this.$store
-            .dispatch('is/fetchTrips', {
-              maxResults: this.maxResults,
-              offset: this.offsetTrips,
-            })
-            .then(() => {
-              this.offsetTrips += this.maxResults
-            })
+          this.$store.dispatch('is/fetchTrips', {
+            maxResults: this.maxResults,
+            offset: this.getPlannedTrips.length,
+          })
         } else if (this.selectedTab == 1) {
-          console.log('nieuwe Rides laden!', this.offsetRides)
-          this.$store
-            .dispatch('cs/fetchRides', {
-              offset: this.offsetRides,
-              maxResults: this.maxResults,
-            })
-            .then(() => {
-              this.offsetRides += this.maxResults
-            })
+          this.$store.dispatch('cs/fetchRides', {
+            offset: this.getPlannedRides.length,
+            maxResults: this.maxResults,
+          })
         }
       }
     },
   },
   mounted() {
-    this.$store
-      .dispatch('is/fetchTrips', {
-        maxResults: this.maxResults,
-        offset: this.offsetTrips,
-      })
-      .then(() => {
-        this.offsetTrips += this.maxResults
-      })
+    this.$store.dispatch('is/fetchTrips', {
+      maxResults: this.maxResults,
+      offset: this.getPlannedTrips.length,
+    })
 
-    this.$store
-      .dispatch('cs/fetchRides', {
-        maxResults: this.maxResults,
-        offset: this.offsetRides,
-      })
-      .then(() => {
-        this.offsetRides += this.maxResults
-      })
+    this.$store.dispatch('cs/fetchRides', {
+      maxResults: this.maxResults,
+      offset: this.getPlannedRides.length,
+    })
 
     document
       .getElementById('content-container')
