@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane id="scroll">
     <template v-slot:header>
       <v-tabs
         id="tabs"
@@ -80,6 +80,7 @@ export default {
   data() {
     return {
       selectedTab: 0,
+      bottom: false,
     }
   },
   computed: {
@@ -88,9 +89,24 @@ export default {
       getPlannedRides: 'cs/getRides',
     }),
   },
+  watch: {
+    bottom(bottom) {
+      if (bottom) {
+        console.log('nieuwe ritten laden!')
+      }
+    },
+  },
   mounted() {
     this.$store.dispatch('is/fetchTrips')
     this.$store.dispatch('cs/fetchRides')
+
+    document
+      .getElementById('content-container')
+      .addEventListener('scroll', () => {
+        this.bottom = this.bottomVisible(
+          document.getElementById('content-container')
+        )
+      })
   },
   beforeRouteEnter: beforeRouteEnter({
     selectedTab: number => number,
@@ -101,6 +117,13 @@ export default {
   methods: {
     parseDate(dateString) {
       return moment(dateString)
+    },
+    bottomVisible(element) {
+      const scrollY = element.scrollTop
+      const visible = element.clientHeight
+      const pageHeight = element.scrollHeight
+      const bottomOfPage = visible + scrollY >= pageHeight
+      return bottomOfPage || pageHeight < visible
     },
     onTripSelected(index) {
       this.$store.commit('is/setSelectedTrip', this.getPlannedTrips[index])
