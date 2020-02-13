@@ -37,18 +37,32 @@
           </v-row>
         </v-col>
       </v-col>
-      <v-col v-for="(itinerary, index) in sortedItineraries()" :key="index">
-        <travel-card
-          :index="index"
-          :from="plan.from"
-          :to="plan.to"
-          :arrival-time="toDate(itinerary.arrivalTime)"
-          :departure-time="toDate(itinerary.departureTime)"
-          :duration="itinerary.duration"
-          :legs="itinerary.legs"
-          @onTripSelected="onTripSelected"
+      <v-col>
+        <section
+          v-for="(day, index) in getAllDifferentDays(sortedItineraries())"
+          :key="index"
         >
-        </travel-card>
+          <span class="pl-3">{{ day }}</span>
+          <v-col
+            v-for="(itinerary, index) in getItinerariesForThatDay(
+              sortedItineraries(),
+              day
+            )"
+            :key="index"
+          >
+            <travel-card
+              :index="index"
+              :from="plan.from"
+              :to="plan.to"
+              :arrival-time="toDate(itinerary.arrivalTime)"
+              :departure-time="toDate(itinerary.departureTime)"
+              :duration="itinerary.duration"
+              :legs="itinerary.legs"
+              @onTripSelected="onTripSelected"
+            >
+            </travel-card>
+          </v-col>
+        </section>
       </v-col>
       <v-col mt-3>
         <v-row class="flex-column">
@@ -116,6 +130,25 @@ export default {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
+    getAllDifferentDays(itineraries) {
+      let differentDays = []
+      itineraries.forEach(it => {
+        const calendarDate = moment(it.arrivalTime).format('LL')
+        if (!differentDays.includes(calendarDate)) {
+          differentDays.push(calendarDate)
+        }
+      })
+      return differentDays
+    },
+    getItinerariesForThatDay(itineraries, sectionDay) {
+      return itineraries.filter(it => {
+        const dateToCheck = moment(it.arrivalTime.valueOf())
+        return (
+          moment(sectionDay, 'LL').isSame(dateToCheck, 'day') &&
+          moment(sectionDay, 'LL').isSame(dateToCheck, 'month')
+        )
+      })
+    },
     sortedItineraries() {
       const list = Object.assign([], this.plan.itineraries)
       if (this.selectedSortModus.value === 'fastest') {
