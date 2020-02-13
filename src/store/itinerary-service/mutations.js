@@ -29,6 +29,6 @@ export default {
     state.plannedTrips = payload
   },
   appendPlannedTrips: (state, payload) => {
-    state.plannedTrips.push(payload)
+    state.plannedTrips = state.plannedTrips.concat(payload)
   },
 }
