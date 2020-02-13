@@ -1,6 +1,6 @@
 <template>
-  <v-container grid-list>
-    <v-layout wrap>
+  <content-pane>
+    <v-row align="center">
       <v-flex>
         <community-button
           forward="/community"
@@ -16,6 +16,8 @@
           :aantal-berichten="11"
         ></community-button>
       </v-flex>
+    </v-row>
+    <v-row>
       <v-flex>
         <community-button
           icon="fa-trophy"
@@ -30,6 +32,8 @@
           disabled="true"
         ></community-button>
       </v-flex>
+    </v-row>
+    <v-row>
       <v-flex>
         <community-button
           icon="fa-bullseye"
@@ -37,15 +41,17 @@
           disabled="true"
         ></community-button>
       </v-flex>
-    </v-layout>
-  </v-container>
+    </v-row>
+  </content-pane>
 </template>
 
 <script>
+import ContentPane from '@/components/common/ContentPane.vue'
 import CommunityButton from '@/components/community/CommunityButton.vue'
 export default {
   components: {
     CommunityButton: CommunityButton,
+    ContentPane,
   },
 }
 </script>

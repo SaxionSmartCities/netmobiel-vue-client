@@ -1,21 +1,29 @@
 <template>
-  <v-container>
-    <div class="text-center">
-      <v-btn x-large outlined color="indigo" :to="forward">
-        <div class="compact-form">
-          <v-badge
-            overlap
-            color="red"
-            :value="aantalBerichten"
-            :content="aantalBerichten"
-          >
-            <v-icon>{{ icon }}</v-icon>
-          </v-badge>
-          <div>{{ naam }}</div>
-        </div>
-      </v-btn>
-    </div>
-  </v-container>
+  <v-card outlined max-width="220">
+    <v-row wrap no-gutters>
+      <v-col>
+        <v-card-text>
+          <v-row no-gutters>
+            <v-col cols="12" align="center">
+              <v-badge
+                overlap
+                color="red"
+                :value="aantalBerichten"
+                :content="aantalBerichten"
+              >
+                <v-icon>{{ icon }}</v-icon>
+              </v-badge>
+            </v-col>
+          </v-row>
+          <v-row no-gutters>
+            <v-col cols="12" align="center">
+              <div>{{ naam }}</div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
@@ -42,9 +50,4 @@ export default {
 }
 </script>
 
-<style>
-.compact-form {
-  transform: scale(0.8);
-  transform-origin: center;
-}
-</style>
+<style></style>

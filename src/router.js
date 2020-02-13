@@ -4,7 +4,7 @@ import store from './store'
 
 Vue.use(Router)
 
-import CommunityOverviewPage from './pages/CommunityOverviewPage.vue'
+import CommunityOverviewPage from './pages/community/CommunityOverviewPage.vue'
 import CommunityPage from './pages/community/CommunityPage.vue'
 import ConversationPage from './pages/community/ConversationPage.vue'
 import ItineraryDetailPage from './pages/planner/ItineraryDetailPage.vue'
