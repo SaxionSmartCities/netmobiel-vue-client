@@ -118,8 +118,6 @@ export default {
   methods: {
     sortedItineraries() {
       const list = Object.assign([], this.plan.itineraries)
-
-      console.log(list)
       if (this.selectedSortModus.value === 'fastest') {
         list.sort((a, b) => {
           return new Date(a.duration) - new Date(b.duration)
