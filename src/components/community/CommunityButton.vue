@@ -1,10 +1,10 @@
 <template>
-  <v-card outlined max-width="220">
+  <v-card outlined max-width="220" v-on:click="toNextPage">
     <v-row wrap no-gutters>
       <v-col>
         <v-card-text>
           <v-row no-gutters>
-            <v-col cols="12" align="center">
+            <v-col align="center">
               <v-badge
                 overlap
                 color="red"
@@ -16,7 +16,7 @@
             </v-col>
           </v-row>
           <v-row no-gutters>
-            <v-col cols="12" align="center">
+            <v-col align="center">
               <div>{{ naam }}</div>
             </v-col>
           </v-row>
@@ -45,6 +45,11 @@ export default {
     forward: {
       type: String,
       required: false,
+    },
+  },
+  methods: {
+    toNextPage: function() {
+      this.$router.push('/community')
     },
   },
 }

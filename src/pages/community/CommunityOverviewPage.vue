@@ -1,8 +1,9 @@
 <template>
-  <content-pane>
-    <v-row align="center">
+  <content-pane wrap>
+    <v-row wrap>
       <v-flex>
         <community-button
+          class="mx-auto"
           forward="/community"
           icon="fa-comments"
           naam="berichten"
@@ -11,6 +12,7 @@
       </v-flex>
       <v-flex>
         <community-button
+          class="mx-auto"
           icon="fa-map"
           naam="gezocht"
           :aantal-berichten="11"
@@ -20,6 +22,7 @@
     <v-row>
       <v-flex>
         <community-button
+          class="mx-auto"
           icon="fa-trophy"
           naam="competenties"
           disabled="true"
@@ -27,6 +30,7 @@
       </v-flex>
       <v-flex>
         <community-button
+          class="mx-auto"
           icon="fa-gift"
           naam="rewards"
           disabled="true"
@@ -36,6 +40,7 @@
     <v-row>
       <v-flex>
         <community-button
+          class="mx-auto"
           icon="fa-bullseye"
           naam="doelen"
           disabled="true"
