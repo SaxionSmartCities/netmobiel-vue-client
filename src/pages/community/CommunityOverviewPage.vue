@@ -1,7 +1,7 @@
 <template>
-  <content-pane wrap>
-    <v-row wrap>
-      <v-flex>
+  <content-pane>
+    <v-row>
+      <v-col>
         <community-button
           class="mx-auto"
           forward="/community"
@@ -9,43 +9,43 @@
           naam="berichten"
           :aantal-berichten="2"
         ></community-button>
-      </v-flex>
-      <v-flex>
+      </v-col>
+      <v-col>
         <community-button
           class="mx-auto"
           icon="fa-map"
           naam="gezocht"
           :aantal-berichten="11"
         ></community-button>
-      </v-flex>
+      </v-col>
     </v-row>
     <v-row>
-      <v-flex>
+      <v-col>
         <community-button
           class="mx-auto"
           icon="fa-trophy"
           naam="competenties"
           disabled="true"
         ></community-button>
-      </v-flex>
-      <v-flex>
+      </v-col>
+      <v-col>
         <community-button
           class="mx-auto"
           icon="fa-gift"
           naam="rewards"
           disabled="true"
         ></community-button>
-      </v-flex>
+      </v-col>
     </v-row>
     <v-row>
-      <v-flex>
+      <v-col>
         <community-button
           class="mx-auto"
           icon="fa-bullseye"
           naam="doelen"
           disabled="true"
         ></community-button>
-      </v-flex>
+      </v-col>
     </v-row>
   </content-pane>
 </template>
