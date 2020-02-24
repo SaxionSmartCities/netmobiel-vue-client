@@ -39,6 +39,43 @@
         </v-flex>
       </v-layout>
     </v-flex>
+    <v-dialog v-model="dialog" persistent>
+      <template v-slot:activator="{ on }"> </template>
+      <v-card>
+        <v-card-title class="headline">Annuleer deze rit.</v-card-title>
+        <v-card-text
+          >Weet je zeker dat je deze rit wilt annuleren? Dit kan niet ongedaan
+          gemaakt worden.</v-card-text
+        >
+        <v-flex my-4 mr-4 ml-4>
+          <v-btn
+            large
+            rounded
+            block
+            mb-4
+            depressed
+            color="button"
+            @click="closeConfirmation"
+          >
+            Rit annuleren
+          </v-btn>
+        </v-flex>
+        <v-flex my-4 mr-4 ml-4 pb-8>
+          <v-btn
+            large
+            rounded
+            outlined
+            block
+            mb-4
+            depressed
+            color="primairy"
+            @click="closeConfirmation"
+          >
+            Rit toch bewaren
+          </v-btn>
+        </v-flex>
+      </v-card>
+    </v-dialog>
   </v-layout>
 </template>
 
@@ -48,12 +85,17 @@ export default {
   components: {},
   props: {},
   data: function() {
-    return {}
+    return { dialog: false }
   },
   methods: {
     editRoute() {},
     replanSameRoute() {},
-    removeRoute() {},
+    closeConfirmation() {
+      this.dialog = false
+    },
+    removeRoute() {
+      this.dialog = true
+    },
   },
 }
 </script>

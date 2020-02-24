@@ -27,7 +27,7 @@
       </v-flex>
       <v-flex my-4>
         <v-btn
-          v-show="!isRideConfirmed"
+          v-show="isRideConfirmed"
           large
           rounded
           block
@@ -48,7 +48,7 @@
           mb-4
           depressed
           color="primairy"
-          @click="saveTrip"
+          @click="contactDriver"
         >
           Stuur bericht naar henk
         </v-btn>
@@ -62,7 +62,7 @@
           mb-4
           depressed
           color="primairy"
-          @click="saveTrip"
+          @click="showMap"
         >
           bekijk op de kaart
         </v-btn>
@@ -128,6 +128,8 @@ export default {
       const selectedTrip = this.$store.getters['is/getSelectedTrip']
       this.$store.dispatch('is/storeSelectedTrip', selectedTrip)
     },
+    contactDriver: function() {},
+    showMap: function() {},
     isRideConfirmed: function() {
       //todo if casted == true
       return true // hide 'button'
