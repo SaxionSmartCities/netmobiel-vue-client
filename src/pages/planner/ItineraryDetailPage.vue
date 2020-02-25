@@ -30,7 +30,7 @@
       </v-flex>
       <v-flex my-4>
         <v-btn
-          v-show="isRideConfirmed"
+          v-show="showSection"
           large
           rounded
           block
@@ -87,6 +87,11 @@ import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vu
 export default {
   name: 'ItineraryDetailPage',
   components: { ContentPane, ItinerarySummary, ItineraryLeg, ItineraryOptions },
+  data: function() {
+    return {
+      showConfirmationButton: true,
+    }
+  },
   computed: {
     selectedTrip() {
       return this.$store.getters['is/getSelectedTrip']
@@ -123,9 +128,16 @@ export default {
       })
       return result
     },
+    showSection() {
+      return this.showConfirmationButton
+    },
   },
   created() {
     this.$store.commit('ui/showBackButton')
+    console.log(this.$store.getters['is/getSelectedTrip'])
+    if (this.selectedTrip.state === 'SCHEDULED') {
+      this.showConfirmationButton = false
+    }
   },
   methods: {
     saveTrip() {
@@ -134,10 +146,6 @@ export default {
     },
     contactDriver: function() {},
     showMap: function() {},
-    isRideConfirmed: function() {
-      //todo if casted == true
-      return true // hide 'button'
-    },
   },
 }
 </script>
