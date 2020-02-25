@@ -44,19 +44,62 @@ export default {
   },
   methods: {
     async onMapLoad(event) {
-      // this.map = event.map;
-      // Here we cathing 'load' map event
-      // const asyncActions = event.component.actions
-      //
-      // const newParams = await asyncActions.flyTo({
-      //   center: [30, 30],
-      //   zoom: 3,
-      //   speed: 1,
-      // })
+      const origin = [6.416015625, 52.25050528572611]
+      const destination = [6.7950439453125, 52.267316957465944]
+
+      var route = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'LineString',
+              coordinates: [origin, destination],
+            },
+          },
+        ],
+      }
+      // A single point that animates along the route.
+      // Coordinates are initially set to origin.
+      var point = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'Point',
+              coordinates: origin,
+            },
+          },
+        ],
+      }
       event.map.fitBounds([
         [6.416015625, 52.25050528572611],
         [6.7950439453125, 52.267316957465944],
       ])
+
+      // Add a source and layer displaying a point which will be animated in a circle.
+      event.map.addSource('route', {
+        type: 'geojson',
+        data: route,
+      })
+
+      event.map.addSource('point', {
+        type: 'geojson',
+        data: point,
+      })
+
+      event.map.addLayer({
+        id: 'route',
+        source: 'route',
+        type: 'line',
+        paint: {
+          'line-width': 2,
+          'line-color': '#007cbf',
+        },
+      })
       // console.log(newParams)
       /* => {
               center: [30, 30],
