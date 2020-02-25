@@ -1,34 +1,39 @@
 <template>
   <content-pane>
-    <v-layout py-2 column>
-      <v-flex mb-3>
+    <v-row class=" flex-column">
+      <v-col class="mb-3 py-0">
         <h1>Reisdetails</h1>
-      </v-flex>
-      <v-flex>
+      </v-col>
+      <v-col class="py-0">
         <v-divider />
-      </v-flex>
-      <v-flex my-2>
+      </v-col>
+      <v-col class="py-0">
         <itinerary-summary
           :date="selectedTrip.departureTime"
           :cost="5"
           :duration="selectedTrip.duration"
         >
         </itinerary-summary>
-      </v-flex>
-      <v-flex>
+      </v-col>
+      <v-col>
         <v-divider />
-      </v-flex>
-      <v-flex mt-4 mx-3>
-        <v-layout column>
-          <v-flex v-if="generateSteps.length == 0">
+      </v-col>
+      <v-col class="mx-3">
+        <v-row class="flex-column">
+          <v-col v-if="generateSteps.length == 0">
             Shoutout
-          </v-flex>
-          <v-flex v-for="(leg, index) in generateSteps" v-else :key="index">
+          </v-col>
+          <v-col
+            class="py-0"
+            v-for="(leg, index) in generateSteps"
+            v-else
+            :key="index"
+          >
             <itinerary-leg :leg="leg" />
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-flex my-4>
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col class="my-4">
         <v-btn
           large
           rounded
@@ -40,8 +45,8 @@
         >
           Deze reis bevestigen
         </v-btn>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <v-layout>
+  <v-layout class="py-0">
     <v-flex>
       <v-layout column>
         <v-flex>
