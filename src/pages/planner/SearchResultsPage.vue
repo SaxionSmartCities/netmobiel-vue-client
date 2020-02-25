@@ -43,7 +43,7 @@
           class="px-2"
           :key="index"
         >
-          <span class="caption text-capitalize date-day-styling">{{
+          <span class="caption text-uppercase date-day-styling">{{
             formatToCategoryDate(date)
           }}</span>
           <v-col
