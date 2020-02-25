@@ -32,6 +32,7 @@ import RidePlanPage from './pages/planner/RidePlanPage.vue'
 import RidePlanOptionsPage from './pages/planner/RidePlanOptionsPage.vue'
 import RidePlanSubmitted from './pages/planner/RidePlanSubmitted.vue'
 import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
+import TripCanceledPage from './pages/saved/TripCanceledPage'
 
 const router = new Router({
   mode: 'history',
@@ -112,6 +113,11 @@ const router = new Router({
       path: '/profileNotificationOptions',
       component: NotificationOptionsPage,
       name: 'notificationOptions',
+    },
+    {
+      path: '/TripCanceledPage',
+      component: TripCanceledPage,
+      name: 'tripCanceledPage',
     },
     {
       path: '/tripsOverviewPage',

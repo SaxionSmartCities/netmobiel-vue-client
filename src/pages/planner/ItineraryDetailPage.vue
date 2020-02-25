@@ -44,6 +44,7 @@
       </v-flex>
       <v-flex my-4>
         <v-btn
+          to="/conversation/1"
           large
           rounded
           outlined
