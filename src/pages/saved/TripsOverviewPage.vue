@@ -94,30 +94,16 @@ export default {
     bottom(bottom) {
       if (bottom) {
         if (this.selectedTab == 0) {
-          this.$store.dispatch('is/fetchTrips', {
-            maxResults: this.maxResults,
-            offset: this.getPlannedTrips.length,
-          })
+          this.fetchTrips()
         } else if (this.selectedTab == 1) {
-          this.$store.dispatch('cs/fetchRides', {
-            offset: this.getPlannedRides.length,
-            maxResults: this.maxResults,
-          })
+          this.fetchRides()
         }
       }
     },
   },
   mounted() {
-    this.$store.dispatch('is/fetchTrips', {
-      maxResults: this.maxResults,
-      offset: this.getPlannedTrips.length,
-    })
-
-    this.$store.dispatch('cs/fetchRides', {
-      maxResults: this.maxResults,
-      offset: this.getPlannedRides.length,
-    })
-
+    this.fetchTrips()
+    this.fetchRides()
     document
       .getElementById('content-container')
       .addEventListener('scroll', () => {
@@ -142,6 +128,18 @@ export default {
       const pageHeight = element.scrollHeight
       const bottomOfPage = visible + scrollY >= pageHeight
       return bottomOfPage || pageHeight < visible
+    },
+    fetchTrips() {
+      this.$store.dispatch('is/fetchTrips', {
+        maxResults: this.maxResults,
+        offset: this.getPlannedTrips.length,
+      })
+    },
+    fetchRides() {
+      this.$store.dispatch('cs/fetchRides', {
+        offset: this.getPlannedRides.length,
+        maxResults: this.maxResults,
+      })
     },
     onTripSelected(index) {
       this.$store.commit('is/setSelectedTrip', this.getPlannedTrips[index])
