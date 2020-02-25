@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined max-width="220" v-on:click="toNextPage">
+  <v-card outlined max-width="220" @click="toNextPage">
     <v-row wrap no-gutters>
       <v-col>
         <v-card-text>
@@ -44,6 +44,7 @@ export default {
     },
     forward: {
       type: String,
+      default: '',
       required: false,
     },
   },
