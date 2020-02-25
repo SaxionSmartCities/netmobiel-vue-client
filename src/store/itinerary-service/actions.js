@@ -1,10 +1,8 @@
 import axios from 'axios'
 import config from '@/config/config'
-import moment from 'moment'
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_PLANNER_SERVICE_API_KEY = config.GRAVITEE_PLANNER_SERVICE_API_KEY
-const GRAVITEE_TRIP_SERVICE_API_KEY = config.GRAVITEE_TRIP_SERVICE_API_KEY
 
 function generateHeader(key) {
   return {
@@ -55,16 +53,20 @@ export default {
       })
   },
   storeSelectedTrip: (context, payload) => {
-    const URL = BASE_URL + '/trips'
+    const URL = BASE_URL + '/planner/trips'
     axios
       .post(URL, payload, {
-        headers: generateHeader(GRAVITEE_TRIP_SERVICE_API_KEY),
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
       })
       .then(response => {
         if (response.status == 201) {
+          let message = 'Oproep naar de community is geplaatst'
+          if (payload.legs && payload.legs.length > 0) {
+            message = 'Reis bevestigd'
+          }
           context.dispatch(
             'ui/queueNotification',
-            { message: 'Reis bevestigd', timeout: 3000 },
+            { message: message, timeout: 3000 },
             { root: true }
           )
         } else {
@@ -85,42 +87,19 @@ export default {
         )
       })
   },
-  fetchCurrentTrip: (context, tripId) => {
-    const URL = BASE_URL + '/trips/' + tripId
+  fetchTrips: (context, payload) => {
+    const offset = payload.offset
+    const maxResults = payload.maxResults
+    const URL = `${BASE_URL}/planner/trips?maxResults=${maxResults}&offset=${offset}`
     axios
-      .get(URL, { headers: generateHeader(GRAVITEE_TRIP_SERVICE_API_KEY) })
+      .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
       .then(response => {
-        if (response.status == 200) {
-          console.log(response.data)
-          return response
-        }
-      })
-      .catch(error => {
-        // eslint-disable-next-line
-          console.log(error)
-        context.dispatch(
-          'ui/queueNotification',
-          {
-            message: 'Fout bij ophalengeselecteerde reis.',
-            timeout: 0,
-          },
-          { root: true }
-        )
-      })
-  },
-  fetchTrips: context => {
-    const URL = BASE_URL + '/trips'
-    axios
-      .get(URL, { headers: generateHeader(GRAVITEE_TRIP_SERVICE_API_KEY) })
-      .then(response => {
-        if (response.status == 200 && response.data.trips.length > 0) {
-          // Convert date to epochs.
-          let parsedTrips = response.data.trips.map(trip => {
-            trip.date = moment(trip.date).valueOf()
-            return trip
-          })
-          console.log(parsedTrips)
-          context.commit('setPlannedTrips', parsedTrips)
+        if (response.status == 200 && response.data.length > 0) {
+          if (offset == 0) {
+            context.commit('setPlannedTrips', response.data)
+          } else {
+            context.commit('appendPlannedTrips', response.data)
+          }
         }
       })
       .catch(error => {

@@ -2,6 +2,7 @@
   <div class="d-flex flex-column fill-height">
     <slot name="header"></slot>
     <v-container
+      id="content-container"
       class="fill-height align-start"
       :class="{
         'container-non-scrollable': !scrollable,
