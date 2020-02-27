@@ -186,4 +186,25 @@ export default {
         )
       })
   },
+  deleteRide: (context, payload) => {
+    console.log('payload', payload, payload.id)
+    const URL = BASE_URL + `/rideshare/rides/` + payload.id
+    axios
+      .delete(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        console.log(resp)
+        if (resp.status == 204) {
+          //Delete trip from store?
+        } else {
+          console.log('something wrong!', resp)
+        }
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
 }

@@ -45,13 +45,18 @@
       </v-col>
     </v-row>
     <v-divider class="mb-2" />
-    <v-flex mt-4 mx-3>
-      <v-layout column>
-        <div v-for="(leg, index) in generateSteps()" :key="index">
+    <v-row>
+      <v-col class="mx-6">
+        <v-row v-for="(leg, index) in generateSteps()" :key="index">
           <itinerary-leg :leg="leg" />
-        </div>
-      </v-layout>
-    </v-flex>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row class="mx-1">
+      <v-btn large rounded block outlined color="warning" @click="deleteTrip()">
+        Reis annuleren
+      </v-btn>
+    </v-row>
   </v-container>
 </template>
 
@@ -119,6 +124,14 @@ export default {
           from: { name: ride.toPlace.label },
         },
       ]
+    },
+    deleteTrip() {
+      console.log('delete trip', this.id)
+      //En dan een call, plus dan een route terug naar de bewaarde ritten. Push een delete message
+      this.$store.dispatch('cs/deleteRide', {
+        id: this.id,
+      })
+      this.$router.push('/tripsOverviewPage')
     },
   },
 }
