@@ -196,7 +196,8 @@ export default {
       .then(function(resp) {
         console.log(resp)
         if (resp.status == 204) {
-          //Delete trip from store?
+          //Delete trip from store!
+          context.commit('deleteRides', payload.id)
         } else {
           console.log('something wrong!', resp)
         }
