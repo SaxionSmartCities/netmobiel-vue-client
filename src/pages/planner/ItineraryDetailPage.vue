@@ -134,7 +134,6 @@ export default {
   },
   created() {
     this.$store.commit('ui/showBackButton')
-    console.log(this.$store.getters['is/getSelectedTrip'])
     if (this.selectedTrip.state === 'SCHEDULED') {
       this.showConfirmationButton = false
     }
