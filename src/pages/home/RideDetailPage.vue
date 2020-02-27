@@ -60,6 +60,19 @@
     </v-row>
     <v-row class="mx-1">
       <v-btn
+        v-if="ride.bookings.length > 0"
+        large
+        rounded
+        block
+        outlined
+        class="mt-2"
+        color="primary"
+        to="/community"
+      >
+        Bericht sturen
+      </v-btn>
+
+      <v-btn
         large
         rounded
         block
@@ -69,7 +82,6 @@
       >
         Reis annuleren
       </v-btn>
-
       <v-dialog v-model="warningDialog">
         <v-card>
           <v-card-title class="headline">
