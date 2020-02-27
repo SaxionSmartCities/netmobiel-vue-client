@@ -137,7 +137,7 @@ export default {
     axios
       .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
       .then(response => {
-        if (response.status == 200 && response.data.length > 0) {
+        if (response.status == 200 && response.data.length >= 0) {
           if (offset == 0) {
             context.commit('setPlannedTrips', response.data)
           } else {
