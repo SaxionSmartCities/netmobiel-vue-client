@@ -15,6 +15,12 @@
       </v-col>
     </v-row>
     <v-row>
+      <v-col cols="4" class="pt-0 pb-0">Boekingen</v-col>
+      <v-col cols="8" class="pt-0 pb-0">
+        {{ ride.bookings.length }}
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col cols="4" class="pt-0 pb-0">Auto</v-col>
       <v-col cols="8" class="pt-0 pb-0">
         {{ ride.car.brand }} {{ ride.car.model }}
@@ -53,9 +59,47 @@
       </v-col>
     </v-row>
     <v-row class="mx-1">
-      <v-btn large rounded block outlined color="warning" @click="deleteTrip()">
+      <v-btn
+        large
+        rounded
+        block
+        outlined
+        color="warning"
+        @click="checkDeleteTrip()"
+      >
         Reis annuleren
       </v-btn>
+
+      <v-dialog v-model="warningDialog">
+        <v-card>
+          <v-card-title class="headline">
+            Weet u zeker dat u wil annuleren?
+          </v-card-title>
+
+          <v-card-text>
+            <p>
+              Op dit moment heeft uw reis {{ ride.bookings.length }} boekingen,
+              wilt u uw passagier(s) een reden geven waarom u de reis annuleert.
+            </p>
+            <v-textarea
+              outlined
+              name="input-7-4"
+              label="Reden voor annulering"
+              :value="cancelReason"
+            ></v-textarea>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-btn text color="primary" @click="deleteTrip()">
+              Ja
+            </v-btn>
+
+            <v-btn text color="primary" @click="warningDialog = false">
+              Nee
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-row>
   </v-container>
 </template>
@@ -79,6 +123,8 @@ export default {
       ride: this.$store.getters['cs/getRides'].find(
         ride => ride.id === this.id
       ),
+      warningDialog: false,
+      cancelReason: '',
     }
   },
   created: function() {
@@ -126,12 +172,23 @@ export default {
       ]
     },
     deleteTrip() {
-      console.log('delete trip', this.id)
-      //En dan een call, plus dan een route terug naar de bewaarde ritten. Push een delete message
+      this.warningDialog = false
+      if (this.cancelReason !== '' && this.ride.bookings.length > 0) {
+        //Leave a message
+        console.log(this.cancelReason, 'push message')
+        //DIT WORDT EEN DISPATCH ACTION
+      }
       this.$store.dispatch('cs/deleteRide', {
         id: this.id,
       })
       this.$router.push('/tripsOverviewPage')
+    },
+    checkDeleteTrip() {
+      if (this.ride.bookings.length > 0 && this.warningDialog == false) {
+        this.warningDialog = true
+      } else {
+        this.deleteTrip()
+      }
     },
   },
 }
