@@ -1,5 +1,10 @@
 <template>
   <content-pane>
+    <v-row v-if="selectedLeg && showMap">
+      <v-col>
+        <route-map :leg="selectedLeg"></route-map>
+      </v-col>
+    </v-row>
     <v-row class=" flex-column">
       <v-col class="mb-3 py-0">
         <h1>Reisdetails</h1>
@@ -29,7 +34,12 @@
             v-else
             :key="index"
           >
-            <itinerary-leg :leg="leg" />
+            <itinerary-leg
+              :isMapActive="selectedLegIndex === index"
+              :step="index"
+              @legSelect="onLegSelected"
+              :leg="leg"
+            />
           </v-col>
         </v-row>
       </v-col>
@@ -54,10 +64,18 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import RouteMap from '@/components/itinerary-details/RouteMap'
 
 export default {
   name: 'ItineraryDetailPage',
-  components: { ContentPane, ItinerarySummary, ItineraryLeg },
+  components: { RouteMap, ContentPane, ItinerarySummary, ItineraryLeg },
+  data() {
+    return {
+      selectedLeg: null,
+      selectedLegIndex: null,
+      showMap: true,
+    }
+  },
   computed: {
     selectedTrip() {
       return this.$store.getters['is/getSelectedTrip']
@@ -102,6 +120,19 @@ export default {
     saveTrip() {
       const selectedTrip = this.$store.getters['is/getSelectedTrip']
       this.$store.dispatch('is/storeSelectedTrip', selectedTrip)
+    },
+    onLegSelected({ leg, step }) {
+      this.selectedLeg = leg
+      this.selectedLegIndex = step
+      this.forceRerender()
+    },
+    forceRerender() {
+      // Remove my-component from the DOM
+      this.showMap = false
+      this.$nextTick(() => {
+        // Add the component back in
+        this.showMap = true
+      })
     },
   },
 }

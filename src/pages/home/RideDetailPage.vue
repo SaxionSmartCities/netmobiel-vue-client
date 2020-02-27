@@ -1,5 +1,10 @@
 <template>
   <v-container>
+    <v-row v-if="selectedLeg">
+      <v-col>
+        <route-map :leg="selectedLeg"></route-map>
+      </v-col>
+    </v-row>
     <h3 class="ma-2">Rit details</h3>
     <v-divider />
     <v-row>
@@ -48,7 +53,7 @@
     <v-flex mt-4 mx-3>
       <v-layout column>
         <div v-for="(leg, index) in generateSteps()" :key="index">
-          <itinerary-leg :leg="leg" />
+          <itinerary-leg @legSelect="onLegSelected" :leg="leg" />
         </div>
       </v-layout>
     </v-flex>
@@ -58,10 +63,11 @@
 <script>
 import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import RouteMap from '@/components/itinerary-details/RouteMap'
 
 export default {
   name: 'RideDetailPage',
-  components: { ItineraryLeg },
+  components: { RouteMap, ItineraryLeg },
   props: {
     id: {
       type: Number,
@@ -74,6 +80,7 @@ export default {
       ride: this.$store.getters['cs/getRides'].find(
         ride => ride.id === this.id
       ),
+      selectedLeg: null,
     }
   },
   created: function() {
@@ -119,6 +126,9 @@ export default {
           from: { name: ride.toPlace.label },
         },
       ]
+    },
+    onLegSelected(leg) {
+      this.selectedLeg = leg
     },
   },
 }

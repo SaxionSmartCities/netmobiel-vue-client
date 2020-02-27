@@ -3,6 +3,8 @@
     id="map"
     :access-token="accessToken"
     :map-style="mapStyle"
+    :center="center"
+    :zoom="6"
     @load="onMapLoad"
   >
     <mgl-marker :coordinates="destinationCoordinates" color="red" />
@@ -17,9 +19,16 @@ var polyline = require('@mapbox/polyline')
 const ACCESS_TOKEN =
   'pk.eyJ1IjoidGltb3RoeS1zZWFseSIsImEiOiJjazcxcG04a3MwOHNqM2Zta2VhOGpkb2xtIn0.EELRFGDmbR-0m761gF6A6Q'
 const MAP_STYLE = 'mapbox://styles/mapbox/streets-v11'
+
 export default {
   name: 'RouteMap',
   components: { MglMap, MglMarker },
+  props: {
+    leg: {
+      default: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       mapBox: null,
@@ -27,17 +36,7 @@ export default {
       accessToken: ACCESS_TOKEN, // your access token. Needed if you using Mapbox maps
       mapStyle: MAP_STYLE, // your map style
       destinationCoordinates: [],
-      geoJsonSource: {
-        type: 'Feature',
-        properties: {},
-        geometry: {
-          type: 'Point',
-          coordinates: [6.416015625, 52.25050528572611],
-        },
-      },
-      geoJsonLayer: {
-        //...some GeoJSON layer configuration object
-      },
+      center: [4.895168, 52.370216],
     }
   },
   created() {
@@ -46,14 +45,11 @@ export default {
   },
   methods: {
     async onMapLoad(event) {
-      const result = polyline.toGeoJSON(
-        '_uv}Hi{`i@B?B?FALC?C??@?@??@?@@R?@c@F?D?D@T?B@DD~@b@IHAFA@JC??J???@A?E@@R?D@B?B?B@BDJ@B?B@D@VJvB@D?@?@BD@A@BDC'
-      )
-
+      const result = polyline.toGeoJSON(this.leg.legGeometry.points)
       this.destinationCoordinates =
         result.coordinates[result.coordinates.length - 1]
 
-      var route = {
+      let route = {
         type: 'FeatureCollection',
         features: [
           {
@@ -134,6 +130,7 @@ export default {
 
 <style lang="scss" scoped>
 #map {
+  width: 100vw;
   height: 200px;
 }
 </style>

@@ -1,11 +1,5 @@
 <template>
   <content-pane>
-    <v-row>
-      <v-col>
-        <span class="title">Mapbox below --></span>
-        <route-map></route-map>
-      </v-col>
-    </v-row>
     <v-row align="center">
       <v-col cols="3">
         <router-link to="/onboardingPage">
@@ -109,11 +103,9 @@ import UpdateCard from '@/components/home/UpdateCard.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
 
 import moment from 'moment'
-import RouteMap from '@/components/itinerary-details/RouteMap'
 
 export default {
   components: {
-    RouteMap,
     ContentPane,
     RideCard,
     UpdateCard,

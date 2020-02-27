@@ -8,7 +8,18 @@
             <v-flex class="border"><div class="open-dot"/></v-flex>
           </v-layout>
         </v-flex>
-        <v-flex xs9>{{ header }}</v-flex>
+        <v-flex xs9>
+          <div class="d-flex flex-row justify-space-between shrink">
+            {{ header }}
+            <v-icon
+              v-if="leg.traverseMode === 'WALK'"
+              @click="$emit('legSelect', { leg, step })"
+              :class="{ 'active-map': isMapActive }"
+            >
+              map
+            </v-icon>
+          </div>
+        </v-flex>
       </v-layout>
     </v-flex>
     <v-flex>
@@ -51,6 +62,8 @@ export default {
       type: Object,
       required: true,
     },
+    isMapActive: Boolean,
+    step: Number,
   },
   computed: {
     travelMode() {
@@ -164,5 +177,8 @@ function humanDistance(meters) {
   background-position: center;
   background-repeat-x: no-repeat;
   height: 100%;
+}
+.active-map {
+  @extend .glow;
 }
 </style>
