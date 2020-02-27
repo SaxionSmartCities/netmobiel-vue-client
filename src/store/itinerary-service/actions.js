@@ -74,16 +74,19 @@ export default {
         } else if (response.status === 404) {
           //requested trip could not be found
           context.dispatch(
-              'ui/queueNotification',
-              { message: "De opgegeven reis kon niet worden gevonden.", timeout: 0 },
-              { root: true }
+            'ui/queueNotification',
+            {
+              message: 'De opgegeven reis kon niet worden gevonden.',
+              timeout: 0,
+            },
+            { root: true }
           )
         } else if (response.status === 401) {
           //The requested object does no longer exist
           context.dispatch(
-              'ui/queueNotification',
-              { message: "Deze reis is al geannuleerd", timeout: 0 },
-              { root: true }
+            'ui/queueNotification',
+            { message: 'Deze reis is al geannuleerd', timeout: 0 },
+            { root: true }
           )
         } else {
           context.dispatch(
