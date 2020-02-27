@@ -37,18 +37,36 @@
           </v-row>
         </v-col>
       </v-col>
-      <v-col v-for="(itinerary, index) in sortedItineraries()" :key="index">
-        <travel-card
-          :index="index"
-          :from="plan.from"
-          :to="plan.to"
-          :arrival-time="toDate(itinerary.arrivalTime)"
-          :departure-time="toDate(itinerary.departureTime)"
-          :duration="itinerary.duration"
-          :legs="itinerary.legs"
-          @onTripSelected="onTripSelected"
+      <v-col>
+        <section
+          v-for="(date, index) in getAllDifferentDays(sortedItineraries())"
+          :key="index"
+          class="px-0"
         >
-        </travel-card>
+          <span class="caption text-uppercase date-day-styling">{{
+            formatToCategoryDate(date)
+          }}</span>
+          <v-col
+            v-for="(itinerary, indx) in getItinerariesForThatDay(
+              sortedItineraries(),
+              date
+            )"
+            :key="indx"
+            class="px-0 py-1"
+          >
+            <travel-card
+              :index="indx"
+              :from="plan.from"
+              :to="plan.to"
+              :arrival-time="toDate(itinerary.arrivalTime)"
+              :departure-time="toDate(itinerary.departureTime)"
+              :duration="itinerary.duration"
+              :legs="itinerary.legs"
+              @onTripSelected="onTripSelected"
+            >
+            </travel-card>
+          </v-col>
+        </section>
       </v-col>
       <v-col mt-3>
         <v-row class="flex-column">
@@ -116,6 +134,30 @@ export default {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
+    getAllDifferentDays(itineraries) {
+      let differentDays = []
+      itineraries.forEach(it => {
+        const calendarDate = moment(it.arrivalTime).format('LL')
+        if (!differentDays.includes(calendarDate)) {
+          differentDays.push(calendarDate)
+        }
+      })
+      return differentDays
+    },
+    getItinerariesForThatDay(itineraries, sectionDay) {
+      return itineraries.filter(it => {
+        const dateToCheck = moment(it.arrivalTime.valueOf())
+        return (
+          moment(sectionDay, 'LL').isSame(dateToCheck, 'day') &&
+          moment(sectionDay, 'LL').isSame(dateToCheck, 'month')
+        )
+      })
+    },
+    formatToCategoryDate(date) {
+      return moment(date, 'LL')
+        .locale('NL')
+        .format('dddd DD MMMM')
+    },
     sortedItineraries() {
       const list = Object.assign([], this.plan.itineraries)
       if (this.selectedSortModus.value === 'fastest') {
@@ -171,6 +213,10 @@ export default {
 .no-padding .v-expansion-panel__header {
   padding-left: 0;
   padding-right: 0;
+}
+
+.date-day-styling {
+  color: $color-primary;
 }
 
 a {

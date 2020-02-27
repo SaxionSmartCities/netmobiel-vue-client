@@ -1,7 +1,7 @@
 <template>
   <content-pane>
     <v-row align="center">
-      <v-col cols="3">
+      <v-col cols="3" class="px-1">
         <router-link to="/onboardingPage">
           <round-user-image></round-user-image>
         </router-link>
@@ -14,7 +14,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col class="px-1">
         <span>
           Welkom bij Netmobiel, dé mobiliteitsapp van de Achterhoek en
           omstreken.
@@ -22,14 +22,14 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col class="px-1">
         <v-btn large rounded block outlined color="primary" to="/howTo">
           Hoe werkt het?
         </v-btn>
       </v-col>
     </v-row>
     <v-row v-if="updateMessages.length > 0">
-      <v-col>
+      <v-col class="px-1">
         <v-row>
           <v-col>
             <h4 class="netmobiel">Updates ({{ updateMessages.length }})</h4>
@@ -43,12 +43,12 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col class="px-1">
         <h4 class="netmobiel">Jouw activiteiten</h4>
       </v-col>
     </v-row>
     <v-row class="pt-0">
-      <v-col v-if="rides.length === 0" class="pt-0">
+      <v-col v-if="rides.length === 0" class="pt-0 px-1">
         <v-row>
           <v-col class="pt-0">
             <span class="font-italic">
@@ -57,7 +57,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col>
+          <v-col class="px-1">
             <v-btn
               large
               rounded
@@ -73,7 +73,7 @@
       </v-col>
       <v-col v-else class="pt-0">
         <v-row v-for="(ride, index) in rides" :key="index" xs12>
-          <v-col class="py-0">
+          <v-col class="pa-1">
             <ride-card class="my-2" :ride="ride"></ride-card>
           </v-col>
         </v-row>
