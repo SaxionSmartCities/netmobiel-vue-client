@@ -6,7 +6,7 @@
         <v-col v-if="plan.itineraries == undefined" my-4>
           Helaas, er zijn geen ritten gevonden!
         </v-col>
-        <v-col class="px-0 pb-0" v-else>
+        <v-col v-else class="px-0 pb-0">
           <v-divider />
           <v-row>
             <v-col class="py-0">
@@ -26,10 +26,10 @@
           <v-row justify="end">
             <v-col class="shrink pb-0 mt-2">
               <v-btn
-                @click="toggleSelectedSortModus()"
                 color="primary"
                 rounded
                 outlined
+                @click="toggleSelectedSortModus()"
               >
                 {{ selectedSortModus.title }}
               </v-btn>

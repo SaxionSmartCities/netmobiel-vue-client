@@ -28,7 +28,7 @@
     </v-flex>
     <v-flex>
       <v-layout column>
-        <v-flex @click="removeRoute">
+        <v-flex @click="openConfirmation">
           <v-divider></v-divider>
           <v-layout ma-3>
             <v-flex xs2>
@@ -56,8 +56,7 @@
             mb-4
             depressed
             color="button"
-            to="TripCanceledPage"
-            onclick=""
+            @click="deleteTrip"
           >
             Rit annuleren
           </v-btn>
@@ -99,15 +98,15 @@ export default {
       this.$store.dispatch('is/deleteSelectedTrip', {
         tripId: this.selectedTrip.id,
       })
+      this.$router.push('/tripCanceledPage')
     },
     editRoute() {},
     replanSameRoute() {},
+    openConfirmation() {
+      this.dialog = true
+    },
     closeConfirmation() {
       this.dialog = false
-    },
-    removeRoute() {
-      this.deleteTrip()
-      this.dialog = true
     },
   },
 }

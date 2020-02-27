@@ -1,32 +1,15 @@
 <template>
   <content-pane id="scroll">
-    <template v-slot:header>
-      <v-tabs id="tabs" grow centered slider-color="#bddade">
-        <v-tab class="white--text no-caps saved">
-          <v-icon color="white">commute</v-icon>
-          <span>
-            Reizen
-          </span>
-        </v-tab>
-        <v-tab class="white--text no-caps saved">
-          <v-icon color="white">directions_car</v-icon>
-          <span>
-            Ritten
-          </span>
-        </v-tab>
-      </v-tabs>
-    </template>
     <v-row my-4 mr-4 ml-6>
       <v-col>
-        <h1>Rit geanuleerd</h1>
+        <h1>Rit geannuleerd</h1>
       </v-col>
     </v-row>
     <v-row my-4 mr-4 ml-6>
       <v-col>
         <span>
-          Je hebt jouw rit geannuleerd, jammer dat het niet doorgaat Henk is
-          automatisch op de hoogte gebracht</span
-        >
+          Je hebt jouw rit geannuleerd, jammer dat het niet doorgaat.
+        </span>
       </v-col>
     </v-row>
     <v-row>

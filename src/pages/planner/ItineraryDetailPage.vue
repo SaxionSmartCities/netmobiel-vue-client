@@ -42,39 +42,41 @@
           Deze reis bevestigen
         </v-btn>
       </v-flex>
-      <v-flex my-4>
-        <v-btn
-          to="/conversation/1"
-          large
-          rounded
-          outlined
-          block
-          mb-4
-          depressed
-          color="primairy"
-          @click="contactDriver"
-        >
-          Stuur bericht naar henk
-        </v-btn>
-      </v-flex>
-      <v-flex my-4>
-        <v-btn
-          large
-          rounded
-          outlined
-          block
-          mb-4
-          depressed
-          color="primairy"
-          @click="showMap"
-        >
-          bekijk op de kaart
-        </v-btn>
-      </v-flex>
-      <v-flex mb-3>
-        <h1>Wijzigen</h1>
-      </v-flex>
-      <itinerary-options></itinerary-options>
+      <div v-if="selectedTrip.state === 'SCHEDULED'">
+        <v-flex my-4>
+          <v-btn
+            to="/conversation/1"
+            large
+            rounded
+            outlined
+            block
+            mb-4
+            depressed
+            color="primairy"
+            @click="contactDriver"
+          >
+            Stuur bericht naar henk
+          </v-btn>
+        </v-flex>
+        <v-flex my-4>
+          <v-btn
+            large
+            rounded
+            outlined
+            block
+            mb-4
+            depressed
+            color="primairy"
+            @click="showMap"
+          >
+            bekijk op de kaart
+          </v-btn>
+        </v-flex>
+        <v-flex mb-3>
+          <h1>Wijzigen</h1>
+        </v-flex>
+        <itinerary-options></itinerary-options>
+      </div>
     </v-layout>
   </content-pane>
 </template>
@@ -144,6 +146,7 @@ export default {
     saveTrip() {
       const selectedTrip = this.$store.getters['is/getSelectedTrip']
       this.$store.dispatch('is/storeSelectedTrip', selectedTrip)
+      this.$router.push('/tripPlanSubmitted')
     },
     contactDriver: function() {},
     showMap: function() {},
