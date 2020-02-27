@@ -3,7 +3,7 @@
     <slot name="header"></slot>
     <v-container
       id="content-container"
-      class="fill-height align-start justify-center"
+      class="fill-height justify-center"
       :class="{
         'container-non-scrollable': !scrollable,
         'container-scrollable': scrollable,
@@ -34,10 +34,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+#content-container {
+  align-content: start;
+}
 .container-non-scrollable {
   overflow: hidden;
 }
-
 .container-scrollable {
   overflow: scroll;
 }

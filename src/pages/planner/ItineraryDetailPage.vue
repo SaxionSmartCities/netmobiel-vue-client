@@ -30,6 +30,7 @@
       </v-flex>
       <v-flex my-4>
         <v-btn
+          v-show="showSection"
           large
           rounded
           block
@@ -41,6 +42,38 @@
           Deze reis bevestigen
         </v-btn>
       </v-flex>
+      <v-flex my-4>
+        <v-btn
+          large
+          rounded
+          outlined
+          block
+          mb-4
+          depressed
+          color="primairy"
+          @click="contactDriver"
+        >
+          Stuur bericht naar henk
+        </v-btn>
+      </v-flex>
+      <v-flex my-4>
+        <v-btn
+          large
+          rounded
+          outlined
+          block
+          mb-4
+          depressed
+          color="primairy"
+          @click="showMap"
+        >
+          bekijk op de kaart
+        </v-btn>
+      </v-flex>
+      <v-flex mb-3>
+        <h1>Wijzigen</h1>
+      </v-flex>
+      <itinerary-options></itinerary-options>
     </v-layout>
   </content-pane>
 </template>
@@ -49,10 +82,16 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 
 export default {
   name: 'ItineraryDetailPage',
-  components: { ContentPane, ItinerarySummary, ItineraryLeg },
+  components: { ContentPane, ItinerarySummary, ItineraryLeg, ItineraryOptions },
+  data: function() {
+    return {
+      showConfirmationButton: true,
+    }
+  },
   computed: {
     selectedTrip() {
       return this.$store.getters['is/getSelectedTrip']
@@ -89,15 +128,24 @@ export default {
       })
       return result
     },
+    showSection() {
+      return this.showConfirmationButton
+    },
   },
   created() {
     this.$store.commit('ui/showBackButton')
+    console.log(this.$store.getters['is/getSelectedTrip'])
+    if (this.selectedTrip.state === 'SCHEDULED') {
+      this.showConfirmationButton = false
+    }
   },
   methods: {
     saveTrip() {
       const selectedTrip = this.$store.getters['is/getSelectedTrip']
       this.$store.dispatch('is/storeSelectedTrip', selectedTrip)
     },
+    contactDriver: function() {},
+    showMap: function() {},
   },
 }
 </script>
