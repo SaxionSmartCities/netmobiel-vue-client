@@ -14,4 +14,7 @@ export default {
   saveRides: (state, payload) => {
     state.rides = payload
   },
+  appendRides: (state, payload) => {
+    state.rides = state.rides.concat(payload)
+  },
 }
