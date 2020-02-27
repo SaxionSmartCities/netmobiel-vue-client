@@ -1,13 +1,7 @@
 <template>
   <content-pane id="scroll">
     <template v-slot:header>
-      <v-tabs
-        id="tabs"
-        v-model="selectedTab"
-        grow
-        centered
-        slider-color="#bddade"
-      >
+      <v-tabs id="tabs" grow centered slider-color="#bddade">
         <v-tab class="white--text no-caps saved">
           <v-icon color="white">commute</v-icon>
           <span>
@@ -28,15 +22,17 @@
       </v-col>
     </v-row>
     <v-row my-4 mr-4 ml-6>
-      <div>
-        Je hebt jouw rit geannuleerd, jammer dat het niet doorgaat Henk is
-        automatisch op de hoogte gebracht
-      </div>
+      <v-col>
+        <span>
+          Je hebt jouw rit geannuleerd, jammer dat het niet doorgaat Henk is
+          automatisch op de hoogte gebracht</span
+        >
+      </v-col>
     </v-row>
     <v-row>
       <v-col>
         <v-btn
-          to="ModeSelectionPage"
+          to="/modeSelection"
           large
           rounded
           block
@@ -71,17 +67,5 @@ import ContentPane from '@/components/common/ContentPane.vue'
 export default {
   name: 'TripCanceledPage',
   components: { ContentPane },
-  data() {
-    return {
-      selectedTab: 0,
-      bottom: false,
-      maxResults: 5,
-    }
-  },
 }
 </script>
-<style>
-.v-card::before {
-  border-color: WHITE;
-}
-</style>

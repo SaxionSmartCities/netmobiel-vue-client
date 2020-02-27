@@ -71,7 +71,7 @@ import { mapGetters } from 'vuex'
 import ContentPane from '@/components/common/ContentPane.vue'
 import TravelCard from '@/components/search-results/TravelCard.vue'
 import RideCard from '@/components/rides/RideCard.vue'
-
+import constants from '../../constants/constants'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 
 export default {
@@ -81,7 +81,7 @@ export default {
     return {
       selectedTab: 0,
       bottom: false,
-      maxResults: 5,
+      maxResults: constants.fetchTripsMaxResults,
     }
   },
   computed: {

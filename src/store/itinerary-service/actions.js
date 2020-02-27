@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from '@/config/config'
+import constants from '../../constants/constants'
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_PLANNER_SERVICE_API_KEY = config.GRAVITEE_PLANNER_SERVICE_API_KEY
@@ -52,6 +53,48 @@ export default {
         )
       })
   },
+  deleteSelectedTrip: (context, payload) => {
+    const URL = BASE_URL + `/planner/trips/${payload.tripId}`
+    axios
+      .delete(URL, {
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      })
+      .then(response => {
+        console.log(response)
+        if (response.status === 204) {
+          //Succesful response, trip is deleted.
+          context.dispatch(
+            'ui/queueNotification',
+            { message: 'Reis is succesvol geannuleerd', timeout: 0 },
+            { root: true }
+          ),
+            context.dispatch('fetchTrips', {
+              maxResults: constants.fetchTripsMaxResults,
+              offset: 0,
+            })
+        } else if (response.status === 404) {
+          //requested trip could not be found
+        } else if (response.status === 401) {
+          console.log('niet geautiseerd.')
+          //The requested object does no longer exist
+        } else {
+          context.dispatch(
+            'ui/queueNotification',
+            { message: response.data.message, timeout: 0 },
+            { root: true }
+          )
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+          console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          { message: 'fout bij het annuleren van de reis', timeout: 0 },
+          { root: true }
+        )
+      })
+  },
   storeSelectedTrip: (context, payload) => {
     const URL = BASE_URL + '/planner/trips'
     axios
@@ -82,7 +125,7 @@ export default {
         console.log(error)
         context.dispatch(
           'ui/queueNotification',
-          { message: 'Fout bij het opslaan van de gekozen reis.', timeout: 0 },
+          { message: 'Fout bij het annuleren van de reis.', timeout: 0 },
           { root: true }
         )
       })
