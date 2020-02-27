@@ -80,9 +80,9 @@ export default {
         source: 'route',
         type: 'line',
         paint: {
-          'line-width': 2,
+          'line-width': 4,
           'line-color': '#007cbf',
-          'line-dasharray': [1, 4],
+          'line-dasharray': [2, 2],
         },
       })
     },
