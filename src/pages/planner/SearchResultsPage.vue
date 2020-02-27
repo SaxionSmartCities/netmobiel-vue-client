@@ -6,7 +6,7 @@
         <v-col v-if="plan.itineraries == undefined" my-4>
           Helaas, er zijn geen ritten gevonden!
         </v-col>
-        <v-col class="px-0 pb-0" v-else>
+        <v-col v-else class="px-0 pb-0">
           <v-divider />
           <v-row>
             <v-col class="py-0">
@@ -26,10 +26,10 @@
           <v-row justify="end">
             <v-col class="shrink pb-0 mt-2">
               <v-btn
-                @click="toggleSelectedSortModus()"
                 color="primary"
                 rounded
                 outlined
+                @click="toggleSelectedSortModus()"
               >
                 {{ selectedSortModus.title }}
               </v-btn>
@@ -40,22 +40,22 @@
       <v-col>
         <section
           v-for="(date, index) in getAllDifferentDays(sortedItineraries())"
-          class="px-2"
           :key="index"
+          class="px-2"
         >
           <span class="caption text-uppercase date-day-styling">{{
             formatToCategoryDate(date)
           }}</span>
           <v-col
-            class="px-0"
-            v-for="(itinerary, index) in getItinerariesForThatDay(
+            v-for="(itinerary, indx) in getItinerariesForThatDay(
               sortedItineraries(),
               date
             )"
-            :key="index"
+            :key="indx"
+            class="px-0"
           >
             <travel-card
-              :index="index"
+              :index="indx"
               :from="plan.from"
               :to="plan.to"
               :arrival-time="toDate(itinerary.arrivalTime)"
