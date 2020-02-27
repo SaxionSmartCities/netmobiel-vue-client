@@ -41,7 +41,7 @@
         <section
           v-for="(date, index) in getAllDifferentDays(sortedItineraries())"
           :key="index"
-          class="px-2"
+          class="px-0"
         >
           <span class="caption text-uppercase date-day-styling">{{
             formatToCategoryDate(date)
@@ -52,7 +52,7 @@
               date
             )"
             :key="indx"
-            class="px-0"
+            class="px-0 py-1"
           >
             <travel-card
               :index="indx"
