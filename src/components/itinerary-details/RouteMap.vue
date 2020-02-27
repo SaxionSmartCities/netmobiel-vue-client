@@ -12,6 +12,8 @@
 <script>
 import Mapbox from 'mapbox-gl'
 import { MglMap, MglMarker } from 'vue-mapbox'
+var polyline = require('@mapbox/polyline')
+
 const ACCESS_TOKEN =
   'pk.eyJ1IjoidGltb3RoeS1zZWFseSIsImEiOiJjazcxcG04a3MwOHNqM2Zta2VhOGpkb2xtIn0.EELRFGDmbR-0m761gF6A6Q'
 const MAP_STYLE = 'mapbox://styles/mapbox/streets-v11'
@@ -44,8 +46,9 @@ export default {
   },
   methods: {
     async onMapLoad(event) {
-      const origin = [6.416015625, 52.25050528572611]
-      const destination = [6.7950439453125, 52.267316957465944]
+      const result = polyline.toGeoJSON(
+        '_uv}Hi{`i@B?B?FALC?C??@?@??@?@@R?@c@F?D?D@T?B@DD~@b@IHAFA@JC??J???@A?E@@R?D@B?B?B@BDJ@B?B@D@VJvB@D?@?@BD@A@BDC'
+      )
 
       var route = {
         type: 'FeatureCollection',
@@ -53,42 +56,23 @@ export default {
           {
             type: 'Feature',
             properties: {},
-            geometry: {
-              type: 'LineString',
-              coordinates: [origin, destination],
-            },
+            geometry: result,
           },
         ],
       }
-      // A single point that animates along the route.
-      // Coordinates are initially set to origin.
-      var point = {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            properties: {},
-            geometry: {
-              type: 'Point',
-              coordinates: origin,
-            },
-          },
+
+      event.map.fitBounds(
+        [
+          result.coordinates[0],
+          result.coordinates[result.coordinates.length - 1],
         ],
-      }
-      event.map.fitBounds([
-        [6.416015625, 52.25050528572611],
-        [6.7950439453125, 52.267316957465944],
-      ])
+        { padding: 30 }
+      )
 
       // Add a source and layer displaying a point which will be animated in a circle.
       event.map.addSource('route', {
         type: 'geojson',
         data: route,
-      })
-
-      event.map.addSource('point', {
-        type: 'geojson',
-        data: point,
       })
 
       event.map.addLayer({
@@ -98,16 +82,9 @@ export default {
         paint: {
           'line-width': 2,
           'line-color': '#007cbf',
+          'line-dasharray': [1, 4],
         },
       })
-      // console.log(newParams)
-      /* => {
-              center: [30, 30],
-              zoom: 9,
-              bearing: 9,
-              pitch: 7
-            }
-      */
     },
   },
 }
