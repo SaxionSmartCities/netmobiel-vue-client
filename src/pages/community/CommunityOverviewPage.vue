@@ -4,7 +4,7 @@
       <v-col>
         <community-button
           class="mx-auto"
-          forward="/community"
+          forward="/inbox"
           icon="fa-comments"
           naam="berichten"
           :aantal-berichten="2"
