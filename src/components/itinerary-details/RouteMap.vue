@@ -55,8 +55,33 @@ export default {
         features: [
           {
             type: 'Feature',
-            properties: {},
             geometry: result,
+          },
+        ],
+      }
+
+      let points = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {
+              name: 'start',
+            },
+            geometry: {
+              type: 'Point',
+              coordinates: result.coordinates[0],
+            },
+          },
+          {
+            type: 'Feature',
+            properties: {
+              name: 'end',
+            },
+            geometry: {
+              type: 'Point',
+              coordinates: result.coordinates[result.coordinates.length - 1],
+            },
           },
         ],
       }
@@ -69,20 +94,33 @@ export default {
         { padding: 30 }
       )
 
-      // Add a source and layer displaying a point which will be animated in a circle.
       event.map.addSource('route', {
         type: 'geojson',
         data: route,
+      })
+
+      event.map.addSource('points', {
+        type: 'geojson',
+        data: points,
+      })
+      event.map.addLayer({
+        id: 'points',
+        source: 'points',
+        type: 'circle',
       })
 
       event.map.addLayer({
         id: 'route',
         source: 'route',
         type: 'line',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round',
+        },
         paint: {
           'line-width': 4,
           'line-color': '#007cbf',
-          'line-dasharray': [2, 2],
+          'line-dasharray': [2, 4],
         },
       })
     },
