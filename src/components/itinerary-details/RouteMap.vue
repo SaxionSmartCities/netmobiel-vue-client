@@ -5,7 +5,7 @@
     :map-style="mapStyle"
     @load="onMapLoad"
   >
-    <mgl-marker :coordinates="coordinates" color="blue" />
+    <mgl-marker :coordinates="destinationCoordinates" color="red" />
   </mgl-map>
 </template>
 
@@ -26,7 +26,7 @@ export default {
       map: null,
       accessToken: ACCESS_TOKEN, // your access token. Needed if you using Mapbox maps
       mapStyle: MAP_STYLE, // your map style
-      coordinates: [-111.549668, 39.014],
+      destinationCoordinates: [],
       geoJsonSource: {
         type: 'Feature',
         properties: {},
@@ -50,6 +50,9 @@ export default {
         '_uv}Hi{`i@B?B?FALC?C??@?@??@?@@R?@c@F?D?D@T?B@DD~@b@IHAFA@JC??J???@A?E@@R?D@B?B?B@BDJ@B?B@D@VJvB@D?@?@BD@A@BDC'
       )
 
+      this.destinationCoordinates =
+        result.coordinates[result.coordinates.length - 1]
+
       var route = {
         type: 'FeatureCollection',
         features: [
@@ -66,7 +69,7 @@ export default {
           {
             type: 'Feature',
             properties: {
-              name: 'start',
+              title: 'start',
             },
             geometry: {
               type: 'Point',
@@ -76,7 +79,7 @@ export default {
           {
             type: 'Feature',
             properties: {
-              name: 'end',
+              title: 'end',
             },
             geometry: {
               type: 'Point',
@@ -91,7 +94,7 @@ export default {
           result.coordinates[0],
           result.coordinates[result.coordinates.length - 1],
         ],
-        { padding: 30 }
+        { padding: 50 }
       )
 
       event.map.addSource('route', {
@@ -103,6 +106,7 @@ export default {
         type: 'geojson',
         data: points,
       })
+
       event.map.addLayer({
         id: 'points',
         source: 'points',
@@ -130,6 +134,6 @@ export default {
 
 <style lang="scss" scoped>
 #map {
-  height: 400px;
+  height: 200px;
 }
 </style>
