@@ -68,6 +68,9 @@ export default {
       return this.$store.getters['ps/getUser']
     },
   },
+  created: function() {
+    this.$store.commit('ui/showBackButton')
+  },
   methods: {
     showConversation(conversation) {
       this.$router.push({

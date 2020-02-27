@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane id="scroll">
     <template v-slot:header>
       <v-tabs
         id="tabs"
@@ -80,6 +80,8 @@ export default {
   data() {
     return {
       selectedTab: 0,
+      bottom: false,
+      maxResults: 5,
     }
   },
   computed: {
@@ -88,9 +90,27 @@ export default {
       getPlannedRides: 'cs/getRides',
     }),
   },
+  watch: {
+    bottom(bottom) {
+      if (bottom) {
+        if (this.selectedTab == 0) {
+          this.fetchTrips()
+        } else if (this.selectedTab == 1) {
+          this.fetchRides()
+        }
+      }
+    },
+  },
   mounted() {
-    this.$store.dispatch('is/fetchTrips')
-    this.$store.dispatch('cs/fetchRides')
+    this.fetchTrips()
+    this.fetchRides()
+    document
+      .getElementById('content-container')
+      .addEventListener('scroll', () => {
+        this.bottom = this.bottomVisible(
+          document.getElementById('content-container')
+        )
+      })
   },
   beforeRouteEnter: beforeRouteEnter({
     selectedTab: number => number,
@@ -101,6 +121,25 @@ export default {
   methods: {
     parseDate(dateString) {
       return moment(dateString)
+    },
+    bottomVisible(element) {
+      const scrollY = element.scrollTop
+      const visible = element.clientHeight
+      const pageHeight = element.scrollHeight
+      const bottomOfPage = visible + scrollY >= pageHeight
+      return bottomOfPage || pageHeight < visible
+    },
+    fetchTrips() {
+      this.$store.dispatch('is/fetchTrips', {
+        maxResults: this.maxResults,
+        offset: this.getPlannedTrips.length,
+      })
+    },
+    fetchRides() {
+      this.$store.dispatch('cs/fetchRides', {
+        offset: this.getPlannedRides.length,
+        maxResults: this.maxResults,
+      })
     },
     onTripSelected(index) {
       this.$store.commit('is/setSelectedTrip', this.getPlannedTrips[index])

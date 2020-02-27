@@ -153,14 +153,24 @@ export default {
         )
       })
   },
-  fetchRides: context => {
+  fetchRides: (context, payload) => {
+    const offset = payload.offset
+    const maxResults = payload.maxResults
     const URL = BASE_URL + `/rideshare/rides`
     axios
       .get(URL, {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+        params: {
+          offset: offset,
+          maxResults: maxResults,
+        },
       })
       .then(function(resp) {
-        context.commit('saveRides', resp.data)
+        if (offset == 0) {
+          context.commit('saveRides', resp.data)
+        } else {
+          context.commit('appendRides', resp.data)
+        }
       })
       .catch(function(error) {
         // TODO: Proper error handling.
