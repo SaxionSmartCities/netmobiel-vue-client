@@ -77,6 +77,100 @@
         </v-flex>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="reviewDialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title><h1>Beoordeel jouw rit!</h1></v-card-title>
+        <v-card-text>
+          <span>
+            Hoe heb je deze rit ervaren? Geef jouw mening en laat weten wat jij
+            ervan vond.
+          </span>
+        </v-card-text>
+        <v-row justify="space-around">
+          <v-col cols="10" sm="10" md="10">
+            <v-chip-group column active-class="primary--text">
+              <v-chip v-for="tag in tags" :key="tag">
+                {{ tag }}
+              </v-chip>
+            </v-chip-group>
+          </v-col>
+        </v-row>
+        <v-flex my-4 mr-4 ml-4>
+          <v-btn
+            large
+            rounded
+            block
+            mb-4
+            depressed
+            color="button"
+            @click="progress()"
+          >
+            Beoordeel deze rit
+          </v-btn>
+        </v-flex>
+        <v-flex my-4 mr-4 ml-4 pb-8>
+          <v-btn
+            large
+            rounded
+            outlined
+            block
+            mb-4
+            depressed
+            color="primairy"
+            @click="reviewDialog = false"
+          >
+            Annuleren
+          </v-btn>
+        </v-flex>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="commentDialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title><h1>Beoordeel jouw rit!</h1></v-card-title>
+        <v-card-text>
+          <span>
+            Hoe heb je deze rit ervaren? Geef jouw mening en laat weten wat jij
+            ervan vond.
+          </span>
+        </v-card-text>
+        <v-row justify="space-around">
+          <v-col cols="12" md="6">
+            <v-textarea
+              clearable
+              clear-icon="cancel"
+              value="Cory is een vriendlijke passagier en reageert direct. De volgende keer neem ik haar graag weer mee!"
+            ></v-textarea>
+          </v-col>
+        </v-row>
+        <v-flex my-4 mr-4 ml-4>
+          <v-btn
+            large
+            rounded
+            block
+            mb-4
+            depressed
+            color="button"
+            @click="deleteTrip"
+          >
+            Beoordeel deze rit
+          </v-btn>
+        </v-flex>
+        <v-flex my-4 mr-4 ml-4 pb-8>
+          <v-btn
+            large
+            rounded
+            outlined
+            block
+            mb-4
+            depressed
+            color="primairy"
+            @click="reviewDialog = false"
+          >
+            Terug
+          </v-btn>
+        </v-flex>
+      </v-card>
+    </v-dialog>
   </v-layout>
 </template>
 
@@ -86,7 +180,17 @@ export default {
   components: {},
   props: {},
   data: function() {
-    return { dialog: false }
+    return {
+      dialog: false,
+      reviewDialog: false,
+      commentDialog: false,
+      tags: [
+        'Zelfde interesses',
+        'Op tijd',
+        'Soepele communicatie',
+        'Gezellig',
+      ],
+    }
   },
   computed: {
     selectedTrip() {
@@ -100,8 +204,14 @@ export default {
       })
       this.$router.push('/tripCanceledPage')
     },
+    progress() {
+      this.reviewDialog = false
+      this.commentDialog = true
+    },
     editRoute() {},
-    replanSameRoute() {},
+    replanSameRoute() {
+      this.reviewDialog = true
+    },
     openConfirmation() {
       this.dialog = true
     },
