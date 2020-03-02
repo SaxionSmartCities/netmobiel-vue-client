@@ -8,7 +8,7 @@
         Jouw reis is bevestigd. We sturen je een herrinnering voor jouw vertrek.
       </v-flex>
       <v-flex shrink>
-        <v-btn block rounded depressed class="my-3 button" to="/planTripBack">
+        <v-btn block rounded depressed class="my-3 button" to="/search">
           Plan direct je terugreis</v-btn
         >
         <v-btn block rounded depressed outlined color="primary" to="/plan">
