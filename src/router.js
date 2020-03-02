@@ -34,6 +34,7 @@ import RidePlanSubmitted from './pages/planner/RidePlanSubmitted.vue'
 import TripPlanSubmitted from './pages/planner/TripPlanSubmitted.vue'
 import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
 import TripCanceledPage from './pages/saved/TripCanceledPage'
+import RidePlanHomePage from './pages/planner/RidePlanHomePage'
 
 const router = new Router({
   mode: 'history',
@@ -69,6 +70,11 @@ const router = new Router({
       path: '/planOptions',
       component: RidePlanOptionsPage,
       name: 'planOptions',
+    },
+    {
+      path: '/planTripBack',
+      component: RidePlanHomePage,
+      name: 'planTripBack',
     },
     {
       path: '/planSubmitted',
