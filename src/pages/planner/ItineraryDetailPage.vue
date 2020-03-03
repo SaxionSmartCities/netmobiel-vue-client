@@ -25,20 +25,20 @@
       </v-col>
       <v-col class="mx-3">
         <v-row class="flex-column">
-          <v-col v-if="generateSteps.length == 0">
+          <v-col v-if="generateSteps.length === 0">
             Shoutout
           </v-col>
           <v-col
-            class="py-0"
             v-for="(leg, index) in generateSteps"
             v-else
             :key="index"
+            class="py-0"
           >
             <itinerary-leg
-              :isMapActive="selectedLegIndex === index"
+              :is-map-active="selectedLegIndex === index"
               :step="index"
-              @legSelect="onLegSelected"
               :leg="leg"
+              @legSelect="onLegSelected"
             />
           </v-col>
         </v-row>
