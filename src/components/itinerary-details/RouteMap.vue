@@ -2,11 +2,14 @@
   <div>
     <mgl-map
       id="map"
+      ref="routeMap"
+      :mapbox-gl="mapbox"
       :access-token="accessToken"
       :map-style="mapStyle"
       :center="center"
       :zoom="6"
-      ref="routeMap"
+      :track-size="true"
+      @resize="resize"
       @load="onMapLoad"
     >
       <mgl-marker :coordinates="destinationCoordinates" color="red" />
@@ -16,7 +19,6 @@
 </template>
 
 <script>
-import Mapbox from 'mapbox-gl'
 import { MglMap, MglMarker } from 'vue-mapbox'
 import config from '@/config/config'
 
@@ -36,19 +38,18 @@ export default {
   },
   data() {
     return {
-      map: null,
       accessToken: ACCESS_TOKEN, // your access token. Needed if you using Mapbox maps
       mapStyle: MAP_STYLE, // your map style
       destinationCoordinates: [],
       center: [4.895168, 52.370216],
+      styleOfTheMap: {},
+      mapbox: null,
     }
-  },
-  created() {
-    // We need to set mapbox-gl library here in order to use it in template
-    this.mapbox = Mapbox
   },
   methods: {
     async onMapLoad(event) {
+      this.map = event.map
+
       const result = polyline.toGeoJSON(this.leg.legGeometry.points)
       this.destinationCoordinates =
         result.coordinates[result.coordinates.length - 1]
@@ -129,13 +130,38 @@ export default {
       })
     },
     resize() {
-      this.$refs.routeMap.resize()
+      // this.$refs.routeMap.resize()
+      // console.log('map is getting resized', event)
+    },
+    async makeSmaller() {
+      // const routeMap = this.$refs.routeMap
+      // const mapbox = await routeMap.mapboxPromise
+      // console.log('routemap ', routeMap)
+      // console.log('mapbox promise', mapbox)
+      // this.styleOfTheMap = {
+      //   width: '50%',
+      // }
+      var mapDiv = document.getElementById('map')
+      var mapCanvas = document.getElementsByClassName('mapboxgl-canvas')[0]
+      mapDiv.style.width = '100px'
+      mapCanvas.style.width = '100%'
+      setTimeout(() => {
+        // console.log(this.map.getMax)
+
+        this.map.resize()
+        this.map.fitBounds(this.map.getBounds())
+        this.map.triggerRepaint()
+        console.log(this.map)
+      }, 1000)
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
+.activated {
+  width: 100px !important;
+}
 #map {
   position: fixed;
   top: $header-height;

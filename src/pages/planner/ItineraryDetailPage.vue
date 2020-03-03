@@ -2,7 +2,7 @@
   <content-pane>
     <v-row v-if="selectedLeg && showMap" class="pa-0">
       <v-col class="pa-0">
-        <route-map ref="map" :leg="selectedLeg"></route-map>
+        <route-map ref="mapComp" :leg="selectedLeg"></route-map>
       </v-col>
     </v-row>
     <v-row class=" flex-column">
@@ -176,7 +176,7 @@ export default {
   },
   methods: {
     fixMap() {
-      this.$refs.map.resize()
+      this.$refs.mapComp.makeSmaller()
     },
     saveTrip() {
       const selectedTrip = this.$store.getters['is/getSelectedTrip']
