@@ -23,7 +23,16 @@
         ><span class="pl-2 subtitle-1 font-weight-light">nog 185 credits</span>
       </v-col>
       <v-col class="pr-4"
-        ><v-btn small rounded block depressed>
+        ><v-btn
+          color="primary"
+          class="font-weight-bold"
+          small
+          rounded
+          block
+          depressed
+          outlined
+          to="/goalDetails"
+        >
           Bekijk dit doel
         </v-btn>
       </v-col>
@@ -33,7 +42,7 @@
 
 <script>
 export default {
-  name: 'GoalDetails',
+  name: 'GoalCard',
 }
 </script>
 

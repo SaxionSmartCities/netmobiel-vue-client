@@ -19,13 +19,21 @@
       </span>
     </v-row>
     <v-row>
-      <goal-details></goal-details>
+      <goal-card></goal-card>
     </v-row>
     <v-row mb-3 mt-3>
       <span class="font-weight-medium primary--text">Eerder gedoneerd </span>
     </v-row>
     <v-row>
-      <goal-details></goal-details>
+      <v-slide-group multiple center-active>
+        <v-slide-item
+          v-for="n in 25"
+          :key="n"
+          v-slot:default="{ active, toggle }"
+        >
+          <goal-card></goal-card>
+        </v-slide-item>
+      </v-slide-group>
     </v-row>
     <v-row mb-3 mt-3>
       <span class="font-weight-medium primary--text">Top donateurs</span>
@@ -99,11 +107,11 @@
 </template>
 
 <script>
-import GoalDetails from '../../../components/community/GoalDetails'
+import GoalCard from '../../../components/community/GoalCard'
 import ContentPane from '../../../components/common/ContentPane'
 export default {
   name: 'GoalOverviewPage',
-  components: { ContentPane, GoalDetails },
+  components: { ContentPane, GoalCard },
   data: function() {
     return {}
   },
