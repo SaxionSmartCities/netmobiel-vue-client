@@ -1,12 +1,13 @@
 <template>
   <content-pane>
-    <v-row v-if="selectedLeg && showMap">
-      <v-col>
-        <route-map :leg="selectedLeg"></route-map>
+    <v-row v-if="selectedLeg && showMap" class="pa-0">
+      <v-col class="pa-0">
+        <route-map ref="map" :leg="selectedLeg"></route-map>
       </v-col>
     </v-row>
     <v-row class=" flex-column">
       <v-col class="mb-3 py-0">
+        <v-btn @click="fixMap">fix map</v-btn>
         <h1>Reisdetails</h1>
       </v-col>
       <v-col class="py-0">
@@ -174,6 +175,9 @@ export default {
     }
   },
   methods: {
+    fixMap() {
+      this.$refs.map.resize()
+    },
     saveTrip() {
       const selectedTrip = this.$store.getters['is/getSelectedTrip']
       this.$store.dispatch('is/storeSelectedTrip', selectedTrip)

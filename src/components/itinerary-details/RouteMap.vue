@@ -1,23 +1,28 @@
 <template>
-  <mgl-map
-    id="map"
-    :access-token="accessToken"
-    :map-style="mapStyle"
-    :center="center"
-    :zoom="6"
-    @load="onMapLoad"
-  >
-    <mgl-marker :coordinates="destinationCoordinates" color="red" />
-  </mgl-map>
+  <div>
+    <mgl-map
+      id="map"
+      :access-token="accessToken"
+      :map-style="mapStyle"
+      :center="center"
+      :zoom="6"
+      ref="routeMap"
+      @load="onMapLoad"
+    >
+      <mgl-marker :coordinates="destinationCoordinates" color="red" />
+    </mgl-map>
+    <div class="ghost-map"></div>
+  </div>
 </template>
 
 <script>
 import Mapbox from 'mapbox-gl'
 import { MglMap, MglMarker } from 'vue-mapbox'
-var polyline = require('@mapbox/polyline')
+import config from '@/config/config'
 
-const ACCESS_TOKEN =
-  'pk.eyJ1IjoidGltb3RoeS1zZWFseSIsImEiOiJjazcxcG04a3MwOHNqM2Zta2VhOGpkb2xtIn0.EELRFGDmbR-0m761gF6A6Q'
+const polyline = require('@mapbox/polyline')
+
+const ACCESS_TOKEN = config.MAPBOX_TOKEN
 const MAP_STYLE = 'mapbox://styles/mapbox/streets-v11'
 
 export default {
@@ -31,7 +36,6 @@ export default {
   },
   data() {
     return {
-      mapBox: null,
       map: null,
       accessToken: ACCESS_TOKEN, // your access token. Needed if you using Mapbox maps
       mapStyle: MAP_STYLE, // your map style
@@ -124,12 +128,22 @@ export default {
         },
       })
     },
+    resize() {
+      this.$refs.routeMap.resize()
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
 #map {
-  height: 200px;
+  position: fixed;
+  top: $header-height;
+  left: 0;
+  width: $map-width;
+  height: $map-height;
+}
+.ghost-map {
+  height: $map-height;
 }
 </style>
