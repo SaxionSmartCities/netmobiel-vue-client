@@ -98,9 +98,6 @@ export default {
   created() {
     this.$store.commit('ui/showBackButton')
   },
-  mounted() {
-    this.$store.dispatch('cs/fetchCars')
-  },
   methods: {
     selectAlternativeCar(car) {
       const profile = this.$store.getters['ps/getUser'].profile
@@ -108,11 +105,20 @@ export default {
         ...profile,
         ridePlanOptions: { ...profile.ridePlanOptions, selectedCarId: car.id },
       })
-      this.$router.go(-1) // navigate back in history and restore models from history state
+      // navigate back in history and restore models from history state
+      this.$router.go(-1)
     },
     removeCar(car) {
-      // Remove car from user profile in the backend.
-      this.$store.dispatch('ps/deleteRidePlanOptionsCar', car)
+      // Remove car in the backend.
+      this.$store.dispatch('cs/removeCar', car).then(() => {
+        this.$store.dispatch('cs/fetchCars')
+      })
+      // Update profile if the car that has been removed the default car is.
+      const profile = this.$store.getters['ps/getUser'].profile
+      if (profile.ridePlanOptions.selectedCarId === car.id) {
+        profile.ridePlanOptions.selectedCarId = -1
+        this.$store.dispatch('updateProfile', profile)
+      }
     },
   },
 }
