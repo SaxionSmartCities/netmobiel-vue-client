@@ -2,7 +2,7 @@
   <v-layout pa-2 column>
     <v-flex>
       <v-layout column>
-        <v-flex @click="editRoute">
+        <v-flex>
           <v-divider></v-divider>
           <v-layout ma-3>
             <v-flex xs2>
@@ -15,13 +15,26 @@
     </v-flex>
     <v-flex>
       <v-layout column>
-        <v-flex @click="replanSameRoute">
+        <v-flex>
           <v-divider></v-divider>
           <v-layout ma-3>
             <v-flex xs2>
               <v-icon>fa-redo</v-icon>
             </v-flex>
             <v-flex>Plan deze reis opnieuw</v-flex>
+          </v-layout>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+    <v-flex>
+      <v-layout column>
+        <v-flex @click="reviewTrip">
+          <v-divider></v-divider>
+          <v-layout ma-3>
+            <v-flex xs2>
+              <v-icon>fa-redo</v-icon>
+            </v-flex>
+            <v-flex>Beoordeel deze reis(tmp)</v-flex>
           </v-layout>
         </v-flex>
       </v-layout>
@@ -77,7 +90,7 @@
         </v-flex>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="reviewDialog" persistent max-width="600px">
+    <v-dialog v-model="reviewDialog" persistent max-width="500px">
       <v-card>
         <v-card-title><h1>Beoordeel jouw rit!</h1></v-card-title>
         <v-card-text>
@@ -124,7 +137,7 @@
         </v-flex>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="commentDialog" persistent max-width="600px">
+    <v-dialog v-model="commentDialog" persistent max-width="500px">
       <v-card>
         <v-card-title><h1>Beoordeel jouw rit!</h1></v-card-title>
         <v-card-text>
@@ -133,16 +146,18 @@
             ervan vond.
           </span>
         </v-card-text>
-        <v-row justify="space-around">
-          <v-col cols="12" md="6">
-            <v-textarea
-              clearable
-              clear-icon="cancel"
-              value="Cory is een vriendlijke passagier en reageert direct. De volgende keer neem ik haar graag weer mee!"
-            ></v-textarea>
-          </v-col>
-        </v-row>
         <v-flex my-4 mr-4 ml-4>
+          <v-textarea
+            pa-md-4
+            clearable
+            clear-icon="cancel"
+            flat
+            outlined
+            solo
+            label="Cory is een vriendlijke passagier en reageert direct. De volgende keer neem ik haar graag weer mee!"
+          ></v-textarea>
+        </v-flex>
+        <v-flex my-8 mr-4 ml-4>
           <v-btn
             large
             rounded
@@ -150,7 +165,7 @@
             mb-4
             depressed
             color="button"
-            @click="deleteTrip"
+            @click="confirmReview()"
           >
             Beoordeel deze rit
           </v-btn>
@@ -208,8 +223,7 @@ export default {
       this.reviewDialog = false
       this.commentDialog = true
     },
-    editRoute() {},
-    replanSameRoute() {
+    reviewTrip() {
       this.reviewDialog = true
     },
     openConfirmation() {
@@ -217,6 +231,10 @@ export default {
     },
     closeConfirmation() {
       this.dialog = false
+    },
+    confirmReview() {
+      this.reviewDialog = false
+      this.$router.push('/tripReviewedPage')
     },
   },
 }
