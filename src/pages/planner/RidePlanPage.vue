@@ -118,6 +118,9 @@ export default {
       return cars.find(car => car.id === selectedCarId)
     },
   },
+  mounted() {
+    this.$store.dispatch('cs/fetchCars')
+  },
   beforeRouteEnter: beforeRouteEnter({
     journeyMoment: DateTimeSelector.restoreModel,
     recurrence: json => json,
