@@ -70,6 +70,7 @@ export default {
   },
   created: function() {
     this.$store.commit('ui/showBackButton')
+    this.$store.dispatch('ms/fetchMessages')
   },
   methods: {
     showConversation(conversation) {
