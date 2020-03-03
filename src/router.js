@@ -32,6 +32,7 @@ import RidePlanPage from './pages/planner/RidePlanPage.vue'
 import RidePlanOptionsPage from './pages/planner/RidePlanOptionsPage.vue'
 import RidePlanSubmitted from './pages/planner/RidePlanSubmitted.vue'
 import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
+import GoalOverviewPage from './pages/community/goals/GoalOverviewPage'
 
 const router = new Router({
   mode: 'history',
@@ -62,6 +63,11 @@ const router = new Router({
       path: '/plan',
       component: RidePlanPage,
       name: 'planRide',
+    },
+    {
+      path: '/goalOverviewPage',
+      component: GoalOverviewPage,
+      name: 'goalOverviewPage',
     },
     {
       path: '/planOptions',

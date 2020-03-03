@@ -43,7 +43,7 @@
           class="mx-auto"
           icon="fa-bullseye"
           naam="doelen"
-          disabled="true"
+          forward="/goalOverviewPage"
         ></community-button>
       </v-col>
     </v-row>
