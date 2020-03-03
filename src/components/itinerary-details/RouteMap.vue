@@ -130,7 +130,6 @@ export default {
 
 <style lang="scss" scoped>
 #map {
-  width: 100vw;
   height: 200px;
 }
 </style>
