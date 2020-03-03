@@ -43,7 +43,7 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col class="my-4">
+      <v-col>
         <v-btn
           v-show="showSection"
           large
@@ -58,38 +58,48 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-flex my-4>
-      <v-btn
-        large
-        rounded
-        outlined
-        block
-        mb-4
-        depressed
-        color="primairy"
-        @click="contactDriver"
-      >
-        Stuur bericht naar henk
-      </v-btn>
-    </v-flex>
-    <v-flex my-4>
-      <v-btn
-        large
-        rounded
-        outlined
-        block
-        mb-4
-        depressed
-        color="primairy"
-        @click="showMap"
-      >
-        bekijk op de kaart
-      </v-btn>
-    </v-flex>
-    <v-flex mb-3>
-      <h1>Wijzigen</h1>
-    </v-flex>
-    <itinerary-options></itinerary-options>
+    <v-row>
+      <v-col>
+        <v-btn
+          large
+          rounded
+          outlined
+          block
+          mb-4
+          depressed
+          color="primairy"
+          @click="contactDriver"
+        >
+          Stuur bericht naar henk
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn
+          large
+          rounded
+          outlined
+          block
+          mb-4
+          depressed
+          color="primairy"
+          @click="showMap"
+        >
+          bekijk op de kaart
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row class="mb-3">
+      <v-col class="pb-0">
+        <h1>Wijzigen</h1>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="pa-0">
+        <itinerary-options></itinerary-options>
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 
