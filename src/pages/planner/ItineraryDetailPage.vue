@@ -45,6 +45,7 @@
       </v-col>
       <v-col class="my-4">
         <v-btn
+          v-show="showSection"
           large
           rounded
           block
@@ -57,6 +58,40 @@
         </v-btn>
       </v-col>
     </v-row>
+      </v-flex>
+      <v-flex my-4>
+        <v-btn
+          large
+          rounded
+          outlined
+          block
+          mb-4
+          depressed
+          color="primairy"
+          @click="contactDriver"
+        >
+          Stuur bericht naar henk
+        </v-btn>
+      </v-flex>
+      <v-flex my-4>
+        <v-btn
+          large
+          rounded
+          outlined
+          block
+          mb-4
+          depressed
+          color="primairy"
+          @click="showMap"
+        >
+          bekijk op de kaart
+        </v-btn>
+      </v-flex>
+      <v-flex mb-3>
+        <h1>Wijzigen</h1>
+      </v-flex>
+      <itinerary-options></itinerary-options>
+    </v-layout>
   </content-pane>
 </template>
 
@@ -64,16 +99,18 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import RouteMap from '@/components/itinerary-details/RouteMap'
 
 export default {
   name: 'ItineraryDetailPage',
-  components: { RouteMap, ContentPane, ItinerarySummary, ItineraryLeg },
+  components: { RouteMap, ContentPane, ItinerarySummary, ItineraryLeg, ItineraryOptions },
   data() {
     return {
       selectedLeg: null,
       selectedLegIndex: null,
       showMap: true,
+      showConfirmationButton: true,
     }
   },
   computed: {
@@ -112,9 +149,15 @@ export default {
       })
       return result
     },
+    showSection() {
+      return this.showConfirmationButton
+    },
   },
   created() {
     this.$store.commit('ui/showBackButton')
+    if (this.selectedTrip.state === 'SCHEDULED') {
+      this.showConfirmationButton = false
+    }
   },
   methods: {
     saveTrip() {
@@ -134,6 +177,8 @@ export default {
         this.showMap = true
       })
     },
+    contactDriver: function() {},
+    showMap: function() {},
   },
 }
 </script>
