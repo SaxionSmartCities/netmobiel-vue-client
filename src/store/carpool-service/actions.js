@@ -49,6 +49,23 @@ export default {
         }
       })
   },
+  fetchCars: context => {
+    const URL = BASE_URL + `/rideshare/cars`
+    axios
+      .get(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        if (resp.status == 200) {
+          context.commit('setAvailableCars', resp.data)
+        }
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
   submitCar: (context, payload) => {
     const URL = BASE_URL + `/rideshare/cars`
     axios
