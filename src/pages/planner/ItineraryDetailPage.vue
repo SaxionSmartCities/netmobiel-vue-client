@@ -23,7 +23,7 @@
       <v-col>
         <v-divider />
       </v-col>
-      <v-col class="mx-3">
+      <v-col class="px-6">
         <v-row class="flex-column">
           <v-col v-if="generateSteps.length === 0">
             Shoutout
