@@ -141,16 +141,17 @@ export default {
       // this.styleOfTheMap = {
       //   width: '50%',
       // }
+      //TODO show the button when is done animating
       var mapDiv = document.getElementById('map')
       var mapCanvas = document.getElementsByClassName('mapboxgl-canvas')[0]
-      mapDiv.style.width = '100px'
+      mapDiv.style.height = '100vh'
       mapCanvas.style.width = '100%'
       setTimeout(() => {
         // console.log(this.map.getMax)
 
         this.map.resize()
+        //Need to trigger this one to center the route
         this.map.fitBounds(this.map.getBounds())
-        this.map.triggerRepaint()
         console.log(this.map)
       }, 1000)
     },
@@ -164,6 +165,7 @@ export default {
 }
 #map {
   position: fixed;
+  z-index: 1;
   top: $header-height;
   left: 0;
   width: $map-width;
