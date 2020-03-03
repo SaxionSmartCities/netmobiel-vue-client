@@ -11,6 +11,9 @@ export default {
   clearSearchResult: state => {
     state.search.result = undefined
   },
+  setAvailableCars: (state, payload) => {
+    state.cars = payload
+  },
   saveRides: (state, payload) => {
     state.rides = payload
   },
