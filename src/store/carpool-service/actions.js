@@ -110,7 +110,7 @@ export default {
   },
   submitRide: (context, payload) => {
     const { ridePlanOptions, selectedTime, from, to, recurrence } = payload
-    if (ridePlanOptions.cars.length == 0) {
+    if (ridePlanOptions.selectedCarId < 0) {
       context.dispatch(
         'ui/queueNotification',
         {
@@ -141,7 +141,6 @@ export default {
       nrSeatsAvailable: ridePlanOptions.numPassengers,
       maxDetourSeconds: ridePlanOptions.maxMinutesDetour * 60,
     }
-
     const axiosConfig = {
       method: 'POST',
       url: BASE_URL + `/rideshare/rides`,
@@ -153,7 +152,7 @@ export default {
       .then(function(res) {
         // eslint-disable-next-line
         console.log(res)
-        context.dispatch('fetchRides')
+        context.dispatch('fetchRides', { offset: 0, maxResults: 10 })
       })
       .catch(function(error) {
         // TODO: Proper error handling.
