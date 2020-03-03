@@ -14,7 +14,6 @@ function generateHeaders(key) {
 export default {
   fetchMessages: () => {
     const URL = BASE_URL + `/communicator/messages`
-    console.log(URL)
     axios
       .get(URL, {
         headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
