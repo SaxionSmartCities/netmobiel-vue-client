@@ -58,40 +58,38 @@
         </v-btn>
       </v-col>
     </v-row>
-      </v-flex>
-      <v-flex my-4>
-        <v-btn
-          large
-          rounded
-          outlined
-          block
-          mb-4
-          depressed
-          color="primairy"
-          @click="contactDriver"
-        >
-          Stuur bericht naar henk
-        </v-btn>
-      </v-flex>
-      <v-flex my-4>
-        <v-btn
-          large
-          rounded
-          outlined
-          block
-          mb-4
-          depressed
-          color="primairy"
-          @click="showMap"
-        >
-          bekijk op de kaart
-        </v-btn>
-      </v-flex>
-      <v-flex mb-3>
-        <h1>Wijzigen</h1>
-      </v-flex>
-      <itinerary-options></itinerary-options>
-    </v-layout>
+    <v-flex my-4>
+      <v-btn
+        large
+        rounded
+        outlined
+        block
+        mb-4
+        depressed
+        color="primairy"
+        @click="contactDriver"
+      >
+        Stuur bericht naar henk
+      </v-btn>
+    </v-flex>
+    <v-flex my-4>
+      <v-btn
+        large
+        rounded
+        outlined
+        block
+        mb-4
+        depressed
+        color="primairy"
+        @click="showMap"
+      >
+        bekijk op de kaart
+      </v-btn>
+    </v-flex>
+    <v-flex mb-3>
+      <h1>Wijzigen</h1>
+    </v-flex>
+    <itinerary-options></itinerary-options>
   </content-pane>
 </template>
 
@@ -104,7 +102,13 @@ import RouteMap from '@/components/itinerary-details/RouteMap'
 
 export default {
   name: 'ItineraryDetailPage',
-  components: { RouteMap, ContentPane, ItinerarySummary, ItineraryLeg, ItineraryOptions },
+  components: {
+    RouteMap,
+    ContentPane,
+    ItinerarySummary,
+    ItineraryLeg,
+    ItineraryOptions,
+  },
   data() {
     return {
       selectedLeg: null,
@@ -178,7 +182,6 @@ export default {
       })
     },
     contactDriver: function() {},
-    showMap: function() {},
   },
 }
 </script>
