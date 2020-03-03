@@ -77,7 +77,7 @@ function luggageLabel(option) {
 export default {
   computed: {
     availableCars() {
-      return this.$store.getters['ps/getUser'].profile.ridePlanOptions.cars
+      return this.$store.getters['cs/getAvailableCars']
     },
     luggageOptions() {
       return this.$store.getters[
@@ -95,8 +95,11 @@ export default {
         .selectedCarId
     },
   },
-  created: function() {
+  created() {
     this.$store.commit('ui/showBackButton')
+  },
+  mounted() {
+    this.$store.dispatch('cs/fetchCars')
   },
   methods: {
     selectAlternativeCar(car) {
