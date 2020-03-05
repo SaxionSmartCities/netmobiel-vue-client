@@ -16,31 +16,29 @@
         </v-tab>
       </v-tabs>
     </template>
-    <v-list three-line avatar class="pt-0">
+    <v-list three-line avatar class="pt-0 conversation-list">
       <template v-for="conversation in conversations">
-        <v-divider :key="conversation.id + '-divider'" />
+        <v-divider :key="conversation.context + '-divider'" />
         <v-list-item
-          :key="conversation.id"
-          class="px-0"
-          @click="showConversation(conversation)"
+          :key="conversation.context"
+          class=""
+          @click="showConversation(conversation.context)"
         >
           <v-list-item-avatar size="60">
-            <v-img :src="profile.image" />
+            <!--                  <v-img :src="profile.image" />-->
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>
               <v-row dense>
                 <v-col>
-                  {{ conversation.sender }}
+                  {{ conversation.sender.givenName }}
                 </v-col>
                 <v-col class="px-2" cols="2">
                   <div class="message-counter">4</div>
                 </v-col>
               </v-row>
             </v-list-item-title>
-            <v-list-item-subtitle>{{
-              conversation.messages[0].content
-            }}</v-list-item-subtitle>
+            <v-list-item-subtitle>{{ conversation.body }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -71,11 +69,12 @@ export default {
   created: function() {
     this.$store.commit('ui/showBackButton')
     this.$store.dispatch('ms/fetchMessages')
+    this.$store.dispatch('ms/fetchConversations')
   },
   methods: {
-    showConversation(conversation) {
+    showConversation(context) {
       this.$router.push({
-        path: `/conversation/${conversation.id}`,
+        path: `/conversation/${context}`,
       })
     },
   },
@@ -83,6 +82,9 @@ export default {
 </script>
 
 <style lang="scss">
+.conversation-list {
+  width: 100%;
+}
 .message-counter {
   border-radius: 1000px;
   background: $color-green;

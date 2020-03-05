@@ -138,28 +138,39 @@ export default {
     if (this.selectedTrip.state === 'SCHEDULED') {
       this.showConfirmationButton = false
     }
+    console.log(this.selectedTrip)
   },
   methods: {
     saveTrip() {
       const selectedTrip = this.$store.getters['is/getSelectedTrip']
       this.$store.dispatch('is/storeSelectedTrip', selectedTrip)
     },
-    testMessage() {
+    async testMessage() {
+      const driver = await this.$store.dispatch('ps/fetchUser', { userId: 78 })
       console.log(this.selectedTrip)
+      const recipient = {
+        managedIdentity: driver.managedIdentity,
+        givenName: driver.givenName,
+        familyName: driver.familyName,
+      }
+
+      console.log(driver)
+
       let tripRef
       if (!this.selectedTrip.tripRef) {
-        tripRef = 'urn:nb:pl:trip:' + this.selectedTrip.id
+        tripRef = 'urn:nb:pl:trip:' + this.selectedTrip.legs[0].id
         console.log('created trip ref myself', tripRef)
       }
 
       console.log('tripref: ', tripRef)
       //check
-      const recipients = []
+      const recipients = [recipient]
       this.$store.dispatch('ms/sendMessage', {
         urn: tripRef,
         message: 'testing...',
         mode: 'MESSAGE',
         recipients,
+        subject: 'some kind of subject...',
       })
     },
     contactDriver: function() {},
