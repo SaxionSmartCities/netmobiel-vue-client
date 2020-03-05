@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <content-pane>
     <v-layout column>
       <v-flex mb-3>
         <h3>Auto toevoegen</h3>
@@ -74,12 +74,17 @@
         </v-layout>
       </v-flex>
     </v-layout>
-  </v-container>
+  </content-pane>
 </template>
 
 <script>
+import ContentPane from '@/components/common/ContentPane.vue'
+
 export default {
   name: 'ProfileAddCar',
+  components: {
+    ContentPane,
+  },
   data: function() {
     return {
       searchLicensePlate: '',

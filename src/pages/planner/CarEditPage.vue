@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <content-pane>
     <v-layout column>
       <v-flex mb-3>
         <h3>{{ isEditing ? 'Auto wijzigen' : 'Auto instellingen' }}</h3>
@@ -91,11 +91,12 @@
         </v-layout>
       </v-flex>
     </v-layout>
-  </v-container>
+  </content-pane>
 </template>
 
 <script>
 import luggageTypes from '@/constants/luggage-types.js'
+import ContentPane from '@/components/common/ContentPane.vue'
 
 const BAD_PERSON_COUNT = 'Voer een geheel getal tussen 1 en 6.'
 
@@ -105,6 +106,9 @@ function validatePersonCount(n) {
 
 export default {
   name: 'ProfileEditCar',
+  components: {
+    ContentPane,
+  },
   data: function() {
     return {
       car: {},
