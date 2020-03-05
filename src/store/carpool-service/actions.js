@@ -187,8 +187,11 @@ export default {
       })
   },
   deleteRide: (context, payload) => {
-    console.log('payload', payload, payload.id)
     const URL = BASE_URL + `/rideshare/rides/` + payload.id
+    if (payload.cancelReason != '') {
+      // ADD MESSAGE HERE
+      console.log(payload.cancelReason)
+    }
     axios
       .delete(URL, {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),

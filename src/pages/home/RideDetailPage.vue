@@ -1,7 +1,11 @@
 <template>
-  <v-container>
-    <h3 class="ma-2">Rit details</h3>
-    <v-divider />
+  <content-pane id="scroll">
+    <v-row>
+      <v-col>
+        <h3 class="ma-2">Rit details</h3>
+        <v-divider />
+      </v-col>
+    </v-row>
     <v-row>
       <v-col cols="4" class="pt-0 pb-0">Datum</v-col>
       <v-col cols="8" class="departure-date pt-0 pb-0">
@@ -50,7 +54,11 @@
         </table>
       </v-col>
     </v-row>
-    <v-divider class="mb-2" />
+    <v-row>
+      <v-col>
+        <v-divider />
+      </v-col>
+    </v-row>
     <v-row>
       <v-col class="mx-6">
         <v-row v-for="(leg, index) in generateSteps()" :key="index">
@@ -58,71 +66,75 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-row class="mx-1">
-      <v-btn
-        v-if="ride.bookings.length > 0"
-        large
-        rounded
-        block
-        outlined
-        class="mt-2"
-        color="primary"
-        to="/community"
-      >
-        Bericht sturen
-      </v-btn>
-
-      <v-btn
-        large
-        rounded
-        block
-        outlined
-        color="warning"
-        @click="checkDeleteTrip()"
-      >
-        Reis annuleren
-      </v-btn>
-      <v-dialog v-model="warningDialog">
-        <v-card>
-          <v-card-title class="headline">
-            Weet u zeker dat u wil annuleren?
-          </v-card-title>
-
-          <v-card-text>
-            <p>
-              Op dit moment heeft uw reis {{ ride.bookings.length }} boekingen,
-              wilt u uw passagier(s) een reden geven waarom u de reis annuleert.
-            </p>
-            <v-textarea
-              outlined
-              name="input-7-4"
-              label="Reden voor annulering"
-              :value="cancelReason"
-            ></v-textarea>
-          </v-card-text>
-
-          <v-card-actions>
-            <v-btn text color="primary" @click="deleteTrip()">
-              Ja
-            </v-btn>
-
-            <v-btn text color="primary" @click="warningDialog = false">
-              Nee
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+    <v-row v-if="ride.bookings.length > 0">
+      <v-col class="mx-1">
+        <v-btn large rounded block outlined color="primary" to="/community">
+          Bericht sturen naar passagier
+        </v-btn>
+      </v-col>
     </v-row>
-  </v-container>
+    <v-row class="mb-2">
+      <v-col>
+        <h3 class="mb-2">Wijzigen</h3>
+        <v-divider />
+        <v-row @click="checkDeleteTrip()">
+          <v-col cols="3" class="text-center">
+            <v-icon>lock</v-icon>
+          </v-col>
+          <v-col>
+            Reis annuleren
+          </v-col>
+        </v-row>
+        <v-dialog v-model="warningDialog">
+          <v-card>
+            <v-card-title class="headline">
+              Weet u dit zeker?
+            </v-card-title>
+
+            <v-card-text v-if="ride.bookings.length > 0">
+              <p>
+                Op dit moment heeft uw reis
+                {{ ride.bookings.length }} boekingen, wilt u uw passagier(s) een
+                reden geven waarom u de reis annuleert.
+              </p>
+              <v-textarea
+                outlined
+                name="input-7-4"
+                label="Reden voor annulering"
+                :value="cancelReason"
+              ></v-textarea>
+            </v-card-text>
+            <v-card-text v-else>
+              <p>
+                Weet u zeker dat u deze rit wil annuleren?
+              </p>
+            </v-card-text>
+
+            <v-card-actions>
+              <v-btn text color="primary" @click="deleteTrip()">
+                Ja
+              </v-btn>
+
+              <v-btn text color="primary" @click="warningDialog = false">
+                Nee
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-divider />
+      </v-col>
+    </v-row>
+  </content-pane>
 </template>
 
 <script>
 import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import ContentPane from '@/components/common/ContentPane.vue'
 
 export default {
   name: 'RideDetailPage',
-  components: { ItineraryLeg },
+  components: { ContentPane, ItineraryLeg },
   props: {
     id: {
       type: Number,
@@ -185,22 +197,14 @@ export default {
     },
     deleteTrip() {
       this.warningDialog = false
-      if (this.cancelReason !== '' && this.ride.bookings.length > 0) {
-        //Leave a message
-        console.log(this.cancelReason, 'push message')
-        //DIT WORDT EEN DISPATCH ACTION
-      }
       this.$store.dispatch('cs/deleteRide', {
         id: this.id,
+        cancelReason: this.cancelReason,
       })
       this.$router.push('/tripsOverviewPage')
     },
     checkDeleteTrip() {
-      if (this.ride.bookings.length > 0 && this.warningDialog == false) {
-        this.warningDialog = true
-      } else {
-        this.deleteTrip()
-      }
+      this.warningDialog = true
     },
   },
 }
