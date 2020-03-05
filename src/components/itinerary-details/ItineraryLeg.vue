@@ -179,6 +179,6 @@ function humanDistance(meters) {
   height: 100%;
 }
 .active-map {
-  @extend .glow;
+  @extend .selected-map;
 }
 </style>

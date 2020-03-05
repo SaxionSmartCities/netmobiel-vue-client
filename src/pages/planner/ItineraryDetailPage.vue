@@ -2,12 +2,37 @@
   <content-pane>
     <v-row v-if="selectedLeg && showMap" class="pa-0">
       <v-col class="pa-0">
-        <route-map ref="mapComp" :leg="selectedLeg"></route-map>
+        <route-map
+          ref="mapComp"
+          :leg="selectedLeg"
+          @loaded="showFullScreenMapBtn = true"
+        ></route-map>
       </v-col>
+    </v-row>
+    <v-row v-if="showFullScreenMapBtn">
+      <v-btn
+        v-if="!isMapFullScreen"
+        fab
+        small
+        class="map-fullscreen"
+        @click="showMapFullScreen"
+      >
+        <v-icon>fullscreen</v-icon>
+      </v-btn>
+      <v-btn
+        v-if="isMapFullScreen"
+        class="map-fullscreen-exit"
+        fab
+        small
+        @click="shrinkMap"
+      >
+        <v-icon>
+          fullscreen_exit
+        </v-icon>
+      </v-btn>
     </v-row>
     <v-row class=" flex-column">
       <v-col class="mb-3 py-0">
-        <v-btn @click="fixMap">fix map</v-btn>
         <h1>Reisdetails</h1>
       </v-col>
       <v-col class="py-0">
@@ -126,6 +151,8 @@ export default {
       selectedLegIndex: null,
       showMap: true,
       showConfirmationButton: true,
+      showFullScreenMapBtn: false,
+      isMapFullScreen: false,
     }
   },
   computed: {
@@ -175,9 +202,6 @@ export default {
     }
   },
   methods: {
-    fixMap() {
-      this.$refs.mapComp.makeSmaller()
-    },
     saveTrip() {
       const selectedTrip = this.$store.getters['is/getSelectedTrip']
       this.$store.dispatch('is/storeSelectedTrip', selectedTrip)
@@ -190,14 +214,39 @@ export default {
     forceRerender() {
       // Remove my-component from the DOM
       this.showMap = false
+      this.showFullScreenMapBtn = false
+      this.isMapFullScreen = false
       this.$nextTick(() => {
         // Add the component back in
         this.showMap = true
       })
+    },
+    showMapFullScreen() {
+      this.$refs.mapComp.resizeMap()
+      this.showFullScreenMapBtn = false
+      this.isMapFullScreen = true
+    },
+    shrinkMap() {
+      this.$refs.mapComp.shrinkMap()
+      this.showFullScreenMapBtn = true
     },
     contactDriver: function() {},
   },
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.map-fullscreen {
+  top: 10px;
+  left: 10px;
+  position: absolute;
+  z-index: 4;
+}
+
+.map-fullscreen-exit {
+  top: 10px;
+  left: 10px;
+  position: absolute;
+  z-index: 4;
+}
+</style>

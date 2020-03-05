@@ -78,20 +78,8 @@ h3 {
 }
 
 
-.glow {
-  font-size: 80px;
-  color: #fff;
-  text-align: center;
-  -webkit-animation: glow 1s ease-in-out infinite alternate;
-  -moz-animation: glow 1s ease-in-out infinite alternate;
-  animation: glow 1s ease-in-out infinite alternate;
+.selected-map {
+  background-color: gold;
 }
 
-@-webkit-keyframes glow {
-  from {
-    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px $color-secondary-dark, 0 0 40px $color-secondary-dark, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
-  }
-  to {
-    text-shadow: 0 0 20px #fff, 0 0 30px $color-secondary-dark, 0 0 40px $color-secondary-dark, 0 0 50px $color-secondary-dark, 0 0 60px $color-secondary-dark, 0 0 70px $color-secondary-dark, 0 0 80px $color-secondary-dark;
-  }
-}
+

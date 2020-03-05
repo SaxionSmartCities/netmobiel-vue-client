@@ -9,8 +9,9 @@
       :center="center"
       :zoom="6"
       :track-size="true"
-      @resize="resize"
+      @resize="onResize"
       @load="onMapLoad"
+      @moveend="onMoveEnd"
     >
       <mgl-marker :coordinates="destinationCoordinates" color="red" />
     </mgl-map>
@@ -44,9 +45,13 @@ export default {
       center: [4.895168, 52.370216],
       styleOfTheMap: {},
       mapbox: null,
+      showShrinkMeBtn: false,
     }
   },
   methods: {
+    onMoveEnd() {
+      this.$emit('loaded', {})
+    },
     async onMapLoad(event) {
       this.map = event.map
 
@@ -129,31 +134,20 @@ export default {
         },
       })
     },
-    resize() {
-      // this.$refs.routeMap.resize()
-      // console.log('map is getting resized', event)
+    shrinkMap() {
+      var mapDiv = document.getElementById('map')
+      mapDiv.style.height = '200px'
+      this.map.resize()
     },
-    async makeSmaller() {
-      // const routeMap = this.$refs.routeMap
-      // const mapbox = await routeMap.mapboxPromise
-      // console.log('routemap ', routeMap)
-      // console.log('mapbox promise', mapbox)
-      // this.styleOfTheMap = {
-      //   width: '50%',
-      // }
-      //TODO show the button when is done animating
+    onResize() {
+      this.map.fitBounds(this.map.getBounds())
+    },
+    async resizeMap() {
       var mapDiv = document.getElementById('map')
       var mapCanvas = document.getElementsByClassName('mapboxgl-canvas')[0]
       mapDiv.style.height = '100vh'
       mapCanvas.style.width = '100%'
-      setTimeout(() => {
-        // console.log(this.map.getMax)
-
-        this.map.resize()
-        //Need to trigger this one to center the route
-        this.map.fitBounds(this.map.getBounds())
-        console.log(this.map)
-      }, 1000)
+      this.map.resize()
     },
   },
 }
