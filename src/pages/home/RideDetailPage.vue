@@ -1,5 +1,10 @@
 <template>
   <content-pane id="scroll">
+    <v-row v-if="selectedLeg">
+      <v-col>
+        <route-map :leg="selectedLeg"></route-map>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col>
         <h3 class="ma-2">Rit details</h3>
@@ -130,11 +135,12 @@
 <script>
 import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import RouteMap from '@/components/itinerary-details/RouteMap'
 import ContentPane from '@/components/common/ContentPane.vue'
 
 export default {
   name: 'RideDetailPage',
-  components: { ContentPane, ItineraryLeg },
+  components: { ContentPane, ItineraryLeg, RouteMap },
   props: {
     id: {
       type: Number,
@@ -147,6 +153,7 @@ export default {
       ride: this.$store.getters['cs/getRides'].find(
         ride => ride.id === this.id
       ),
+      selectedLeg: null,
       warningDialog: false,
       cancelReason: '',
     }
@@ -194,6 +201,9 @@ export default {
           from: { name: ride.toPlace.label },
         },
       ]
+    },
+    onLegSelected(leg) {
+      this.selectedLeg = leg
     },
     deleteTrip() {
       this.warningDialog = false
