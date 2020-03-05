@@ -202,7 +202,15 @@ export default {
           //Delete trip from store!
           context.commit('deleteRides', payload.id)
         } else {
-          console.log('something wrong!', resp)
+          console.log('Error during deleting rides!', resp)
+          context.dispatch(
+            'ui/queueNotification',
+            {
+              message: 'Fout bij het verwijderen van uw rit-aanbod.',
+              timeout: 0,
+            },
+            { root: true }
+          )
         }
       })
       .catch(function(error) {
