@@ -229,6 +229,7 @@ export default {
     shrinkMap() {
       this.$refs.mapComp.shrinkMap()
       this.showFullScreenMapBtn = true
+      this.isMapFullScreen = false
     },
     contactDriver: function() {},
   },
