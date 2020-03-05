@@ -13,8 +13,8 @@
             {{ header }}
             <v-icon
               v-if="leg.traverseMode === 'WALK'"
-              @click="$emit('legSelect', { leg, step })"
               :class="{ 'active-map': isMapActive }"
+              @click="$emit('legSelect', { leg, step })"
             >
               map
             </v-icon>
@@ -58,12 +58,9 @@ import delegation from '@/utils/delegation'
 export default {
   name: 'ItineraryLeg',
   props: {
-    leg: {
-      type: Object,
-      required: true,
-    },
-    isMapActive: Boolean,
-    step: Number,
+    leg: { type: Object, required: true },
+    isMapActive: { type: Boolean, default: false },
+    step: { type: Number, default: 0 },
   },
   computed: {
     travelMode() {

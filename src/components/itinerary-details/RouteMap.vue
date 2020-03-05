@@ -21,11 +21,10 @@
 
 <script>
 import { MglMap, MglMarker } from 'vue-mapbox'
-import config from '@/config/config'
-
 const polyline = require('@mapbox/polyline')
 
-const ACCESS_TOKEN = config.MAPBOX_TOKEN
+const ACCESS_TOKEN =
+  'pk.eyJ1IjoibmV0bW9iaWVsIiwiYSI6ImNrN2JuNXd0ZjBpMXozbHJ3Znc5emxndzIifQ.t9ONoGEq441FOgHhKyqYag'
 const MAP_STYLE = 'mapbox://styles/mapbox/streets-v11'
 
 export default {
@@ -33,6 +32,7 @@ export default {
   components: { MglMap, MglMarker },
   props: {
     leg: {
+      type: Object,
       default: Object,
       required: true,
     },
