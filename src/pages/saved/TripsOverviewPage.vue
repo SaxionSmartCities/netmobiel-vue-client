@@ -2,6 +2,7 @@
   <content-pane id="scroll">
     <template v-slot:header>
       <v-tabs
+        v-if="showTabs"
         id="tabs"
         v-model="selectedTab"
         grow
@@ -24,7 +25,11 @@
         </v-tab>
       </v-tabs>
     </template>
-    <v-row v-if="selectedTab == 0" class="fill-height" dense>
+    <v-row
+      v-if="(showTabs && selectedTab == 0) || isPassenger"
+      class="fill-height"
+      dense
+    >
       <v-col v-if="getPlannedTrips.length == 0">
         U heeft geen bewaarde reizen. Ga naar de planner om uw reis te plannen.
       </v-col>
@@ -44,7 +49,7 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-row v-if="selectedTab == 1" dense>
+    <v-row v-if="(showTabs && selectedTab == 1) || isDriver" dense>
       <v-col v-if="getPlannedRides.length == 0">
         U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
         plannen.
@@ -89,6 +94,18 @@ export default {
       getPlannedTrips: 'is/getPlannedTrips',
       getPlannedRides: 'cs/getRides',
     }),
+    showTabs() {
+      const role = this.$store.getters['ps/getProfile'].userRole
+      return !role || role == 'both'
+    },
+    isPassenger() {
+      const role = this.$store.getters['ps/getProfile'].userRole
+      return role == 'passenger'
+    },
+    isDriver() {
+      const role = this.$store.getters['ps/getProfile'].userRole
+      return role == 'driver'
+    },
   },
   watch: {
     bottom(bottom) {
