@@ -2,13 +2,13 @@
   <content-pane id="scroll">
     <v-row my-4 mr-4 ml-6>
       <v-col>
-        <h1>Rit geannuleerd</h1>
+        <h1>Reis geannuleerd</h1>
       </v-col>
     </v-row>
     <v-row my-4 mr-4 ml-6>
       <v-col>
         <span>
-          Je hebt jouw rit geannuleerd, jammer dat het niet doorgaat.
+          Je hebt jouw Reis geannuleerd, jammer dat het niet doorgaat.
         </span>
       </v-col>
     </v-row>
@@ -23,7 +23,7 @@
           depressed
           color="button"
         >
-          Plan een nieuwe rit
+          Plan een nieuwe reis
         </v-btn>
       </v-col>
     </v-row>
@@ -37,9 +37,9 @@
           block
           mb-4
           depressed
-          color="primairy"
+          color="primary"
         >
-          bekijk mijn ritten
+          Bekijk mijn reizen
         </v-btn>
       </v-col>
     </v-row>

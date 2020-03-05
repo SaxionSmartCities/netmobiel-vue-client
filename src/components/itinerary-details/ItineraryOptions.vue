@@ -1,54 +1,45 @@
 <template>
-  <v-layout pa-2 column>
-    <v-flex>
-      <v-layout column>
-        <v-flex @click="editRoute">
-          <v-divider></v-divider>
-          <v-layout ma-3>
-            <v-flex xs2>
-              <v-icon>fa-pencil-alt</v-icon>
-            </v-flex>
-            <v-flex>Wijzig deze rit</v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    <v-flex>
-      <v-layout column>
-        <v-flex @click="replanSameRoute">
-          <v-divider></v-divider>
-          <v-layout ma-3>
-            <v-flex xs2>
-              <v-icon>fa-redo</v-icon>
-            </v-flex>
-            <v-flex>Plan deze reis opnieuw</v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    <v-flex>
-      <v-layout column>
-        <v-flex @click="openConfirmation">
-          <v-divider></v-divider>
-          <v-layout ma-3>
-            <v-flex xs2>
-              <v-icon>fa-times-circle</v-icon>
-            </v-flex>
-            <v-flex>Annuleer deze reis</v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
+  <v-container pa-2 column>
+    <v-row>
+      <v-divider></v-divider>
+    </v-row>
+    <v-row @click="editRoute">
+      <v-col cols="3">
+        <v-icon>fa-pencil-alt</v-icon>
+      </v-col>
+      <v-col cols 6>
+        Wijzig deze reis
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-divider></v-divider>
+    </v-row>
+    <v-row @click="replanSameRoute">
+      <v-col cols="3">
+        <v-icon>fa-redo</v-icon>
+      </v-col>
+      <v-col cols 6>
+        Plan deze reis opnieuw
+      </v-col>
+    </v-row>
+    <v-row @click="openConfirmation">
+      <v-col cols="3">
+        <v-icon>fa-times-circle</v-icon>
+      </v-col>
+      <v-col cols 6>
+        Annuleer deze reis
+      </v-col>
+    </v-row>
     <v-dialog v-model="dialog" persistent max-width="320px">
       <v-card>
-        <v-card-title><h1>Annuleer deze rit.</h1></v-card-title>
+        <v-card-title><h1>Annuleer deze reis.</h1></v-card-title>
         <v-card-text>
           <span>
-            Weet je zeker dat je deze rit wilt annuleren? Dit kan niet ongedaan
+            Weet je zeker dat je deze reis wilt annuleren? Dit kan niet ongedaan
             gemaakt worden.
           </span>
         </v-card-text>
-        <v-flex my-4 mr-4 ml-4>
+        <v-row my-4 mr-4 ml-4>
           <v-btn
             large
             rounded
@@ -58,10 +49,10 @@
             color="button"
             @click="deleteTrip"
           >
-            Rit annuleren
+            Reis annuleren
           </v-btn>
-        </v-flex>
-        <v-flex my-4 mr-4 ml-4 pb-8>
+        </v-row>
+        <v-row my-4 mr-4 ml-4 pb-8>
           <v-btn
             large
             rounded
@@ -72,12 +63,12 @@
             color="primairy"
             @click="closeConfirmation"
           >
-            Rit toch bewaren
+            Reis toch bewaren
           </v-btn>
-        </v-flex>
+        </v-row>
       </v-card>
     </v-dialog>
-  </v-layout>
+  </v-container>
 </template>
 
 <script>

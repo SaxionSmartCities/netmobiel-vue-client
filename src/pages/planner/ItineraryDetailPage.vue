@@ -1,24 +1,24 @@
 <template>
   <content-pane>
-    <v-layout py-2 column>
-      <v-flex mb-3>
+    <v-container py-2 column>
+      <v-row mb-3>
         <h1>Reisdetails</h1>
-      </v-flex>
-      <v-flex>
+      </v-row>
+      <v-row mb-3>
         <v-divider />
-      </v-flex>
-      <v-flex my-2>
+      </v-row>
+      <v-row my-2>
         <itinerary-summary
           :date="selectedTrip.departureTime"
           :cost="5"
           :duration="selectedTrip.duration"
         >
         </itinerary-summary>
-      </v-flex>
-      <v-flex>
+      </v-row>
+      <v-row>
         <v-divider />
-      </v-flex>
-      <v-flex mt-4 mx-3>
+      </v-row>
+      <v-row mt-4 mx-3>
         <v-layout column>
           <v-flex v-if="generateSteps.length == 0">
             Shoutout
@@ -27,8 +27,8 @@
             <itinerary-leg :leg="leg" />
           </v-flex>
         </v-layout>
-      </v-flex>
-      <v-flex my-4>
+      </v-row>
+      <v-row my-4>
         <v-btn
           v-show="showSection"
           large
@@ -41,43 +41,49 @@
         >
           Deze reis bevestigen
         </v-btn>
-      </v-flex>
-      <div v-if="selectedTrip.state === 'SCHEDULED'">
-        <v-flex my-4>
-          <v-btn
-            to="/conversation/1"
-            large
-            rounded
-            outlined
-            block
-            mb-4
-            depressed
-            color="primairy"
-            @click="contactDriver"
-          >
-            Stuur bericht naar henk
-          </v-btn>
-        </v-flex>
-        <v-flex my-4>
-          <v-btn
-            large
-            rounded
-            outlined
-            block
-            mb-4
-            depressed
-            color="primairy"
-            @click="showMap"
-          >
-            bekijk op de kaart
-          </v-btn>
-        </v-flex>
-        <v-flex mb-3>
-          <h1>Wijzigen</h1>
-        </v-flex>
+      </v-row>
+      <v-container v-if="selectedTrip.state === 'SCHEDULED'">
+        <v-row>
+          <v-col cols="12">
+            <v-btn
+              to="/conversation/1"
+              large
+              rounded
+              outlined
+              block
+              mb-4
+              depressed
+              color="primairy"
+              @click="contactDriver"
+            >
+              Stuur bericht naar henk
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row my-4>
+          <v-col cols="12">
+            <v-btn
+              large
+              rounded
+              outlined
+              block
+              mb-4
+              depressed
+              color="primairy"
+              @click="showMap"
+            >
+              Bekijk op de kaart
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row mb-3>
+          <v-col cols="12">
+            <h1>Wijzigen</h1>
+          </v-col>
+        </v-row>
         <itinerary-options></itinerary-options>
-      </div>
-    </v-layout>
+      </v-container>
+    </v-container>
   </content-pane>
 </template>
 
