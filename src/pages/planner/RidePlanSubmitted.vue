@@ -9,7 +9,13 @@
         automatisch bericht als er iemand met je mee wil.
       </v-flex>
       <v-flex shrink>
-        <v-btn block rounded depressed class="my-3 button" to="/home">
+        <v-btn
+          block
+          rounded
+          depressed
+          class="my-3 button"
+          to="/tripsOverviewPage"
+        >
           Bekijk geplande ritten</v-btn
         >
         <v-btn block rounded depressed outlined color="primary" to="/plan">

@@ -5,6 +5,7 @@ import actions from './actions'
 export default {
   namespaced: true,
   state: {
+    cars: [],
     rides: [],
     search: {
       licensePlate: undefined,
