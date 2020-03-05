@@ -188,21 +188,16 @@ export default {
   },
   deleteRide: (context, payload) => {
     const URL = BASE_URL + `/rideshare/rides/` + payload.id
-    if (payload.cancelReason != '') {
-      // ADD MESSAGE HERE
-      console.log(payload.cancelReason)
-    }
+    //TODO: Pass reason to message service.
     axios
       .delete(URL, {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       })
       .then(function(resp) {
-        console.log(resp)
         if (resp.status == 204) {
           //Delete trip from store!
           context.commit('deleteRides', payload.id)
         } else {
-          console.log('Error during deleting rides!', resp)
           context.dispatch(
             'ui/queueNotification',
             {
