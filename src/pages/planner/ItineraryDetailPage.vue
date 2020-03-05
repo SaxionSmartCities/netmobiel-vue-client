@@ -42,6 +42,7 @@
           Deze reis bevestigen
         </v-btn>
       </v-flex>
+      <v-btn @click="testMessage">Test message</v-btn>
       <v-flex my-4>
         <v-btn
           large
@@ -142,6 +143,23 @@ export default {
     saveTrip() {
       const selectedTrip = this.$store.getters['is/getSelectedTrip']
       this.$store.dispatch('is/storeSelectedTrip', selectedTrip)
+    },
+    testMessage() {
+      console.log(this.selectedTrip)
+      let tripRef
+      if (!this.selectedTrip.tripRef) {
+        tripRef = 'urn:nb:pl:trip:' + this.selectedTrip.id
+        console.log('created trip ref myself', tripRef)
+      }
+
+      console.log('tripref: ', tripRef)
+      const recipients = []
+      this.$store.dispatch('ms/sendMessage', {
+        urn: tripRef,
+        message: 'testing...',
+        mode: 'MESSAGE',
+        recipients,
+      })
     },
     contactDriver: function() {},
     showMap: function() {},

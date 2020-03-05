@@ -27,4 +27,25 @@ export default {
         console.log(error)
       })
   },
+  sendMessage: (context, { urn, message, mode, recipients }) => {
+    const URL = BASE_URL + `/communicator/messages`
+    const body = {
+      context: urn,
+      deliveryMode: mode,
+      recipients,
+      body: message,
+    }
+    axios
+      .post(URL, body, {
+        headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        console.log(resp.data)
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
 }
