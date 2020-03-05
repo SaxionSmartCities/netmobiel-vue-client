@@ -21,11 +21,11 @@
 
 <script>
 import { MglMap, MglMarker } from 'vue-mapbox'
-const polyline = require('@mapbox/polyline')
+import config from '@/config/config'
 
-const ACCESS_TOKEN =
-  'pk.eyJ1IjoibmV0bW9iaWVsIiwiYSI6ImNrN2JuNXd0ZjBpMXozbHJ3Znc5emxndzIifQ.t9ONoGEq441FOgHhKyqYag'
+const polyline = require('@mapbox/polyline')
 const MAP_STYLE = 'mapbox://styles/mapbox/streets-v11'
+const ACCESS_TOKEN = config.MAPBOX_TOKEN
 
 export default {
   name: 'RouteMap',
