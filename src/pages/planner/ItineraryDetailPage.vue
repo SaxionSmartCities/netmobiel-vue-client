@@ -153,6 +153,7 @@ export default {
       }
 
       console.log('tripref: ', tripRef)
+      //check
       const recipients = []
       this.$store.dispatch('ms/sendMessage', {
         urn: tripRef,
