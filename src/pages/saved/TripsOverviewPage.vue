@@ -56,7 +56,7 @@
       </v-col>
       <v-col v-else>
         <v-row v-for="(ride, index) in getPlannedRides" :key="index">
-          <v-col class="py-1">
+          <v-col v-if="checkUpdates" class="py-1">
             <ride-card
               :from="ride.fromPlace"
               :to="ride.toPlace"
@@ -76,7 +76,7 @@ import { mapGetters } from 'vuex'
 import ContentPane from '@/components/common/ContentPane.vue'
 import TravelCard from '@/components/search-results/TravelCard.vue'
 import RideCard from '@/components/rides/RideCard.vue'
-
+import constants from '../../constants/constants'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 
 export default {
@@ -86,7 +86,7 @@ export default {
     return {
       selectedTab: 0,
       bottom: false,
-      maxResults: 5,
+      maxResults: constants.fetchTripsMaxResults,
     }
   },
   computed: {
@@ -161,6 +161,10 @@ export default {
     onTripSelected(index) {
       this.$store.commit('is/setSelectedTrip', this.getPlannedTrips[index])
       this.$router.push('/itineraryDetailPage')
+    },
+    checkUpdates() {
+      console.log(this.getPlannedRides)
+      return true
     },
   },
 }

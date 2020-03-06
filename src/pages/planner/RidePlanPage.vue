@@ -151,6 +151,7 @@ export default {
         recurrence: this.recurrence,
         selectedTime: this.journeyMoment.when,
       })
+      console.log(this.getSelectedTrip().id)
       this.$router.push('/planSubmitted')
     },
     allowedDates(v) {
