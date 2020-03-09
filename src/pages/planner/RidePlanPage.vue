@@ -114,9 +114,12 @@ export default {
     selectedCar() {
       const selectedCarId = this.$store.getters['ps/getProfile'].ridePlanOptions
           .selectedCarId,
-        cars = this.$store.getters['ps/getProfile'].ridePlanOptions.cars
+        cars = this.$store.getters['cs/getAvailableCars']
       return cars.find(car => car.id === selectedCarId)
     },
+  },
+  mounted() {
+    this.$store.dispatch('cs/fetchCars')
   },
   beforeRouteEnter: beforeRouteEnter({
     journeyMoment: DateTimeSelector.restoreModel,

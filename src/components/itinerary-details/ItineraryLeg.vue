@@ -8,7 +8,18 @@
             <v-flex class="border"><div class="open-dot"/></v-flex>
           </v-layout>
         </v-flex>
-        <v-flex xs9>{{ header }}</v-flex>
+        <v-flex xs9>
+          <div class="d-flex flex-row justify-space-between shrink">
+            {{ header }}
+            <v-icon
+              v-if="leg.traverseMode === 'WALK'"
+              :class="{ 'active-map': isMapActive }"
+              @click="$emit('legSelect', { leg, step })"
+            >
+              map
+            </v-icon>
+          </div>
+        </v-flex>
       </v-layout>
     </v-flex>
     <v-flex>
@@ -47,10 +58,9 @@ import delegation from '@/utils/delegation'
 export default {
   name: 'ItineraryLeg',
   props: {
-    leg: {
-      type: Object,
-      required: true,
-    },
+    leg: { type: Object, required: true },
+    isMapActive: { type: Boolean, default: false },
+    step: { type: Number, default: 0 },
   },
   computed: {
     travelMode() {
@@ -164,5 +174,8 @@ function humanDistance(meters) {
   background-position: center;
   background-repeat-x: no-repeat;
   height: 100%;
+}
+.active-map {
+  @extend .selected-map;
 }
 </style>

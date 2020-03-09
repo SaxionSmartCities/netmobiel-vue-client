@@ -1,11 +1,6 @@
 export default {
-  getRides: state => {
-    return state.rides
-  },
-  getSearchResult: state => {
-    return state.search.result
-  },
-  getSearchLicensePlate: state => {
-    return state.search.licensePlate
-  },
+  getAvailableCars: state => state.cars,
+  getRides: state => state.rides,
+  getSearchResult: state => state.search.result,
+  getSearchLicensePlate: state => state.search.licensePlate,
 }

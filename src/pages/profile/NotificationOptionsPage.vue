@@ -37,11 +37,6 @@
         <v-divider></v-divider>
       </v-flex>
     </v-layout>
-    <v-layout column>
-      <v-flex>
-        <car-options v-if="isDriver"></car-options>
-      </v-flex>
-    </v-layout>
     <v-layout pt-3>
       <v-flex>
         <h3 class="text-primary-uppercase">Notificaties</h3>
@@ -91,13 +86,8 @@
 </template>
 
 <script>
-import CarOptions from '@/components/settings/CarOptions.vue'
-
 export default {
   name: 'NotificationOptions',
-  components: {
-    CarOptions,
-  },
   data() {
     return {
       title: 'Instellingen',

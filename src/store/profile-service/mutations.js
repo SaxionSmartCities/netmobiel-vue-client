@@ -43,11 +43,6 @@ export default {
   setRidePlanOptions: (state, payload) => {
     state.user.profile.ridePlanOptions = payload
   },
-  deleteRidePlanOptionsCar: (state, payload) => {
-    state.user.profile.ridePlanOptions.cars = state.user.profile.ridePlanOptions.cars.filter(
-      car => car.licensePlate !== payload.licensePlate
-    )
-  },
   addRidePlanOptionsCar: (state, payload) => {
     let isPresent = false
     const currentCars = state.user.profile.ridePlanOptions.cars

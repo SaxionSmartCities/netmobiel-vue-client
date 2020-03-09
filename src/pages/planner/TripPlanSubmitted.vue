@@ -1,42 +1,41 @@
 <template>
-  <content-pane id="scroll">
-    <v-row my-4 mr-4 ml-6>
-      <v-col>
+  <v-container>
+    <v-layout column justify-center fill-height>
+      <v-flex shrink mb-4>
         <h1>Reis gepland! 🎉</h1>
-      </v-col>
-    </v-row>
-    <v-row my-4 mr-4 ml-6>
-      <v-col>
-        <span>
-          Jouw reis is bevestigd. We sturen je een herrinnering voor jouw
-          vertrek.
-        </span>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-btn block rounded depressed class="my-3 button" to="/home">
+      </v-flex>
+      <v-flex shrink>
+        Jouw reis is bevestigd. We sturen je een herrinnering voor jouw vertrek.
+      </v-flex>
+      <v-flex shrink>
+        <v-btn
+          block
+          rounded
+          depressed
+          class="my-3 button"
+          @click="swapLocations()"
+        >
           Plan direct je terugreis</v-btn
         >
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
         <v-btn block rounded depressed outlined color="primary" to="/plan">
           Plan een nieuwe rit</v-btn
         >
-      </v-col>
-    </v-row>
-  </content-pane>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
-import ContentPane from '../../components/common/ContentPane'
 export default {
   name: 'TripPlanSubmitted',
-  components: { ContentPane },
   data: function() {
     return {}
+  },
+  methods: {
+    swapLocations() {
+      this.$store.commit('gs/swapLocations')
+      this.$router.push('/search')
+    },
   },
 }
 </script>
