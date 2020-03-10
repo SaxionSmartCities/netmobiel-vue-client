@@ -38,8 +38,7 @@ export default {
         headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
       })
       .then(function(resp) {
-        commit('setConversations', resp.data)
-        console.log(resp.data)
+        commit('setConversations', resp.data.data)
       })
       .catch(function(error) {
         // TODO: Proper error handling.
@@ -58,9 +57,9 @@ export default {
       })
       .then(function(resp) {
         context = context.replace(/:/gi, '')
-        commit('setMessages', { context: context, messages: resp.data })
+        commit('setMessages', { context: context, messages: resp.data.data })
         commit('addContext', context)
-        return resp.data
+        return resp.data.data
       })
       .catch(function(error) {
         // TODO: Proper error handling.

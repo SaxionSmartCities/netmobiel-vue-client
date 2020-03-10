@@ -61,6 +61,8 @@ export default {
   computed: {
     conversations() {
       return this.$store.getters['ms/getConversations']
+        ? this.$store.getters['ms/getConversations']
+        : []
     },
     profile() {
       return this.$store.getters['ps/getUser']

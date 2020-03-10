@@ -4,7 +4,7 @@
     :class="{ mymessage: isMessageSendByMe, message: !isMessageSendByMe }"
   >
     <v-card-title class="pa-2">
-      {{ message.content }}
+      {{ message.body }}
     </v-card-title>
     <v-card-subtitle class="text-right px-2 py-1">
       {{ timeStamp }}
@@ -21,13 +21,18 @@ export default {
       type: Object,
       required: true,
     },
+    sendByMe: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
   },
   computed: {
     timeStamp: function() {
       return moment(this.message.timeStamp).format('HH:mm')
     },
     isMessageSendByMe: function() {
-      return this.message.sender === 'You'
+      return this.sendByMe
     },
   },
 }
