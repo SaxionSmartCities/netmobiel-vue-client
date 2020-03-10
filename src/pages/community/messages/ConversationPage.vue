@@ -3,25 +3,20 @@
     <template v-slot:header>
       <v-container class="py-1">
         <v-row dense>
-          <v-col cols="3">
-            <v-img class="profileimage" :src="profile.image" />
+          <v-col class="shrink">
+            <v-img class="profile-image" :src="profile.image" />
           </v-col>
-          <v-col align-self="center">
-            <h2>{{ sender.givenName }}</h2>
+          <v-col align-self="center" class="d-flex px-3">
+            <h4>{{ sender.givenName + ' ' + sender.familyName }}</h4>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" small rounded outlined>
+              <v-icon>call</v-icon>
+            </v-btn>
           </v-col>
         </v-row>
         <v-divider class="mt-1" />
       </v-container>
     </template>
-    <div
-      v-for="message in conversation"
-      :key="message.id"
-      class="d-flex flex-column"
-    >
-      <span>
-        {{ message.body }}
-      </span>
-    </div>
     <v-row dense>
       <v-col>
         <template v-for="message in conversation">
@@ -109,4 +104,10 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+</style>
