@@ -6,21 +6,21 @@
       </v-col>
       <v-col>
         <v-row>
-          <span class="subtitle-2 text-no-wrap pr-2"
-            >Renovatie St. Bonifatiuskerk
-          </span>
+          <span class="subtitle-2 text-no-wrap pr-2"> {{ titel }} </span>
         </v-row>
         <v-row>
-          <span class="overline">Lichtenvoorde</span>
+          <span class="overline">{{ plaatsnaam }}</span>
         </v-row>
       </v-col>
     </v-row>
     <v-row class="ma-auto pl-4 pr-4">
-      <v-progress-linear value="15"></v-progress-linear>
+      <v-progress-linear :value="remainingValue"></v-progress-linear>
     </v-row>
     <v-row class="mx-auto">
       <v-col
-        ><span class="pl-2 subtitle-1 font-weight-light">nog 185 credits</span>
+        ><span class="pl-2 subtitle-1 font-weight-light"
+          >nog {{ creditsRemaining }} credits</span
+        >
       </v-col>
       <v-col class="pr-4"
         ><v-btn
@@ -43,6 +43,17 @@
 <script>
 export default {
   name: 'GoalCard',
+  props: {
+    titel: { type: String, required: true },
+    plaatsnaam: { type: String, required: true },
+    creditsRemaining: { type: Number, default: 0 },
+    creditsTotal: { type: Number, default: 125 },
+  },
+  computed: {
+    remainingValue: function() {
+      return this.creditsTotal - this.creditsRemaining
+    },
+  },
 }
 </script>
 

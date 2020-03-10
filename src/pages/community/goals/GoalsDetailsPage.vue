@@ -36,42 +36,136 @@
     </v-row>
     <v-row>
       <v-col cols="4">
-        <v-progress-circular
-          :rotate="-90"
-          :size="100"
-          :width="10"
-          :value="100"
-          color="primary"
-        >
-          {{ value }}
-        </v-progress-circular>
-        <span>Donateurs</span>
+        <row>
+          <v-col cols="12">
+            <v-progress-circular
+              :rotate="-90"
+              :size="100"
+              :width="11"
+              :value="100"
+              color="primary"
+            >
+              {{ nrOfDonors }}
+            </v-progress-circular>
+          </v-col>
+        </row>
+        <row>
+          <v-col>
+            <span>Donateurs</span>
+          </v-col>
+        </row>
       </v-col>
       <v-col cols="4">
-        <v-progress-circular
-          :rotate="-90"
-          :size="100"
-          :width="10"
-          :value="77"
-          color="primary"
-        >
-          {{ value }}
-        </v-progress-circular>
-        <span>Gedoneerd</span>
+        <row>
+          <v-col cols="12">
+            <v-progress-circular
+              :rotate="-90"
+              :size="100"
+              :width="11"
+              :value="77"
+              color="primary"
+            >
+              {{ donatedCredits }}
+              <br />
+              {{ prefix }}
+            </v-progress-circular>
+          </v-col>
+        </row>
+        <v-row>
+          <v-col>
+            <span>Gedoneerd</span>
+          </v-col>
+        </v-row>
       </v-col>
       <v-col cols="4">
-        <v-progress-circular
-          :rotate="-90"
-          :size="100"
-          :width="10"
-          :value="75"
-          color="primary"
-        >
-          {{ value }}
-        </v-progress-circular>
-        <span>Behaald</span>
+        <v-row>
+          <v-col cols="12">
+            <v-progress-circular
+              :rotate="-90"
+              :size="100"
+              :width="11"
+              :value="75"
+              color="primary"
+            >
+              {{ percentageAchievedOfGoal }}
+            </v-progress-circular>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <span>Behaald</span>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
+    <v-row>
+      <v-btn
+        large
+        rounded
+        block
+        mb-4
+        depressed
+        color="button"
+        @click="closeConfirmation"
+      >
+        Steun dit doel
+      </v-btn>
+    </v-row>
+    <v-container>
+      <v-row mb-3 mt-3>
+        <span class="font-weight-medium primary--text">Top donateurs</span>
+      </v-row>
+      <v-row>
+        <v-divider />
+      </v-row>
+      <v-row>
+        <v-col cols="2">
+          <v-list-item-avatar tilesize="100" color="grey"></v-list-item-avatar>
+        </v-col>
+        <v-col>
+          <v-row>
+            <span class="subtitle-2 text-no-wrap pr-2"
+              >Hendrik van der laan
+            </span>
+          </v-row>
+          <v-row>
+            <span class="overline">793 credits gedoneerd</span>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-divider />
+      </v-row>
+      <v-row>
+        <v-col cols="2">
+          <v-list-item-avatar tilesize="100" color="grey"></v-list-item-avatar>
+        </v-col>
+        <v-col>
+          <v-row>
+            <span class="subtitle-2 text-no-wrap pr-2">Marc de Vries </span>
+          </v-row>
+          <v-row>
+            <span class="overline">323 credits gedoneerd</span>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-divider />
+      </v-row>
+      <v-row>
+        <v-col cols="2">
+          <v-list-item-avatar tilesize="100" color="grey"></v-list-item-avatar>
+        </v-col>
+        <v-col>
+          <v-row>
+            <span class="subtitle-2 text-no-wrap pr-2">Coby Hoekstra </span>
+          </v-row>
+          <v-row>
+            <span class="overline">123 credits gedoneerd</span>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-container>
   </content-pane>
 </template>
 
@@ -80,6 +174,15 @@ import ContentPane from '../../../components/common/ContentPane'
 export default {
   name: 'GoalsDetailsPage',
   components: { ContentPane },
+  data() {
+    return {
+      nrOfDonors: 30,
+      donatedCredits: 230,
+      prefix: 'credits',
+      percentageAchievedOfGoal: '65%',
+    }
+  },
+  methods() {},
 }
 </script>
 

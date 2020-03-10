@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined max-width="220" @click="toNextPage">
+  <v-card outlined max-width="220" :disabled="disabled" @click="toNextPage">
     <v-row wrap no-gutters>
       <v-col>
         <v-card-text>
@@ -46,6 +46,10 @@ export default {
       type: String,
       default: '/',
       required: false,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {

@@ -19,19 +19,28 @@
       </span>
     </v-row>
     <v-row>
-      <goal-card></goal-card>
+      <goal-card
+        titel="Renovatie St. Bonifatiuskerk"
+        plaatsnaam="Lichtenvoorde"
+        credits-remaining="233"
+      ></goal-card>
     </v-row>
     <v-row mb-3 mt-3>
       <span class="font-weight-medium primary--text">Eerder gedoneerd </span>
     </v-row>
     <v-row>
-      <v-slide-group multiple center-active>
+      <v-slide-group center-active mobile-break-point="300">
         <v-slide-item
           v-for="n in 25"
           :key="n"
           v-slot:default="{ active, toggle }"
         >
-          <goal-card></goal-card>
+          <goal-card
+            titel="Renovatie St. Bonifatiuskerk"
+            plaatsnaam="Lichtenvoorde"
+            credits-remaining="20"
+            credits-total="100"
+          ></goal-card>
         </v-slide-item>
       </v-slide-group>
     </v-row>
