@@ -4,7 +4,7 @@
       <v-col>
         <community-button
           class="mx-auto"
-          forward="/inbox"
+          forward="inbox"
           icon="fa-comments"
           naam="berichten"
           :aantal-berichten="2"
@@ -14,6 +14,7 @@
         <community-button
           class="mx-auto"
           icon="fa-map"
+          forward="shoutouts"
           naam="gezocht"
           :aantal-berichten="11"
         ></community-button>

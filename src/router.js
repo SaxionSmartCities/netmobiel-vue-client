@@ -32,6 +32,7 @@ import RidePlanPage from './pages/planner/RidePlanPage.vue'
 import RidePlanOptionsPage from './pages/planner/RidePlanOptionsPage.vue'
 import RidePlanSubmitted from './pages/planner/RidePlanSubmitted.vue'
 import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
+import Shoutouts from '@/pages/community/Shoutouts'
 
 const router = new Router({
   mode: 'history',
@@ -174,6 +175,7 @@ const router = new Router({
       component: ConversationPage,
       props: true,
     },
+    { path: '/shoutouts', name: 'shoutouts', component: Shoutouts },
   ],
 })
 
