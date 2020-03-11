@@ -31,41 +31,45 @@
       <template v-slot:activator="{ on }"> </template>
       <v-card>
         <v-card-title class="headline">Annuleer deze rit.</v-card-title>
-        <v-card-text
-          >Weet je zeker dat je deze rit wilt annuleren? Dit kan niet ongedaan
-          gemaakt worden.</v-card-text
-        >
-        <v-row my-4 mr-4 ml-4>
-          <v-col>
-            <v-btn
-              large
-              rounded
-              block
-              mb-4
-              depressed
-              color="button"
-              @click="closeConfirmation"
-            >
-              Rit annuleren
-            </v-btn>
-          </v-col>
-        </v-row>
-        <v-row my-4 mr-4 ml-4 pb-8>
-          <v-col>
-            <v-btn
-              large
-              rounded
-              outlined
-              block
-              mb-4
-              depressed
-              color="primairy"
-              @click="closeDialog"
-            >
-              Rit toch bewaren
-            </v-btn>
-          </v-col>
-        </v-row>
+        <v-card-text>
+          <v-row>
+            <v-col>
+              Weet je zeker dat je deze rit wilt annuleren? Dit kan niet
+              ongedaan gemaakt worden.
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-btn
+                large
+                rounded
+                block
+                mb-4
+                depressed
+                color="button"
+                @click="closeConfirmation"
+              >
+                Rit annuleren
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-btn
+                large
+                rounded
+                outlined
+                block
+                mb-4
+                depressed
+                color="primairy"
+                @click="closeDialog"
+              >
+                Rit toch bewaren
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-text>
       </v-card>
     </v-dialog>
   </v-layout>
