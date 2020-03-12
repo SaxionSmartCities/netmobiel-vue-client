@@ -134,6 +134,38 @@ export default {
           },
         ],
       },
+      {
+        id: 5,
+        title: 'nieuw plafond toneelzaal',
+        location: 'Diemen',
+        description:
+          'Voor de toneeluitvoeringen in het plaatselijke dorpshuis maken wij gebruik van de grote zaal. \n' +
+          'Het plafond is oud en ziet er niet meer uit.\n' +
+          'We gaan een nieuw plafond maken met een vaste gordijnrail voor de toneelvoorhanggordijnen \n' +
+          'waarbij tevens LED licht zal worden aangebracht',
+        creditsGoal: 85,
+        creditsDonated: 54,
+        donors: [
+          {
+            name: 'Henk van der Laan',
+            creditsDonated: 14,
+            message: 'Veel Succes, ik kom graag eens kijken',
+            anonymous: false,
+          },
+          {
+            name: 'Marc de Vries',
+            creditsDonated: 54,
+            message: '',
+            anonymous: false,
+          },
+          {
+            name: 'Netmobiel gebruiker',
+            creditsDonated: 14,
+            message: '',
+            anonymous: true,
+          },
+        ],
+      },
     ],
     topDonors: [
       {

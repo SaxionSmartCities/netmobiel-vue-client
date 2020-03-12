@@ -21,17 +21,15 @@
     </v-row>
     <v-row>
       <span class="title pt-4">
-        Renovatie St. Bonifatiuskerk
+        {{ selectedGoal.title }}
       </span>
     </v-row>
     <v-row class="mb-4">
-      <span class="overline">Lichtenvoorde</span>
+      <span class="overline">{{ selectedGoal.location }}</span>
     </v-row>
     <v-row>
       <span>
-        De Sint-Bonifatiuskerk is een rooms-katholieke kerk in Lichtenvoorde,
-        gebouwd in de jaren 1912 en 1913. De architect was WOlter te Riele, die
-        een negotisch
+        {{ selectedGoal.description }}
       </span>
     </v-row>
     <v-row>
@@ -111,51 +109,7 @@
         <v-divider />
       </v-row>
       <v-row>
-        <v-col cols="2">
-          <v-list-item-avatar tilesize="100" color="grey"></v-list-item-avatar>
-        </v-col>
-        <v-col>
-          <v-row>
-            <span class="subtitle-2 text-no-wrap pr-2"
-              >Hendrik van der laan
-            </span>
-          </v-row>
-          <v-row>
-            <span class="overline">793 credits gedoneerd</span>
-          </v-row>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-divider />
-      </v-row>
-      <v-row>
-        <v-col cols="2">
-          <v-list-item-avatar tilesize="100" color="grey"></v-list-item-avatar>
-        </v-col>
-        <v-col>
-          <v-row>
-            <span class="subtitle-2 text-no-wrap pr-2">Marc de Vries </span>
-          </v-row>
-          <v-row>
-            <span class="overline">323 credits gedoneerd</span>
-          </v-row>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-divider />
-      </v-row>
-      <v-row>
-        <v-col cols="2">
-          <v-list-item-avatar tilesize="100" color="grey"></v-list-item-avatar>
-        </v-col>
-        <v-col>
-          <v-row>
-            <span class="subtitle-2 text-no-wrap pr-2">Coby Hoekstra </span>
-          </v-row>
-          <v-row>
-            <span class="overline">{{ fetchGoals() }}</span>
-          </v-row>
-        </v-col>
+        <donors-list :donors="selectedGoal.donors"> </donors-list>
       </v-row>
     </v-container>
   </content-pane>
@@ -163,9 +117,16 @@
 
 <script>
 import ContentPane from '../../../components/common/ContentPane'
+import DonorsList from '../../../components/community/DonorsList'
 export default {
   name: 'GoalsDetailsPage',
-  components: { ContentPane },
+  components: { DonorsList, ContentPane },
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       nrOfDonors: 30,
@@ -173,6 +134,13 @@ export default {
       prefix: 'credits',
       percentageAchievedOfGoal: '65%',
     }
+  },
+  computed: {
+    selectedGoal: function() {
+      return this.$store.getters['sg/fetchGoals'].find(
+        goal => goal.id == this.id
+      )
+    },
   },
   methods: {
     fetchGoals() {

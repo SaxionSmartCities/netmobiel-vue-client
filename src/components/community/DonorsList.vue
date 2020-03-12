@@ -3,7 +3,7 @@
     <v-list-item-group>
       <template v-for="(donor, index) in donors">
         <v-divider v-if="index > 0" :key="index" class="mx-3" />
-        <v-list-item :key="donor.ranking">
+        <v-list-item :key="donor.id">
           <v-list-item-content>
             <v-row>
               <v-col cols="2">
@@ -19,7 +19,9 @@
                   }}</span>
                 </v-row>
                 <v-row>
-                  <span class="overline">323 credits gedoneerd</span>
+                  <span class="overline"
+                    >{{ donor.creditsDonated }} credits gedoneerd</span
+                  >
                 </v-row>
               </v-col>
               <v-col>

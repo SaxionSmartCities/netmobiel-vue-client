@@ -31,7 +31,7 @@
           block
           depressed
           outlined
-          to="/goalDetails"
+          @click="showDetails(id)"
         >
           Bekijk dit doel
         </v-btn>
@@ -44,6 +44,7 @@
 export default {
   name: 'GoalCard',
   props: {
+    id: { type: Number, required: true },
     titel: { type: String, required: true },
     plaatsnaam: { type: String, required: true },
     creditsRemaining: { type: Number, default: 0 },
@@ -52,6 +53,13 @@ export default {
   computed: {
     remainingValue: function() {
       return this.creditsTotal - this.creditsRemaining
+    },
+  },
+  methods: {
+    showDetails(id) {
+      this.$router.push({
+        path: `/goalDetails/${id}`,
+      })
     },
   },
 }

@@ -20,6 +20,7 @@
     </v-row>
     <v-row>
       <goal-card
+        :id="4"
         titel="Renovatie St. Bonifatiuskerk"
         plaatsnaam="Lichtenvoorde"
         :credits-remaining="233"
@@ -36,6 +37,7 @@
           v-slot:default="{ active, toggle }"
         >
           <goal-card
+            :id="fetchGoalForIndex(index).id"
             :titel="fetchGoalForIndex(index).title"
             :plaatsnaam="fetchGoalForIndex(index).location"
             :credits-remaining="20"

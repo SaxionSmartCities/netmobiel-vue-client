@@ -71,9 +71,10 @@ const router = new Router({
       name: 'goalOverviewPage',
     },
     {
-      path: '/goalDetails',
+      path: '/goalDetails/:id',
       component: GoalsDetailsPage,
       name: 'goalDetailsPage',
+      props: true,
     },
     {
       path: '/planOptions',
