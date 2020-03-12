@@ -13,7 +13,11 @@
       @load="onMapLoad"
       @moveend="onMoveEnd"
     >
-      <mgl-marker :coordinates="destinationCoordinates" color="red" />
+      <mgl-marker
+        v-if="destinationCoordinates.length > 1"
+        :coordinates="destinationCoordinates"
+        color="red"
+      />
     </mgl-map>
     <div class="ghost-map"></div>
   </div>
@@ -49,6 +53,12 @@ export default {
       showShrinkMeBtn: false,
     }
   },
+  created() {
+    if (this.legs.length === 1) {
+      this.leg = this.legs[0]
+    }
+    console.log('[CREATED] Route map', this.legs)
+  },
   methods: {
     onMoveEnd() {
       this.$emit('loaded', {})
@@ -58,6 +68,8 @@ export default {
 
       if (this.legs.length === 1) {
         this.initiateMapSingleLeg(event.map, this.legs[0])
+      } else if (this.legs.length > 1) {
+        this.initiateMapWholeRoute(event.map, this.legs)
       }
     },
     initiateMapSingleLeg(map, leg) {
@@ -140,6 +152,99 @@ export default {
         },
       })
     },
+    async initiateMapWholeRoute(map, legs) {
+      const result = legs.map(leg => polyline.toGeoJSON(leg.legGeometry.points))
+
+      let features = []
+      let beginPoints = []
+      let endPoints = []
+      result.forEach(leg => {
+        features.push({
+          type: 'Feature',
+          geometry: leg,
+        })
+        beginPoints.push({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: leg.coordinates[0],
+          },
+        })
+        endPoints.push({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: leg.coordinates[leg.coordinates.length - 1],
+          },
+        })
+      })
+
+      console.log('features: ', features)
+      console.log('points: ', beginPoints)
+      map.addSource('legs', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: features,
+        },
+      })
+      map.addSource('beginPoints', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: beginPoints,
+        },
+      })
+      map.addSource('endPoints', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: endPoints,
+        },
+      })
+
+      map.addLayer({
+        id: 'legs',
+        type: 'line',
+        source: 'legs',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round',
+        },
+        paint: {
+          'line-color': '#007cbf',
+          'line-width': 1,
+        },
+      })
+      const finalDestinationCoordinates =
+        result[result.length - 1].coordinates[
+          result[result.length - 1].coordinates.length - 1
+        ]
+      await this.resizeMap()
+      map.fitBounds([result[0].coordinates[0], finalDestinationCoordinates], {
+        padding: 15,
+      })
+
+      this.destinationCoordinates = finalDestinationCoordinates
+      map.addLayer({
+        id: 'beginPoints',
+        source: 'beginPoints',
+        type: 'circle',
+        paint: {
+          'circle-radius': 3,
+          'circle-color': '#ff0a10',
+        },
+      })
+      map.addLayer({
+        id: 'endPoints',
+        source: 'endPoints',
+        type: 'circle',
+        paint: {
+          'circle-radius': 3,
+          'circle-color': '#000000',
+        },
+      })
+    },
     shrinkMap() {
       var mapDiv = document.getElementById('map')
       mapDiv.style.height = '200px'
@@ -155,12 +260,6 @@ export default {
       mapCanvas.style.width = '100%'
       this.map.resize()
     },
-  },
-  created() {
-    if (this.legs.length === 1) {
-      this.leg = this.legs[0]
-    }
-    console.log('[CREATED] Route map', this.legs)
   },
 }
 </script>

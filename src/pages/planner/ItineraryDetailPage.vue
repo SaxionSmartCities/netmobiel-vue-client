@@ -234,6 +234,7 @@ export default {
     showFullRouteOnMap() {
       this.selectedLegs = this.selectedTrip.legs
       this.forceRerender()
+      this.showMapFullScreen()
     },
     contactDriver: function() {},
   },
