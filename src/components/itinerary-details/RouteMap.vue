@@ -20,6 +20,28 @@
       />
     </mgl-map>
     <div class="ghost-map"></div>
+    <v-row v-if="isLoaded">
+      <v-btn
+        v-if="mapSize !== 'fullscreen'"
+        fab
+        small
+        class="map-fullscreen"
+        @click="mapSize = 'fullscreen'"
+      >
+        <v-icon>fullscreen</v-icon>
+      </v-btn>
+      <v-btn
+        v-if="mapSize === 'fullscreen'"
+        class="map-fullscreen-exit"
+        fab
+        small
+        @click="mapSize = 'small'"
+      >
+        <v-icon>
+          fullscreen_exit
+        </v-icon>
+      </v-btn>
+    </v-row>
   </div>
 </template>
 
@@ -40,6 +62,7 @@ export default {
       default: Array,
       required: true,
     },
+    mapSizeProp: { type: String, default: 'small', required: false },
   },
   data() {
     return {
@@ -47,11 +70,22 @@ export default {
       accessToken: ACCESS_TOKEN, // your access token. Needed if you using Mapbox maps
       mapStyle: MAP_STYLE, // your map style
       destinationCoordinates: [],
+      isLoaded: false,
       center: [4.895168, 52.370216],
       styleOfTheMap: {},
       mapbox: null,
       showShrinkMeBtn: false,
     }
+  },
+  computed: {
+    mapSize: {
+      get: function() {
+        return this.mapSizeProp
+      },
+      set: function(value) {
+        this.$emit('sizeChanged', { size: value })
+      },
+    },
   },
   created() {
     if (this.legs.length === 1) {
@@ -61,6 +95,7 @@ export default {
   },
   methods: {
     onMoveEnd() {
+      this.isLoaded = true
       this.$emit('loaded', {})
     },
     async onMapLoad(event) {
@@ -245,13 +280,15 @@ export default {
         },
       })
     },
-    shrinkMap() {
-      var mapDiv = document.getElementById('map')
-      mapDiv.style.height = '200px'
-      this.map.resize()
-    },
     onResize() {
       this.map.fitBounds(this.map.getBounds())
+    },
+    changeMapSize({ height, width }) {
+      var mapDiv = document.getElementById('map')
+      var mapCanvas = document.getElementsByClassName('mapboxgl-canvas')[0]
+      mapDiv.style.height = height
+      mapCanvas.style.width = width
+      this.map.resize()
     },
     async resizeMap() {
       var mapDiv = document.getElementById('map')
@@ -259,6 +296,15 @@ export default {
       mapDiv.style.height = '100vh'
       mapCanvas.style.width = '100%'
       this.map.resize()
+    },
+  },
+  watch: {
+    mapSizeProp: function(newValue, oldValue) {
+      console.log('mapSize changed from ', oldValue, 'to: ', newValue)
+      newValue === 'small' &&
+        this.changeMapSize({ height: '200px', width: '100%' })
+      newValue === 'fullscreen' &&
+        this.changeMapSize({ height: '100vh', width: '100%' })
     },
   },
 }
@@ -278,5 +324,18 @@ export default {
 }
 .ghost-map {
   height: $map-height;
+}
+.map-fullscreen {
+  top: 10px;
+  left: 10px;
+  position: absolute;
+  z-index: 4;
+}
+
+.map-fullscreen-exit {
+  top: 10px;
+  left: 10px;
+  position: absolute;
+  z-index: 4;
 }
 </style>

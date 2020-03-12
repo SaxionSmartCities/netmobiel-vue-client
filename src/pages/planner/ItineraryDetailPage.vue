@@ -5,31 +5,11 @@
         <route-map
           ref="mapComp"
           :legs="selectedLegs"
+          :map-size-prop="mapSize"
           @loaded="showFullScreenMapBtn = true"
+          @sizeChanged="onMapSizeChanged"
         ></route-map>
       </v-col>
-    </v-row>
-    <v-row v-if="showFullScreenMapBtn">
-      <v-btn
-        v-if="!isMapFullScreen"
-        fab
-        small
-        class="map-fullscreen"
-        @click="showMapFullScreen"
-      >
-        <v-icon>fullscreen</v-icon>
-      </v-btn>
-      <v-btn
-        v-if="isMapFullScreen"
-        class="map-fullscreen-exit"
-        fab
-        small
-        @click="shrinkMap"
-      >
-        <v-icon>
-          fullscreen_exit
-        </v-icon>
-      </v-btn>
     </v-row>
     <v-row class=" flex-column">
       <v-col class="mb-3 py-0">
@@ -150,6 +130,7 @@ export default {
       selectedLegs: null,
       selectedLegsIndex: null,
       showMap: true,
+      mapSize: 'small',
       showConfirmationButton: true,
       showFullScreenMapBtn: false,
       isMapFullScreen: false,
@@ -202,6 +183,9 @@ export default {
     }
   },
   methods: {
+    onMapSizeChanged({ size }) {
+      this.mapSize = size
+    },
     saveTrip() {
       const selectedTrip = this.$store.getters['is/getSelectedTrip']
       this.$store.dispatch('is/storeSelectedTrip', selectedTrip)
@@ -209,50 +193,25 @@ export default {
     onLegSelected({ leg, step }) {
       this.selectedLegs = [leg]
       this.selectedLegsIndex = step
+      this.mapSize = 'small'
       this.forceRerender()
     },
     forceRerender() {
       // Remove my-component from the DOM
       this.showMap = false
-      this.showFullScreenMapBtn = false
-      this.isMapFullScreen = false
       this.$nextTick(() => {
         // Add the component back in
         this.showMap = true
       })
     },
-    showMapFullScreen() {
-      this.$refs.mapComp.resizeMap()
-      this.showFullScreenMapBtn = false
-      this.isMapFullScreen = true
-    },
-    shrinkMap() {
-      this.$refs.mapComp.shrinkMap()
-      this.showFullScreenMapBtn = true
-      this.isMapFullScreen = false
-    },
     showFullRouteOnMap() {
+      this.mapSize = 'fullscreen'
       this.selectedLegs = this.selectedTrip.legs
       this.forceRerender()
-      this.showMapFullScreen()
     },
     contactDriver: function() {},
   },
 }
 </script>
 
-<style lang="scss">
-.map-fullscreen {
-  top: 10px;
-  left: 10px;
-  position: absolute;
-  z-index: 4;
-}
-
-.map-fullscreen-exit {
-  top: 10px;
-  left: 10px;
-  position: absolute;
-  z-index: 4;
-}
-</style>
+<style lang="scss"></style>
