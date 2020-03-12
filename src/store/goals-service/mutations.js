@@ -1,5 +1,5 @@
 export default {
-    setSelectedGoal: (state, payload) => {
-        state.selectedTrip = payload
-    },
+  setSelectedGoal: (state, payload) => {
+    state.selectedGoal = payload
+  },
 }

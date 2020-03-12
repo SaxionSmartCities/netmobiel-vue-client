@@ -25,7 +25,6 @@
           class="mx-auto"
           icon="fa-trophy"
           naam="competenties"
-          disabled="true"
         ></community-button>
       </v-col>
       <v-col>
@@ -33,7 +32,6 @@
           class="mx-auto"
           icon="fa-gift"
           naam="rewards"
-          disabled="true"
         ></community-button>
       </v-col>
     </v-row>

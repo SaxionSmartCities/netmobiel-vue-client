@@ -1,5 +1,6 @@
 export default {
-  getGoals: state => state.goals,
-  getSelectedGoal: state => state.selectedTrip,
-  getDonorCount: state => state.selectedTrip,
+  fetchGoals: state => state.storedGoals,
+  getTopDonorsList: state => state.topDonors,
+  getGoalListSize: state => state.storedGoals.length,
+  getSelectedGoal: state => state.selectedGoal,
 }

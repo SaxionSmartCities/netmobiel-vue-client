@@ -22,7 +22,7 @@
       <goal-card
         titel="Renovatie St. Bonifatiuskerk"
         plaatsnaam="Lichtenvoorde"
-        credits-remaining="233"
+        :credits-remaining="233"
       ></goal-card>
     </v-row>
     <v-row mb-3 mt-3>
@@ -31,15 +31,15 @@
     <v-row>
       <v-slide-group center-active mobile-break-point="300">
         <v-slide-item
-          v-for="n in 25"
-          :key="n"
+          v-for="(item, index) in fetchListSize()"
+          :key="index"
           v-slot:default="{ active, toggle }"
         >
           <goal-card
-            titel="Renovatie St. Bonifatiuskerk"
-            plaatsnaam="Lichtenvoorde"
-            credits-remaining="20"
-            credits-total="100"
+            :titel="fetchGoalForIndex(index).title"
+            :plaatsnaam="fetchGoalForIndex(index).location"
+            :credits-remaining="20"
+            :credits-total="100"
           ></goal-card>
         </v-slide-item>
       </v-slide-group>
@@ -48,69 +48,7 @@
       <span class="font-weight-medium primary--text">Top donateurs</span>
     </v-row>
     <v-row>
-      <v-divider />
-    </v-row>
-    <v-row>
-      <v-col cols="2">
-        <v-list-item-avatar tilesize="100" color="grey"></v-list-item-avatar>
-      </v-col>
-      <v-col>
-        <v-row>
-          <span class="subtitle-2 text-no-wrap pr-2"
-            >Hendrik van der laan
-          </span>
-        </v-row>
-        <v-row>
-          <span class="overline">793 credits gedoneerd</span>
-        </v-row>
-      </v-col>
-      <v-col>
-        <v-btn rounded color="button" dark>
-          <v-icon>fa-user-plus</v-icon></v-btn
-        ></v-col
-      >
-    </v-row>
-    <v-row>
-      <v-divider />
-    </v-row>
-    <v-row>
-      <v-col cols="2">
-        <v-list-item-avatar tilesize="100" color="grey"></v-list-item-avatar>
-      </v-col>
-      <v-col>
-        <v-row>
-          <span class="subtitle-2 text-no-wrap pr-2">Marc de Vries </span>
-        </v-row>
-        <v-row>
-          <span class="overline">323 credits gedoneerd</span>
-        </v-row>
-      </v-col>
-      <v-col>
-        <v-btn rounded color="button" dark>
-          <v-icon>fa-user-plus</v-icon></v-btn
-        ></v-col
-      >
-    </v-row>
-    <v-row>
-      <v-divider />
-    </v-row>
-    <v-row>
-      <v-col cols="2">
-        <v-list-item-avatar tilesize="100" color="grey"></v-list-item-avatar>
-      </v-col>
-      <v-col>
-        <v-row>
-          <span class="subtitle-2 text-no-wrap pr-2">Coby Hoekstra </span>
-        </v-row>
-        <v-row>
-          <span class="overline">123 credits gedoneerd</span>
-        </v-row>
-      </v-col>
-      <v-col>
-        <v-btn rounded color="button" dark>
-          <v-icon>fa-user-plus</v-icon></v-btn
-        ></v-col
-      >
+      <donors-list :donors="gdonors"> </donors-list>
     </v-row>
   </content-pane>
 </template>
@@ -118,11 +56,35 @@
 <script>
 import GoalCard from '../../../components/community/GoalCard'
 import ContentPane from '../../../components/common/ContentPane'
+import { mapGetters } from 'vuex'
+import DonorsList from '../../../components/community/DonorsList'
 export default {
   name: 'GoalOverviewPage',
-  components: { ContentPane, GoalCard },
+  components: { DonorsList, ContentPane, GoalCard },
   data: function() {
     return {}
+  },
+  computed: {
+    ...mapGetters({
+      getSavedGoals: 'sg/fetchGoals',
+    }),
+    gdonors() {
+      return this.$store.getters['sg/getTopDonorsList']
+    },
+  },
+  methods: {
+    fetchGoals() {
+      return this.$store.getters['sg/fetchGoals']
+    },
+    fetchGoalForIndex(index) {
+      return this.getSavedGoals[index]
+    },
+    fetchListSize() {
+      return this.$store.getters['sg/getGoalListSize']
+    },
+    fetchTopDonors() {
+      return this.$store.getters['sg/getTopDonorsList']
+    },
   },
 }
 </script>

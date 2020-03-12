@@ -36,7 +36,7 @@
     </v-row>
     <v-row>
       <v-col cols="4">
-        <row>
+        <v-row>
           <v-col cols="12">
             <v-progress-circular
               :rotate="-90"
@@ -48,15 +48,15 @@
               {{ nrOfDonors }}
             </v-progress-circular>
           </v-col>
-        </row>
-        <row>
+        </v-row>
+        <v-row>
           <v-col>
             <span>Donateurs</span>
           </v-col>
-        </row>
+        </v-row>
       </v-col>
       <v-col cols="4">
-        <row>
+        <v-row>
           <v-col cols="12">
             <v-progress-circular
               :rotate="-90"
@@ -70,7 +70,7 @@
               {{ prefix }}
             </v-progress-circular>
           </v-col>
-        </row>
+        </v-row>
         <v-row>
           <v-col>
             <span>Gedoneerd</span>
@@ -99,15 +99,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-btn
-        large
-        rounded
-        block
-        mb-4
-        depressed
-        color="button"
-        @click="closeConfirmation"
-      >
+      <v-btn large rounded block mb-4 depressed color="button">
         Steun dit doel
       </v-btn>
     </v-row>
@@ -161,7 +153,7 @@
             <span class="subtitle-2 text-no-wrap pr-2">Coby Hoekstra </span>
           </v-row>
           <v-row>
-            <span class="overline">123 credits gedoneerd</span>
+            <span class="overline">{{ fetchGoals() }}</span>
           </v-row>
         </v-col>
       </v-row>
@@ -182,7 +174,11 @@ export default {
       percentageAchievedOfGoal: '65%',
     }
   },
-  methods() {},
+  methods: {
+    fetchGoals() {
+      return this.$store.getters['sg/fetchGoals']
+    },
+  },
 }
 </script>
 
