@@ -20,7 +20,7 @@
       />
     </mgl-map>
     <div class="ghost-map"></div>
-    <v-row v-if="isLoaded">
+    <v-row v-if="!isLoading">
       <v-btn
         v-if="mapSize !== 'fullscreen'"
         fab
@@ -70,7 +70,7 @@ export default {
       accessToken: ACCESS_TOKEN, // your access token. Needed if you using Mapbox maps
       mapStyle: MAP_STYLE, // your map style
       destinationCoordinates: [],
-      isLoaded: false,
+      isLoading: true,
       center: [4.895168, 52.370216],
       mapbox: null,
       showShrinkMeBtn: false,
@@ -86,16 +86,25 @@ export default {
       },
     },
   },
+  watch: {
+    mapSizeProp: function(newValue) {
+      console.log('whemen')
+      this.setMapSize(newValue)
+    },
+  },
   created() {
+    this.isLoading = true
     if (this.legs.length === 1) {
       this.leg = this.legs[0]
     }
+
     console.log('[CREATED] Route map', this.legs)
   },
   methods: {
     onMoveEnd() {
-      this.isLoaded = true
       this.$emit('loaded', {})
+      console.log('move ended')
+      this.isLoading = false
     },
     async onMapLoad(event) {
       this.map = event.map
@@ -187,7 +196,7 @@ export default {
         },
       })
     },
-    async initiateMapWholeRoute(map, legs) {
+    initiateMapWholeRoute(map, legs) {
       const result = legs.map(leg => polyline.toGeoJSON(leg.legGeometry.points))
       let features = []
       let beginPoints = []
@@ -213,8 +222,6 @@ export default {
         })
       })
 
-      console.log('features: ', features)
-      console.log('points: ', beginPoints)
       map.addSource('legs', {
         type: 'geojson',
         data: {
@@ -294,12 +301,6 @@ export default {
         this.changeMapSize({ height: '100vh', width: '100%' })
 
       this.map.resize()
-    },
-  },
-  watch: {
-    mapSizeProp: function(newValue, oldValue) {
-      console.log('mapSize changed from', oldValue, 'to:', newValue)
-      this.setMapSize(newValue)
     },
   },
 }

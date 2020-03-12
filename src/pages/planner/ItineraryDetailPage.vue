@@ -6,7 +6,6 @@
           ref="mapComp"
           :legs="selectedLegs"
           :map-size-prop="mapSize"
-          @loaded="showFullScreenMapBtn = true"
           @sizeChanged="onMapSizeChanged"
         ></route-map>
       </v-col>
@@ -132,8 +131,6 @@ export default {
       showMap: true,
       mapSize: 'small',
       showConfirmationButton: true,
-      showFullScreenMapBtn: false,
-      isMapFullScreen: false,
     }
   },
   computed: {
@@ -193,7 +190,6 @@ export default {
     onLegSelected({ leg, step }) {
       this.selectedLegs = [leg]
       this.selectedLegsIndex = step
-      this.mapSize = 'small'
       this.forceRerender()
     },
     forceRerender() {
