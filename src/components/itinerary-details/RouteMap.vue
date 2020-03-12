@@ -72,7 +72,6 @@ export default {
       destinationCoordinates: [],
       isLoaded: false,
       center: [4.895168, 52.370216],
-      styleOfTheMap: {},
       mapbox: null,
       showShrinkMeBtn: false,
     }
@@ -100,6 +99,7 @@ export default {
     },
     async onMapLoad(event) {
       this.map = event.map
+      this.setMapSize(this.mapSizeProp)
 
       if (this.legs.length === 1) {
         this.initiateMapSingleLeg(event.map, this.legs[0])
@@ -189,7 +189,6 @@ export default {
     },
     async initiateMapWholeRoute(map, legs) {
       const result = legs.map(leg => polyline.toGeoJSON(leg.legGeometry.points))
-
       let features = []
       let beginPoints = []
       let endPoints = []
@@ -255,7 +254,6 @@ export default {
         result[result.length - 1].coordinates[
           result[result.length - 1].coordinates.length - 1
         ]
-      await this.resizeMap()
       map.fitBounds([result[0].coordinates[0], finalDestinationCoordinates], {
         padding: 15,
       })
@@ -290,21 +288,18 @@ export default {
       mapCanvas.style.width = width
       this.map.resize()
     },
-    async resizeMap() {
-      var mapDiv = document.getElementById('map')
-      var mapCanvas = document.getElementsByClassName('mapboxgl-canvas')[0]
-      mapDiv.style.height = '100vh'
-      mapCanvas.style.width = '100%'
+    setMapSize(size) {
+      size === 'small' && this.changeMapSize({ height: '200px', width: '100%' })
+      size === 'fullscreen' &&
+        this.changeMapSize({ height: '100vh', width: '100%' })
+
       this.map.resize()
     },
   },
   watch: {
     mapSizeProp: function(newValue, oldValue) {
-      console.log('mapSize changed from ', oldValue, 'to: ', newValue)
-      newValue === 'small' &&
-        this.changeMapSize({ height: '200px', width: '100%' })
-      newValue === 'fullscreen' &&
-        this.changeMapSize({ height: '100vh', width: '100%' })
+      console.log('mapSize changed from', oldValue, 'to:', newValue)
+      this.setMapSize(newValue)
     },
   },
 }
