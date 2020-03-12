@@ -1,10 +1,10 @@
 <template>
   <content-pane>
-    <v-row v-if="selectedLeg && showMap" class="pa-0">
+    <v-row v-if="selectedLegs && showMap" class="pa-0">
       <v-col class="pa-0">
         <route-map
           ref="mapComp"
-          :leg="selectedLeg"
+          :legs="selectedLegs"
           @loaded="showFullScreenMapBtn = true"
         ></route-map>
       </v-col>
@@ -61,7 +61,7 @@
             class="py-0"
           >
             <itinerary-leg
-              :is-map-active="selectedLegIndex === index"
+              :is-map-active="selectedLegsIndex === index"
               :step="index"
               :leg="leg"
               @legSelect="onLegSelected"
@@ -110,7 +110,7 @@
           mb-4
           depressed
           color="primairy"
-          @click="showMap"
+          @click="showFullRouteOnMap()"
         >
           bekijk op de kaart
         </v-btn>
@@ -147,8 +147,8 @@ export default {
   },
   data() {
     return {
-      selectedLeg: null,
-      selectedLegIndex: null,
+      selectedLegs: null,
+      selectedLegsIndex: null,
       showMap: true,
       showConfirmationButton: true,
       showFullScreenMapBtn: false,
@@ -207,8 +207,8 @@ export default {
       this.$store.dispatch('is/storeSelectedTrip', selectedTrip)
     },
     onLegSelected({ leg, step }) {
-      this.selectedLeg = leg
-      this.selectedLegIndex = step
+      this.selectedLegs = [leg]
+      this.selectedLegsIndex = step
       this.forceRerender()
     },
     forceRerender() {
@@ -230,6 +230,10 @@ export default {
       this.$refs.mapComp.shrinkMap()
       this.showFullScreenMapBtn = true
       this.isMapFullScreen = false
+    },
+    showFullRouteOnMap() {
+      this.selectedLegs = this.selectedTrip.legs
+      this.forceRerender()
     },
     contactDriver: function() {},
   },

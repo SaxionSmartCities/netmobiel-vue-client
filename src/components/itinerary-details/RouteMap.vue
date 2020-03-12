@@ -31,14 +31,15 @@ export default {
   name: 'RouteMap',
   components: { MglMap, MglMarker },
   props: {
-    leg: {
-      type: Object,
-      default: Object,
+    legs: {
+      type: Array,
+      default: Array,
       required: true,
     },
   },
   data() {
     return {
+      leg: null,
       accessToken: ACCESS_TOKEN, // your access token. Needed if you using Mapbox maps
       mapStyle: MAP_STYLE, // your map style
       destinationCoordinates: [],
@@ -55,7 +56,12 @@ export default {
     async onMapLoad(event) {
       this.map = event.map
 
-      const result = polyline.toGeoJSON(this.leg.legGeometry.points)
+      if (this.legs.length === 1) {
+        this.initiateMapSingleLeg(event.map, this.legs[0])
+      }
+    },
+    initiateMapSingleLeg(map, leg) {
+      const result = polyline.toGeoJSON(leg.legGeometry.points)
       this.destinationCoordinates =
         result.coordinates[result.coordinates.length - 1]
 
@@ -95,7 +101,7 @@ export default {
         ],
       }
 
-      event.map.fitBounds(
+      map.fitBounds(
         [
           result.coordinates[0],
           result.coordinates[result.coordinates.length - 1],
@@ -103,23 +109,23 @@ export default {
         { padding: 50 }
       )
 
-      event.map.addSource('route', {
+      map.addSource('route', {
         type: 'geojson',
         data: route,
       })
 
-      event.map.addSource('points', {
+      map.addSource('points', {
         type: 'geojson',
         data: points,
       })
 
-      event.map.addLayer({
+      map.addLayer({
         id: 'points',
         source: 'points',
         type: 'circle',
       })
 
-      event.map.addLayer({
+      map.addLayer({
         id: 'route',
         source: 'route',
         type: 'line',
@@ -149,6 +155,12 @@ export default {
       mapCanvas.style.width = '100%'
       this.map.resize()
     },
+  },
+  created() {
+    if (this.legs.length === 1) {
+      this.leg = this.legs[0]
+    }
+    console.log('[CREATED] Route map', this.legs)
   },
 }
 </script>
