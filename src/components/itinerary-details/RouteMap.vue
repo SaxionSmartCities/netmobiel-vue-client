@@ -299,7 +299,9 @@ export default {
       size === 'small' && this.changeMapSize({ height: '200px', width: '100%' })
       size === 'fullscreen' &&
         this.changeMapSize({ height: '100vh', width: '100%' })
-      if (this.map) this.map.resize()
+      if (this.map) {
+        console.log('calling map.resize()')
+      }
     },
   },
 }
