@@ -121,11 +121,6 @@ const router = new Router({
       name: 'notificationOptions',
     },
     {
-      path: '/tripCanceledPage',
-      component: TripCanceledPage,
-      name: 'tripCanceledPage',
-    },
-    {
       path: '/tripsOverviewPage',
       component: TripsOverviewPage,
       name: 'tripsOverviewPage',

@@ -95,7 +95,7 @@ export default {
       this.$store.dispatch('is/deleteSelectedTrip', {
         tripId: this.selectedTrip.id,
       })
-      this.$router.push('/tripCanceledPage')
+      this.$router.push('/tripCancelledPage')
     },
     editRoute() {},
     replanSameRoute() {},
