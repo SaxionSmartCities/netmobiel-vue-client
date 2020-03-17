@@ -56,7 +56,7 @@
       </v-col>
       <v-col v-else>
         <v-row v-for="(ride, index) in getPlannedRides" :key="index">
-          <v-col v-if="checkUpdates" class="py-1">
+          <v-col class="py-1">
             <ride-card
               :from="ride.fromPlace"
               :to="ride.toPlace"
@@ -163,10 +163,6 @@ export default {
     onTripSelected(index) {
       this.$store.commit('is/setSelectedTrip', this.getPlannedTrips[index])
       this.$router.push('/itineraryDetailPage')
-    },
-    checkUpdates() {
-      console.log(this.getPlannedRides)
-      return true
     },
   },
 }
