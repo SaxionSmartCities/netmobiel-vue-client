@@ -96,8 +96,6 @@ export default {
     if (this.legs.length === 1) {
       this.leg = this.legs[0]
     }
-
-    console.log('[CREATED] Route map', this.legs)
   },
   methods: {
     onMoveEnd() {
@@ -299,9 +297,6 @@ export default {
       size === 'small' && this.changeMapSize({ height: '200px', width: '100%' })
       size === 'fullscreen' &&
         this.changeMapSize({ height: '100vh', width: '100%' })
-      if (this.map) {
-        console.log('calling map.resize()')
-      }
     },
   },
 }
