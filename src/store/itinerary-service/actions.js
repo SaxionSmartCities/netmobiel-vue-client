@@ -85,29 +85,6 @@ export default {
         )
       })
   },
-  fetchCurrentTrip: (context, tripId) => {
-    const URL = BASE_URL + '/trips/' + tripId
-    axios
-      .get(URL, { headers: generateHeader(GRAVITEE_TRIP_SERVICE_API_KEY) })
-      .then(response => {
-        if (response.status == 200) {
-          console.log(response.data)
-          return response
-        }
-      })
-      .catch(error => {
-        // eslint-disable-next-line
-          console.log(error)
-        context.dispatch(
-          'ui/queueNotification',
-          {
-            message: 'Fout bij ophalengeselecteerde reis.',
-            timeout: 0,
-          },
-          { root: true }
-        )
-      })
-  },
   fetchTrips: context => {
     const URL = BASE_URL + '/trips'
     axios
@@ -119,7 +96,6 @@ export default {
             trip.date = moment(trip.date).valueOf()
             return trip
           })
-          console.log(parsedTrips)
           context.commit('setPlannedTrips', parsedTrips)
         }
       })
