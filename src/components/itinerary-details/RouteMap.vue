@@ -99,9 +99,6 @@ export default {
 
     console.log('[CREATED] Route map', this.legs)
   },
-  mounted() {
-    this.setMapSize(this.mapSizeProp)
-  },
   methods: {
     onMoveEnd() {
       this.$emit('loaded', {})
@@ -109,6 +106,7 @@ export default {
     },
     async onMapLoad(event) {
       this.map = event.map
+      this.setMapSize(this.mapSizeProp)
 
       if (this.legs.length === 1) {
         this.initiateMapSingleLeg(event.map, this.legs[0])
@@ -295,14 +293,13 @@ export default {
         mapDiv.style.height = height
         mapCanvas.style.width = width
       }
-      this.map.resize()
+      if (this.map) this.map.resize()
     },
     setMapSize(size) {
       size === 'small' && this.changeMapSize({ height: '200px', width: '100%' })
       size === 'fullscreen' &&
         this.changeMapSize({ height: '100vh', width: '100%' })
-
-      this.map.resize()
+      if (this.map) this.map.resize()
     },
   },
 }
@@ -312,6 +309,7 @@ export default {
 .activated {
   width: 100px !important;
 }
+
 #map {
   position: fixed;
   z-index: 1;
@@ -320,9 +318,11 @@ export default {
   width: $map-width;
   height: $map-height;
 }
+
 .ghost-map {
   height: $map-height;
 }
+
 .map-fullscreen {
   top: 10px;
   left: 10px;
