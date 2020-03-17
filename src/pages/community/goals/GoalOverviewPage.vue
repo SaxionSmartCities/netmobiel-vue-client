@@ -56,10 +56,10 @@
 </template>
 
 <script>
-import GoalCard from '../../../components/community/GoalCard'
+import GoalCard from '../../../components/community/goals/GoalCard'
 import ContentPane from '../../../components/common/ContentPane'
 import { mapGetters } from 'vuex'
-import DonorsList from '../../../components/community/DonorsList'
+import DonorsList from '../../../components/community/goals/DonorsList'
 export default {
   name: 'GoalOverviewPage',
   components: { DonorsList, ContentPane, GoalCard },

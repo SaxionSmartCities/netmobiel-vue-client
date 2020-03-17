@@ -33,68 +33,34 @@
       </span>
     </v-row>
     <v-row>
-      <v-col cols="4">
-        <v-row>
-          <v-col cols="12">
-            <v-progress-circular
-              :rotate="-90"
-              :size="100"
-              :width="11"
-              :value="100"
-              color="primary"
-            >
-              {{ nrOfDonors }}
-            </v-progress-circular>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <span>Donateurs</span>
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-col cols="4">
-        <v-row>
-          <v-col cols="12">
-            <v-progress-circular
-              :rotate="-90"
-              :size="100"
-              :width="11"
-              :value="77"
-              color="primary"
-            >
-              {{ donatedCredits }}
-              <br />
-              {{ prefix }}
-            </v-progress-circular>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <span>Gedoneerd</span>
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-col cols="4">
-        <v-row>
-          <v-col cols="12">
-            <v-progress-circular
-              :rotate="-90"
-              :size="100"
-              :width="11"
-              :value="75"
-              color="primary"
-            >
-              {{ percentageAchievedOfGoal }}
-            </v-progress-circular>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <span>Behaald</span>
-          </v-col>
-        </v-row>
-      </v-col>
+      <goal-progress-bar
+        name="Donateurs"
+        :number-of-donors="33"
+        :credits-remaining="43"
+        :credits-total="232"
+      >
+      </goal-progress-bar>
+
+      <goal-progress-bar
+        name="credits"
+        :value="65"
+        :content-multi-line="true"
+        :number-of-donors="33"
+        :credits-donated="76"
+        :credits-remaining="43"
+        :credits-total="232"
+      >
+      </goal-progress-bar>
+
+      <goal-progress-bar
+        name="Behaald"
+        :content-percentage="true"
+        :number-of-donors="33"
+        :credits-remaining="43"
+        :credits-donated="76"
+        :credits-total="232"
+      >
+      </goal-progress-bar>
     </v-row>
     <v-row>
       <v-btn large rounded block mb-4 depressed color="button">
@@ -117,23 +83,16 @@
 
 <script>
 import ContentPane from '../../../components/common/ContentPane'
-import DonorsList from '../../../components/community/DonorsList'
+import DonorsList from '../../../components/community/goals/DonorsList'
+import GoalProgressBar from '../../../components/community/goals/GoalProgressBar'
 export default {
   name: 'GoalsDetailsPage',
-  components: { DonorsList, ContentPane },
+  components: { GoalProgressBar, DonorsList, ContentPane },
   props: {
     id: {
       type: String,
       required: true,
     },
-  },
-  data() {
-    return {
-      nrOfDonors: 30,
-      donatedCredits: 230,
-      prefix: 'credits',
-      percentageAchievedOfGoal: '65%',
-    }
   },
   computed: {
     selectedGoal: function() {
