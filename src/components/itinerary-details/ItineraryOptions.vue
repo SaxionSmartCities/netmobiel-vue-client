@@ -2,7 +2,7 @@
   <v-row>
     <v-col>
       <v-divider></v-divider>
-      <v-row @click="editRoute">
+      <v-row @click="editTrip">
         <v-col cols="2">
           <v-icon>fa-pencil-alt</v-icon>
         </v-col>
@@ -20,7 +20,7 @@
         </v-col>
       </v-row>
       <v-divider></v-divider>
-      <v-row @click="removeRoute">
+      <v-row @click="deleteTrip">
         <v-col cols="2">
           <v-icon>fa-times-circle</v-icon>
         </v-col>
@@ -82,7 +82,7 @@ export default {
   name: 'ItineraryOptions',
   components: {},
   props: {},
-  data: function() {
+  data() {
     return { dialog: false }
   },
   computed: {
@@ -97,7 +97,7 @@ export default {
       })
       this.$router.push('/tripCancelledPage')
     },
-    editRoute() {},
+    editTrip() {},
     replanSameRoute() {},
     openConfirmation() {
       this.dialog = true
