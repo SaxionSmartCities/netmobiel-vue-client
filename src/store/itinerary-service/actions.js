@@ -100,6 +100,7 @@ export default {
           } else {
             context.commit('appendPlannedTrips', response.data.data)
           }
+          context.commit('setPlannedTripsCount', response.data.totalCount)
         }
       })
       .catch(error => {

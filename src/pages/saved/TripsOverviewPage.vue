@@ -13,7 +13,7 @@
           <v-icon color="white">commute</v-icon>
           <span>
             Reizen
-            <sup>{{ getPlannedTrips.length }}</sup>
+            <sup>{{ getPlannedTripsCount }}</sup>
           </span>
         </v-tab>
         <v-tab class="white--text no-caps saved">
@@ -91,6 +91,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      getPlannedTripsCount: 'is/getPlannedTripsCount',
       getPlannedTrips: 'is/getPlannedTrips',
       getPlannedRides: 'cs/getRides',
     }),
