@@ -204,8 +204,9 @@ export default {
   methods: {
     saveTrip() {
       const selectedTrip = this.$store.getters['is/getSelectedTrip']
-      this.$store.dispatch('is/storeSelectedTrip', selectedTrip)
-      this.$router.push('/tripPlanSubmitted')
+      this.$store
+        .dispatch('is/storeSelectedTrip', selectedTrip)
+        .then(() => this.$router.push('/tripPlanSubmitted'))
     },
     onLegSelected({ leg, step }) {
       this.selectedLeg = leg
