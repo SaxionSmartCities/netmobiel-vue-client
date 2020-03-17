@@ -1,44 +1,77 @@
 <template>
   <v-layout pa-2 column>
-    <v-flex>
-      <v-layout column>
-        <v-flex @click="editRoute">
-          <v-divider></v-divider>
-          <v-layout align-center ma-3>
-            <v-flex xs2>
-              <v-icon>fa-pencil-alt</v-icon>
-            </v-flex>
-            <v-flex>Wijzig deze rit</v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    <v-flex>
-      <v-layout column>
-        <v-flex @click="replanSameRoute">
-          <v-divider></v-divider>
-          <v-layout align-center ma-3>
-            <v-flex xs2>
-              <v-icon>fa-redo</v-icon>
-            </v-flex>
-            <v-flex>Plan deze reis opnieuw</v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    <v-flex>
-      <v-layout column>
-        <v-flex @click="removeRoute">
-          <v-divider></v-divider>
-          <v-layout align-center ma-3>
-            <v-flex xs2>
-              <v-icon>fa-times-circle</v-icon>
-            </v-flex>
-            <v-flex>Annuleer deze reis</v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
+    <v-divider></v-divider>
+    <v-row @click="editRoute">
+      <v-col cols="2">
+        <v-icon>fa-pencil-alt</v-icon>
+      </v-col>
+      <v-col>
+        Wijzig deze reis
+      </v-col>
+    </v-row>
+    <v-divider></v-divider>
+    <v-row @click="replanSameRoute">
+      <v-col cols="2">
+        <v-icon>fa-redo</v-icon>
+      </v-col>
+      <v-col>
+        Plan deze reis opnieuw
+      </v-col>
+    </v-row>
+    <v-divider></v-divider>
+    <v-row @click="removeRoute">
+      <v-col cols="2">
+        <v-icon>fa-times-circle</v-icon>
+      </v-col>
+      <v-col>
+        Annuleer deze reis
+      </v-col>
+    </v-row>
+    <v-dialog v-model="dialog" persistent>
+      <template v-slot:activator="{ on }"> </template>
+      <v-card>
+        <v-card-title class="headline">Annuleer deze rit.</v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col>
+              Weet je zeker dat je deze rit wilt annuleren? Dit kan niet
+              ongedaan gemaakt worden.
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-btn
+                large
+                rounded
+                block
+                mb-4
+                depressed
+                color="button"
+                @click="closeConfirmation"
+              >
+                Rit annuleren
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-btn
+                large
+                rounded
+                outlined
+                block
+                mb-4
+                depressed
+                color="primairy"
+                @click="closeDialog"
+              >
+                Rit toch bewaren
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-layout>
 </template>
 
@@ -48,12 +81,21 @@ export default {
   components: {},
   props: {},
   data: function() {
-    return {}
+    return { dialog: false }
   },
   methods: {
     editRoute() {},
     replanSameRoute() {},
-    removeRoute() {},
+    closeConfirmation() {
+      this.dialog = false
+      this.$router.push('/tripCancelledPage')
+    },
+    closeDialog() {
+      this.dialog = false
+    },
+    removeRoute() {
+      this.dialog = true
+    },
   },
 }
 </script>

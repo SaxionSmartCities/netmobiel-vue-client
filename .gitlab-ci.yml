@@ -28,7 +28,8 @@ run production linter:
     - master
     - dev
   before_script:
-   - npm install
+    - rm -rf node_modules/.cache/
+    - npm install
   script:
     - npm run lint-prod
 

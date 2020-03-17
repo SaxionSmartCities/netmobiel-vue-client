@@ -1,24 +1,26 @@
 <template>
-  <v-card outlined @click="openDetails()">
+  <v-card outlined @click="$emit('onTripSelected', index)">
     <v-row no-gutters>
       <v-col>
         <v-card-title>
           <h4>Vertrek</h4>
         </v-card-title>
         <v-card-subtitle>
-          {{ departureTime }}
+          {{ formatDateTime(departureTime) }}
         </v-card-subtitle>
         <v-card-text>
-          <v-row no-gutters>
+          <v-row no-gutters class="pb-2">
             <v-col
-              v-for="(leg, index) in journey.legs"
-              :key="index"
-              :cols="calculateWidth(index)"
+              v-for="(leg, indx) in legs"
+              :key="indx"
+              :cols="calculateWidth(indx)"
             >
               <travel-leg :leg="leg"> </travel-leg>
             </v-col>
           </v-row>
-          <div>{{ Math.round(journey.duration / 60) }} minuten</div>
+          <div v-if="duration">
+            Reistijd: {{ Math.round(duration / 60) }} minuten
+          </div>
         </v-card-text>
       </v-col>
       <v-card-actions>
@@ -38,65 +40,44 @@ export default {
     TravelLeg,
   },
   props: {
+    index: { type: Number, required: true },
     from: { type: Object, required: true },
     to: { type: Object, required: true },
-    date: { type: Object, required: true },
-    journey: { type: Object, required: true },
+    arrivalTime: { type: Object, required: true },
+    departureTime: { type: Object, required: true },
+    duration: { type: Number, required: false, default: 0 },
+    legs: { type: Array, required: true },
   },
-  data: function() {
+  data() {
     return {
       layoutRatios: [],
       totalTime: 0,
     }
   },
-  computed: {
-    departureTime: function() {
-      let startTime = this.journey.startTime
-      if (typeof startTime === 'string') {
-        startTime = parseInt(startTime)
-      }
-      return moment(startTime)
-        .locale('nl')
-        .calendar()
-    },
-    driverString: function() {
-      for (let i = 0; i < this.journey.legs.length; i++) {
-        let currentLeg = this.journey.legs[i]
-        if (currentLeg.mode === 'RIDESHARE') {
-          return (
-            currentLeg.ride.driver.givenName +
-            ' ' +
-            currentLeg.ride.driver.familyName
-          )
-        }
-      }
-      return ''
-    },
-  },
-  watch: {
-    journey: function() {
-      this.calculateLegDivison()
-    },
-  },
-  mounted: function() {
+  mounted() {
     this.calculateLegDivison()
   },
   methods: {
+    formatDateTime(dateTime) {
+      return moment(dateTime)
+        .locale('nl')
+        .calendar()
+    },
     // Function to pre-determine the divions of column per leg
-    calculateLegDivison: function() {
+    calculateLegDivison() {
       // Skip calculation if we have no legs.
-      if (this.journey.legs.length == 0) {
+      if (this.legs.length == 0) {
         return
       }
       // Calculate total travel time
-      this.totalTime = this.journey.legs
+      this.totalTime = this.legs
         .map(leg => leg.duration)
         .reduce((a, b) => a + b)
 
       // Calculate ratio for each leg and map it on a 1-12 scale (based on grid system)
       let ratios = []
-      for (let i = 0, len = this.journey.legs.length; i < len; i++) {
-        let currentRatio = this.journey.legs[i].duration / this.totalTime // Calculate weight of value i.c.t. other values
+      for (let i = 0, len = this.legs.length; i < len; i++) {
+        let currentRatio = this.legs[i].duration / this.totalTime // Calculate weight of value i.c.t. other values
         let mappedRatio = currentRatio * 12 // Map over 12 columns
         let pushValue = Math.max(1, mappedRatio) // Make sure the minimum value is 1 - otherwise it won't be displayed
 
@@ -125,18 +106,8 @@ export default {
       }
       this.layoutRatios = ratios
     },
-    calculateWidth: function(index) {
+    calculateWidth(index) {
       return this.layoutRatios[index]
-    },
-    openDetails: function() {
-      const selectedTrip = {
-        from: this.from,
-        to: this.from,
-        date: this.date,
-        itinerary: this.journey,
-      }
-      this.$store.commit('is/setSelectedTrip', selectedTrip)
-      this.$router.push('/itineraryDetailPage')
     },
   },
 }

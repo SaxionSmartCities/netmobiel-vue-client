@@ -4,8 +4,9 @@ import store from './store'
 
 Vue.use(Router)
 
-import CommunityPage from './pages/community/CommunityPage.vue'
-import ConversationPage from './pages/community/ConversationPage.vue'
+import CommunityOverviewPage from './pages/community/CommunityOverviewPage.vue'
+import InboxPage from './pages/community/messages/InboxPage.vue'
+import ConversationPage from './pages/community/messages/ConversationPage.vue'
 import ItineraryDetailPage from './pages/planner/ItineraryDetailPage.vue'
 import LandingPage from './pages/LandingPage.vue'
 import HomePage from './pages/home/HomePage.vue'
@@ -31,6 +32,7 @@ import RidePlanPage from './pages/planner/RidePlanPage.vue'
 import RidePlanOptionsPage from './pages/planner/RidePlanOptionsPage.vue'
 import RidePlanSubmitted from './pages/planner/RidePlanSubmitted.vue'
 import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
+import TripCancelledPage from './pages/saved/TripCancelledPage'
 
 const router = new Router({
   mode: 'history',
@@ -118,6 +120,11 @@ const router = new Router({
       name: 'tripsOverviewPage',
     },
     {
+      path: '/tripCancelledPage',
+      component: TripCancelledPage,
+      name: 'tripCancelledPage',
+    },
+    {
       path: '/rideDetailPage/:id',
       component: RideDetailPage,
       name: 'rideDetailPage',
@@ -159,8 +166,13 @@ const router = new Router({
       name: 'onboardingComplete',
     },
     {
+      path: '/inbox',
+      component: InboxPage,
+      name: 'inbox',
+    },
+    {
       path: '/community',
-      component: CommunityPage,
+      component: CommunityOverviewPage,
       name: 'community',
     },
     {

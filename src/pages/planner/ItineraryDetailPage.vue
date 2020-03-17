@@ -1,32 +1,77 @@
 <template>
   <content-pane>
-    <v-layout py-2 column>
-      <v-flex mb-3>
+    <v-row v-if="selectedLeg && showMap" class="pa-0">
+      <v-col class="pa-0">
+        <route-map
+          ref="mapComp"
+          :leg="selectedLeg"
+          @loaded="showFullScreenMapBtn = true"
+        ></route-map>
+      </v-col>
+    </v-row>
+    <v-row v-if="showFullScreenMapBtn">
+      <v-btn
+        v-if="!isMapFullScreen"
+        fab
+        small
+        class="map-fullscreen"
+        @click="showMapFullScreen"
+      >
+        <v-icon>fullscreen</v-icon>
+      </v-btn>
+      <v-btn
+        v-if="isMapFullScreen"
+        class="map-fullscreen-exit"
+        fab
+        small
+        @click="shrinkMap"
+      >
+        <v-icon>
+          fullscreen_exit
+        </v-icon>
+      </v-btn>
+    </v-row>
+    <v-row class=" flex-column">
+      <v-col class="mb-3 py-0">
         <h1>Reisdetails</h1>
-      </v-flex>
-      <v-flex>
+      </v-col>
+      <v-col class="py-0">
         <v-divider />
-      </v-flex>
-      <v-flex my-2>
+      </v-col>
+      <v-col class="py-0">
         <itinerary-summary
-          :date="selectedTrip.itinerary.departureTime"
+          :date="selectedTrip.departureTime"
           :cost="5"
-          :duration="selectedTrip.itinerary.duration"
+          :duration="selectedTrip.duration"
         >
         </itinerary-summary>
-      </v-flex>
-      <v-flex>
+      </v-col>
+      <v-col>
         <v-divider />
-      </v-flex>
-      <v-flex mt-4 mx-3>
-        <v-layout column>
-          <v-flex v-for="(leg, index) in generateSteps" :key="index">
-            <itinerary-leg :leg="leg" />
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-flex my-4>
+      </v-col>
+      <v-col class="px-6">
+        <v-row class="flex-column">
+          <v-col v-if="generateSteps.length === 0">
+            Shoutout
+          </v-col>
+          <v-col
+            v-for="(leg, index) in generateSteps"
+            v-else
+            :key="index"
+            class="py-0"
+          >
+            <itinerary-leg
+              :is-map-active="selectedLegIndex === index"
+              :step="index"
+              :leg="leg"
+              @legSelect="onLegSelected"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col>
         <v-btn
+          v-show="showSection"
           large
           rounded
           block
@@ -37,8 +82,50 @@
         >
           Deze reis bevestigen
         </v-btn>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn
+          large
+          rounded
+          outlined
+          block
+          mb-4
+          depressed
+          color="primairy"
+          @click="contactDriver"
+        >
+          Stuur bericht naar henk
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn
+          large
+          rounded
+          outlined
+          block
+          mb-4
+          depressed
+          color="primairy"
+          @click="showMap"
+        >
+          bekijk op de kaart
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row class="mb-3">
+      <v-col class="pb-0">
+        <h1>Wijzigen</h1>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="pa-0">
+        <itinerary-options></itinerary-options>
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 
@@ -46,19 +133,40 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
+import RouteMap from '@/components/itinerary-details/RouteMap'
 
 export default {
   name: 'ItineraryDetailPage',
-  components: { ContentPane, ItinerarySummary, ItineraryLeg },
+  components: {
+    RouteMap,
+    ContentPane,
+    ItinerarySummary,
+    ItineraryLeg,
+    ItineraryOptions,
+  },
+  data() {
+    return {
+      selectedLeg: null,
+      selectedLegIndex: null,
+      showMap: true,
+      showConfirmationButton: true,
+      showFullScreenMapBtn: false,
+      isMapFullScreen: false,
+    }
+  },
   computed: {
-    selectedTrip: function() {
+    selectedTrip() {
       return this.$store.getters['is/getSelectedTrip']
     },
-    generateSteps: function() {
+    generateSteps() {
+      if (!this.selectedTrip.legs || this.selectedTrip.legs.length == 0) {
+        return []
+      }
       let result = []
-      for (let i = 0; i < this.selectedTrip.itinerary.legs.length - 1; i++) {
-        let currentLeg = this.selectedTrip.itinerary.legs[i]
-        let nextLeg = this.selectedTrip.itinerary.legs[i + 1]
+      for (let i = 0; i < this.selectedTrip.legs.length - 1; i++) {
+        let currentLeg = this.selectedTrip.legs[i]
+        let nextLeg = this.selectedTrip.legs[i + 1]
         result.push(currentLeg)
 
         // We won't show any waiting times < 60 sec -- should be made a config
@@ -72,9 +180,7 @@ export default {
           })
         }
       }
-      let lastLeg = this.selectedTrip.itinerary.legs[
-        this.selectedTrip.itinerary.legs.length - 1
-      ]
+      let lastLeg = this.selectedTrip.legs[this.selectedTrip.legs.length - 1]
       result.push(lastLeg)
 
       // Finally, we push the "FINISH" element (not from OTP)
@@ -85,17 +191,63 @@ export default {
       })
       return result
     },
+    showSection() {
+      return this.showConfirmationButton
+    },
   },
-  created: function() {
+  created() {
     this.$store.commit('ui/showBackButton')
+    if (this.selectedTrip.state === 'SCHEDULED') {
+      this.showConfirmationButton = false
+    }
   },
   methods: {
-    saveTrip: function() {
+    saveTrip() {
       const selectedTrip = this.$store.getters['is/getSelectedTrip']
       this.$store.dispatch('is/storeSelectedTrip', selectedTrip)
     },
+    onLegSelected({ leg, step }) {
+      this.selectedLeg = leg
+      this.selectedLegIndex = step
+      this.forceRerender()
+    },
+    forceRerender() {
+      // Remove my-component from the DOM
+      this.showMap = false
+      this.showFullScreenMapBtn = false
+      this.isMapFullScreen = false
+      this.$nextTick(() => {
+        // Add the component back in
+        this.showMap = true
+      })
+    },
+    showMapFullScreen() {
+      this.$refs.mapComp.resizeMap()
+      this.showFullScreenMapBtn = false
+      this.isMapFullScreen = true
+    },
+    shrinkMap() {
+      this.$refs.mapComp.shrinkMap()
+      this.showFullScreenMapBtn = true
+      this.isMapFullScreen = false
+    },
+    contactDriver: function() {},
   },
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.map-fullscreen {
+  top: 10px;
+  left: 10px;
+  position: absolute;
+  z-index: 4;
+}
+
+.map-fullscreen-exit {
+  top: 10px;
+  left: 10px;
+  position: absolute;
+  z-index: 4;
+}
+</style>

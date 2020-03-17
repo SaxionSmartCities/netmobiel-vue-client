@@ -1,7 +1,8 @@
 <template>
-  <content-pane>
+  <content-pane id="scroll">
     <template v-slot:header>
       <v-tabs
+        v-if="showTabs"
         id="tabs"
         v-model="selectedTab"
         grow
@@ -24,7 +25,11 @@
         </v-tab>
       </v-tabs>
     </template>
-    <v-row v-if="selectedTab == 0" class="fill-height" dense>
+    <v-row
+      v-if="(showTabs && selectedTab == 0) || isPassenger"
+      class="fill-height"
+      dense
+    >
       <v-col v-if="getPlannedTrips.length == 0">
         U heeft geen bewaarde reizen. Ga naar de planner om uw reis te plannen.
       </v-col>
@@ -32,16 +37,19 @@
         <v-row v-for="(trip, index) in getPlannedTrips" :key="index">
           <v-col class="py-1">
             <travel-card
+              :index="index"
               :from="trip.from"
               :to="trip.to"
-              :date="epochToDate(trip.date)"
-              :journey="trip.itinerary"
+              :arrival-time="parseDate(trip.arrivalTime)"
+              :departure-time="parseDate(trip.departureTime)"
+              :legs="trip.legs"
+              @onTripSelected="onTripSelected"
             />
           </v-col>
         </v-row>
       </v-col>
     </v-row>
-    <v-row v-if="selectedTab == 1" dense>
+    <v-row v-if="(showTabs && selectedTab == 1) || isDriver" dense>
       <v-col v-if="getPlannedRides.length == 0">
         U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
         plannen.
@@ -64,6 +72,7 @@
 
 <script>
 import moment from 'moment'
+import { mapGetters } from 'vuex'
 import ContentPane from '@/components/common/ContentPane.vue'
 import TravelCard from '@/components/search-results/TravelCard.vue'
 import RideCard from '@/components/rides/RideCard.vue'
@@ -76,19 +85,49 @@ export default {
   data() {
     return {
       selectedTab: 0,
+      bottom: false,
+      maxResults: 5,
     }
   },
   computed: {
-    getPlannedTrips() {
-      return this.$store.getters['is/getPlannedTrips']
+    ...mapGetters({
+      getPlannedTrips: 'is/getPlannedTrips',
+      getPlannedRides: 'cs/getRides',
+    }),
+    showTabs() {
+      const role = this.$store.getters['ps/getProfile'].userRole
+      return !role || role == 'both'
     },
-    getPlannedRides() {
-      return this.$store.getters['cs/getRides']
+    isPassenger() {
+      const role = this.$store.getters['ps/getProfile'].userRole
+      return role == 'passenger'
+    },
+    isDriver() {
+      const role = this.$store.getters['ps/getProfile'].userRole
+      return role == 'driver'
+    },
+  },
+  watch: {
+    bottom(bottom) {
+      if (bottom) {
+        if (this.selectedTab == 0) {
+          this.fetchTrips()
+        } else if (this.selectedTab == 1) {
+          this.fetchRides()
+        }
+      }
     },
   },
   mounted() {
-    this.$store.dispatch('is/fetchTrips')
-    this.$store.dispatch('cs/fetchRides')
+    this.fetchTrips()
+    this.fetchRides()
+    document
+      .getElementById('content-container')
+      .addEventListener('scroll', () => {
+        this.bottom = this.bottomVisible(
+          document.getElementById('content-container')
+        )
+      })
   },
   beforeRouteEnter: beforeRouteEnter({
     selectedTab: number => number,
@@ -97,13 +136,31 @@ export default {
     selectedTab: number => number,
   }),
   methods: {
-    epochToDate(epoch) {
-      return moment(epoch)
-    },
     parseDate(dateString) {
-      //HACK: Remove [UTC] from the date string for correct parseing.
-      // Should be fixed in the backend.
-      return moment(dateString.replace('[UTC]', '')).valueOf()
+      return moment(dateString)
+    },
+    bottomVisible(element) {
+      const scrollY = element.scrollTop
+      const visible = element.clientHeight
+      const pageHeight = element.scrollHeight
+      const bottomOfPage = visible + scrollY >= pageHeight
+      return bottomOfPage || pageHeight < visible
+    },
+    fetchTrips() {
+      this.$store.dispatch('is/fetchTrips', {
+        maxResults: this.maxResults,
+        offset: this.getPlannedTrips.length,
+      })
+    },
+    fetchRides() {
+      this.$store.dispatch('cs/fetchRides', {
+        offset: this.getPlannedRides.length,
+        maxResults: this.maxResults,
+      })
+    },
+    onTripSelected(index) {
+      this.$store.commit('is/setSelectedTrip', this.getPlannedTrips[index])
+      this.$router.push('/itineraryDetailPage')
     },
   },
 }
