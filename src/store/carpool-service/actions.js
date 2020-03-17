@@ -187,6 +187,7 @@ export default {
         } else {
           context.commit('appendRides', resp.data.data)
         }
+        context.commit('setPlannedRidesCount', resp.data.totalCount)
       })
       .catch(function(error) {
         // TODO: Proper error handling.

@@ -20,7 +20,7 @@
           <v-icon color="white">directions_car</v-icon>
           <span>
             Ritten
-            <sup>{{ getPlannedRides.length }}</sup>
+            <sup>{{ getPlannedRidesCount }}</sup>
           </span>
         </v-tab>
       </v-tabs>
@@ -93,6 +93,7 @@ export default {
     ...mapGetters({
       getPlannedTripsCount: 'is/getPlannedTripsCount',
       getPlannedTrips: 'is/getPlannedTrips',
+      getPlannedRidesCount: 'cs/getPlannedRidesCount',
       getPlannedRides: 'cs/getRides',
     }),
     showTabs() {

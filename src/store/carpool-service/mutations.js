@@ -14,6 +14,7 @@ export default {
   setAvailableCars: (state, payload) => {
     state.cars = payload
   },
+  setPlannedRidesCount: (state, payload) => (state.plannedRidesCount = payload),
   saveRides: (state, payload) => {
     state.rides = payload
   },
