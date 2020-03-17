@@ -31,6 +31,7 @@ import RideDetailPage from './pages/home/RideDetailPage.vue'
 import RidePlanPage from './pages/planner/RidePlanPage.vue'
 import RidePlanOptionsPage from './pages/planner/RidePlanOptionsPage.vue'
 import RidePlanSubmitted from './pages/planner/RidePlanSubmitted.vue'
+import TripPlanSubmitted from './pages/planner/TripPlanSubmitted.vue'
 import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
 import TripCancelledPage from './pages/saved/TripCancelledPage'
 
@@ -73,6 +74,11 @@ const router = new Router({
       path: '/planSubmitted',
       component: RidePlanSubmitted,
       name: 'planSubmitted',
+    },
+    {
+      path: '/tripPlanSubmitted',
+      component: TripPlanSubmitted,
+      name: 'tripPlanSubmitted',
     },
     {
       path: '/searchOptions',
