@@ -15,6 +15,7 @@
           class="mx-auto"
           icon="fa-map"
           naam="gezocht"
+          :disabled="true"
           :aantal-berichten="11"
         ></community-button>
       </v-col>
@@ -25,6 +26,7 @@
           class="mx-auto"
           icon="fa-trophy"
           naam="competenties"
+          :disabled="true"
         ></community-button>
       </v-col>
       <v-col>
@@ -32,6 +34,7 @@
           class="mx-auto"
           icon="fa-gift"
           naam="rewards"
+          :disabled="true"
         ></community-button>
       </v-col>
     </v-row>
