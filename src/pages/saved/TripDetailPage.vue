@@ -10,9 +10,9 @@
         ></route-map>
       </v-col>
     </v-row>
-    <v-row class=" flex-column">
+    <v-row class="flex-column">
       <v-col class="mb-3 py-0">
-        <h1>Reisdetails</h1>
+        <h1>Reis details</h1>
       </v-col>
       <v-col class="py-0">
         <v-divider />
@@ -28,7 +28,7 @@
       <v-col>
         <v-divider />
       </v-col>
-      <v-col class="px-6">
+      <v-col>
         <v-row class="flex-column">
           <v-col v-if="isShoutOut">
             <p>Shoutout,</p>
