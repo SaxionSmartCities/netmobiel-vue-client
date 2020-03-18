@@ -106,7 +106,7 @@ import RouteMap from '@/components/itinerary-details/RouteMap'
 import travelModes from '@/constants/travel-modes.js'
 
 export default {
-  name: 'ItineraryDetailPage',
+  name: 'TripDetailPage',
   components: {
     RouteMap,
     ContentPane,
