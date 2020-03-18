@@ -73,36 +73,10 @@
           mb-4
           depressed
           color="primairy"
-          @click="contactDriver"
-        >
-          Stuur bericht naar henk
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-btn
-          large
-          rounded
-          outlined
-          block
-          mb-4
-          depressed
-          color="primairy"
           @click="showFullRouteOnMap()"
         >
           bekijk op de kaart
         </v-btn>
-      </v-col>
-    </v-row>
-    <v-row class="mb-3">
-      <v-col class="pb-0">
-        <h1>Wijzigen</h1>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col class="pa-0">
-        <itinerary-options></itinerary-options>
       </v-col>
     </v-row>
   </content-pane>
@@ -112,7 +86,6 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
-import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import RouteMap from '@/components/itinerary-details/RouteMap'
 
 export default {
@@ -122,7 +95,6 @@ export default {
     ContentPane,
     ItinerarySummary,
     ItineraryLeg,
-    ItineraryOptions,
   },
   data() {
     return {
@@ -207,7 +179,6 @@ export default {
       this.selectedLegs = this.selectedTrip.legs
       this.forceRerender()
     },
-    contactDriver: function() {},
   },
 }
 </script>
