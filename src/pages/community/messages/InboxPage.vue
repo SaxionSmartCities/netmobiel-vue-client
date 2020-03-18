@@ -22,7 +22,7 @@
         <v-list-item
           :key="conversation.context"
           class=""
-          @click="showConversation(conversation.context)"
+          @click="showConversation(conversation)"
         >
           <v-list-item-avatar size="60">
             <!--                  <v-img :src="profile.image" />-->
@@ -38,7 +38,9 @@
                 </v-col>
               </v-row>
             </v-list-item-title>
-            <v-list-item-subtitle>{{ conversation.body }}</v-list-item-subtitle>
+            <v-list-item-subtitle>
+              {{ conversation.context }}
+            </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -61,8 +63,6 @@ export default {
   computed: {
     conversations() {
       return this.$store.getters['ms/getConversations']
-        ? this.$store.getters['ms/getConversations']
-        : []
     },
     profile() {
       return this.$store.getters['ps/getUser']
@@ -70,13 +70,16 @@ export default {
   },
   created: function() {
     this.$store.commit('ui/showBackButton')
-    this.$store.dispatch('ms/fetchMessages')
     this.$store.dispatch('ms/fetchConversations')
   },
   methods: {
-    showConversation(context) {
+    showConversation(conversation) {
       this.$router.push({
-        path: `/conversation/${context}`,
+        name: `conversation`,
+        params: {
+          context: conversation.context,
+          recipient: conversation.sender,
+        },
       })
     },
   },

@@ -38,6 +38,7 @@ export default {
         headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
       })
       .then(function(resp) {
+        console.log(resp.data)
         commit('setConversations', resp.data.data)
       })
       .catch(function(error) {
@@ -56,6 +57,7 @@ export default {
         headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
       })
       .then(function(resp) {
+        console.log(resp.data)
         context = context.replace(/:/gi, '')
         commit('setMessages', { context: context, messages: resp.data.data })
         commit('addContext', context)
@@ -67,21 +69,16 @@ export default {
         console.log(error)
       })
   },
-  sendMessage: (context, { urn, message, mode, subject, recipients }) => {
+  sendMessage: (context, payload) => {
     const URL = BASE_URL + `/communicator/messages`
-    const body = {
-      context: urn,
-      deliveryMode: mode,
-      recipients,
-      subject,
-      body: message,
-    }
     axios
-      .post(URL, body, {
+      .post(URL, payload, {
         headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
       })
       .then(function(resp) {
-        console.log(resp.data)
+        if (resp.status == 202) {
+          context.dispatch('fetchMessagesByContext', payload.context)
+        }
       })
       .catch(function(error) {
         // TODO: Proper error handling.

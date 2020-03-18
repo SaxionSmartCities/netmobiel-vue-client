@@ -190,6 +190,7 @@ const router = new Router({
     {
       path: '/conversation/:context',
       component: ConversationPage,
+      name: 'conversation',
       props: true,
     },
   ],
