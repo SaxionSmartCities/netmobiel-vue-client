@@ -25,15 +25,13 @@
           </v-row>
         </v-col>
       </v-row>
-      <v-row
-        v-if="travelMode !== 'FINISH' && travelMode !== 'ARRIVAL'"
-        no-gutters
-      >
+      <v-row v-if="travelMode !== 'FINISH'" no-gutters>
         <v-col cols="2" class="pl-1">
           <v-icon :class="{ rideshare: isRideShare }">{{ icon }}</v-icon>
         </v-col>
         <v-col cols="1" justify="center" align="center" fill-height>
           <div v-if="travelMode === 'WALK'" class="borderstopped borderwidth" />
+          <div v-else-if="travelMode === 'ARRIVAL'" />
           <div v-else class="border borderwidth" />
         </v-col>
         <v-col class="description pl-1 pb-3">
@@ -85,9 +83,7 @@ const headers = {
   WALK() {
     return `Lopen (${humanDistance(this.leg.distance)})`
   },
-  CAR() {
-    return this.leg.from.name
-  },
+  CAR: 'Vertrek',
   RIDESHARE: 'Meerijden',
   RAIL() {
     return `${this.leg.routeShortName} naar ${this.leg.to.label}`
@@ -99,10 +95,7 @@ const headers = {
     return `Even wachten.. (${Math.round(this.leg.duration / 60)} minuten)`
   },
   FINISH: 'Gearriveerd',
-  ARRIVAL() {
-    // car arrival when sharing a ride
-    return this.leg.from.name
-  },
+  ARRIVAL: 'Aankomst',
   SUBWAY() {
     return `${this.leg.routeShortName} naar ${this.leg.to.label}`
   },
@@ -112,7 +105,9 @@ const descriptions = {
   WALK() {
     return `${this.leg.from.label} - ${this.leg.to.label}`
   },
-  CAR: '',
+  CAR() {
+    return this.leg.from.name
+  },
   RIDESHARE() {
     return `Meerijden met ${this.leg.driverName}`
   },
@@ -127,7 +122,10 @@ const descriptions = {
   },
   WAIT: '',
   FINISH: '',
-  ARRIVAL: '',
+  ARRIVAL() {
+    // car arrival when sharing a ride
+    return this.leg.from.name
+  },
   SUBWAY() {
     return `${this.leg.from.name} - ${this.leg.to.name}`
   },
