@@ -58,10 +58,9 @@
         <v-row v-for="(ride, index) in getPlannedRides" :key="index">
           <v-col class="py-1">
             <ride-card
-              :from="ride.fromPlace"
-              :to="ride.toPlace"
-              :date="parseDate(ride.departureTime)"
+              :index="index"
               :ride="ride"
+              @rideSelected="onRideSelected"
             />
           </v-col>
         </v-row>
@@ -163,6 +162,13 @@ export default {
     onTripSelected(index) {
       this.$store.commit('is/setSelectedTrip', this.getPlannedTrips[index])
       this.$router.push('/tripDetailPage')
+    },
+    onRideSelected(index) {
+      const ride = this.getPlannedRides[index]
+      this.$router.push({
+        name: 'rideDetailPage',
+        params: { ride, id: ride.id },
+      })
     },
   },
 }
