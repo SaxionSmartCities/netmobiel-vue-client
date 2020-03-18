@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined @click="showRideDetails()">
+  <v-card outlined @click="$emit('rideSelected', index)">
     <v-row no-gutters>
       <v-col>
         <v-card-title justify-center>
@@ -40,6 +40,7 @@
 import moment from 'moment'
 export default {
   props: {
+    index: { type: Number, required: true },
     ride: {
       type: Object,
       required: true,
@@ -68,13 +69,6 @@ export default {
           .format('dd'),
         weekly = interval === 1 ? 'wekelijks' : `elke ${interval} weken`
       return `${weekly} op ${weekday}`
-    },
-    showRideDetails() {
-      const { ride } = this
-      this.$router.push({
-        name: 'rideDetailPage',
-        params: { ride, id: ride.id },
-      })
     },
   },
 }

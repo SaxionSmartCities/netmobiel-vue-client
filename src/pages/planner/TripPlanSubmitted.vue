@@ -2,11 +2,10 @@
   <v-container>
     <v-layout column justify-center fill-height>
       <v-flex shrink mb-4>
-        <h1>Rit gepland! 🎉</h1>
+        <h1>Reis gepland! 🎉</h1>
       </v-flex>
       <v-flex shrink>
-        Dank je wel! Jouw rit wordt meegenomen in de zoekresultaten! Je krijgt
-        automatisch bericht als er iemand met je mee wil.
+        Jouw reis is bevestigd. We sturen je een herrinnering voor jouw vertrek.
       </v-flex>
       <v-flex shrink>
         <v-btn
@@ -14,9 +13,9 @@
           rounded
           depressed
           class="my-3 button"
-          to="/tripsOverviewPage"
+          @click="swapLocations()"
         >
-          Bekijk geplande ritten</v-btn
+          Plan direct je terugreis</v-btn
         >
         <v-btn block rounded depressed outlined color="primary" to="/plan">
           Plan een nieuwe rit</v-btn
@@ -28,9 +27,15 @@
 
 <script>
 export default {
-  name: 'RidePlanSubmitted',
+  name: 'TripPlanSubmitted',
   data: function() {
     return {}
+  },
+  methods: {
+    swapLocations() {
+      this.$store.commit('gs/swapLocations')
+      this.$router.push('/search')
+    },
   },
 }
 </script>
