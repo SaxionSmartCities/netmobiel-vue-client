@@ -31,9 +31,11 @@ import RideDetailPage from './pages/home/RideDetailPage.vue'
 import RidePlanPage from './pages/planner/RidePlanPage.vue'
 import RidePlanOptionsPage from './pages/planner/RidePlanOptionsPage.vue'
 import RidePlanSubmitted from './pages/planner/RidePlanSubmitted.vue'
+import TripPlanSubmitted from './pages/planner/TripPlanSubmitted.vue'
 import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
 import GoalOverviewPage from './pages/community/goals/GoalOverviewPage'
 import GoalsDetailsPage from './pages/community/goals/GoalsDetailsPage'
+import TripCancelledPage from './pages/saved/TripCancelledPage'
 
 const router = new Router({
   mode: 'history',
@@ -87,6 +89,11 @@ const router = new Router({
       name: 'planSubmitted',
     },
     {
+      path: '/tripPlanSubmitted',
+      component: TripPlanSubmitted,
+      name: 'tripPlanSubmitted',
+    },
+    {
       path: '/searchOptions',
       component: SearchOptionsPage,
       name: 'searchOptions',
@@ -130,6 +137,11 @@ const router = new Router({
       path: '/tripsOverviewPage',
       component: TripsOverviewPage,
       name: 'tripsOverviewPage',
+    },
+    {
+      path: '/tripCancelledPage',
+      component: TripCancelledPage,
+      name: 'tripCancelledPage',
     },
     {
       path: '/rideDetailPage/:id',

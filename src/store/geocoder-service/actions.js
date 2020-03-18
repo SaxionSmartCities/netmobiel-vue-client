@@ -23,7 +23,6 @@ export default {
       context.commit('setGeocoderSuggestions', resp.data.suggestions)
     } catch (problem) {
       // TODO: Proper error handling.
-      // eslint-disable-next-line
       console.error(problem)
       context.dispatch(
         'ui/queueNotification',
