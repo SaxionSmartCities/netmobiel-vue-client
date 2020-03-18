@@ -27,13 +27,14 @@ import SearchPage from './pages/planner/SearchPage.vue'
 import SearchResultsPage from './pages/planner/SearchResultsPage.vue'
 import TermsOfUsePage from './pages/profile/TermsOfUsePage.vue'
 import RegistrationPage from './pages/RegistrationPage.vue'
-import RideDetailPage from './pages/home/RideDetailPage.vue'
+import RideDetailPage from './pages/saved/RideDetailPage.vue'
 import RidePlanPage from './pages/planner/RidePlanPage.vue'
 import RidePlanOptionsPage from './pages/planner/RidePlanOptionsPage.vue'
 import RidePlanSubmitted from './pages/planner/RidePlanSubmitted.vue'
 import TripPlanSubmitted from './pages/planner/TripPlanSubmitted.vue'
 import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
 import TripCancelledPage from './pages/saved/TripCancelledPage'
+import TripDetailPage from './pages/saved/TripDetailPage'
 
 const router = new Router({
   mode: 'history',
@@ -129,6 +130,11 @@ const router = new Router({
       path: '/tripCancelledPage',
       component: TripCancelledPage,
       name: 'tripCancelledPage',
+    },
+    {
+      path: '/tripDetailPage',
+      component: TripDetailPage,
+      name: 'tripDetailPage',
     },
     {
       path: '/rideDetailPage/:id',

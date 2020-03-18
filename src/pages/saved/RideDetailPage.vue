@@ -1,43 +1,40 @@
 <template>
-  <content-pane id="scroll">
-    <v-row v-if="selectedLeg">
-      <v-col>
-        <route-map :leg="selectedLeg"></route-map>
+  <content-pane>
+    <v-row dense class="pa-0">
+      <v-col class="mb-3 py-0">
+        <h1>Rit details</h1>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col>
-        <h3 class="ma-2">Rit details</h3>
+    <v-row dense>
+      <v-col class="py-0">
         <v-divider />
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="4" class="pt-0 pb-0">Datum</v-col>
-      <v-col cols="8" class="departure-date pt-0 pb-0">
+    <v-row dense>
+      <v-col cols="4">Datum</v-col>
+      <v-col cols="8" class="departure-date">
         {{ formatDate() }}
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="4" class="pt-0 pb-0">Reisduur</v-col>
-      <v-col cols="8" class="pt-0 pb-0">
+    <v-row dense>
+      <v-col cols="4">Reisduur</v-col>
+      <v-col cols="8">
         {{ formatDuration() }}
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="4" class="pt-0 pb-0">Boekingen</v-col>
-      <v-col cols="8" class="pt-0 pb-0">
+    <v-row dense>
+      <v-col cols="4">Boekingen</v-col>
+      <v-col cols="8">
         {{ ride.bookings.length }}
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="4" class="pt-0 pb-0">Auto</v-col>
-      <v-col cols="8" class="pt-0 pb-0">
-        {{ ride.car.brand }} {{ ride.car.model }}
-      </v-col>
+    <v-row dense>
+      <v-col cols="4">Auto</v-col>
+      <v-col cols="8">{{ ride.car.brand }} {{ ride.car.model }}</v-col>
     </v-row>
-    <v-row v-if="ride.recurrence">
-      <v-col cols="4" class="pt-0 pb-0">Herhalen</v-col>
-      <v-col cols="8" class="pt-0 pb-0">
+    <v-row v-if="ride.recurrence" dense>
+      <v-col cols="4">Herhalen</v-col>
+      <v-col cols="8">
         {{ formatRecurrence() }}
         <table v-if="ride.recurrence.unit == 'WEEK'" class="equal-width">
           <tr>
@@ -59,17 +56,17 @@
         </table>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="pb-3">
       <v-col>
         <v-divider />
       </v-col>
     </v-row>
-    <v-row>
-      <v-col class="mx-6">
-        <v-row v-for="(leg, index) in generateSteps()" :key="index">
-          <itinerary-leg :leg="leg" />
-        </v-row>
-      </v-col>
+    <v-row
+      v-for="(leg, index) in generateSteps()"
+      :key="index"
+      class="mx-3 py-0"
+    >
+      <itinerary-leg :leg="leg" />
     </v-row>
     <v-row v-if="ride.bookings.length > 0">
       <v-col class="mx-1">
@@ -135,12 +132,11 @@
 <script>
 import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
-import RouteMap from '@/components/itinerary-details/RouteMap'
 import ContentPane from '@/components/common/ContentPane.vue'
 
 export default {
   name: 'RideDetailPage',
-  components: { ContentPane, ItineraryLeg, RouteMap },
+  components: { ContentPane, ItineraryLeg },
   props: {
     id: {
       type: Number,
