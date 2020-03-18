@@ -22,8 +22,6 @@ export default {
       })
       context.commit('setGeocoderSuggestions', resp.data.suggestions)
     } catch (problem) {
-      // TODO: Proper error handling.
-      console.error(problem)
       context.dispatch(
         'ui/queueNotification',
         {
