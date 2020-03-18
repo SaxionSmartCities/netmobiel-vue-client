@@ -162,7 +162,7 @@ export default {
     },
     onTripSelected(index) {
       this.$store.commit('is/setSelectedTrip', this.getPlannedTrips[index])
-      this.$router.push('/itineraryDetailPage')
+      this.$router.push('/tripDetailPage')
     },
   },
 }
