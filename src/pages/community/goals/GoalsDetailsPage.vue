@@ -2,7 +2,7 @@
   <content-pane>
     <v-row align="center" justify="center">
       <v-img
-        src="../../../../src/assets/achterhoek_background.jpg"
+        src="@/assets/achterhoek_background.jpg"
         lazy-src="https://picsum.photos/id/11/100/60"
         aspect-ratio="1"
         class="grey lighten-2"
@@ -82,9 +82,9 @@
 </template>
 
 <script>
-import ContentPane from '../../../components/common/ContentPane'
-import DonorsList from '../../../components/community/goals/DonorsList'
-import GoalProgressBar from '../../../components/community/goals/GoalProgressBar'
+import ContentPane from '@/components/common/ContentPane'
+import DonorsList from '@/components/community/goals/DonorsList'
+import GoalProgressBar from '@/components/community/goals/GoalProgressBar'
 export default {
   name: 'GoalsDetailsPage',
   components: { GoalProgressBar, DonorsList, ContentPane },
