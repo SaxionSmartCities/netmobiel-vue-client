@@ -1,79 +1,80 @@
 <template>
   <content-pane>
-    <v-layout column>
-      <v-flex mb-3>
+    <v-row>
+      <v-col>
         <h3>Auto toevoegen</h3>
-      </v-flex>
-      <v-divider />
-      <v-flex>
-        <v-layout align-center my-2>
-          <v-flex xs7>
-            Voer het kenteken in:
-          </v-flex>
-          <v-flex xs2>
-            <input
-              v-model="searchLicensePlate"
-              placeholder="__-___-_"
-              class="search-license-plate"
-              maxlength="8"
-            />
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-flex pl-2>
-        <v-layout align-center my-1>
-          <v-flex xs4 font-italic>
-            Merk:
-          </v-flex>
-          <v-flex xs8 text-truncate font-weight-medium>
-            <span v-if="searchResult" class="search-results">
-              {{ searchResult.brand }}
-            </span>
-            <span v-else>-</span>
-          </v-flex>
-        </v-layout>
-        <v-layout align-center my-1>
-          <v-flex xs4 font-italic>
-            Model:
-          </v-flex>
-          <v-flex xs8 text-truncate font-weight-medium>
-            <span v-if="searchResult" class="search-results">
-              {{ searchResult.model }}
-            </span>
-            <span v-else>-</span>
-          </v-flex>
-        </v-layout>
-        <v-layout align-center my-1>
-          <v-flex xs4 font-italic>
-            Bouwjaar:
-          </v-flex>
-          <v-flex xs8 text-truncate font-weight-medium>
-            <span v-if="searchResult" class="search-results">
-              {{ searchResult.registrationYear }}
-            </span>
-            <span v-else>-</span>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-flex>
-        <v-layout align-center my-2>
-          <v-flex xs8 />
-          <v-flex xs5>
-            <v-btn
-              :disabled="!searchResult"
-              small
-              rounded
-              block
-              depressed
-              class="button"
-              @click="addCar(searchResult)"
-            >
-              Toevoegen
-            </v-btn>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="8">
+        Voer het kenteken in:
+      </v-col>
+      <v-col>
+        <input
+          v-model="searchLicensePlate"
+          placeholder="__-___-_"
+          class="search-license-plate"
+          maxlength="8"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-divider />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="4" class="pb-0">
+        <em>Merk:</em>
+      </v-col>
+      <v-col class="pb-0">
+        <span v-if="searchResult" class="search-results">
+          {{ searchResult.brand }}
+        </span>
+        <span v-else>-</span>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="4" class="pb-0">
+        <em>Model:</em>
+      </v-col>
+      <v-col class="pb-0">
+        <span v-if="searchResult" class="search-results">
+          {{ searchResult.model }}
+        </span>
+        <span v-else>-</span>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="4" class="pb-5">
+        <em>Bouwjaar:</em>
+      </v-col>
+      <v-col class="pb-5">
+        <span v-if="searchResult" class="search-results">
+          {{ searchResult.registrationYear }}
+        </span>
+        <span v-else>-</span>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-divider />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn
+          :disabled="!searchResult"
+          rounded
+          block
+          depressed
+          class="button"
+          @click="addCar(searchResult)"
+        >
+          Voeg deze auto toe
+        </v-btn>
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 
