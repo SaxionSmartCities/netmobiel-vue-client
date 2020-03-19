@@ -19,6 +19,9 @@ import ShoutOut from '@/components/community/ShoutOut'
 export default {
   name: 'Shoutouts',
   components: { ShoutOut, ContentPane },
+  created() {
+    this.$store.commit('ui/showBackButton')
+  },
 }
 </script>
 
