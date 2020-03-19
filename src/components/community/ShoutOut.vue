@@ -44,9 +44,7 @@ export default {
     },
   },
   methods: {
-    doSomething() {
-      console.log('hello 123')
-    },
+    doSomething() {},
   },
 }
 </script>

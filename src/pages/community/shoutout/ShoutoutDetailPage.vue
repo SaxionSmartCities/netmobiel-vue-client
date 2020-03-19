@@ -93,7 +93,6 @@ export default {
   mounted() {
     //TODO: Now hardcoded first ride.
     this.ride = this.$store.getters['cs/getRides'][0]
-    console.log(this.ride)
   },
   created() {
     this.$store.commit('ui/showBackButton')
