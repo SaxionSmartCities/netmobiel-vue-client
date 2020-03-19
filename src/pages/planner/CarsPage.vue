@@ -103,25 +103,21 @@ export default {
         ...profile,
         ridePlanOptions: {
           ...profile.ridePlanOptions,
-          selectedCarId: car.car.id,
+          selectedCarId: car.id,
         },
       })
     },
     checkDeleteCar(car) {
       this.dialog = true
-      this.carToDelete = car.car
+      this.carToDelete = car
     },
     removeCar(car) {
       this.dialog = false
       // Remove car in the backend.
-      this.$store.dispatch('cs/removeCar', car).then(() => {
-        this.$store.dispatch('cs/fetchCars')
-      })
+      this.$store.dispatch('cs/removeCar', car)
       // Update profile if the car that has been removed the default car is.
-      const profile = this.$store.getters['ps/getUser'].profile
-      if (profile.ridePlanOptions.selectedCarId === car.id) {
-        profile.ridePlanOptions.selectedCarId = -1
-        this.$store.dispatch('updateProfile', profile)
+      if (this.selectedCarId === car.id) {
+        this.selectAlternativeCar(this.availableCars[0])
       }
     },
   },

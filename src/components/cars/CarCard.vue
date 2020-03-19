@@ -55,14 +55,10 @@ export default {
   },
   methods: {
     setCar() {
-      this.$emit('set-car', {
-        car: this.car,
-      })
+      this.$emit('set-car', this.car)
     },
     checkDeleteCar() {
-      this.$emit('check-delete-car', {
-        car: this.car,
-      })
+      this.$emit('check-delete-car', this.car)
     },
   },
 }
