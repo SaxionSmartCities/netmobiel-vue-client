@@ -38,7 +38,12 @@ export default {
         headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
       })
       .then(function(resp) {
-        console.log(resp.data)
+        resp.data.data.forEach(item => {
+          item.participants = [
+            item.sender,
+            ...item.envelopes.map(envelope => envelope.recipient),
+          ]
+        })
         commit('setConversations', resp.data.data)
       })
       .catch(function(error) {
@@ -69,15 +74,24 @@ export default {
         console.log(error)
       })
   },
-  sendMessage: (context, payload) => {
+  sendMessage: async ({ commit }, payload) => {
     const URL = BASE_URL + `/communicator/messages`
-    axios
+    return await axios
       .post(URL, payload, {
         headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
       })
       .then(function(resp) {
-        if (resp.status == 202) {
-          context.dispatch('fetchMessagesByContext', payload.context)
+        if (resp.status === 202) {
+          const message = {
+            sender: { managedIdentity: payload.managedIdentity },
+            body: payload.body,
+            context: payload.context,
+            creationTime: new Date(),
+            deliveryMode: 'MESSAGE',
+          }
+          commit('addActiveMessage', message)
+
+          return message
         }
       })
       .catch(function(error) {

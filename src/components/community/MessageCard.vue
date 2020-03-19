@@ -28,8 +28,8 @@ export default {
     },
   },
   computed: {
-    timeStamp: function() {
-      return moment(this.message.timeStamp).format('HH:mm')
+    timeStamp() {
+      return moment(this.message.creationTime).format('HH:mm')
     },
     isMessageSendByMe: function() {
       return this.sendByMe

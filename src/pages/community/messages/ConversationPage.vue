@@ -7,7 +7,9 @@
             <v-img class="profile-image" :src="profile.image" />
           </v-col>
           <v-col align-self="center" class="d-flex px-3">
-            <h4>{{ recipientName }}</h4>
+            <h4>
+              {{ recipient.givenName + ' ' + recipient.familyName }}
+            </h4>
             <v-spacer></v-spacer>
             <v-btn color="primary" small rounded outlined>
               <v-icon>call</v-icon>
@@ -18,8 +20,8 @@
       </v-container>
     </template>
     <v-row dense>
-      <v-col>
-        <template v-for="(message, index) in conversation">
+      <v-col id="message-container">
+        <template v-for="(message, index) in sortedMessages">
           <v-row :key="index">
             <v-col class="py-1">
               <message-card
@@ -35,7 +37,8 @@
       <v-row dense class="px-4 pb-1">
         <v-col class="pl-0">
           <v-text-field
-            v-model="newMessage"
+            @focus="testFocus"
+            v-model.trim="newMessage"
             clearable
             outlined
             hide-details
@@ -44,7 +47,13 @@
           ></v-text-field>
         </v-col>
         <v-col cols="1" align-self="center">
-          <v-icon class="send-icon" @click="sendMessage">send</v-icon>
+          <v-icon
+            class="send-icon"
+            :disabled="!newMessage"
+            @click="sendMessage"
+          >
+            send
+          </v-icon>
         </v-col>
       </v-row>
     </template>
@@ -65,8 +74,8 @@ export default {
       type: String,
       required: true,
     },
-    recipient: {
-      type: Object,
+    participants: {
+      type: Array,
       required: true,
     },
   },
@@ -77,12 +86,22 @@ export default {
     }
   },
   computed: {
-    conversation() {
-      return this.$store.getters['ms/getMessages'](this.urn)
+    sortedMessages() {
+      let messages = Object.assign(
+        [],
+        this.$store.getters['ms/getActiveMessages']
+      )
+      return messages.sort(function(a, b) {
+        a = new Date(a.creationTime)
+        b = new Date(b.creationTime)
+        return a < b ? -1 : a < b ? 1 : 0
+      })
     },
-    // messages: function() {
-    //   return this.conversation.messages
-    // },
+    recipient() {
+      return this.participants.find(
+        recipient => recipient.managedIdentity !== this.myId
+      )
+    },
     profile() {
       return this.$store.getters['ps/getUser']
     },
@@ -90,47 +109,46 @@ export default {
       return this.$store.getters['ms/getConversationByContext'](this.context)
         .sender
     },
-    recipientName() {
-      const envelope = this.$store.getters['ms/getConversationByContext'](
-        this.context
-      ).envelopes[0].recipient
-      console.log('envelope ', envelope)
-      return envelope.givenName + ' ' + envelope.familyName
-    },
   },
   mounted() {
     this.$store.commit('ui/showBackButton')
   },
   async created() {
     //This.context is the urn as path parameter in URL.
-    //In this URN the : needs to be replaced else javascript wont like it being used as a key
-    console.log(this.context)
+    //In this URN the : needs to be replaced cause javascript wont like it being used as a key
     await this.$store.dispatch('ms/fetchMessagesByContext', {
       context: this.context,
     })
     this.urn = (' ' + this.context.replace(/:/gi, '')).slice(1)
-    console.log(this.urn)
-    console.log(
-      'Conversation saved by context: ',
-      this.$store.getters['ms/getConversationByContext'](this.context)
-    )
   },
   methods: {
+    testFocus(event) {
+      console.log(event)
+    },
     isMessageSendByMe(id) {
       return id === this.$store.getters['ps/getProfile'].id
     },
     sendMessage() {
       console.log('Sending: ' + this.newMessage)
-      console.log(this.recipient)
+      // console.log(this.recipient)
       const envelopes = [{ recipient: this.recipient }]
-      console.log(envelopes)
-      this.$store.dispatch('ms/sendMessage', {
-        body: this.newMessage,
-        context: this.context,
-        deliveryMode: 'MESSAGE',
-        envelopes: envelopes,
-        subject: 'Van A naar B',
-      })
+      // console.log(envelopes)
+      this.$store
+        .dispatch('ms/sendMessage', {
+          body: this.newMessage,
+          context: this.context,
+          deliveryMode: 'MESSAGE',
+          envelopes: envelopes,
+          managedIdentity: this.$store.getters['ps/getProfile'].id,
+          subject: 'Van A naar B',
+        })
+        .then(() => {
+          this.$nextTick(() => {
+            var items = document.getElementById('message-container').children
+            var last = items[items.length - 1]
+            last.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          })
+        })
     },
   },
 }

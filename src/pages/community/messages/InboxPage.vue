@@ -58,6 +58,7 @@ export default {
   data() {
     return {
       selectedTab: 0,
+      // conversations: {},
     }
   },
   computed: {
@@ -67,6 +68,9 @@ export default {
     profile() {
       return this.$store.getters['ps/getUser']
     },
+    myId() {
+      return this.$store.getters['ps/getProfile'].id
+    },
   },
   created: function() {
     this.$store.commit('ui/showBackButton')
@@ -74,11 +78,12 @@ export default {
   },
   methods: {
     showConversation(conversation) {
+      console.log('Conversation', conversation)
       this.$router.push({
         name: `conversation`,
         params: {
           context: conversation.context,
-          recipient: conversation.sender,
+          participants: conversation.participants,
         },
       })
     },

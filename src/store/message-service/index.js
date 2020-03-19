@@ -154,6 +154,7 @@ export default {
     conversations: [],
     messages: {},
     contexts: [],
+    activeMessages: [],
   },
   getters,
   mutations,
