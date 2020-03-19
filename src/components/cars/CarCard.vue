@@ -5,34 +5,31 @@
         <v-card-title justify-center>
           <span>{{ car.brand }} {{ car.model }}</span>
           <v-spacer />
-          <span class="booking-count">
-            {{ car.licensePlate }}
-          </span>
+          <v-icon v-if="selectedCar == car.id">directions_car</v-icon>
         </v-card-title>
         <v-card-subtitle>
-          <span>{{ car.color }}</span>
+          <span>Kenteken: {{ car.licensePlate }}</span>
+          <br />
+          <span>Bouwjaar: {{ car.registrationYear }}</span>
+          <br />
+          <span>Kleur: {{ car.color }}</span>
         </v-card-subtitle>
         <v-card-text>
-          <v-row>
+          <v-row dense>
             <v-col>
-              <v-btn
-                outlined
-                rounded
-                color="button"
-                x-small
-                @click="checkDeleteCar"
-                >Verwijder</v-btn
-              >
+              <v-btn outlined rounded color="button" @click="checkDeleteCar">
+                Verwijder
+              </v-btn>
             </v-col>
-            <v-col v-if="selectedCar == car.id">
-              <v-btn outlined disabled rounded color="primary" x-small
-                >Geselecteerde auto</v-btn
-              >
+            <v-col v-if="selectedCar == car.id" align="right">
+              <v-btn outlined disabled rounded color="primary">
+                Geselecteerd
+              </v-btn>
             </v-col>
-            <v-col v-else>
-              <v-btn outlined rounded color="primary" x-small @click="setCar"
-                >Selecteren</v-btn
-              >
+            <v-col v-else align="right">
+              <v-btn outlined rounded color="primary" @click="setCar">
+                Selecteren
+              </v-btn>
             </v-col>
           </v-row>
         </v-card-text>

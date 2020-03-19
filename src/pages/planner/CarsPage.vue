@@ -5,7 +5,7 @@
         <h3>Mijn auto's</h3>
       </v-col>
     </v-row>
-    <v-row v-for="car in availableCars" :key="car.id">
+    <v-row v-for="car in availableCars" :key="car.id" dense>
       <v-col>
         <car-card
           :car="car"
@@ -16,9 +16,8 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="add-new-car">
+      <v-col align="right" mt-1>
         <v-btn
-          large
           rounded
           outlined
           color="#2E8997"
@@ -36,14 +35,11 @@
           {{ carToDelete.model }} met nummerplaats
           {{ carToDelete.licensePlate }}
         </v-card-text>
-
         <v-card-actions>
           <v-spacer></v-spacer>
-
           <v-btn text @click="dialog = false">
             Annuleren
           </v-btn>
-
           <v-btn text @click="removeCar(carToDelete)">
             Ja
           </v-btn>
@@ -67,7 +63,7 @@ export default {
     ContentPane,
     CarCard,
   },
-  data: function() {
+  data() {
     return {
       dialog: false,
       carToDelete: { brand: '', model: '', licensePlate: '' },
@@ -133,13 +129,5 @@ export default {
 }
 .car:first-child {
   margin-top: 0;
-}
-.actions {
-  margin: 1em 0;
-}
-.add-new-car {
-  margin-top: 1em;
-  padding-bottom: calc(56px + 1em);
-  text-align: right;
 }
 </style>
