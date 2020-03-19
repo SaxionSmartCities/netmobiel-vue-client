@@ -1,82 +1,80 @@
 <template>
-  <v-layout pa-2 column>
-    <v-flex>
-      <v-layout column>
-        <v-flex @click="editRoute">
-          <v-divider></v-divider>
-          <v-layout align-center ma-3>
-            <v-flex xs2>
-              <v-icon>fa-pencil-alt</v-icon>
-            </v-flex>
-            <v-flex>Wijzig deze rit</v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    <v-flex>
-      <v-layout column>
-        <v-flex @click="replanSameRoute">
-          <v-divider></v-divider>
-          <v-layout align-center ma-3>
-            <v-flex xs2>
-              <v-icon>fa-redo</v-icon>
-            </v-flex>
-            <v-flex>Plan deze reis opnieuw</v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    <v-flex>
-      <v-layout column>
-        <v-flex @click="removeRoute">
-          <v-divider></v-divider>
-          <v-layout align-center ma-3>
-            <v-flex xs2>
-              <v-icon>fa-times-circle</v-icon>
-            </v-flex>
-            <v-flex>Annuleer deze reis</v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    <v-dialog v-model="dialog" persistent>
-      <template v-slot:activator="{ on }"> </template>
-      <v-card>
-        <v-card-title class="headline">Annuleer deze rit.</v-card-title>
-        <v-card-text
-          >Weet je zeker dat je deze rit wilt annuleren? Dit kan niet ongedaan
-          gemaakt worden.</v-card-text
-        >
-        <v-flex my-4 mr-4 ml-4>
-          <v-btn
-            large
-            rounded
-            block
-            mb-4
-            depressed
-            color="button"
-            @click="closeConfirmation"
-          >
-            Rit annuleren
-          </v-btn>
-        </v-flex>
-        <v-flex my-4 mr-4 ml-4 pb-8>
-          <v-btn
-            large
-            rounded
-            outlined
-            block
-            mb-4
-            depressed
-            color="primairy"
-            @click="closeConfirmation"
-          >
-            Rit toch bewaren
-          </v-btn>
-        </v-flex>
-      </v-card>
-    </v-dialog>
-  </v-layout>
+  <v-row>
+    <v-col>
+      <v-divider></v-divider>
+      <v-row @click="editTrip">
+        <v-col cols="2">
+          <v-icon>fa-pencil-alt</v-icon>
+        </v-col>
+        <v-col>
+          Wijzig deze reis
+        </v-col>
+      </v-row>
+      <v-divider></v-divider>
+      <v-row @click="replanSameRoute">
+        <v-col cols="2">
+          <v-icon>fa-redo</v-icon>
+        </v-col>
+        <v-col>
+          Plan deze reis opnieuw
+        </v-col>
+      </v-row>
+      <v-divider></v-divider>
+      <v-row @click="deleteTrip">
+        <v-col cols="2">
+          <v-icon>fa-times-circle</v-icon>
+        </v-col>
+        <v-col>
+          Annuleer deze reis
+        </v-col>
+      </v-row>
+      <v-dialog v-model="dialog" persistent>
+        <template v-slot:activator="{ on }"> </template>
+        <v-card>
+          <v-card-title class="headline">Annuleer deze rit.</v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col>
+                Weet je zeker dat je deze rit wilt annuleren? Dit kan niet
+                ongedaan gemaakt worden.
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-btn
+                  large
+                  rounded
+                  block
+                  mb-4
+                  depressed
+                  color="button"
+                  @click="closeConfirmation"
+                >
+                  Rit annuleren
+                </v-btn>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-btn
+                  large
+                  rounded
+                  outlined
+                  block
+                  mb-4
+                  depressed
+                  color="primairy"
+                  @click="closeDialog"
+                >
+                  Rit toch bewaren
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -84,17 +82,32 @@ export default {
   name: 'ItineraryOptions',
   components: {},
   props: {},
-  data: function() {
+  data() {
     return { dialog: false }
   },
+  computed: {
+    selectedTrip() {
+      return this.$store.getters['is/getSelectedTrip']
+    },
+  },
   methods: {
-    editRoute() {},
+    deleteTrip() {
+      this.$store.dispatch('is/deleteSelectedTrip', {
+        tripId: this.selectedTrip.id,
+      })
+      this.$router.push('/tripCancelledPage')
+    },
+    editTrip() {},
     replanSameRoute() {},
+    openConfirmation() {
+      this.dialog = true
+    },
     closeConfirmation() {
       this.dialog = false
+      this.$router.push('/tripCancelledPage')
     },
-    removeRoute() {
-      this.dialog = true
+    closeDialog() {
+      this.dialog = false
     },
   },
 }

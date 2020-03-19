@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from '@/config/config'
+import constants from '../../constants/constants'
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_PLANNER_SERVICE_API_KEY = config.GRAVITEE_PLANNER_SERVICE_API_KEY
@@ -52,6 +53,59 @@ export default {
         )
       })
   },
+  deleteSelectedTrip: (context, payload) => {
+    const URL = BASE_URL + `/planner/trips/${payload.tripId}`
+    axios
+      .delete(URL, {
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      })
+      .then(response => {
+        if (response.status === 204) {
+          //Succesful response, trip is deleted.
+          context.dispatch(
+            'ui/queueNotification',
+            { message: 'Reis is succesvol geannuleerd', timeout: 3000 },
+            { root: true }
+          ),
+            context.dispatch('fetchTrips', {
+              maxResults: constants.fetchTripsMaxResults,
+              offset: 0,
+            })
+        } else if (response.status === 404) {
+          //requested trip could not be found
+          context.dispatch(
+            'ui/queueNotification',
+            {
+              message: 'De opgegeven reis kon niet worden gevonden.',
+              timeout: 0,
+            },
+            { root: true }
+          )
+        } else if (response.status === 401) {
+          //The requested object does no longer exist
+          context.dispatch(
+            'ui/queueNotification',
+            { message: 'Deze reis is al geannuleerd', timeout: 0 },
+            { root: true }
+          )
+        } else {
+          context.dispatch(
+            'ui/queueNotification',
+            { message: response.data.message, timeout: 0 },
+            { root: true }
+          )
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          { message: 'fout bij het annuleren van de reis', timeout: 0 },
+          { root: true }
+        )
+      })
+  },
   storeSelectedTrip: (context, payload) => {
     const URL = BASE_URL + '/planner/trips'
     axios
@@ -82,7 +136,7 @@ export default {
         console.log(error)
         context.dispatch(
           'ui/queueNotification',
-          { message: 'Fout bij het opslaan van de gekozen reis.', timeout: 0 },
+          { message: 'Fout bij het annuleren van de reis.', timeout: 0 },
           { root: true }
         )
       })
@@ -94,12 +148,13 @@ export default {
     axios
       .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
       .then(response => {
-        if (response.status == 200 && response.data.length > 0) {
+        if (response.status == 200 && response.data.data.length > 0) {
           if (offset == 0) {
-            context.commit('setPlannedTrips', response.data)
+            context.commit('setPlannedTrips', response.data.data)
           } else {
-            context.commit('appendPlannedTrips', response.data)
+            context.commit('appendPlannedTrips', response.data.data)
           }
+          context.commit('setPlannedTripsCount', response.data.totalCount)
         }
       })
       .catch(error => {

@@ -183,10 +183,11 @@ export default {
       })
       .then(function(resp) {
         if (offset == 0) {
-          context.commit('saveRides', resp.data)
+          context.commit('saveRides', resp.data.data)
         } else {
-          context.commit('appendRides', resp.data)
+          context.commit('appendRides', resp.data.data)
         }
+        context.commit('setPlannedRidesCount', resp.data.totalCount)
       })
       .catch(function(error) {
         // TODO: Proper error handling.
@@ -200,6 +201,34 @@ export default {
           },
           { root: true }
         )
+      })
+  },
+  deleteRide: (context, payload) => {
+    const URL = BASE_URL + `/rideshare/rides/` + payload.id
+    //TODO: Pass reason to message service.
+    axios
+      .delete(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        if (resp.status == 204) {
+          //Delete trip from store!
+          context.commit('deleteRides', payload.id)
+        } else {
+          context.dispatch(
+            'ui/queueNotification',
+            {
+              message: 'Fout bij het verwijderen van uw rit-aanbod.',
+              timeout: 0,
+            },
+            { root: true }
+          )
+        }
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
       })
   },
 }

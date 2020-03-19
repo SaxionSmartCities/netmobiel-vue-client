@@ -10,9 +10,9 @@
         ></route-map>
       </v-col>
     </v-row>
-    <v-row class=" flex-column">
+    <v-row class="flex-column">
       <v-col class="mb-3 py-0">
-        <h1>Reisdetails</h1>
+        <h1>Reis details</h1>
       </v-col>
       <v-col class="py-0">
         <v-divider />
@@ -28,10 +28,12 @@
       <v-col>
         <v-divider />
       </v-col>
-      <v-col class="px-6">
+      <v-col>
         <v-row class="flex-column">
-          <v-col v-if="generateSteps.length === 0">
-            Shoutout
+          <v-col v-if="isShoutOut">
+            <p>Shoutout,</p>
+            <p>Shoutout,</p>
+            <p>Let it all out.</p>
           </v-col>
           <v-col
             v-for="(leg, index) in generateSteps"
@@ -48,22 +50,24 @@
           </v-col>
         </v-row>
       </v-col>
+    </v-row>
+    <v-row v-if="!isShoutOut && hasRideShareDriver">
       <v-col>
         <v-btn
-          v-show="showSection"
           large
           rounded
+          outlined
           block
           mb-4
           depressed
-          color="button"
-          @click="saveTrip"
+          color="primairy"
+          @click="contactDriver"
         >
-          Deze reis bevestigen
+          Stuur bericht naar chauffeur
         </v-btn>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="!isShoutOut">
       <v-col>
         <v-btn
           large
@@ -75,8 +79,18 @@
           color="primairy"
           @click="showFullRouteOnMap()"
         >
-          bekijk op de kaart
+          Bekijk op de kaart
         </v-btn>
+      </v-col>
+    </v-row>
+    <v-row class="mb-0">
+      <v-col class="pb-0">
+        <h1>Wijzigen</h1>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <itinerary-options></itinerary-options>
       </v-col>
     </v-row>
   </content-pane>
@@ -86,15 +100,19 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import RouteMap from '@/components/itinerary-details/RouteMap'
 
+import travelModes from '@/constants/travel-modes.js'
+
 export default {
-  name: 'ItineraryDetailPage',
+  name: 'TripDetailPage',
   components: {
     RouteMap,
     ContentPane,
     ItinerarySummary,
     ItineraryLeg,
+    ItineraryOptions,
   },
   data() {
     return {
@@ -102,10 +120,21 @@ export default {
       selectedLegsIndex: null,
       showMap: true,
       mapSize: 'small',
-      showConfirmationButton: true,
     }
   },
   computed: {
+    isShoutOut() {
+      return this.generateSteps.length === 0
+    },
+    hasRideShareDriver() {
+      const rideshareMode = travelModes.RIDESHARE.mode
+      for (let i = 0; i < this.selectedTrip.legs.length; i++) {
+        if (this.selectedTrip.legs[i].traverseMode === rideshareMode) {
+          return true
+        }
+      }
+      return false
+    },
     selectedTrip() {
       return this.$store.getters['is/getSelectedTrip']
     },
@@ -140,9 +169,6 @@ export default {
         to: lastLeg.to,
       })
       return result
-    },
-    showSection() {
-      return this.showConfirmationButton
     },
   },
   created() {
@@ -179,6 +205,7 @@ export default {
       this.selectedLegs = this.selectedTrip.legs
       this.forceRerender()
     },
+    contactDriver() {},
   },
 }
 </script>
