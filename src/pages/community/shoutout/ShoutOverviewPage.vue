@@ -7,7 +7,10 @@
     </v-row>
     <v-row>
       <v-col>
-        <shout-out></shout-out>
+        <shout-out
+          :index="1"
+          @shoutoutSelected="onShoutoutSelected"
+        ></shout-out>
       </v-col>
     </v-row>
   </content-pane>
@@ -21,6 +24,11 @@ export default {
   components: { ShoutOut, ContentPane },
   created() {
     this.$store.commit('ui/showBackButton')
+  },
+  methods: {
+    onShoutoutSelected(index) {
+      console.log('onShoutoutSelected: ' + index)
+    },
   },
 }
 </script>

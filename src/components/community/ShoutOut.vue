@@ -1,5 +1,9 @@
 <template>
-  <v-card class="shoutout-container" @click="doSomething()" fluid>
+  <v-card
+    fluid
+    class="shoutout-container"
+    @click="$emit('shoutoutSelected', index)"
+  >
     <v-row>
       <v-col class="shrink">
         <v-img class="shoutout-image" :src="profile.image" />
@@ -31,7 +35,9 @@
 <script>
 export default {
   name: 'ShoutOut',
-  props: {},
+  props: {
+    index: { type: Number, required: true },
+  },
   computed: {
     profile() {
       return this.$store.getters['ps/getUser']
