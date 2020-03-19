@@ -183,10 +183,11 @@ export default {
       })
       .then(function(resp) {
         if (offset == 0) {
-          context.commit('saveRides', resp.data)
+          context.commit('saveRides', resp.data.data)
         } else {
-          context.commit('appendRides', resp.data)
+          context.commit('appendRides', resp.data.data)
         }
+        context.commit('setPlannedRidesCount', resp.data.totalCount)
       })
       .catch(function(error) {
         // TODO: Proper error handling.

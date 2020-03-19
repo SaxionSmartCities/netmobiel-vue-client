@@ -6,6 +6,7 @@ export default {
   namespaced: true,
   state: {
     cars: [],
+    plannedRidesCount: 0,
     rides: [],
     search: {
       licensePlate: undefined,

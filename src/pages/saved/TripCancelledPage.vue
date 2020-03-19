@@ -48,7 +48,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 export default {
-  name: 'TripCanceledPage',
+  name: 'TripCancelledPage',
   components: { ContentPane },
 }
 </script>
