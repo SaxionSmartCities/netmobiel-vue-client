@@ -35,6 +35,7 @@
       <v-row dense class="px-4 pb-1">
         <v-col class="pl-0">
           <v-text-field
+            v-model="newMessage"
             clearable
             outlined
             hide-details
@@ -43,7 +44,7 @@
           ></v-text-field>
         </v-col>
         <v-col cols="1" align-self="center">
-          <v-icon class="send-icon">send</v-icon>
+          <v-icon class="send-icon" @click="sendMessage">send</v-icon>
         </v-col>
       </v-row>
     </template>
@@ -64,10 +65,15 @@ export default {
       type: String,
       required: true,
     },
+    recipient: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
       urn: '',
+      newMessage: '',
     }
   },
   computed: {
@@ -92,25 +98,40 @@ export default {
       return envelope.givenName + ' ' + envelope.familyName
     },
   },
-  methods: {
-    isMessageSendByMe(id) {
-      return id === this.$store.getters['ps/getProfile'].id
-    },
+  mounted() {
+    this.$store.commit('ui/showBackButton')
   },
   async created() {
     //This.context is the urn as path parameter in URL.
     //In this URN the : needs to be replaced else javascript wont like it being used as a key
+    console.log(this.context)
     await this.$store.dispatch('ms/fetchMessagesByContext', {
       context: this.context,
     })
     this.urn = (' ' + this.context.replace(/:/gi, '')).slice(1)
+    console.log(this.urn)
     console.log(
       'Conversation saved by context: ',
       this.$store.getters['ms/getConversationByContext'](this.context)
     )
   },
-  mounted: function() {
-    this.$store.commit('ui/showBackButton')
+  methods: {
+    isMessageSendByMe(id) {
+      return id === this.$store.getters['ps/getProfile'].id
+    },
+    sendMessage() {
+      console.log('Sending: ' + this.newMessage)
+      console.log(this.recipient)
+      const envelopes = [{ recipient: this.recipient }]
+      console.log(envelopes)
+      this.$store.dispatch('ms/sendMessage', {
+        body: this.newMessage,
+        context: this.context,
+        deliveryMode: 'MESSAGE',
+        envelopes: envelopes,
+        subject: 'Van A naar B',
+      })
+    },
   },
 }
 </script>
