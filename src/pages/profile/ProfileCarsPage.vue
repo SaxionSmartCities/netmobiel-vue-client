@@ -1,59 +1,65 @@
 <template>
-  <v-container>
-    <v-layout column>
-      <v-flex mb-3>
+  <content-pane>
+    <v-row>
+      <v-col>
         <h3>Mijn auto's</h3>
-      </v-flex>
-      <v-flex>
-        <div v-for="car in availableCars" :key="car.id" class="car">
-          <v-layout columns>
-            <v-flex mt-4 xs4>
-              Kenteken:
-            </v-flex>
-            <v-flex mt-4 font-weight-medium>
-              {{ car.licensePlate }}
-            </v-flex>
-          </v-layout>
-          <v-layout columns>
-            <v-flex mt-1 xs4>
-              Model:
-            </v-flex>
-            <v-flex mt-1 font-italic>
-              {{ car.brand }}&nbsp;{{ car.model }},&nbsp;{{ car.color }}
-            </v-flex>
-          </v-layout>
-          <v-layout row class="actions">
-            <v-flex xs5>
-              <v-btn
-                small
-                rounded
-                outlined
-                color="#2E8997"
-                @click="removeCar(car)"
-              >
-                Verwijder
-              </v-btn>
-            </v-flex>
-            <v-flex xs7>
-              <v-btn v-if="car.id === selectedCarId" small rounded>
-                Geselecteerd
-              </v-btn>
-              <v-btn
-                v-else
-                small
-                rounded
-                block
-                depressed
-                color="button"
-                @click="selectAlternativeCar(car)"
-              >
-                Met deze auto rijden
-              </v-btn>
-            </v-flex>
-          </v-layout>
-        </div>
-      </v-flex>
-      <v-flex class="add-new-car">
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-row v-for="car in availableCars" :key="car.id" class="car">
+          <v-col>
+            <v-row>
+              <v-col xs4>
+                Kenteken:
+              </v-col>
+              <v-col>
+                {{ car.licensePlate }}
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col xs4>
+                Model:
+              </v-col>
+              <v-col font-italic>
+                {{ car.brand }}&nbsp;{{ car.model }},&nbsp;{{ car.color }}
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col xs5>
+                <v-btn
+                  small
+                  rounded
+                  outlined
+                  color="#2E8997"
+                  @click="removeCar(car)"
+                >
+                  Verwijder
+                </v-btn>
+              </v-col>
+              <v-col>
+                <v-btn v-if="car.id === selectedCarId" small rounded>
+                  Geselecteerd
+                </v-btn>
+                <v-btn
+                  v-else
+                  small
+                  rounded
+                  block
+                  depressed
+                  color="button"
+                  @click="selectAlternativeCar(car)"
+                >
+                  Met deze auto rijden
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="add-new-car">
         <v-btn
           large
           rounded
@@ -63,21 +69,26 @@
         >
           Auto toevoegen
         </v-btn>
-      </v-flex>
-    </v-layout>
-  </v-container>
+      </v-col>
+    </v-row>
+  </content-pane>
 </template>
 
 <script>
 import luggageTypes from '@/constants/luggage-types.js'
+import ContentPane from '@/components/common/ContentPane.vue'
 
 function luggageLabel(option) {
   return luggageTypes[option].label
 }
 export default {
+  name: 'ProfileCarsPage',
+  components: {
+    ContentPane,
+  },
   computed: {
     availableCars() {
-      return this.$store.getters['ps/getUser'].profile.ridePlanOptions.cars
+      return this.$store.getters['cs/getAvailableCars']
     },
     luggageOptions() {
       return this.$store.getters[
@@ -95,7 +106,7 @@ export default {
         .selectedCarId
     },
   },
-  created: function() {
+  created() {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
@@ -105,11 +116,20 @@ export default {
         ...profile,
         ridePlanOptions: { ...profile.ridePlanOptions, selectedCarId: car.id },
       })
-      this.$router.go(-1) // navigate back in history and restore models from history state
+      // navigate back in history and restore models from history state
+      this.$router.go(-1)
     },
     removeCar(car) {
-      // Remove car from user profile in the backend.
-      this.$store.dispatch('ps/deleteRidePlanOptionsCar', car)
+      // Remove car in the backend.
+      this.$store.dispatch('cs/removeCar', car).then(() => {
+        this.$store.dispatch('cs/fetchCars')
+      })
+      // Update profile if the car that has been removed the default car is.
+      const profile = this.$store.getters['ps/getUser'].profile
+      if (profile.ridePlanOptions.selectedCarId === car.id) {
+        profile.ridePlanOptions.selectedCarId = -1
+        this.$store.dispatch('updateProfile', profile)
+      }
     },
   },
 }

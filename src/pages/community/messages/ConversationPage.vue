@@ -7,7 +7,7 @@
             <v-img class="profile-image" :src="profile.image" />
           </v-col>
           <v-col align-self="center" class="d-flex px-3">
-            <h4>{{ sender.givenName + ' ' + sender.familyName }}</h4>
+            <h4>{{ recipientName }}</h4>
             <v-spacer></v-spacer>
             <v-btn color="primary" small rounded outlined>
               <v-icon>call</v-icon>
@@ -19,8 +19,8 @@
     </template>
     <v-row dense>
       <v-col>
-        <template v-for="message in conversation">
-          <v-row :key="message.id">
+        <template v-for="(message, index) in conversation">
+          <v-row :key="index">
             <v-col class="py-1">
               <message-card
                 :send-by-me="isMessageSendByMe(message.sender.managedIdentity)"
@@ -84,6 +84,13 @@ export default {
       return this.$store.getters['ms/getConversationByContext'](this.context)
         .sender
     },
+    recipientName() {
+      const envelope = this.$store.getters['ms/getConversationByContext'](
+        this.context
+      ).envelopes[0].recipient
+      console.log('envelope ', envelope)
+      return envelope.givenName + ' ' + envelope.familyName
+    },
   },
   methods: {
     isMessageSendByMe(id) {
@@ -97,6 +104,10 @@ export default {
       context: this.context,
     })
     this.urn = (' ' + this.context.replace(/:/gi, '')).slice(1)
+    console.log(
+      'Conversation saved by context: ',
+      this.$store.getters['ms/getConversationByContext'](this.context)
+    )
   },
   mounted: function() {
     this.$store.commit('ui/showBackButton')

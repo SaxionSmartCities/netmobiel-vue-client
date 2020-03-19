@@ -29,7 +29,7 @@
       </v-row>
     </v-col>
     <v-col id="heenweericoon" class="text-center align-self-center">
-      <v-icon>import_export</v-icon>
+      <v-icon @click="swapLocations()">import_export</v-icon>
     </v-col>
   </v-row>
 </template>
