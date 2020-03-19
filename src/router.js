@@ -35,7 +35,8 @@ import TripPlanSubmitted from './pages/planner/TripPlanSubmitted.vue'
 import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
 import TripCancelledPage from './pages/saved/TripCancelledPage'
 import TripDetailPage from './pages/saved/TripDetailPage'
-import Shoutouts from '@/pages/community/shoutout/ShoutOverviewPage'
+import ShoutoutOverviewPage from '@/pages/community/shoutout/ShoutOverviewPage'
+import ShoutoutDetailPage from '@/pages/community/shoutout/ShoutoutDetailPage'
 
 const router = new Router({
   mode: 'history',
@@ -193,7 +194,17 @@ const router = new Router({
       component: ConversationPage,
       props: true,
     },
-    { path: '/shoutouts', name: 'shoutouts', component: Shoutouts },
+    {
+      path: '/shoutouts',
+      component: ShoutoutOverviewPage,
+      name: 'shoutouts',
+    },
+    {
+      path: '/shoutout/:id',
+      component: ShoutoutDetailPage,
+      name: 'shoutout',
+      props: true,
+    },
   ],
 })
 

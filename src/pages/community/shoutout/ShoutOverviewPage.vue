@@ -27,7 +27,10 @@ export default {
   },
   methods: {
     onShoutoutSelected(index) {
-      console.log('onShoutoutSelected: ' + index)
+      this.$router.push({
+        name: 'shoutout',
+        params: { id: index },
+      })
     },
   },
 }
