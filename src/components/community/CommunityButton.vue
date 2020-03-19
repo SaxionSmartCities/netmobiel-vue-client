@@ -44,13 +44,13 @@ export default {
     },
     forward: {
       type: String,
-      default: '/',
+      default: '',
       required: false,
     },
   },
   methods: {
     toNextPage: function() {
-      this.$router.push(this.forward)
+      this.$router.push({ name: this.forward })
     },
   },
 }

@@ -99,6 +99,7 @@ export default {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       })
       .then(function(resp) {
+        context.dispatch('fetchCars')
         // eslint-disable-next-line
         console.log(resp)
       })

@@ -17,9 +17,9 @@ import OnboardingComplete from './pages/OnboardingComplete.vue'
 import OnboardingPage from './pages/OnboardingPage.vue'
 import PrivacySecurityPage from './pages/profile/PrivacySecurityPage.vue'
 import PrivacyStatementPage from './pages/profile/PrivacyStatementPage.vue'
-import ProfileCarsPage from './pages/profile/ProfileCarsPage.vue'
-import ProfileAddCarPage from './pages/profile/ProfileAddCarPage.vue'
-import ProfileEditCarPage from './pages/profile/ProfileEditCarPage.vue'
+import CarsPage from './pages/planner/CarsPage.vue'
+import CarAddPage from './pages/planner/CarAddPage.vue'
+import CarEditPage from './pages/planner/CarEditPage.vue'
 import ProfilePage from './pages/profile/ProfilePage.vue'
 import SearchLocationPage from './pages/planner/SearchLocationPage'
 import SearchOptionsPage from './pages/planner/SearchOptionsPage'
@@ -35,6 +35,8 @@ import TripPlanSubmitted from './pages/planner/TripPlanSubmitted.vue'
 import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
 import TripCancelledPage from './pages/saved/TripCancelledPage'
 import TripDetailPage from './pages/saved/TripDetailPage'
+import ShoutoutOverviewPage from '@/pages/community/shoutout/ShoutOverviewPage'
+import ShoutoutDetailPage from '@/pages/community/shoutout/ShoutoutDetailPage'
 
 const router = new Router({
   mode: 'history',
@@ -153,19 +155,19 @@ const router = new Router({
       name: 'modeSelectionPage',
     },
     {
-      path: '/profileCars',
-      component: ProfileCarsPage,
-      name: 'profileCarsPage',
+      path: '/Cars',
+      component: CarsPage,
+      name: 'CarsPage',
     },
     {
-      path: '/profileAddCar',
-      component: ProfileAddCarPage,
-      name: 'profileAddCarPage',
+      path: '/AddCar',
+      component: CarAddPage,
+      name: 'CarAddPage',
     },
     {
-      path: '/profileEditCar',
-      component: ProfileEditCarPage,
-      name: 'profileEditCarPage',
+      path: '/EditCar',
+      component: CarEditPage,
+      name: 'CarEditPage',
     },
     {
       path: '/onboardingPage',
@@ -190,6 +192,17 @@ const router = new Router({
     {
       path: '/conversation/:id',
       component: ConversationPage,
+      props: true,
+    },
+    {
+      path: '/shoutouts',
+      component: ShoutoutOverviewPage,
+      name: 'shoutouts',
+    },
+    {
+      path: '/shoutout/:id',
+      component: ShoutoutDetailPage,
+      name: 'shoutout',
       props: true,
     },
   ],
