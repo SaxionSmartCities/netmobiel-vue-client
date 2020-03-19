@@ -113,6 +113,9 @@ export default {
   mounted() {
     this.$store.commit('ui/showBackButton')
   },
+  updated() {
+    this.scrollToBottomMessageContainer()
+  },
   async created() {
     //This.context is the urn as path parameter in URL.
     //In this URN the : needs to be replaced cause javascript wont like it being used as a key
@@ -128,11 +131,17 @@ export default {
     isMessageSendByMe(id) {
       return id === this.$store.getters['ps/getProfile'].id
     },
+    scrollToBottomMessageContainer(animation = false) {
+      var items = document.getElementById('message-container').children
+      if (items && items.length > 1) {
+        var last = items[items.length - 1]
+        animation
+          ? last.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          : last.scrollIntoView()
+      }
+    },
     sendMessage() {
-      console.log('Sending: ' + this.newMessage)
-      // console.log(this.recipient)
       const envelopes = [{ recipient: this.recipient }]
-      // console.log(envelopes)
       this.$store
         .dispatch('ms/sendMessage', {
           body: this.newMessage,
@@ -143,10 +152,9 @@ export default {
           subject: 'Van A naar B',
         })
         .then(() => {
+          this.newMessage = null
           this.$nextTick(() => {
-            var items = document.getElementById('message-container').children
-            var last = items[items.length - 1]
-            last.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            this.scrollToBottomMessageContainer(true)
           })
         })
     },
