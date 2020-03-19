@@ -35,7 +35,7 @@ import TripPlanSubmitted from './pages/planner/TripPlanSubmitted.vue'
 import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
 import TripCancelledPage from './pages/saved/TripCancelledPage'
 import TripDetailPage from './pages/saved/TripDetailPage'
-import Shoutouts from '@/pages/community/ShoutOuts'
+import Shoutouts from '@/pages/community/shoutout/ShoutOverviewPage'
 
 const router = new Router({
   mode: 'history',
