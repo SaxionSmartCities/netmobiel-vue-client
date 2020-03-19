@@ -37,13 +37,13 @@
       <v-row dense class="px-4 pb-1">
         <v-col class="pl-0">
           <v-text-field
-            @focus="testFocus"
             v-model.trim="newMessage"
             clearable
             outlined
             hide-details
             dense
             label="Typ een bericht"
+            @focus="onInputMessageFocus"
           ></v-text-field>
         </v-col>
         <v-col cols="1" align-self="center">
@@ -122,7 +122,7 @@ export default {
     this.urn = (' ' + this.context.replace(/:/gi, '')).slice(1)
   },
   methods: {
-    testFocus(event) {
+    onInputMessageFocus(event) {
       console.log(event)
     },
     isMessageSendByMe(id) {
