@@ -44,6 +44,7 @@
             dense
             label="Typ een bericht"
             @focus="onInputMessageFocus"
+            @focusout="onInputMessageFocusOut"
           ></v-text-field>
         </v-col>
         <v-col cols="1" align-self="center">
@@ -125,8 +126,11 @@ export default {
     this.urn = (' ' + this.context.replace(/:/gi, '')).slice(1)
   },
   methods: {
-    onInputMessageFocus(event) {
-      console.log(event)
+    onInputMessageFocus() {
+      this.$store.commit('ui/disableFooter')
+    },
+    onInputMessageFocusOut() {
+      this.$store.commit('ui/enableFooter')
     },
     isMessageSendByMe(id) {
       return id === this.$store.getters['ps/getProfile'].id
