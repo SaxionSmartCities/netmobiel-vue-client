@@ -143,7 +143,11 @@ export default {
       return this.selectedTrip.legs
         .filter(leg => leg.traverseMode === 'RIDESHARE')
         .map(leg => {
-          return { name: leg.driverName, id: leg.driverId }
+          return {
+            name: leg.driverName,
+            id: leg.driverId,
+            tripContext: leg.tripId,
+          }
         })
     },
     getRideShareDriver() {
@@ -246,7 +250,7 @@ export default {
       //Maybe this will later change to an id and we can delete the split code... :)
       const driverUrn = event.id
       const driverId = driverUrn.split(':').splice(-1)[0]
-
+      console.log('[onDriverSelectForMessage]', event)
       //Gets the driver his profile
       const driverProfile = await this.$store.dispatch('cs/fetchUser', {
         userRef: driverId,
