@@ -60,7 +60,7 @@
           block
           mb-4
           depressed
-          color="primairy"
+          color="primary"
           @click="contactDriver"
         >
           Stuur bericht naar chauffeur
@@ -76,7 +76,7 @@
           block
           mb-4
           depressed
-          color="primairy"
+          color="primary"
           @click="showFullRouteOnMap()"
         >
           Bekijk op de kaart
@@ -85,7 +85,7 @@
     </v-row>
     <v-row class="mb-0">
       <v-col class="pb-0">
-        <h1>Wijzigen</h1>
+        <h3>Wijzigen</h3>
       </v-col>
     </v-row>
     <v-row>
@@ -127,13 +127,16 @@ export default {
       return this.generateSteps.length === 0
     },
     hasRideShareDriver() {
+      return this.getRideShareDriver !== null
+    },
+    getRideShareDriver() {
       const rideshareMode = travelModes.RIDESHARE.mode
       for (let i = 0; i < this.selectedTrip.legs.length; i++) {
         if (this.selectedTrip.legs[i].traverseMode === rideshareMode) {
-          return true
+          return this.selectedTrip.legs[i].driverId
         }
       }
-      return false
+      return null
     },
     selectedTrip() {
       return this.$store.getters['is/getSelectedTrip']
@@ -205,7 +208,25 @@ export default {
       this.selectedLegs = this.selectedTrip.legs
       this.forceRerender()
     },
-    contactDriver() {},
+    contactDriver() {
+      console.log(this.selectedTrip)
+      this.$router.push({
+        name: `conversation`,
+        params: {
+          context: this.selectedTrip.tripRef,
+          participants: [
+            {
+              managedIdentity: this.$store.getters['ps/getProfile'].id,
+              urn: '',
+            },
+            {
+              managedIdentity: '',
+              urn: this.getRideShareDriver,
+            },
+          ],
+        },
+      })
+    },
   },
 }
 </script>

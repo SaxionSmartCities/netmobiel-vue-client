@@ -70,8 +70,15 @@
     </v-row>
     <v-row v-if="ride.bookings.length > 0">
       <v-col class="mx-1">
-        <v-btn large rounded block outlined color="primary" to="/community">
-          Bericht sturen naar passagier
+        <v-btn
+          large
+          rounded
+          block
+          outlined
+          color="primary"
+          @click="sendMessage"
+        >
+          Stuur bericht naar passagier
         </v-btn>
       </v-col>
     </v-row>
@@ -211,6 +218,9 @@ export default {
     },
     checkDeleteTrip() {
       this.warningDialog = true
+    },
+    sendMessage() {
+      console.log(this.ride)
     },
   },
 }

@@ -38,6 +38,10 @@ export default {
         headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
       })
       .then(function(resp) {
+        if (resp.status == 200) {
+          const conversations = resp.data.data
+          console.log(conversations)
+        }
         resp.data.data.forEach(item => {
           item.participants = [
             item.sender,

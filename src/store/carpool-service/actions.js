@@ -231,4 +231,22 @@ export default {
         console.log(error)
       })
   },
+  fetchUser: (context, { userRef }) => {
+    const URL = BASE_URL + `/rideshare/users/${userRef}`
+    axios
+      .get(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        console.log(resp.data)
+        // if (resp.status == 200) {
+        //   context.commit('setAvailableCars', resp.data)
+        // }
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
 }
