@@ -12,7 +12,7 @@
             </h4>
             <v-spacer></v-spacer>
             <v-btn color="primary" small rounded outlined>
-              <v-icon>call</v-icon>
+              <i class="fas fa-comments"></i>
             </v-btn>
           </v-col>
         </v-row>
