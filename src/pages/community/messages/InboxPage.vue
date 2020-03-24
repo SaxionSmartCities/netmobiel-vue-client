@@ -31,7 +31,11 @@
             <v-list-item-title>
               <v-row dense>
                 <v-col>
-                  {{ conversation.sender.givenName }}
+                  {{
+                    getReceiverViaConversationParticipants(
+                      conversation.participants
+                    )
+                  }}
                 </v-col>
                 <v-col class="px-2" cols="2">
                   <div class="message-counter">4</div>
@@ -77,6 +81,15 @@ export default {
     this.$store.dispatch('ms/fetchConversations')
   },
   methods: {
+    getReceiverViaConversationParticipants(participants) {
+      const res = participants.filter(
+        user => user.managedIdentity !== this.myId
+      )[0]
+      if (res) {
+        return res.givenName + ' ' + res.familyName
+      }
+      return 'not found'
+    },
     showConversation(conversation) {
       console.log('Conversation', conversation)
       this.$router.push({
@@ -95,6 +108,7 @@ export default {
 .conversation-list {
   width: 100%;
 }
+
 .message-counter {
   border-radius: 1000px;
   background: $color-green;
