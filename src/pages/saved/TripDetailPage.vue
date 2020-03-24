@@ -93,6 +93,13 @@
         <itinerary-options></itinerary-options>
       </v-col>
     </v-row>
+    <contact-driver-modal
+      v-if="showContactDriverModal"
+      :show-me="showContactDriverModal"
+      :users="drivers"
+      @select="onDriverSelectForMessage"
+      @close="showContactDriverModal = false"
+    ></contact-driver-modal>
   </content-pane>
 </template>
 
@@ -104,10 +111,12 @@ import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vu
 import RouteMap from '@/components/itinerary-details/RouteMap'
 
 import travelModes from '@/constants/travel-modes.js'
+import ContactDriverModal from '@/components/itinerary-details/ContactDriverModal'
 
 export default {
   name: 'TripDetailPage',
   components: {
+    ContactDriverModal,
     RouteMap,
     ContentPane,
     ItinerarySummary,
@@ -120,6 +129,7 @@ export default {
       selectedLegsIndex: null,
       showMap: true,
       mapSize: 'small',
+      showContactDriverModal: false,
     }
   },
   computed: {
@@ -128,6 +138,13 @@ export default {
     },
     hasRideShareDriver() {
       return this.getRideShareDriver !== null
+    },
+    drivers() {
+      return this.selectedTrip.legs
+        .filter(leg => leg.traverseMode === 'RIDESHARE')
+        .map(leg => {
+          return { name: leg.driverName, id: leg.driverId }
+        })
     },
     getRideShareDriver() {
       const rideshareMode = travelModes.RIDESHARE.mode
@@ -210,6 +227,33 @@ export default {
     },
     contactDriver() {
       console.log(this.selectedTrip)
+      this.showContactDriverModal = true
+
+      // if (this.selectedTrip.legs.length > 1) {
+      //   //Open the modal
+      //   this.showContactDriverModal = true
+      // } else {
+      //   // You can directly get the
+      //   const leg = this.selectedTrip.legs[0]
+      //   this.onDriverSelectForMessage({
+      //     name: leg.driverName,
+      //     id: leg.driverId,
+      //   })
+      // }
+    },
+    async onDriverSelectForMessage(event) {
+      //The backend sends an urn for now so we need to split on ':' and get the last element
+      //Maybe this will later change to an id and we can delete the split code... :)
+      const driverUrn = event.id
+      const driverId = driverUrn.split(':').splice(-1)[0]
+
+      //Gets the driver his profile
+      const driverProfile = await this.$store.dispatch('cs/fetchUser', {
+        userRef: driverId,
+      })
+      this.$store.commit('ms/addGhostConversation', { driverProfile })
+    },
+    routeToConversation() {
       this.$router.push({
         name: `conversation`,
         params: {

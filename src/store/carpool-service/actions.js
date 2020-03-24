@@ -233,12 +233,13 @@ export default {
   },
   fetchUser: (context, { userRef }) => {
     const URL = BASE_URL + `/rideshare/users/${userRef}`
-    axios
+    return axios
       .get(URL, {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       })
       .then(function(resp) {
         console.log(resp.data)
+        return resp.data
         // if (resp.status == 200) {
         //   context.commit('setAvailableCars', resp.data)
         // }

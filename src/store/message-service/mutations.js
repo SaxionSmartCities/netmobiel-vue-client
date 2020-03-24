@@ -27,4 +27,7 @@ export default {
     }
     Vue.set(state.messages, urn, [...state.messages[urn], newMessage])
   },
+  addGhostConversation: (state, { driverProfile }) => {
+    console.log('[addGhostConversation]', driverProfile)
+  },
 }
