@@ -83,4 +83,34 @@ export default {
         console.log(error)
       })
   },
+  fetchCreditAmount: context => {
+    //TODO: Add backend call
+    let amount = 89
+    context.commit('setCreditAmount', amount)
+  },
+  fetchCreditHistory: context => {
+    //TODO: Add backend call
+    let creditHistory = [
+      {
+        date: '',
+        amount: 5,
+        type: 'donation',
+        otherParty: 'Tennisclub Vragender',
+      },
+      {
+        date: '',
+        amount: -5,
+        type: 'drive',
+        otherParty: 'Marc de Vries',
+        destinationRide: 'Lievelde',
+      },
+      {
+        date: '',
+        amount: -20,
+        type: 'reward',
+        otherParty: 'Bakkerij de Zoete inval',
+      },
+    ]
+    context.commit('setCreditHistory', creditHistory)
+  },
 }
