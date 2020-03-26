@@ -1,8 +1,8 @@
 <template>
   <content-pane>
-    <v-layout pa-2 column>
-      <v-flex>
-        <v-layout row mb-3>
+    <v-row class="pa-2 flex-column">
+      <v-col>
+        <v-row class="mb-3">
           <v-flex lg1 sm2 xs4>
             <round-user-image></round-user-image>
           </v-flex>
@@ -31,9 +31,9 @@
               </v-flex>
             </v-layout>
           </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-flex>
+        </v-row>
+      </v-col>
+      <v-col>
         <v-layout row mb-2>
           <v-flex travel-card mr-2>
             <v-layout column align-center my-2 class="disabled">
@@ -48,8 +48,8 @@
             </v-layout>
           </v-flex>
         </v-layout>
-      </v-flex>
-      <v-flex>
+      </v-col>
+      <v-col class="pa-0">
         <v-layout column>
           <v-flex
             v-for="item in items"
@@ -57,19 +57,22 @@
             @click="$router.push(item.route)"
           >
             <v-divider></v-divider>
-            <v-layout align-center ma-3 :class="{ 'no-route': !item.route }">
-              <v-flex xs2>
-                <v-icon>{{ item.icon }}</v-icon>
-              </v-flex>
-              <v-flex>{{ item.name }}</v-flex>
-              <v-flex xs1>
-                <v-icon>chevron_right</v-icon>
-              </v-flex>
-            </v-layout>
+            <v-row
+              align-content="center"
+              class="my-3 ml-0 mr-1"
+              :class="{ 'no-route': !item.route }"
+            >
+              <v-icon>{{ item.icon }}</v-icon>
+              <span class="pl-4 body-1 font-weight-light align-self-center">
+                {{ item.name }}
+              </span>
+              <v-spacer></v-spacer>
+              <v-icon>chevron_right</v-icon>
+            </v-row>
           </v-flex>
         </v-layout>
-      </v-flex>
-      <v-flex travel-card mt-2 mr-2 @click="logOut">
+      </v-col>
+      <v-col travel-card mt-2 mr-2 @click="logOut">
         <v-layout column align-center my-2>
           <v-flex>
             <v-icon>exit_to_app</v-icon>
@@ -78,8 +81,8 @@
             Log out
           </v-flex>
         </v-layout>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 
