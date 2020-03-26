@@ -76,7 +76,7 @@
           block
           outlined
           color="primary"
-          @click="sendMessage"
+          @click="contactPassenger"
         >
           Stuur bericht naar passagier
         </v-btn>
@@ -133,6 +133,13 @@
         <v-divider />
       </v-col>
     </v-row>
+    <contact-traveller-modal
+      v-if="showContactTravellerModal"
+      :show="showContactTravellerModal"
+      :users="travellersInBookings"
+      @close="showContactTravellerModal = false"
+      @select="onTravellerSelectForMessage"
+    ></contact-traveller-modal>
   </content-pane>
 </template>
 
@@ -140,10 +147,11 @@
 import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ContentPane from '@/components/common/ContentPane.vue'
+import ContactTravellerModal from '@/components/itinerary-details/ContactTravellerModal'
 
 export default {
   name: 'RideDetailPage',
-  components: { ContentPane, ItineraryLeg },
+  components: { ContactTravellerModal, ContentPane, ItineraryLeg },
   props: {
     id: {
       type: Number,
@@ -159,7 +167,21 @@ export default {
       selectedLeg: null,
       warningDialog: false,
       cancelReason: '',
+      showContactTravellerModal: false,
     }
+  },
+  computed: {
+    travellersInBookings() {
+      //TODO get all the travllers in the bookings from this.ride
+      return this.ride.bookings.map(booking => {
+        return {
+          name:
+            booking.passenger.givenName + ' ' + booking.passenger.familyName,
+          passengerRef: booking.passengerRef,
+          ...booking.passenger,
+        }
+      })
+    },
   },
   created: function() {
     this.$store.commit('ui/showBackButton')
@@ -219,8 +241,45 @@ export default {
     checkDeleteTrip() {
       this.warningDialog = true
     },
-    sendMessage() {
-      console.log(this.ride)
+    async onTravellerSelectForMessage(event) {
+      console.log('selected Traveler. Event:', event)
+      const tripContext = 'urn:nb:rs:ride:' + this.ride.id
+      this.routeToConversation(tripContext, event)
+    },
+    contactPassenger() {
+      this.showContactTravellerModal = true
+    },
+    async routeToConversation(ctx, passengerProfile) {
+      const conversations = await this.$store.dispatch('ms/fetchConversations')
+      const index = conversations.findIndex(
+        conversation => conversation.context === ctx
+      )
+      let params = null
+      if (index !== -1) {
+        //So if the conversation already exists...
+        params = conversations[index]
+      } else {
+        //If the conversation does not exists
+        //Then create a ghost conversation
+        params = {
+          context: ctx,
+          participants: [
+            {
+              managedIdentity: this.$store.getters['ps/getProfile'].id,
+              urn: '',
+            },
+            {
+              ...passengerProfile,
+              urn: passengerProfile.passengerRef,
+            },
+          ],
+        }
+      }
+
+      this.$router.push({
+        name: `conversation`,
+        params: params,
+      })
     },
   },
 }

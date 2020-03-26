@@ -95,7 +95,7 @@
     </v-row>
     <contact-driver-modal
       v-if="showContactDriverModal"
-      :show-me="showContactDriverModal"
+      :show="showContactDriverModal"
       :users="drivers"
       @select="onDriverSelectForMessage"
       @close="showContactDriverModal = false"

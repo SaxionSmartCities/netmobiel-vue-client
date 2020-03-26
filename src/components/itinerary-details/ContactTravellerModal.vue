@@ -2,7 +2,8 @@
   <v-dialog v-model="showMe" max-width="400px">
     <v-card>
       <v-card-title class="headline">
-        Which driver do you want to send a message?
+        Which traveller do you want <br />
+        to send a message?
       </v-card-title>
 
       <v-card-text class="mt-2">
@@ -23,7 +24,7 @@
 
 <script>
 export default {
-  name: 'ContactDriverModal',
+  name: 'ContactTravellerModal',
   props: {
     show: {
       type: Boolean,
