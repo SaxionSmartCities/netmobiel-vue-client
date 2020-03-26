@@ -162,9 +162,14 @@ export default {
         .then(() => this.$router.push('/tripPlanSubmitted'))
     },
     onLegSelected({ leg, step }) {
-      this.selectedLegs = [leg]
-      this.selectedLegsIndex = step
-      this.forceRerender()
+      if (this.selectedLegsIndex === step && this.showMap) {
+        this.showMap = false
+        this.selectedLegsIndex = null
+      } else {
+        this.selectedLegs = [leg]
+        this.selectedLegsIndex = step
+        this.forceRerender()
+      }
     },
     forceRerender() {
       // Remove my-component from the DOM
