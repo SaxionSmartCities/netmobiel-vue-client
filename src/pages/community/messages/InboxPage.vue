@@ -91,7 +91,6 @@ export default {
       return 'not found'
     },
     showConversation(conversation) {
-      console.log('Conversation', conversation)
       this.$router.push({
         name: `conversation`,
         params: {

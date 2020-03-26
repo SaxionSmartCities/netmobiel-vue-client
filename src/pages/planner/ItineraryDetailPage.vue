@@ -182,14 +182,11 @@ export default {
     },
     async testMessage() {
       const driver = await this.$store.dispatch('ps/fetchUser', { userId: 78 })
-      console.log(this.selectedTrip)
       const recipient = {
         managedIdentity: driver.managedIdentity,
         givenName: driver.givenName,
         familyName: driver.familyName,
       }
-
-      console.log(driver)
 
       let tripRef
       if (!this.selectedTrip.tripRef) {

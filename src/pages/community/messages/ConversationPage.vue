@@ -114,7 +114,6 @@ export default {
   },
   mounted() {
     this.$store.commit('ui/showBackButton')
-    console.log('the participants ==>', this.participants)
   },
   updated() {
     this.scrollToBottomMessageContainer()

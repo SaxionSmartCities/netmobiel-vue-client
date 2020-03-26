@@ -136,7 +136,7 @@
     <contact-traveller-modal
       v-if="showContactTravellerModal"
       :show="showContactTravellerModal"
-      :users="travellersInBookings"
+      :users="passengersInBookings"
       @close="showContactTravellerModal = false"
       @select="onTravellerSelectForMessage"
     ></contact-traveller-modal>
@@ -171,8 +171,7 @@ export default {
     }
   },
   computed: {
-    travellersInBookings() {
-      //TODO get all the travllers in the bookings from this.ride
+    passengersInBookings() {
       return this.ride.bookings.map(booking => {
         return {
           name:
@@ -242,12 +241,15 @@ export default {
       this.warningDialog = true
     },
     async onTravellerSelectForMessage(event) {
-      console.log('selected Traveler. Event:', event)
       const tripContext = 'urn:nb:rs:ride:' + this.ride.id
       this.routeToConversation(tripContext, event)
     },
     contactPassenger() {
-      this.showContactTravellerModal = true
+      if (this.passengersInBookings.length > 1) {
+        this.showContactTravellerModal = true
+      } else {
+        this.onTravellerSelectForMessage(this.passengersInBookings[0])
+      }
     },
     async routeToConversation(ctx, passengerProfile) {
       const conversations = await this.$store.dispatch('ms/fetchConversations')

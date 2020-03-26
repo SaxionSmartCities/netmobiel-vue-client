@@ -230,20 +230,18 @@ export default {
       this.forceRerender()
     },
     contactDriver() {
-      console.log(this.selectedTrip)
-      this.showContactDriverModal = true
-
-      // if (this.selectedTrip.legs.length > 1) {
-      //   //Open the modal
-      //   this.showContactDriverModal = true
-      // } else {
-      //   // You can directly get the
-      //   const leg = this.selectedTrip.legs[0]
-      //   this.onDriverSelectForMessage({
-      //     name: leg.driverName,
-      //     id: leg.driverId,
-      //   })
-      // }
+      if (this.selectedTrip.legs.length > 1) {
+        //Open the modal
+        this.showContactDriverModal = true
+      } else {
+        // You can directly push to the router
+        const leg = this.selectedTrip.legs[0]
+        this.onDriverSelectForMessage({
+          name: leg.driverName,
+          id: leg.driverId,
+          tripContext: leg.tripId,
+        })
+      }
     },
     async onDriverSelectForMessage(event) {
       //The backend sends an urn for now so we need to split on ':' and get the last element
