@@ -99,8 +99,9 @@ export default {
       })
     },
     recipient() {
+      const myId = this.$store.getters['ps/getProfile'].id
       return this.participants.find(
-        recipient => recipient.managedIdentity !== this.myId
+        recipient => recipient.managedIdentity !== myId
       )
     },
     profile() {
@@ -113,6 +114,7 @@ export default {
   },
   mounted() {
     this.$store.commit('ui/showBackButton')
+    console.log('the participants ==>', this.participants)
   },
   updated() {
     this.scrollToBottomMessageContainer()

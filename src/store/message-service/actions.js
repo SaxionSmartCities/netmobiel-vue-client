@@ -28,9 +28,9 @@ export default {
         console.log(error)
       })
   },
-  fetchConversations: ({ commit }) => {
+  fetchConversations: async ({ commit }) => {
     const URL = BASE_URL + `/communicator/messages`
-    axios
+    return await axios
       .get(URL, {
         params: {
           groupByConversation: true,
@@ -49,6 +49,7 @@ export default {
           ]
         })
         commit('setConversations', resp.data.data)
+        return resp.data.data
       })
       .catch(function(error) {
         // TODO: Proper error handling.

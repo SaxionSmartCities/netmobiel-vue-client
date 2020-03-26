@@ -250,30 +250,40 @@ export default {
       //Maybe this will later change to an id and we can delete the split code... :)
       const driverUrn = event.id
       const driverId = driverUrn.split(':').splice(-1)[0]
-      console.log('[onDriverSelectForMessage]', event)
       //Gets the driver his profile
       const driverProfile = await this.$store.dispatch('cs/fetchUser', {
         userRef: driverId,
       })
-      this.$store.commit('ms/addGhostConversation', { driverProfile })
+      this.routeToConversation(event.tripContext, driverProfile)
     },
-    routeToConversation() {
-      this.$router.push({
-        name: `conversation`,
-        params: {
-          context: this.selectedTrip.tripRef,
-          participants: [
-            {
-              managedIdentity: this.$store.getters['ps/getProfile'].id,
-              urn: '',
-            },
-            {
-              managedIdentity: '',
-              urn: this.getRideShareDriver,
-            },
-          ],
-        },
-      })
+    async routeToConversation(ctx, driverProfile) {
+      const conversations = await this.$store.dispatch('ms/fetchConversations')
+      const index = conversations.findIndex(
+        conversation => conversation.context === ctx
+      )
+      if (index !== -1) {
+        //So if the conversation already exists...
+        console.log('conversation already exists')
+      } else {
+        //If the conversation does not exists
+        //Then create a ghost conversation
+        this.$router.push({
+          name: `conversation`,
+          params: {
+            context: ctx,
+            participants: [
+              {
+                managedIdentity: this.$store.getters['ps/getProfile'].id,
+                urn: '',
+              },
+              {
+                ...driverProfile,
+                urn: this.getRideShareDriver,
+              },
+            ],
+          },
+        })
+      }
     },
   },
 }
