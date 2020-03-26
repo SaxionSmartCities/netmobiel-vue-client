@@ -89,6 +89,12 @@ export default {
     let amount = 89
     context.commit('setCreditAmount', amount)
   },
+  // addCredits: (context, transaction) => {
+  //   //TODO: Add backend call
+  // },
+  // addTransactionCreditAmount: (context, transaction) => {
+  //   //TODO: Add backend call
+  // },
   fetchCreditHistory: context => {
     //TODO: Add backend call
     let creditHistory = [
@@ -112,6 +118,11 @@ export default {
         amount: -20,
         type: 'reward',
         otherParty: 'Bakkerij de Zoete inval',
+      },
+      {
+        date: moment(),
+        amount: 40,
+        type: 'addedCredits',
       },
     ]
     context.commit('setCreditHistory', creditHistory)

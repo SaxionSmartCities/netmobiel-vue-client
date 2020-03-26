@@ -24,6 +24,7 @@
           rounded
           outlined
           color="primary"
+          disabled
           @click="router.push('/addCredits')"
           >Doel steunen</v-btn
         >
@@ -34,6 +35,7 @@
           rounded
           block
           outlined
+          disabled
           color="primary"
           @click="router.push('/addCredits')"
         >
@@ -48,6 +50,7 @@
           rounded
           block
           depressed
+          disabled
           color="button"
           @click="router.push('/addCredits')"
           >Credits toevoegen</v-btn

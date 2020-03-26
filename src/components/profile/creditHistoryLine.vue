@@ -7,8 +7,10 @@
     </v-row>
     <v-row align="center" class="py-0 my-0">
       <v-col class="py-0 my-0" cols="2">{{ formatTime }}</v-col>
-      <v-col class="py-0 my-0 text-small">{{ description }}</v-col>
-      <v-col class="py-0 my-0" cols="2">{{ transaction.amount }}</v-col>
+      <v-col class="py-0 my-0">{{ description }}</v-col>
+      <v-col class="py-0 my-0" :class="transactionColor" cols="2">
+        {{ amountFormat }}</v-col
+      >
     </v-row>
   </v-col>
 </template>
@@ -36,9 +38,11 @@ export default {
           ' naar ' +
           this.transaction.destinationRide
       } else if (type == 'reward') {
-        message = 'Reward verzilverd van ' + this.transaction.otherParty
+        message = 'Reward uitgezocht van ' + this.transaction.otherParty
       } else if (type == 'donation') {
         message = 'Donatie aan ' + this.transaction.otherParty
+      } else if (type == 'addedCredits') {
+        message = 'Credits opgewaardeerd'
       }
       return message
     },
@@ -55,6 +59,21 @@ export default {
         .locale('nl')
         .format('hh:mm')
     },
+    transactionColor() {
+      if (this.transaction.amount > 0) {
+        return 'text-green'
+      } else {
+        return 'text-red'
+      }
+    },
   },
 }
 </script>
+<style>
+.text-green {
+  color: #2e8997;
+}
+.text-red {
+  color: #d0021b;
+}
+</style>
