@@ -41,7 +41,6 @@ export default {
     return await axios
       .get(URL, { headers: generateHeader(GRAVITEE_RIDESHARE_SERVICE_API_KEY) })
       .then(response => {
-        console.log('fetched user from rideshare response... ', response)
         return response.data
       })
       .catch(error => {
