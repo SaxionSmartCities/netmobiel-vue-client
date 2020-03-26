@@ -37,7 +37,7 @@
         name="Donateurs"
         :number-of-donors="33"
         :credits-remaining="43"
-        :credits-total="232"
+        :value-total="232"
       >
       </goal-progress-bar>
 
@@ -45,10 +45,11 @@
         name="credits"
         :value="65"
         :content-multi-line="true"
+        postfix="credits"
         :number-of-donors="33"
-        :credits-donated="76"
+        :value-current="76"
         :credits-remaining="43"
-        :credits-total="232"
+        :value-total="232"
       >
       </goal-progress-bar>
 
@@ -57,8 +58,8 @@
         :content-percentage="true"
         :number-of-donors="33"
         :credits-remaining="43"
-        :credits-donated="76"
-        :credits-total="232"
+        :value-current="76"
+        :value-total="232"
       >
       </goal-progress-bar>
     </v-row>
@@ -95,7 +96,7 @@ export default {
     },
   },
   computed: {
-    selectedGoal: function() {
+    selectedGoal() {
       return this.$store.getters['sg/fetchGoals'].find(
         goal => goal.id == this.id
       )

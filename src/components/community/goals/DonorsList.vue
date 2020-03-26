@@ -20,7 +20,7 @@
                 </v-row>
                 <v-row>
                   <span class="overline"
-                    >{{ donor.creditsDonated }} credits gedoneerd</span
+                    >{{ donor.currentValue }} credits gedoneerd</span
                   >
                 </v-row>
               </v-col>

@@ -1,10 +1,7 @@
-<template xmlns:display="http://www.w3.org/1999/xhtml">
+<template>
   <content-pane>
     <v-row mb-3>
       <h1>Doelen</h1>
-    </v-row>
-    <v-row>
-      <v-divider />
     </v-row>
     <v-row mt-6>
       <v-text-field
@@ -14,9 +11,11 @@
       ></v-text-field>
     </v-row>
     <v-row mb-3 mt-3>
-      <span class="font-weight-medium primary--text"
-        >Populair in de buurt
-      </span>
+      <v-col>
+        <h4 class="netmobiel">
+          >Populair in de buurt
+        </h4>
+      </v-col>
     </v-row>
     <v-row>
       <goal-card
@@ -27,7 +26,11 @@
       ></goal-card>
     </v-row>
     <v-row mb-3 mt-3>
-      <span class="font-weight-medium primary--text">Eerder gedoneerd </span>
+      <v-col>
+        <h4 class="netmobiel">
+          >Eerder gedoneerd
+        </h4>
+      </v-col>
     </v-row>
     <v-row>
       <v-slide-group center-active mobile-break-point="300">

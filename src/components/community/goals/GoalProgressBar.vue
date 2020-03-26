@@ -10,7 +10,7 @@
           color="primary"
         >
           <div v-if="contentMultiLine === true">
-            {{ creditsDonated }}
+            {{ valueCurrent }}
             <br />
             {{ postfix }}
           </div>
@@ -42,7 +42,7 @@ export default {
     name: { type: String, required: true },
     numberOfDonors: { type: Number, default: 0 },
     //TODO how is this going to be used in the store?
-    creditsDonated: {
+    valueCurrent: {
       type: Number,
       default: 0,
     },
@@ -50,15 +50,13 @@ export default {
       type: Number,
       default: 0,
     },
-    creditsTotal: {
+    valueTotal: {
       type: Number,
       default: 0,
     },
-  },
-  data() {
-    return {
-      postfix: 'credits',
-    }
+    postfix: {
+      type: String,
+    },
   },
   computed: {
     computedProgress: function() {
@@ -67,7 +65,7 @@ export default {
         //maybe this could be handled differently.
         return 100
       } else {
-        return Math.round((this.creditsDonated / this.creditsTotal) * 100)
+        return Math.round((this.valueCurrent / this.valueTotal) * 100)
       }
     },
   },
