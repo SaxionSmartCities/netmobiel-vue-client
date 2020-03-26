@@ -27,11 +27,14 @@
       </v-row>
       <v-row v-if="travelMode !== 'FINISH'" no-gutters>
         <v-col cols="2" class="pl-2">
-          <v-icon :class="{ rideshare: isRideShare }">{{ icon }}</v-icon>
+          <v-icon v-if="showicon" :class="{ rideshare: isRideShare }">
+            {{ icon }}
+          </v-icon>
         </v-col>
         <v-col cols="1" justify="center" align="center" fill-height>
           <div v-if="travelMode === 'WALK'" class="borderstopped borderwidth" />
-          <div v-else-if="travelMode === 'ARRIVAL'" />
+          <div v-else-if="travelMode === 'ARRIVAL'" class="no-border" />
+          <div v-else-if="showdottedline" class="borderstopped borderwidth" />
           <div v-else class="border borderwidth" />
         </v-col>
         <v-col class="description pl-2 pb-3">
@@ -53,6 +56,8 @@ export default {
     leg: { type: Object, required: true },
     isMapActive: { type: Boolean, default: false },
     step: { type: Number, default: 0 },
+    showicon: { type: Boolean, default: true },
+    showdottedline: { type: Boolean, default: false },
   },
   computed: {
     travelMode() {

@@ -23,7 +23,7 @@
       :key="index"
       class="mx-1 py-0"
     >
-      <itinerary-leg :leg="leg" />
+      <itinerary-leg :leg="leg" :showicon="false" :showdottedline="true" />
     </v-row>
     <v-row justify="center">
       <v-col align="start" class="header ma">
