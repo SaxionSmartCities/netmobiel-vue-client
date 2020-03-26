@@ -261,29 +261,31 @@ export default {
       const index = conversations.findIndex(
         conversation => conversation.context === ctx
       )
+      let params = null
       if (index !== -1) {
         //So if the conversation already exists...
-        console.log('conversation already exists')
+        params = conversations[index]
       } else {
         //If the conversation does not exists
         //Then create a ghost conversation
-        this.$router.push({
-          name: `conversation`,
-          params: {
-            context: ctx,
-            participants: [
-              {
-                managedIdentity: this.$store.getters['ps/getProfile'].id,
-                urn: '',
-              },
-              {
-                ...driverProfile,
-                urn: this.getRideShareDriver,
-              },
-            ],
-          },
-        })
+        params = {
+          context: ctx,
+          participants: [
+            {
+              managedIdentity: this.$store.getters['ps/getProfile'].id,
+              urn: '',
+            },
+            {
+              ...driverProfile,
+              urn: this.getRideShareDriver,
+            },
+          ],
+        }
       }
+      this.$router.push({
+        name: `conversation`,
+        params: params,
+      })
     },
   },
 }
