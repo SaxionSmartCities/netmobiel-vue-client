@@ -9,7 +9,7 @@
           <div class="open-dot" />
         </v-col>
         <v-col>
-          <v-row class="pl-1">
+          <v-row class="pl-2">
             <v-col class="header py-0">
               {{ header }}
             </v-col>
@@ -26,7 +26,7 @@
         </v-col>
       </v-row>
       <v-row v-if="travelMode !== 'FINISH'" no-gutters>
-        <v-col cols="2" class="pl-1">
+        <v-col cols="2" class="pl-2">
           <v-icon :class="{ rideshare: isRideShare }">{{ icon }}</v-icon>
         </v-col>
         <v-col cols="1" justify="center" align="center" fill-height>
@@ -34,7 +34,7 @@
           <div v-else-if="travelMode === 'ARRIVAL'" />
           <div v-else class="border borderwidth" />
         </v-col>
-        <v-col class="description pl-1 pb-3">
+        <v-col class="description pl-2 pb-3">
           {{ description }}
         </v-col>
       </v-row>

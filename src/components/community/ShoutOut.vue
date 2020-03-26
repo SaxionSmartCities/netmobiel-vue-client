@@ -4,28 +4,24 @@
     class="shoutout-container"
     @click="$emit('shoutoutSelected', index)"
   >
-    <v-row>
+    <v-row class="mb-2">
       <v-col class="shrink">
         <v-img class="shoutout-image" :src="profile.image" />
       </v-col>
-      <v-col class="shrink">
-        <div class="d-flex flex-column">
-          <span class="font-weight-regular subtitle-2">Reiziger</span>
-          <span class="subtitle-1 font-weight-light">
-            {{ shoutout.traveller.givenName }}
-          </span>
-        </div>
-      </v-col>
       <v-col>
-        <div class="d-flex justify-end">
-          <v-icon>chevron_right</v-icon>
-        </div>
+        <p class="font-weight-regular header mb-0">Reiziger</p>
+        <p class="font-weight-light subtitle-1 mb-0">
+          {{ shoutout.traveller.givenName }}
+        </p>
+      </v-col>
+      <v-col class="shrink align-center">
+        <v-icon>chevron_right</v-icon>
       </v-col>
     </v-row>
     <v-row
       v-for="(leg, index) in generateSteps()"
       :key="index"
-      class="mx-3 py-0"
+      class="mx-1 py-0"
     >
       <itinerary-leg :leg="leg" />
     </v-row>
@@ -93,8 +89,8 @@ export default {
 
   .shoutout-image {
     padding-right: 0;
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
   }
 }
