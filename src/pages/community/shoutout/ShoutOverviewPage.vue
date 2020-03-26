@@ -10,28 +10,22 @@
         </v-radio-group>
       </v-col>
     </v-row>
-    <v-row v-for="(shoutout, index) in getShoutOuts" :key="index">
-      <v-col>
-        <shout-out
-          :shoutout="shoutout"
-          @shoutoutSelected="onShoutoutSelected"
-        ></shout-out>
-      </v-col>
-    </v-row>
+    <grouped-shout-outs :label="label" :shoutouts="getShoutOuts" />
   </content-pane>
 </template>
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
-import ShoutOut from '@/components/community/ShoutOut'
+import GroupedShoutOuts from '@/components/community/GroupedShoutOuts'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'Shoutouts',
-  components: { ShoutOut, ContentPane },
+  components: { GroupedShoutOuts, ContentPane },
   data() {
     return {
       baseLocation: 'Home',
+      label: 'Morgen',
     }
   },
   computed: {
