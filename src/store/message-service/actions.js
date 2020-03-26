@@ -57,12 +57,13 @@ export default {
         console.log(error)
       })
   },
-  fetchMessagesByContext: async ({ commit }, { context }) => {
+  fetchMessagesByParams: async ({ commit }, { context, participant }) => {
     const URL = BASE_URL + `/communicator/messages`
     return await axios
       .get(URL, {
         params: {
           context: context,
+          participant,
         },
         headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
       })

@@ -122,8 +122,9 @@ export default {
   async created() {
     //This.context is the urn as path parameter in URL.
     //In this URN the : needs to be replaced cause javascript wont like it being used as a key
-    await this.$store.dispatch('ms/fetchMessagesByContext', {
+    await this.$store.dispatch('ms/fetchMessagesByParams', {
       context: this.context,
+      participant: this.recipient.managedIdentity,
     })
     this.urn = (' ' + this.context.replace(/:/gi, '')).slice(1)
   },
