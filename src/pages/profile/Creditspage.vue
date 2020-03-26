@@ -2,21 +2,43 @@
   <content-pane>
     <v-row align="center">
       <v-col>
-        Credits
+        <h3>Credits</h3>
       </v-col>
     </v-row>
+    <v-row>
+      <v-divider />
+    </v-row>
     <v-row align="center">
-      <v-col>
-        Saldo
+      <v-col cols="2">
+        <strong>Saldo</strong>
       </v-col>
       <v-col> {{ creditAmount }} credits </v-col>
     </v-row>
+    <v-row>
+      <v-divider />
+    </v-row>
     <v-row align="center">
       <v-col>
-        <v-btn>Doel steunen</v-btn>
+        <v-btn
+          large
+          rounded
+          outlined
+          color="primary"
+          @click="router.push('/addCredits')"
+          >Doel steunen</v-btn
+        >
       </v-col>
       <v-col>
-        <v-btn>Sparen voor mijn reward</v-btn>
+        <v-btn
+          large
+          rounded
+          block
+          outlined
+          color="primary"
+          @click="router.push('/addCredits')"
+        >
+          Rewards</v-btn
+        >
       </v-col>
     </v-row>
     <v-row align="center">
@@ -27,7 +49,6 @@
           block
           depressed
           color="button"
-          disabled
           @click="router.push('/addCredits')"
           >Credits toevoegen</v-btn
         >
@@ -35,31 +56,26 @@
     </v-row>
     <v-row align="center">
       <v-col>
-        Overzicht
+        <h3 class="text-primary-uppercase">Reizen</h3>
       </v-col>
     </v-row>
-    <v-divider />
+    <v-row>
+      <v-divider />
+    </v-row>
     <v-row v-for="(transaction, index) in creditHistory" :key="index">
-      <v-col>
-        <v-row align="center">
-          <v-col>Maandag 17 juni 2019</v-col>
-        </v-row>
-        <v-row align="center">
-          <v-col>07:45</v-col>
-          <v-col>Rit met Coby Hoekstra Naar Lutjebroek</v-col>
-          <v-col>+ 5</v-col>
-        </v-row>
-      </v-col>
+      <credit-history-line :transaction="transaction"></credit-history-line>
     </v-row>
   </content-pane>
 </template>
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
+import CreditHistoryLine from '@/components/profile/creditHistoryLine.vue'
 export default {
   name: 'Credits',
   components: {
     ContentPane,
+    CreditHistoryLine,
   },
   data() {
     return {

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from '@/config/config'
+import moment from 'moment'
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_PROFILE_SERVICE_API_KEY = config.GRAVITEE_PROFILE_SERVICE_API_KEY
@@ -92,20 +93,22 @@ export default {
     //TODO: Add backend call
     let creditHistory = [
       {
-        date: '',
+        date: moment().subtract(2, 'weeks'),
         amount: 5,
         type: 'donation',
         otherParty: 'Tennisclub Vragender',
       },
       {
-        date: '',
+        date: moment()
+          .subtract(6, 'days')
+          .subtract(8, 'hours'),
         amount: -5,
         type: 'drive',
         otherParty: 'Marc de Vries',
         destinationRide: 'Lievelde',
       },
       {
-        date: '',
+        date: moment(),
         amount: -20,
         type: 'reward',
         otherParty: 'Bakkerij de Zoete inval',
