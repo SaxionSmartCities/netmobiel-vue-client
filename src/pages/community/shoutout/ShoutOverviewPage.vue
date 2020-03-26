@@ -44,8 +44,8 @@ export default {
   },
   mounted() {
     this.$store.dispatch('is/fetchShoutOuts', {
-      latitude: 52.298417,
-      longitude: 6.749157,
+      latitude: 52.2224,
+      longitude: 5.28248,
     })
   },
   methods: {
