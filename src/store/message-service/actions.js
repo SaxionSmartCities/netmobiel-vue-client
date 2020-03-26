@@ -20,7 +20,6 @@ export default {
       })
       .then(function(resp) {
         commit('setMessages', resp.data)
-        console.log(resp.data)
       })
       .catch(function(error) {
         // TODO: Proper error handling.
@@ -38,18 +37,17 @@ export default {
         headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
       })
       .then(function(resp) {
-        if (resp.status == 200) {
-          const conversations = resp.data.data
-          console.log(conversations)
+        if (resp.status === 200) {
+          resp.data.data.forEach(item => {
+            item.participants = [
+              item.sender,
+              ...item.envelopes.map(envelope => envelope.recipient),
+            ]
+          })
+          commit('setConversations', resp.data.data)
+          return resp.data.data
         }
-        resp.data.data.forEach(item => {
-          item.participants = [
-            item.sender,
-            ...item.envelopes.map(envelope => envelope.recipient),
-          ]
-        })
-        commit('setConversations', resp.data.data)
-        return resp.data.data
+        return []
       })
       .catch(function(error) {
         // TODO: Proper error handling.
@@ -68,7 +66,6 @@ export default {
         headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
       })
       .then(function(resp) {
-        console.log(resp.data)
         context = context.replace(/:/gi, '')
         commit('setMessages', { context: context, messages: resp.data.data })
         commit('addContext', context)
@@ -96,7 +93,6 @@ export default {
             deliveryMode: 'MESSAGE',
           }
           commit('addActiveMessage', message)
-
           return message
         }
       })

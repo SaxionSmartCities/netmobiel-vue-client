@@ -16,8 +16,6 @@ export default {
     state.activeMessages.push(message)
   },
   addMessageToContext: (state, { context, message }) => {
-    // console.log('addin the context: ', context)
-    // console.log('adding this message: ', message)
     const urn = (' ' + context.replace(/:/gi, '')).slice(1)
     const newMessage = {
       body: message,

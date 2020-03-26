@@ -238,7 +238,6 @@ export default {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       })
       .then(function(resp) {
-        console.log(resp.data)
         return resp.data
         // if (resp.status == 200) {
         //   context.commit('setAvailableCars', resp.data)
