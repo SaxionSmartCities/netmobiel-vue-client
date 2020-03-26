@@ -34,4 +34,5 @@ export default {
   appendPlannedTrips: (state, payload) => {
     state.plannedTrips = state.plannedTrips.concat(payload)
   },
+  setShoutOuts: (state, payload) => (state.shoutOuts = payload),
 }

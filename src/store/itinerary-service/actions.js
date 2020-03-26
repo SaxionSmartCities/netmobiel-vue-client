@@ -170,4 +170,28 @@ export default {
         )
       })
   },
+  fetchShoutOuts: (context, payload) => {
+    // const lat = payload.latitude
+    // const lon = payload.longitude
+    const lat = 52.2224
+    const lon = 5.28248
+    const URL = payload.maxResults
+      ? `${BASE_URL}/planner/shout-outs?maxResults=${
+          payload.maxResults
+        }&location=${lat},${lon}`
+      : `${BASE_URL}/planner/shout-outs?location=${lat},${lon}&depArrRadius=1000000`
+    console.log(URL)
+    axios
+      .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
+      .then(response => {
+        console.log(response)
+        if (response.status == 200 && response.data.data.length > 0) {
+          context.commit('setShoutOuts', response.data.data)
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
 }
