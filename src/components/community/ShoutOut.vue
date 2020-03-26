@@ -53,12 +53,8 @@ export default {
     },
   },
   methods: {
-    doSomething() {
-      console.log('hello 123')
-    },
     generateSteps() {
       const ride = this.shoutout
-      console.log(this.shoutout)
       const departure = moment(ride.departureTime),
         arrival = moment(ride.estimatedArrivalTime)
       return [
