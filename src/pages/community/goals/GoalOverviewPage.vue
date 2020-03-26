@@ -59,16 +59,14 @@
 </template>
 
 <script>
-import GoalCard from '../../../components/community/goals/GoalCard'
-import ContentPane from '../../../components/common/ContentPane'
+import GoalCard from '@/components/community/goals/GoalCard'
+import ContentPane from '@/components/common/ContentPane'
+import DonorsList from '@/components/community/goals/DonorsList'
 import { mapGetters } from 'vuex'
-import DonorsList from '../../../components/community/goals/DonorsList'
+
 export default {
   name: 'GoalOverviewPage',
   components: { DonorsList, ContentPane, GoalCard },
-  data: function() {
-    return {}
-  },
   computed: {
     ...mapGetters({
       getSavedGoals: 'sg/fetchGoals',
