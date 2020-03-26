@@ -1,53 +1,44 @@
 <template>
   <content-pane>
-    <v-row class="pa-2 flex-column">
-      <v-col>
+    <v-row class="pt-2 flex-column">
+      <v-col class="pa-0">
         <v-row class="mb-3">
-          <v-flex lg1 sm2 xs4>
+          <v-col class="shrink py-0 pr-7" lg="1" sm="2">
             <round-user-image></round-user-image>
-          </v-flex>
+            <div class="d-flex flex-row justify-center">
+              <a class="caption bewerk">Bewerk</a>
+            </div>
+          </v-col>
 
-          <v-flex body-2 mt-2>
-            <v-layout>
-              <v-flex>
-                <p class="ma-0">{{ user.fullName }}</p>
-                <p class="ma-0">{{ address }}</p>
-                <v-rating
-                  v-model="user.rating"
-                  :length="user.maxRating"
-                  background-color="yellow darken-3"
-                  color="yellow darken-3"
-                  small
-                  readonly
-                ></v-rating>
-              </v-flex>
-            </v-layout>
-          </v-flex>
-
-          <v-flex lg1 sm1>
-            <v-layout align-center justify-end fill-height>
-              <v-flex align-center>
-                <v-icon class="align-center">chevron_right</v-icon>
-              </v-flex>
-            </v-layout>
-          </v-flex>
+          <v-col class="pa-0" body-2 mt-2>
+            <v-row class="d-flex flex-column">
+              <v-col class="pa-0 pl-3 pt-3 flex-row">
+                <v-row class="d-flex flex-row shrink">
+                  <v-col
+                    cols="9"
+                    class="pa-0 d-flex flex-column"
+                    @click="navToAccount"
+                  >
+                    <span class="ma-0">{{ user.fullName }}</span>
+                    <span class="ma-0 caption text--">{{ address }}</span>
+                  </v-col>
+                  <v-col class="pa-0  shrink align-self-center">
+                    <v-icon large @click="navToAccount">chevron_right</v-icon>
+                  </v-col>
+                </v-row>
+              </v-col>
+              <v-col class="pl-0 mt-1">
+                <v-btn rounded depressed color="button" small>
+                  Beheer credits
+                </v-btn>
+                <div class="py-1"></div>
+                <v-btn rounded depressed outlined color="primary" small>
+                  Bekijk reviews
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-col>
         </v-row>
-      </v-col>
-      <v-col>
-        <v-layout row mb-2>
-          <v-flex travel-card mr-2>
-            <v-layout column align-center my-2 class="disabled">
-              <v-flex><v-icon>control_point</v-icon></v-flex>
-              <v-flex>Doelen</v-flex>
-            </v-layout>
-          </v-flex>
-          <v-flex travel-card ml-2>
-            <v-layout column align-center my-2 class="disabled">
-              <v-flex><v-icon>star_border</v-icon></v-flex>
-              <v-flex>Reviews</v-flex>
-            </v-layout>
-          </v-flex>
-        </v-layout>
       </v-col>
       <v-col class="pa-0">
         <v-layout column>
@@ -129,8 +120,8 @@ export default {
     },
   },
   methods: {
-    navToHome: function() {
-      this.$router.push('/')
+    navToAccount() {
+      this.$router.push({ name: 'account' })
     },
     logOut: function() {
       this.$keycloak.logoutFn()
@@ -157,5 +148,8 @@ export default {
 //TEMP: Just to pretend disabled buttons
 .disabled .v-icon {
   color: #ccc;
+}
+.bewerk {
+  text-decoration: underline;
 }
 </style>
