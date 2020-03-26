@@ -63,7 +63,6 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-btn @click="testMessage">Test message</v-btn>
     <v-row>
       <v-col>
         <v-btn
@@ -179,31 +178,6 @@ export default {
       this.mapSize = 'fullscreen'
       this.selectedLegs = this.selectedTrip.legs
       this.forceRerender()
-    },
-    async testMessage() {
-      const driver = await this.$store.dispatch('ps/fetchUser', { userId: 78 })
-      const recipient = {
-        managedIdentity: driver.managedIdentity,
-        givenName: driver.givenName,
-        familyName: driver.familyName,
-      }
-
-      let tripRef
-      if (!this.selectedTrip.tripRef) {
-        tripRef = 'urn:nb:pl:trip:' + this.selectedTrip.legs[0].id
-        console.log('created trip ref myself', tripRef)
-      }
-
-      console.log('tripref: ', tripRef)
-      //check
-      const recipients = [recipient]
-      this.$store.dispatch('ms/sendMessage', {
-        urn: tripRef,
-        message: 'testing...',
-        mode: 'MESSAGE',
-        recipients,
-        subject: 'some kind of subject...',
-      })
     },
   },
 }
