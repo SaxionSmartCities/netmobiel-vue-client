@@ -46,7 +46,7 @@ export default {
       type: Number,
       default: 0,
     },
-    creditsRemaining: {
+    valueRemainder: {
       type: Number,
       default: 0,
     },

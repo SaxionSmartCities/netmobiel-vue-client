@@ -1,7 +1,11 @@
 <template>
   <content-pane>
     <v-row mb-3>
-      <h1>Doelen</h1>
+      <v-col>
+        <h1 class="netmobiel">
+          >Doelen
+        </h1>
+      </v-col>
     </v-row>
     <v-row mt-6>
       <v-text-field
@@ -19,10 +23,11 @@
     </v-row>
     <v-row>
       <goal-card
-        :id="4"
-        titel="Renovatie St. Bonifatiuskerk"
-        plaatsnaam="Lichtenvoorde"
-        :credits-remaining="233"
+        :id="getSavedGoals[0].id"
+        :titel="getSavedGoals[0].title"
+        :plaatsnaam="getSavedGoals[0].location"
+        :credits-remaining="20"
+        :credits-total="100"
       ></goal-card>
     </v-row>
     <v-row mb-3 mt-3>
@@ -35,14 +40,14 @@
     <v-row>
       <v-slide-group center-active mobile-break-point="300">
         <v-slide-item
-          v-for="(item, index) in fetchListSize()"
-          :key="index"
+          v-for="item in getListGoals()"
+          :key="item.id"
           v-slot:default="{ active, toggle }"
         >
           <goal-card
-            :id="fetchGoalForIndex(index).id"
-            :titel="fetchGoalForIndex(index).title"
-            :plaatsnaam="fetchGoalForIndex(index).location"
+            :id="item.id"
+            :titel="item.title"
+            :plaatsnaam="item.location"
             :credits-remaining="20"
             :credits-total="100"
           ></goal-card>
@@ -69,24 +74,16 @@ export default {
   components: { DonorsList, ContentPane, GoalCard },
   computed: {
     ...mapGetters({
-      getSavedGoals: 'sg/fetchGoals',
+      getSavedGoals: 'sg/getGoals',
+      getTopDonors: 'sg/getTopDonorsList',
     }),
     gdonors() {
       return this.$store.getters['sg/getTopDonorsList']
     },
   },
   methods: {
-    fetchGoals() {
-      return this.$store.getters['sg/fetchGoals']
-    },
-    fetchGoalForIndex(index) {
-      return this.getSavedGoals[index]
-    },
-    fetchListSize() {
-      return this.$store.getters['sg/getGoalListSize']
-    },
-    fetchTopDonors() {
-      return this.$store.getters['sg/getTopDonorsList']
+    getListGoals() {
+      return this.$store.getters['sg/getGoals']
     },
   },
 }

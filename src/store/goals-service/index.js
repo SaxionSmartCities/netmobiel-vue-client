@@ -5,12 +5,7 @@ import actions from './actions'
 export default {
   namespaced: true,
   state: {
-    selectedGoal: {
-      title: undefined,
-      decription: undefined,
-      creditGoal: undefined,
-      nrOfDonor: undefined,
-    },
+    selectedGoalIndex: undefined,
     storedGoals: [
       {
         id: 1,

@@ -20,9 +20,9 @@
       </v-img>
     </v-row>
     <v-row>
-      <span class="title pt-4">
+      <h1 class="netmobiel">
         {{ selectedGoal.title }}
-      </span>
+      </h1>
     </v-row>
     <v-row class="mb-4">
       <span class="overline">{{ selectedGoal.location }}</span>
@@ -33,35 +33,39 @@
       </span>
     </v-row>
     <v-row>
-      <goal-progress-bar
-        name="Donateurs"
-        :number-of-donors="33"
-        :credits-remaining="43"
-        :value-total="232"
-      >
-      </goal-progress-bar>
-
-      <goal-progress-bar
-        name="credits"
-        :value="65"
-        :content-multi-line="true"
-        postfix="credits"
-        :number-of-donors="33"
-        :value-current="76"
-        :credits-remaining="43"
-        :value-total="232"
-      >
-      </goal-progress-bar>
-
-      <goal-progress-bar
-        name="Behaald"
-        :content-percentage="true"
-        :number-of-donors="33"
-        :credits-remaining="43"
-        :value-current="76"
-        :value-total="232"
-      >
-      </goal-progress-bar>
+      <v-col>
+        <goal-progress-bar
+          name="Donateurs"
+          :number-of-donors="33"
+          :credits-remaining="43"
+          :value-total="232"
+        >
+        </goal-progress-bar>
+      </v-col>
+      <v-col>
+        <goal-progress-bar
+          name="credits"
+          :value="65"
+          :content-multi-line="true"
+          postfix="credits"
+          :number-of-donors="33"
+          :value-current="76"
+          :credits-remaining="43"
+          :value-total="232"
+        >
+        </goal-progress-bar>
+      </v-col>
+      <v-col>
+        <goal-progress-bar
+          name="Behaald"
+          :content-percentage="true"
+          :number-of-donors="33"
+          :credits-remaining="43"
+          :value-current="76"
+          :value-total="232"
+        >
+        </goal-progress-bar>
+      </v-col>
     </v-row>
     <v-row>
       <v-btn large rounded block mb-4 depressed color="button">
@@ -97,14 +101,12 @@ export default {
   },
   computed: {
     selectedGoal() {
-      return this.$store.getters['sg/fetchGoals'].find(
-        goal => goal.id == this.id
-      )
+      return this.$store.getters['sg/getGoals'].find(goal => goal.id == this.id)
     },
   },
   methods: {
     fetchGoals() {
-      return this.$store.getters['sg/fetchGoals']
+      return this.$store.getters['sg/getGoals']
     },
   },
 }
