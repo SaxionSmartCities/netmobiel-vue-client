@@ -9,7 +9,7 @@
       <v-col>
         <v-row v-for="car in availableCars" :key="car.id" class="car">
           <v-col>
-            <v-row>
+            <v-row dense>
               <v-col xs4>
                 Kenteken:
               </v-col>
@@ -17,7 +17,7 @@
                 {{ car.licensePlate }}
               </v-col>
             </v-row>
-            <v-row>
+            <v-row dense>
               <v-col xs4>
                 Model:
               </v-col>
@@ -25,7 +25,7 @@
                 {{ car.brand }}&nbsp;{{ car.model }},&nbsp;{{ car.color }}
               </v-col>
             </v-row>
-            <v-row>
+            <v-row dense>
               <v-col xs5>
                 <v-btn
                   small
@@ -116,19 +116,13 @@ export default {
         ...profile,
         ridePlanOptions: { ...profile.ridePlanOptions, selectedCarId: car.id },
       })
-      // navigate back in history and restore models from history state
-      this.$router.go(-1)
     },
     removeCar(car) {
       // Remove car in the backend.
-      this.$store.dispatch('cs/removeCar', car).then(() => {
-        this.$store.dispatch('cs/fetchCars')
-      })
+      this.$store.dispatch('cs/removeCar', car)
       // Update profile if the car that has been removed the default car is.
-      const profile = this.$store.getters['ps/getUser'].profile
-      if (profile.ridePlanOptions.selectedCarId === car.id) {
-        profile.ridePlanOptions.selectedCarId = -1
-        this.$store.dispatch('updateProfile', profile)
+      if (this.selectedCarId === car.id) {
+        this.selectAlternativeCar(this.availableCars[0])
       }
     },
   },
@@ -141,6 +135,8 @@ export default {
   border-radius: 7px;
   padding: 0 1em;
   margin-top: 1em;
+  padding-left: 4px;
+  padding-right: 4px;
 }
 .car:first-child {
   margin-top: 0;
