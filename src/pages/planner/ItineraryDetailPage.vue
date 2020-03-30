@@ -7,7 +7,9 @@
           :legs="selectedLegs"
           :map-size-prop="mapSize"
           @sizeChanged="onMapSizeChanged"
-        ></route-map>
+          @closeMap="showMap = false"
+        >
+        </route-map>
       </v-col>
     </v-row>
     <v-row class=" flex-column">
@@ -72,7 +74,7 @@
           block
           mb-4
           depressed
-          color="primairy"
+          color="primary"
           @click="showFullRouteOnMap()"
         >
           bekijk op de kaart
@@ -162,9 +164,14 @@ export default {
         .then(() => this.$router.push('/tripPlanSubmitted'))
     },
     onLegSelected({ leg, step }) {
-      this.selectedLegs = [leg]
-      this.selectedLegsIndex = step
-      this.forceRerender()
+      if (this.selectedLegsIndex === step && this.showMap) {
+        this.showMap = false
+        this.selectedLegsIndex = null
+      } else {
+        this.selectedLegs = [leg]
+        this.selectedLegsIndex = step
+        this.forceRerender()
+      }
     },
     forceRerender() {
       // Remove my-component from the DOM
