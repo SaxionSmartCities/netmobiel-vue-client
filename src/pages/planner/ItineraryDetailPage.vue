@@ -7,7 +7,9 @@
           :legs="selectedLegs"
           :map-size-prop="mapSize"
           @sizeChanged="onMapSizeChanged"
-        ></route-map>
+          @closeMap="showMap = false"
+        >
+        </route-map>
       </v-col>
     </v-row>
     <v-row class=" flex-column">
@@ -72,7 +74,7 @@
           block
           mb-4
           depressed
-          color="primairy"
+          color="primary"
           @click="showFullRouteOnMap()"
         >
           bekijk op de kaart
