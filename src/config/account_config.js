@@ -12,7 +12,7 @@ export default {
     { title: 'Plaats', key: '' },
   ],
   'bereikbaar op': [
-    { title: 'E-mailadres', key: '' },
+    { title: 'E-mailadres', key: 'email' },
     { title: 'Telefoonnummer', key: '' },
   ],
 }

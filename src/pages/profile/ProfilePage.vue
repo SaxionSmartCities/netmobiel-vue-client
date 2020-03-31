@@ -17,18 +17,26 @@
                   <v-col
                     cols="9"
                     class="pa-0 d-flex flex-column"
-                    @click="navToAccount"
+                    @click="navTo('account')"
                   >
                     <span class="ma-0">{{ user.fullName }}</span>
                     <span class="ma-0 caption text--">{{ address }}</span>
                   </v-col>
                   <v-col class="pa-0  shrink align-self-center">
-                    <v-icon large @click="navToAccount">chevron_right</v-icon>
+                    <v-icon large @click="navTo('account')">
+                      chevron_right
+                    </v-icon>
                   </v-col>
                 </v-row>
               </v-col>
               <v-col class="pl-0 mt-1">
-                <v-btn rounded depressed color="button" small>
+                <v-btn
+                  rounded
+                  depressed
+                  @click="navTo('credits')"
+                  color="button"
+                  small
+                >
                   Beheer credits
                 </v-btn>
                 <div class="py-1"></div>
@@ -120,8 +128,8 @@ export default {
     },
   },
   methods: {
-    navToAccount() {
-      this.$router.push({ name: 'account' })
+    navTo(name) {
+      this.$router.push({ name: name })
     },
     logOut: function() {
       this.$keycloak.logoutFn()

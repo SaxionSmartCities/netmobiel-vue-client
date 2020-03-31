@@ -59,6 +59,7 @@ const router = new Router({
     {
       path: '/credits',
       component: Credits,
+      name: 'credits',
     },
     {
       path: '/profile',

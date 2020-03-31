@@ -1,23 +1,28 @@
 <template>
   <content-pane>
     <v-row>
-      <v-col>
+      <v-col class="px-0">
         <span class="headline">Account</span>
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="py-0">
+      <v-col class="pa-0">
         <div v-for="section in sections" :key="section">
-          <span class="text-uppercase caption text-color-primary">
+          <span
+            class="text-uppercase caption font-weight-bold text-color-primary"
+          >
             {{ section }}
           </span>
           <v-divider></v-divider>
           <template v-for="(item, index) in accountConfig[section]">
-            <v-row :key="item.title">
-              <v-col cols="6">
-                <span> {{ item.title }}</span>
+            <v-row
+              :key="item.title"
+              :class="{ 'mb-3': index === accountConfig[section].length - 1 }"
+            >
+              <v-col cols="5" class="d-flex flex-row">
+                <span class="align-self-center body-2"> {{ item.title }}</span>
               </v-col>
-              <v-col cols="6">
+              <v-col cols="6" class="body-2 font-weight-thin">
                 {{ user[item.key] }}
               </v-col>
             </v-row>
@@ -53,8 +58,8 @@ export default {
     },
   },
   created() {
-    console.log('account config' + JSON.stringify(account_config, null, 2))
-    console.log('keys', Object.keys(account_config))
+    // console.log('account config' + JSON.stringify(account_config, null, 2))
+    // console.log('keys', Object.keys(account_config))
   },
 }
 </script>
