@@ -55,6 +55,10 @@ export default {
         { name: 'Beoordeel je reis', value: true },
         { name: 'Deel mijn reviews met anderen', value: false },
       ],
+      credits: {
+        creditAmount: 0,
+        creditHistory: [],
+      },
     },
   },
   actions,

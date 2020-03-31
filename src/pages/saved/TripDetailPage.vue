@@ -7,6 +7,7 @@
           :legs="selectedLegs"
           :map-size-prop="mapSize"
           @sizeChanged="onMapSizeChanged"
+          @closeMap="showMap = false"
         ></route-map>
       </v-col>
     </v-row>
@@ -60,7 +61,7 @@
           block
           mb-4
           depressed
-          color="primairy"
+          color="primary"
           @click="contactDriver"
         >
           Stuur bericht naar chauffeur
@@ -76,7 +77,7 @@
           block
           mb-4
           depressed
-          color="primairy"
+          color="primary"
           @click="showFullRouteOnMap()"
         >
           Bekijk op de kaart
