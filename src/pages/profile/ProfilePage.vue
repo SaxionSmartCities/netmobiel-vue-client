@@ -1,51 +1,87 @@
 <template>
-  <content-pane>
+  <content-pane :clearpadding="true" class="pa-0">
     <v-row class="pt-2 flex-column">
-      <v-col class="pa-0">
+      <v-col>
         <v-row class="mb-3">
-          <v-col class="shrink py-0 pr-7" lg="1" sm="2">
-            <round-user-image></round-user-image>
+          <v-col class="shrink pa-0 pr-3">
+            <round-user-image
+              :image-size="92"
+              :avatar-size="100"
+            ></round-user-image>
             <div class="d-flex flex-row justify-center">
               <a class="caption bewerk">Bewerk</a>
             </div>
           </v-col>
-
-          <v-col class="pa-0" body-2 mt-2>
-            <v-row class="d-flex flex-column">
-              <v-col class="pa-0 pl-3 pt-3 flex-row">
-                <v-row class="d-flex flex-row shrink">
-                  <v-col
-                    cols="9"
-                    class="pa-0 d-flex flex-column"
-                    @click="navTo('account')"
+          <v-col class="flex-column">
+            <v-row>
+              <div
+                class="d-flex grow align-self-center flex-column user-text"
+                @click="navTo('account')"
+              >
+                <span class="shrink">{{ user.fullName }}</span>
+                <span class="caption text--gray">
+                  {{ user.address || 'Gasthuisstraat 9, Bredevoort' }}
+                </span>
+              </div>
+              <v-icon large @click="navTo('account')">
+                chevron_right
+              </v-icon>
+            </v-row>
+            <v-row class="mt-5">
+              <v-col class="pa-0 shrink">
+                <div>
+                  <v-btn
+                    rounded
+                    depressed
+                    color="button"
+                    small
+                    @click="navTo('credits')"
                   >
-                    <span class="ma-0">{{ user.fullName }}</span>
-                    <span class="ma-0 caption text--">{{ address }}</span>
-                  </v-col>
-                  <v-col class="pa-0  shrink align-self-center">
-                    <v-icon large @click="navTo('account')">
-                      chevron_right
-                    </v-icon>
-                  </v-col>
-                </v-row>
-              </v-col>
-              <v-col class="pl-0 mt-1">
-                <v-btn
-                  rounded
-                  depressed
-                  @click="navTo('credits')"
-                  color="button"
-                  small
-                >
-                  Beheer credits
-                </v-btn>
-                <div class="py-1"></div>
-                <v-btn rounded depressed outlined color="primary" small>
-                  Bekijk reviews
-                </v-btn>
+                    Beheer credits
+                  </v-btn>
+                  <div class="py-1"></div>
+                  <v-btn rounded depressed outlined color="primary" small>
+                    Bekijk reviews
+                  </v-btn>
+                </div>
               </v-col>
             </v-row>
           </v-col>
+          <!--          <v-col col="10">-->
+          <!--            <v-row class="d-flex flex-column">-->
+          <!--              <v-col class="py-0 pt-3 flex-row">-->
+          <!--                <v-row class="d-flex flex-row shrink">-->
+          <!--                  <v-col-->
+          <!--                    class="pa-0 d-flex flex-column"-->
+          <!--                    @click="navTo('account')"-->
+          <!--                  >-->
+          <!--                    <span class="ma-0">{{ user.fullName }}</span>-->
+          <!--                    <span class="ma-0 caption">{{ address }}</span>-->
+          <!--                  </v-col>-->
+          <!--                  <v-col class="pa-0  shrink align-self-center">-->
+          <!--                    <v-icon large @click="navTo('account')">-->
+          <!--                      chevron_right-->
+          <!--                    </v-icon>-->
+          <!--                  </v-col>-->
+          <!--                </v-row>-->
+          <!--              </v-col>-->
+          <!--              <v-col class="pl-0 mt-1">-->
+          <!--                <v-btn-->
+          <!--                  rounded-->
+          <!--                  depressed-->
+          <!--                  @click="navTo('credits')"-->
+          <!--                  color="button"-->
+          <!--                  small-->
+          <!--                >-->
+          <!--                  Beheer credits-->
+          <!--                </v-btn>-->
+          <!--                <div class="py-1"></div>-->
+          <!--                <v-btn rounded depressed outlined color="primary" small>-->
+          <!--                  Bekijk reviews-->
+          <!--                </v-btn>-->
+          <!--              </v-col>-->
+          <!--            </v-row>-->
+          <!--          </v-col>-->
         </v-row>
       </v-col>
       <v-col class="pa-0">
@@ -140,6 +176,10 @@ export default {
 </script>
 
 <style lang="scss">
+.user-text {
+  flex: 0 1 0;
+}
+
 .theme--light.v-icon {
   color: $color-green;
 }
