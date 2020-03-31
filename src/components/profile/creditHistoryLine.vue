@@ -1,16 +1,21 @@
 <template>
-  <v-col class="py-0 my-2">
+  <v-col class="py-0 my-3 ">
     <v-row class="py-0 my-0" align="center">
-      <v-col class="py-0 my-0"
-        ><strong>{{ formatDate }}</strong></v-col
-      >
+      <v-col class="pa-0 pb-2 my-0 body-2 font-weight-medium">
+        {{ formatDate }}
+      </v-col>
     </v-row>
     <v-row align="center" class="py-0 my-0">
-      <v-col class="py-0 my-0" cols="2">{{ formatTime }}</v-col>
-      <v-col class="py-0 my-0">{{ description }}</v-col>
-      <v-col class="py-0 my-0" :class="transactionColor" cols="2">
-        {{ amountFormat }}</v-col
+      <v-col class="pa-0 my-0 body-2 align-self-start text-gray shrink mr-2">
+        {{ formatTime }}
+      </v-col>
+      <v-col class="pa-0 my-0 body-2">{{ description }}</v-col>
+      <v-col
+        class="pa-0 my-0 body-2 align-self-end shrink"
+        :class="transactionColor"
       >
+        {{ amountFormat }}
+      </v-col>
     </v-row>
   </v-col>
 </template>
@@ -29,19 +34,19 @@ export default {
       return amount
     },
     description() {
-      let type = this.transaction.type
+      const type = this.transaction.type
       let message = 'Onbekende transactie'
-      if (type == 'drive') {
+      if (type === 'drive') {
         message =
           'Rit met ' +
           this.transaction.otherParty +
           ' naar ' +
           this.transaction.destinationRide
-      } else if (type == 'reward') {
+      } else if (type === 'reward') {
         message = 'Reward uitgezocht van ' + this.transaction.otherParty
-      } else if (type == 'donation') {
+      } else if (type === 'donation') {
         message = 'Donatie aan ' + this.transaction.otherParty
-      } else if (type == 'addedCredits') {
+      } else if (type === 'addedCredits') {
         message = 'Credits opgewaardeerd'
       }
       return message
@@ -50,9 +55,7 @@ export default {
       let dateString = moment(this.transaction.date)
         .locale('nl')
         .format('dddd D MMMM YYYY')
-      let dateUpperString =
-        dateString.charAt(0).toUpperCase() + dateString.substring(1)
-      return dateUpperString
+      return dateString.charAt(0).toUpperCase() + dateString.substring(1)
     },
     formatTime() {
       return moment(this.transaction.date)
@@ -70,6 +73,9 @@ export default {
 }
 </script>
 <style>
+.text-gray {
+  color: gray;
+}
 .text-green {
   color: #2e8997;
 }

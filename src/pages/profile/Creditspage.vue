@@ -1,7 +1,7 @@
 <template>
   <content-pane>
     <v-row align="center">
-      <v-col>
+      <v-col class="px-0">
         <h3>Credits</h3>
       </v-col>
     </v-row>
@@ -9,10 +9,10 @@
       <v-divider />
     </v-row>
     <v-row align="center">
-      <v-col cols="2">
+      <v-col class="px-0 mr-2 shrink">
         <strong>Saldo</strong>
       </v-col>
-      <v-col> {{ creditAmount }} credits </v-col>
+      <v-col class="body-2"> {{ creditAmount }} credits </v-col>
     </v-row>
     <v-row>
       <v-divider />
@@ -26,8 +26,9 @@
           color="primary"
           disabled
           @click="router.push('/addCredits')"
-          >Doel steunen</v-btn
         >
+          Doel steunen
+        </v-btn>
       </v-col>
       <v-col>
         <v-btn
@@ -39,8 +40,8 @@
           color="primary"
           @click="router.push('/addCredits')"
         >
-          Rewards</v-btn
-        >
+          Rewards
+        </v-btn>
       </v-col>
     </v-row>
     <v-row align="center">
@@ -53,12 +54,13 @@
           disabled
           color="button"
           @click="router.push('/addCredits')"
-          >Credits toevoegen</v-btn
         >
+          Credits toevoegen
+        </v-btn>
       </v-col>
     </v-row>
     <v-row align="center">
-      <v-col>
+      <v-col class="px-0">
         <h3 class="text-primary-uppercase">Reizen</h3>
       </v-col>
     </v-row>
@@ -93,7 +95,7 @@ export default {
       return this.$store.getters['ps/getCreditHistory']
     },
   },
-  created: function() {
+  created() {
     this.$store.commit('ui/showBackButton')
     this.$store.dispatch('ps/fetchCreditAmount')
     this.$store.dispatch('ps/fetchCreditHistory')
