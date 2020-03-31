@@ -20,7 +20,6 @@
     <v-row align="center">
       <v-col class="px-0">
         <v-btn
-          large
           rounded
           outlined
           color="primary"
@@ -32,7 +31,6 @@
       </v-col>
       <v-col class="px-0">
         <v-btn
-          large
           rounded
           block
           outlined
