@@ -9,7 +9,7 @@
       <v-divider />
     </v-row>
     <v-row align="center">
-      <v-col class="px-0 mr-2 shrink">
+      <v-col class="px-0 body-1 shrink">
         <strong>Saldo</strong>
       </v-col>
       <v-col class="body-2"> {{ creditAmount }} credits </v-col>
@@ -18,7 +18,7 @@
       <v-divider />
     </v-row>
     <v-row align="center">
-      <v-col>
+      <v-col class="px-0">
         <v-btn
           large
           rounded
@@ -30,7 +30,7 @@
           Doel steunen
         </v-btn>
       </v-col>
-      <v-col>
+      <v-col class="px-0">
         <v-btn
           large
           rounded
@@ -45,7 +45,7 @@
       </v-col>
     </v-row>
     <v-row align="center">
-      <v-col>
+      <v-col class="px-0">
         <v-btn
           large
           rounded
@@ -61,7 +61,7 @@
     </v-row>
     <v-row align="center">
       <v-col class="px-0">
-        <h3 class="text-primary-uppercase">Reizen</h3>
+        <h3 class="text-uppercase caption text-color-primary">overzicht</h3>
       </v-col>
     </v-row>
     <v-row>
@@ -75,7 +75,7 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-import CreditHistoryLine from '@/components/profile/creditHistoryLine.vue'
+import CreditHistoryLine from '@/components/profile/CreditHistoryLine.vue'
 export default {
   name: 'Credits',
   components: {
