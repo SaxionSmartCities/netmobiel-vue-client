@@ -5,6 +5,7 @@ import store from './store'
 Vue.use(Router)
 
 import CommunityOverviewPage from './pages/community/CommunityOverviewPage.vue'
+import Credits from './pages/profile/Creditspage.vue'
 import InboxPage from './pages/community/messages/InboxPage.vue'
 import ConversationPage from './pages/community/messages/ConversationPage.vue'
 import ItineraryDetailPage from './pages/planner/ItineraryDetailPage.vue'
@@ -53,6 +54,10 @@ const router = new Router({
       path: '/createUser',
       component: RegistrationPage,
       name: 'createUser',
+    },
+    {
+      path: '/credits',
+      component: Credits,
     },
     {
       path: '/profile',
