@@ -7,15 +7,15 @@
         </router-link>
       </v-col>
       <v-col>
-        <h1>
+        <h3>
           {{ timeOfDayGreeting }},
           {{ user.fullName }}
-        </h1>
+        </h3>
       </v-col>
     </v-row>
     <v-row>
       <v-col class="px-1">
-        <span>
+        <span class="body-1">
           Welkom bij Netmobiel, dé mobiliteitsapp van de Achterhoek en
           omstreken.
         </span>
@@ -43,8 +43,12 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="px-1">
-        <h4 class="netmobiel">Jouw activiteiten</h4>
+      <v-col class="px-1 pb-0 pt-2">
+        <span
+          class="text-uppercase font-weight-medium text-color-primary caption"
+        >
+          Jouw activiteiten
+        </span>
       </v-col>
     </v-row>
     <v-row class="pt-0">
@@ -73,7 +77,7 @@
       </v-col>
       <v-col v-else class="pt-0">
         <v-row v-for="(ride, index) in rides" :key="index" xs12>
-          <v-col class="pa-1">
+          <v-col class="pa-1 pt-0">
             <ride-card
               class="my-2"
               :index="index"

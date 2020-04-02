@@ -1,5 +1,5 @@
 // Import variables --> bootstrap --> this file
-@import "_variables";
+@import '_variables';
 
 // App-specific configuration
 .v-application {
@@ -8,21 +8,19 @@
   font-size: $font-size;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
 }
-.v-application--wrap{
+.v-application--wrap {
   //Waarom moet dit?
-  background:#ffffff;
+  background: #ffffff;
 }
 
-.v-expansion-panel:before{
+.v-expansion-panel:before {
   box-shadow: none !important;
 }
 
 button.button {
   color: white !important;
 }
-
 
 h1 {
   font-size: $h1-font-size;
@@ -47,7 +45,7 @@ h3 {
   background: $color-primary;
 }
 
-.background-white{
+.background-white {
   background: $color-white;
 }
 
@@ -73,10 +71,9 @@ h3 {
   border-radius: $border-radius !important;
 }
 
-.full-height{
-  height:100%;
+.full-height {
+  height: 100%;
 }
-
 
 .selected-map {
   color: $color-secondary !important;
