@@ -10,18 +10,22 @@
         </v-radio-group>
       </v-col>
     </v-row>
-    <grouped-shout-outs
-      :label="label"
-      :shoutouts="getShoutOuts"
-      @shoutoutSelected="onShoutoutSelected"
-    />
+    <v-row v-for="group in Object.keys(groupedShoutOuts)" :key="group">
+      <v-col>
+        <grouped-shout-outs
+          :label="formatDate(group)"
+          :shoutouts="groupedShoutOuts[group]"
+          @shoutoutSelected="onShoutoutSelected"
+        />
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 
 <script>
+import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane'
 import GroupedShoutOuts from '@/components/community/GroupedShoutOuts'
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'ShoutOutOverview',
@@ -29,13 +33,21 @@ export default {
   data() {
     return {
       baseLocation: 'Home',
-      label: 'Morgen',
     }
   },
   computed: {
-    ...mapGetters({
-      getShoutOuts: 'is/getShoutOuts',
-    }),
+    groupedShoutOuts() {
+      const shoutouts = this.$store.getters['is/getShoutOuts']
+      let groupedShoutOuts = {}
+      shoutouts.map(s => {
+        const date = moment(s.departureTime).format('YYYYMMDD')
+        if (!groupedShoutOuts[date]) {
+          groupedShoutOuts[date] = []
+        }
+        groupedShoutOuts[date].push(s)
+      })
+      return groupedShoutOuts
+    },
   },
   created() {
     this.$store.commit('ui/showBackButton')
@@ -49,6 +61,13 @@ export default {
   methods: {
     onShoutoutSelected(index) {
       this.$router.push({ name: 'shoutout', params: { id: index } })
+    },
+    formatDate(date) {
+      return date
+        ? moment(date)
+            .locale('nl')
+            .format('dddd D MMMM')
+        : ''
     },
   },
 }
