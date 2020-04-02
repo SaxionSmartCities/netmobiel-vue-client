@@ -4,6 +4,8 @@ import moment from 'moment'
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_PROFILE_SERVICE_API_KEY = config.GRAVITEE_PROFILE_SERVICE_API_KEY
+const GRAVITEE_RIDESHARE_SERVICE_API_KEY =
+  config.GRAVITEE_RIDESHARE_SERVICE_API_KEY
 
 function generateHeader(key) {
   return {
@@ -29,6 +31,18 @@ export default {
             context.commit('setProfile', profile)
           }
         }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
+  fetchUser: async (context, { userId }) => {
+    const URL = BASE_URL + `/rideshare/users/${userId}`
+    return await axios
+      .get(URL, { headers: generateHeader(GRAVITEE_RIDESHARE_SERVICE_API_KEY) })
+      .then(response => {
+        return response.data
       })
       .catch(error => {
         // eslint-disable-next-line
