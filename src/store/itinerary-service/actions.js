@@ -190,4 +190,27 @@ export default {
         console.log(error)
       })
   },
+  fetchTrip: (context, payload) => {
+    const tripId = payload.id
+    const URL = `${BASE_URL}/planner/trips/${tripId}`
+    axios
+      .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
+      .then(response => {
+        if (response.status == 200) {
+          context.commit('setSelectedTrip', response.data)
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het ophalen van opgeslagen reizen.',
+            timeout: 0,
+          },
+          { root: true }
+        )
+      })
+  },
 }

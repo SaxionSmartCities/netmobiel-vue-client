@@ -2,7 +2,7 @@
   <v-card
     outlined
     class="shoutout-container"
-    @click="$emit('shoutoutSelected', index)"
+    @click="$emit('shoutoutSelected', shoutoutId)"
   >
     <v-row class="mb-2">
       <v-col class="shrink">
@@ -48,6 +48,9 @@ export default {
     shoutout: { type: Object, required: true },
   },
   computed: {
+    shoutoutId() {
+      return this.shoutout.id
+    },
     profile() {
       return this.$store.getters['ps/getUser']
     },

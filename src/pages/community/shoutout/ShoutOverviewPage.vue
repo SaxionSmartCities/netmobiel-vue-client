@@ -10,7 +10,11 @@
         </v-radio-group>
       </v-col>
     </v-row>
-    <grouped-shout-outs :label="label" :shoutouts="getShoutOuts" />
+    <grouped-shout-outs
+      :label="label"
+      :shoutouts="getShoutOuts"
+      @shoutoutSelected="onShoutoutSelected"
+    />
   </content-pane>
 </template>
 
@@ -44,10 +48,7 @@ export default {
   },
   methods: {
     onShoutoutSelected(index) {
-      this.$router.push({
-        name: 'shoutout',
-        params: { id: index },
-      })
+      this.$router.push({ name: 'shoutout', params: { id: index } })
     },
   },
 }
