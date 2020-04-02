@@ -5,6 +5,7 @@ import store from './store'
 Vue.use(Router)
 
 import CommunityOverviewPage from './pages/community/CommunityOverviewPage.vue'
+import Credits from './pages/profile/Creditspage.vue'
 import InboxPage from './pages/community/messages/InboxPage.vue'
 import ConversationPage from './pages/community/messages/ConversationPage.vue'
 import ItineraryDetailPage from './pages/planner/ItineraryDetailPage.vue'
@@ -17,9 +18,9 @@ import OnboardingComplete from './pages/OnboardingComplete.vue'
 import OnboardingPage from './pages/OnboardingPage.vue'
 import PrivacySecurityPage from './pages/profile/PrivacySecurityPage.vue'
 import PrivacyStatementPage from './pages/profile/PrivacyStatementPage.vue'
-import ProfileCarsPage from './pages/profile/ProfileCarsPage.vue'
-import ProfileAddCarPage from './pages/profile/ProfileAddCarPage.vue'
-import ProfileEditCarPage from './pages/profile/ProfileEditCarPage.vue'
+import CarsPage from './pages/planner/CarsPage.vue'
+import CarAddPage from './pages/planner/CarAddPage.vue'
+import CarEditPage from './pages/planner/CarEditPage.vue'
 import ProfilePage from './pages/profile/ProfilePage.vue'
 import SearchLocationPage from './pages/planner/SearchLocationPage'
 import SearchOptionsPage from './pages/planner/SearchOptionsPage'
@@ -53,6 +54,10 @@ const router = new Router({
       path: '/createUser',
       component: RegistrationPage,
       name: 'createUser',
+    },
+    {
+      path: '/credits',
+      component: Credits,
     },
     {
       path: '/profile',
@@ -155,19 +160,19 @@ const router = new Router({
       name: 'modeSelectionPage',
     },
     {
-      path: '/profileCars',
-      component: ProfileCarsPage,
-      name: 'profileCarsPage',
+      path: '/Cars',
+      component: CarsPage,
+      name: 'CarsPage',
     },
     {
-      path: '/profileAddCar',
-      component: ProfileAddCarPage,
-      name: 'profileAddCarPage',
+      path: '/AddCar',
+      component: CarAddPage,
+      name: 'CarAddPage',
     },
     {
-      path: '/profileEditCar',
-      component: ProfileEditCarPage,
-      name: 'profileEditCarPage',
+      path: '/EditCar',
+      component: CarEditPage,
+      name: 'CarEditPage',
     },
     {
       path: '/onboardingPage',

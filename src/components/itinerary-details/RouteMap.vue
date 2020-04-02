@@ -21,26 +21,33 @@
     </mgl-map>
     <div class="ghost-map"></div>
     <v-row v-if="!isLoading">
-      <v-btn
-        v-if="mapSize !== 'fullscreen'"
-        fab
-        small
-        class="map-fullscreen"
-        @click="mapSize = 'fullscreen'"
-      >
-        <v-icon>fullscreen</v-icon>
-      </v-btn>
-      <v-btn
-        v-if="mapSize === 'fullscreen'"
-        class="map-fullscreen-exit"
-        fab
-        small
-        @click="mapSize = 'small'"
-      >
-        <v-icon>
-          fullscreen_exit
-        </v-icon>
-      </v-btn>
+      <v-col>
+        <v-btn
+          v-if="mapSize !== 'fullscreen'"
+          fab
+          small
+          class="map-fullscreen"
+          @click="mapSize = 'fullscreen'"
+        >
+          <v-icon>fullscreen</v-icon>
+        </v-btn>
+        <v-btn
+          v-if="mapSize === 'fullscreen'"
+          class="map-fullscreen-exit"
+          fab
+          small
+          @click="mapSize = 'small'"
+        >
+          <v-icon>
+            fullscreen_exit
+          </v-icon>
+        </v-btn>
+      </v-col>
+      <v-col>
+        <v-btn fab small class="map-close" @click="$emit('closeMap')">
+          <v-icon>close</v-icon>
+        </v-btn>
+      </v-col>
     </v-row>
   </div>
 </template>
@@ -332,5 +339,17 @@ export default {
   left: 10px;
   position: absolute;
   z-index: 4;
+}
+
+.map-close {
+  top: 10px;
+  border-radius: 50%;
+  height: 40px;
+  min-height: 40px;
+  width: 40px;
+  min-width: 40px !important;
+  left: 87vw;
+  z-index: 100;
+  position: absolute;
 }
 </style>

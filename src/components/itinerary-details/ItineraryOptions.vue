@@ -63,7 +63,7 @@
                   block
                   mb-4
                   depressed
-                  color="primairy"
+                  color="primary"
                   @click="closeDialog"
                 >
                   Rit toch bewaren

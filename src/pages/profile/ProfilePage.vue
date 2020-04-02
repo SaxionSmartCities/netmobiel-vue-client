@@ -42,6 +42,14 @@
             </v-layout>
           </v-flex>
           <v-flex travel-card ml-2>
+            <v-layout column align-center my-2>
+              <v-flex @click="$router.push('/credits')"
+                ><v-icon>monetization_on</v-icon></v-flex
+              >
+              <v-flex>Credits beheren</v-flex>
+            </v-layout>
+          </v-flex>
+          <v-flex travel-card ml-2>
             <v-layout column align-center my-2 class="disabled">
               <v-flex><v-icon>star_border</v-icon></v-flex>
               <v-flex>Reviews</v-flex>
