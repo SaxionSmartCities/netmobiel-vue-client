@@ -51,15 +51,14 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.getters['ps/getUser']
+      return this.$store.getters['ps/getUser'].profile
     },
     sections() {
       return Object.keys(account_config)
     },
   },
   created() {
-    // console.log('account config' + JSON.stringify(account_config, null, 2))
-    // console.log('keys', Object.keys(account_config))
+    this.$store.commit('ui/showBackButton')
   },
 }
 </script>
