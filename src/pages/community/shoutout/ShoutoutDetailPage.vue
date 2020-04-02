@@ -55,7 +55,7 @@
           mb-4
           depressed
           color="button"
-          @click="saveTrip"
+          @click="bookTrip"
         >
           Rit aanbieden
         </v-btn>
@@ -100,6 +100,9 @@ export default {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
+    bookTrip() {
+      //TODO:
+    },
     formatDate() {
       return this.selectedTrip.departureTime
         ? moment(this.selectedTrip.departureTime)
@@ -114,17 +117,19 @@ export default {
       const { selectedTrip } = this
       const departure = moment(selectedTrip.departureTime),
         arrival = moment(selectedTrip.estimatedArrivalTime)
+      const from = selectedTrip.from ? selectedTrip.from.label : '',
+        to = selectedTrip.to ? selectedTrip.to.label : ''
       return [
         {
           mode: 'CAR',
           startTime: departure.toDate().getTime(),
           endTime: arrival.toDate().getTime(),
-          from: { name: selectedTrip.from.label },
+          from: { name: from },
         },
         {
           mode: 'ARRIVAL',
           startTime: arrival.toDate().getTime(),
-          from: { name: selectedTrip.to.label },
+          from: { name: to },
         },
       ]
     },
