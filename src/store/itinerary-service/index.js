@@ -11,6 +11,7 @@ export default {
       date: undefined,
       itinerary: {},
     },
+    shoutOuts: [],
     plannedTripsCount: 0,
     plannedTrips: [],
     planningRequest: {
