@@ -57,6 +57,6 @@ export default {
     visible: false,
     mode: 'ARRIVAL',
     label: 'Aankomst',
-    icon: 'outlined_flag',
+    icon: '',
   },
 }
