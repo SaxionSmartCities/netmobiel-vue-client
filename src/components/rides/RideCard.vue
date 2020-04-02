@@ -3,7 +3,7 @@
     <v-row no-gutters>
       <v-col>
         <v-card-title justify-center>
-          <span>Vertrek</span>
+          <h5>Vertrek</h5>
           <v-spacer />
           <span class="booking-count">
             {{ ride.bookings.length }} boekingen

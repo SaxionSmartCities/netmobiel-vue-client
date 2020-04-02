@@ -1,131 +1,155 @@
 <template>
   <content-pane>
-    <v-row dense class="pa-0">
-      <v-col class="mb-3 py-0">
-        <h1>Rit details</h1>
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col class="py-0">
-        <v-divider />
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col cols="4">Datum</v-col>
-      <v-col cols="8" class="departure-date">
-        {{ formatDate() }}
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col cols="4">Reisduur</v-col>
-      <v-col cols="8">
-        {{ formatDuration() }}
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col cols="4">Boekingen</v-col>
-      <v-col cols="8">
-        {{ ride.bookings.length }}
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col cols="4">Auto</v-col>
-      <v-col cols="8">{{ ride.car.brand }} {{ ride.car.model }}</v-col>
-    </v-row>
-    <v-row v-if="ride.recurrence" dense>
-      <v-col cols="4">Herhalen</v-col>
-      <v-col cols="8">
-        {{ formatRecurrence() }}
-        <table v-if="ride.recurrence.unit == 'WEEK'" class="equal-width">
-          <tr>
-            <td>ma</td>
-            <td>di</td>
-            <td>wo</td>
-            <td>do</td>
-            <td>vr</td>
-            <td>za</td>
-            <td>zo</td>
-          </tr>
-          <tr>
-            <td v-for="day in [0, 1, 2, 3, 4, 5, 6]" :key="day">
-              <v-icon>
-                {{ recursOn(day) ? 'done' : '' }}
-              </v-icon>
-            </td>
-          </tr>
-        </table>
-      </v-col>
-    </v-row>
-    <v-row class="pb-3">
-      <v-col>
-        <v-divider />
-      </v-col>
-    </v-row>
-    <v-row
-      v-for="(leg, index) in generateSteps()"
-      :key="index"
-      class="mx-3 py-0"
-    >
-      <itinerary-leg :leg="leg" />
-    </v-row>
-    <v-row v-if="ride.bookings.length > 0">
-      <v-col class="mx-1">
-        <v-btn large rounded block outlined color="primary" to="/community">
-          Bericht sturen naar passagier
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row class="mb-2">
-      <v-col>
-        <h3 class="mb-2">Wijzigen</h3>
-        <v-divider />
-        <v-row @click="checkDeleteTrip()">
-          <v-col cols="3" class="text-center">
-            <v-icon>lock</v-icon>
-          </v-col>
-          <v-col>
-            Reis annuleren
-          </v-col>
-        </v-row>
-        <v-dialog v-model="warningDialog">
-          <v-card>
-            <v-card-title class="headline">
-              Weet u dit zeker?
-            </v-card-title>
+    <div class="d-flex flex-column grow px-2 py-3">
+      <v-row dense class="pa-0">
+        <v-col class="mb-3 py-0">
+          <h3>Rit details</h3>
+        </v-col>
+      </v-row>
+      <v-row dense>
+        <v-col class="py-0">
+          <v-divider />
+        </v-col>
+      </v-row>
+      <v-row class="py-1" dense>
+        <v-col cols="4">
+          <span class="body-1">Datum</span>
+        </v-col>
+        <v-col class="departure-date">
+          <span class="body-1 font-weight-light">
+            {{ formatDate() }}
+          </span>
+        </v-col>
+      </v-row>
+      <v-row class="py-1" dense>
+        <v-col cols="4">
+          <span class="body-1">Reisduur</span>
+        </v-col>
+        <v-col>
+          <span class="body-1 font-weight-light">
+            {{ formatDuration() }}
+          </span>
+        </v-col>
+      </v-row>
+      <v-row class="py-1" dense>
+        <v-col cols="4">
+          <span class="body-1">Boekingen</span>
+        </v-col>
+        <v-col>
+          <span class="body-1 font-weight-light">
+            {{ ride.bookings.length }}
+          </span>
+        </v-col>
+      </v-row>
+      <v-row class="py-1" dense>
+        <v-col cols="4">
+          <span class="body-1">Auto</span>
+        </v-col>
+        <v-col>
+          <span class="body-1 font-weight-light">
+            {{ ride.car.brand }} {{ ride.car.model }}
+          </span>
+        </v-col>
+      </v-row>
+      <v-row v-if="ride.recurrence" class="py-1" dense>
+        <v-col cols="4">
+          <span class="body-1">Herhalingen</span>
+        </v-col>
+        <v-col>
+          <span class="body-1 font-weight-light">
+            {{ formatRecurrence() }}
+          </span>
+          <table v-if="ride.recurrence.unit == 'WEEK'" class="equal-width">
+            <tr>
+              <td>ma</td>
+              <td>di</td>
+              <td>wo</td>
+              <td>do</td>
+              <td>vr</td>
+              <td>za</td>
+              <td>zo</td>
+            </tr>
+            <tr>
+              <td v-for="day in [0, 1, 2, 3, 4, 5, 6]" :key="day">
+                <v-icon>
+                  {{ recursOn(day) ? 'done' : '' }}
+                </v-icon>
+              </td>
+            </tr>
+          </table>
+        </v-col>
+      </v-row>
+      <v-row class="pb-3">
+        <v-col>
+          <v-divider />
+        </v-col>
+      </v-row>
+      <v-row
+        v-for="(leg, index) in generateSteps()"
+        :key="index"
+        class="mx-0 py-0"
+      >
+        <itinerary-leg :leg="leg" />
+      </v-row>
+      <v-row v-if="ride.bookings.length > 0">
+        <v-col class="mx-1">
+          <v-btn large rounded block outlined color="primary" to="/community">
+            Bericht sturen naar passagier
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row class="mb-2">
+        <v-col>
+          <h3 class="mb-2">Wijzigen</h3>
+          <v-divider />
+          <v-row @click="checkDeleteTrip()">
+            <v-col class="text-center shrink">
+              <v-icon>lock</v-icon>
+            </v-col>
+            <v-col>
+              Reis annuleren
+            </v-col>
+          </v-row>
+          <v-dialog v-model="warningDialog">
+            <v-card>
+              <v-card-title class="headline">
+                Weet u dit zeker?
+              </v-card-title>
 
-            <v-card-text v-if="ride.bookings.length > 0">
-              <p>
-                Op dit moment heeft uw reis
-                {{ ride.bookings.length }} boekingen, wilt u uw passagier(s) een
-                reden geven waarom u de reis annuleert.
-              </p>
-              <v-textarea
-                outlined
-                name="input-7-4"
-                label="Reden voor annulering"
-                :value="cancelReason"
-              ></v-textarea>
-            </v-card-text>
-            <v-card-text v-else>
-              <p>
-                Weet u zeker dat u deze rit wil annuleren?
-              </p>
-            </v-card-text>
+              <v-card-text v-if="ride.bookings.length > 0">
+                <p>
+                  Op dit moment heeft uw reis
+                  {{ ride.bookings.length }} boekingen, wilt u uw passagier(s)
+                  een reden geven waarom u de reis annuleert.
+                </p>
+                <v-textarea
+                  outlined
+                  name="input-7-4"
+                  label="Reden voor annulering"
+                  :value="cancelReason"
+                ></v-textarea>
+              </v-card-text>
+              <v-card-text v-else>
+                <p>
+                  Weet u zeker dat u deze rit wil annuleren?
+                </p>
+              </v-card-text>
 
-            <v-card-actions>
-              <v-btn text color="primary" @click="deleteTrip()">
-                Ja
-              </v-btn>
+              <v-card-actions>
+                <v-btn text color="primary" @click="deleteTrip()">
+                  Ja
+                </v-btn>
 
-              <v-btn text color="primary" @click="warningDialog = false">
-                Nee
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-divider />
-      </v-col>
-    </v-row>
+                <v-btn text color="primary" @click="warningDialog = false">
+                  Nee
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-divider />
+        </v-col>
+      </v-row>
+    </div>
   </content-pane>
 </template>
 

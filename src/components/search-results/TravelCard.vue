@@ -3,7 +3,7 @@
     <v-row no-gutters>
       <v-col>
         <v-card-title>
-          <h4>Vertrek</h4>
+          <h5>Vertrek</h5>
         </v-card-title>
         <v-card-subtitle>
           {{ formatDateTime(departureTime) }}

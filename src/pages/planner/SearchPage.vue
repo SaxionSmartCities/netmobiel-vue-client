@@ -8,7 +8,7 @@
               <v-form>
                 <v-row dense>
                   <v-col>
-                    <h1>Waar wil je heen?</h1>
+                    <h2>Waar wil je heen?</h2>
                   </v-col>
                 </v-row>
                 <v-row dense>

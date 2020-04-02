@@ -5,7 +5,7 @@
         <v-flex>
           <v-layout>
             <v-flex>
-              <h4>Vertrek</h4>
+              <h5>Vertrek</h5>
               <p class="first-letter-caps">{{ parsedDepature }}</p>
             </v-flex>
             <v-flex text-xs-right pr-1>

@@ -1,28 +1,32 @@
 <template>
-  <v-layout class="py-0">
-    <v-flex>
-      <v-layout column>
-        <v-flex>
-          <v-layout py-2>
-            <v-flex xs3>Datum</v-flex>
-            <v-flex>{{ printableDate }}</v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex>
-          <v-layout py-2>
-            <v-flex xs3>Reisduur</v-flex>
-            <v-flex>{{ Math.round(duration / 60) }} minuten</v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex>
-          <!-- <v-layout py-2>
-            <v-flex xs3>Kosten</v-flex>
-            <v-flex>{{ cost }} credits</v-flex>
-          </v-layout> -->
-        </v-flex>
-      </v-layout>
-    </v-flex>
-  </v-layout>
+  <v-row class="py-0">
+    <v-col class="">
+      <v-row class="flex-column">
+        <v-col class="py-0">
+          <v-row class="mb-3">
+            <v-col cols="3" class="pa-0">
+              <span class="body-1">Datum</span>
+            </v-col>
+            <v-col class="pa-0">
+              <span class="body-1 font-weight-light">
+                {{ printableDate }}
+              </span>
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-col class="py-0">
+          <v-row>
+            <v-col cols="3" class="pa-0 body-1">Reisduur</v-col>
+            <v-col class="pa-0">
+              <span class="body-1 font-weight-light">
+                {{ Math.round(duration / 60) }} minuten
+              </span>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

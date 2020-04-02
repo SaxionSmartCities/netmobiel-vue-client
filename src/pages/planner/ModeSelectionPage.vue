@@ -28,7 +28,6 @@
                       <v-row class="flex-column">
                         <v-col class="px-0 pb-1">
                           <v-btn
-                            large
                             rounded
                             depressed
                             color="button"
@@ -49,7 +48,6 @@
                       <v-row class="flex-column">
                         <v-col class="px-0 pb-1">
                           <v-btn
-                            large
                             rounded
                             depressed
                             color="button"

@@ -43,7 +43,11 @@
           :key="index"
           class="px-0"
         >
-          <h4 class="netmobiel py-1">{{ formatToCategoryDate(date) }}</h4>
+          <h4
+            class="text-uppercase text-color-primary caption font-weight-medium py-1"
+          >
+            {{ formatToCategoryDate(date) }}
+          </h4>
           <v-col
             v-for="(itinerary, indx) in getItinerariesForThatDay(
               sortedItineraries(),

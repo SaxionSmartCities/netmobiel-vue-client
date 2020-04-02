@@ -1,6 +1,7 @@
 <template>
   <v-row dense>
     <v-col>
+      <v-divider></v-divider>
       <v-row no-gutters>
         <v-col>
           <v-expansion-panels accordion>
@@ -8,7 +9,7 @@
               <v-expansion-panel-header>
                 <v-row no-gutters>
                   <v-col>
-                    <span>Personen</span>
+                    <span class="body-1">Personen</span>
                   </v-col>
                 </v-row>
                 <v-row no-gutters>
@@ -37,6 +38,7 @@
             </v-expansion-panel>
             <search-options-icon-expansion-panel
               v-model="luggage"
+              class="body-1"
               @onChanged="
                 newLugagge => {
                   luggage = newLugagge
@@ -47,7 +49,7 @@
               <v-expansion-panel-header>
                 <v-row no-gutters>
                   <v-col>
-                    <span>Overstappen</span>
+                    <span class="body-1">Overstappen</span>
                   </v-col>
                 </v-row>
                 <v-row no-gutters>
@@ -86,6 +88,7 @@
             </v-expansion-panel>
             <search-options-icon-expansion-panel
               v-model="travel"
+              class="body-1"
               @onChanged="
                 newTravel => {
                   travel = newTravel
@@ -96,7 +99,9 @@
               <v-expansion-panel-header>
                 <v-row no-gutters>
                   <v-col>
-                    <span class="form-label py-2">Maximale loopafstand</span>
+                    <span class="form-label py-2 body-1">
+                      Maximale loopafstand
+                    </span>
                   </v-col>
                 </v-row>
                 <v-row dense>

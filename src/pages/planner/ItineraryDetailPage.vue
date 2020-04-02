@@ -1,86 +1,86 @@
 <template>
   <content-pane>
-    <v-row v-if="selectedLegs && showMap" class="pa-0">
-      <v-col class="pa-0">
-        <route-map
-          ref="mapComp"
-          :legs="selectedLegs"
-          :map-size-prop="mapSize"
-          @sizeChanged="onMapSizeChanged"
-          @closeMap="showMap = false"
-        >
-        </route-map>
-      </v-col>
-    </v-row>
-    <v-row class=" flex-column">
-      <v-col class="mb-3 py-0">
-        <h1>Reisdetails</h1>
-      </v-col>
-      <v-col class="py-0">
-        <v-divider />
-      </v-col>
-      <v-col class="py-0">
-        <itinerary-summary
-          :date="selectedTrip.departureTime"
-          :cost="5"
-          :duration="selectedTrip.duration"
-        >
-        </itinerary-summary>
-      </v-col>
-      <v-col>
-        <v-divider />
-      </v-col>
-      <v-col class="px-6">
-        <v-row class="flex-column">
-          <v-col v-if="generateSteps.length === 0">
-            Shoutout
-          </v-col>
-          <v-col
-            v-for="(leg, index) in generateSteps"
-            v-else
-            :key="index"
-            class="py-0"
+    <div class="d-flex flex-column grow px-4 py-3">
+      <v-row v-if="selectedLegs && showMap" class="pa-0">
+        <v-col class="pa-0">
+          <route-map
+            ref="mapComp"
+            :legs="selectedLegs"
+            :map-size-prop="mapSize"
+            @sizeChanged="onMapSizeChanged"
+            @closeMap="showMap = false"
           >
-            <itinerary-leg
-              :is-map-active="selectedLegsIndex === index"
-              :step="index"
-              :leg="leg"
-              @legSelect="onLegSelected"
-            />
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-col>
-        <v-btn
-          v-show="showSection"
-          large
-          rounded
-          block
-          mb-4
-          depressed
-          color="button"
-          @click="saveTrip"
-        >
-          Deze reis bevestigen
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-btn
-          large
-          rounded
-          outlined
-          block
-          mb-4
-          depressed
-          color="primary"
-          @click="showFullRouteOnMap()"
-        >
-          bekijk op de kaart
-        </v-btn>
-      </v-col>
-    </v-row>
+          </route-map>
+        </v-col>
+      </v-row>
+      <v-row class="flex-column">
+        <v-col class="pa-0">
+          <h3 class="mb-3">Reisdetails</h3>
+          <v-divider />
+        </v-col>
+        <v-col class="py-0 px-3">
+          <itinerary-summary
+            :date="selectedTrip.departureTime"
+            :cost="5"
+            :duration="selectedTrip.duration"
+          >
+          </itinerary-summary>
+        </v-col>
+        <v-col class="pa-0">
+          <v-divider />
+        </v-col>
+        <v-col class="px-0">
+          <v-row class="flex-column">
+            <v-col v-if="generateSteps.length === 0">
+              Shoutout
+            </v-col>
+            <v-col
+              v-for="(leg, index) in generateSteps"
+              v-else
+              :key="index"
+              class="py-0"
+            >
+              <itinerary-leg
+                :is-map-active="selectedLegsIndex === index"
+                :step="index"
+                :leg="leg"
+                @legSelect="onLegSelected"
+              />
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-col>
+          <v-btn
+            v-show="showSection"
+            large
+            rounded
+            block
+            mb-4
+            depressed
+            color="button"
+            @click="saveTrip"
+          >
+            Deze reis bevestigen
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-btn
+            large
+            rounded
+            outlined
+            block
+            mb-4
+            depressed
+            color="primary"
+            @click="showFullRouteOnMap()"
+          >
+            bekijk op de kaart
+          </v-btn>
+        </v-col>
+      </v-row>
+    </div>
   </content-pane>
 </template>
 
