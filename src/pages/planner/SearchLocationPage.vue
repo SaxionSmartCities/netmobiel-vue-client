@@ -101,10 +101,10 @@ export default {
       if (val != null) {
         const show = (this.showSuggestionsList = val.length > 3)
         if (show) {
-          this.$store.dispatch('gs/fetchGeocoderSuggestions', {
-            place: val,
+          this.$store.dispatch('gs/fetchGeocoderSuggestions2', {
+            query: val,
             // geographic center of the Netherlands (near Lunteren)
-            area: '52.063045,5.349972;r=150000',
+            area: '52.063045,5.349972',
             result_types: 'place,address',
             // highlight the search text
             hlStart: `<span ${highlightMarker}>`,
