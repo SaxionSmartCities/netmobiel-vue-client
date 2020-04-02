@@ -78,7 +78,7 @@ import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ContentPane from '@/components/common/ContentPane.vue'
 
 export default {
-  name: 'ShoutoutDetailPage',
+  name: 'ShoutOutDetailPage',
   components: { ContentPane, ItineraryLeg },
   props: {
     id: { type: Number, required: true },

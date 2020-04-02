@@ -24,7 +24,7 @@ import GroupedShoutOuts from '@/components/community/GroupedShoutOuts'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'Shoutouts',
+  name: 'ShoutOutOverview',
   components: { GroupedShoutOuts, ContentPane },
   data() {
     return {
