@@ -206,7 +206,7 @@ export default {
         context.dispatch(
           'ui/queueNotification',
           {
-            message: 'Fout bij het ophalen van opgeslagen reizen.',
+            message: 'Fout bij het ophalen van de reis.',
             timeout: 0,
           },
           { root: true }
