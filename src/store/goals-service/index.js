@@ -67,6 +67,12 @@ export default {
             message: '',
             anonymous: true,
           },
+          {
+            name: 'Netmobiel gebruiker',
+            creditsDonated: 3,
+            message: '',
+            anonymous: true,
+          },
         ],
       },
       {

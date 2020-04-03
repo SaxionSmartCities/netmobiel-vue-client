@@ -36,9 +36,9 @@
       <v-col>
         <goal-progress-bar
           name="Donateurs"
-          :number-of-donors="33"
-          :credits-remaining="43"
-          :value-total="232"
+          :number-of-donors="selectedGoal.donors.length"
+          :credits-remaining="getCreditsRemaining()"
+          :value-total="selectedGoal.creditsTotal"
         >
         </goal-progress-bar>
       </v-col>
@@ -48,10 +48,10 @@
           :value="65"
           :content-multi-line="true"
           postfix="credits"
-          :number-of-donors="33"
-          :value-current="76"
-          :credits-remaining="43"
-          :value-total="232"
+          :number-of-donors="selectedGoal.donors.length"
+          :value-current="selectedGoal.creditsDonated"
+          :credits-remaining="getCreditsRemaining()"
+          :value-total="selectedGoal.creditsTotal"
         >
         </goal-progress-bar>
       </v-col>
@@ -59,10 +59,10 @@
         <goal-progress-bar
           name="Behaald"
           :content-percentage="true"
-          :number-of-donors="33"
-          :credits-remaining="43"
-          :value-current="76"
-          :value-total="232"
+          :number-of-donors="selectedGoal.donors.length"
+          :credits-remaining="getCreditsRemaining()"
+          :value-current="selectedGoal.creditsDonated"
+          :value-total="selectedGoal.creditsGoal"
         >
         </goal-progress-bar>
       </v-col>
@@ -74,13 +74,15 @@
     </v-row>
     <v-container>
       <v-row mb-3 mt-3>
-        <span class="font-weight-medium primary--text">Top donateurs</span>
+        <h4 class="netmobiel">
+          Top donateurs
+        </h4>
       </v-row>
       <v-row>
         <v-divider />
       </v-row>
       <v-row>
-        <donors-list :donors="selectedGoal.donors"> </donors-list>
+        <donors-list :donors="getTopDonors()"> </donors-list>
       </v-row>
     </v-container>
   </content-pane>
@@ -105,8 +107,14 @@ export default {
     },
   },
   methods: {
-    fetchGoals() {
+    getGoals() {
       return this.$store.getters['sg/getGoals']
+    },
+    getTopDonors() {
+      return this.$store.getters['sg/getTopDonorsList']
+    },
+    getCreditsRemaining() {
+      this.selectedGoal.creditsGoal - this.selectedGoal.creditsDonated
     },
   },
 }

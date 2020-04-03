@@ -51,7 +51,7 @@ export default {
     creditsTotal: { type: Number, default: 125 },
   },
   computed: {
-    remainingValue: function() {
+    remainingValue() {
       return this.creditsTotal - this.creditsRemaining
     },
   },

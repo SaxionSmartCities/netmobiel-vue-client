@@ -60,13 +60,7 @@ export default {
   },
   computed: {
     computedProgress: function() {
-      if (this.name === 'Donateurs') {
-        //todo: progress bar with 'Number of donors' is always full.
-        //maybe this could be handled differently.
-        return 100
-      } else {
-        return Math.round((this.valueCurrent / this.valueTotal) * 100)
-      }
+      return Math.round((this.valueCurrent / this.valueTotal) * 100)
     },
   },
 }

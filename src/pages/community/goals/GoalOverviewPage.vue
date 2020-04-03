@@ -58,7 +58,7 @@
       <span class="font-weight-medium primary--text">Top donateurs</span>
     </v-row>
     <v-row>
-      <donors-list :donors="gdonors"> </donors-list>
+      <donors-list :donors="getTopDonors"> </donors-list>
     </v-row>
   </content-pane>
 </template>
@@ -77,9 +77,6 @@ export default {
       getSavedGoals: 'sg/getGoals',
       getTopDonors: 'sg/getTopDonorsList',
     }),
-    gdonors() {
-      return this.$store.getters['sg/getTopDonorsList']
-    },
   },
   methods: {
     getListGoals() {
