@@ -44,7 +44,7 @@ export default {
           headers: generateHeaders(GRAVITEE_GEO_SERVICE_API_KEY),
         }
       )
-      console.log('response ', resp.data.data)
+      // console.log('response ', resp.data.data)
       context.commit('setGeocoderSuggestions', resp.data.data)
     } catch (problem) {
       context.dispatch(

@@ -83,6 +83,7 @@ export default {
     },
     suggestions() {
       let suggestions = this.$store.getters['gs/getGeocoderSuggestions']
+      console.log('suggestions...', suggestions)
       const highlighted = suggestions.filter(
         suggestion =>
           suggestion.highlightedTitle.indexOf(highlightMarker) > 0 &&
@@ -93,6 +94,8 @@ export default {
         ...suggestion,
         favorite: !!this.favorites.find(fav => fav.id === suggestion.id),
       }))
+      console.log('favorited...', favorited)
+      console.log('highlighted marker', highlightMarker)
       return favorited
     },
   },
