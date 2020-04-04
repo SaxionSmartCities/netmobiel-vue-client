@@ -19,7 +19,13 @@ export default {
       const resp = await axios.get(
         `${GEOCODER_BASE_URL}/planner/geocode-suggestions`,
         {
-          params: { query, center: area, result_types, hlStart, hlEnd },
+          params: {
+            query,
+            center: area,
+            result_types,
+            hls: hlStart,
+            hle: hlEnd,
+          },
           headers: generateHeaders(GRAVITEE_GEO_SERVICE_API_KEY),
         }
       )

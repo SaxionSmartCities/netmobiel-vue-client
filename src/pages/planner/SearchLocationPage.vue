@@ -85,7 +85,7 @@ export default {
       let suggestions = this.$store.getters['gs/getGeocoderSuggestions']
       const highlighted = suggestions.filter(
         suggestion =>
-          // suggestion.highlightedTitle.indexOf(highlightMarker) > 0 &&
+          suggestion.highlightedTitle.indexOf(highlightMarker) > 0 &&
           !skipCategories.has(suggestion.category)
       )
       highlighted.length = Math.min(highlighted.length, maxSuggestions)
