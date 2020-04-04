@@ -83,10 +83,9 @@ export default {
     },
     suggestions() {
       let suggestions = this.$store.getters['gs/getGeocoderSuggestions']
-      console.log('suggestions...', suggestions)
       const highlighted = suggestions.filter(
         suggestion =>
-          suggestion.highlightedTitle.indexOf(highlightMarker) > 0 &&
+          // suggestion.highlightedTitle.indexOf(highlightMarker) > 0 &&
           !skipCategories.has(suggestion.category)
       )
       highlighted.length = Math.min(highlighted.length, maxSuggestions)
@@ -94,8 +93,6 @@ export default {
         ...suggestion,
         favorite: !!this.favorites.find(fav => fav.id === suggestion.id),
       }))
-      console.log('favorited...', favorited)
-      console.log('highlighted marker', highlightMarker)
       return favorited
     },
   },
@@ -104,7 +101,7 @@ export default {
       if (val != null) {
         const show = (this.showSuggestionsList = val.length > 3)
         if (show) {
-          this.$store.dispatch('gs/fetchGeocoderSuggestions2', {
+          this.$store.dispatch('gs/fetchGeocoderSuggestions', {
             query: val,
             // geographic center of the Netherlands (near Lunteren)
             area: '52.063045,5.349972',

@@ -13,27 +13,6 @@ function generateHeaders(key) {
 export default {
   fetchGeocoderSuggestions: async (
     context,
-    { place, area, result_types, hlStart, hlEnd }
-  ) => {
-    try {
-      const resp = await axios.get(`${GEOCODER_BASE_URL}/geo/autosuggest`, {
-        params: { place, in: area, result_types, hlStart, hlEnd },
-        headers: generateHeaders(GRAVITEE_GEO_SERVICE_API_KEY),
-      })
-      context.commit('setGeocoderSuggestions', resp.data.suggestions)
-    } catch (problem) {
-      context.dispatch(
-        'ui/queueNotification',
-        {
-          message: 'Fout bij het ophalen van locatiesuggesties.',
-          timeout: 0,
-        },
-        { root: true }
-      )
-    }
-  },
-  fetchGeocoderSuggestions2: async (
-    context,
     { query, area, result_types, hlStart, hlEnd }
   ) => {
     try {
