@@ -21,6 +21,7 @@ export default {
         {
           params: {
             query,
+            radius: 150000,
             center: area,
             result_types,
             hls: hlStart,
