@@ -23,7 +23,7 @@
                 <span class="align-self-center body-2"> {{ item.title }}</span>
               </v-col>
               <v-col cols="6" class="body-2 font-weight-thin">
-                {{ user[item.key] }}
+                {{ item.format ? item.format(user[item.key]) : user[item.key] }}
               </v-col>
             </v-row>
             <v-divider

@@ -1,9 +1,23 @@
+import moment from 'moment'
+
 export default {
   persoonlijk: [
     { title: 'Voornaam', key: 'firstName' },
     { title: 'Achternaam', key: 'lastName' },
-    { title: 'Leeftijd', key: 'dateOfBirth' },
-    { title: 'Interesses', key: 'interests' },
+    {
+      title: 'Leeftijd',
+      key: 'dateOfBirth',
+      format: function(value) {
+        return moment().diff(value, 'years')
+      },
+    },
+    {
+      title: 'Interesses',
+      key: 'interests',
+      format: function(value) {
+        return value.join(', ')
+      },
+    },
   ],
   adres: [
     { title: 'Straat', key: 'address.street' },
