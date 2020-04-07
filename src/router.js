@@ -38,6 +38,7 @@ import TripCancelledPage from './pages/saved/TripCancelledPage'
 import TripDetailPage from './pages/saved/TripDetailPage'
 import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
 import ShoutOutDetailPage from '@/pages/community/shoutout/ShoutOutDetailPage'
+import Account from '@/pages/profile/Account'
 
 const router = new Router({
   mode: 'history',
@@ -58,6 +59,7 @@ const router = new Router({
     {
       path: '/credits',
       component: Credits,
+      name: 'credits',
     },
     {
       path: '/profile',
@@ -210,6 +212,11 @@ const router = new Router({
       component: ShoutOutDetailPage,
       name: 'shoutout',
       props: true,
+    },
+    {
+      path: '/account',
+      component: Account,
+      name: 'account',
     },
   ],
 })
