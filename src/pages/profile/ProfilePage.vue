@@ -47,41 +47,6 @@
               </v-col>
             </v-row>
           </v-col>
-          <!--          <v-col col="10">-->
-          <!--            <v-row class="d-flex flex-column">-->
-          <!--              <v-col class="py-0 pt-3 flex-row">-->
-          <!--                <v-row class="d-flex flex-row shrink">-->
-          <!--                  <v-col-->
-          <!--                    class="pa-0 d-flex flex-column"-->
-          <!--                    @click="navTo('account')"-->
-          <!--                  >-->
-          <!--                    <span class="ma-0">{{ user.fullName }}</span>-->
-          <!--                    <span class="ma-0 caption">{{ address }}</span>-->
-          <!--                  </v-col>-->
-          <!--                  <v-col class="pa-0  shrink align-self-center">-->
-          <!--                    <v-icon large @click="navTo('account')">-->
-          <!--                      chevron_right-->
-          <!--                    </v-icon>-->
-          <!--                  </v-col>-->
-          <!--                </v-row>-->
-          <!--              </v-col>-->
-          <!--              <v-col class="pl-0 mt-1">-->
-          <!--                <v-btn-->
-          <!--                  rounded-->
-          <!--                  depressed-->
-          <!--                  @click="navTo('credits')"-->
-          <!--                  color="button"-->
-          <!--                  small-->
-          <!--                >-->
-          <!--                  Beheer credits-->
-          <!--                </v-btn>-->
-          <!--                <div class="py-1"></div>-->
-          <!--                <v-btn rounded depressed outlined color="primary" small>-->
-          <!--                  Bekijk reviews-->
-          <!--                </v-btn>-->
-          <!--              </v-col>-->
-          <!--            </v-row>-->
-          <!--          </v-col>-->
         </v-row>
       </v-col>
       <v-col class="pa-0">
