@@ -93,13 +93,15 @@
       </v-row>
       <v-row v-if="ride.bookings.length > 0">
         <v-col class="mx-1">
-          <v-btn large
-                 @click="contactPassenger"
-                 rounded
-                 block
-                 outlined
-                 color="primary"
-                 to="/community">
+          <v-btn
+            large
+            @click="contactPassenger"
+            rounded
+            block
+            outlined
+            color="primary"
+            to="/community"
+          >
             Stuur bericht naar passagier
           </v-btn>
         </v-col>
@@ -146,22 +148,23 @@
                   Ja
                 </v-btn>
 
-              <v-btn text color="primary" @click="warningDialog = false">
-                Nee
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-divider />
-      </v-col>
-    </v-row>
-    <contact-traveller-modal
-      v-if="showContactTravellerModal"
-      :show="showContactTravellerModal"
-      :users="passengersInBookings"
-      @close="showContactTravellerModal = false"
-      @select="onTravellerSelectForMessage"
-    ></contact-traveller-modal>
+                <v-btn text color="primary" @click="warningDialog = false">
+                  Nee
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-divider />
+        </v-col>
+      </v-row>
+      <contact-traveller-modal
+        v-if="showContactTravellerModal"
+        :show="showContactTravellerModal"
+        :users="passengersInBookings"
+        @close="showContactTravellerModal = false"
+        @select="onTravellerSelectForMessage"
+      ></contact-traveller-modal>
+    </div>
   </content-pane>
 </template>
 
