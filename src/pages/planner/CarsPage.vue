@@ -91,6 +91,7 @@ export default {
   },
   created() {
     this.$store.commit('ui/showBackButton')
+    this.$store.dispatch('cs/fetchCars')
   },
   methods: {
     selectAlternativeCar(car) {
