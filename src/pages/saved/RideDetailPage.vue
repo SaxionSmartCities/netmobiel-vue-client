@@ -53,7 +53,7 @@
       </v-row>
       <v-row v-if="ride.recurrence" class="py-1" dense>
         <v-col cols="4">
-          <span class="body-1">Herhalingen</span>
+          <span class="body-1">Herhalen</span>
         </v-col>
         <v-col>
           <span class="body-1 font-weight-light">
@@ -93,8 +93,14 @@
       </v-row>
       <v-row v-if="ride.bookings.length > 0">
         <v-col class="mx-1">
-          <v-btn large rounded block outlined color="primary" to="/community">
-            Bericht sturen naar passagier
+          <v-btn large
+                 @click="contactPassenger"
+                 rounded
+                 block
+                 outlined
+                 color="primary"
+                 to="/community">
+            Stuur bericht naar passagier
           </v-btn>
         </v-col>
       </v-row>
@@ -140,16 +146,22 @@
                   Ja
                 </v-btn>
 
-                <v-btn text color="primary" @click="warningDialog = false">
-                  Nee
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <v-divider />
-        </v-col>
-      </v-row>
-    </div>
+              <v-btn text color="primary" @click="warningDialog = false">
+                Nee
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-divider />
+      </v-col>
+    </v-row>
+    <contact-traveller-modal
+      v-if="showContactTravellerModal"
+      :show="showContactTravellerModal"
+      :users="passengersInBookings"
+      @close="showContactTravellerModal = false"
+      @select="onTravellerSelectForMessage"
+    ></contact-traveller-modal>
   </content-pane>
 </template>
 
@@ -157,10 +169,11 @@
 import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ContentPane from '@/components/common/ContentPane.vue'
+import ContactTravellerModal from '@/components/itinerary-details/ContactTravellerModal'
 
 export default {
   name: 'RideDetailPage',
-  components: { ContentPane, ItineraryLeg },
+  components: { ContactTravellerModal, ContentPane, ItineraryLeg },
   props: {
     id: {
       type: Number,
@@ -176,7 +189,20 @@ export default {
       selectedLeg: null,
       warningDialog: false,
       cancelReason: '',
+      showContactTravellerModal: false,
     }
+  },
+  computed: {
+    passengersInBookings() {
+      return this.ride.bookings.map(booking => {
+        return {
+          name:
+            booking.passenger.givenName + ' ' + booking.passenger.familyName,
+          passengerRef: booking.passengerRef,
+          ...booking.passenger,
+        }
+      })
+    },
   },
   created: function() {
     this.$store.commit('ui/showBackButton')
@@ -235,6 +261,49 @@ export default {
     },
     checkDeleteTrip() {
       this.warningDialog = true
+    },
+    async onTravellerSelectForMessage(event) {
+      const tripContext = 'urn:nb:rs:ride:' + this.ride.id
+      this.routeToConversation(tripContext, event)
+    },
+    contactPassenger() {
+      if (this.passengersInBookings.length > 1) {
+        this.showContactTravellerModal = true
+      } else {
+        this.onTravellerSelectForMessage(this.passengersInBookings[0])
+      }
+    },
+    async routeToConversation(ctx, passengerProfile) {
+      const conversations = await this.$store.dispatch('ms/fetchConversations')
+      const index = conversations.findIndex(
+        conversation => conversation.context === ctx
+      )
+      let params = null
+      if (index !== -1) {
+        //So if the conversation already exists...
+        params = conversations[index]
+      } else {
+        //If the conversation does not exists
+        //Then create a ghost conversation
+        params = {
+          context: ctx,
+          participants: [
+            {
+              managedIdentity: this.$store.getters['ps/getProfile'].id,
+              urn: '',
+            },
+            {
+              ...passengerProfile,
+              urn: passengerProfile.passengerRef,
+            },
+          ],
+        }
+      }
+
+      this.$router.push({
+        name: `conversation`,
+        params: params,
+      })
     },
   },
 }

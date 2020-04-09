@@ -1,9 +1,9 @@
 <template>
-  <v-avatar :size="sizeAv">
+  <v-avatar :size="avatarSize">
     <v-img
       :src="getUserData().image"
-      :max-height="sizeImg"
-      :max-width="sizeImg"
+      :max-height="imageSize"
+      :max-width="imageSize"
     />
   </v-avatar>
 </template>
@@ -11,11 +11,17 @@
 <script>
 export default {
   name: 'RoundUserImage',
-  data() {
-    return {
-      sizeImg: 70,
-      sizeAv: 78,
-    }
+  props: {
+    imageSize: {
+      type: Number,
+      default: 70,
+      required: false,
+    },
+    avatarSize: {
+      type: Number,
+      default: 78,
+      required: false,
+    },
   },
   methods: {
     getUserData() {

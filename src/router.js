@@ -36,8 +36,9 @@ import TripPlanSubmitted from './pages/planner/TripPlanSubmitted.vue'
 import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
 import TripCancelledPage from './pages/saved/TripCancelledPage'
 import TripDetailPage from './pages/saved/TripDetailPage'
-import ShoutoutOverviewPage from '@/pages/community/shoutout/ShoutOverviewPage'
-import ShoutoutDetailPage from '@/pages/community/shoutout/ShoutoutDetailPage'
+import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
+import ShoutOutDetailPage from '@/pages/community/shoutout/ShoutOutDetailPage'
+import Account from '@/pages/profile/Account'
 
 const router = new Router({
   mode: 'history',
@@ -58,6 +59,7 @@ const router = new Router({
     {
       path: '/credits',
       component: Credits,
+      name: 'credits',
     },
     {
       path: '/profile',
@@ -195,20 +197,26 @@ const router = new Router({
       name: 'community',
     },
     {
-      path: '/conversation/:id',
+      path: '/conversation/:context',
       component: ConversationPage,
+      name: 'conversation',
       props: true,
     },
     {
       path: '/shoutouts',
-      component: ShoutoutOverviewPage,
+      component: ShoutOutOverviewPage,
       name: 'shoutouts',
     },
     {
       path: '/shoutout/:id',
-      component: ShoutoutDetailPage,
+      component: ShoutOutDetailPage,
       name: 'shoutout',
       props: true,
+    },
+    {
+      path: '/account',
+      component: Account,
+      name: 'account',
     },
   ],
 })

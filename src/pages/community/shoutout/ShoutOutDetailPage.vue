@@ -55,7 +55,7 @@
           mb-4
           depressed
           color="button"
-          @click="saveTrip"
+          @click="bookTrip"
         >
           Rit aanbieden
         </v-btn>
@@ -73,60 +73,63 @@
 
 <script>
 import moment from 'moment'
+import { mapGetters } from 'vuex'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ContentPane from '@/components/common/ContentPane.vue'
 
 export default {
-  name: 'ShoutoutDetailPage',
+  name: 'ShoutOutDetailPage',
   components: { ContentPane, ItineraryLeg },
   props: {
-    id: {
-      type: Number,
-      required: true,
-    },
+    id: { type: Number, required: true },
   },
   data() {
     return {
       ride: null,
     }
   },
+  computed: {
+    ...mapGetters({
+      selectedTrip: 'is/getSelectedTrip',
+    }),
+  },
   mounted() {
-    //TODO: Now hardcoded first ride.
-    this.ride = this.$store.getters['cs/getRides'][0]
+    this.$store.dispatch('is/fetchTrip', { id: this.id })
   },
   created() {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
+    bookTrip() {
+      //TODO:
+    },
     formatDate() {
-      return this.ride.departureTime
-        ? moment(this.ride.departureTime)
+      return this.selectedTrip.departureTime
+        ? moment(this.selectedTrip.departureTime)
             .locale('nl')
             .format('dddd DD-MM-YYYY')
         : ''
     },
     formatDuration() {
-      const seconds = this.ride.estimatedDrivingTime,
-        minutes = Math.round(seconds / 60)
-      return minutes < 60
-        ? `${minutes} minuten`
-        : `${Math.floor(minutes / 60)} uur ${minutes % 60} minuten`
+      return '?'
     },
     generateSteps() {
-      const { ride } = this
-      const departure = moment(ride.departureTime),
-        arrival = moment(ride.estimatedArrivalTime)
+      const { selectedTrip } = this
+      const departure = moment(selectedTrip.departureTime),
+        arrival = moment(selectedTrip.estimatedArrivalTime)
+      const from = selectedTrip.from ? selectedTrip.from.label : '',
+        to = selectedTrip.to ? selectedTrip.to.label : ''
       return [
         {
           mode: 'CAR',
           startTime: departure.toDate().getTime(),
           endTime: arrival.toDate().getTime(),
-          from: { name: ride.fromPlace.label },
+          from: { name: from },
         },
         {
           mode: 'ARRIVAL',
           startTime: arrival.toDate().getTime(),
-          from: { name: ride.toPlace.label },
+          from: { name: to },
         },
       ]
     },

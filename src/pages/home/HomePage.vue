@@ -127,10 +127,14 @@ export default {
     },
     rides() {
       //HACK: Only display first 3 rides.
-      let sortedList = this.$store.getters['cs/getRides'].slice(0, 3)
-      sortedList.sort((a, b) => {
-        return new Date(a.departureTime) - new Date(b.departureTime)
-      })
+      let sortedList = []
+      const rides = this.$store.getters['cs/getRides']
+      if (rides) {
+        sortedList = rides.slice(0, 3)
+        sortedList.sort((a, b) => {
+          return new Date(a.departureTime) - new Date(b.departureTime)
+        })
+      }
       return sortedList
     },
     timeOfDayGreeting() {
