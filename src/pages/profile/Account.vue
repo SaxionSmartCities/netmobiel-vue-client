@@ -22,8 +22,16 @@
               <v-col cols="5" class="d-flex flex-row">
                 <span class="align-self-center body-2"> {{ item.title }}</span>
               </v-col>
-              <v-col cols="6" class="body-2 font-weight-thin">
-                {{ item.format ? item.format(user[item.key]) : user[item.key] }}
+              <v-col
+                cols="6"
+                class="body-2 font-weight-thin"
+                @click="changeInfo(item)"
+              >
+                <span>
+                  {{
+                    item.format ? item.format(user[item.key]) : user[item.key]
+                  }}
+                </span>
               </v-col>
             </v-row>
             <v-divider
@@ -34,19 +42,28 @@
         </div>
       </v-col>
     </v-row>
+    <change-info-modal
+      v-if="showChangeInfoModal && selectedProperty"
+      :show="showChangeInfoModal"
+      :property-title="selectedProperty.title"
+      @close="showChangeInfoModal = false"
+    ></change-info-modal>
   </content-pane>
 </template>
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
 import account_config from '@/config/account_config'
+import ChangeInfoModal from '@/components/profile/ChangeInfoModal'
 
 export default {
   name: 'Account',
-  components: { ContentPane },
+  components: { ChangeInfoModal, ContentPane },
   data() {
     return {
       accountConfig: account_config,
+      showChangeInfoModal: false,
+      selectedProperty: null,
     }
   },
   computed: {
@@ -59,6 +76,13 @@ export default {
   },
   created() {
     this.$store.commit('ui/showBackButton')
+  },
+  methods: {
+    changeInfo(item) {
+      console.log(item)
+      this.selectedProperty = item
+      this.showChangeInfoModal = true
+    },
   },
 }
 </script>
