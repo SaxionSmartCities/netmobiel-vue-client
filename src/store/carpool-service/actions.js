@@ -75,6 +75,7 @@ export default {
       .then(function(resp) {
         // eslint-disable-next-line
         console.log(resp)
+        context.dispatch('fetchCars')
       })
       .catch(function(error) {
         // TODO: Proper error handling.
@@ -102,6 +103,7 @@ export default {
         context.dispatch('fetchCars')
         // eslint-disable-next-line
         console.log(resp)
+        context.dispatch('fetchCars')
       })
       .catch(function(error) {
         // TODO: Proper error handling.
