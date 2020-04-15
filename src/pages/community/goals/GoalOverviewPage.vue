@@ -26,8 +26,8 @@
         :id="getSavedGoals[0].id"
         :titel="getSavedGoals[0].title"
         :plaatsnaam="getSavedGoals[0].location"
-        :credits-remaining="20"
-        :credits-total="100"
+        :credits-donated="getSavedGoals[0].creditsDonated"
+        :credits-total="getSavedGoals[0].creditsGoal"
       ></goal-card>
     </v-row>
     <v-row mb-3 mt-3>
@@ -40,7 +40,7 @@
     <v-row>
       <v-slide-group center-active mobile-break-point="300">
         <v-slide-item
-          v-for="item in getListGoals()"
+          v-for="item in getSavedGoals"
           :key="item.id"
           v-slot:default="{ active, toggle }"
         >
@@ -48,8 +48,8 @@
             :id="item.id"
             :titel="item.title"
             :plaatsnaam="item.location"
-            :credits-remaining="20"
-            :credits-total="100"
+            :credits-donated="item.creditsDonated"
+            :credits-total="item.creditsGoal"
           ></goal-card>
         </v-slide-item>
       </v-slide-group>
@@ -77,11 +77,6 @@ export default {
       getSavedGoals: 'sg/getGoals',
       getTopDonors: 'sg/getTopDonorsList',
     }),
-  },
-  methods: {
-    getListGoals() {
-      return this.$store.getters['sg/getGoals']
-    },
   },
 }
 </script>

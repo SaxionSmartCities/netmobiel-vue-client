@@ -14,7 +14,7 @@
       </v-col>
     </v-row>
     <v-row class="ma-auto pl-4 pr-4">
-      <v-progress-linear :value="remainingValue"></v-progress-linear>
+      <v-progress-linear :value="creditsDonated"></v-progress-linear>
     </v-row>
     <v-row class="mx-auto">
       <v-col
@@ -47,12 +47,12 @@ export default {
     id: { type: Number, required: true },
     titel: { type: String, required: true },
     plaatsnaam: { type: String, required: true },
-    creditsRemaining: { type: Number, default: 0 },
+    creditsDonated: { type: Number, default: 0 },
     creditsTotal: { type: Number, default: 125 },
   },
   computed: {
-    remainingValue() {
-      return this.creditsTotal - this.creditsRemaining
+    creditsRemaining() {
+      return this.creditsTotal - this.creditsDonated
     },
   },
   methods: {

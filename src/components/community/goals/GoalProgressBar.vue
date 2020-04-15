@@ -41,7 +41,6 @@ export default {
     contentPercentage: { type: Boolean, default: false },
     name: { type: String, required: true },
     numberOfDonors: { type: Number, default: 0 },
-    //TODO how is this going to be used in the store?
     valueCurrent: {
       type: Number,
       default: 0,

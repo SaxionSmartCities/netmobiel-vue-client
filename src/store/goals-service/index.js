@@ -113,7 +113,7 @@ export default {
           'De beplanting bij de ingang van de basisschool is aan vervanging toe. \n' +
           'De beplanting wordt verwijderd en nieuwe beplanting wordt aangebracht. ',
         creditsGoal: 85,
-        creditsDonated: 54,
+        creditsDonated: 72,
         donors: [
           {
             name: 'Henk van der Laan',
