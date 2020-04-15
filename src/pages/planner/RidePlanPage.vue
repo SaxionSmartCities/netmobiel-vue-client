@@ -38,12 +38,12 @@
                       <v-icon>directions_car</v-icon>
                     </v-col>
                     <v-col v-if="!selectedCar" class="pl-3">
-                      <router-link to="profileCars">
+                      <router-link to="cars">
                         <span>Voer je auto in</span>
                       </router-link>
                     </v-col>
                     <v-col v-else class="pl-3">
-                      <router-link to="profileCars">
+                      <router-link to="cars">
                         <span> {{ selectedCar.licensePlate }}</span>
                       </router-link>
                       <div class="car-model">

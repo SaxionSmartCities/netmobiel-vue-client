@@ -35,6 +35,7 @@ $color-primary-dark: darken( $color-green, 20% );
 $color-secondary: $color-orange;
 $color-secondary-light: lighten( $color-secondary, 20%);
 $color-secondary-dark: darken( $color-secondary, 20%);
+$color-text-gray: lighten(gray, 5%);
 
 $border-radius: 6px;
 

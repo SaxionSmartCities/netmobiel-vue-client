@@ -25,10 +25,14 @@ export default {
   setSelectedTrip: (state, payload) => {
     state.selectedTrip = payload
   },
+  setPlannedTripsCount: (state, payload) => {
+    state.plannedTripsCount = payload
+  },
   setPlannedTrips: (state, payload) => {
     state.plannedTrips = payload
   },
   appendPlannedTrips: (state, payload) => {
     state.plannedTrips = state.plannedTrips.concat(payload)
   },
+  setShoutOuts: (state, payload) => (state.shoutOuts = payload),
 }

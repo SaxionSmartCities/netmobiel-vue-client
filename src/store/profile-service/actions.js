@@ -1,8 +1,11 @@
 import axios from 'axios'
 import config from '@/config/config'
+import moment from 'moment'
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_PROFILE_SERVICE_API_KEY = config.GRAVITEE_PROFILE_SERVICE_API_KEY
+const GRAVITEE_RIDESHARE_SERVICE_API_KEY =
+  config.GRAVITEE_RIDESHARE_SERVICE_API_KEY
 
 function generateHeader(key) {
   return {
@@ -28,6 +31,18 @@ export default {
             context.commit('setProfile', profile)
           }
         }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
+  fetchUser: async (context, { userId }) => {
+    const URL = BASE_URL + `/rideshare/users/${userId}`
+    return await axios
+      .get(URL, { headers: generateHeader(GRAVITEE_RIDESHARE_SERVICE_API_KEY) })
+      .then(response => {
+        return response.data
       })
       .catch(error => {
         // eslint-disable-next-line
@@ -82,5 +97,48 @@ export default {
         // eslint-disable-next-line
         console.log(error)
       })
+  },
+  fetchCreditAmount: context => {
+    //TODO: Add backend call
+    let amount = 89
+    context.commit('setCreditAmount', amount)
+  },
+  // addCredits: (context, transaction) => {
+  //   //TODO: Add backend call
+  // },
+  // addTransactionCreditAmount: (context, transaction) => {
+  //   //TODO: Add backend call
+  // },
+  fetchCreditHistory: context => {
+    //TODO: Add backend call
+    let creditHistory = [
+      {
+        date: moment().subtract(2, 'weeks'),
+        amount: 5,
+        type: 'donation',
+        otherParty: 'Tennisclub Vragender',
+      },
+      {
+        date: moment()
+          .subtract(6, 'days')
+          .subtract(8, 'hours'),
+        amount: -5,
+        type: 'drive',
+        otherParty: 'Marc de Vries',
+        destinationRide: 'Lievelde',
+      },
+      {
+        date: moment(),
+        amount: -20,
+        type: 'reward',
+        otherParty: 'Bakkerij de Zoete inval',
+      },
+      {
+        date: moment(),
+        amount: 40,
+        type: 'addedCredits',
+      },
+    ]
+    context.commit('setCreditHistory', creditHistory)
   },
 }

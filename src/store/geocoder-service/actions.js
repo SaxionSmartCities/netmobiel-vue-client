@@ -2,7 +2,7 @@ import axios from 'axios'
 import config from '@/config/config'
 
 const GEOCODER_BASE_URL = config.BASE_URL
-const GRAVITEE_GEO_SERVICE_API_KEY = config.GRAVITEE_GEO_SERVICE_API_KEY
+const GRAVITEE_GEO_SERVICE_API_KEY = config.GRAVITEE_PLANNER_SERVICE_API_KEY
 
 function generateHeaders(key) {
   return {
@@ -13,18 +13,26 @@ function generateHeaders(key) {
 export default {
   fetchGeocoderSuggestions: async (
     context,
-    { place, area, result_types, hlStart, hlEnd }
+    { query, area, result_types, hlStart, hlEnd }
   ) => {
     try {
-      const resp = await axios.get(`${GEOCODER_BASE_URL}/geo/autosuggest`, {
-        params: { place, in: area, result_types, hlStart, hlEnd },
-        headers: generateHeaders(GRAVITEE_GEO_SERVICE_API_KEY),
-      })
-      context.commit('setGeocoderSuggestions', resp.data.suggestions)
+      const resp = await axios.get(
+        `${GEOCODER_BASE_URL}/planner/geocode-suggestions`,
+        {
+          params: {
+            query,
+            radius: 150000,
+            center: area,
+            result_types,
+            hls: hlStart,
+            hle: hlEnd,
+          },
+          headers: generateHeaders(GRAVITEE_GEO_SERVICE_API_KEY),
+        }
+      )
+      // console.log('response ', resp.data.data)
+      context.commit('setGeocoderSuggestions', resp.data.data)
     } catch (problem) {
-      // TODO: Proper error handling.
-      // eslint-disable-next-line
-      console.error(problem)
       context.dispatch(
         'ui/queueNotification',
         {

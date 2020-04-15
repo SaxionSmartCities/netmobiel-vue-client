@@ -8,13 +8,12 @@
           :map-size-prop="mapSize"
           @sizeChanged="onMapSizeChanged"
           @closeMap="showMap = false"
-        >
-        </route-map>
+        ></route-map>
       </v-col>
     </v-row>
-    <v-row class=" flex-column">
+    <v-row class="flex-column">
       <v-col class="mb-3 py-0">
-        <h1>Reisdetails</h1>
+        <h1>Reis details</h1>
       </v-col>
       <v-col class="py-0">
         <v-divider />
@@ -30,10 +29,12 @@
       <v-col>
         <v-divider />
       </v-col>
-      <v-col class="px-6">
+      <v-col>
         <v-row class="flex-column">
-          <v-col v-if="generateSteps.length === 0">
-            Shoutout
+          <v-col v-if="isShoutOut">
+            <p>Shoutout,</p>
+            <p>Shoutout,</p>
+            <p>Let it all out.</p>
           </v-col>
           <v-col
             v-for="(leg, index) in generateSteps"
@@ -50,22 +51,24 @@
           </v-col>
         </v-row>
       </v-col>
+    </v-row>
+    <v-row v-if="!isShoutOut && hasRideShareDriver">
       <v-col>
         <v-btn
-          v-show="showSection"
           large
           rounded
+          outlined
           block
           mb-4
           depressed
-          color="button"
-          @click="saveTrip"
+          color="primary"
+          @click="contactDriver"
         >
-          Deze reis bevestigen
+          Stuur bericht naar chauffeur
         </v-btn>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="!isShoutOut">
       <v-col>
         <v-btn
           large
@@ -77,10 +80,27 @@
           color="primary"
           @click="showFullRouteOnMap()"
         >
-          bekijk op de kaart
+          Bekijk op de kaart
         </v-btn>
       </v-col>
     </v-row>
+    <v-row class="mb-0">
+      <v-col class="pb-0">
+        <h3>Wijzigen</h3>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <itinerary-options></itinerary-options>
+      </v-col>
+    </v-row>
+    <contact-driver-modal
+      v-if="showContactDriverModal"
+      :show="showContactDriverModal"
+      :users="drivers"
+      @select="onDriverSelectForMessage"
+      @close="showContactDriverModal = false"
+    ></contact-driver-modal>
   </content-pane>
 </template>
 
@@ -88,15 +108,21 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import RouteMap from '@/components/itinerary-details/RouteMap'
 
+import travelModes from '@/constants/travel-modes.js'
+import ContactDriverModal from '@/components/itinerary-details/ContactDriverModal'
+
 export default {
-  name: 'ItineraryDetailPage',
+  name: 'TripDetailPage',
   components: {
+    ContactDriverModal,
     RouteMap,
     ContentPane,
     ItinerarySummary,
     ItineraryLeg,
+    ItineraryOptions,
   },
   data() {
     return {
@@ -104,10 +130,36 @@ export default {
       selectedLegsIndex: null,
       showMap: true,
       mapSize: 'small',
-      showConfirmationButton: true,
+      showContactDriverModal: false,
     }
   },
   computed: {
+    isShoutOut() {
+      return this.generateSteps.length === 0
+    },
+    hasRideShareDriver() {
+      return this.getRideShareDriver !== null
+    },
+    drivers() {
+      return this.selectedTrip.legs
+        .filter(leg => leg.traverseMode === 'RIDESHARE')
+        .map(leg => {
+          return {
+            name: leg.driverName,
+            id: leg.driverId,
+            tripContext: leg.tripId,
+          }
+        })
+    },
+    getRideShareDriver() {
+      const rideshareMode = travelModes.RIDESHARE.mode
+      for (let i = 0; i < this.selectedTrip.legs.length; i++) {
+        if (this.selectedTrip.legs[i].traverseMode === rideshareMode) {
+          return this.selectedTrip.legs[i].driverId
+        }
+      }
+      return null
+    },
     selectedTrip() {
       return this.$store.getters['is/getSelectedTrip']
     },
@@ -143,9 +195,6 @@ export default {
       })
       return result
     },
-    showSection() {
-      return this.showConfirmationButton
-    },
   },
   created() {
     this.$store.commit('ui/showBackButton')
@@ -164,14 +213,9 @@ export default {
         .then(() => this.$router.push('/tripPlanSubmitted'))
     },
     onLegSelected({ leg, step }) {
-      if (this.selectedLegsIndex === step && this.showMap) {
-        this.showMap = false
-        this.selectedLegsIndex = null
-      } else {
-        this.selectedLegs = [leg]
-        this.selectedLegsIndex = step
-        this.forceRerender()
-      }
+      this.selectedLegs = [leg]
+      this.selectedLegsIndex = step
+      this.forceRerender()
     },
     forceRerender() {
       // Remove my-component from the DOM
@@ -185,6 +229,62 @@ export default {
       this.mapSize = 'fullscreen'
       this.selectedLegs = this.selectedTrip.legs
       this.forceRerender()
+    },
+    contactDriver() {
+      if (this.selectedTrip.legs.length > 1) {
+        //Open the modal
+        this.showContactDriverModal = true
+      } else {
+        // You can directly push to the router
+        const leg = this.selectedTrip.legs[0]
+        this.onDriverSelectForMessage({
+          name: leg.driverName,
+          id: leg.driverId,
+          tripContext: leg.tripId,
+        })
+      }
+    },
+    async onDriverSelectForMessage(event) {
+      //The backend sends an urn for now so we need to split on ':' and get the last element
+      //Maybe this will later change to an id and we can delete the split code... :)
+      const driverUrn = event.id
+      const driverId = driverUrn.split(':').splice(-1)[0]
+      //Gets the driver his profile
+      const driverProfile = await this.$store.dispatch('cs/fetchUser', {
+        userRef: driverId,
+      })
+      this.routeToConversation(event.tripContext, driverProfile)
+    },
+    async routeToConversation(ctx, driverProfile) {
+      const conversations = await this.$store.dispatch('ms/fetchConversations')
+      const index = conversations.findIndex(
+        conversation => conversation.context === ctx
+      )
+      let params = null
+      if (index !== -1) {
+        //So if the conversation already exists...
+        params = conversations[index]
+      } else {
+        //If the conversation does not exists
+        //Then create a ghost conversation
+        params = {
+          context: ctx,
+          participants: [
+            {
+              managedIdentity: this.$store.getters['ps/getProfile'].id,
+              urn: '',
+            },
+            {
+              ...driverProfile,
+              urn: this.getRideShareDriver,
+            },
+          ],
+        }
+      }
+      this.$router.push({
+        name: `conversation`,
+        params: params,
+      })
     },
   },
 }
