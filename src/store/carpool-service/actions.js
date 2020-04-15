@@ -100,6 +100,7 @@ export default {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       })
       .then(function(resp) {
+        context.dispatch('fetchCars')
         // eslint-disable-next-line
         console.log(resp)
         context.dispatch('fetchCars')
@@ -185,10 +186,11 @@ export default {
       })
       .then(function(resp) {
         if (offset == 0) {
-          context.commit('saveRides', resp.data)
+          context.commit('saveRides', resp.data.data)
         } else {
-          context.commit('appendRides', resp.data)
+          context.commit('appendRides', resp.data.data)
         }
+        context.commit('setPlannedRidesCount', resp.data.totalCount)
       })
       .catch(function(error) {
         // TODO: Proper error handling.
@@ -225,6 +227,24 @@ export default {
             { root: true }
           )
         }
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
+  fetchUser: (context, { userRef }) => {
+    const URL = BASE_URL + `/rideshare/users/${userRef}`
+    return axios
+      .get(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        return resp.data
+        // if (resp.status == 200) {
+        //   context.commit('setAvailableCars', resp.data)
+        // }
       })
       .catch(function(error) {
         // TODO: Proper error handling.

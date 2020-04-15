@@ -37,7 +37,7 @@
           block
           mb-4
           depressed
-          color="primairy"
+          color="primary"
         >
           bekijk mijn ritten
         </v-btn>
@@ -48,7 +48,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 export default {
-  name: 'TripCanceledPage',
+  name: 'TripCancelledPage',
   components: { ContentPane },
 }
 </script>

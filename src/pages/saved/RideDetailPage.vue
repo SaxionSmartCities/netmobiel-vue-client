@@ -1,43 +1,40 @@
 <template>
-  <content-pane id="scroll">
-    <v-row v-if="selectedLeg">
-      <v-col>
-        <route-map :leg="selectedLeg"></route-map>
+  <content-pane>
+    <v-row dense class="pa-0">
+      <v-col class="mb-3 py-0">
+        <h1>Rit details</h1>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col>
-        <h3 class="ma-2">Rit details</h3>
+    <v-row dense>
+      <v-col class="py-0">
         <v-divider />
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="4" class="pt-0 pb-0">Datum</v-col>
-      <v-col cols="8" class="departure-date pt-0 pb-0">
+    <v-row dense>
+      <v-col cols="4">Datum</v-col>
+      <v-col cols="8" class="departure-date">
         {{ formatDate() }}
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="4" class="pt-0 pb-0">Reisduur</v-col>
-      <v-col cols="8" class="pt-0 pb-0">
+    <v-row dense>
+      <v-col cols="4">Reisduur</v-col>
+      <v-col cols="8">
         {{ formatDuration() }}
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="4" class="pt-0 pb-0">Boekingen</v-col>
-      <v-col cols="8" class="pt-0 pb-0">
+    <v-row dense>
+      <v-col cols="4">Boekingen</v-col>
+      <v-col cols="8">
         {{ ride.bookings.length }}
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="4" class="pt-0 pb-0">Auto</v-col>
-      <v-col cols="8" class="pt-0 pb-0">
-        {{ ride.car.brand }} {{ ride.car.model }}
-      </v-col>
+    <v-row dense>
+      <v-col cols="4">Auto</v-col>
+      <v-col cols="8">{{ ride.car.brand }} {{ ride.car.model }}</v-col>
     </v-row>
-    <v-row v-if="ride.recurrence">
-      <v-col cols="4" class="pt-0 pb-0">Herhalen</v-col>
-      <v-col cols="8" class="pt-0 pb-0">
+    <v-row v-if="ride.recurrence" dense>
+      <v-col cols="4">Herhalen</v-col>
+      <v-col cols="8">
         {{ formatRecurrence() }}
         <table v-if="ride.recurrence.unit == 'WEEK'" class="equal-width">
           <tr>
@@ -59,22 +56,29 @@
         </table>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="pb-3">
       <v-col>
         <v-divider />
       </v-col>
     </v-row>
-    <v-row>
-      <v-col class="mx-6">
-        <v-row v-for="(leg, index) in generateSteps()" :key="index">
-          <itinerary-leg :leg="leg" />
-        </v-row>
-      </v-col>
+    <v-row
+      v-for="(leg, index) in generateSteps()"
+      :key="index"
+      class="mx-3 py-0"
+    >
+      <itinerary-leg :leg="leg" />
     </v-row>
     <v-row v-if="ride.bookings.length > 0">
       <v-col class="mx-1">
-        <v-btn large rounded block outlined color="primary" to="/community">
-          Bericht sturen naar passagier
+        <v-btn
+          large
+          rounded
+          block
+          outlined
+          color="primary"
+          @click="contactPassenger"
+        >
+          Stuur bericht naar passagier
         </v-btn>
       </v-col>
     </v-row>
@@ -129,18 +133,25 @@
         <v-divider />
       </v-col>
     </v-row>
+    <contact-traveller-modal
+      v-if="showContactTravellerModal"
+      :show="showContactTravellerModal"
+      :users="passengersInBookings"
+      @close="showContactTravellerModal = false"
+      @select="onTravellerSelectForMessage"
+    ></contact-traveller-modal>
   </content-pane>
 </template>
 
 <script>
 import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
-import RouteMap from '@/components/itinerary-details/RouteMap'
 import ContentPane from '@/components/common/ContentPane.vue'
+import ContactTravellerModal from '@/components/itinerary-details/ContactTravellerModal'
 
 export default {
   name: 'RideDetailPage',
-  components: { ContentPane, ItineraryLeg, RouteMap },
+  components: { ContactTravellerModal, ContentPane, ItineraryLeg },
   props: {
     id: {
       type: Number,
@@ -156,7 +167,20 @@ export default {
       selectedLeg: null,
       warningDialog: false,
       cancelReason: '',
+      showContactTravellerModal: false,
     }
+  },
+  computed: {
+    passengersInBookings() {
+      return this.ride.bookings.map(booking => {
+        return {
+          name:
+            booking.passenger.givenName + ' ' + booking.passenger.familyName,
+          passengerRef: booking.passengerRef,
+          ...booking.passenger,
+        }
+      })
+    },
   },
   created: function() {
     this.$store.commit('ui/showBackButton')
@@ -215,6 +239,49 @@ export default {
     },
     checkDeleteTrip() {
       this.warningDialog = true
+    },
+    async onTravellerSelectForMessage(event) {
+      const tripContext = 'urn:nb:rs:ride:' + this.ride.id
+      this.routeToConversation(tripContext, event)
+    },
+    contactPassenger() {
+      if (this.passengersInBookings.length > 1) {
+        this.showContactTravellerModal = true
+      } else {
+        this.onTravellerSelectForMessage(this.passengersInBookings[0])
+      }
+    },
+    async routeToConversation(ctx, passengerProfile) {
+      const conversations = await this.$store.dispatch('ms/fetchConversations')
+      const index = conversations.findIndex(
+        conversation => conversation.context === ctx
+      )
+      let params = null
+      if (index !== -1) {
+        //So if the conversation already exists...
+        params = conversations[index]
+      } else {
+        //If the conversation does not exists
+        //Then create a ghost conversation
+        params = {
+          context: ctx,
+          participants: [
+            {
+              managedIdentity: this.$store.getters['ps/getProfile'].id,
+              urn: '',
+            },
+            {
+              ...passengerProfile,
+              urn: passengerProfile.passengerRef,
+            },
+          ],
+        }
+      }
+
+      this.$router.push({
+        name: `conversation`,
+        params: params,
+      })
     },
   },
 }

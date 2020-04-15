@@ -1,55 +1,55 @@
 <template>
-  <content-pane>
-    <v-layout pa-2 column>
-      <v-flex>
-        <v-layout row mb-3>
-          <v-flex lg1 sm2 xs4>
-            <round-user-image></round-user-image>
-          </v-flex>
-
-          <v-flex body-2 mt-2>
-            <v-layout>
-              <v-flex>
-                <p class="ma-0">{{ user.fullName }}</p>
-                <p class="ma-0">{{ address }}</p>
-                <v-rating
-                  v-model="user.rating"
-                  :length="user.maxRating"
-                  background-color="yellow darken-3"
-                  color="yellow darken-3"
-                  small
-                  readonly
-                ></v-rating>
-              </v-flex>
-            </v-layout>
-          </v-flex>
-
-          <v-flex lg1 sm1>
-            <v-layout align-center justify-end fill-height>
-              <v-flex align-center>
-                <v-icon class="align-center">chevron_right</v-icon>
-              </v-flex>
-            </v-layout>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-flex>
-        <v-layout row mb-2>
-          <v-flex travel-card mr-2>
-            <v-layout column align-center my-2 class="disabled">
-              <v-flex><v-icon>control_point</v-icon></v-flex>
-              <v-flex>Doelen</v-flex>
-            </v-layout>
-          </v-flex>
-          <v-flex travel-card ml-2>
-            <v-layout column align-center my-2 class="disabled">
-              <v-flex><v-icon>star_border</v-icon></v-flex>
-              <v-flex>Reviews</v-flex>
-            </v-layout>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-flex>
+  <content-pane :clearpadding="true" class="pa-0">
+    <v-row class="pt-2 flex-column">
+      <v-col>
+        <v-row class="mb-3">
+          <v-col class="shrink pa-0 pr-3">
+            <round-user-image
+              :image-size="92"
+              :avatar-size="100"
+            ></round-user-image>
+            <div class="d-flex flex-row justify-center">
+              <a class="caption bewerk">Bewerk</a>
+            </div>
+          </v-col>
+          <v-col class="flex-column">
+            <v-row>
+              <div
+                class="d-flex grow align-self-center flex-column user-text"
+                @click="navTo('account')"
+              >
+                <span class="shrink">{{ user.fullName }}</span>
+                <span class="caption text--gray">
+                  {{ user.address || 'Gasthuisstraat 9, Bredevoort' }}
+                </span>
+              </div>
+              <v-icon large @click="navTo('account')">
+                chevron_right
+              </v-icon>
+            </v-row>
+            <v-row class="mt-5">
+              <v-col class="pa-0 shrink">
+                <div>
+                  <v-btn
+                    rounded
+                    depressed
+                    color="button"
+                    small
+                    @click="navTo('credits')"
+                  >
+                    Beheer credits
+                  </v-btn>
+                  <div class="py-1"></div>
+                  <v-btn rounded depressed outlined color="primary" small>
+                    Bekijk reviews
+                  </v-btn>
+                </div>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col class="pa-0">
         <v-layout column>
           <v-flex
             v-for="item in items"
@@ -57,19 +57,22 @@
             @click="$router.push(item.route)"
           >
             <v-divider></v-divider>
-            <v-layout align-center ma-3 :class="{ 'no-route': !item.route }">
-              <v-flex xs2>
-                <v-icon>{{ item.icon }}</v-icon>
-              </v-flex>
-              <v-flex>{{ item.name }}</v-flex>
-              <v-flex xs1>
-                <v-icon>chevron_right</v-icon>
-              </v-flex>
-            </v-layout>
+            <v-row
+              align-content="center"
+              class="my-3 ml-0 mr-1"
+              :class="{ 'no-route': !item.route }"
+            >
+              <v-icon>{{ item.icon }}</v-icon>
+              <span class="pl-4 body-1 font-weight-light align-self-center">
+                {{ item.name }}
+              </span>
+              <v-spacer></v-spacer>
+              <v-icon>chevron_right</v-icon>
+            </v-row>
           </v-flex>
         </v-layout>
-      </v-flex>
-      <v-flex travel-card mt-2 mr-2 @click="logOut">
+      </v-col>
+      <v-col travel-card mt-2 mr-2 @click="logOut">
         <v-layout column align-center my-2>
           <v-flex>
             <v-icon>exit_to_app</v-icon>
@@ -78,8 +81,8 @@
             Log out
           </v-flex>
         </v-layout>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 
@@ -126,8 +129,8 @@ export default {
     },
   },
   methods: {
-    navToHome: function() {
-      this.$router.push('/')
+    navTo(name) {
+      this.$router.push({ name: name })
     },
     logOut: function() {
       this.$keycloak.logoutFn()
@@ -138,6 +141,10 @@ export default {
 </script>
 
 <style lang="scss">
+.user-text {
+  flex: 0 1 0;
+}
+
 .theme--light.v-icon {
   color: $color-green;
 }
@@ -154,5 +161,8 @@ export default {
 //TEMP: Just to pretend disabled buttons
 .disabled .v-icon {
   color: #ccc;
+}
+.bewerk {
+  text-decoration: underline;
 }
 </style>
