@@ -55,6 +55,7 @@ export default {
     },
     postfix: {
       type: String,
+      default: '',
     },
   },
   computed: {
