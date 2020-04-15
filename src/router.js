@@ -5,7 +5,6 @@ import store from './store'
 Vue.use(Router)
 
 import CommunityOverviewPage from './pages/community/CommunityOverviewPage.vue'
-import Credits from './pages/profile/Creditspage.vue'
 import InboxPage from './pages/community/messages/InboxPage.vue'
 import ConversationPage from './pages/community/messages/ConversationPage.vue'
 import ItineraryDetailPage from './pages/planner/ItineraryDetailPage.vue'
@@ -18,9 +17,6 @@ import OnboardingComplete from './pages/OnboardingComplete.vue'
 import OnboardingPage from './pages/OnboardingPage.vue'
 import PrivacySecurityPage from './pages/profile/PrivacySecurityPage.vue'
 import PrivacyStatementPage from './pages/profile/PrivacyStatementPage.vue'
-import ProfileCarsPage from './pages/profile/ProfileCarsPage.vue'
-import ProfileAddCarPage from './pages/profile/ProfileAddCarPage.vue'
-import ProfileEditCarPage from './pages/profile/ProfileEditCarPage.vue'
 import ProfilePage from './pages/profile/ProfilePage.vue'
 import SearchLocationPage from './pages/planner/SearchLocationPage'
 import SearchOptionsPage from './pages/planner/SearchOptionsPage'
@@ -39,7 +35,6 @@ import TripDetailPage from './pages/saved/TripDetailPage'
 import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
 import ShoutOutDetailPage from '@/pages/community/shoutout/ShoutOutDetailPage'
 import Account from '@/pages/profile/Account'
-import TripCanceledPage from './pages/saved/TripCanceledPage'
 import TripReviewedPage from './pages/planner/TripReviewedPage'
 
 const router = new Router({
@@ -167,21 +162,6 @@ const router = new Router({
       path: '/modeSelection',
       component: ModeSelectionPage,
       name: 'modeSelectionPage',
-    },
-    {
-      path: '/Cars',
-      component: CarsPage,
-      name: 'CarsPage',
-    },
-    {
-      path: '/AddCar',
-      component: CarAddPage,
-      name: 'CarAddPage',
-    },
-    {
-      path: '/EditCar',
-      component: CarEditPage,
-      name: 'CarEditPage',
     },
     {
       path: '/onboardingPage',
