@@ -74,7 +74,13 @@
       <v-col v-else class="pt-0">
         <v-row v-for="(ride, index) in rides" :key="index" xs12>
           <v-col class="pa-1">
-            <ride-card class="my-2" :ride="ride"></ride-card>
+            <ride-card
+              class="my-2"
+              :index="index"
+              :ride="ride"
+              @rideSelected="onRideSelected"
+            >
+            </ride-card>
           </v-col>
         </v-row>
         <v-row>
@@ -117,10 +123,14 @@ export default {
     },
     rides() {
       //HACK: Only display first 3 rides.
-      let sortedList = this.$store.getters['cs/getRides'].slice(0, 3)
-      sortedList.sort((a, b) => {
-        return new Date(a.departureTime) - new Date(b.departureTime)
-      })
+      let sortedList = []
+      const rides = this.$store.getters['cs/getRides']
+      if (rides) {
+        sortedList = rides.slice(0, 3)
+        sortedList.sort((a, b) => {
+          return new Date(a.departureTime) - new Date(b.departureTime)
+        })
+      }
       return sortedList
     },
     timeOfDayGreeting() {
@@ -142,6 +152,15 @@ export default {
     this.$store.commit('ui/addAppClass', 'homepage')
     //TODO: How many cards do we want?
     this.$store.dispatch('cs/fetchRides', { offset: 0, maxResults: 2 })
+  },
+  methods: {
+    onRideSelected(index) {
+      const ride = this.rides[index]
+      this.$router.push({
+        name: 'rideDetailPage',
+        params: { ride, id: ride.id },
+      })
+    },
   },
 }
 </script>

@@ -1,192 +1,80 @@
 <template>
-  <v-layout pa-2 column>
-    <v-flex>
-      <v-layout column>
-        <v-flex>
-          <v-divider></v-divider>
-          <v-layout ma-3>
-            <v-flex xs2>
-              <v-icon>fa-pencil-alt</v-icon>
-            </v-flex>
-            <v-flex>Wijzig deze rit</v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    <v-flex>
-      <v-layout column>
-        <v-flex>
-          <v-divider></v-divider>
-          <v-layout ma-3>
-            <v-flex xs2>
-              <v-icon>fa-redo</v-icon>
-            </v-flex>
-            <v-flex>Plan deze reis opnieuw</v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    <v-flex>
-      <v-layout column>
-        <v-flex @click="reviewTrip">
-          <v-divider></v-divider>
-          <v-layout ma-3>
-            <v-flex xs2>
-              <v-icon>fa-redo</v-icon>
-            </v-flex>
-            <v-flex>Beoordeel deze reis(tmp)</v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    <v-flex>
-      <v-layout column>
-        <v-flex @click="openConfirmation">
-          <v-divider></v-divider>
-          <v-layout ma-3>
-            <v-flex xs2>
-              <v-icon>fa-times-circle</v-icon>
-            </v-flex>
-            <v-flex>Annuleer deze reis</v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    <v-dialog v-model="dialog" persistent max-width="320px">
-      <v-card>
-        <v-card-title><h1>Annuleer deze rit.</h1></v-card-title>
-        <v-card-text>
-          <span>
-            Weet je zeker dat je deze rit wilt annuleren? Dit kan niet ongedaan
-            gemaakt worden.
-          </span>
-        </v-card-text>
-        <v-flex my-4 mr-4 ml-4>
-          <v-btn
-            large
-            rounded
-            block
-            mb-4
-            depressed
-            color="button"
-            @click="deleteTrip"
-          >
-            Rit annuleren
-          </v-btn>
-        </v-flex>
-        <v-flex my-4 mr-4 ml-4 pb-8>
-          <v-btn
-            large
-            rounded
-            outlined
-            block
-            mb-4
-            depressed
-            color="primairy"
-            @click="closeConfirmation"
-          >
-            Rit toch bewaren
-          </v-btn>
-        </v-flex>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="reviewDialog" persistent max-width="500px">
-      <v-card>
-        <v-card-title><h1>Beoordeel jouw rit!</h1></v-card-title>
-        <v-card-text>
-          <span>
-            Hoe heb je deze rit ervaren? Geef jouw mening en laat weten wat jij
-            ervan vond.
-          </span>
-        </v-card-text>
-        <v-row justify="space-around">
-          <v-col cols="10" sm="10" md="10">
-            <v-chip-group column active-class="primary--text">
-              <v-chip v-for="tag in tags" :key="tag">
-                {{ tag }}
-              </v-chip>
-            </v-chip-group>
-          </v-col>
-        </v-row>
-        <v-flex my-4 mr-4 ml-4>
-          <v-btn
-            large
-            rounded
-            block
-            mb-4
-            depressed
-            color="button"
-            @click="progress()"
-          >
-            Beoordeel deze rit
-          </v-btn>
-        </v-flex>
-        <v-flex my-4 mr-4 ml-4 pb-8>
-          <v-btn
-            large
-            rounded
-            outlined
-            block
-            mb-4
-            depressed
-            color="primairy"
-            @click="reviewDialog = false"
-          >
-            Annuleren
-          </v-btn>
-        </v-flex>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="commentDialog" persistent max-width="500px">
-      <v-card>
-        <v-card-title><h1>Beoordeel jouw rit!</h1></v-card-title>
-        <v-card-text>
-          <span>
-            Hoe heb je deze rit ervaren? Geef jouw mening en laat weten wat jij
-            ervan vond.
-          </span>
-        </v-card-text>
-        <v-flex my-4 mr-4 ml-4>
-          <v-textarea
-            pa-md-4
-            clearable
-            clear-icon="cancel"
-            flat
-            outlined
-            solo
-            label="Cory is een vriendlijke passagier en reageert direct. De volgende keer neem ik haar graag weer mee!"
-          ></v-textarea>
-        </v-flex>
-        <v-flex my-8 mr-4 ml-4>
-          <v-btn
-            large
-            rounded
-            block
-            mb-4
-            depressed
-            color="button"
-            @click="confirmReview()"
-          >
-            Beoordeel deze rit
-          </v-btn>
-        </v-flex>
-        <v-flex my-4 mr-4 ml-4 pb-8>
-          <v-btn
-            large
-            rounded
-            outlined
-            block
-            mb-4
-            depressed
-            color="primairy"
-            @click="reviewDialog = false"
-          >
-            Terug
-          </v-btn>
-        </v-flex>
-      </v-card>
-    </v-dialog>
-  </v-layout>
+  <v-row>
+    <v-col>
+      <v-divider></v-divider>
+      <v-row @click="editTrip">
+        <v-col cols="2">
+          <v-icon>fa-pencil-alt</v-icon>
+        </v-col>
+        <v-col>
+          Wijzig deze reis
+        </v-col>
+      </v-row>
+      <v-divider></v-divider>
+      <v-row @click="replanSameRoute">
+        <v-col cols="2">
+          <v-icon>fa-redo</v-icon>
+        </v-col>
+        <v-col>
+          Plan deze reis opnieuw
+        </v-col>
+      </v-row>
+      <v-divider></v-divider>
+      <v-row @click="deleteTrip">
+        <v-col cols="2">
+          <v-icon>fa-times-circle</v-icon>
+        </v-col>
+        <v-col>
+          Annuleer deze reis
+        </v-col>
+      </v-row>
+      <v-dialog v-model="dialog" persistent>
+        <template v-slot:activator="{ on }"> </template>
+        <v-card>
+          <v-card-title class="headline">Annuleer deze rit.</v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col>
+                Weet je zeker dat je deze rit wilt annuleren? Dit kan niet
+                ongedaan gemaakt worden.
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-btn
+                  large
+                  rounded
+                  block
+                  mb-4
+                  depressed
+                  color="button"
+                  @click="closeConfirmation"
+                >
+                  Rit annuleren
+                </v-btn>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-btn
+                  large
+                  rounded
+                  outlined
+                  block
+                  mb-4
+                  depressed
+                  color="primary"
+                  @click="closeDialog"
+                >
+                  Rit toch bewaren
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -194,18 +82,8 @@ export default {
   name: 'ItineraryOptions',
   components: {},
   props: {},
-  data: function() {
-    return {
-      dialog: false,
-      reviewDialog: false,
-      commentDialog: false,
-      tags: [
-        'Zelfde interesses',
-        'Op tijd',
-        'Soepele communicatie',
-        'Gezellig',
-      ],
-    }
+  data() {
+    return { dialog: false }
   },
   computed: {
     selectedTrip() {
@@ -217,24 +95,19 @@ export default {
       this.$store.dispatch('is/deleteSelectedTrip', {
         tripId: this.selectedTrip.id,
       })
-      this.$router.push('/tripCanceledPage')
+      this.$router.push('/tripCancelledPage')
     },
-    progress() {
-      this.reviewDialog = false
-      this.commentDialog = true
-    },
-    reviewTrip() {
-      this.reviewDialog = true
-    },
+    editTrip() {},
+    replanSameRoute() {},
     openConfirmation() {
       this.dialog = true
     },
     closeConfirmation() {
       this.dialog = false
+      this.$router.push('/tripCancelledPage')
     },
-    confirmReview() {
-      this.reviewDialog = false
-      this.$router.push('/tripReviewedPage')
+    closeDialog() {
+      this.dialog = false
     },
   },
 }

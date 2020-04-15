@@ -49,6 +49,23 @@ export default {
         }
       })
   },
+  fetchCars: context => {
+    const URL = BASE_URL + `/rideshare/cars`
+    axios
+      .get(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        if (resp.status == 200) {
+          context.commit('setAvailableCars', resp.data)
+        }
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
   submitCar: (context, payload) => {
     const URL = BASE_URL + `/rideshare/cars`
     axios
@@ -58,6 +75,7 @@ export default {
       .then(function(resp) {
         // eslint-disable-next-line
         console.log(resp)
+        context.dispatch('fetchCars')
       })
       .catch(function(error) {
         // TODO: Proper error handling.
@@ -82,8 +100,10 @@ export default {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       })
       .then(function(resp) {
+        context.dispatch('fetchCars')
         // eslint-disable-next-line
         console.log(resp)
+        context.dispatch('fetchCars')
       })
       .catch(function(error) {
         // TODO: Proper error handling.
@@ -93,7 +113,7 @@ export default {
   },
   submitRide: (context, payload) => {
     const { ridePlanOptions, selectedTime, from, to, recurrence } = payload
-    if (ridePlanOptions.cars.length == 0) {
+    if (ridePlanOptions.selectedCarId < 0) {
       context.dispatch(
         'ui/queueNotification',
         {
@@ -124,7 +144,6 @@ export default {
       nrSeatsAvailable: ridePlanOptions.numPassengers,
       maxDetourSeconds: ridePlanOptions.maxMinutesDetour * 60,
     }
-
     const axiosConfig = {
       method: 'POST',
       url: BASE_URL + `/rideshare/rides`,
@@ -136,7 +155,7 @@ export default {
       .then(function(res) {
         // eslint-disable-next-line
         console.log(res)
-        context.dispatch('fetchRides')
+        context.dispatch('fetchRides', { offset: 0, maxResults: 10 })
       })
       .catch(function(error) {
         // TODO: Proper error handling.
@@ -167,10 +186,11 @@ export default {
       })
       .then(function(resp) {
         if (offset == 0) {
-          context.commit('saveRides', resp.data)
+          context.commit('saveRides', resp.data.data)
         } else {
-          context.commit('appendRides', resp.data)
+          context.commit('appendRides', resp.data.data)
         }
+        context.commit('setPlannedRidesCount', resp.data.totalCount)
       })
       .catch(function(error) {
         // TODO: Proper error handling.
@@ -184,6 +204,52 @@ export default {
           },
           { root: true }
         )
+      })
+  },
+  deleteRide: (context, payload) => {
+    const URL = BASE_URL + `/rideshare/rides/` + payload.id
+    //TODO: Pass reason to message service.
+    axios
+      .delete(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        if (resp.status == 204) {
+          //Delete trip from store!
+          context.commit('deleteRides', payload.id)
+        } else {
+          context.dispatch(
+            'ui/queueNotification',
+            {
+              message: 'Fout bij het verwijderen van uw rit-aanbod.',
+              timeout: 0,
+            },
+            { root: true }
+          )
+        }
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
+  fetchUser: (context, { userRef }) => {
+    const URL = BASE_URL + `/rideshare/users/${userRef}`
+    return axios
+      .get(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        return resp.data
+        // if (resp.status == 200) {
+        //   context.commit('setAvailableCars', resp.data)
+        // }
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
       })
   },
 }

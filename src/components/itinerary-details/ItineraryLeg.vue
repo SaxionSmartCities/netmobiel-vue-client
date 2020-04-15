@@ -1,42 +1,48 @@
 <template>
-  <v-layout column>
-    <v-flex body-1>
-      <v-layout row>
-        <v-flex xs2>{{ time }}</v-flex>
-        <v-flex xs1>
-          <v-layout column align-center fill-height>
-            <v-flex class="border"><div class="open-dot"/></v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex xs9>{{ header }}</v-flex>
-      </v-layout>
-    </v-flex>
-    <v-flex>
-      <v-layout row>
-        <v-flex xs2 my-3>
-          <v-icon my-6>{{ icon }}</v-icon>
-        </v-flex>
-        <v-flex xs1>
-          <v-layout
-            v-if="travelMode !== 'FINISH' && travelMode !== 'ARRIVAL'"
-            justify-center
-            fill-height
-          >
-            <v-flex shrink>
-              <div
-                v-if="travelMode === 'WAIT'"
-                class="borderstopped borderwidth"
-              />
-              <div v-else class="border borderwidth" />
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex xs8 caption>
+  <v-row no-gutters>
+    <v-col>
+      <v-row no-gutters align="center" justify="center">
+        <v-col cols="2" class="time px-0">
+          {{ time }}
+        </v-col>
+        <v-col cols="1" align="center">
+          <div class="open-dot" />
+        </v-col>
+        <v-col>
+          <v-row class="pl-2">
+            <v-col class="header py-0">
+              {{ header }}
+            </v-col>
+            <v-col cols="2" class="map-icon-height py-0">
+              <v-icon
+                v-if="leg.traverseMode === 'WALK'"
+                :class="{ 'active-map': isMapActive }"
+                @click="$emit('legSelect', { leg, step })"
+              >
+                map
+              </v-icon>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row v-if="travelMode !== 'FINISH'" no-gutters>
+        <v-col cols="2" class="pl-2">
+          <v-icon v-if="showicon" :class="{ rideshare: isRideShare }">
+            {{ icon }}
+          </v-icon>
+        </v-col>
+        <v-col cols="1" justify="center" align="center" fill-height>
+          <div v-if="travelMode === 'WALK'" class="borderstopped borderwidth" />
+          <div v-else-if="travelMode === 'ARRIVAL'" class="no-border" />
+          <div v-else-if="showdottedline" class="borderstopped borderwidth" />
+          <div v-else class="border borderwidth" />
+        </v-col>
+        <v-col class="description pl-2 pb-3">
           {{ description }}
-        </v-flex>
-      </v-layout>
-    </v-flex>
-  </v-layout>
+        </v-col>
+      </v-row>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -47,10 +53,11 @@ import delegation from '@/utils/delegation'
 export default {
   name: 'ItineraryLeg',
   props: {
-    leg: {
-      type: Object,
-      required: true,
-    },
+    leg: { type: Object, required: true },
+    isMapActive: { type: Boolean, default: false },
+    step: { type: Number, default: 0 },
+    showicon: { type: Boolean, default: true },
+    showdottedline: { type: Boolean, default: false },
   },
   computed: {
     travelMode() {
@@ -60,7 +67,7 @@ export default {
     icon() {
       return travelModes[this.travelMode].icon
     },
-    time: function() {
+    time() {
       return moment(this.leg.startTime)
         .locale('nl')
         .format('LT')
@@ -71,6 +78,9 @@ export default {
     description() {
       return delegation(this, this.travelMode, descriptions)
     },
+    isRideShare() {
+      return this.travelMode === travelModes.RIDESHARE.mode
+    },
   },
 }
 
@@ -78,10 +88,8 @@ const headers = {
   WALK() {
     return `Lopen (${humanDistance(this.leg.distance)})`
   },
-  CAR() {
-    return this.leg.from.name
-  },
-  RIDESHARE: 'Meerijden met een Netmobiel gebruiker',
+  CAR: 'Vertrek',
+  RIDESHARE: 'Meerijden',
   RAIL() {
     return `${this.leg.routeShortName} naar ${this.leg.to.label}`
   },
@@ -91,11 +99,8 @@ const headers = {
   WAIT() {
     return `Even wachten.. (${Math.round(this.leg.duration / 60)} minuten)`
   },
-  FINISH: 'Aangekomen op bestemming',
-  ARRIVAL() {
-    // car arrival when sharing a ride
-    return this.leg.from.name
-  },
+  FINISH: 'Gearriveerd',
+  ARRIVAL: 'Aankomst',
   SUBWAY() {
     return `${this.leg.routeShortName} naar ${this.leg.to.label}`
   },
@@ -105,8 +110,12 @@ const descriptions = {
   WALK() {
     return `${this.leg.from.label} - ${this.leg.to.label}`
   },
-  CAR: '',
-  RIDESHARE: 'Meerijden met een Netmobiel gebruiker',
+  CAR() {
+    return this.leg.from.name
+  },
+  RIDESHARE() {
+    return `Meerijden met ${this.leg.driverName}`
+  },
   RAIL() {
     // add platform to departure and arrival
     return `${this.leg.from.label} perron ${this.leg.from.platformCode} - ${
@@ -118,7 +127,10 @@ const descriptions = {
   },
   WAIT: '',
   FINISH: '',
-  ARRIVAL: '',
+  ARRIVAL() {
+    // car arrival when sharing a ride
+    return this.leg.from.name
+  },
   SUBWAY() {
     return `${this.leg.from.name} - ${this.leg.to.name}`
   },
@@ -141,10 +153,26 @@ function humanDistance(meters) {
 </script>
 
 <style lang="scss">
+.time {
+  font-size: 0.8em;
+}
+.header {
+  font-size: 0.9em;
+}
+.description {
+  font-size: 0.7em;
+}
+.map-icon-height {
+  height: 24px;
+}
+.rideshare {
+  color: $color-secondary !important;
+}
+
 .open-dot {
   background: url('../../assets/travel_details_dot.gif');
-  height: 24px;
-  width: 24px;
+  height: 25px;
+  width: 25px;
   background-size: cover;
   background-position: bottom;
   background-repeat: no-repeat;
@@ -164,5 +192,8 @@ function humanDistance(meters) {
   background-position: center;
   background-repeat-x: no-repeat;
   height: 100%;
+}
+.active-map {
+  @extend .selected-map;
 }
 </style>

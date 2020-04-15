@@ -24,6 +24,7 @@ export default {
 
 <style lang="scss">
 .header {
+  height: $header-height;
   background-image: url('../../assets/logo_header.png');
   background-size: 120px;
   background-repeat: no-repeat;

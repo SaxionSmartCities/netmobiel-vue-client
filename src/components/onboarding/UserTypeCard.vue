@@ -3,7 +3,7 @@
     <v-card-title>Hoe ga je netmobiel gebruiken?</v-card-title>
     <v-card-text class="py-0">
       <v-radio-group v-model="value.userRole" :mandatory="false">
-        <v-radio label="Meerijden of via het OV" value="passager"></v-radio>
+        <v-radio label="Meerijden of via het OV" value="passenger"></v-radio>
         <v-radio label="Zelf ritten aanbieden" value="driver"></v-radio>
         <v-radio label="Meerijden én zelf ritten aanbieden" value="both">
         </v-radio>

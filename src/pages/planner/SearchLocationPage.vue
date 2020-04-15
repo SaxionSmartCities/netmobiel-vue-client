@@ -59,6 +59,7 @@ import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
 
 // map category to Material icon name (needs more work...)
 // show at most 8 suitable suggestions
+import { throttle } from 'lodash'
 const highlightMarker = 'class="search-hit"'
 const skipCategories = new Set(['intersection'])
 const maxSuggestions = 8
@@ -97,14 +98,14 @@ export default {
     },
   },
   watch: {
-    searchInput: function(val) {
+    searchInput: throttle(function(val) {
       if (val != null) {
         const show = (this.showSuggestionsList = val.length > 3)
         if (show) {
           this.$store.dispatch('gs/fetchGeocoderSuggestions', {
-            place: val,
+            query: val,
             // geographic center of the Netherlands (near Lunteren)
-            area: '52.063045,5.349972;r=150000',
+            area: '52.063045,5.349972',
             result_types: 'place,address',
             // highlight the search text
             hlStart: `<span ${highlightMarker}>`,
@@ -112,7 +113,7 @@ export default {
           })
         }
       }
-    },
+    }, 500),
   },
   created() {
     this.$store.commit('ui/showBackButton')

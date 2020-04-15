@@ -8,7 +8,13 @@
         Jouw reis is bevestigd. We sturen je een herrinnering voor jouw vertrek.
       </v-flex>
       <v-flex shrink>
-        <v-btn block rounded depressed class="my-3 button" to="/home">
+        <v-btn
+          block
+          rounded
+          depressed
+          class="my-3 button"
+          @click="swapLocations()"
+        >
           Plan direct je terugreis</v-btn
         >
         <v-btn block rounded depressed outlined color="primary" to="/plan">
@@ -24,6 +30,12 @@ export default {
   name: 'TripPlanSubmitted',
   data: function() {
     return {}
+  },
+  methods: {
+    swapLocations() {
+      this.$store.commit('gs/swapLocations')
+      this.$router.push('/search')
+    },
   },
 }
 </script>

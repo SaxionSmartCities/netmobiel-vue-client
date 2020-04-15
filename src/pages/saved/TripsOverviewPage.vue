@@ -2,6 +2,7 @@
   <content-pane id="scroll">
     <template v-slot:header>
       <v-tabs
+        v-if="showTabs"
         id="tabs"
         v-model="selectedTab"
         grow
@@ -12,19 +13,23 @@
           <v-icon color="white">commute</v-icon>
           <span>
             Reizen
-            <sup>{{ getPlannedTrips.length }}</sup>
+            <sup>{{ getPlannedTripsCount }}</sup>
           </span>
         </v-tab>
         <v-tab class="white--text no-caps saved">
           <v-icon color="white">directions_car</v-icon>
           <span>
             Ritten
-            <sup>{{ getPlannedRides.length }}</sup>
+            <sup>{{ getPlannedRidesCount }}</sup>
           </span>
         </v-tab>
       </v-tabs>
     </template>
-    <v-row v-if="selectedTab == 0" class="fill-height" dense>
+    <v-row
+      v-if="(showTabs && selectedTab == 0) || isPassenger"
+      class="fill-height"
+      dense
+    >
       <v-col v-if="getPlannedTrips.length == 0">
         U heeft geen bewaarde reizen. Ga naar de planner om uw reis te plannen.
       </v-col>
@@ -44,7 +49,7 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-row v-if="selectedTab == 1" dense>
+    <v-row v-if="(showTabs && selectedTab == 1) || isDriver" dense>
       <v-col v-if="getPlannedRides.length == 0">
         U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
         plannen.
@@ -53,10 +58,9 @@
         <v-row v-for="(ride, index) in getPlannedRides" :key="index">
           <v-col class="py-1">
             <ride-card
-              :from="ride.fromPlace"
-              :to="ride.toPlace"
-              :date="parseDate(ride.departureTime)"
+              :index="index"
               :ride="ride"
+              @rideSelected="onRideSelected"
             />
           </v-col>
         </v-row>
@@ -86,9 +90,23 @@ export default {
   },
   computed: {
     ...mapGetters({
+      getPlannedTripsCount: 'is/getPlannedTripsCount',
       getPlannedTrips: 'is/getPlannedTrips',
+      getPlannedRidesCount: 'cs/getPlannedRidesCount',
       getPlannedRides: 'cs/getRides',
     }),
+    showTabs() {
+      const role = this.$store.getters['ps/getProfile'].userRole
+      return !role || role == 'both'
+    },
+    isPassenger() {
+      const role = this.$store.getters['ps/getProfile'].userRole
+      return role == 'passenger'
+    },
+    isDriver() {
+      const role = this.$store.getters['ps/getProfile'].userRole
+      return role == 'driver'
+    },
   },
   watch: {
     bottom(bottom) {
@@ -143,7 +161,14 @@ export default {
     },
     onTripSelected(index) {
       this.$store.commit('is/setSelectedTrip', this.getPlannedTrips[index])
-      this.$router.push('/itineraryDetailPage')
+      this.$router.push('/tripDetailPage')
+    },
+    onRideSelected(index) {
+      const ride = this.getPlannedRides[index]
+      this.$router.push({
+        name: 'rideDetailPage',
+        params: { ride, id: ride.id },
+      })
     },
   },
 }

@@ -32,6 +32,12 @@ export default {
       }
     })
   },
+  setCreditAmount: (state, payload) => {
+    state.user.credits.creditAmount = payload
+  },
+  setCreditHistory: (state, payload) => {
+    state.user.credits.creditHistory = payload
+  },
   setReviewOptionsValue: (state, payload) => {
     state.user.reviews.filter(function(item) {
       if (item.name === payload.key) {
@@ -42,11 +48,6 @@ export default {
   },
   setRidePlanOptions: (state, payload) => {
     state.user.profile.ridePlanOptions = payload
-  },
-  deleteRidePlanOptionsCar: (state, payload) => {
-    state.user.profile.ridePlanOptions.cars = state.user.profile.ridePlanOptions.cars.filter(
-      car => car.licensePlate !== payload.licensePlate
-    )
   },
   addRidePlanOptionsCar: (state, payload) => {
     let isPresent = false

@@ -98,7 +98,7 @@ export default {
       })
       .catch(error => {
         // eslint-disable-next-line
-          console.log(error)
+        console.log(error)
         context.dispatch(
           'ui/queueNotification',
           { message: 'fout bij het annuleren van de reis', timeout: 0 },
@@ -148,12 +148,13 @@ export default {
     axios
       .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
       .then(response => {
-        if (response.status == 200 && response.data.length >= 0) {
+        if (response.status == 200 && response.data.data.length > 0) {
           if (offset == 0) {
-            context.commit('setPlannedTrips', response.data)
+            context.commit('setPlannedTrips', response.data.data)
           } else {
-            context.commit('appendPlannedTrips', response.data)
+            context.commit('appendPlannedTrips', response.data.data)
           }
+          context.commit('setPlannedTripsCount', response.data.totalCount)
         }
       })
       .catch(error => {
@@ -163,6 +164,49 @@ export default {
           'ui/queueNotification',
           {
             message: 'Fout bij het ophalen van opgeslagen reizen.',
+            timeout: 0,
+          },
+          { root: true }
+        )
+      })
+  },
+  fetchShoutOuts: (context, payload) => {
+    const lat = payload.latitude
+    const lon = payload.longitude
+    const URL = payload.maxResults
+      ? `${BASE_URL}/planner/shout-outs?maxResults=${
+          payload.maxResults
+        }&location=${lat},${lon}`
+      : `${BASE_URL}/planner/shout-outs?location=${lat},${lon}&depArrRadius=1000000`
+    axios
+      .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
+      .then(response => {
+        if (response.status == 200 && response.data.data.length > 0) {
+          context.commit('setShoutOuts', response.data.data)
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
+  fetchTrip: (context, payload) => {
+    const tripId = payload.id
+    const URL = `${BASE_URL}/planner/trips/${tripId}`
+    axios
+      .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
+      .then(response => {
+        if (response.status == 200) {
+          context.commit('setSelectedTrip', response.data)
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het ophalen van de reis.',
             timeout: 0,
           },
           { root: true }
