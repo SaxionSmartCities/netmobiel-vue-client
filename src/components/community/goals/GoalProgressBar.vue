@@ -58,7 +58,7 @@ export default {
     },
   },
   computed: {
-    computedProgress: function() {
+    computedProgress() {
       return Math.round((this.valueCurrent / this.valueTotal) * 100)
     },
   },
