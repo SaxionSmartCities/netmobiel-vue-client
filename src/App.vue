@@ -133,16 +133,6 @@ export default {
     finishNotification: function() {
       this.$store.dispatch('ui/finishNotification')
     },
-    onScroll(e) {
-      this.offsetTop = e.target.scrollTop
-      if (this.offsetTop > 30) {
-        if (this.appClasses.slice(-1)[0] !== 'small') {
-          this.$store.commit('ui/addAppClass', 'small')
-        }
-      } else {
-        this.$store.commit('ui/removeAppClass', 'small')
-      }
-    },
     goBack: function() {
       this.$router.go(-1)
     },
