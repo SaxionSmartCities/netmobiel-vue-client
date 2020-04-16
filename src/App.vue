@@ -1,5 +1,6 @@
 <template>
   <v-app id="app">
+    <!-- Header -->
     <v-app-bar v-if="isHeaderVisible" flat app color="primary">
       <v-btn v-if="isBackButtonVisible" icon @click="goBack()">
         <v-icon color="white">arrow_back</v-icon>
@@ -7,7 +8,7 @@
       <v-spacer></v-spacer>
       <span class="version">{{ commithash }}</span>
     </v-app-bar>
-
+    <!-- Content -->
     <v-content>
       <router-view></router-view>
       <v-snackbar
@@ -31,28 +32,24 @@
         </v-btn>
       </v-snackbar>
     </v-content>
-
+    <!-- Footer -->
     <v-bottom-navigation v-if="isFooterVisible" v-model="selectedNav" app>
       <v-btn text value="home" to="/home">
         <span>Home</span>
         <v-icon>home</v-icon>
       </v-btn>
-
       <v-btn text value="planner" @click="routeToMode()">
         <span>Planner</span>
         <v-icon>commute</v-icon>
       </v-btn>
-
       <v-btn text value="saved" to="/tripsOverviewPage">
         <span>Bewaard</span>
         <v-icon>favorite</v-icon>
       </v-btn>
-
       <v-btn text value="community" to="/community">
         <span>Community</span>
         <v-icon>chat</v-icon>
       </v-btn>
-
       <v-btn text value="profile" to="/profile">
         <span>Profiel</span>
         <v-icon>person</v-icon>
@@ -121,6 +118,8 @@ export default {
     },
   },
   mounted() {
+    // Set the fcm token (for push notifications) in the local storage
+    // for so we can retrieve it later to update the profile.
     if (this.$route.query.fcm) {
       localStorage.fcm = this.$route.query.fcm
     }
