@@ -209,6 +209,29 @@ export default {
   deleteRide: (context, payload) => {
     const URL = BASE_URL + `/rideshare/rides/` + payload.id
     //TODO: Pass reason to message service.
+    let ride = this.$store.getters['cs/getRides'].find(
+      ride => ride.id === payload.id
+    )
+    //Does ride have passenger? LOOP FOR EVERY PASSENGER
+    if (ride.bookings.length > 0) {
+      //Is there a message? If not set default message?
+      let cancelReason = payload.cancelReason
+      if (cancelReason === '') {
+        cancelReason = 'Er is door de bestuurder geen reden opgegeven.'
+      }
+
+      //Construct message payload object
+      let messagePayload = {
+        body: cancelReason,
+        context: this.context,
+        deliveryMode: 'MESSAGE',
+        envelopes: [{ recipient: this.recipient }],
+        managedIdentity: this.$store.getters['ps/getProfile'].id,
+        subject: 'Afgezegde rit',
+      }
+      context.commit('ms/sendMessage', messagePayload)
+    }
+
     axios
       .delete(URL, {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
