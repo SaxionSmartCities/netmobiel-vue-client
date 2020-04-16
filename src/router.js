@@ -39,6 +39,7 @@ import TripDetailPage from './pages/saved/TripDetailPage'
 import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
 import ShoutOutDetailPage from '@/pages/community/shoutout/ShoutOutDetailPage'
 import Account from '@/pages/profile/Account'
+import DriverReviewPage from './pages/saved/DriverReviewPage'
 
 const router = new Router({
   mode: 'history',
@@ -217,6 +218,11 @@ const router = new Router({
       path: '/account',
       component: Account,
       name: 'account',
+    },
+    {
+      path: '/reviewDriver',
+      name: 'reviewDriver',
+      component: DriverReviewPage,
     },
   ],
 })

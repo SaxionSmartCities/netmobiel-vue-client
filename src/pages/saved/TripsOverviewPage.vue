@@ -25,47 +25,74 @@
         </v-tab>
       </v-tabs>
     </template>
-    <v-row
-      v-if="(showTabs && selectedTab == 0) || isPassenger"
-      class="fill-height"
-      dense
-    >
-      <v-col v-if="getPlannedTrips.length == 0">
-        U heeft geen bewaarde reizen. Ga naar de planner om uw reis te plannen.
-      </v-col>
-      <v-col v-else>
-        <v-row v-for="(trip, index) in getPlannedTrips" :key="index">
-          <v-col class="py-1">
-            <travel-card
-              :index="index"
-              :from="trip.from"
-              :to="trip.to"
-              :arrival-time="parseDate(trip.arrivalTime)"
-              :departure-time="parseDate(trip.departureTime)"
-              :legs="trip.legs"
-              @onTripSelected="onTripSelected"
-            />
-          </v-col>
-        </v-row>
+    <v-row>
+      <v-col>
+        <v-radio-group v-model="tripsSearchTime" class="mt-1" row>
+          <v-radio label="Afgelopen" value="Past"></v-radio>
+          <v-radio label="Toekomstige" value="Future"></v-radio>
+        </v-radio-group>
       </v-col>
     </v-row>
-    <v-row v-if="(showTabs && selectedTab == 1) || isDriver" dense>
-      <v-col v-if="getPlannedRides.length == 0">
-        U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
-        plannen.
-      </v-col>
-      <v-col v-else>
-        <v-row v-for="(ride, index) in getPlannedRides" :key="index">
-          <v-col class="py-1">
-            <ride-card
-              :index="index"
-              :ride="ride"
-              @rideSelected="onRideSelected"
-            />
-          </v-col>
-        </v-row>
+    <v-row v-if="tripsSearchTime === 'Past'">
+      <v-col class="past-rides-column py-0">
+        <travel-card
+          v-for="(trip, index) in getPastTrips"
+          class="trip-card"
+          :key="index"
+          :index="index"
+          :from="trip.from"
+          :to="trip.to"
+          :arrival-time="parseDate(trip.arrivalTime)"
+          :departure-time="parseDate(trip.departureTime)"
+          :legs="trip.legs"
+          @onTripSelected="startReview()"
+        />
       </v-col>
     </v-row>
+    <template v-if="tripsSearchTime === 'Future'">
+      <v-row
+        v-if="(showTabs && selectedTab == 0) || isPassenger"
+        class="fill-height"
+        dense
+      >
+        <v-col v-if="getPlannedTrips.length == 0">
+          U heeft geen bewaarde reizen. Ga naar de planner om uw reis te
+          plannen.
+        </v-col>
+        <v-col v-else>
+          <v-row v-for="(trip, index) in getPlannedTrips" :key="index">
+            <v-col>
+              <travel-card
+                :index="index"
+                :from="trip.from"
+                :to="trip.to"
+                :arrival-time="parseDate(trip.arrivalTime)"
+                :departure-time="parseDate(trip.departureTime)"
+                :legs="trip.legs"
+                @onTripSelected="onTripSelected"
+              />
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row v-if="(showTabs && selectedTab == 1) || isDriver" dense>
+        <v-col v-if="getPlannedRides.length == 0">
+          U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
+          plannen.
+        </v-col>
+        <v-col v-else>
+          <v-row v-for="(ride, index) in getPlannedRides" :key="index">
+            <v-col class="py-1">
+              <ride-card
+                :index="index"
+                :ride="ride"
+                @rideSelected="onRideSelected"
+              />
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </template>
   </content-pane>
 </template>
 
@@ -86,12 +113,16 @@ export default {
       selectedTab: 0,
       bottom: false,
       maxResults: constants.fetchTripsMaxResults,
+      maxResultsPastTrips: constants.fetchTripsMaxResults,
+      tripsSearchTime: 'Past',
     }
   },
   computed: {
     ...mapGetters({
       getPlannedTripsCount: 'is/getPlannedTripsCount',
       getPlannedTrips: 'is/getPlannedTrips',
+      getPastTripsCount: 'is/getPastTripsCount',
+      getPastTrips: 'is/getPastTrips',
       getPlannedRidesCount: 'cs/getPlannedRidesCount',
       getPlannedRides: 'cs/getRides',
     }),
@@ -121,6 +152,7 @@ export default {
   },
   mounted() {
     this.fetchTrips()
+    this.fetchPastTrips()
     this.fetchRides()
     document
       .getElementById('content-container')
@@ -147,10 +179,21 @@ export default {
       const bottomOfPage = visible + scrollY >= pageHeight
       return bottomOfPage || pageHeight < visible
     },
+    startReview() {
+      this.$router.push({ name: 'reviewDriver' })
+    },
     fetchTrips() {
       this.$store.dispatch('is/fetchTrips', {
         maxResults: this.maxResults,
         offset: this.getPlannedTrips.length,
+      })
+    },
+    fetchPastTrips() {
+      // const date = moment(Date.now()).format('YYYY-MM-DD')
+      this.$store.dispatch('is/fetchTrips', {
+        pastTrips: true,
+        maxResults: this.maxResultsPastTrips,
+        until: '2020-04-21T14:00:00+01:00',
       })
     },
     fetchRides() {
@@ -175,6 +218,9 @@ export default {
 </script>
 
 <style lang="scss">
+.trip-card {
+  margin: 4px 0;
+}
 .saved {
   background-color: $color-green;
 }
