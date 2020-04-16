@@ -41,8 +41,8 @@
                   flat
                   single-line
                   clearable
-                  hide-details
-                  @input="onChangedInfoProperty"
+                  :hide-details="true"
+                  @change="onChangedInfoProperty"
                 >
                 </v-text-field>
                 <span v-else>
@@ -60,12 +60,6 @@
         </div>
       </v-col>
     </v-row>
-    <!--    <change-info-modal-->
-    <!--      v-if="showChangeInfoModal && selectedProperty"-->
-    <!--      :show="showChangeInfoModal"-->
-    <!--      :property-title="selectedProperty.title"-->
-    <!--      @close="showChangeInfoModal = false"-->
-    <!--    ></change-info-modal>-->
   </content-pane>
 </template>
 
@@ -79,7 +73,6 @@ export default {
   data() {
     return {
       accountConfig: account_config,
-      showChangeInfoModal: false,
       selectedProperty: null,
     }
   },
@@ -95,11 +88,11 @@ export default {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
-    changeInfo(item) {
-      console.log(item)
-    },
-    onChangedInfoProperty(event) {
-      console.log('Changed info property', event)
+    onChangedInfoProperty(input) {
+      // Fires when the user onfocusses the input
+      let newProfile = { ...this.$store.getters['ps/getProfile'] }
+      newProfile[this.selectedProperty] = input
+      this.$store.dispatch('ps/updateProfile', newProfile)
     },
   },
 }
@@ -109,21 +102,20 @@ export default {
 .selected-property-column {
   padding: 0px;
   align-content: center;
-  border: 1px solid red;
   display: flex;
   flex-direction: row;
 }
+
 .change-property-input {
   align-self: center;
-  .v-icon.v-icon.v-icon--link {
-  }
+
   .v-text-field.v-text-field--enclosed:not(.v-text-field--rounded)
     > .v-input__control
     > .v-input__slot,
   .v-text-field.v-text-field--enclosed .v-text-field__details {
     padding: 0px;
     svg {
-      height: 24px !important;
+      height: 32px !important;
     }
   }
 }
