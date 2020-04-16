@@ -13,9 +13,6 @@ export default {
       visible: true,
       selectedNav: 'home',
     },
-    app: {
-      classes: [],
-    },
     backButtonVisible: false,
     notificationBarVisible: false,
     notificationQueue: [],

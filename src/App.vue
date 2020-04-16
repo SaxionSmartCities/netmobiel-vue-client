@@ -72,9 +72,6 @@ export default {
     commithash: hash,
   }),
   computed: {
-    appClasses: function() {
-      return this.$store.getters['ui/getAppClasses']
-    },
     selectedNav: {
       get: function() {
         return this.$store.getters['ui/getSelectedNav']
