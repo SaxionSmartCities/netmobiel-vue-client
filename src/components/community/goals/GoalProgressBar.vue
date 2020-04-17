@@ -55,10 +55,11 @@ export default {
     },
     postfix: {
       type: String,
+      default: '',
     },
   },
   computed: {
-    computedProgress: function() {
+    computedProgress() {
       return Math.round((this.valueCurrent / this.valueTotal) * 100)
     },
   },
