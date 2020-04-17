@@ -91,7 +91,8 @@
     </v-row>
     <v-row>
       <v-col>
-        <itinerary-options></itinerary-options>
+        <itinerary-options @tripCancelled="onTripCancelled">
+        </itinerary-options>
       </v-col>
     </v-row>
     <contact-driver-modal
@@ -243,6 +244,10 @@ export default {
           tripContext: leg.tripId,
         })
       }
+    },
+    onTripCancelled(selectedTrip) {
+      this.$store.dispatch('is/deleteSelectedTrip', selectedTrip)
+      this.$router.push('/tripCancelledPage')
     },
     async onDriverSelectForMessage(event) {
       //The backend sends an urn for now so we need to split on ':' and get the last element

@@ -104,10 +104,7 @@ export default {
     },
     confirmTripCancellation() {
       this.closeConfirmationDialog()
-      this.$store.dispatch('is/deleteSelectedTrip', {
-        tripId: this.selectedTrip.id,
-      })
-      this.$router.push('/tripCancelledPage')
+      this.$emit('tripCancelled', { tripId: this.selectedTrip.id })
     },
     closeConfirmationDialog() {
       this.dialog = false
