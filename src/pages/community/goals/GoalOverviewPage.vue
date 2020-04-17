@@ -3,7 +3,7 @@
     <v-row mb-3>
       <v-col>
         <h1 class="netmobiel">
-          >Doelen
+          Doelen
         </h1>
       </v-col>
     </v-row>
@@ -17,7 +17,7 @@
     <v-row mb-3 mt-3>
       <v-col>
         <h4 class="netmobiel">
-          >Populair in de buurt
+          Populair in de buurt
         </h4>
       </v-col>
     </v-row>
@@ -33,12 +33,12 @@
     <v-row mb-3 mt-3>
       <v-col>
         <h4 class="netmobiel">
-          >Eerder gedoneerd
+          Eerder gedoneerd
         </h4>
       </v-col>
     </v-row>
     <v-row>
-      <v-slide-group center-active mobile-break-point="300">
+      <v-slide-group center-active mobile-break-point="100">
         <v-slide-item
           v-for="item in getSavedGoals"
           :key="item.id"
@@ -72,6 +72,9 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'GoalOverviewPage',
   components: { DonorsList, ContentPane, GoalCard },
+  created: function() {
+    this.$store.commit('ui/showBackButton')
+  },
   computed: {
     ...mapGetters({
       getSavedGoals: 'sg/getGoals',
