@@ -81,14 +81,11 @@
 export default {
   name: 'ItineraryOptions',
   components: {},
-  props: {},
+  props: {
+    selectedTrip: { type: Object, default: () => {} },
+  },
   data() {
     return { dialog: false }
-  },
-  computed: {
-    selectedTrip() {
-      return this.$store.getters['is/getSelectedTrip']
-    },
   },
   methods: {
     editTrip() {

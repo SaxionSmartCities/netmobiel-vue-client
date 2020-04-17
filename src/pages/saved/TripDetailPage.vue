@@ -91,7 +91,10 @@
     </v-row>
     <v-row>
       <v-col>
-        <itinerary-options @tripCancelled="onTripCancelled">
+        <itinerary-options
+          :selected-trip="selectedTrip"
+          @tripCancelled="onTripCancelled"
+        >
         </itinerary-options>
       </v-col>
     </v-row>
