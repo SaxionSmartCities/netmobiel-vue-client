@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane :clearpadding="true">
     <v-row mb-3>
       <v-col>
         <h1 class="netmobiel">
@@ -55,7 +55,7 @@
       </v-slide-group>
     </v-row>
     <v-row mb-3 mt-3>
-      <span class="font-weight-medium primary--text">Top donateurs</span>
+      <span class="netmobiel">Top donateurs</span>
     </v-row>
     <v-row>
       <donors-list :donors="getTopDonors"> </donors-list>
@@ -72,14 +72,14 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'GoalOverviewPage',
   components: { DonorsList, ContentPane, GoalCard },
-  created: function() {
-    this.$store.commit('ui/showBackButton')
-  },
   computed: {
     ...mapGetters({
       getSavedGoals: 'sg/getGoals',
       getTopDonors: 'sg/getTopDonorsList',
     }),
+  },
+  created: function() {
+    this.$store.commit('ui/showBackButton')
   },
 }
 </script>

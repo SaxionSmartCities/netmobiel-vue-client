@@ -101,13 +101,13 @@ export default {
       required: true,
     },
   },
-  created: function() {
-    this.$store.commit('ui/showBackButton')
-  },
   computed: {
     selectedGoal() {
       return this.$store.getters['sg/getGoals'].find(goal => goal.id == this.id)
     },
+  },
+  created: function() {
+    this.$store.commit('ui/showBackButton')
   },
   methods: {
     getGoals() {
