@@ -1,32 +1,28 @@
 <template>
-  <v-col cols="4">
+  <v-col>
     <v-row>
-      <v-col cols="12">
-        <v-progress-circular
-          :rotate="-90"
-          :size="100"
-          :width="11"
-          :value="computedProgress"
-          color="primary"
-        >
-          <div v-if="contentMultiLine === true">
-            {{ valueCurrent }}
-            <br />
-            {{ postfix }}
-          </div>
-          <div v-else-if="contentPercentage === true">
-            {{ computedProgress + '%' }}
-          </div>
-          <div v-else>
-            {{ numberOfDonors }}
-          </div>
-        </v-progress-circular>
-      </v-col>
+      <v-progress-circular
+        :rotate="-90"
+        :size="100"
+        :width="11"
+        :value="computedProgress"
+        color="primary"
+      >
+        <div v-if="contentMultiLine === true">
+          {{ valueCurrent }}
+          <br />
+          {{ postfix }}
+        </div>
+        <div v-else-if="contentPercentage === true">
+          {{ computedProgress + '%' }}
+        </div>
+        <div v-else>
+          {{ numberOfDonors }}
+        </div>
+      </v-progress-circular>
     </v-row>
     <v-row>
-      <v-col>
-        <span>{{ name }}</span>
-      </v-col>
+      <span>{{ name }}</span>
     </v-row>
   </v-col>
 </template>
