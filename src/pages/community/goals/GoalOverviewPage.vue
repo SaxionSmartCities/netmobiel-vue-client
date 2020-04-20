@@ -38,30 +38,48 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-slide-group center-active mobile-break-point="100">
-        <v-slide-item
-          v-for="item in getSavedGoals"
-          :key="item.id"
-          v-slot:default="{ active, toggle }"
-        >
-          <goal-card
-            :id="item.id"
-            :titel="item.title"
-            :plaatsnaam="item.location"
-            :credits-donated="item.creditsDonated"
-            :credits-total="item.creditsGoal"
-          ></goal-card>
-        </v-slide-item>
-      </v-slide-group>
+      <v-col>
+        <v-slide-group center-active mobile-break-point="100">
+          <v-slide-item
+            v-for="item in getSavedGoals"
+            :key="item.id"
+            v-slot:default="{ active, toggle }"
+          >
+            <goal-card
+              :id="item.id"
+              :titel="item.title"
+              :plaatsnaam="item.location"
+              :credits-donated="item.creditsDonated"
+              :credits-total="item.creditsGoal"
+            ></goal-card>
+          </v-slide-item>
+        </v-slide-group>
+      </v-col>
     </v-row>
     <v-row mb-3 mt-3>
-      <span class="netmobiel">Top donateurs</span>
+      <v-col>
+        <h4 class="netmobiel">Top donateurs</h4>
+      </v-col>
     </v-row>
     <v-row>
       <donors-list :donors="getTopDonors"> </donors-list>
     </v-row>
   </content-pane>
 </template>
+
+<style>
+/**
+makes sure that cards are aligned on small devices, but still show arrows(prev&next) on desktop.
+ */
+@media (max-width: 767.98px) {
+  .v-slide-group__prev {
+    display: none !important;
+  }
+  .v-slide-group__next {
+    display: none !important;
+  }
+}
+</style>
 
 <script>
 import GoalCard from '@/components/community/goals/GoalCard'
