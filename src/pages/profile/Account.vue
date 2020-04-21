@@ -90,7 +90,9 @@ export default {
   methods: {
     onChangedInfoProperty(input) {
       // Fires when the user onfocusses the input
-      let newProfile = { ...this.$store.getters['ps/getProfile'] }
+
+      let newProfile = {}
+      Object.assign(newProfile, this.$store.getters['ps/getProfile'])
       newProfile[this.selectedProperty] = input
       this.$store.dispatch('ps/updateProfile', newProfile)
     },
