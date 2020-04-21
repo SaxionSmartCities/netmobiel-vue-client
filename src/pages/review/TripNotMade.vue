@@ -1,0 +1,40 @@
+<template>
+  <content-pane>
+    Waarom niet ?
+    <v-row>
+      <v-col>
+        <v-radio-group v-model="tripNotMadeReason" class="mt-1" column>
+          <v-radio
+            v-for="reason in tripNotMadeReasons"
+            :key="reason.value"
+            :label="reason.title"
+            :value="reason.value"
+          ></v-radio>
+        </v-radio-group>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn @click="$emit('sendFeedback', {})">Beoordeel deze reis</v-btn>
+        <v-btn @click="$emit('back', {})">Terug</v-btn>
+      </v-col>
+    </v-row>
+  </content-pane>
+</template>
+
+<script>
+import ContentPane from '../../components/common/ContentPane'
+import trip_not_made_config from '../../config/review/trip_not_made_config'
+export default {
+  name: 'TripNotMade',
+  components: { ContentPane },
+  data() {
+    return {
+      tripNotMadeReasons: trip_not_made_config,
+      tripNotMadeReason: null,
+    }
+  },
+}
+</script>
+
+<style scoped></style>
