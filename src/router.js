@@ -223,6 +223,7 @@ const router = new Router({
       path: '/reviewDriver',
       name: 'reviewDriver',
       component: DriverReviewPage,
+      props: true,
     },
   ],
 })

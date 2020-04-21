@@ -25,7 +25,7 @@
         </v-tab>
       </v-tabs>
     </template>
-    <v-row v-if="selectedTab === 1">
+    <v-row v-if="selectedTab === 0">
       <v-col>
         <v-radio-group v-model="tripsSearchTime" class="mt-1" row>
           <v-radio label="Afgelopen" value="Past"></v-radio>
@@ -33,8 +33,8 @@
         </v-radio-group>
       </v-col>
     </v-row>
-    <v-row v-if="tripsSearchTime === 'Past'">
-      <v-col v-if="getPastTrips.length == 0">
+    <v-row v-if="selectedTab === 0 && tripsSearchTime === 'Past'">
+      <v-col v-if="getPastTrips.length === 0">
         U heeft nog niet meegereden.
       </v-col>
       <v-col class="past-rides-column py-0">
@@ -48,11 +48,11 @@
           :arrival-time="parseDate(trip.arrivalTime)"
           :departure-time="parseDate(trip.departureTime)"
           :legs="trip.legs"
-          @onTripSelected="startReview()"
+          @onTripSelected="startReview(trip)"
         />
       </v-col>
     </v-row>
-    <template v-if="tripsSearchTime === 'Future'">
+    <template v-if="selectedTab === 0 && tripsSearchTime === 'Future'">
       <v-row
         v-if="(showTabs && selectedTab === 0) || isPassenger"
         class="fill-height"
@@ -76,24 +76,25 @@
           />
         </v-col>
       </v-row>
-      <v-row v-if="(showTabs && selectedTab === 1) || isDriver">
-        <v-col v-if="getPlannedRides.length === 0">
-          U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
-          plannen.
-        </v-col>
-        <v-col class="past-rides-column py-0">
-          <v-row v-for="(ride, index) in getPlannedRides" :key="index">
-            <v-col class="py-1">
-              <ride-card
-                :index="index"
-                :ride="ride"
-                @rideSelected="onRideSelected"
-              />
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
     </template>
+
+    <v-row v-if="(showTabs && selectedTab === 1) || isDriver">
+      <v-col v-if="getPlannedRides.length === 0">
+        U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
+        plannen.
+      </v-col>
+      <v-col class="past-rides-column py-0">
+        <v-row v-for="(ride, index) in getPlannedRides" :key="index">
+          <v-col class="py-1">
+            <ride-card
+              :index="index"
+              :ride="ride"
+              @rideSelected="onRideSelected"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 
@@ -180,8 +181,14 @@ export default {
       const bottomOfPage = visible + scrollY >= pageHeight
       return bottomOfPage || pageHeight < visible
     },
-    startReview() {
-      this.$router.push({ name: 'reviewDriver' })
+    startReview(trip) {
+      console.log('trip', trip)
+      this.$router.push({
+        name: 'reviewDriver',
+        params: {
+          title: trip.to.label,
+        },
+      })
     },
     fetchTrips() {
       this.$store.dispatch('is/fetchTrips', {
