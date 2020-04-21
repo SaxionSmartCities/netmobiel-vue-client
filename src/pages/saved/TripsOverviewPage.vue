@@ -25,7 +25,7 @@
         </v-tab>
       </v-tabs>
     </template>
-    <v-row>
+    <v-row v-if="selectedTab === 1">
       <v-col>
         <v-radio-group v-model="tripsSearchTime" class="mt-1" row>
           <v-radio label="Afgelopen" value="Past"></v-radio>
@@ -34,11 +34,14 @@
       </v-col>
     </v-row>
     <v-row v-if="tripsSearchTime === 'Past'">
+      <v-col v-if="getPastTrips.length == 0">
+        U heeft nog niet meegereden.
+      </v-col>
       <v-col class="past-rides-column py-0">
         <travel-card
           v-for="(trip, index) in getPastTrips"
-          class="trip-card"
           :key="index"
+          class="trip-card"
           :index="index"
           :from="trip.from"
           :to="trip.to"
@@ -53,26 +56,24 @@
       <v-row
         v-if="(showTabs && selectedTab == 0) || isPassenger"
         class="fill-height"
-        dense
       >
         <v-col v-if="getPlannedTrips.length == 0">
           U heeft geen bewaarde reizen. Ga naar de planner om uw reis te
           plannen.
         </v-col>
-        <v-col v-else>
-          <v-row v-for="(trip, index) in getPlannedTrips" :key="index">
-            <v-col>
-              <travel-card
-                :index="index"
-                :from="trip.from"
-                :to="trip.to"
-                :arrival-time="parseDate(trip.arrivalTime)"
-                :departure-time="parseDate(trip.departureTime)"
-                :legs="trip.legs"
-                @onTripSelected="onTripSelected"
-              />
-            </v-col>
-          </v-row>
+        <v-col class="past-rides-column py-0">
+          <travel-card
+            v-for="(trip, index) in getPlannedTrips"
+            :key="index"
+            class="trip-card"
+            :index="index"
+            :from="trip.from"
+            :to="trip.to"
+            :arrival-time="parseDate(trip.arrivalTime)"
+            :departure-time="parseDate(trip.departureTime)"
+            :legs="trip.legs"
+            @onTripSelected="onTripSelected"
+          />
         </v-col>
       </v-row>
       <v-row v-if="(showTabs && selectedTab == 1) || isDriver" dense>
@@ -193,7 +194,7 @@ export default {
       this.$store.dispatch('is/fetchTrips', {
         pastTrips: true,
         maxResults: this.maxResultsPastTrips,
-        until: '2020-04-21T14:00:00+01:00',
+        until: '2020-04-30T14:00:00+01:00',
       })
     },
     fetchRides() {
