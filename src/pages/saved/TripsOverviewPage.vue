@@ -54,10 +54,10 @@
     </v-row>
     <template v-if="tripsSearchTime === 'Future'">
       <v-row
-        v-if="(showTabs && selectedTab == 0) || isPassenger"
+        v-if="(showTabs && selectedTab === 0) || isPassenger"
         class="fill-height"
       >
-        <v-col v-if="getPlannedTrips.length == 0">
+        <v-col v-if="getPlannedTrips.length === 0">
           U heeft geen bewaarde reizen. Ga naar de planner om uw reis te
           plannen.
         </v-col>
@@ -76,12 +76,12 @@
           />
         </v-col>
       </v-row>
-      <v-row v-if="(showTabs && selectedTab == 1) || isDriver" dense>
-        <v-col v-if="getPlannedRides.length == 0">
+      <v-row v-if="(showTabs && selectedTab === 1) || isDriver">
+        <v-col v-if="getPlannedRides.length === 0">
           U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
           plannen.
         </v-col>
-        <v-col v-else>
+        <v-col class="past-rides-column py-0">
           <v-row v-for="(ride, index) in getPlannedRides" :key="index">
             <v-col class="py-1">
               <ride-card
@@ -129,15 +129,15 @@ export default {
     }),
     showTabs() {
       const role = this.$store.getters['ps/getProfile'].userRole
-      return !role || role == 'both'
+      return !role || role === 'both'
     },
     isPassenger() {
       const role = this.$store.getters['ps/getProfile'].userRole
-      return role == 'passenger'
+      return role === 'passenger'
     },
     isDriver() {
       const role = this.$store.getters['ps/getProfile'].userRole
-      return role == 'driver'
+      return role === 'driver'
     },
   },
   watch: {
