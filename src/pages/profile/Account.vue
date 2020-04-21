@@ -47,7 +47,9 @@
                 </v-text-field>
                 <span v-else>
                   {{
-                    item.format ? item.format(user[item.key]) : user[item.key]
+                    item.format
+                      ? item.format(get(user, item.key))
+                      : get(user, item.key)
                   }}
                 </span>
               </v-col>
@@ -66,6 +68,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane'
 import account_config from '@/config/account_config'
+import { get, set } from 'lodash'
 
 export default {
   name: 'Account',
@@ -88,12 +91,13 @@ export default {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
+    get: get,
+    set: set,
     onChangedInfoProperty(input) {
       // Fires when the user onfocusses the input
-
       let newProfile = {}
       Object.assign(newProfile, this.$store.getters['ps/getProfile'])
-      newProfile[this.selectedProperty] = input
+      set(newProfile, this.selectedProperty, input)
       this.$store.dispatch('ps/updateProfile', newProfile)
     },
   },
