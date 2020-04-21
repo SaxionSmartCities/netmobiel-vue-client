@@ -33,7 +33,7 @@
       </v-row>
     </template>
     <template v-if="step !== 1">
-      <component :is="getCurrentStepComponent()"></component>
+      <component @back="step--" :is="getCurrentStepComponent()"></component>
     </template>
   </content-pane>
 </template>

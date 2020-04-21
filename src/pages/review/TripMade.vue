@@ -7,14 +7,15 @@
     </span>
     <v-row>
       <v-col>
-        <v-radio-group v-model="tripNotMadeReason" class="mt-1" column>
-          <v-radio
-            v-for="reason in tripNotMadeReasons"
-            :key="reason.value"
-            :label="reason.title"
-            :value="reason.value"
-          ></v-radio>
-        </v-radio-group>
+        <v-btn-toggle v-model="compliments" multiple>
+          <v-btn
+            v-for="(compliment, index) in availableCompliments"
+            :key="index"
+            :value="compliment.value"
+          >
+            {{ compliment.title }}
+          </v-btn>
+        </v-btn-toggle>
       </v-col>
     </v-row>
     <v-row>
@@ -29,6 +30,7 @@
 <script>
 import ContentPane from '../../components/common/ContentPane'
 import trip_made_config from '../../config/review/trip_made_config'
+
 export default {
   name: 'TripMade',
   components: { ContentPane },
