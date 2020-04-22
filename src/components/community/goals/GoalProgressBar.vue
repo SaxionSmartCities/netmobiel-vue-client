@@ -27,6 +27,15 @@
   </v-col>
 </template>
 
+<style>
+@media (max-width: 500px) {
+  .v-progress-circular {
+    max-width: 75px;
+    font-size: 80%;
+  }
+}
+</style>
+
 <script>
 export default {
   name: 'GoalProgressBar',

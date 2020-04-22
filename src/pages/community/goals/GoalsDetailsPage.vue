@@ -35,7 +35,7 @@
     <v-row>
       <v-col>
         <goal-progress-bar
-          name="Donateurs"
+          name="donateurs"
           :number-of-donors="selectedGoal.donors.length"
           :credits-remaining="getCreditsRemaining()"
           :value-total="selectedGoal.creditsTotal"
@@ -57,7 +57,7 @@
       </v-col>
       <v-col>
         <goal-progress-bar
-          name="Behaald"
+          name="behaald"
           :content-percentage="true"
           :number-of-donors="selectedGoal.donors.length"
           :credits-remaining="getCreditsRemaining()"

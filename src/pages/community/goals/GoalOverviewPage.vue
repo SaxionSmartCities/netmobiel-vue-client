@@ -1,13 +1,13 @@
 <template>
   <content-pane :clearpadding="true">
     <v-row mb-3>
-      <v-col>
+      <v-col ml-3>
         <h1 class="netmobiel">
           Doelen
         </h1>
       </v-col>
     </v-row>
-    <v-row mt-6>
+    <v-row>
       <v-text-field
         outlined
         label="zoeken"
@@ -69,7 +69,7 @@
 
 <style>
 /**
-makes sure that cards are aligned on small devices, but still show arrows(prev&next) on desktop.
+makes sure that cards are aligned on small devices, but still show arrows(prev&next) on desktop
  */
 @media (max-width: 767.98px) {
   .v-slide-group__prev {
