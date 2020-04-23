@@ -9,11 +9,11 @@ export default {
     storedGoals: [
       {
         id: 1,
-        title: 'renovatie Sint-Bonifatiuskerk',
-        location: 'lichtenvoorde',
+        title: 'Renovatie Sint-Bonifatiuskerk',
+        location: 'Lichtenvoorde',
         description:
           ' De Sint-Bonifatiuskerk is een rooms-katholieke kerk in Lichtenvoorde,\n' +
-          '        gebouwd in de jaren 1912 en 1913. De architect was WOlter te Riele, die\n' +
+          '        gebouwd in de jaren 1912 en 1913. De architect was Wolter te Riele, die\n' +
           '        een negotisch',
         creditsGoal: 200,
         creditsDonated: 54,
