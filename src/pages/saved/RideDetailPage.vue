@@ -107,10 +107,10 @@
                 reden geven waarom u de reis annuleert.
               </p>
               <v-textarea
+                v-model="cancelReason"
                 outlined
                 name="input-7-4"
                 label="Reden voor annulering"
-                :value="cancelReason"
               ></v-textarea>
             </v-card-text>
             <v-card-text v-else>
@@ -234,6 +234,8 @@ export default {
       this.$store.dispatch('cs/deleteRide', {
         id: this.id,
         cancelReason: this.cancelReason,
+        ride: this.ride,
+        driver: this.$store.getters['ps/getProfile'].id,
       })
       this.$router.push('/tripsOverviewPage')
     },
