@@ -7,9 +7,9 @@
       </v-card-title>
 
       <v-card-text class="mt-2">
-        <span @click="userClick(user)" v-for="user in users" :key="user.id">
+        <p v-for="user in users" :key="user.id" @click="userClick(user)">
           {{ user.name }}
-        </span>
+        </p>
       </v-card-text>
 
       <v-card-actions>
