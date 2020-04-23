@@ -28,7 +28,7 @@
 <script>
 export default {
   name: 'TripPlanSubmitted',
-  data: function() {
+  data() {
     return {}
   },
   methods: {

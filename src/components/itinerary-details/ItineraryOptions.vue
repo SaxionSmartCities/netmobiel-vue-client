@@ -194,7 +194,7 @@ export default {
   name: 'ItineraryOptions',
   components: {},
   props: {},
-  data: function() {
+  data() {
     return {
       dialog: false,
       thesaurusDialog: false, //dialog to select keywords
