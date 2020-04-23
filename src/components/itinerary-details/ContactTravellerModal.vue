@@ -7,7 +7,7 @@
       </v-card-title>
 
       <v-card-text class="mt-2">
-        <span @click="userClick(user)" v-for="user in users" :key="user.id">
+        <span v-for="user in users" :key="user.id" @click="userClick(user)">
           {{ user.name }}
         </span>
       </v-card-text>
@@ -31,6 +31,7 @@ export default {
     },
     users: {
       type: Array,
+      default: () => [],
     },
   },
   computed: {

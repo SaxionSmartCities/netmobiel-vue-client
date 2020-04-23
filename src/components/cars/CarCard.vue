@@ -60,9 +60,4 @@ export default {
   },
 }
 </script>
-<style scoped>
-.booking-count {
-  color: rgba(0, 0, 0, 0.54);
-  font-size: 75%;
-}
-</style>
+<style scoped></style>

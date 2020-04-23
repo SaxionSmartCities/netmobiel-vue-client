@@ -1,22 +1,26 @@
 <template>
-  <v-container>
-    <v-layout column justify-center fill-height>
-      <v-flex shrink mb-4>
+  <v-container fluid fill-height>
+    <v-row>
+      <v-col>
         <h1>Profiel ingevuld 🎉</h1>
-      </v-flex>
-      <v-flex shrink>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         Bedankt voor het invullen van je profiel! Je krijgt een gratis rit zo
         snel mogelijk toeschreven op je account.
-      </v-flex>
-      <v-flex shrink>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <v-btn block rounded depressed class="my-3 button" to="/modeSelection">
-          Plan een reis</v-btn
-        >
+          Plan een reis
+        </v-btn>
         <v-btn block rounded depressed outlined to="/profile">
           Bekijk profiel
         </v-btn>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -25,7 +29,7 @@ import constants from '@/constants/update-messages.js'
 
 export default {
   name: 'OnboardingComplete',
-  data: function() {
+  data() {
     return {}
   },
   mounted() {
