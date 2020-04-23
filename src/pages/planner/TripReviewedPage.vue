@@ -1,19 +1,23 @@
 <template>
-  <v-container>
-    <v-layout column justify-center fill-height pb-8 pt-8>
-      <v-flex shrink mb-4>
+  <content-pane>
+    <v-row class="ma-auto mt-2">
+      <v-col>
         <h1>Reis beoordeeld! 🎉</h1>
-      </v-flex>
-      <v-flex shrink>
+      </v-col>
+    </v-row>
+    <v-row class="ma-auto mt-2">
+      <v-col>
         Bedankt voor jouw beoordeling!
-      </v-flex>
-      <v-flex shrink>
+      </v-col>
+    </v-row>
+    <v-row class="ma-auto mt-2">
+      <v-col>
         <v-btn block rounded outlined color="primary" to="/plan">
           Plan een nieuwe rit</v-btn
         >
-      </v-flex>
-    </v-layout>
-  </v-container>
+      </v-col>
+    </v-row>
+  </content-pane>
 </template>
 
 <script>
