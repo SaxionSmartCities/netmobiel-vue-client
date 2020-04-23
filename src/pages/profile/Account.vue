@@ -34,7 +34,9 @@
                   v-if="selectedProperty === item.key"
                   class="change-property-input"
                   :value="
-                    item.format ? item.format(user[item.key]) : user[item.key]
+                    item.format
+                      ? item.format(get(user, item.key))
+                      : get(user, item.key)
                   "
                   solo
                   autofocus
