@@ -97,8 +97,9 @@ export default {
     set: set,
     onChangedInfoProperty(input) {
       // Fires when the user onfocusses the input
-      let newProfile = {}
-      Object.assign(newProfile, this.$store.getters['ps/getProfile'])
+      //HACK: JSON parse/stringify to prevent "[vuex] do not mutate vuex store
+      // state outside mutation handlers." error.
+      let newProfile = JSON.parse(JSON.stringify(this.user))
       set(newProfile, this.selectedProperty, input)
       this.$store.dispatch('ps/updateProfile', newProfile)
     },
