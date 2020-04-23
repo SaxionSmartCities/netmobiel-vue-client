@@ -147,12 +147,15 @@ export default {
       }
     },
     sendMessage() {
-      const envelopes = [{ recipient: this.recipient }]
+      const { familyName, givenName, managedIdentity } = this.recipient
+      const envelopes = [
+        { recipient: { familyName, givenName, managedIdentity } },
+      ]
       this.$store
         .dispatch('ms/sendMessage', {
           body: this.newMessage,
           context: this.context,
-          deliveryMode: 'MESSAGE',
+          deliveryMode: 'ALL',
           envelopes: envelopes,
           managedIdentity: this.$store.getters['ps/getProfile'].id,
           subject: 'Van A naar B',

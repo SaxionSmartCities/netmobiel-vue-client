@@ -90,7 +90,7 @@ export default {
             body: payload.body,
             context: payload.context,
             creationTime: new Date(),
-            deliveryMode: 'MESSAGE',
+            deliveryMode: payload.deliveryMode,
           }
           commit('addActiveMessage', message)
           return message
