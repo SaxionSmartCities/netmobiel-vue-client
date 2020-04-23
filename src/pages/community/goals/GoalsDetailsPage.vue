@@ -35,32 +35,22 @@
     <v-row>
       <v-col>
         <goal-progress-bar
-          name="donateurs"
-          :number-of-donors="selectedGoal.donors.length"
-          :credits-remaining="getCreditsRemaining()"
-          :value-total="selectedGoal.creditsTotal"
+          name="Donateurs"
+          :value-current="selectedGoal.donors.length"
         >
         </goal-progress-bar>
       </v-col>
       <v-col>
         <goal-progress-bar
-          name="credits"
-          :value="65"
-          :content-multi-line="true"
-          postfix="credits"
-          :number-of-donors="selectedGoal.donors.length"
+          name="Credits"
           :value-current="selectedGoal.creditsDonated"
-          :credits-remaining="getCreditsRemaining()"
-          :value-total="selectedGoal.creditsTotal"
         >
         </goal-progress-bar>
       </v-col>
       <v-col>
         <goal-progress-bar
-          name="behaald"
-          :content-percentage="true"
-          :number-of-donors="selectedGoal.donors.length"
-          :credits-remaining="getCreditsRemaining()"
+          name="Behaald"
+          :displayPercentage="true"
           :value-current="selectedGoal.creditsDonated"
           :value-total="selectedGoal.creditsGoal"
         >
