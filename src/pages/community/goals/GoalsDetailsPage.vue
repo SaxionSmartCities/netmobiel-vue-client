@@ -96,7 +96,7 @@ export default {
       return this.$store.getters['sg/getGoals'].find(goal => goal.id == this.id)
     },
   },
-  created: function() {
+  created() {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
