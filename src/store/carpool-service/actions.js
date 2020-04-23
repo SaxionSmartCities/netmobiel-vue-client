@@ -207,31 +207,52 @@ export default {
       })
   },
   deleteRide: (context, payload) => {
-    const URL = BASE_URL + `/rideshare/rides/` + payload.id
-    //TODO: Pass reason to message service.
-    let ride = this.$store.getters['cs/getRides'].find(
-      ride => ride.id === payload.id
-    )
-    //Does ride have passenger? LOOP FOR EVERY PASSENGER
-    if (ride.bookings.length > 0) {
-      //Is there a message? If not set default message?
-      let cancelReason = payload.cancelReason
-      if (cancelReason === '') {
-        cancelReason = 'Er is door de bestuurder geen reden opgegeven.'
-      }
+    if (payload.ride.bookings.length > 0) {
+      let recipientList = []
+      let promiseList = []
 
-      //Construct message payload object
-      let messagePayload = {
-        body: cancelReason,
-        context: this.context,
-        deliveryMode: 'MESSAGE',
-        envelopes: [{ recipient: this.recipient }],
-        managedIdentity: this.$store.getters['ps/getProfile'].id,
-        subject: 'Afgezegde rit',
+      for (const index in payload.ride.bookings) {
+        let booking = payload.ride.bookings[index]
+        //This will cause async issues?
+        promiseList.push(
+          context.dispatch('fetchUser', {
+            userRef: booking.passenger.id,
+          })
+        )
       }
-      context.commit('ms/sendMessage', messagePayload)
+      Promise.all(promiseList).then(function(values) {
+        for (const index in values) {
+          let recipient = {
+            familyName: values[index].familyName,
+            givenName: values[index].givenName,
+            id: values[index].id,
+            managedIdentity: values[index].managedIdentity,
+          }
+          recipientList.push({ recipient: recipient })
+        }
+
+        let cancelReason = payload.cancelReason
+        if (cancelReason === '') {
+          cancelReason =
+            'De rit is geannuleerd. Er is door de bestuurder geen reden opgegeven.'
+        } else {
+          cancelReason =
+            'De rit is geannuleerd vanwege de volgende reden: ' + cancelReason
+        }
+        //Construct message payload object
+        let messagePayload = {
+          body: cancelReason,
+          context: 'urn:nb:rs:ride:' + payload.id,
+          deliveryMode: 'MESSAGE',
+          envelopes: recipientList,
+          managedIdentity: payload.driver,
+          subject: 'Van A naar B',
+        }
+        context.dispatch('ms/sendMessage', messagePayload, { root: true })
+      })
     }
 
+    const URL = BASE_URL + '/rideshare/rides/' + payload.id
     axios
       .delete(URL, {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
