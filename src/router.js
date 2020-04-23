@@ -39,7 +39,7 @@ import TripDetailPage from './pages/saved/TripDetailPage'
 import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
 import ShoutOutDetailPage from '@/pages/community/shoutout/ShoutOutDetailPage'
 import Account from '@/pages/profile/Account'
-import DriverReviewPage from './pages/saved/DriverReviewPage'
+import DriverReviewPage from './pages/review/DriverReviewPage'
 
 const router = new Router({
   mode: 'history',

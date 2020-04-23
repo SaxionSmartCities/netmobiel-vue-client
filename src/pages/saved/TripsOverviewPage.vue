@@ -37,7 +37,7 @@
       <v-col v-if="getPastTrips.length === 0">
         U heeft nog niet meegereden.
       </v-col>
-      <v-col class="past-rides-column py-0">
+      <v-col v-else class="past-rides-column py-0">
         <travel-card
           v-for="(trip, index) in getPastTrips"
           :key="index"
@@ -199,11 +199,14 @@ export default {
       })
     },
     fetchPastTrips() {
-      // const date = moment(Date.now()).format('YYYY-MM-DD')
+      // time format example: '2020-04-28T14:00:00+01:00'
       this.$store.dispatch('is/fetchTrips', {
         pastTrips: true,
         maxResults: this.maxResultsPastTrips,
-        until: '2020-04-30T14:00:00+01:00',
+        since: moment()
+          .subtract(1, 'week')
+          .format(),
+        until: moment().format(),
       })
     },
     fetchRides() {

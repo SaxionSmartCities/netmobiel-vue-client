@@ -2,7 +2,7 @@
   <content-pane>
     <v-row>
       <v-col>
-        <v-stepper v-model="step" :elevation="0">
+        <v-stepper v-model="step" class="stepper" :elevation="0">
           <v-stepper-header>
             <v-stepper-step step="1"></v-stepper-step>
 
@@ -31,13 +31,33 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-btn @click="confirmTrip(false)">Nee</v-btn>
-          <v-btn @click="confirmTrip(true)">ja</v-btn>
-          <v-btn @click="$router.push({ name: 'home' })">Annuleren</v-btn>
+          <v-btn block rounded color="button" @click="confirmTrip(true)">
+            ja
+          </v-btn>
+          <v-btn
+            block
+            class="my-2"
+            rounded
+            outlined
+            color="primary"
+            @click="confirmTrip(false)"
+          >
+            Nee
+          </v-btn>
+
+          <v-btn
+            block
+            outlined
+            rounded
+            color="primary"
+            @click="$router.push({ name: 'tripsOverviewPage' })"
+          >
+            Annuleren
+          </v-btn>
         </v-col>
       </v-row>
     </template>
-    <template v-if="step !== 1">
+    <template v-else>
       <component
         :is="getCurrentStepComponent()"
         @tripNotMade="onTripNotMade"
@@ -51,8 +71,8 @@
 
 <script>
 import ContentPane from '../../components/common/ContentPane'
-import TripMade from '../review/TripMade'
-import TripNotMade from '../review/TripNotMade'
+import TripMade from './TripMade'
+import TripNotMade from './TripNotMade'
 export default {
   name: 'DriverReviewPage',
   components: { TripNotMade, TripMade, ContentPane },
@@ -66,29 +86,43 @@ export default {
       review: true,
     }
   },
+  created() {
+    this.$store.commit('ui/showBackButton')
+  },
   methods: {
     setTripMade(value) {
       this.isTripMade = value
-      //Open a model to confirm the user his answe
       this.review ? this.step++ : this.$router.push({ name: 'home' })
     },
     getCurrentStepComponent() {
       return this.isTripMade ? TripMade : TripNotMade
     },
     confirmTrip(value) {
-      if (value)
-        //Dispatch that the trip was made.
-        this.setTripMade(true)
+      if (value) this.setTripMade(true)
       else this.setTripMade(false)
     },
     onTripMade(rate) {
       console.log('the rate of the trip >> ', rate)
+      this.$router.push({ name: 'home' })
     },
     onTripNotMade(reason) {
       console.log('trip was not made: ', reason)
+      this.$router.push({ name: 'home' })
     },
   },
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.stepper {
+  box-shadow: none;
+}
+.v-stepper__step {
+  &:first-child {
+    padding-left: 0;
+  }
+  &:last-child {
+    padding-right: 0;
+  }
+}
+</style>

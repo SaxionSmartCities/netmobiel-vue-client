@@ -1,7 +1,7 @@
 <template>
   <content-pane>
     <v-row>
-      <v-col class="d-flex flex-column">
+      <v-col class="d-flex flex-column pt-0 px-0">
         <h3>Beoordeel jouw reis</h3>
         <span>
           Hoe heb jij deze reis ervaren? Geef jouw mening en laat Henk weten wat
@@ -14,10 +14,12 @@
         <v-chip
           v-for="(compliment, index) in availableCompliments"
           :key="index"
-          class="chip"
-          :outlined="
-            compliments.findIndex(c => c.value === compliment.value) === -1
-          "
+          :ripple="false"
+          class="compliment-chip"
+          :class="{
+            'compliment-chip-active':
+              compliments.findIndex(c => c.value === compliment.value) !== -1,
+          }"
           :value="compliment.value"
           @click="addCompliment(compliment)"
         >
@@ -25,13 +27,22 @@
         </v-chip>
       </v-col>
       <v-col v-else class="px-0">
-        <v-textarea v-model="inputTextArea" outlined></v-textarea>
+        <v-textarea
+          v-model="inputTextArea"
+          placeholder="Beschrijving..."
+          :hide-details="true"
+          outlined
+        ></v-textarea>
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
-        <v-btn @click="rateTrip()">Beoordeel deze reis</v-btn>
-        <v-btn @click="back()">Terug</v-btn>
+      <v-col class="px-0">
+        <v-btn class="my-2" block rounded color="button" @click="rateTrip()">
+          Beoordeel deze reis
+        </v-btn>
+        <v-btn block outlined rounded color="primary" @click="back()">
+          Terug
+        </v-btn>
       </v-col>
     </v-row>
   </content-pane>
@@ -81,7 +92,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.chip {
+.compliment-chip {
   margin: 3px;
+  box-shadow: none;
+  border: none;
+  color: $color-primary;
+  background: rgba($color-primary, 0.05) !important;
+}
+.compliment-chip-active {
+  color: white;
+  background: $color-primary !important;
 }
 </style>

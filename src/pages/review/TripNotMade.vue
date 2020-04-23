@@ -1,8 +1,12 @@
 <template>
   <content-pane>
-    Waarom niet ?
     <v-row>
-      <v-col>
+      <v-col class="pt-0 px-0">
+        <h2>Waarom niet ?</h2>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="pa-0">
         <v-radio-group v-model="tripNotMadeReason" class="mt-1" column>
           <v-radio
             v-for="reason in tripNotMadeReasons"
@@ -14,9 +18,19 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
-        <v-btn @click="tripNotMade()">Beoordeel deze reis</v-btn>
-        <v-btn @click="$emit('back', {})">Terug</v-btn>
+      <v-col class="px-0">
+        <v-btn class="my-2" block rounded color="button" @click="tripNotMade()">
+          Beoordeel deze reis
+        </v-btn>
+        <v-btn
+          block
+          outlined
+          rounded
+          color="primary"
+          @click="$emit('back', {})"
+        >
+          Terug
+        </v-btn>
       </v-col>
     </v-row>
   </content-pane>
