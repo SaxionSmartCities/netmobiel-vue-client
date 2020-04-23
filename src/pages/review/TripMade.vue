@@ -1,11 +1,21 @@
 <template>
   <content-pane>
     <v-row>
+      <v-col class="px-0 pt-0">
+        <v-chip pill>
+          <v-avatar left>
+            <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
+          </v-avatar>
+          {{ trip.legs[0].driverName }}
+        </v-chip>
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col class="d-flex flex-column pt-0 px-0">
         <h3>Beoordeel jouw reis</h3>
         <span>
-          Hoe heb jij deze reis ervaren? Geef jouw mening en laat Henk weten wat
-          jij er van vond
+          Hoe heb jij deze reis ervaren? Geef jouw mening en laat
+          {{ trip.legs[0].driverName }} weten wat jij er van vond
         </span>
       </v-col>
     </v-row>
@@ -55,6 +65,9 @@ import trip_made_config from '../../config/review/trip_made_config'
 export default {
   name: 'TripMade',
   components: { ContentPane },
+  props: {
+    trip: { type: Object, required: true },
+  },
   data() {
     return {
       availableCompliments: trip_made_config,

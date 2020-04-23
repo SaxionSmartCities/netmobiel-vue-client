@@ -221,7 +221,7 @@ const router = new Router({
       name: 'account',
     },
     {
-      path: '/reviewDriver',
+      path: '/reviewDriver/:tripContext',
       name: 'reviewDriver',
       component: DriverReviewPage,
       props: true,

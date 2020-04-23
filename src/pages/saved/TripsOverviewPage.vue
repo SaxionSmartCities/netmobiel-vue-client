@@ -186,7 +186,7 @@ export default {
       this.$router.push({
         name: 'reviewDriver',
         params: {
-          title: trip.to.label,
+          tripContext: trip.tripRef,
           //TODO get drive name via profile service for the review text TripMade?
           // driverName: trip.
         },

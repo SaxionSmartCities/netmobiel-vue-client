@@ -2,7 +2,7 @@
   <content-pane>
     <v-row>
       <v-col class="pt-0 px-0">
-        <h2>Waarom niet ?</h2>
+        <h3>Waarom niet ?</h3>
       </v-col>
     </v-row>
     <v-row>
@@ -42,6 +42,9 @@ import trip_not_made_config from '../../config/review/trip_not_made_config'
 export default {
   name: 'TripNotMade',
   components: { ContentPane },
+  props: {
+    trip: { type: Object, required: true },
+  },
   data() {
     return {
       tripNotMadeReasons: trip_not_made_config,
