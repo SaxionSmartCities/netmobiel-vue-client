@@ -1,9 +1,13 @@
 <template>
-  <v-card outlined @click="$emit('onTripSelected', index)">
+  <v-card outlined :ripple="!done" @click="$emit('onTripSelected', index)">
     <v-row no-gutters>
       <v-col>
-        <v-card-title>
+        <v-card-title class="d-flex justify-space-between">
           <h4>Vertrek</h4>
+          <div v-if="done" class="d-flex">
+            <!--            <span class="caption">{{ 1 + 1 }} compliments</span>-->
+            <v-btn outlined color="primary" small rounded>Beoordeel</v-btn>
+          </div>
         </v-card-title>
         <v-card-subtitle>
           {{ formatDateTime(departureTime) }}
@@ -47,6 +51,7 @@ export default {
     departureTime: { type: Object, required: true },
     duration: { type: Number, required: false, default: 0 },
     legs: { type: Array, required: true },
+    done: { type: Boolean, required: false, default: false },
   },
   data() {
     return {

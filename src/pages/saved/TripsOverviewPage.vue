@@ -41,6 +41,7 @@
         <travel-card
           v-for="(trip, index) in getPastTrips"
           :key="index"
+          :done="true"
           class="trip-card"
           :index="index"
           :from="trip.from"
