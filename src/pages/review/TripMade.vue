@@ -1,27 +1,37 @@
 <template>
   <content-pane>
-    <span> Beoordeel jouw reis ?</span>
-    <span>
-      Hoe heb jij deze reis ervaren? Geef jouw mening en laat Henk weten wat jij
-      er van vond
-    </span>
     <v-row>
-      <v-col>
-        <v-btn-toggle v-model="compliments" multiple>
-          <v-btn
-            v-for="(compliment, index) in availableCompliments"
-            :key="index"
-            :value="compliment.value"
-          >
-            {{ compliment.title }}
-          </v-btn>
-        </v-btn-toggle>
+      <v-col class="d-flex flex-column">
+        <h3>Beoordeel jouw reis</h3>
+        <span>
+          Hoe heb jij deze reis ervaren? Geef jouw mening en laat Henk weten wat
+          jij er van vond
+        </span>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col v-if="showChips" class="px-0">
+        <v-chip
+          v-for="(compliment, index) in availableCompliments"
+          :key="index"
+          class="chip"
+          :outlined="
+            compliments.findIndex(c => c.value === compliment.value) === -1
+          "
+          :value="compliment.value"
+          @click="addCompliment(compliment)"
+        >
+          {{ compliment.title }}
+        </v-chip>
+      </v-col>
+      <v-col v-else class="px-0">
+        <v-textarea v-model="inputTextArea" outlined></v-textarea>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <v-btn @click="$emit('sendFeedback', {})">Beoordeel deze reis</v-btn>
-        <v-btn @click="$emit('back', {})">Terug</v-btn>
+        <v-btn @click="rateTrip()">Beoordeel deze reis</v-btn>
+        <v-btn @click="back()">Terug</v-btn>
       </v-col>
     </v-row>
   </content-pane>
@@ -39,9 +49,39 @@ export default {
       availableCompliments: trip_made_config,
       compliments: [],
       feedbackMessage: '',
+      showChips: true,
+      inputTextArea: null,
     }
+  },
+  methods: {
+    addCompliment(compliment) {
+      const index = this.compliments.findIndex(
+        c => c.value === compliment.value
+      )
+      if (index === -1) this.compliments.push(compliment)
+      else this.compliments.splice(index, 1)
+    },
+    back() {
+      this.$emit('back', {})
+      !this.showChips && (this.showChips = true)
+    },
+    rateTrip() {
+      if (this.showChips) {
+        this.showChips = false
+        this.$emit('nextStep', {})
+      } else {
+        this.$emit('rateTrip', {
+          compliments: this.compliments,
+          feedbackMessage: this.inputTextArea,
+        })
+      }
+    },
   },
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.chip {
+  margin: 3px;
+}
+</style>

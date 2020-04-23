@@ -19,21 +19,32 @@
     </v-row>
     <template v-if="step === 1">
       <v-row>
-        <v-col>
+        <v-col class="flex-column">
           <span>
             Heb je de reis naar <b>{{ title }}</b> gemaakt?
           </span>
+          <v-checkbox
+            v-model="review"
+            label="Meteen een review achterlaten?"
+          ></v-checkbox>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <v-btn @click="setTripMade(false)">Nee</v-btn>
-          <v-btn @click="setTripMade(true)">ja</v-btn>
+          <v-btn @click="confirmTrip(false)">Nee</v-btn>
+          <v-btn @click="confirmTrip(true)">ja</v-btn>
+          <v-btn @click="$router.push({ name: 'home' })">Annuleren</v-btn>
         </v-col>
       </v-row>
     </template>
     <template v-if="step !== 1">
-      <component @back="step--" :is="getCurrentStepComponent()"></component>
+      <component
+        :is="getCurrentStepComponent()"
+        @tripNotMade="onTripNotMade"
+        @rateTrip="onTripMade"
+        @nextStep="step++"
+        @back="step--"
+      ></component>
     </template>
   </content-pane>
 </template>
@@ -52,15 +63,29 @@ export default {
     return {
       step: 1,
       isTripMade: null,
+      review: true,
     }
   },
   methods: {
     setTripMade(value) {
       this.isTripMade = value
-      this.step++
+      //Open a model to confirm the user his answe
+      this.review ? this.step++ : this.$router.push({ name: 'home' })
     },
     getCurrentStepComponent() {
       return this.isTripMade ? TripMade : TripNotMade
+    },
+    confirmTrip(value) {
+      if (value)
+        //Dispatch that the trip was made.
+        this.setTripMade(true)
+      else this.setTripMade(false)
+    },
+    onTripMade(rate) {
+      console.log('the rate of the trip >> ', rate)
+    },
+    onTripNotMade(reason) {
+      console.log('trip was not made: ', reason)
     },
   },
 }

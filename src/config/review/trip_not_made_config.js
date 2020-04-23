@@ -5,7 +5,7 @@ export default [
   },
   {
     title: 'Ander vervoer gevonden',
-    value: 'unnecessary',
+    value: 'otherTransport',
   },
   {
     title: 'De chauffeur kwam niet opdagen.',

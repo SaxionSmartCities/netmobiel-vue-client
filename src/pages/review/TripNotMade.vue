@@ -15,7 +15,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-btn @click="$emit('sendFeedback', {})">Beoordeel deze reis</v-btn>
+        <v-btn @click="tripNotMade()">Beoordeel deze reis</v-btn>
         <v-btn @click="$emit('back', {})">Terug</v-btn>
       </v-col>
     </v-row>
@@ -33,6 +33,11 @@ export default {
       tripNotMadeReasons: trip_not_made_config,
       tripNotMadeReason: null,
     }
+  },
+  methods: {
+    tripNotMade() {
+      this.$emit('tripNotMade', { reason: this.tripNotMadeReason })
+    },
   },
 }
 </script>

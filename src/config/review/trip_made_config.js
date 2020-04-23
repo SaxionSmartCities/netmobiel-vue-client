@@ -1,14 +1,26 @@
 export default [
   {
-    title: 'De reis was niet meer nodig',
-    value: 'unnecessary',
+    title: 'Fijne rijstijl',
+    value: 'fijneRijstijl',
   },
   {
-    title: 'Ander vervoer gevonden',
-    value: 'unnecessary',
+    title: 'Op tijd',
+    value: 'opTijd',
   },
   {
-    title: 'De chauffeur kwam niet opdagen.',
-    value: '',
+    title: 'Netjes',
+    value: 'netjes',
+  },
+  {
+    title: 'Soepele communicatie',
+    value: 'soepeleCommunicatie',
+  },
+  {
+    title: 'Goede auto',
+    value: 'goedeAuto',
+  },
+  {
+    title: 'Gezellig',
+    value: 'gezellig',
   },
 ]
