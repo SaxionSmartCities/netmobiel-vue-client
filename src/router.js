@@ -5,6 +5,7 @@ import store from './store'
 Vue.use(Router)
 
 import CommunityOverviewPage from './pages/community/CommunityOverviewPage.vue'
+import Credits from './pages/profile/Creditspage.vue'
 import InboxPage from './pages/community/messages/InboxPage.vue'
 import ConversationPage from './pages/community/messages/ConversationPage.vue'
 import ItineraryDetailPage from './pages/planner/ItineraryDetailPage.vue'
@@ -17,9 +18,9 @@ import OnboardingComplete from './pages/OnboardingComplete.vue'
 import OnboardingPage from './pages/OnboardingPage.vue'
 import PrivacySecurityPage from './pages/profile/PrivacySecurityPage.vue'
 import PrivacyStatementPage from './pages/profile/PrivacyStatementPage.vue'
-import ProfileCarsPage from './pages/profile/ProfileCarsPage.vue'
-import ProfileAddCarPage from './pages/profile/ProfileAddCarPage.vue'
-import ProfileEditCarPage from './pages/profile/ProfileEditCarPage.vue'
+import CarsPage from './pages/planner/CarsPage.vue'
+import CarAddPage from './pages/planner/CarAddPage.vue'
+import CarEditPage from './pages/planner/CarEditPage.vue'
 import ProfilePage from './pages/profile/ProfilePage.vue'
 import SearchLocationPage from './pages/planner/SearchLocationPage'
 import SearchOptionsPage from './pages/planner/SearchOptionsPage'
@@ -27,7 +28,7 @@ import SearchPage from './pages/planner/SearchPage.vue'
 import SearchResultsPage from './pages/planner/SearchResultsPage.vue'
 import TermsOfUsePage from './pages/profile/TermsOfUsePage.vue'
 import RegistrationPage from './pages/RegistrationPage.vue'
-import RideDetailPage from './pages/home/RideDetailPage.vue'
+import RideDetailPage from './pages/saved/RideDetailPage.vue'
 import RidePlanPage from './pages/planner/RidePlanPage.vue'
 import RidePlanOptionsPage from './pages/planner/RidePlanOptionsPage.vue'
 import RidePlanSubmitted from './pages/planner/RidePlanSubmitted.vue'
@@ -36,6 +37,10 @@ import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
 import GoalOverviewPage from './pages/community/goals/GoalOverviewPage'
 import GoalsDetailsPage from './pages/community/goals/GoalsDetailsPage'
 import TripCancelledPage from './pages/saved/TripCancelledPage'
+import TripDetailPage from './pages/saved/TripDetailPage'
+import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
+import ShoutOutDetailPage from '@/pages/community/shoutout/ShoutOutDetailPage'
+import Account from '@/pages/profile/Account'
 
 const router = new Router({
   mode: 'history',
@@ -52,6 +57,11 @@ const router = new Router({
       path: '/createUser',
       component: RegistrationPage,
       name: 'createUser',
+    },
+    {
+      path: '/credits',
+      component: Credits,
+      name: 'credits',
     },
     {
       path: '/profile',
@@ -144,6 +154,11 @@ const router = new Router({
       name: 'tripCancelledPage',
     },
     {
+      path: '/tripDetailPage',
+      component: TripDetailPage,
+      name: 'tripDetailPage',
+    },
+    {
       path: '/rideDetailPage/:id',
       component: RideDetailPage,
       name: 'rideDetailPage',
@@ -160,19 +175,19 @@ const router = new Router({
       name: 'modeSelectionPage',
     },
     {
-      path: '/profileCars',
-      component: ProfileCarsPage,
-      name: 'profileCarsPage',
+      path: '/Cars',
+      component: CarsPage,
+      name: 'CarsPage',
     },
     {
-      path: '/profileAddCar',
-      component: ProfileAddCarPage,
-      name: 'profileAddCarPage',
+      path: '/AddCar',
+      component: CarAddPage,
+      name: 'CarAddPage',
     },
     {
-      path: '/profileEditCar',
-      component: ProfileEditCarPage,
-      name: 'profileEditCarPage',
+      path: '/EditCar',
+      component: CarEditPage,
+      name: 'CarEditPage',
     },
     {
       path: '/onboardingPage',
@@ -195,9 +210,26 @@ const router = new Router({
       name: 'community',
     },
     {
-      path: '/conversation/:id',
+      path: '/conversation/:context',
       component: ConversationPage,
+      name: 'conversation',
       props: true,
+    },
+    {
+      path: '/shoutouts',
+      component: ShoutOutOverviewPage,
+      name: 'shoutouts',
+    },
+    {
+      path: '/shoutout/:id',
+      component: ShoutOutDetailPage,
+      name: 'shoutout',
+      props: true,
+    },
+    {
+      path: '/account',
+      component: Account,
+      name: 'account',
     },
   ],
 })
@@ -206,7 +238,6 @@ router.beforeEach((to, from, next) => {
   store.commit('ui/hideBackButton')
   store.commit('ui/enableFooter')
   store.commit('ui/enableHeader')
-  store.commit('ui/clearAppClasses')
 
   if (
     to.path !== '/' &&

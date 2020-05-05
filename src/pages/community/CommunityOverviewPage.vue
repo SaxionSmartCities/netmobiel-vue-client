@@ -4,9 +4,9 @@
       <v-col>
         <community-button
           class="mx-auto"
-          forward="/inbox"
+          forward="inbox"
           icon="fa-comments"
-          naam="berichten"
+          naam="Berichten"
           :aantal-berichten="2"
         ></community-button>
       </v-col>
@@ -14,8 +14,8 @@
         <community-button
           class="mx-auto"
           icon="fa-map"
-          naam="gezocht"
-          :disabled="true"
+          forward="shoutouts"
+          naam="Oproepen"
           :aantal-berichten="11"
         ></community-button>
       </v-col>
@@ -25,7 +25,7 @@
         <community-button
           class="mx-auto"
           icon="fa-trophy"
-          naam="competenties"
+          naam="Competenties"
           :disabled="true"
         ></community-button>
       </v-col>
@@ -33,7 +33,7 @@
         <community-button
           class="mx-auto"
           icon="fa-gift"
-          naam="rewards"
+          naam="Rewards"
           :disabled="true"
         ></community-button>
       </v-col>

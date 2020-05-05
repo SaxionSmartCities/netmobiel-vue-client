@@ -44,7 +44,7 @@ export default {
     },
     forward: {
       type: String,
-      default: '/',
+      default: '',
       required: false,
     },
     disabled: {
@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     toNextPage: function() {
-      this.$router.push(this.forward)
+      this.$router.push({ name: this.forward })
     },
   },
 }
