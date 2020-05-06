@@ -104,10 +104,6 @@ export default {
         if (show) {
           this.$store.dispatch('gs/fetchGeocoderSuggestions', {
             query: val,
-            // geographic center of the Netherlands (near Lunteren)
-            area: '52.063045,5.349972',
-            result_types: 'place,address',
-            // highlight the search text
             hlStart: `<span ${highlightMarker}>`,
             hlEnd: '</span>',
           })
