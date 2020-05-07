@@ -1,5 +1,20 @@
 <template>
   <content-pane>
+    <template v-slot:header>
+      <tab-bar
+        v-if="showTabs"
+        :selected-tab-model="selectedTab"
+        @tabChange="selectedTab = $event"
+      >
+        <template v-slot:firstTab>
+          <span>Mijn oproepen</span>
+        </template>
+
+        <template v-slot:secondTab>
+          <span>Community oproepen</span>
+        </template>
+      </tab-bar>
+    </template>
     <v-row>
       <v-col>
         <h3>Community oproepen</h3>
@@ -26,12 +41,14 @@
 import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane'
 import GroupedShoutOuts from '@/components/community/GroupedShoutOuts'
+import TabBar from '../../../components/common/TabBar'
 
 export default {
   name: 'ShoutOutOverview',
-  components: { GroupedShoutOuts, ContentPane },
+  components: { TabBar, GroupedShoutOuts, ContentPane },
   data() {
     return {
+      selectedTab: 0,
       baseLocation: 'Home',
     }
   },
@@ -47,6 +64,10 @@ export default {
         groupedShoutOuts[date].push(s)
       })
       return groupedShoutOuts
+    },
+    showTabs() {
+      const role = this.$store.getters['ps/getProfile'].userRole
+      return !role || role === 'both'
     },
   },
   created() {
