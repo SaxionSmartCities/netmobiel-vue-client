@@ -133,7 +133,7 @@ export default {
         this.$store.dispatch(
           'ui/queueNotification',
           {
-            message: 'De geselecteerde datum/tijd is incorrect.',
+            message: 'De geselecteerde tijd ligt in het verleden.',
             timeout: 3000,
           },
           { root: true }
