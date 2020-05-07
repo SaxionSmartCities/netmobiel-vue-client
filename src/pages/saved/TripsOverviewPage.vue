@@ -75,6 +75,7 @@ import TravelCard from '@/components/search-results/TravelCard.vue'
 import RideCard from '@/components/rides/RideCard.vue'
 import constants from '../../constants/constants'
 import TabBar from '../../components/common/TabBar'
+import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 
 export default {
   name: 'TripsOverviewPage',
@@ -117,6 +118,14 @@ export default {
       }
     },
   },
+  beforeRouteEnter: beforeRouteEnter({
+    selectedTab: number => {
+      return number || 0
+    },
+  }),
+  beforeRouteLeave: beforeRouteLeave({
+    selectedTab: number => number || 0,
+  }),
   mounted() {
     this.fetchTrips()
     this.fetchRides()
