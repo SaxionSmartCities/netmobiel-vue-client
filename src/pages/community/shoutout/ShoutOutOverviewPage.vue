@@ -15,25 +15,32 @@
         </template>
       </tab-bar>
     </template>
-    <v-row>
+    <v-row v-if="selectedTab === 0 || userRole === 'passenger'">
       <v-col>
-        <h3>Community oproepen</h3>
-        <p class="mt-2 mb-0">Gezochte reizen in de buurt van mijn:</p>
-        <v-radio-group v-model="baseLocation" class="mt-1" row>
-          <v-radio label="Woonplaats" value="Home" selected></v-radio>
-          <v-radio label="Huidige locatie" value="Here" disabled></v-radio>
-        </v-radio-group>
+        <span>hello here show my own oproepen</span>
       </v-col>
     </v-row>
-    <v-row v-for="group in Object.keys(groupedShoutOuts)" :key="group">
-      <v-col>
-        <grouped-shout-outs
-          :label="formatDate(group)"
-          :shoutouts="groupedShoutOuts[group]"
-          @shoutoutSelected="onShoutoutSelected"
-        />
-      </v-col>
-    </v-row>
+    <template v-if="selectedTab === 1 || userRole === 'driver'">
+      <v-row>
+        <v-col>
+          <h3>Community oproepen</h3>
+          <p class="mt-2 mb-0">Gezochte reizen in de buurt van mijn:</p>
+          <v-radio-group v-model="baseLocation" class="mt-1" row>
+            <v-radio label="Woonplaats" value="Home" selected></v-radio>
+            <v-radio label="Huidige locatie" value="Here" disabled></v-radio>
+          </v-radio-group>
+        </v-col>
+      </v-row>
+      <v-row v-for="group in Object.keys(groupedShoutOuts)" :key="group">
+        <v-col>
+          <grouped-shout-outs
+            :label="formatDate(group)"
+            :shoutouts="groupedShoutOuts[group]"
+            @shoutoutSelected="onShoutoutSelected"
+          />
+        </v-col>
+      </v-row>
+    </template>
   </content-pane>
 </template>
 
@@ -68,6 +75,9 @@ export default {
     showTabs() {
       const role = this.$store.getters['ps/getProfile'].userRole
       return !role || role === 'both'
+    },
+    userRole() {
+      return this.$store.getters['ps/getProfile'].userRole
     },
   },
   created() {
