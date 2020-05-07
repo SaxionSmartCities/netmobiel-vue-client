@@ -12,6 +12,7 @@ export default {
       itinerary: {},
     },
     shoutOuts: [],
+    shoutOutsTotalCount: 0,
     plannedTripsCount: 0,
     plannedTrips: [],
     planningRequest: {
