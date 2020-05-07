@@ -11,7 +11,7 @@
         </template>
 
         <template v-slot:secondTab>
-          <span>Community oproepen</span>
+          <span>Community</span>
         </template>
       </tab-bar>
     </template>
