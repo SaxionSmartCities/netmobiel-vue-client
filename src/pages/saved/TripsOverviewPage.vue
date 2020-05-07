@@ -120,7 +120,7 @@ export default {
     },
   },
   mounted() {
-    this.fetchTrips(0)
+    this.fetchTrips()
     this.fetchRides()
     document
       .getElementById('content-container')
