@@ -17,9 +17,14 @@
               </a>
               <!--UPLOAD-->
               <div v-if="showUploadFile" class="text-center">
-                <label for="file-input" class="custom-file-upload caption">
+                <label for="file-input" class="custom-file-upload">
                   Upload afbeelding
                   <input id="file-input" type="file" @change="readFile" />
+                  <v-progress-circular
+                    v-if="isUploadingFile"
+                    indeterminate
+                    color="btn-primary"
+                  ></v-progress-circular>
                 </label>
               </div>
             </div>
@@ -111,7 +116,7 @@ export default {
     return {
       rating: 4,
       showUploadFile: false,
-      file: '',
+      isUploadingFile: false,
       items: [
         {
           icon: 'settings',
@@ -165,6 +170,17 @@ export default {
     readFile(event) {
       if (event.target.files[0]) {
         let fileReader = new FileReader()
+        fileReader.addEventListener('load', () => {
+          this.isUploadingFile = true
+        })
+        fileReader.addEventListener('loadend', () => {
+          this.isUploadingFile = false
+          //Update profile
+          let profile = { ...this.$store.getters['ps/getProfile'] }
+          // fileReader.result = base64 encoded string
+          profile.image = fileReader.result
+          this.$store.dispatch('ps/updateProfile', profile)
+        })
         fileReader.readAsDataURL(event.target.files[0])
       }
     },
@@ -173,8 +189,6 @@ export default {
 </script>
 
 <style lang="scss">
-.custom-file-upload {
-}
 #file-input {
   display: none;
 }
