@@ -17,7 +17,7 @@
               </a>
               <!--UPLOAD-->
               <div v-if="showUploadFile" class="text-center">
-                <label for="file-input" class="custom-file-upload">
+                <label for="file-input" class="custom-file-upload caption">
                   Upload afbeelding
                   <input id="file-input" type="file" @change="readFile" />
                   <v-progress-circular
