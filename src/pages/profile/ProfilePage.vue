@@ -8,8 +8,20 @@
               :image-size="92"
               :avatar-size="100"
             ></round-user-image>
-            <div class="d-flex flex-row justify-center">
-              <a class="caption bewerk">Bewerk</a>
+            <div class="d-flex flex-column align-center">
+              <a
+                class="caption bewerk"
+                @click="showUploadFile = !showUploadFile"
+              >
+                Bewerk
+              </a>
+              <!--UPLOAD-->
+              <div v-if="showUploadFile" class="text-center">
+                <label for="file-input" class="custom-file-upload caption">
+                  Upload afbeelding
+                  <input id="file-input" type="file" @change="readFile" />
+                </label>
+              </div>
             </div>
           </v-col>
           <v-col class="flex-column">
@@ -95,9 +107,11 @@ export default {
     ContentPane,
     roundUserImage,
   },
-  data: function() {
+  data() {
     return {
       rating: 4,
+      showUploadFile: false,
+      file: '',
       items: [
         {
           icon: 'settings',
@@ -148,11 +162,22 @@ export default {
       this.$keycloak.logoutFn()
       this.$store.commit('ui/deleteAccessToken')
     },
+    readFile(event) {
+      if (event.target.files[0]) {
+        let fileReader = new FileReader()
+        fileReader.readAsDataURL(event.target.files[0])
+      }
+    },
   },
 }
 </script>
 
 <style lang="scss">
+.custom-file-upload {
+}
+#file-input {
+  display: none;
+}
 .user-text {
   flex: 0 1 0;
 }
