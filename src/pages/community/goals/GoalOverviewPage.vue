@@ -8,13 +8,15 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-text-field
-        outlined
-        label="zoeken"
-        prepend-inner-icon="search"
-      ></v-text-field>
+      <v-col>
+        <v-text-field
+          outlined
+          label="Zoeken"
+          prepend-inner-icon="search"
+        ></v-text-field>
+      </v-col>
     </v-row>
-    <v-row mb-3 mt-3>
+    <v-row>
       <v-col>
         <h4 class="netmobiel">
           Populair in de buurt
@@ -22,13 +24,15 @@
       </v-col>
     </v-row>
     <v-row>
-      <goal-card
-        :id="getSavedGoals[0].id"
-        :titel="getSavedGoals[0].title"
-        :plaatsnaam="getSavedGoals[0].location"
-        :credits-donated="getSavedGoals[0].creditsDonated"
-        :credits-total="getSavedGoals[0].creditsGoal"
-      ></goal-card>
+      <v-col>
+        <goal-card
+          :id="getSavedGoals[0].id"
+          :titel="getSavedGoals[0].title"
+          :plaatsnaam="getSavedGoals[0].location"
+          :credits-donated="getSavedGoals[0].creditsDonated"
+          :credits-total="getSavedGoals[0].creditsGoal"
+        ></goal-card>
+      </v-col>
     </v-row>
     <v-row mb-3 mt-3>
       <v-col>
