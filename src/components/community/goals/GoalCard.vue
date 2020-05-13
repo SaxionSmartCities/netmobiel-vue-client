@@ -1,10 +1,11 @@
 <template>
-  <v-card class="mx-auto" outlined>
-    <v-row class="mx-auto">
-      <v-col class="pl-8 pt-2" wrap>
-        <v-list-item-avatar tilesize="100" color="grey"></v-list-item-avatar>
+  <v-card outlined>
+    <v-row>
+      <v-col cols="4" class="pl-8">
+        <round-user-image :image-size="69" :avatar-size="75">
+        </round-user-image>
       </v-col>
-      <v-col>
+      <v-col class="mx-auto">
         <v-row>
           <span class="subtitle-2 text-no-wrap pr-2"> {{ titel }} </span>
         </v-row>
@@ -13,8 +14,10 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-row class="ma-auto pl-4 pr-4">
-      <v-progress-linear :value="creditsDonated"></v-progress-linear>
+    <v-row>
+      <v-col>
+        <v-progress-linear :value="creditsDonated"></v-progress-linear>
+      </v-col>
     </v-row>
     <v-row class="mx-auto">
       <v-col
@@ -41,8 +44,13 @@
 </template>
 
 <script>
+import RoundUserImage from '@/components/common/RoundUserImage'
+
 export default {
   name: 'GoalCard',
+  components: {
+    RoundUserImage,
+  },
   props: {
     id: { type: Number, required: true },
     titel: { type: String, required: true },
