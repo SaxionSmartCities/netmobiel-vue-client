@@ -7,6 +7,7 @@
             <round-user-image
               :image-size="92"
               :avatar-size="100"
+              :profile-image="profileImage"
             ></round-user-image>
             <div class="d-flex flex-column align-center">
               <a
@@ -23,7 +24,7 @@
                   <v-progress-circular
                     v-if="isUploadingFile"
                     indeterminate
-                    color="btn-primary"
+                    color="primary"
                   ></v-progress-circular>
                 </label>
               </div>
@@ -157,6 +158,9 @@ export default {
         formatted = address['locality']
       }
       return formatted
+    },
+    profileImage() {
+      return this.$store.getters['ps/getUser'].profile.image
     },
   },
   methods: {
