@@ -201,7 +201,6 @@ export default {
       mineOnly: true,
       offset: offset || 0,
     }
-    console.log('fired my shoutouts fetch')
     axios
       .get(BASE_URL + '/planner/shout-outs', {
         headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),

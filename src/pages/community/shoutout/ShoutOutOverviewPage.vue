@@ -17,7 +17,7 @@
     </template>
     <v-row v-if="selectedTab === 0 || userRole === 'passenger'">
       <v-col>
-        <span>hello here show my own oproepen</span>
+        <span>{{ myShoutOuts }}</span>
       </v-col>
     </v-row>
     <template v-if="selectedTab === 1 || userRole === 'driver'">
@@ -71,6 +71,9 @@ export default {
         groupedShoutOuts[date].push(s)
       })
       return groupedShoutOuts
+    },
+    myShoutOuts() {
+      return this.$store.getters['is/getMyShoutOuts']
     },
     showTabs() {
       const role = this.$store.getters['ps/getProfile'].userRole
