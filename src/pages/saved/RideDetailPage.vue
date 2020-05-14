@@ -251,36 +251,37 @@ export default {
         this.onTravellerSelectForMessage(this.passengersInBookings[0])
       }
     },
-    async routeToConversation(ctx, passengerProfile) {
-      const conversations = await this.$store.dispatch('ms/fetchConversations')
-      const index = conversations.findIndex(
-        conversation => conversation.context === ctx
-      )
-      let params = null
-      if (index !== -1) {
-        //So if the conversation already exists...
-        params = conversations[index]
-      } else {
-        //If the conversation does not exists
-        //Then create a ghost conversation
-        params = {
-          context: ctx,
-          participants: [
-            {
-              managedIdentity: this.$store.getters['ps/getProfile'].id,
-              urn: '',
-            },
-            {
-              ...passengerProfile,
-              urn: passengerProfile.passengerRef,
-            },
-          ],
+    routeToConversation(ctx, passengerProfile) {
+      this.$store.dispatch('ms/fetchConversations').then(conversations => {
+        const index = conversations.findIndex(
+          conversation => conversation.context === ctx
+        )
+        let params = null
+        if (index !== -1) {
+          //So if the conversation already exists...
+          params = conversations[index]
+        } else {
+          //If the conversation does not exists
+          //Then create a ghost conversation
+          params = {
+            context: ctx,
+            participants: [
+              {
+                managedIdentity: this.$store.getters['ps/getProfile'].id,
+                urn: '',
+              },
+              {
+                ...passengerProfile,
+                urn: passengerProfile.passengerRef,
+              },
+            ],
+          }
         }
-      }
 
-      this.$router.push({
-        name: `conversation`,
-        params: params,
+        this.$router.push({
+          name: `conversation`,
+          params: params,
+        })
       })
     },
   },
