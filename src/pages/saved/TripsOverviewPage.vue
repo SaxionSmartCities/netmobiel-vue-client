@@ -111,9 +111,9 @@ export default {
     bottom(bottom) {
       if (bottom) {
         if (this.selectedTab === 0) {
-          this.fetchTrips()
+          this.fetchTrips(this.getPlannedTrips.length)
         } else if (this.selectedTab === 1) {
-          this.fetchRides()
+          this.fetchRides(this.getPlannedRides.length)
         }
       }
     },
@@ -148,15 +148,15 @@ export default {
       const bottomOfPage = visible + scrollY >= pageHeight
       return bottomOfPage || pageHeight < visible
     },
-    fetchTrips() {
+    fetchTrips(offset = 0) {
       this.$store.dispatch('is/fetchTrips', {
         maxResults: this.maxResults,
-        offset: this.getPlannedTrips.length,
+        offset: offset,
       })
     },
-    fetchRides() {
+    fetchRides(offset = 0) {
       this.$store.dispatch('cs/fetchRides', {
-        offset: this.getPlannedRides.length,
+        offset: offset,
         maxResults: this.maxResults,
       })
     },

@@ -127,6 +127,19 @@ export default {
     },
   },
   watch: {
+    journeyMoment(newValue) {
+      // If the selected date is in the past
+      if (moment(newValue.when) < moment()) {
+        this.$store.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'De geselecteerde tijd ligt in het verleden.',
+            timeout: 3000,
+          },
+          { root: true }
+        )
+      }
+    },
     getSubmitStatus(newValue) {
       if (newValue.status === 'SUCCESS') {
         this.$router.push('/searchResults')

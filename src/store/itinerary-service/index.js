@@ -13,6 +13,7 @@ export default {
     },
     shoutOuts: [],
     myShoutOuts: [],
+    shoutOutsTotalCount: 0,
     plannedTripsCount: 0,
     plannedTrips: [],
     planningRequest: {

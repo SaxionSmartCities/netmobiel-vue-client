@@ -129,7 +129,6 @@ export default {
     userAddress() {
       let formatted = 'Onbekende woonplaats'
       const address = this.user.profile.address
-      console.log(address)
       if (address['locality'] && address['street']) {
         formatted = address['houseNumber']
           ? `${address['street']} ${address['houseNumber']},
