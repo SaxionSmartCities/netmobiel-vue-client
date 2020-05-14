@@ -190,6 +190,36 @@ export default {
         console.log(error)
       })
   },
+  fetchMyShoutOuts: (
+    context,
+    { latitude: lat, longitude: lon, offset: offset }
+  ) => {
+    const params = {
+      location: `${lat},${lon}`,
+      maxResults: 10,
+      depArrRadius: 1000000,
+      mineOnly: true,
+      offset: offset || 0,
+    }
+    console.log('fired my shoutouts fetch')
+    axios
+      .get(BASE_URL + '/planner/shout-outs', {
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+        params: params,
+      })
+      .then(response => {
+        if (response.status === 200) {
+          // When you using a offset you want to append the shoutouts and not clear the already fetched shoutouts.
+          if (offset > 0)
+            context.commit('appendMyShoutOuts', response.data.data)
+          else context.commit('setMyShoutOuts', response.data.data)
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
   fetchTrip: (context, payload) => {
     const tripId = payload.id
     const URL = `${BASE_URL}/planner/trips/${tripId}`

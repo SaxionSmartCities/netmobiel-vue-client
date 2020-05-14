@@ -5,4 +5,5 @@ export default {
   getPlannedTrips: state => state.plannedTrips,
   getPlannedTripsCount: state => state.plannedTripsCount,
   getShoutOuts: state => state.shoutOuts,
+  getMyShoutOuts: state => state.myShoutOuts,
 }

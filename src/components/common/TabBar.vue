@@ -1,5 +1,12 @@
 <template>
-  <v-tabs id="tabs" v-model="selectedTab" grow centered slider-color="#bddade">
+  <v-tabs
+    id="tabs"
+    v-model="selectedTab"
+    grow
+    centered
+    slider-color="#bddade"
+    :active-class="'lighter-tab'"
+  >
     <v-tab class="white--text no-caps saved">
       <slot name="firstTab"> </slot>
     </v-tab>

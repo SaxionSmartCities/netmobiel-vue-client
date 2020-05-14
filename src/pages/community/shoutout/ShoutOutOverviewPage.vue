@@ -36,7 +36,7 @@
           <grouped-shout-outs
             :label="formatDate(group)"
             :shoutouts="groupedShoutOuts[group]"
-            @shoutoutSelected="onShoutoutSelected"
+            @shoutoutSelected="onShoutOutSelected"
           />
         </v-col>
       </v-row>
@@ -88,9 +88,13 @@ export default {
       latitude: 52.2224,
       longitude: 5.28248,
     })
+    this.$store.dispatch('is/fetchMyShoutOuts', {
+      latitude: 52.2224,
+      longitude: 5.28248,
+    })
   },
   methods: {
-    onShoutoutSelected(index) {
+    onShoutOutSelected(index) {
       this.$router.push({ name: 'shoutout', params: { id: index } })
     },
     formatDate(date) {

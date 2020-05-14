@@ -35,4 +35,6 @@ export default {
     state.plannedTrips = state.plannedTrips.concat(payload)
   },
   setShoutOuts: (state, payload) => (state.shoutOuts = payload),
+  setMyShoutOuts: (state, payload) => (state.myShoutOuts = payload),
+  appendMyShoutOuts: (state, payload) => state.myShoutOuts.concat(payload),
 }
