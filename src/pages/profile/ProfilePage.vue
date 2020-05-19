@@ -179,11 +179,14 @@ export default {
         })
         fileReader.addEventListener('loadend', () => {
           this.isUploadingFile = false
-          //Update profile
-          let profile = { ...this.$store.getters['ps/getProfile'] }
+          //TODO make seperate call to update profile picture
+          //TODO DOWNSCALE the image size when it's bigger than 500kb
           // fileReader.result = base64 encoded string
-          profile.image = fileReader.result
-          this.$store.dispatch('ps/updateProfile', profile)
+          const image = fileReader.result
+          console.log('whole file (raw)', image)
+          // this.$store.dispatch('ps/updateProfile', image)
+          // resizeImage(fileReader)
+          this.width
         })
         fileReader.readAsDataURL(event.target.files[0])
       }
