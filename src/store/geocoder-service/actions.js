@@ -13,7 +13,7 @@ function generateHeaders(key) {
 export default {
   fetchGeocoderSuggestions: async (
     context,
-    { query, area, result_types, hlStart, hlEnd }
+    { query, area, hlStart, hlEnd }
   ) => {
     try {
       const resp = await axios.get(
@@ -22,8 +22,9 @@ export default {
           params: {
             query,
             radius: 150000,
-            center: area,
-            result_types,
+            // Default geographic center of the Netherlands (near Lunteren)
+            center: area || '52.063045,5.349972',
+            result_types: 'place,address',
             hls: hlStart,
             hle: hlEnd,
           },

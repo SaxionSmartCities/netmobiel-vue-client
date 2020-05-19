@@ -22,8 +22,38 @@
               <v-col cols="5" class="d-flex flex-row">
                 <span class="align-self-center body-2"> {{ item.title }}</span>
               </v-col>
-              <v-col cols="6" class="body-2 font-weight-thin">
-                {{ item.format ? item.format(user[item.key]) : user[item.key] }}
+              <v-col
+                cols="6"
+                class="body-2 font-weight-thin"
+                :class="{
+                  'selected-property-column': selectedProperty === item.key,
+                }"
+                @click="selectedProperty = item.key"
+              >
+                <v-text-field
+                  v-if="selectedProperty === item.key"
+                  class="change-property-input"
+                  :value="
+                    item.format
+                      ? item.format(get(user, item.key))
+                      : get(user, item.key)
+                  "
+                  solo
+                  autofocus
+                  flat
+                  single-line
+                  clearable
+                  :hide-details="true"
+                  @change="onChangedInfoProperty"
+                >
+                </v-text-field>
+                <span v-else>
+                  {{
+                    item.format
+                      ? item.format(get(user, item.key))
+                      : get(user, item.key)
+                  }}
+                </span>
               </v-col>
             </v-row>
             <v-divider
@@ -40,6 +70,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane'
 import account_config from '@/config/account_config'
+import { get, set, isEqual } from 'lodash'
 
 export default {
   name: 'Account',
@@ -47,20 +78,96 @@ export default {
   data() {
     return {
       accountConfig: account_config,
+      selectedProperty: null,
     }
   },
   computed: {
     user() {
       return this.$store.getters['ps/getUser'].profile
     },
+    suggestions() {
+      return this.$store.getters['gs/getGeocoderSuggestions']
+    },
     sections() {
       return Object.keys(account_config)
+    },
+  },
+  watch: {
+    suggestions(value) {
+      if (value.length > 0) {
+        const address = value.find(s => s.resultType == 'address')
+        if (address && !isEqual(address.position, this.user.address.location)) {
+          let newProfile = JSON.parse(JSON.stringify(this.user))
+          // Use GeoJSON format (notice the lon,lat order)
+          newProfile.address.location = {
+            type: 'Point',
+            coordinates: [
+              address.position[1], // Longitude
+              address.position[0], // Latitude
+            ],
+          }
+          this.$store.dispatch('ps/updateProfile', newProfile)
+        }
+      }
     },
   },
   created() {
     this.$store.commit('ui/showBackButton')
   },
+  methods: {
+    get: get,
+    set: set,
+    onChangedInfoProperty(input) {
+      // Fires when the user onfocusses the input
+      //HACK: JSON parse/stringify to prevent "[vuex] do not mutate vuex store
+      // state outside mutation handlers." error.
+      let newProfile = JSON.parse(JSON.stringify(this.user))
+      set(newProfile, this.selectedProperty, input)
+      this.$store.dispatch('ps/updateProfile', newProfile)
+
+      // Fetch geocode for address if different.
+      if (!isEqual(this.user.address, newProfile.address)) {
+        const query = this.addressQuery(newProfile.address)
+        if (query)
+          this.$store.dispatch('gs/fetchGeocoderSuggestions', { query: query })
+      }
+    },
+    addressQuery(address) {
+      let query = ''
+      // A locality is the minimum requirement.
+      if (address['locality']) query = address['locality']
+      else return query
+
+      if (address['postalCode']) query = `${address['postalCode']}, ` + query
+      if (address['street'] && address['houseNumber'])
+        query = `${address['street']} ${address['houseNumber']}, ` + query
+      else if (address['street']) query = `${address['street']}, ` + query
+
+      return query
+    },
+  },
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.selected-property-column {
+  padding: 0px;
+  align-content: center;
+  display: flex;
+  flex-direction: row;
+}
+
+.change-property-input {
+  align-self: center;
+
+  .v-text-field.v-text-field--enclosed:not(.v-text-field--rounded)
+    > .v-input__control
+    > .v-input__slot,
+  .v-text-field.v-text-field--enclosed .v-text-field__details {
+    padding: 0px;
+    svg {
+      height: 32px !important;
+    }
+  }
+}
+</style>

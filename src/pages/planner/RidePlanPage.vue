@@ -136,6 +136,7 @@ export default {
         !from.title ||
         !to.title ||
         !this.journeyMoment ||
+        !this.selectedCar ||
         this.journeyMoment.when < moment().add(1, 'hour')
       )
     },

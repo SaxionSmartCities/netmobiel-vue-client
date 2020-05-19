@@ -20,7 +20,7 @@
               >
                 <span class="shrink">{{ user.fullName }}</span>
                 <span class="caption text--gray">
-                  {{ user.address || 'Gasthuisstraat 9, Bredevoort' }}
+                  {{ userAddress }}
                 </span>
               </div>
               <v-icon large @click="navTo('account')">
@@ -120,12 +120,24 @@ export default {
         { icon: 'error_outline', name: 'Over deze app', route: '' },
         { icon: 'cancel', name: 'Verwijder mijn account', route: '' },
       ],
-      address: 'Gasthuisstraat 9, Bredevoort',
     }
   },
   computed: {
     user() {
       return this.$store.getters['ps/getUser']
+    },
+    userAddress() {
+      let formatted = 'Onbekende woonplaats'
+      const address = this.user.profile.address
+      if (address['locality'] && address['street']) {
+        formatted = address['houseNumber']
+          ? `${address['street']} ${address['houseNumber']},
+              ${address['locality']}`
+          : `${address['street']}, ${address['locality']}`
+      } else if (address['locality']) {
+        formatted = address['locality']
+      }
+      return formatted
     },
   },
   methods: {
