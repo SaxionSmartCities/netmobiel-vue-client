@@ -149,7 +149,6 @@ export default {
     },
   },
   mounted() {
-    this.$store.commit('ui/addAppClass', 'homepage')
     //TODO: How many cards do we want?
     this.$store.dispatch('cs/fetchRides', { offset: 0, maxResults: 2 })
   },

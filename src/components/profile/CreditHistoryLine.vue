@@ -21,7 +21,9 @@
 </template>
 <script>
 import moment from 'moment'
+
 export default {
+  name: 'CreditHistoryLine',
   props: {
     transaction: { type: Object, required: true },
   },
