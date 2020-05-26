@@ -61,6 +61,7 @@
 <script>
 import constants from '@/constants/update-messages.js'
 import hash from 'raw-loader!@/assets/current.hash'
+import ybug from './config/ybug'
 
 export default {
   name: 'App',
@@ -118,6 +119,8 @@ export default {
     },
   },
   mounted() {
+    const user = { name: 'netmobiel' }
+    ybug(user)
     // Set the fcm token (for push notifications) in the local storage
     // for so we can retrieve it later to update the profile.
     if (this.$route.query.fcm) {

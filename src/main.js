@@ -53,6 +53,6 @@ Vue.use(VueKeyCloak, {
   },
   onInitError: function() {
     // Does not work yet :(
-    console.log('init error... :(')
+    // console.log('init error... :(')
   },
 })
