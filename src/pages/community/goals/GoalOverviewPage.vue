@@ -60,13 +60,12 @@
         </v-slide-group>
       </v-col>
     </v-row> -->
-    <v-row mb-3 mt-3>
-      <v-col>
-        <h4 class="netmobiel">Top donateurs</h4>
-      </v-col>
-    </v-row>
     <v-row>
-      <donors-list :donors="getTopDonors"> </donors-list>
+      <v-col>
+        <h4 class="netmobiel my-3">Top donateurs</h4>
+        <v-divider />
+        <donors-list :donors="getTopDonors"> </donors-list>
+      </v-col>
     </v-row>
   </content-pane>
 </template>
