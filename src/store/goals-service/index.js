@@ -31,7 +31,7 @@ export default {
             anonymous: false,
           },
           {
-            name: 'Netmobiel gebruiker',
+            name: 'Piet Geheim',
             creditsDonated: 14,
             message: '',
             anonymous: true,
@@ -68,7 +68,7 @@ export default {
             anonymous: true,
           },
           {
-            name: 'Netmobiel gebruiker',
+            name: 'Piet Geheim',
             creditsDonated: 3,
             message: '',
             anonymous: true,
@@ -98,7 +98,7 @@ export default {
             anonymous: false,
           },
           {
-            name: 'Netmobiel gebruiker',
+            name: 'Piet Geheim',
             creditsDonated: 14,
             message: '',
             anonymous: true,
@@ -128,7 +128,7 @@ export default {
             anonymous: false,
           },
           {
-            name: 'Netmobiel gebruiker',
+            name: 'Piet Geheim',
             creditsDonated: 14,
             message: '',
             anonymous: true,
@@ -160,7 +160,7 @@ export default {
             anonymous: false,
           },
           {
-            name: 'Netmobiel gebruiker',
+            name: 'Piet Geheim',
             creditsDonated: 14,
             message: '',
             anonymous: true,
@@ -171,27 +171,27 @@ export default {
     topDonors: [
       {
         ranking: 1,
-        username: 'Henk van der Laan',
+        name: 'Henk van der Laan',
         creditsDonated: 180,
       },
       {
         ranking: 2,
-        username: 'Marc de vries',
+        name: 'Marc de vries',
         creditsDonated: 156,
       },
       {
         ranking: 3,
-        username: 'Netmobiel gebruiker',
+        name: 'Netmobiel gebruiker',
         creditsDonated: 121,
       },
       {
         ranking: 4,
-        username: 'Coby Hoekstra',
+        name: 'Coby Hoekstra',
         creditsDonated: 83,
       },
       {
         ranking: 5,
-        username: 'Tania',
+        name: 'Tania',
         creditsDonated: 44,
       },
     ],
