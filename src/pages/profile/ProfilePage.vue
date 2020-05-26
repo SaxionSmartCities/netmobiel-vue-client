@@ -88,12 +88,12 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-import roundUserImage from '@/components/common/RoundUserImage'
+import RoundUserImage from '@/components/common/RoundUserImage'
 
 export default {
   components: {
     ContentPane,
-    roundUserImage,
+    RoundUserImage,
   },
   data: function() {
     return {
