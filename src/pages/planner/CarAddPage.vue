@@ -18,7 +18,7 @@
           dense
           :hide-details="true"
           outlined
-          label="XX-XXX-XX"
+          placeholder="bv. XX-XXX-XX"
           class="search-license-plate"
           maxlength="8"
         />
