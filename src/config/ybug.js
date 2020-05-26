@@ -14,9 +14,9 @@ export default function init(user) {
   })
   Ybug.on('beforesend', function(report) {
     console.log('Before report is sent', report)
-    // setTimeout(() => {
-    //   Ybug.close()
-    // }, 100)
+    setTimeout(() => {
+      Ybug.close()
+    }, 100)
   })
   Ybug.on('cancel', function() {
     console.log('canceled')
