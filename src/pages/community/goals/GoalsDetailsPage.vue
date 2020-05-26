@@ -50,7 +50,7 @@
       <v-col>
         <goal-progress-bar
           name="Behaald"
-          :displayPercentage="true"
+          :display-percentage="true"
           :value-current="selectedGoal.creditsDonated"
           :value-total="selectedGoal.creditsGoal"
         >
@@ -93,7 +93,9 @@ export default {
   },
   computed: {
     selectedGoal() {
-      return this.$store.getters['gos/getGoals'].find(goal => goal.id == this.id)
+      return this.$store.getters['gos/getGoals'].find(
+        goal => goal.id == this.id
+      )
     },
   },
   created() {
