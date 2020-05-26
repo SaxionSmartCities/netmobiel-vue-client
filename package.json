@@ -9,7 +9,7 @@
     "lint-prod": "vue-cli-service lint --mode production"
   },
   "dependencies": {
-    "@dsb-norge/vue-keycloak-js": "^1.0.7",
+    "@dsb-norge/vue-keycloak-js": "^1.1.2",
     "@mapbox/polyline": "^1.1.0",
     "axios": "^0.18.1",
     "mapbox-gl": "^1.8.0",
@@ -24,6 +24,8 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.8.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.9.0",
     "@vue/cli-plugin-babel": "^4.0.0",
     "@vue/cli-plugin-eslint": "^4.0.0",
     "@vue/cli-service": "^4.0.0",

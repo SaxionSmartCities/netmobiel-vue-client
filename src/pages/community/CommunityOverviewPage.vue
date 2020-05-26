@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane :clearpadding="true">
     <v-row>
       <v-col>
         <community-button
@@ -26,7 +26,7 @@
           class="mx-auto"
           icon="fa-trophy"
           naam="Competenties"
-          disabled="true"
+          :disabled="true"
         ></community-button>
       </v-col>
       <v-col>
@@ -34,7 +34,7 @@
           class="mx-auto"
           icon="fa-gift"
           naam="Rewards"
-          disabled="true"
+          :disabled="true"
         ></community-button>
       </v-col>
     </v-row>
@@ -44,7 +44,7 @@
           class="mx-auto"
           icon="fa-bullseye"
           naam="doelen"
-          disabled="true"
+          forward="goalOverviewPage"
         ></community-button>
       </v-col>
     </v-row>
