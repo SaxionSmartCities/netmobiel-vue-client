@@ -34,7 +34,7 @@
         ></goal-card>
       </v-col>
     </v-row>
-    <v-row mb-3 mt-3>
+    <!-- <v-row mb-3 mt-3>
       <v-col>
         <h4 class="netmobiel">
           Eerder gedoneerd
@@ -59,7 +59,7 @@
           </v-slide-item>
         </v-slide-group>
       </v-col>
-    </v-row>
+    </v-row> -->
     <v-row mb-3 mt-3>
       <v-col>
         <h4 class="netmobiel">Top donateurs</h4>
