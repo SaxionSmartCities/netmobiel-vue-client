@@ -6,29 +6,29 @@
         <v-list-item :key="donor.id">
           <v-list-item-content>
             <v-row>
-              <v-col cols="2">
-                <v-list-item-avatar
-                  tilesize="100"
-                  color="grey"
-                ></v-list-item-avatar>
+              <v-col cols="3">
+                <round-user-image :image-size="60" :avatar-size="66">
+                </round-user-image>
               </v-col>
-              <v-col>
-                <v-row>
-                  <span class="subtitle-2 text-no-wrap pr-2">{{
-                    donor.username
-                  }}</span>
-                </v-row>
-                <v-row>
-                  <span class="overline"
-                    >{{ donor.currentValue }} credits gedoneerd</span
-                  >
+              <v-col class="px-0">
+                <v-row dense>
+                  <v-col>
+                    <span class="subtitle-2 text-no-wrap pr-2">{{
+                      donor.username
+                    }}</span>
+                    <br />
+                    <span class="overline"
+                      >{{ donor.currentValue }} credits gedoneerd
+                    </span>
+                  </v-col>
                 </v-row>
               </v-col>
-              <v-col>
-                <v-btn rounded color="button" dark>
+              <v-col cols="3" class="my-auto">
+                <!-- <v-btn large rounded block outlined color="primary" to="/howTo"> -->
+                <v-btn rounded block color="button" dark>
                   <v-icon>fa-user-plus</v-icon></v-btn
-                ></v-col
-              >
+                >
+              </v-col>
             </v-row>
           </v-list-item-content>
         </v-list-item>
@@ -38,8 +38,13 @@
 </template>
 
 <script>
+import RoundUserImage from '@/components/common/RoundUserImage'
+
 export default {
   name: 'DonorsList',
+  components: {
+    RoundUserImage,
+  },
   props: {
     donors: { type: Array, required: true },
   },
