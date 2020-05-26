@@ -23,7 +23,7 @@ export default new Vuex.Store({
     pn: notificationService,
     ps: profileService,
     rs: registrationService,
-    sg: goalsService,
+    gos: goalsService,
     ui: ui,
   },
 })

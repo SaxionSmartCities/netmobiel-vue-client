@@ -93,7 +93,7 @@ export default {
   },
   computed: {
     selectedGoal() {
-      return this.$store.getters['sg/getGoals'].find(goal => goal.id == this.id)
+      return this.$store.getters['gos/getGoals'].find(goal => goal.id == this.id)
     },
   },
   created() {
@@ -101,10 +101,10 @@ export default {
   },
   methods: {
     getGoals() {
-      return this.$store.getters['sg/getGoals']
+      return this.$store.getters['gos/getGoals']
     },
     getTopDonors() {
-      return this.$store.getters['sg/getTopDonorsList']
+      return this.$store.getters['gos/getTopDonorsList']
     },
     getCreditsRemaining() {
       this.selectedGoal.creditsGoal - this.selectedGoal.creditsDonated

@@ -82,8 +82,8 @@ export default {
   components: { DonorsList, ContentPane, GoalCard },
   computed: {
     ...mapGetters({
-      getSavedGoals: 'sg/getGoals',
-      getTopDonors: 'sg/getTopDonorsList',
+      getSavedGoals: 'gos/getGoals',
+      getTopDonors: 'gos/getTopDonorsList',
     }),
   },
   created: function() {
