@@ -71,20 +71,6 @@
   </content-pane>
 </template>
 
-<style>
-/**
-makes sure that cards are aligned on small devices, but still show arrows(prev&next) on desktop
- */
-@media (max-width: 767.98px) {
-  .v-slide-group__prev {
-    display: none !important;
-  }
-  .v-slide-group__next {
-    display: none !important;
-  }
-}
-</style>
-
 <script>
 import GoalCard from '@/components/community/goals/GoalCard'
 import ContentPane from '@/components/common/ContentPane'
@@ -106,4 +92,16 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+/**
+makes sure that cards are aligned on small devices, but still show arrows(prev&next) on desktop
+ */
+@media (max-width: 767.98px) {
+  .v-slide-group__prev {
+    display: none !important;
+  }
+  .v-slide-group__next {
+    display: none !important;
+  }
+}
+</style>
