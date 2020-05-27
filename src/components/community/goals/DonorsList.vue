@@ -14,7 +14,7 @@
                 <v-row dense>
                   <v-col>
                     <span class="subtitle-2 text-no-wrap pr-2">{{
-                      donor.name
+                      getScreenName(donor)
                     }}</span>
                     <br />
                     <span class="overline"
@@ -47,6 +47,16 @@ export default {
   },
   props: {
     donors: { type: Array, required: true },
+  },
+  methods: {
+    getScreenName(donor) {
+      //If donor wants to remain anonymous, set screen name to "Netmobiel Gebruiker".
+      if (donor.anonymous) {
+        return 'Netmobiel Gebruiker'
+      } else {
+        return donor.name
+      }
+    },
   },
 }
 </script>
