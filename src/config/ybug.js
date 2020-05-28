@@ -4,7 +4,7 @@ export default function init(user) {
   // https://ybug.io/docs/installation
 
   Ybug.setUser({
-    id: '123456',
+    id: 'dummy_id',
     username: user.name,
     // any other info you need to identify the user
   })
