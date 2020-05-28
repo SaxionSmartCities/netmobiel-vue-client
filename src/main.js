@@ -53,7 +53,5 @@ Vue.use(VueKeyCloak, {
   },
   onInitError: function() {
     // Does not work yet :(
-    // eslint-disable-next-line
-    console.log('init error... :(')
   },
 })
