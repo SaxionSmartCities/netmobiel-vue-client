@@ -183,7 +183,11 @@ export default {
           this.isUploadingFile = false
           const imageString = fileReader.result
           scaleImageDown(imageString, 20).then(resizedImage => {
-            this.$store.dispatch('ps/updateProfile', resizedImage)
+            const profile = { ...this.$store.getters['ps/getProfile'] }
+            this.$store.dispatch('ps/updateProfileImage', {
+              id: profile.id,
+              image: resizedImage,
+            })
           })
         })
         fileReader.readAsDataURL(event.target.files[0])

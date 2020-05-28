@@ -79,7 +79,7 @@ export default {
     context.dispatch('updateProfile', profile)
   },
   updateProfile: (context, profile) => {
-    const URL = BASE_URL + '/:profileId/image' + profile.id
+    const URL = BASE_URL + '/profiles/' + profile.id
     axios
       .put(URL, profile, {
         headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
@@ -91,6 +91,45 @@ export default {
             ...response.data.profiles[0],
           }
           context.commit('setProfile', profile)
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
+  updateProfileImage: (context, { id, image }) => {
+    const URL = BASE_URL + `/${id}/image`
+    axios
+      .put(
+        URL,
+        { image },
+        {
+          headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+        }
+      )
+      .then(response => {
+        if (response.status === 200) {
+          console.log('response from updating profile image', response)
+          context.commit('setProfileImage', response)
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
+  fetchProfileImage: (context, { id }) => {
+    const URL = BASE_URL + `/${id}/image`
+    axios
+      .get(URL, {
+        headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      })
+      .then(response => {
+        if (response.status === 200) {
+          //TODO: Add response path to the link
+          console.log('response from GET profile image', response)
+          context.commit('setProfileImage', response)
         }
       })
       .catch(error => {
