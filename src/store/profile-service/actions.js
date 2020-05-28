@@ -79,7 +79,7 @@ export default {
     context.dispatch('updateProfile', profile)
   },
   updateProfile: (context, profile) => {
-    const URL = BASE_URL + '/profiles/' + profile.id
+    const URL = BASE_URL + '/:profileId/image' + profile.id
     axios
       .put(URL, profile, {
         headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),

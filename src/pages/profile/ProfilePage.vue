@@ -9,25 +9,26 @@
               :avatar-size="100"
               :profile-image="profileImage"
             ></round-user-image>
-            <div class="d-flex flex-column align-center">
+            <img class="d-flex flex-column align-center" />
+            <div class="d-flex flex-row justify-center">
               <a
                 class="caption bewerk"
                 @click="showUploadFile = !showUploadFile"
               >
                 Bewerk
               </a>
-              <!--UPLOAD-->
-              <div v-if="showUploadFile" class="text-center">
-                <label for="file-input" class="custom-file-upload caption">
-                  Upload afbeelding
-                  <input id="file-input" type="file" @change="readFile" />
-                  <v-progress-circular
-                    v-if="isUploadingFile"
-                    indeterminate
-                    color="primary"
-                  ></v-progress-circular>
-                </label>
-              </div>
+            </div>
+            <!--UPLOAD-->
+            <div v-if="showUploadFile" class="text-center">
+              <label for="file-input" class="custom-file-upload caption">
+                Upload afbeelding
+                <input id="file-input" type="file" @change="readFile" />
+                <v-progress-circular
+                  v-if="isUploadingFile"
+                  indeterminate
+                  color="primary"
+                ></v-progress-circular>
+              </label>
             </div>
           </v-col>
           <v-col class="flex-column">
@@ -107,7 +108,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import roundUserImage from '@/components/common/RoundUserImage'
-import { getFileSize, getImageDimensions } from '../../utils/picture_scaling'
+import { scaleImageDown } from '../../utils/image_scaling'
 
 export default {
   components: {
@@ -180,14 +181,10 @@ export default {
         })
         fileReader.addEventListener('loadend', async () => {
           this.isUploadingFile = false
-          //TODO make seperate call to update profile picture
-          //TODO DOWNSCALE the image size when it's bigger than 500kb
           const imageString = fileReader.result
-          const val = await getImageDimensions(imageString)
-          console.log('Image size: ', val)
-
-          console.log('base64 string resize', getFileSize(imageString))
-          // this.$store.dispatch('ps/updateProfile', image)
+          scaleImageDown(imageString, 20).then(resizedImage => {
+            this.$store.dispatch('ps/updateProfile', resizedImage)
+          })
         })
         fileReader.readAsDataURL(event.target.files[0])
       }
