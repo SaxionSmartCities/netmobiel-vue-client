@@ -44,6 +44,7 @@ build site acceptance:
     - apk update && apk add git
     - hash=`git describe --always`
     - echo $hash > src/assets/current.hash
+    - echo "VUE_APP_YBUG_ID=$VUE_APP_YBUG_ID" >> .env
     - npm run build
   artifacts:
     expire_in: 1 week
@@ -76,6 +77,7 @@ build site production:
     - apk update && apk add git
     - hash=`git describe --always`
     - echo $hash > src/assets/current.hash
+    - echo "VUE_APP_YBUG_ID=$VUE_APP_YBUG_ID" >> .env
     - npm run build
   artifacts:
     expire_in: 1 week
