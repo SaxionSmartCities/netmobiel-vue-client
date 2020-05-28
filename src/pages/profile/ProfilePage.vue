@@ -107,6 +107,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import roundUserImage from '@/components/common/RoundUserImage'
+import { getFileSize, getImageDimensions } from '../../utils/picture_scaling'
 
 export default {
   components: {
@@ -177,16 +178,16 @@ export default {
         fileReader.addEventListener('load', () => {
           this.isUploadingFile = true
         })
-        fileReader.addEventListener('loadend', () => {
+        fileReader.addEventListener('loadend', async () => {
           this.isUploadingFile = false
           //TODO make seperate call to update profile picture
           //TODO DOWNSCALE the image size when it's bigger than 500kb
-          // fileReader.result = base64 encoded string
-          const image = fileReader.result
-          console.log('whole file (raw)', image)
+          const imageString = fileReader.result
+          const val = await getImageDimensions(imageString)
+          console.log('Image size: ', val)
+
+          console.log('base64 string resize', getFileSize(imageString))
           // this.$store.dispatch('ps/updateProfile', image)
-          // resizeImage(fileReader)
-          this.width
         })
         fileReader.readAsDataURL(event.target.files[0])
       }
