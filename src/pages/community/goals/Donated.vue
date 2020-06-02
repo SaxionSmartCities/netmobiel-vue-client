@@ -2,17 +2,26 @@
   <content-pane>
     <v-row class="donated-row">
       <v-col class="donated-col">
-        <h3>Bedankt voor het doneren to {{ name }}</h3>
-        <span>
-          Jouw credits zijn gedoneerd, dankjewel! {{ name }} is automatisch op
-          de hoogte gebracht
-        </span>
+        <div class="d-flex flex-row">
+          <div class="full-height align-self-center">
+            <h3>
+              Gedoneerd
+            </h3>
+          </div>
+          <v-img class="party-icon" :src="partyIcon"></v-img>
+        </div>
+        <div class="mt-6">
+          <span>
+            Jouw credits zijn gedoneerd, dankjewel! {{ name }} is automatisch op
+            de hoogte gebracht
+          </span>
+        </div>
 
-        <div>
-          <v-btn rounded block depressed color="button" class="mb-2">
+        <div class="mt-8">
+          <v-btn large rounded block depressed color="button" class="mb-2">
             Steun nog een doel
           </v-btn>
-          <v-btn rounded outlined block color="primary">
+          <v-btn large rounded outlined block color="primary">
             Bekijk alle donaties
           </v-btn>
         </div>
@@ -43,6 +52,10 @@ export default {
   height: 100%;
   .donated-col {
     padding-top: 10vh;
+    .party-icon {
+      margin-left: 20px;
+      max-width: 35px;
+    }
   }
 }
 </style>
