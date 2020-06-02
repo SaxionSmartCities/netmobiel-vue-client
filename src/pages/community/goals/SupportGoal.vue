@@ -100,6 +100,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.goal-jumbo-image {
+  border-radius: 10px;
+}
 .input-support-goal {
   max-width: 100px;
 }
