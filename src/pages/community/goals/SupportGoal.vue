@@ -55,7 +55,14 @@
         </v-switch>
       </v-col>
       <v-col>
-        <v-btn rounded color="button" depressed block @click="donate()">
+        <v-btn
+          rounded
+          color="button"
+          depressed
+          block
+          :disabled="donationAmount <= 0"
+          @click="donate()"
+        >
           Nu doneren
         </v-btn>
       </v-col>
