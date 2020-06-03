@@ -211,7 +211,7 @@ export default {
     generateSteps() {
       const { ride } = this
       const departure = moment(ride.departureTime),
-        arrival = moment(ride.estimatedArrivalTime)
+        arrival = moment(ride.arrivalTime)
       return [
         {
           mode: 'CAR',
