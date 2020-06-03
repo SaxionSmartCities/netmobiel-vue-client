@@ -41,7 +41,7 @@ export default {
   },
   fetchUser: async (context, { userId }) => {
     const URL = BASE_URL + `/rideshare/users/${userId}`
-    return await axios
+    return axios
       .get(URL, { headers: generateHeader(GRAVITEE_RIDESHARE_SERVICE_API_KEY) })
       .then(response => {
         return response.data
