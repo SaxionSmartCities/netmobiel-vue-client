@@ -24,6 +24,8 @@ export default {
             ...context.state.user.profile,
             ...response.data.profiles[0],
           }
+          const imgSrc = `${BASE_URL}${response.data.profiles[0].image}`
+          profile.image = imgSrc
           if (!!localStorage.fcm && localStorage.fcm !== profile.fcmToken) {
             profile.fcmToken = localStorage.fcm
             context.dispatch('updateProfile', profile)
@@ -75,7 +77,6 @@ export default {
   storeFcmToken: (context, payload) => {
     let profile = { ...context.state.user.profile }
     profile.fcmToken = payload.fcmToken
-    profile.firstName = 'Test'
     context.dispatch('updateProfile', profile)
   },
   updateProfile: (context, profile) => {
@@ -99,7 +100,7 @@ export default {
       })
   },
   updateProfileImage: (context, { id, image }) => {
-    const URL = BASE_URL + `/${id}/image`
+    const URL = `${BASE_URL}/profiles/${id}/image`
     axios
       .put(
         URL,
@@ -110,8 +111,8 @@ export default {
       )
       .then(response => {
         if (response.status === 200) {
-          console.log('response from updating profile image', response)
-          context.commit('setProfileImage', response)
+          const imgSrc = `${BASE_URL}${response.data.profiles[0].image}`
+          context.commit('setProfileImage', imgSrc)
         }
       })
       .catch(error => {
