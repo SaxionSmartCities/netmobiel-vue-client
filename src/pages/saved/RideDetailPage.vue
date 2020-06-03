@@ -192,7 +192,7 @@ export default {
         .format('dddd DD-MM-YYYY')
     },
     formatDuration() {
-      const seconds = this.ride.estimatedDrivingTime,
+      const seconds = this.ride.duration,
         minutes = Math.round(seconds / 60)
       return minutes < 60
         ? `${minutes} minuten`
