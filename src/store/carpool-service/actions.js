@@ -137,7 +137,14 @@ export default {
       })
   },
   submitRide: (context, payload) => {
-    const { ridePlanOptions, selectedTime, from, to, recurrence } = payload
+    const {
+      ridePlanOptions,
+      selectedTime,
+      isArrivalTime,
+      from,
+      to,
+      recurrence,
+    } = payload
     if (ridePlanOptions.selectedCarId < 0) {
       context.dispatch(
         'ui/queueNotification',
@@ -151,9 +158,6 @@ export default {
     }
     const request = {
       carRef: 'urn:nb:rs:car:' + ridePlanOptions.selectedCarId,
-      // only departure time possible?
-      // this conflicts with UI that supports departure or arrival time
-      departureTime: moment(selectedTime).toISOString(),
       recurrence,
       fromPlace: {
         label: `${from.title} ${from.vicinity}`,
@@ -169,6 +173,13 @@ export default {
       nrSeatsAvailable: ridePlanOptions.numPassengers,
       maxDetourSeconds: ridePlanOptions.maxMinutesDetour * 60,
     }
+    // Set arrival or departure time.
+    if (isArrivalTime) {
+      request.arrivalTime = moment(selectedTime).toISOString()
+    } else {
+      request.departureTime = moment(selectedTime).toISOString()
+    }
+
     const axiosConfig = {
       method: 'POST',
       url: BASE_URL + `/rideshare/rides`,
