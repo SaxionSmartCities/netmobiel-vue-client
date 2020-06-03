@@ -1,6 +1,5 @@
 import axios from 'axios'
 import config from '@/config/config'
-import moment from 'moment'
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_RIDESHARE_SERVICE_API_KEY =
@@ -137,14 +136,8 @@ export default {
       })
   },
   submitRide: (context, payload) => {
-    const {
-      ridePlanOptions,
-      selectedTime,
-      isArrivalTime,
-      from,
-      to,
-      recurrence,
-    } = payload
+    console.log(payload)
+    const { ridePlanOptions, timestamp, from, to, recurrence } = payload
     if (ridePlanOptions.selectedCarId < 0) {
       context.dispatch(
         'ui/queueNotification',
@@ -174,10 +167,11 @@ export default {
       maxDetourSeconds: ridePlanOptions.maxMinutesDetour * 60,
     }
     // Set arrival or departure time.
-    if (isArrivalTime) {
-      request.arrivalTime = moment(selectedTime).toISOString()
+    const formattedDate = timestamp.when.toISOString()
+    if (timestamp.arriving) {
+      request.arrivalTime = formattedDate
     } else {
-      request.departureTime = moment(selectedTime).toISOString()
+      request.departureTime = formattedDate
     }
 
     const axiosConfig = {
