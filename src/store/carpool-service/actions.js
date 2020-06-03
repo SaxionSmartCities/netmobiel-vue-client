@@ -25,7 +25,6 @@ export default {
         context.commit('setSearchResult', resp.data)
       })
       .catch(function(error) {
-        // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
         if (!!error.response && error.response.status == 404) {
@@ -61,9 +60,16 @@ export default {
         }
       })
       .catch(function(error) {
-        // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: `Onbekende fout bij ophalen van de autos.`,
+            timeout: 3000,
+          },
+          { root: true }
+        )
       })
   },
   submitCar: (context, payload) => {
@@ -78,7 +84,6 @@ export default {
         context.dispatch('fetchCars')
       })
       .catch(function(error) {
-        // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
         if (!!error.response && error.response.status == 409) {
@@ -106,9 +111,29 @@ export default {
         context.dispatch('fetchCars')
       })
       .catch(function(error) {
-        // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
+        if (!!error.response && error.response.status == 403) {
+          context.dispatch(
+            'ui/queueNotification',
+            {
+              message: `Niet toegestaan auto (${
+                payload.licensePlate
+              }) te verwijderen.`,
+              timeout: 0,
+            },
+            { root: true }
+          )
+        } else if (!!error.response && error.response.status == 404) {
+          context.dispatch(
+            'ui/queueNotification',
+            {
+              message: `Onbekende kenteken ${payload.licensePlate}.`,
+              timeout: 0,
+            },
+            { root: true }
+          )
+        }
       })
   },
   submitRide: (context, payload) => {
@@ -158,10 +183,8 @@ export default {
         context.dispatch('fetchRides', { offset: 0, maxResults: 10 })
       })
       .catch(function(error) {
-        // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
-
         context.dispatch(
           'ui/queueNotification',
           {
@@ -193,7 +216,6 @@ export default {
         context.commit('setPlannedRidesCount', resp.data.totalCount)
       })
       .catch(function(error) {
-        // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
         context.dispatch(
@@ -229,9 +251,16 @@ export default {
         }
       })
       .catch(function(error) {
-        // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het verwijderen van uw rit-aanbod.',
+            timeout: 0,
+          },
+          { root: true }
+        )
       })
   },
   fetchUser: (context, { userRef }) => {
