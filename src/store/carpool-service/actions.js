@@ -153,7 +153,7 @@ export default {
       carRef: 'urn:nb:rs:car:' + ridePlanOptions.selectedCarId,
       // only departure time possible?
       // this conflicts with UI that supports departure or arrival time
-      departureTime: moment(selectedTime).format('YYYY-MM-DDTHH:mm:ss'),
+      departureTime: moment(selectedTime).toISOString(),
       recurrence,
       fromPlace: {
         label: `${from.title} ${from.vicinity}`,
