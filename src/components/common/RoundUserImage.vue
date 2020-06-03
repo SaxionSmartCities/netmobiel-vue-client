@@ -1,6 +1,19 @@
 <template>
   <v-avatar :size="avatarSize">
-    <v-img :src="profileImage" :max-height="imageSize" :max-width="imageSize" />
+    <!-- HACK: Passing @/asset/.. as default value for profileImage will not
+    load image in v-img. Added work around with v-if else  -->
+    <v-img
+      v-if="profileImage"
+      :src="profileImage"
+      :max-height="imageSize"
+      :max-width="imageSize"
+    />
+    <v-img
+      v-else
+      src="@/assets/profile_img.png"
+      :max-height="imageSize"
+      :max-width="imageSize"
+    />
   </v-avatar>
 </template>
 
@@ -21,6 +34,7 @@ export default {
     profileImage: {
       type: String,
       required: true,
+      default: '',
     },
   },
 }
