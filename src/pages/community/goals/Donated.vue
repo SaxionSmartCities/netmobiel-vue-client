@@ -57,10 +57,10 @@ export default {
   },
   methods: {
     supportGoal() {
-      console.log('supporting goal...')
+      this.$router.push({ name: 'goalOverviewPage' })
     },
     showAllDonations() {
-      console.log('showing all donations...')
+      this.$router.push({ name: 'goalOverviewPage' })
     },
   },
 }
