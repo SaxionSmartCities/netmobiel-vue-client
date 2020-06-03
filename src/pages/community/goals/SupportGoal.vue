@@ -23,8 +23,8 @@
     </v-row>
     <v-row class="flex-column">
       <v-col>
-        <span class="text-color-primary subtitle-1 text-uppercase">
-          Hoeveel wil je doneren?
+        <span class="text-color-primary subtitle-1">
+          Hoeveel credits wil je doneren?
         </span>
         <v-text-field
           v-model="donationAmount"
@@ -38,8 +38,8 @@
         </v-text-field>
       </v-col>
       <v-col>
-        <span class="text-color-primary subtitle-1 text-uppercase">
-          Persoonlijk bericht? (optioneel)
+        <span class="text-color-primary subtitle-1">
+          Persoonlijk bericht (optioneel)
         </span>
         <v-textarea
           v-model="donationMessage"
@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import ContentPane from '../../../components/common/ContentPane'
+import ContentPane from '@/components/common/ContentPane'
 export default {
   name: 'SupportGoal',
   components: { ContentPane },
