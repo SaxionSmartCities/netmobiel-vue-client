@@ -50,17 +50,26 @@ export default {
   name: 'Donated',
   components: { ContentPane },
   props: {
-    name: { type: String, required: true },
+    id: { type: String, required: true },
   },
   data() {
     return {}
+  },
+  computed: {
+    name() {
+      return (
+        this.$store.getters['gos/getGoals'].find(
+          goal => goal.id === Number(this.id)
+        ).title || 'Onbekend'
+      )
+    },
   },
   methods: {
     supportGoal() {
       this.$router.push({ name: 'goalOverviewPage' })
     },
     showAllDonations() {
-      this.$router.push({ name: 'goalOverviewPage' })
+      this.$router.push({ path: `/goalDetails/${this.id}` })
     },
   },
 }

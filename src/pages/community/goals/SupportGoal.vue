@@ -99,7 +99,7 @@ export default {
     donate() {
       this.$router.push({
         name: 'donated',
-        params: { name: this.selectedGoal.title },
+        params: { id: this.id },
       })
     },
   },
