@@ -120,24 +120,6 @@ export default {
         console.log(error)
       })
   },
-  fetchProfileImage: (context, { id }) => {
-    const URL = BASE_URL + `/${id}/image`
-    axios
-      .get(URL, {
-        headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
-      })
-      .then(response => {
-        if (response.status === 200) {
-          //TODO: Add response path to the link
-          console.log('response from GET profile image', response)
-          context.commit('setProfileImage', response)
-        }
-      })
-      .catch(error => {
-        // eslint-disable-next-line
-        console.log(error)
-      })
-  },
   fetchCreditAmount: context => {
     //TODO: Add backend call
     let amount = 89
