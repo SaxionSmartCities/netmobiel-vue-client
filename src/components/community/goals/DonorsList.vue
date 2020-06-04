@@ -24,15 +24,9 @@
                 </v-row>
                 <v-row dense>
                   <v-col>
-                    <span class="text-no-wrap pr-2">{{ donor.message }}</span>
+                    <span class="text pr-2">{{ donor.message }}</span>
                   </v-col>
                 </v-row>
-              </v-col>
-              <v-col cols="3" class="my-auto">
-                <!--
-                <v-btn rounded block color="button" dark>
-                  <v-icon>fa-user-plus</v-icon></v-btn
-                > -->
               </v-col>
             </v-row>
           </v-list-item-content>
