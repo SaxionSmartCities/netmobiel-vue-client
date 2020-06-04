@@ -16,8 +16,8 @@
       </tab-bar>
     </template>
     <v-row v-if="selectedTab === 0 || userRole === 'passenger'">
-      <v-col>
-        <span>{{ myShoutOuts }}</span>
+      <v-col v-for="so in myShoutOuts" :key="so">
+        <shout-out :shoutout="so" />
       </v-col>
     </v-row>
     <template v-if="selectedTab === 1 || userRole === 'driver'">
@@ -49,10 +49,11 @@ import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane'
 import GroupedShoutOuts from '@/components/community/GroupedShoutOuts'
 import TabBar from '../../../components/common/TabBar'
+import ShoutOut from '../../../components/community/ShoutOut'
 
 export default {
   name: 'ShoutOutOverview',
-  components: { TabBar, GroupedShoutOuts, ContentPane },
+  components: { ShoutOut, TabBar, GroupedShoutOuts, ContentPane },
   data() {
     return {
       selectedTab: 0,
@@ -73,6 +74,7 @@ export default {
       return groupedShoutOuts
     },
     myShoutOuts() {
+      console.log(this.$store.getters['is/getMyShoutOuts'])
       return this.$store.getters['is/getMyShoutOuts']
     },
     showTabs() {
@@ -92,8 +94,7 @@ export default {
       longitude: 5.28248,
     })
     this.$store.dispatch('is/fetchMyShoutOuts', {
-      latitude: 52.2224,
-      longitude: 5.28248,
+      offset: 0,
     })
   },
   methods: {

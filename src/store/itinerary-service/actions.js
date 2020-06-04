@@ -196,19 +196,13 @@ export default {
         console.log(error)
       })
   },
-  fetchMyShoutOuts: (
-    context,
-    { latitude: lat, longitude: lon, offset: offset }
-  ) => {
+  fetchMyShoutOuts: (context, { offset: offset }) => {
     const params = {
-      location: `${lat},${lon}`,
-      maxResults: 10,
-      depArrRadius: 1000000,
-      mineOnly: true,
-      offset: offset || 0,
+      offset,
+      state: 'PLANNING',
     }
     axios
-      .get(BASE_URL + '/planner/shout-outs', {
+      .get(BASE_URL + '/planner/trips', {
         headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
         params: params,
       })
