@@ -16,8 +16,12 @@
       </tab-bar>
     </template>
     <v-row v-if="selectedTab === 0 || userRole === 'passenger'">
-      <v-col v-for="so in myShoutOuts" :key="so">
-        <shout-out :shoutout="so" />
+      <v-col>
+        <grouped-shout-outs
+          label="A"
+          :shoutouts="myShoutOuts"
+          @shoutoutSelected="onShoutOutSelected"
+        />
       </v-col>
     </v-row>
     <template v-if="selectedTab === 1 || userRole === 'driver'">
@@ -49,15 +53,15 @@ import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane'
 import GroupedShoutOuts from '@/components/community/GroupedShoutOuts'
 import TabBar from '../../../components/common/TabBar'
-import ShoutOut from '../../../components/community/ShoutOut'
 
 export default {
   name: 'ShoutOutOverview',
-  components: { ShoutOut, TabBar, GroupedShoutOuts, ContentPane },
+  components: { TabBar, GroupedShoutOuts, ContentPane },
   data() {
     return {
       selectedTab: 0,
       baseLocation: 'Home',
+      myShoutOuts: [],
     }
   },
   computed: {
@@ -73,8 +77,7 @@ export default {
       })
       return groupedShoutOuts
     },
-    myShoutOuts() {
-      console.log(this.$store.getters['is/getMyShoutOuts'])
+    _myShoutOuts() {
       return this.$store.getters['is/getMyShoutOuts']
     },
     showTabs() {
@@ -87,6 +90,11 @@ export default {
   },
   created() {
     this.$store.commit('ui/showBackButton')
+    const profile = this.$store.getters['ps/getProfile']
+    this._myShoutOuts.forEach(shoutout => {
+      this.myShoutOuts.push({ ...shoutout, traveller: profile })
+    })
+    this.$forceUpdate()
   },
   mounted() {
     this.$store.dispatch('is/fetchShoutOuts', {
