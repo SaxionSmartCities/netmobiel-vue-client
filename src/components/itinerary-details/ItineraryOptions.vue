@@ -1,33 +1,34 @@
 <template>
   <v-row>
-    <v-col>
+    <v-col class="py-0">
       <v-divider></v-divider>
       <v-row @click="editTrip">
-        <v-col cols="2">
+        <v-col cols="1">
           <v-icon>fa-pencil-alt</v-icon>
         </v-col>
-        <v-col>
+        <v-col class="pl-5">
           Wijzig deze reis
         </v-col>
       </v-row>
       <v-divider></v-divider>
       <v-row @click="replanSameRoute">
-        <v-col cols="2">
+        <v-col cols="1">
           <v-icon>fa-redo</v-icon>
         </v-col>
-        <v-col>
+        <v-col class="pl-5">
           Plan deze reis opnieuw
         </v-col>
       </v-row>
       <v-divider></v-divider>
       <v-row @click="openConfirmationDialog">
-        <v-col cols="2">
+        <v-col cols="1">
           <v-icon>fa-times-circle</v-icon>
         </v-col>
-        <v-col>
+        <v-col class="pl-5">
           Annuleer deze reis
         </v-col>
       </v-row>
+      <v-divider></v-divider>
       <v-dialog v-model="dialog" persistent>
         <template v-slot:activator="{ on }"> </template>
         <v-card>
