@@ -28,6 +28,12 @@
                   </v-col>
                 </v-row>
               </v-col>
+              <v-col cols="3" class="my-auto">
+                <!--
+                <v-btn rounded block color="button" dark>
+                  <v-icon>fa-user-plus</v-icon></v-btn
+                > -->
+              </v-col>
             </v-row>
           </v-list-item-content>
         </v-list-item>
