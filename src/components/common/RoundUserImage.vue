@@ -1,7 +1,16 @@
 <template>
   <v-avatar :size="avatarSize">
+    <!-- HACK: Passing @/asset/.. as default value for profileImage will not
+    load image in v-img. Added work around with v-if else  -->
     <v-img
-      :src="getUserData().image"
+      v-if="profileImage"
+      :src="profileImage"
+      :max-height="imageSize"
+      :max-width="imageSize"
+    />
+    <v-img
+      v-else
+      src="@/assets/profile_img.png"
       :max-height="imageSize"
       :max-width="imageSize"
     />
@@ -22,10 +31,10 @@ export default {
       default: 78,
       required: false,
     },
-  },
-  methods: {
-    getUserData() {
-      return this.$store.getters['ps/getUser']
+    profileImage: {
+      type: String,
+      required: true,
+      default: '',
     },
   },
 }

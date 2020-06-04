@@ -61,7 +61,15 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-btn large rounded block mb-4 depressed color="button">
+        <v-btn
+          large
+          rounded
+          block
+          mb-4
+          depressed
+          color="button"
+          @click="$router.push({ name: 'supportGoal' })"
+        >
           Steun dit doel
         </v-btn>
       </v-col>
