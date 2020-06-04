@@ -34,11 +34,15 @@ import RidePlanOptionsPage from './pages/planner/RidePlanOptionsPage.vue'
 import RidePlanSubmitted from './pages/planner/RidePlanSubmitted.vue'
 import TripPlanSubmitted from './pages/planner/TripPlanSubmitted.vue'
 import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
+import GoalOverviewPage from './pages/community/goals/GoalOverviewPage'
+import GoalsDetailsPage from './pages/community/goals/GoalsDetailsPage'
 import TripCancelledPage from './pages/saved/TripCancelledPage'
 import TripDetailPage from './pages/saved/TripDetailPage'
 import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
 import ShoutOutDetailPage from '@/pages/community/shoutout/ShoutOutDetailPage'
 import Account from '@/pages/profile/Account'
+import SupportGoal from './pages/community/goals/SupportGoal'
+import Donated from './pages/community/goals/Donated'
 
 const router = new Router({
   mode: 'history',
@@ -74,6 +78,29 @@ const router = new Router({
       path: '/plan',
       component: RidePlanPage,
       name: 'planRide',
+    },
+    {
+      path: '/goalOverviewPage',
+      component: GoalOverviewPage,
+      name: 'goalOverviewPage',
+    },
+    {
+      path: '/goalDetails/:id',
+      component: GoalsDetailsPage,
+      name: 'goalDetailsPage',
+      props: true,
+    },
+    {
+      path: '/supportGoal/:id',
+      component: SupportGoal,
+      name: 'supportGoal',
+      props: true,
+    },
+    {
+      path: '/donated/:name',
+      component: Donated,
+      name: 'donated',
+      props: true,
     },
     {
       path: '/planOptions',
