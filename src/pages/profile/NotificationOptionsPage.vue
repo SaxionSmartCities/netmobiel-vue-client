@@ -6,19 +6,26 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="pa-0 ">
+      <v-col class="pa-0">
         <h2
           class="mt-4 text-uppercase caption font-weight-bold text-color-primary"
         >
           Gebruik netmobiel als
         </h2>
-        <single-select :options="profileOptions"></single-select>
+        <single-select
+          class="mt-1"
+          v-if="selectedMode"
+          :active-option="selectedMode"
+          :options="profileOptions"
+          :init-value="selectedMode"
+          @change="onModeChange"
+        ></single-select>
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="pa-0 ">
+      <v-col class="pa-0 mt-4">
         <div
-          v-for="section in Object.keys(notificationSettings)"
+          v-for="section in Object.keys(notificationSettings[selectedMode])"
           :key="section"
         >
           <span
@@ -27,7 +34,11 @@
             {{ section }}
           </span>
           <v-divider></v-divider>
-          <template v-for="(option, index) in notificationSettings[section]">
+          <template
+            v-for="(option, index) in notificationSettings[selectedMode][
+              section
+            ]"
+          >
             <v-row :key="option.title" justify="space-between">
               <v-col class="d-flex align-center">
                 <span class="body-2">{{ option.title }}</span>
@@ -42,7 +53,9 @@
               </v-col>
             </v-row>
             <v-divider
-              v-if="index !== notificationSettings[section].length - 1"
+              v-if="
+                index !== notificationSettings[selectedMode][section].length - 1
+              "
               :key="index"
             ></v-divider>
           </template>
@@ -56,6 +69,7 @@
 import ContentPane from '../../components/common/ContentPane'
 import notification_settings from '../../config/notification_settings'
 import SingleSelect from '../../components/profile/SingleSelect'
+import { throttle } from 'lodash'
 
 export default {
   name: 'NotificationOptions',
@@ -64,10 +78,11 @@ export default {
     return {
       title: 'Instellingen',
       notificationSettings: notification_settings,
+      selectedMode: null,
       profileOptions: [
-        { title: 'Reiziger', value: 'traveller' },
+        { title: 'Reiziger', value: 'passenger' },
+        { title: 'Reiziger + Chauffeur', value: 'both' },
         { title: 'Chauffeur', value: 'driver' },
-        { title: 'Reiziger+Chauffeur', value: 'both' },
       ],
     }
   },
@@ -78,35 +93,25 @@ export default {
     tripOptions() {
       return this.$store.getters['ps/getUser'].tripOptions
     },
-    isDriver() {
-      return this.$store.getters['ps/getUser'].tripOptions[0].value
-    },
-    reviewOptions() {
-      return this.$store.getters['ps/getUser'].reviews
+    userRole() {
+      return this.$store.getters['ps/getProfile'].userRole
     },
   },
   created: function() {
     this.$store.commit('ui/showBackButton')
+    if (!this.userRole) {
+      this.selectedMode = 'both'
+    } else {
+      this.selectedMode = this.userRole
+    }
   },
   methods: {
-    setNotificationValue(key, state) {
-      this.$store.commit('ps/setNotificationOptionsValue', {
-        key: key,
-        value: state,
-      })
-    },
-    setTripValue(key, state) {
-      this.$store.commit('ps/setTripOptionsValue', {
-        key: key,
-        value: state,
-      })
-    },
-    setReviewValue(key, state) {
-      this.$store.commit('ps/setReviewOptionsValue', {
-        key: key,
-        value: state,
-      })
-    },
+    onModeChange: throttle(function(option) {
+      this.selectedMode = option.value
+      let profile = { ...this.$store.getters['ps/getProfile'] }
+      profile.userRole = option.value
+      this.$store.dispatch('ps/updateProfile', profile)
+    }),
   },
 }
 </script>

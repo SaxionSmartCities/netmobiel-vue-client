@@ -1,16 +1,16 @@
 // Global constants should be defined here
 
 // Font url + font weights
-@import url("https://fonts.googleapis.com/css?family=Montserrat:300,500,600");
-@import url("https://fonts.googleapis.com/css?family=Lato:300,400,700");
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,500,600');
+@import url('https://fonts.googleapis.com/css?family=Lato:300,400,700');
 
 $font-bold: 700;
 $font-medium: 400;
 $font-light: 300;
 $font-size: 1.2em;
-$font-family: "Lato", sans-serif;
+$font-family: 'Lato', sans-serif;
 
-$font-family-button: "Montserrat", sans-serif;
+$font-family-button: 'Montserrat', sans-serif;
 $font-weight-button: 600;
 
 $h1-font-size: 1.5em;
@@ -18,23 +18,22 @@ $h2-font-size: 1.3em;
 $h3-font-size: 1.1em;
 
 // Color definitions
-$color-white: #FFFFFF;
-$color-green: #2E8997;
-$color-orange: #FF8500;
-$color-alertRed: #D0021B;
+$color-white: #ffffff;
+$color-green: #2e8997;
+$color-orange: #ff8500;
+$color-alertRed: #d0021b;
 
-$color-white-grey: #E9E9E9; // Dividers, secondary lines, footer border
-$color-light-grey: #CCCCCC; // Card outlines, card trip line, input outlines
-$color-mid-grey: #9B9B9B; //  Footer icons, card chevron-icon, body sub text
-$color-dark-grey: #4A4A4A; // Headings, body text
-
+$color-white-grey: #e9e9e9; // Dividers, secondary lines, footer border
+$color-light-grey: #cccccc; // Card outlines, card trip line, input outlines
+$color-mid-grey: #9b9b9b; //  Footer icons, card chevron-icon, body sub text
+$color-dark-grey: #4a4a4a; // Headings, body text
 
 $color-primary: $color-green;
-$color-primary-light: lighten( $color-green, 20% );
-$color-primary-dark: darken( $color-green, 20% );
+$color-primary-light: lighten($color-green, 20%);
+$color-primary-dark: darken($color-green, 20%);
 $color-secondary: $color-orange;
-$color-secondary-light: lighten( $color-secondary, 20%);
-$color-secondary-dark: darken( $color-secondary, 20%);
+$color-secondary-light: lighten($color-secondary, 20%);
+$color-secondary-dark: darken($color-secondary, 20%);
 $color-text-gray: lighten(gray, 5%);
 
 $border-radius: 6px;
@@ -61,4 +60,7 @@ $map-width: 100vw;
 $map-height: 200px;
 
 $single-select-background-color: lighten(lightgray, 12%);
-$single-border-radius: 9px;
+$single-select-border-radius: 9px;
+$single-select-text-color: lighten(rgb(0, 0, 0), 50%);
+$single-select-box-shadow: 0 1px 1px 0 rgba(74, 74, 74, 0.2),
+  0 2px 6px 0 rgba(74, 74, 74, 0.2);
