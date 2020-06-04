@@ -18,7 +18,7 @@
     <v-row v-if="selectedTab === 0 || userRole === 'passenger'">
       <v-col>
         <grouped-shout-outs
-          label="A"
+          label="Mijn shoutouts"
           :shoutouts="myShoutOuts"
           @shoutoutSelected="onShoutOutSelected"
         />
@@ -61,7 +61,6 @@ export default {
     return {
       selectedTab: 0,
       baseLocation: 'Home',
-      myShoutOuts: [],
     }
   },
   computed: {
@@ -77,8 +76,13 @@ export default {
       })
       return groupedShoutOuts
     },
-    _myShoutOuts() {
-      return this.$store.getters['is/getMyShoutOuts']
+    myShoutOuts() {
+      const profile = this.$store.getters['ps/getProfile']
+      const listMyShoutOuts = this.$store.getters['is/getMyShoutOuts']
+      return listMyShoutOuts.map(shoutout => ({
+        ...shoutout,
+        traveller: profile,
+      }))
     },
     showTabs() {
       const role = this.$store.getters['ps/getProfile'].userRole
@@ -90,11 +94,6 @@ export default {
   },
   created() {
     this.$store.commit('ui/showBackButton')
-    const profile = this.$store.getters['ps/getProfile']
-    this._myShoutOuts.forEach(shoutout => {
-      this.myShoutOuts.push({ ...shoutout, traveller: profile })
-    })
-    this.$forceUpdate()
   },
   mounted() {
     this.$store.dispatch('is/fetchShoutOuts', {
