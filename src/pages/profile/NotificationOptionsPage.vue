@@ -1,96 +1,74 @@
 <template>
-  <v-container>
-    <v-layout column>
-      <v-flex mb-3>
-        <h1>{{ title }}</h1>
-      </v-flex>
-      <v-flex mb-2>
-        <v-divider />
-      </v-flex>
-    </v-layout>
-    <v-layout pt-3>
-      <v-flex>
-        <h3 class="text-primary-uppercase">Reizen</h3>
-      </v-flex>
-    </v-layout>
-    <v-layout column>
-      <v-flex v-for="option in tripOptions" :key="option.name">
-        <v-divider></v-divider>
-        <v-layout align-center mr-3>
-          <v-flex>
-            <p class="body-1 mb-0">{{ option.name }}</p>
-          </v-flex>
-          <v-flex xs1>
-            <v-switch
-              :input-value="option.value"
-              color="#2E8997"
-              @change="setTripValue(option.name, $event)"
-            ></v-switch>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
-
-    <v-layout v-if="isDriver" pt-3>
-      <v-flex>
-        <p class="text-primary-uppercase">Auto's</p>
-        <v-divider></v-divider>
-      </v-flex>
-    </v-layout>
-    <v-layout pt-3>
-      <v-flex>
-        <h3 class="text-primary-uppercase">Notificaties</h3>
-      </v-flex>
-    </v-layout>
-    <v-layout column>
-      <v-flex v-for="option in notificationOptions" :key="option.name">
-        <v-divider></v-divider>
-        <v-layout align-center mr-3>
-          <v-flex>
-            <p class="body-1 mb-0">{{ option.name }}</p>
-          </v-flex>
-          <v-flex xs1>
-            <v-switch
-              :input-value="option.value"
-              color="#2E8997"
-              @change="setNotificationValue(option.name, $event)"
-            ></v-switch>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
-
-    <v-layout pt-3>
-      <v-flex>
-        <h2 class="text-primary-uppercase">Reviews</h2>
-      </v-flex>
-    </v-layout>
-    <v-layout column>
-      <v-flex v-for="option in reviewOptions" :key="option.name">
-        <v-divider></v-divider>
-        <v-layout align-center mr-3>
-          <v-flex>
-            <p class="body-1 mb-0">{{ option.name }}</p>
-          </v-flex>
-          <v-flex xs1>
-            <v-switch
-              :input-value="option.value"
-              color="#2E8997"
-              @change="setReviewValue(option.name, $event)"
-            ></v-switch>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
-  </v-container>
+  <content-pane>
+    <v-row>
+      <v-col class="pa-0 ">
+        <h1 class="headline">Instellingen</h1>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="pa-0 ">
+        <h2
+          class="mt-4 text-uppercase caption font-weight-bold text-color-primary"
+        >
+          Gebruik netmobiel als
+        </h2>
+        <single-select :options="profileOptions"></single-select>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="pa-0 ">
+        <div
+          v-for="section in Object.keys(notificationSettings)"
+          :key="section"
+        >
+          <span
+            class="text-uppercase caption font-weight-bold text-color-primary"
+          >
+            {{ section }}
+          </span>
+          <v-divider></v-divider>
+          <template v-for="(option, index) in notificationSettings[section]">
+            <v-row :key="option.title" justify="space-between">
+              <v-col class="d-flex align-center">
+                <span class="body-2">{{ option.title }}</span>
+              </v-col>
+              <v-col class="shrink d-flex align-center">
+                <v-switch
+                  class="switch-overwrite"
+                  hide-details
+                  inset
+                  :value="false"
+                ></v-switch>
+              </v-col>
+            </v-row>
+            <v-divider
+              v-if="index !== notificationSettings[section].length - 1"
+              :key="index"
+            ></v-divider>
+          </template>
+        </div>
+      </v-col>
+    </v-row>
+  </content-pane>
 </template>
 
 <script>
+import ContentPane from '../../components/common/ContentPane'
+import notification_settings from '../../config/notification_settings'
+import SingleSelect from '../../components/profile/SingleSelect'
+
 export default {
   name: 'NotificationOptions',
+  components: { SingleSelect, ContentPane },
   data() {
     return {
       title: 'Instellingen',
+      notificationSettings: notification_settings,
+      profileOptions: [
+        { title: 'Reiziger', value: 'traveller' },
+        { title: 'Chauffeur', value: 'driver' },
+        { title: 'Reiziger+Chauffeur', value: 'both' },
+      ],
     }
   },
   computed: {
@@ -132,7 +110,12 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
+.switch-overwrite {
+  &.v-input--selection-controls {
+    margin-top: 0px;
+  }
+}
 .v-input__control {
   height: 32px !important;
 }
