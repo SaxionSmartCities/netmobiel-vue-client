@@ -13,8 +13,8 @@
           Gebruik netmobiel als
         </h2>
         <single-select
-          class="mt-1"
           v-if="selectedMode"
+          class="mt-1"
           :active-option="selectedMode"
           :options="profileOptions"
           :init-value="selectedMode"
@@ -97,7 +97,7 @@ export default {
       return this.$store.getters['ps/getProfile'].userRole
     },
   },
-  created: function() {
+  created() {
     this.$store.commit('ui/showBackButton')
     if (!this.userRole) {
       this.selectedMode = 'both'

@@ -2,7 +2,7 @@ const driver = {
   notifications: [
     { title: 'Bevestiging nieuwe reis', value: false },
     { title: 'Wijziging bewaarde reis', value: false },
-    { title: ' Herinnering voor aanvang reis', value: false },
+    { title: 'Herinnering voor aanvang reis', value: false },
     { title: 'Nieuw persoonlijk bericht', value: false },
     { title: 'Oproepen uit de community', value: false },
   ],
@@ -15,7 +15,7 @@ const passenger = {
   notifications: [
     { title: 'Bevestiging nieuwe reis', value: false },
     { title: 'Wijziging bewaarde reis', value: false },
-    { title: ' Herinnering voor aanvang reis', value: false },
+    { title: 'Herinnering voor aanvang reis', value: false },
     { title: 'Nieuw persoonlijk bericht', value: false },
     { title: 'Oproepen uit de community', value: false },
   ],
