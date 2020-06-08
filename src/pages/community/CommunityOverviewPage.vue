@@ -24,21 +24,11 @@
       <v-col>
         <community-button
           class="mx-auto"
-          icon="fa-trophy"
-          naam="Competenties"
-          :disabled="true"
-        ></community-button>
-      </v-col>
-      <v-col>
-        <community-button
-          class="mx-auto"
           icon="fa-gift"
           naam="Rewards"
           :disabled="true"
         ></community-button>
       </v-col>
-    </v-row>
-    <v-row>
       <v-col>
         <community-button
           class="mx-auto"
