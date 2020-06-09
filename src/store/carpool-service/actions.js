@@ -239,10 +239,10 @@ export default {
       .get(URL, {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       })
-      .then(function(resp) {
+      .then(resp => {
         context.commit('setSelectedRide', resp.data)
       })
-      .catch(function(error) {
+      .catch(error => {
         // eslint-disable-next-line
         console.log(error)
         context.dispatch(
@@ -298,9 +298,6 @@ export default {
       })
       .then(function(resp) {
         return resp.data
-        // if (resp.status == 200) {
-        //   context.commit('setAvailableCars', resp.data)
-        // }
       })
       .catch(function(error) {
         // TODO: Proper error handling.
