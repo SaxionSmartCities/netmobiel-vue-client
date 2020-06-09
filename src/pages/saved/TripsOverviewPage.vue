@@ -129,7 +129,6 @@ export default {
     }),
     showTabs() {
       const role = this.$store.getters['ps/getProfile'].userRole
-      console.log(!role || role === 'both')
       return !role || role === 'both'
     },
     isPassenger() {
