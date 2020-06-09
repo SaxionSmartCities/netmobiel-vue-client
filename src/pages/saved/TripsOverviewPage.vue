@@ -28,8 +28,8 @@
     <v-row v-if="selectedTab === 0">
       <v-col>
         <v-radio-group v-model="tripsSearchTime" class="mt-1" row>
-          <v-radio label="Afgelopen" value="Past"></v-radio>
-          <v-radio label="Toekomstige" value="Future"></v-radio>
+          <v-radio label="Geplande reizen" value="Future"></v-radio>
+          <v-radio label="Afgelopen reizen" value="Past"></v-radio>
         </v-radio-group>
       </v-col>
     </v-row>
@@ -117,7 +117,7 @@ export default {
       bottom: false,
       maxResults: constants.fetchTripsMaxResults,
       maxResultsPastTrips: constants.fetchTripsMaxResults,
-      tripsSearchTime: 'Past',
+      tripsSearchTime: 'Future',
     }
   },
   computed: {
