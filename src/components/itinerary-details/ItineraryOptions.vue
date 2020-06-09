@@ -1,8 +1,8 @@
 <template>
   <v-row>
     <v-col class="py-0">
-      <v-divider></v-divider>
-      <v-row @click="editTrip">
+      <v-divider v-if="!isPastTrip"></v-divider>
+      <v-row v-if="!isPastTrip" @click="editTrip">
         <v-col cols="1">
           <v-icon>fa-pencil-alt</v-icon>
         </v-col>
@@ -20,13 +20,17 @@
         </v-col>
       </v-row>
       <v-divider></v-divider>
-      <v-row @click="openConfirmationDialog">
+      <v-row v-if="isPastTrip" @click="$emit('tripReview', selectedTrip)">
+        <v-col cols="1">
+          <v-icon>fa-check-circle</v-icon>
+        </v-col>
+        <v-col class="pl-5">Bevestig deze reis</v-col>
+      </v-row>
+      <v-row v-else @click="openConfirmationDialog">
         <v-col cols="1">
           <v-icon>fa-times-circle</v-icon>
         </v-col>
-        <v-col class="pl-5">
-          Annuleer deze reis
-        </v-col>
+        <v-col class="pl-5">Annuleer deze reis</v-col>
       </v-row>
       <v-divider></v-divider>
       <v-dialog v-model="dialog" persistent>
@@ -79,6 +83,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   name: 'ItineraryOptions',
   components: {},
@@ -87,6 +93,11 @@ export default {
   },
   data() {
     return { dialog: false }
+  },
+  computed: {
+    isPastTrip() {
+      return moment(this.selectedTrip.arrivalTime).isBefore(moment())
+    },
   },
   methods: {
     editTrip() {
