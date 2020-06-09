@@ -1,7 +1,6 @@
 import axios from 'axios'
 import config from '@/config/config'
 import moment from 'moment'
-import constants from "../../constants/constants";
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_RIDESHARE_SERVICE_API_KEY =
@@ -174,27 +173,29 @@ export default {
       })
   },
   fetchRide: (context, payload) => {
-    const tripId = payload.id
+    const rideId = payload.id
     const URL = `${BASE_URL}/rideshare/rides/${rideId}`
     axios
-        .get(URL, { headers: generateHeader(GRAVITEE_RIDESHARE_SERVICE_API_KEY) })
-        .then(response => {
-          if (response.status == 200) {
-            context.commit('setSelectedRide', response.data)
-          }
-        })
-        .catch(error => {
-          // eslint-disable-next-line
+      .get(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(response => {
+        if (response.status == 200) {
+          context.commit('setSelectedRide', response.data)
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
           console.log(error)
-          context.dispatch(
-              'ui/queueNotification',
-              {
-                message: 'Fout bij het ophalen van de rit.',
-                timeout: 0,
-              },
-              { root: true }
-          )
-        })
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het ophalen van de rit.',
+            timeout: 0,
+          },
+          { root: true }
+        )
+      })
   },
   fetchRides: (context, payload) => {
     const offset = payload.offset

@@ -183,9 +183,15 @@ export default {
     },
   },
   created: function() {
+    this.$store.dispatch('cs/fetchRide', {
+      id: this.id,
+    })
     this.$store.commit('ui/showBackButton')
   },
   methods: {
+    selectedRide() {
+      return this.$store.getters['cs/getSelectedRide']
+    },
     formatDate() {
       return moment(this.ride.departureTime)
         .locale('nl')
