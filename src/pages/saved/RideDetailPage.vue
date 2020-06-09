@@ -68,7 +68,7 @@
     >
       <itinerary-leg :leg="leg" />
     </v-row>
-    <v-row v-if="ride.bookings.length > 0">
+    <v-row v-if="ride">
       <v-col class="mx-1">
         <v-btn
           large
@@ -100,7 +100,7 @@
               Weet u dit zeker?
             </v-card-title>
 
-            <v-card-text v-if="ride.bookings.length > 0">
+            <v-card-text v-if="ride">
               <p>
                 Op dit moment heeft uw reis
                 {{ ride.bookings.length }} boekingen, wilt u uw passagier(s) een
@@ -161,7 +161,9 @@ export default {
   data() {
     return {
       // for now, assume the ride is always available (may change when deeplinking from a notification)
-      ride: this.$store.getters['cs/getSelectedRide'],
+      ride: this.$store.getters['cs/getRides'].find(
+        ride => ride.id === this.id
+      ),
       selectedLeg: null,
       warningDialog: false,
       cancelReason: '',
@@ -187,9 +189,6 @@ export default {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
-    selectedRide() {
-      return this.$store.getters['cs/getSelectedRide']
-    },
     formatDate() {
       return moment(this.ride.departureTime)
         .locale('nl')

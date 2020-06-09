@@ -181,7 +181,7 @@ export default {
       })
       .then(response => {
         if (response.status == 200) {
-          context.commit('setSelectedRide', response.data)
+          context.commit('setSelectedRide', response.data.data)
         }
       })
       .catch(error => {
