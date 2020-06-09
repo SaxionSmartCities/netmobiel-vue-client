@@ -166,9 +166,11 @@ export default {
   },
   beforeRouteEnter: beforeRouteEnter({
     selectedTab: number => number,
+    tripsSearchTime: searchtime => searchtime || 'Future',
   }),
   beforeRouteLeave: beforeRouteLeave({
     selectedTab: number => number,
+    tripsSearchTime: searchtime => searchtime,
   }),
   methods: {
     parseDate(dateString) {
