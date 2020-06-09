@@ -25,60 +25,58 @@
         </v-tab>
       </v-tabs>
     </template>
-    <v-row v-if="selectedTab === 0">
+    <v-row v-if="(showTabs && selectedTab === 0) || isPassenger">
       <v-col>
-        <v-radio-group v-model="tripsSearchTime" class="mt-1" row>
-          <v-radio label="Geplande reizen" value="Future"></v-radio>
-          <v-radio label="Afgelopen reizen" value="Past"></v-radio>
-        </v-radio-group>
+        <v-row>
+          <v-col>
+            <v-radio-group v-model="tripsSearchTime" class="mt-1" row>
+              <v-radio label="Geplande reizen" value="Future"></v-radio>
+              <v-radio label="Afgelopen reizen" value="Past"></v-radio>
+            </v-radio-group>
+          </v-col>
+        </v-row>
+        <v-row v-if="tripsSearchTime === 'Past'">
+          <v-col v-if="getPastTrips.length === 0">
+            U heeft nog niet meegereden.
+          </v-col>
+          <v-col v-else class="past-rides-column py-0">
+            <travel-card
+              v-for="(trip, index) in getPastTrips"
+              :key="index"
+              class="trip-card"
+              :needs-review="needsReview(trip)"
+              :index="index"
+              :from="trip.from"
+              :to="trip.to"
+              :arrival-time="parseDate(trip.arrivalTime)"
+              :departure-time="parseDate(trip.departureTime)"
+              :legs="trip.legs"
+              @onTripSelected="onTripSelected"
+            />
+          </v-col>
+        </v-row>
+        <v-row v-if="tripsSearchTime === 'Future'">
+          <v-col v-if="getPlannedTrips.length === 0">
+            U heeft geen bewaarde reizen. Ga naar de planner om uw reis te
+            plannen.
+          </v-col>
+          <v-col class="past-rides-column py-0">
+            <travel-card
+              v-for="(trip, index) in getPlannedTrips"
+              :key="index"
+              class="trip-card"
+              :index="index"
+              :from="trip.from"
+              :to="trip.to"
+              :arrival-time="parseDate(trip.arrivalTime)"
+              :departure-time="parseDate(trip.departureTime)"
+              :legs="trip.legs"
+              @onTripSelected="onTripSelected"
+            />
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
-    <v-row v-if="selectedTab === 0 && tripsSearchTime === 'Past'">
-      <v-col v-if="getPastTrips.length === 0">
-        U heeft nog niet meegereden.
-      </v-col>
-      <v-col v-else class="past-rides-column py-0">
-        <travel-card
-          v-for="(trip, index) in getPastTrips"
-          :key="index"
-          class="trip-card"
-          :needs-review="needsReview(trip)"
-          :index="index"
-          :from="trip.from"
-          :to="trip.to"
-          :arrival-time="parseDate(trip.arrivalTime)"
-          :departure-time="parseDate(trip.departureTime)"
-          :legs="trip.legs"
-          @onTripSelected="onTripSelected"
-        />
-      </v-col>
-    </v-row>
-    <template v-if="selectedTab === 0 && tripsSearchTime === 'Future'">
-      <v-row
-        v-if="(showTabs && selectedTab === 0) || isPassenger"
-        class="fill-height"
-      >
-        <v-col v-if="getPlannedTrips.length === 0">
-          U heeft geen bewaarde reizen. Ga naar de planner om uw reis te
-          plannen.
-        </v-col>
-        <v-col class="past-rides-column py-0">
-          <travel-card
-            v-for="(trip, index) in getPlannedTrips"
-            :key="index"
-            class="trip-card"
-            :index="index"
-            :from="trip.from"
-            :to="trip.to"
-            :arrival-time="parseDate(trip.arrivalTime)"
-            :departure-time="parseDate(trip.departureTime)"
-            :legs="trip.legs"
-            @onTripSelected="onTripSelected"
-          />
-        </v-col>
-      </v-row>
-    </template>
-
     <v-row v-if="(showTabs && selectedTab === 1) || isDriver">
       <v-col v-if="getPlannedRides.length === 0">
         U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
@@ -131,6 +129,7 @@ export default {
     }),
     showTabs() {
       const role = this.$store.getters['ps/getProfile'].userRole
+      console.log(!role || role === 'both')
       return !role || role === 'both'
     },
     isPassenger() {
