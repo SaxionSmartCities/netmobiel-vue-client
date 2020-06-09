@@ -306,6 +306,7 @@ export default {
 <style scoped>
 .departure-date {
   text-transform: lowercase;
+  padding-left: 0;
 }
 .departure-date::first-letter {
   text-transform: uppercase;
