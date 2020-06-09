@@ -1,6 +1,7 @@
 import axios from 'axios'
 import config from '@/config/config'
 import moment from 'moment'
+import constants from "../../constants/constants";
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_RIDESHARE_SERVICE_API_KEY =
@@ -169,6 +170,61 @@ export default {
             timeout: 0,
           },
           { root: true }
+        )
+      })
+  },
+  fetchsSelectedRide: (context, payload) => {
+  const URL = BASE_URL + `/rideshare/rides/${payload.rideId}`
+  axios
+      .get(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+        params: {
+          offset: offset,
+          maxResults: maxResults,
+        },
+      })
+      .then(response => {
+        if (response.status === 200) {
+          //Succesful response, returns a single Ride.
+          context.dispatch(
+              'ui/queueNotification',
+              { message: 'Reis is succesvol geannuleerd', timeout: 3000 },
+              { root: true }
+          ),
+              context.dispatch('fetchTrips', {
+                maxResults: constants.fetchTripsMaxResults,
+                offset: 0,
+              })
+        } else if (response.status === 403) {
+          // The calling user is not allowed to perform the operation on the resource
+          context.dispatch(
+              'ui/queueNotification',
+              {
+                message: 'U bent niet geauthoriseerd om deze rit in te zien',
+                timeout: 0,
+              },
+              { root: true }
+          )
+        } else if (response.status === 404) {
+          //requested Ride could not be found
+          context.dispatch(
+              'ui/queueNotification',
+              { message: 'Geen rit met dit ID gevonden', timeout: 0 },
+              { root: true }
+          )
+        }
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+        context.dispatch(
+            'ui/queueNotification',
+            {
+              message: 'Fout bij het ophalen van uw rit-aanbod.',
+              timeout: 0,
+            },
+            { root: true }
         )
       })
   },
