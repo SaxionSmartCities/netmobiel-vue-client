@@ -160,7 +160,7 @@ export default {
       })
     },
     onTripSelected(index) {
-      this.$store.commit('is/setSelectedTrip', this.getPlannedTrips[index])
+      this.$store.dispatch('is/fetchTrip', this.getPlannedTrips[index])
       this.$router.push('/tripDetailPage')
     },
     onRideSelected(index) {
