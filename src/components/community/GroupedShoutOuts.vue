@@ -11,6 +11,7 @@
           <shout-out
             :shoutout="shoutout"
             :btn-text="btnText"
+            :is-mine="myShoutOut"
             @shoutoutSelected="onShoutoutSelected"
           ></shout-out>
         </v-col>

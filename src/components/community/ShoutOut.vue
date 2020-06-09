@@ -6,7 +6,7 @@
   >
     <v-row class="mb-2">
       <v-col class="shrink">
-        <v-img class="shoutout-image" :src="profile.image" />
+        <v-img class="shoutout-image" :src="profileImage" />
       </v-col>
       <v-col>
         <p class="font-weight-regular header mb-0">Reiziger</p>
@@ -49,10 +49,17 @@ export default {
   props: {
     shoutout: { type: Object, required: true },
     btnText: { type: String, required: true },
+    isMine: { type: Boolean, required: true },
   },
   computed: {
     profile() {
       return this.$store.getters['ps/getUser']
+    },
+    myProfileImage() {
+      return this.$store.getters['ps/getUser'].profile.image
+    },
+    profileImage() {
+      return this.isMine ? this.myProfileImage : this.profile.image
     },
   },
   methods: {
