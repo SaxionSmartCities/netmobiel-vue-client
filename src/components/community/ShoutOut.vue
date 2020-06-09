@@ -11,7 +11,9 @@
       <v-col>
         <p class="font-weight-regular header mb-0">Reiziger</p>
         <p class="font-weight-light subtitle-1 mb-0">
-          {{ shoutout.traveller.givenName }}
+          {{
+            isMine ? shoutout.traveller.firstName : shoutout.traveller.givenName
+          }}
         </p>
       </v-col>
       <v-col class="shrink align-center">
