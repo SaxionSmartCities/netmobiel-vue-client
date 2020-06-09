@@ -136,7 +136,6 @@ export default {
       })
   },
   submitRide: (context, payload) => {
-    console.log(payload)
     const { ridePlanOptions, timestamp, from, to, recurrence } = payload
     if (ridePlanOptions.selectedCarId < 0) {
       context.dispatch(
