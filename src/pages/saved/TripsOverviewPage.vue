@@ -1,36 +1,34 @@
 <template>
   <content-pane id="scroll">
     <template v-slot:header>
-      <v-tabs
+      <tab-bar
         v-if="showTabs"
-        id="tabs"
-        v-model="selectedTab"
-        grow
-        centered
-        slider-color="#bddade"
+        :selected-tab-model="selectedTab"
+        @tabChange="selectedTab = $event"
       >
-        <v-tab class="white--text no-caps saved">
+        <template v-slot:firstTab>
           <v-icon color="white">commute</v-icon>
           <span>
             Reizen
             <sup>{{ getPlannedTripsCount }}</sup>
           </span>
-        </v-tab>
-        <v-tab class="white--text no-caps saved">
+        </template>
+
+        <template v-slot:secondTab>
           <v-icon color="white">directions_car</v-icon>
           <span>
             Ritten
             <sup>{{ getPlannedRidesCount }}</sup>
           </span>
-        </v-tab>
-      </v-tabs>
+        </template>
+      </tab-bar>
     </template>
     <v-row
-      v-if="(showTabs && selectedTab == 0) || isPassenger"
+      v-if="(showTabs && selectedTab === 0) || isPassenger"
       class="fill-height"
       dense
     >
-      <v-col v-if="getPlannedTrips.length == 0">
+      <v-col v-if="getPlannedTrips.length === 0">
         U heeft geen bewaarde reizen. Ga naar de planner om uw reis te plannen.
       </v-col>
       <v-col v-else>
@@ -49,8 +47,8 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-row v-if="(showTabs && selectedTab == 1) || isDriver" dense>
-      <v-col v-if="getPlannedRides.length == 0">
+    <v-row v-if="(showTabs && selectedTab === 1) || isDriver" dense>
+      <v-col v-if="getPlannedRides.length === 0">
         U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
         plannen.
       </v-col>
@@ -76,11 +74,12 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import TravelCard from '@/components/search-results/TravelCard.vue'
 import RideCard from '@/components/rides/RideCard.vue'
 import constants from '../../constants/constants'
+import TabBar from '../../components/common/TabBar'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 
 export default {
   name: 'TripsOverviewPage',
-  components: { ContentPane, TravelCard, RideCard },
+  components: { TabBar, ContentPane, TravelCard, RideCard },
   data() {
     return {
       selectedTab: 0,
@@ -97,28 +96,36 @@ export default {
     }),
     showTabs() {
       const role = this.$store.getters['ps/getProfile'].userRole
-      return !role || role == 'both'
+      return !role || role === 'both'
     },
     isPassenger() {
       const role = this.$store.getters['ps/getProfile'].userRole
-      return role == 'passenger'
+      return role === 'passenger'
     },
     isDriver() {
       const role = this.$store.getters['ps/getProfile'].userRole
-      return role == 'driver'
+      return role === 'driver'
     },
   },
   watch: {
     bottom(bottom) {
       if (bottom) {
-        if (this.selectedTab == 0) {
+        if (this.selectedTab === 0) {
           this.fetchTrips(this.getPlannedTrips.length)
-        } else if (this.selectedTab == 1) {
+        } else if (this.selectedTab === 1) {
           this.fetchRides(this.getPlannedRides.length)
         }
       }
     },
   },
+  beforeRouteEnter: beforeRouteEnter({
+    selectedTab: number => {
+      return number || 0
+    },
+  }),
+  beforeRouteLeave: beforeRouteLeave({
+    selectedTab: number => number || 0,
+  }),
   mounted() {
     this.fetchTrips()
     this.fetchRides()
@@ -130,12 +137,6 @@ export default {
         )
       })
   },
-  beforeRouteEnter: beforeRouteEnter({
-    selectedTab: number => number,
-  }),
-  beforeRouteLeave: beforeRouteLeave({
-    selectedTab: number => number,
-  }),
   methods: {
     parseDate(dateString) {
       return moment(dateString)

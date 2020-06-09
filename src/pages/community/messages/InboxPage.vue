@@ -1,20 +1,18 @@
 <template>
   <content-pane :clearpadding="true">
     <template v-slot:header>
-      <v-tabs
-        id="tabs"
-        v-model="selectedTab"
-        grow
-        centered
-        slider-color="#bddade"
+      <tab-bar
+        :selected-tab-model="selectedTab"
+        @tabChange="selectedTab = $event"
       >
-        <v-tab class="white--text no-caps saved">
+        <template v-slot:firstTab>
           <span>Recent</span>
-        </v-tab>
-        <v-tab class="white--text no-caps saved">
+        </template>
+
+        <template v-slot:secondTab>
           <span>Archief</span>
-        </v-tab>
-      </v-tabs>
+        </template>
+      </tab-bar>
     </template>
     <v-list three-line avatar class="pt-0 conversation-list">
       <template v-for="conversation in conversations">
@@ -54,9 +52,11 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
+import TabBar from '../../../components/common/TabBar'
 
 export default {
   components: {
+    TabBar,
     ContentPane,
   },
   data() {
