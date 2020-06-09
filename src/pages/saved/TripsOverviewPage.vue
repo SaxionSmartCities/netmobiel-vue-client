@@ -26,7 +26,7 @@
       </v-tabs>
     </template>
     <v-row v-if="(showTabs && selectedTab === 0) || isPassenger">
-      <v-col>
+      <v-col class="px-0">
         <v-row>
           <v-col>
             <v-radio-group v-model="tripsSearchTime" class="mt-1" row>
@@ -82,7 +82,7 @@
         U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
         plannen.
       </v-col>
-      <v-col class="past-rides-column py-0">
+      <v-col class="past-rides-column pa-0">
         <v-row v-for="(ride, index) in getPlannedRides" :key="index">
           <v-col class="py-1">
             <ride-card
