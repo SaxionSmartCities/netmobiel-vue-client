@@ -7,9 +7,28 @@
             <round-user-image
               :image-size="92"
               :avatar-size="100"
+              :profile-image="profileImage"
             ></round-user-image>
+            <img class="d-flex flex-column align-center" />
             <div class="d-flex flex-row justify-center">
-              <a class="caption bewerk">Bewerk</a>
+              <a
+                class="caption bewerk"
+                @click="showUploadFile = !showUploadFile"
+              >
+                Bewerk
+              </a>
+            </div>
+            <!--UPLOAD-->
+            <div v-if="showUploadFile" class="text-center">
+              <label for="file-input" class="custom-file-upload caption">
+                Upload afbeelding
+                <input id="file-input" type="file" @change="readFile" />
+                <v-progress-circular
+                  v-if="isUploadingFile"
+                  indeterminate
+                  color="primary"
+                ></v-progress-circular>
+              </label>
             </div>
           </v-col>
           <v-col class="flex-column">
@@ -20,7 +39,7 @@
               >
                 <span class="shrink">{{ user.fullName }}</span>
                 <span class="caption text--gray">
-                  {{ user.address || 'Gasthuisstraat 9, Bredevoort' }}
+                  {{ userAddress }}
                 </span>
               </div>
               <v-icon large @click="navTo('account')">
@@ -88,16 +107,19 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-import roundUserImage from '@/components/common/RoundUserImage'
+import RoundUserImage from '@/components/common/RoundUserImage'
+import { scaleImageDown } from '../../utils/image_scaling'
 
 export default {
   components: {
     ContentPane,
-    roundUserImage,
+    RoundUserImage,
   },
-  data: function() {
+  data() {
     return {
       rating: 4,
+      showUploadFile: false,
+      isUploadingFile: false,
       items: [
         {
           icon: 'settings',
@@ -120,12 +142,27 @@ export default {
         { icon: 'error_outline', name: 'Over deze app', route: '' },
         { icon: 'cancel', name: 'Verwijder mijn account', route: '' },
       ],
-      address: 'Gasthuisstraat 9, Bredevoort',
     }
   },
   computed: {
     user() {
       return this.$store.getters['ps/getUser']
+    },
+    userAddress() {
+      let formatted = 'Onbekende woonplaats'
+      const address = this.user.profile.address
+      if (address['locality'] && address['street']) {
+        formatted = address['houseNumber']
+          ? `${address['street']} ${address['houseNumber']},
+              ${address['locality']}`
+          : `${address['street']}, ${address['locality']}`
+      } else if (address['locality']) {
+        formatted = address['locality']
+      }
+      return formatted
+    },
+    profileImage() {
+      return this.$store.getters['ps/getUser'].profile.image
     },
   },
   methods: {
@@ -136,11 +173,34 @@ export default {
       this.$keycloak.logoutFn()
       this.$store.commit('ui/deleteAccessToken')
     },
+    readFile(event) {
+      if (event.target.files[0]) {
+        let fileReader = new FileReader()
+        fileReader.addEventListener('load', () => {
+          this.isUploadingFile = true
+        })
+        fileReader.addEventListener('loadend', async () => {
+          this.isUploadingFile = false
+          const imageString = fileReader.result
+          scaleImageDown(imageString, 20).then(resizedImage => {
+            const profile = { ...this.$store.getters['ps/getProfile'] }
+            this.$store.dispatch('ps/updateProfileImage', {
+              id: profile.id,
+              image: resizedImage,
+            })
+          })
+        })
+        fileReader.readAsDataURL(event.target.files[0])
+      }
+    },
   },
 }
 </script>
 
 <style lang="scss">
+#file-input {
+  display: none;
+}
 .user-text {
   flex: 0 1 0;
 }

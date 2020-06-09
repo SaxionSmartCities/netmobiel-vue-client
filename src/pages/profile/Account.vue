@@ -70,7 +70,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane'
 import account_config from '@/config/account_config'
-import { get, set } from 'lodash'
+import { get, set, isEqual } from 'lodash'
 
 export default {
   name: 'Account',
@@ -85,8 +85,30 @@ export default {
     user() {
       return this.$store.getters['ps/getUser'].profile
     },
+    suggestions() {
+      return this.$store.getters['gs/getGeocoderSuggestions']
+    },
     sections() {
       return Object.keys(account_config)
+    },
+  },
+  watch: {
+    suggestions(value) {
+      if (value.length > 0) {
+        const address = value.find(s => s.resultType == 'address')
+        if (address && !isEqual(address.position, this.user.address.location)) {
+          let newProfile = JSON.parse(JSON.stringify(this.user))
+          // Use GeoJSON format (notice the lon,lat order)
+          newProfile.address.location = {
+            type: 'Point',
+            coordinates: [
+              address.position[1], // Longitude
+              address.position[0], // Latitude
+            ],
+          }
+          this.$store.dispatch('ps/updateProfile', newProfile)
+        }
+      }
     },
   },
   created() {
@@ -102,6 +124,26 @@ export default {
       let newProfile = JSON.parse(JSON.stringify(this.user))
       set(newProfile, this.selectedProperty, input)
       this.$store.dispatch('ps/updateProfile', newProfile)
+
+      // Fetch geocode for address if different.
+      if (!isEqual(this.user.address, newProfile.address)) {
+        const query = this.addressQuery(newProfile.address)
+        if (query)
+          this.$store.dispatch('gs/fetchGeocoderSuggestions', { query: query })
+      }
+    },
+    addressQuery(address) {
+      let query = ''
+      // A locality is the minimum requirement.
+      if (address['locality']) query = address['locality']
+      else return query
+
+      if (address['postalCode']) query = `${address['postalCode']}, ` + query
+      if (address['street'] && address['houseNumber'])
+        query = `${address['street']} ${address['houseNumber']}, ` + query
+      else if (address['street']) query = `${address['street']}, ` + query
+
+      return query
     },
   },
 }

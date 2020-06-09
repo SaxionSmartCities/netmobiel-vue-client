@@ -35,6 +35,8 @@ export default {
     state.plannedTrips = state.plannedTrips.concat(payload)
   },
   setShoutOuts: (state, payload) => (state.shoutOuts = payload),
+  setShoutOutsTotalCount: (state, payload) =>
+    (state.shoutOutsTotalCount = payload),
   setPastTrips: (state, payload) => {
     state.pastTrips = payload
   },

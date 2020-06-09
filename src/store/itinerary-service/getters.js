@@ -7,4 +7,5 @@ export default {
   getPastTrips: state => state.pastTrips,
   getPastTripsCount: state => state.pastTripsCount,
   getShoutOuts: state => state.shoutOuts,
+  getShoutOutsTotalCount: state => state.shoutOutsTotalCount,
 }

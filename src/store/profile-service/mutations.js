@@ -16,6 +16,9 @@ export default {
   setProfile: (state, payload) => {
     state.user.profile = payload
   },
+  setProfileImage: (state, payload) => {
+    state.user.profile.image = payload
+  },
   setNotificationOptionsValue: (state, payload) => {
     state.user.notificationOptions.filter(function(item) {
       if (item.name === payload.key) {

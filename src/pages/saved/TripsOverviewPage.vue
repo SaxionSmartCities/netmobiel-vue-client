@@ -146,9 +146,9 @@ export default {
     bottom(bottom) {
       if (bottom) {
         if (this.selectedTab == 0) {
-          this.fetchTrips()
+          this.fetchTrips(this.getPlannedTrips.length)
         } else if (this.selectedTab == 1) {
-          this.fetchRides()
+          this.fetchRides(this.getPlannedRides.length)
         }
       }
     },
@@ -193,10 +193,10 @@ export default {
         },
       })
     },
-    fetchTrips() {
+    fetchTrips(offset = 0) {
       this.$store.dispatch('is/fetchTrips', {
         maxResults: this.maxResults,
-        offset: this.getPlannedTrips.length,
+        offset: offset,
       })
     },
     fetchPastTrips() {
@@ -210,14 +210,16 @@ export default {
         until: moment().format(),
       })
     },
-    fetchRides() {
+    fetchRides(offset = 0) {
       this.$store.dispatch('cs/fetchRides', {
-        offset: this.getPlannedRides.length,
+        offset: offset,
         maxResults: this.maxResults,
       })
     },
     onTripSelected(index) {
-      this.$store.commit('is/setSelectedTrip', this.getPlannedTrips[index])
+      this.$store.dispatch('is/fetchTrip', {
+        id: this.getPlannedTrips[index].id,
+      })
       this.$router.push('/tripDetailPage')
     },
     onRideSelected(index) {

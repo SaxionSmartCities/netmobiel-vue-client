@@ -51,4 +51,7 @@ Vue.use(VueKeyCloak, {
       render: h => h(App),
     }).$mount('#app')
   },
+  onInitError: function() {
+    // Does not work yet :(
+  },
 })

@@ -3,7 +3,11 @@
     <v-row align="center">
       <v-col cols="3" class="px-1">
         <router-link to="/onboardingPage">
-          <round-user-image></round-user-image>
+          <round-user-image
+            :image-size="92"
+            :avatar-size="100"
+            :profile-image="profileImage"
+          ></round-user-image>
         </router-link>
       </v-col>
       <v-col>
@@ -146,6 +150,9 @@ export default {
     },
     updateMessages() {
       return this.$store.getters['ui/getUpdateMessages']
+    },
+    profileImage() {
+      return this.$store.getters['ps/getUser'].profile.image
     },
   },
   mounted() {
