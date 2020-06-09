@@ -20,19 +20,31 @@
         </v-col>
       </v-row>
       <v-divider></v-divider>
-      <v-row v-if="isPastTrip" @click="$emit('tripReview', selectedTrip)">
-        <v-col cols="1">
-          <v-icon>fa-check-circle</v-icon>
+      <v-row v-if="isPastTrip">
+        <v-col class="py-0">
+          <v-row
+            v-if="isRideShareTrip"
+            @click="$emit('tripReview', selectedTrip)"
+          >
+            <v-col cols="1">
+              <v-icon>fa-check-circle</v-icon>
+            </v-col>
+            <v-col class="pl-5">Bevestig deze reis</v-col>
+          </v-row>
+          <v-divider></v-divider>
         </v-col>
-        <v-col class="pl-5">Bevestig deze reis</v-col>
       </v-row>
       <v-row v-else @click="openConfirmationDialog">
-        <v-col cols="1">
-          <v-icon>fa-times-circle</v-icon>
+        <v-col class="py-0">
+          <v-row>
+            <v-col cols="1">
+              <v-icon>fa-times-circle</v-icon>
+            </v-col>
+            <v-col class="pl-5">Annuleer deze reis</v-col>
+          </v-row>
+          <v-divider></v-divider>
         </v-col>
-        <v-col class="pl-5">Annuleer deze reis</v-col>
       </v-row>
-      <v-divider></v-divider>
       <v-dialog v-model="dialog" persistent>
         <template v-slot:activator="{ on }"> </template>
         <v-card>
@@ -97,6 +109,9 @@ export default {
   computed: {
     isPastTrip() {
       return moment(this.selectedTrip.arrivalTime).isBefore(moment())
+    },
+    isRideShareTrip() {
+      return !!this.selectedTrip.legs.find(l => l.traverseMode == 'RIDESHARE')
     },
   },
   methods: {

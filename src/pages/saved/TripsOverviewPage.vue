@@ -42,7 +42,7 @@
           v-for="(trip, index) in getPastTrips"
           :key="index"
           class="trip-card"
-          :needs-review="true"
+          :needs-review="needsReview(trip)"
           :index="index"
           :from="trip.from"
           :to="trip.to"
@@ -175,6 +175,10 @@ export default {
     parseDate(dateString) {
       return moment(dateString)
     },
+    needsReview(trip) {
+      //TODO: Base this on the status for the trip.
+      return !!trip.legs.find(l => l.traverseMode == 'RIDESHARE')
+    },
     bottomVisible(element) {
       const scrollY = element.scrollTop
       const visible = element.clientHeight
@@ -206,8 +210,10 @@ export default {
       })
     },
     onTripSelected(index) {
-      let tripId = this.getPlannedTrips[index].id
-      if (this.tripsSearchTime === 'Past') {
+      let tripId
+      if (this.tripsSearchTime === 'Future') {
+        tripId = this.getPlannedTrips[index].id
+      } else {
         tripId = this.getPastTrips[index].id
       }
       this.$store.dispatch('is/fetchTrip', { id: tripId })
