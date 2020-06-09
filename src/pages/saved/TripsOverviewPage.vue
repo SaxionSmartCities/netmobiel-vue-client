@@ -41,15 +41,15 @@
         <travel-card
           v-for="(trip, index) in getPastTrips"
           :key="index"
-          :done="true"
           class="trip-card"
+          :needs-review="true"
           :index="index"
           :from="trip.from"
           :to="trip.to"
           :arrival-time="parseDate(trip.arrivalTime)"
           :departure-time="parseDate(trip.departureTime)"
           :legs="trip.legs"
-          @onTripSelected="startReview(trip)"
+          @onTripSelected="onTripSelected"
         />
       </v-col>
     </v-row>
@@ -182,17 +182,6 @@ export default {
       const bottomOfPage = visible + scrollY >= pageHeight
       return bottomOfPage || pageHeight < visible
     },
-    startReview(trip) {
-      console.log('trip', trip)
-      this.$router.push({
-        name: 'reviewDriver',
-        params: {
-          tripContext: trip.tripRef,
-          //TODO get drive name via profile service for the review text TripMade?
-          // driverName: trip.
-        },
-      })
-    },
     fetchTrips(offset = 0) {
       this.$store.dispatch('is/fetchTrips', {
         maxResults: this.maxResults,
@@ -217,9 +206,11 @@ export default {
       })
     },
     onTripSelected(index) {
-      this.$store.dispatch('is/fetchTrip', {
-        id: this.getPlannedTrips[index].id,
-      })
+      let tripId = this.getPlannedTrips[index].id
+      if (this.tripsSearchTime === 'Past') {
+        tripId = this.getPastTrips[index].id
+      }
+      this.$store.dispatch('is/fetchTrip', { id: tripId })
       this.$router.push('/tripDetailPage')
     },
     onRideSelected(index) {

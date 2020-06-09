@@ -1,12 +1,24 @@
 <template>
-  <v-card outlined :ripple="!done" @click="$emit('onTripSelected', index)">
+  <v-card
+    outlined
+    :ripple="!needsReview"
+    @click="$emit('onTripSelected', index)"
+  >
     <v-row no-gutters>
       <v-col>
         <v-card-title class="d-flex justify-space-between">
           <h4>Vertrek</h4>
-          <div v-if="done" class="d-flex">
-            <!--            <span class="caption">{{ 1 + 1 }} compliments</span>-->
-            <v-btn outlined color="primary" small rounded>Beoordeel</v-btn>
+          <div v-if="needsReview" class="not-confirmed">
+            Niet bevestigd!
+            <!-- <v-btn
+              outlined
+              small
+              rounded
+              color="primary"
+              :onclick="$emit('onTripReview')"
+            >
+              Beoordeel
+            </v-btn> -->
           </div>
         </v-card-title>
         <v-card-subtitle>
@@ -51,7 +63,7 @@ export default {
     departureTime: { type: Object, required: true },
     duration: { type: Number, required: false, default: 0 },
     legs: { type: Array, required: true },
-    done: { type: Boolean, required: false, default: false },
+    needsReview: { type: Boolean, required: false, default: false },
   },
   data() {
     return {
@@ -118,4 +130,10 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.not-confirmed {
+  color: $color-secondary !important;
+  font-style: italic;
+  font-size: 0.8em;
+}
+</style>
