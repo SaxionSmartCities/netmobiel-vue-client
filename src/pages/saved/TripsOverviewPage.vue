@@ -199,11 +199,11 @@ export default {
         offset: offset,
       })
     },
-    fetchPastTrips() {
-      // time format example: '2020-04-28T14:00:00+01:00'
+    fetchPastTrips(offset = 0) {
       this.$store.dispatch('is/fetchTrips', {
         pastTrips: true,
         maxResults: this.maxResultsPastTrips,
+        offset: offset,
         since: moment()
           .subtract(1, 'week')
           .format(),
