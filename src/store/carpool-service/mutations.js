@@ -3,7 +3,6 @@ export default {
   setSearchLicensePlate: (state, payload) => {
     state.search.licensePlate = payload
   },
-  setSelectedRide: (state, payload) => (state.selectedRide = payload),
   setSearchResult: (state, payload) => (state.search.result = payload),
   clearSearchResult: state => (state.search.result = undefined),
   setAvailableCars: (state, payload) => (state.cars = payload),

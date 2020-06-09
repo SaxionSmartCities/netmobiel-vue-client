@@ -199,31 +199,6 @@ export default {
         )
       })
   },
-  fetchRide: (context, payload) => {
-    const rideId = payload.id
-    const URL = `${BASE_URL}/rideshare/rides/${rideId}`
-    axios
-      .get(URL, {
-        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
-      })
-      .then(response => {
-        if (response.status == 200) {
-          context.commit('setSelectedRide', response.data.data)
-        }
-      })
-      .catch(error => {
-        // eslint-disable-next-line
-          console.log(error)
-        context.dispatch(
-          'ui/queueNotification',
-          {
-            message: 'Fout bij het ophalen van de rit.',
-            timeout: 0,
-          },
-          { root: true }
-        )
-      })
-  },
   fetchRides: (context, payload) => {
     const offset = payload.offset
     const maxResults = payload.maxResults
@@ -264,10 +239,10 @@ export default {
       .get(URL, {
         headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       })
-      .then(function(resp) {
+      .then(resp => {
         context.commit('setSelectedRide', resp.data)
       })
-      .catch(function(error) {
+      .catch(error => {
         // eslint-disable-next-line
         console.log(error)
         context.dispatch(
@@ -323,9 +298,6 @@ export default {
       })
       .then(function(resp) {
         return resp.data
-        // if (resp.status == 200) {
-        //   context.commit('setAvailableCars', resp.data)
-        // }
       })
       .catch(function(error) {
         // TODO: Proper error handling.
