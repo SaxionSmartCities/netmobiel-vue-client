@@ -2,7 +2,7 @@
   <v-card
     outlined
     class="shoutout-container"
-    @click="$emit('shoutoutSelected', shoutoutId)"
+    @click="$emit('shoutoutSelected', shoutout.id)"
   >
     <v-row class="mb-2">
       <v-col class="shrink">
@@ -31,7 +31,9 @@
         <strong class="text-color-primary ">5 credits</strong>
       </v-col>
       <v-col align="end">
-        <v-btn small rounded depressed color="button">Rit aanbieden</v-btn>
+        <v-btn small rounded depressed color="button">
+          {{ btnText }}
+        </v-btn>
       </v-col>
     </v-row>
   </v-card>
@@ -46,11 +48,9 @@ export default {
   components: { ItineraryLeg },
   props: {
     shoutout: { type: Object, required: true },
+    btnText: { type: String, required: true },
   },
   computed: {
-    shoutoutId() {
-      return this.shoutout.id
-    },
     profile() {
       return this.$store.getters['ps/getUser']
     },

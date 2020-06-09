@@ -20,6 +20,8 @@
         <grouped-shout-outs
           label="Mijn shoutouts"
           :shoutouts="myShoutOuts"
+          :btn-text="mySoBtnText"
+          :my-shout-out="true"
           @shoutoutSelected="onShoutOutSelected"
         />
       </v-col>
@@ -40,6 +42,7 @@
           <grouped-shout-outs
             :label="formatDate(group)"
             :shoutouts="groupedShoutOuts[group]"
+            :btn-text="communitySoBtnText"
             @shoutoutSelected="onShoutOutSelected"
           />
         </v-col>
@@ -61,6 +64,8 @@ export default {
     return {
       selectedTab: 0,
       baseLocation: 'Home',
+      communitySoBtnText: 'Rit aanbieden',
+      mySoBtnText: 'Bekijk shoutout',
     }
   },
   computed: {
@@ -105,8 +110,9 @@ export default {
     })
   },
   methods: {
-    onShoutOutSelected(index) {
-      this.$router.push({ name: 'shoutout', params: { id: index } })
+    onShoutOutSelected({ index, isMine }) {
+      console.log('selected shoutout', index, isMine)
+      this.$router.push({ name: 'shoutout', params: { id: index, isMine } })
     },
     formatDate(date) {
       return date

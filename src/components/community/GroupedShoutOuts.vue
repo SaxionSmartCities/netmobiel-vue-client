@@ -10,6 +10,7 @@
         <v-col>
           <shout-out
             :shoutout="shoutout"
+            :btn-text="btnText"
             @shoutoutSelected="onShoutoutSelected"
           ></shout-out>
         </v-col>
@@ -27,10 +28,12 @@ export default {
   props: {
     label: { type: String, required: true },
     shoutouts: { type: Array, required: true },
+    btnText: { type: String, required: true },
+    myShoutOut: { type: Boolean, required: false, default: false },
   },
   methods: {
     onShoutoutSelected(index) {
-      this.$emit('shoutoutSelected', index)
+      this.$emit('shoutoutSelected', { index, isMine: this.myShoutOut })
     },
   },
 }
