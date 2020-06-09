@@ -161,9 +161,7 @@ export default {
   data() {
     return {
       // for now, assume the ride is always available (may change when deeplinking from a notification)
-      ride: this.$store.getters['cs/getRides'].find(
-        ride => ride.id === this.id
-      ),
+      ride: this.$store.getters['cs/getSelectedRide'],
       selectedLeg: null,
       warningDialog: false,
       cancelReason: '',
