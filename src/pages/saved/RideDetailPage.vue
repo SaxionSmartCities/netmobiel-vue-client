@@ -11,29 +11,29 @@
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="4">Datum</v-col>
+      <v-col cols="3">Datum:</v-col>
       <v-col cols="8" class="departure-date">
         {{ formatDate() }}
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="4">Reisduur</v-col>
+      <v-col cols="3">Reisduur:</v-col>
       <v-col cols="8">
         {{ formatDuration() }}
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="4">Boekingen</v-col>
+      <v-col cols="3">Boekingen:</v-col>
       <v-col cols="8">
-        {{ ride.bookings.length }}
+        {{ numBookings }}
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="4">Auto</v-col>
-      <v-col cols="8">{{ ride.car.brand }} {{ ride.car.model }}</v-col>
+      <v-col cols="3">Auto:</v-col>
+      <v-col cols="8">{{ carBrandModel }}</v-col>
     </v-row>
     <v-row v-if="ride.recurrence" dense>
-      <v-col cols="4">Herhalen</v-col>
+      <v-col cols="3">Herhalen:</v-col>
       <v-col cols="8">
         {{ formatRecurrence() }}
         <table v-if="ride.recurrence.unit == 'WEEK'" class="equal-width">
@@ -68,7 +68,7 @@
     >
       <itinerary-leg :leg="leg" />
     </v-row>
-    <v-row v-if="ride.bookings.length > 0">
+    <v-row v-if="numBookings > 0">
       <v-col class="mx-1">
         <v-btn
           large
@@ -100,11 +100,11 @@
               Weet u dit zeker?
             </v-card-title>
 
-            <v-card-text v-if="ride.bookings.length > 0">
+            <v-card-text v-if="numBookings > 0">
               <p>
                 Op dit moment heeft uw reis
-                {{ ride.bookings.length }} boekingen, wilt u uw passagier(s) een
-                reden geven waarom u de reis annuleert.
+                {{ numBookings }} boekingen, wilt u uw passagier(s) een reden
+                geven waarom u de reis annuleert.
               </p>
               <v-textarea
                 outlined
@@ -160,10 +160,6 @@ export default {
   },
   data() {
     return {
-      // for now, assume the ride is always available (may change when deeplinking from a notification)
-      ride: this.$store.getters['cs/getRides'].find(
-        ride => ride.id === this.id
-      ),
       selectedLeg: null,
       warningDialog: false,
       cancelReason: '',
@@ -172,18 +168,37 @@ export default {
   },
   computed: {
     passengersInBookings() {
-      return this.ride.bookings.map(booking => {
-        return {
-          name:
-            booking.passenger.givenName + ' ' + booking.passenger.familyName,
-          passengerRef: booking.passengerRef,
-          ...booking.passenger,
-        }
-      })
+      let bookings = !this.ride
+        ? []
+        : this.ride.bookings.map(booking => {
+            return {
+              name: `${booking.passenger.givenName} ${
+                booking.passenger.familyName
+              }`,
+              passengerRef: booking.passengerRef,
+              ...booking.passenger,
+            }
+          })
+      return bookings
+    },
+    ride() {
+      return this.$store.getters['cs/getSelectedRide']
+    },
+    numBookings() {
+      return !this.ride.bookings ? 0 : this.ride.bookings.length
+    },
+    carBrandModel() {
+      return !this.ride.car
+        ? ''
+        : `${this.ride.car.brand} ${this.ride.car.model}`
     },
   },
-  created: function() {
+  created() {
     this.$store.commit('ui/showBackButton')
+  },
+  mounted() {
+    // Fetch the ride on details page. This is needed for deeplinking.
+    this.$store.dispatch('cs/fetchRide', { id: this.id })
   },
   methods: {
     formatDate() {
@@ -192,7 +207,7 @@ export default {
         .format('dddd DD-MM-YYYY')
     },
     formatDuration() {
-      const seconds = this.ride.estimatedDrivingTime,
+      const seconds = this.ride.duration,
         minutes = Math.round(seconds / 60)
       return minutes < 60
         ? `${minutes} minuten`
@@ -210,6 +225,7 @@ export default {
     },
     generateSteps() {
       const { ride } = this
+      if (!ride.id) return []
       const departure = moment(ride.departureTime),
         arrival = moment(ride.estimatedArrivalTime)
       return [
