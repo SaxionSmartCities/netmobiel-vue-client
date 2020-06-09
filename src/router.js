@@ -42,6 +42,8 @@ import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPag
 import ShoutOutDetailPage from '@/pages/community/shoutout/ShoutOutDetailPage'
 import Account from '@/pages/profile/Account'
 import DriverReviewPage from './pages/review/DriverReviewPage'
+import TripReviewedPage from './pages/review/TripReviewedPage'
+import TripConfirmedPage from './pages/review/TripConfirmedPage'
 import SupportGoal from './pages/community/goals/SupportGoal'
 import Donated from './pages/community/goals/Donated'
 
@@ -252,6 +254,16 @@ const router = new Router({
       name: 'reviewDriver',
       component: DriverReviewPage,
       props: true,
+    },
+    {
+      path: '/tripReviewed',
+      component: TripReviewedPage,
+      name: 'tripReviewedPage',
+    },
+    {
+      path: '/tripConfirmed',
+      component: TripConfirmedPage,
+      name: 'tripConfirmedPage',
     },
   ],
 })
