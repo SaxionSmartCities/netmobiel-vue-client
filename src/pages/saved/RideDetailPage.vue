@@ -226,21 +226,51 @@ export default {
     generateSteps() {
       const { ride } = this
       if (!ride.id) return []
-      const departure = moment(ride.departureTime),
-        arrival = moment(ride.estimatedArrivalTime)
-      return [
-        {
-          mode: 'CAR',
-          startTime: departure.toDate().getTime(),
-          endTime: arrival.toDate().getTime(),
-          from: { name: ride.fromPlace.label },
-        },
-        {
-          mode: 'ARRIVAL',
-          startTime: arrival.toDate().getTime(),
-          from: { name: ride.toPlace.label },
-        },
-      ]
+      let result = []
+      let bookingDict = this.generateBookingDictionary(ride.bookings)
+      for (let i = 0; i < this.ride.legs.length - 1; i++) {
+        let currentLeg = this.ride.legs[i]
+        // TODO: Check why modality is not provided
+        currentLeg.mode = 'CAR'
+        let passenger = bookingDict.find(b => b.legRef == currentLeg.legRef)
+        if (passenger) currentLeg.passenger = passenger
+        let nextLeg = this.ride.legs[i + 1]
+        result.push(currentLeg)
+
+        // We won't show any waiting times < 60 sec -- should be made a config
+        if (nextLeg.startTime - currentLeg.endTime > 60 * 1000) {
+          // Add "WAIT" element (not from OTP).
+          result.push({
+            mode: 'WAIT',
+            startTime: currentLeg.endTime,
+            endTime: nextLeg.startTime,
+            duration: (nextLeg.startTime - currentLeg.endTime) / 1000,
+          })
+        }
+      }
+      let lastLeg = this.ride.legs[this.ride.legs.length - 1]
+      lastLeg.mode = 'CAR'
+      result.push(lastLeg)
+
+      // Finally, we push the "FINISH" element (not from OTP)
+      result.push({
+        mode: 'FINISH',
+        startTime: lastLeg.endTime,
+        to: lastLeg.to,
+      })
+      return result
+    },
+    generateBookingDictionary(bookings) {
+      let dict = []
+      for (var i = 0; i < bookings.length; i++) {
+        let map = bookings[i].legs.map(l => {
+          let dictItem = { ...bookings[i].passenger }
+          dictItem.legRef = l.legRef
+          return dictItem
+        })
+        dict = dict.concat(map)
+      }
+      return dict
     },
     onLegSelected(leg) {
       this.selectedLeg = leg
