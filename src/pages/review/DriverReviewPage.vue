@@ -5,13 +5,9 @@
         <v-stepper v-model="step" class="stepper" :elevation="0">
           <v-stepper-header>
             <v-stepper-step step="1"></v-stepper-step>
-
             <v-divider></v-divider>
-
             <v-stepper-step step="2"></v-stepper-step>
-
             <v-divider></v-divider>
-
             <v-stepper-step step="3"></v-stepper-step>
           </v-stepper-header>
         </v-stepper>
@@ -21,40 +17,57 @@
       <v-row>
         <v-col class="flex-column">
           <h3>Bevestig jouw reis</h3>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
           <span>
-            Heb je de reis naar <b>{{ trip.to.label }}</b> gemaakt?
+            Heb je op <em>{{ tripDepartureDate }}</em> om
+            {{ tripDepartureTime }} een reis van
+            <b>{{ trip.from.label }}</b> naar
+            <b>{{ trip.to.label }}</b> gemaakt?
           </span>
           <v-checkbox
             v-model="review"
-            label="Meteen een review achterlaten?"
+            label="Ik wil ook een review achterlaten?"
           ></v-checkbox>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <v-btn block rounded color="button" @click="confirmTrip(true)">
-            ja
+          <v-btn
+            block
+            rounded
+            depressed
+            color="button"
+            @click="confirmTrip(true)"
+          >
+            Ja
           </v-btn>
           <v-btn
             block
             class="my-2"
             rounded
             outlined
+            depressed
             color="primary"
             @click="confirmTrip(false)"
           >
             Nee
           </v-btn>
 
+          <!-- This button seems redundant because we already have a back
+            button (see top left corner)
           <v-btn
             block
-            outlined
             rounded
+            outlined
+            depressed
             color="primary"
             @click="$router.push({ name: 'tripsOverviewPage' })"
           >
-            Annuleren
-          </v-btn>
+            Ga terug
+          </v-btn> -->
         </v-col>
       </v-row>
     </template>
@@ -76,6 +89,8 @@
 import ContentPane from '../../components/common/ContentPane'
 import TripMade from './TripMade'
 import TripNotMade from './TripNotMade'
+import moment from 'moment'
+
 export default {
   name: 'DriverReviewPage',
   components: { TripNotMade, TripMade, ContentPane },
@@ -100,6 +115,16 @@ export default {
             trip => trip.tripRef === this.tripContext
           )
     },
+    tripDepartureDate() {
+      return moment(this.trip.departureTime)
+        .locale('nl')
+        .format('dddd D MMMM')
+    },
+    tripDepartureTime() {
+      return moment(this.trip.departureTime)
+        .locale('nl')
+        .format('H:mm')
+    },
   },
   created() {
     this.$store.commit('ui/showBackButton')
@@ -113,22 +138,28 @@ export default {
   methods: {
     setTripMade(value) {
       this.isTripMade = value
-      this.review ? this.step++ : this.$router.push({ name: 'home' })
+      this.review || !this.isTripMade
+        ? this.step++
+        : this.$router.push({ name: 'tripConfirmedPage' })
     },
     getCurrentStepComponent() {
       return this.isTripMade ? TripMade : TripNotMade
     },
     confirmTrip(value) {
+      //TODO: Send confirmation to backend.
       if (value) this.setTripMade(true)
       else this.setTripMade(false)
     },
     onTripMade(rate) {
+      // eslint-disable-next-line
       console.log('the rate of the trip >> ', rate)
-      this.$router.push({ name: 'home' })
+      //TODO: Send rating to backend.
+      this.$router.push({ name: 'tripReviewedPage' })
     },
     onTripNotMade(reason) {
+      // eslint-disable-next-line
       console.log('trip was not made: ', reason)
-      this.$router.push({ name: 'home' })
+      this.$router.push({ name: 'tripConfirmedPage' })
     },
   },
 }
