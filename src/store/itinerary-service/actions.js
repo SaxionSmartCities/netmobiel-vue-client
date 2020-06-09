@@ -157,7 +157,6 @@ export default {
       .then(response => {
         if (response.status === 200 && response.data.data.length > 0) {
           if (offset === 0) {
-            pastTrips && console.log('paste trips', response)
             pastTrips
               ? context.commit('setPastTrips', response.data.data)
               : context.commit('setPlannedTrips', response.data.data)
