@@ -17,4 +17,5 @@ export default {
       }
     }
   },
+  setSelectedRide: (state, payload) => (state.selectedRide = payload),
 }

@@ -233,6 +233,29 @@ export default {
         )
       })
   },
+  fetchRide: (context, payload) => {
+    const rideId = payload.id
+    const URL = `${BASE_URL}/rideshare/rides/${rideId}`
+    axios
+      .get(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        context.commit('setSelectedRide', resp.data)
+      })
+      .catch(function(error) {
+        // eslint-disable-next-line
+        console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het ophalen van uw rit.',
+            timeout: 0,
+          },
+          { root: true }
+        )
+      })
+  },
   deleteRide: (context, payload) => {
     const URL = BASE_URL + `/rideshare/rides/` + payload.id
     //TODO: Pass reason to message service.
