@@ -22,6 +22,11 @@
                     </span>
                   </v-col>
                 </v-row>
+                <v-row dense>
+                  <v-col>
+                    <span class="text pr-2">{{ donor.message }}</span>
+                  </v-col>
+                </v-row>
               </v-col>
               <v-col cols="3" class="my-auto">
                 <!--

@@ -9,6 +9,7 @@ export default {
     cars: [],
     plannedRidesCount: 0,
     rides: [],
+    selectedRide: {},
     search: {
       licensePlate: undefined,
       result: {},
