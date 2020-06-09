@@ -250,7 +250,6 @@ export default {
       }
     },
     onTripReview(trip) {
-      console.log(trip)
       this.$router.push({
         name: 'reviewDriver',
         params: {
