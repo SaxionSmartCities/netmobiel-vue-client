@@ -87,6 +87,7 @@
 
 <script>
 import moment from 'moment'
+
 import {
   DATE_FORMAT_INPUT,
   DATE_FORMAT_PICKER,
@@ -117,10 +118,10 @@ export default {
       showTimePicker: false,
       pickedDate: null,
       pickedTime: null,
-      pickedArriving: false,
+      pickedArriving: true,
       date: null,
       time: null,
-      arriving: false,
+      arriving: true,
     }
   },
   watch: { value: 'initialize' },
@@ -134,8 +135,8 @@ export default {
         this.pickedDate = when.format(DATE_FORMAT_PICKER)
         this.date = when.format(DATE_FORMAT_INPUT)
         this.time = this.pickedTime = when.format(TIME_FORMAT)
+        this.arriving = arriving
       }
-      this.arriving = this.pickedArriving = arriving || true
     },
     emitInput() {
       const { date, time } = this
@@ -166,11 +167,13 @@ export default {
       this.showTimePicker = false
       this.time = this.pickedTime
       this.arriving = this.pickedArriving
+      this.pickedArriving = this.arriving
       this.emitInput()
     },
   },
   saveModel(model) {
     if (model) {
+      console.log('saving model: ', model)
       return {
         when: model.when.format(TIMESTAMP_FORMAT),
         arriving: model.arriving,
@@ -179,6 +182,7 @@ export default {
   },
   restoreModel(json) {
     if (json) {
+      console.log('restoring model: ', json)
       return {
         when: moment(json.when, TIMESTAMP_FORMAT),
         arriving: json.arriving,
