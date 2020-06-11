@@ -63,6 +63,7 @@ import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane'
 import GroupedShoutOuts from '@/components/community/GroupedShoutOuts'
 import TabBar from '../../../components/common/TabBar'
+import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 
 export default {
   name: 'ShoutOutOverview',
@@ -102,6 +103,12 @@ export default {
   created() {
     this.$store.commit('ui/showBackButton')
   },
+  beforeRouteEnter: beforeRouteEnter({
+    selectedTab: number => number || 0,
+  }),
+  beforeRouteLeave: beforeRouteLeave({
+    selectedTab: number => number || 0,
+  }),
   mounted() {
     this.$store.dispatch('is/fetchShoutOuts', {
       latitude: 52.2224,
