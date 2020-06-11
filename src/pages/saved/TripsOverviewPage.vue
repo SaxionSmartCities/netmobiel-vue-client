@@ -24,15 +24,10 @@
       </tab-bar>
     </template>
     <v-row v-if="(showTabs && selectedTab === 0) || isPassenger">
-      <v-col class="px-0 pt-2">
-        <v-row>
-          <v-col class="pt-0 pb-6">
-            <v-radio-group
-              v-model="tripsSearchTime"
-              hide-details
-              class="mt-1"
-              row
-            >
+      <v-col class="px-0">
+        <v-row dense>
+          <v-col>
+            <v-radio-group v-model="tripsSearchTime" class="mt-1" row>
               <v-radio label="Geplande reizen" value="Future"></v-radio>
               <v-radio label="Afgelopen reizen" value="Past"></v-radio>
             </v-radio-group>
@@ -155,6 +150,14 @@ export default {
       }
     },
   },
+  beforeRouteEnter: beforeRouteEnter({
+    selectedTab: number => number || 0,
+    tripsSearchTime: searchtime => searchtime || 'Future',
+  }),
+  beforeRouteLeave: beforeRouteLeave({
+    selectedTab: number => number || 0,
+    tripsSearchTime: searchtime => searchtime,
+  }),
   mounted() {
     this.fetchTrips()
     this.fetchPastTrips()

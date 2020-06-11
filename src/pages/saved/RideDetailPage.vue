@@ -230,10 +230,7 @@ export default {
       let bookingDict = this.generateBookingDictionary(ride.bookings)
       for (let i = 0; i < this.ride.legs.length - 1; i++) {
         let currentLeg = this.ride.legs[i]
-        // TODO: Check why modality is not provided
-        currentLeg.mode = 'CAR'
-        let passenger = bookingDict.find(b => b.legRef == currentLeg.legRef)
-        if (passenger) currentLeg.passenger = passenger
+        this.setPassenger(currentLeg, bookingDict)
         let nextLeg = this.ride.legs[i + 1]
         result.push(currentLeg)
 
@@ -249,7 +246,7 @@ export default {
         }
       }
       let lastLeg = this.ride.legs[this.ride.legs.length - 1]
-      lastLeg.mode = 'CAR'
+      this.setPassenger(lastLeg, bookingDict)
       result.push(lastLeg)
 
       // Finally, we push the "FINISH" element (not from OTP)
@@ -271,6 +268,12 @@ export default {
         dict = dict.concat(map)
       }
       return dict
+    },
+    setPassenger(leg, bookingDict) {
+      // TODO: Check why modality is not provided
+      leg.mode = 'CAR'
+      let passenger = bookingDict.find(b => b.legRef == leg.legRef)
+      if (passenger) leg.passenger = passenger
     },
     onLegSelected(leg) {
       this.selectedLeg = leg
