@@ -7,21 +7,31 @@
         @tabChange="selectedTab = $event"
       >
         <template v-slot:firstTab>
-          <span>Mijn oproepen</span>
+          <span>
+            Mijn oproepen
+            <sup>{{ myShoutOuts.length }}</sup>
+          </span>
         </template>
 
         <template v-slot:secondTab>
-          <span>Community</span>
+          <span>
+            Community
+            <sup>{{ allShoutOuts.length }}</sup>
+          </span>
         </template>
       </tab-bar>
     </template>
     <v-row v-if="selectedTab === 0 || userRole === 'passenger'">
       <v-col>
-        <grouped-shout-outs
-          label="Mijn shoutouts"
-          :shoutouts="myShoutOuts"
-          @shoutoutSelected="onShoutOutSelected"
-        />
+        <v-row v-for="group in Object.keys(groupedMyShoutOuts)" :key="group">
+          <v-col>
+            <grouped-shout-outs
+              :label="formatDate(group)"
+              :shoutouts="groupedMyShoutOuts[group]"
+              @shoutoutSelected="onShoutOutSelected"
+            />
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
     <template v-if="selectedTab === 1 || userRole === 'driver'">
@@ -64,17 +74,11 @@ export default {
     }
   },
   computed: {
+    allShoutOuts() {
+      return this.$store.getters['is/getShoutOuts']
+    },
     groupedShoutOuts() {
-      const shoutouts = this.$store.getters['is/getShoutOuts']
-      let groupedShoutOuts = {}
-      shoutouts.map(s => {
-        const date = moment(s.departureTime).format('YYYYMMDD')
-        if (!groupedShoutOuts[date]) {
-          groupedShoutOuts[date] = []
-        }
-        groupedShoutOuts[date].push(s)
-      })
-      return groupedShoutOuts
+      return this.groupShoutOuts(this.allShoutOuts)
     },
     myShoutOuts() {
       const profile = this.$store.getters['ps/getProfile']
@@ -83,6 +87,9 @@ export default {
         ...shoutout,
         traveller: profile,
       }))
+    },
+    groupedMyShoutOuts() {
+      return this.groupShoutOuts(this.myShoutOuts)
     },
     showTabs() {
       const role = this.$store.getters['ps/getProfile'].userRole
@@ -105,6 +112,17 @@ export default {
     })
   },
   methods: {
+    groupShoutOuts(shoutouts) {
+      let groupedShoutOuts = {}
+      shoutouts.map(s => {
+        const date = moment(s.departureTime).format('YYYYMMDD')
+        if (!groupedShoutOuts[date]) {
+          groupedShoutOuts[date] = []
+        }
+        groupedShoutOuts[date].push(s)
+      })
+      return groupedShoutOuts
+    },
     onShoutOutSelected(index) {
       this.$router.push({ name: 'shoutout', params: { id: index } })
     },
