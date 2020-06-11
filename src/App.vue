@@ -1,5 +1,6 @@
 <template>
   <v-app id="app">
+    <!-- Header -->
     <v-app-bar v-if="isHeaderVisible" flat app color="primary">
       <v-btn v-if="isBackButtonVisible" icon @click="goBack()">
         <v-icon color="white">arrow_back</v-icon>
@@ -7,7 +8,7 @@
       <v-spacer></v-spacer>
       <span class="version">{{ commithash }}</span>
     </v-app-bar>
-
+    <!-- Content -->
     <v-content>
       <router-view></router-view>
       <v-snackbar
@@ -31,28 +32,24 @@
         </v-btn>
       </v-snackbar>
     </v-content>
-
+    <!-- Footer -->
     <v-bottom-navigation v-if="isFooterVisible" v-model="selectedNav" app>
       <v-btn text value="home" to="/home">
         <span>Home</span>
         <v-icon>home</v-icon>
       </v-btn>
-
       <v-btn text value="planner" @click="routeToMode()">
         <span>Planner</span>
         <v-icon>commute</v-icon>
       </v-btn>
-
       <v-btn text value="saved" to="/tripsOverviewPage">
         <span>Bewaard</span>
         <v-icon>favorite</v-icon>
       </v-btn>
-
       <v-btn text value="community" to="/community">
         <span>Community</span>
         <v-icon>chat</v-icon>
       </v-btn>
-
       <v-btn text value="profile" to="/profile">
         <span>Profiel</span>
         <v-icon>person</v-icon>
@@ -64,6 +61,7 @@
 <script>
 import constants from '@/constants/update-messages.js'
 import hash from 'raw-loader!@/assets/current.hash'
+import ybug from './config/ybug'
 
 export default {
   name: 'App',
@@ -72,9 +70,6 @@ export default {
     commithash: hash,
   }),
   computed: {
-    appClasses: function() {
-      return this.$store.getters['ui/getAppClasses']
-    },
     selectedNav: {
       get: function() {
         return this.$store.getters['ui/getSelectedNav']
@@ -124,6 +119,10 @@ export default {
     },
   },
   mounted() {
+    const user = { name: 'netmobiel' }
+    ybug(user)
+    // Set the fcm token (for push notifications) in the local storage
+    // for so we can retrieve it later to update the profile.
     if (this.$route.query.fcm) {
       localStorage.fcm = this.$route.query.fcm
     }
@@ -135,16 +134,6 @@ export default {
   methods: {
     finishNotification: function() {
       this.$store.dispatch('ui/finishNotification')
-    },
-    onScroll(e) {
-      this.offsetTop = e.target.scrollTop
-      if (this.offsetTop > 30) {
-        if (this.appClasses.slice(-1)[0] !== 'small') {
-          this.$store.commit('ui/addAppClass', 'small')
-        }
-      } else {
-        this.$store.commit('ui/removeAppClass', 'small')
-      }
     },
     goBack: function() {
       this.$router.go(-1)

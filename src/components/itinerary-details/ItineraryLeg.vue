@@ -35,10 +35,12 @@
           <div v-if="travelMode === 'WALK'" class="borderstopped borderwidth" />
           <div v-else-if="travelMode === 'ARRIVAL'" class="no-border" />
           <div v-else-if="showdottedline" class="borderstopped borderwidth" />
+          <!-- <div v-else-if="isRideShare" class="borderrs borderwidth" /> -->
           <div v-else class="border borderwidth" />
         </v-col>
         <v-col class="description pl-2 pb-3">
           {{ description }}
+          <itinerary-leg-passenger v-if="passenger" :passenger="passenger" />
         </v-col>
       </v-row>
     </v-col>
@@ -49,9 +51,11 @@
 import moment from 'moment'
 import travelModes from '@/constants/travel-modes.js'
 import delegation from '@/utils/delegation'
+import ItineraryLegPassenger from '@/components/itinerary-details/ItineraryLegPassenger.vue'
 
 export default {
   name: 'ItineraryLeg',
+  components: { ItineraryLegPassenger },
   props: {
     leg: { type: Object, required: true },
     isMapActive: { type: Boolean, default: false },
@@ -78,8 +82,14 @@ export default {
     description() {
       return delegation(this, this.travelMode, descriptions)
     },
+    passenger() {
+      return this.leg.passenger
+    },
     isRideShare() {
-      return this.travelMode === travelModes.RIDESHARE.mode
+      return (
+        this.travelMode === travelModes.RIDESHARE.mode ||
+        (this.passenger && this.travelMode === travelModes.CAR.mode)
+      )
     },
   },
 }
@@ -111,7 +121,7 @@ const descriptions = {
     return `${this.leg.from.label} - ${this.leg.to.label}`
   },
   CAR() {
-    return this.leg.from.name
+    return this.leg.from.label
   },
   RIDESHARE() {
     return `Meerijden met ${this.leg.driverName}`
@@ -129,7 +139,7 @@ const descriptions = {
   FINISH: '',
   ARRIVAL() {
     // car arrival when sharing a ride
-    return this.leg.from.name
+    return this.leg.from.label
   },
   SUBWAY() {
     return `${this.leg.from.name} - ${this.leg.to.name}`
@@ -193,6 +203,13 @@ function humanDistance(meters) {
   background-repeat-x: no-repeat;
   height: 100%;
 }
+.borderrs {
+  background: url('../../assets/itinerarysolidlinerideshare.gif');
+  background-position: center;
+  background-repeat-x: no-repeat;
+  height: 100%;
+}
+
 .active-map {
   @extend .selected-map;
 }

@@ -22,6 +22,7 @@ export default {
       profile: {
         id: undefined,
         fcmToken: undefined,
+        image: undefined,
         searchPreferences: {
           numPassengers: 0,
           allowTransfer: true,

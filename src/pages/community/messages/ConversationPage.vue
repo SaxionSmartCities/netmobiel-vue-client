@@ -20,7 +20,7 @@
       </v-container>
     </template>
     <v-row dense>
-      <v-col id="message-container">
+      <v-col v-if="!isFetchingMessages" id="message-container">
         <template v-for="(message, index) in sortedMessages">
           <v-row :key="index">
             <v-col class="py-1">
@@ -31,6 +31,13 @@
             </v-col>
           </v-row>
         </template>
+      </v-col>
+      <v-col v-else>
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+        <span class="caption ml-2">Bericht ophalen...</span>
       </v-col>
     </v-row>
     <template v-slot:footer>
@@ -84,6 +91,7 @@ export default {
     return {
       urn: '',
       newMessage: '',
+      isFetchingMessages: true,
     }
   },
   computed: {
@@ -118,13 +126,17 @@ export default {
   updated() {
     this.scrollToBottomMessageContainer()
   },
-  async created() {
+  created() {
     //This.context is the urn as path parameter in URL.
-    //In this URN the : needs to be replaced cause javascript wont like it being used as a key
-    await this.$store.dispatch('ms/fetchMessagesByParams', {
-      context: this.context,
-      participant: this.recipient.managedIdentity,
-    })
+    //In this URN the ':' needs to be replaced cause javascript wont like it being used as a key
+    this.$store
+      .dispatch('ms/fetchMessagesByParams', {
+        context: this.context,
+        participant: this.recipient.managedIdentity,
+      })
+      .then(() => {
+        this.isFetchingMessages = false
+      })
     this.urn = (' ' + this.context.replace(/:/gi, '')).slice(1)
   },
   methods: {
@@ -138,21 +150,27 @@ export default {
       return id === this.$store.getters['ps/getProfile'].id
     },
     scrollToBottomMessageContainer(animation = false) {
-      var items = document.getElementById('message-container').children
-      if (items && items.length > 1) {
-        var last = items[items.length - 1]
-        animation
-          ? last.scrollIntoView({ behavior: 'smooth', block: 'center' })
-          : last.scrollIntoView()
+      var items = document.getElementById('message-container')
+      if (items && items.children) {
+        items = items.children
+        if (items.length > 1) {
+          var last = items[items.length - 1]
+          animation
+            ? last.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            : last.scrollIntoView()
+        }
       }
     },
     sendMessage() {
-      const envelopes = [{ recipient: this.recipient }]
+      const { familyName, givenName, managedIdentity } = this.recipient
+      const envelopes = [
+        { recipient: { familyName, givenName, managedIdentity } },
+      ]
       this.$store
         .dispatch('ms/sendMessage', {
           body: this.newMessage,
           context: this.context,
-          deliveryMode: 'MESSAGE',
+          deliveryMode: 'ALL',
           envelopes: envelopes,
           managedIdentity: this.$store.getters['ps/getProfile'].id,
           subject: 'Van A naar B',

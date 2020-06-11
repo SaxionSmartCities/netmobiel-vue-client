@@ -136,6 +136,7 @@ export default {
         !from.title ||
         !to.title ||
         !this.journeyMoment ||
+        !this.selectedCar ||
         this.journeyMoment.when < moment().add(1, 'hour')
       )
     },
@@ -149,7 +150,7 @@ export default {
         to,
         ridePlanOptions: this.$store.getters['ps/getProfile'].ridePlanOptions,
         recurrence: this.recurrence,
-        selectedTime: this.journeyMoment.when,
+        timestamp: this.journeyMoment,
       })
       this.$router.push('/planSubmitted')
     },

@@ -6,13 +6,19 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="8">
-        Voer het kenteken in:
+      <v-col cols="7" class="d-flex flex-column justify-center">
+        <span class="title font-weight-light">Voer het kenteken in:</span>
+        <span class="caption font-weight-light ml-1">
+          Vul zelf de middenstreepjes in
+        </span>
       </v-col>
       <v-col>
-        <input
+        <v-text-field
           v-model="searchLicensePlate"
-          placeholder="__-___-_"
+          dense
+          :hide-details="true"
+          outlined
+          placeholder="bv. XX-XXX-XX"
           class="search-license-plate"
           maxlength="8"
         />
@@ -134,6 +140,6 @@ export default {
 <style lang="scss">
 .search-license-plate {
   text-transform: uppercase;
-  width: 90px;
+  width: 130px;
 }
 </style>

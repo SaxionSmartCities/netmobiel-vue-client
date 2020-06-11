@@ -141,20 +141,33 @@ export default {
         )
       })
   },
-  fetchTrips: (context, payload) => {
-    const offset = payload.offset
-    const maxResults = payload.maxResults
-    const URL = `${BASE_URL}/planner/trips?maxResults=${maxResults}&offset=${offset}`
+  fetchTrips: (context, { pastTrips, offset, maxResults, until, since }) => {
+    const params = {}
+    params['maxResults'] = maxResults || 10
+    params['offset'] = offset || 0
+    until && (params['until'] = until)
+    since && (params['since'] = since)
+
+    const URL = `${BASE_URL}/planner/trips`
     axios
-      .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
+      .get(URL, {
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+        params: params,
+      })
       .then(response => {
-        if (response.status == 200 && response.data.data.length > 0) {
-          if (offset == 0) {
-            context.commit('setPlannedTrips', response.data.data)
+        if (response.status === 200 && response.data.data.length > 0) {
+          if (offset === 0) {
+            pastTrips
+              ? context.commit('setPastTrips', response.data.data)
+              : context.commit('setPlannedTrips', response.data.data)
           } else {
-            context.commit('appendPlannedTrips', response.data.data)
+            pastTrips
+              ? context.commit('appendPastTrips', response.data.data)
+              : context.commit('appendPlannedTrips', response.data.data)
           }
-          context.commit('setPlannedTripsCount', response.data.totalCount)
+          pastTrips
+            ? context.commit('setPastTripsCount', response.data.totalCount)
+            : context.commit('setPlannedTripsCount', response.data.totalCount)
         }
       })
       .catch(error => {
@@ -170,19 +183,48 @@ export default {
         )
       })
   },
-  fetchShoutOuts: (context, payload) => {
-    const lat = payload.latitude
-    const lon = payload.longitude
-    const URL = payload.maxResults
-      ? `${BASE_URL}/planner/shout-outs?maxResults=${
-          payload.maxResults
-        }&location=${lat},${lon}`
-      : `${BASE_URL}/planner/shout-outs?location=${lat},${lon}&depArrRadius=1000000`
+  fetchShoutOuts: (
+    context,
+    { latitude: lat = 52.2224, longitude: lon = 5.28248, maxResults }
+  ) => {
+    const params = {
+      maxResults: maxResults,
+      location: `${lat},${lon}`,
+      depArrRadius: 1000000,
+    }
     axios
-      .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
+      .get(BASE_URL + '/planner/shout-outs', {
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+        params: params,
+      })
       .then(response => {
-        if (response.status == 200 && response.data.data.length > 0) {
-          context.commit('setShoutOuts', response.data.data)
+        if (response.status === 200) {
+          context.commit('setShoutOutsTotalCount', response.data.totalCount)
+          response.data.data.length > 0 &&
+            context.commit('setShoutOuts', response.data.data)
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
+  fetchMyShoutOuts: (context, { offset: offset }) => {
+    const params = {
+      offset,
+      state: 'PLANNING',
+    }
+    axios
+      .get(BASE_URL + '/planner/trips', {
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+        params: params,
+      })
+      .then(response => {
+        if (response.status === 200) {
+          // When you using a offset you want to append the shoutouts and not clear the already fetched shoutouts.
+          if (offset > 0)
+            context.commit('appendMyShoutOuts', response.data.data)
+          else context.commit('setMyShoutOuts', response.data.data)
         }
       })
       .catch(error => {

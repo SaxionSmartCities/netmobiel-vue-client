@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane :clearpadding="true">
     <v-row>
       <v-col>
         <community-button
@@ -16,35 +16,25 @@
           icon="fa-map"
           forward="shoutouts"
           naam="Oproepen"
-          :aantal-berichten="11"
+          :aantal-berichten="shoutOutsTotalCount"
         ></community-button>
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
-        <community-button
-          class="mx-auto"
-          icon="fa-trophy"
-          naam="Competenties"
-          disabled="true"
-        ></community-button>
-      </v-col>
       <v-col>
         <community-button
           class="mx-auto"
           icon="fa-gift"
           naam="Rewards"
-          disabled="true"
+          :disabled="true"
         ></community-button>
       </v-col>
-    </v-row>
-    <v-row>
       <v-col>
         <community-button
           class="mx-auto"
           icon="fa-bullseye"
           naam="doelen"
-          disabled="true"
+          forward="goalOverviewPage"
         ></community-button>
       </v-col>
     </v-row>
@@ -54,10 +44,19 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import CommunityButton from '@/components/community/CommunityButton.vue'
+import { mapGetters } from 'vuex'
 export default {
   components: {
     CommunityButton: CommunityButton,
     ContentPane,
+  },
+  computed: {
+    ...mapGetters({ shoutOutsTotalCount: 'is/getShoutOutsTotalCount' }),
+  },
+  mounted() {
+    this.$store.dispatch('is/fetchShoutOuts', {
+      maxResults: 0,
+    })
   },
 }
 </script>

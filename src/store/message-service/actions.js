@@ -55,9 +55,9 @@ export default {
         console.log(error)
       })
   },
-  fetchMessagesByParams: async ({ commit }, { context, participant }) => {
+  fetchMessagesByParams: ({ commit }, { context, participant }) => {
     const URL = BASE_URL + `/communicator/messages`
-    return await axios
+    return axios
       .get(URL, {
         params: {
           context: context,
@@ -90,7 +90,7 @@ export default {
             body: payload.body,
             context: payload.context,
             creationTime: new Date(),
-            deliveryMode: 'MESSAGE',
+            deliveryMode: payload.deliveryMode,
           }
           commit('addActiveMessage', message)
           return message
