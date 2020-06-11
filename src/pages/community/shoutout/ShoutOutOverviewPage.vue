@@ -27,6 +27,7 @@
           <v-col class="py-0">
             <grouped-shout-outs
               :label="formatDate(group)"
+              :btn-text="mySoBtnText"
               :shoutouts="groupedMyShoutOuts[group]"
               @shoutoutSelected="onShoutOutSelected"
             />
@@ -49,6 +50,7 @@
         <v-col class="py-0">
           <grouped-shout-outs
             :label="formatDate(group)"
+            :btn-text="communitySoBtnText"
             :shoutouts="groupedShoutOuts[group]"
             @shoutoutSelected="onShoutOutSelected"
           />
@@ -101,21 +103,6 @@ export default {
     userRole() {
       return this.$store.getters['ps/getProfile'].userRole
     },
-    myShoutOuts() {
-      const profile = this.$store.getters['ps/getProfile']
-      const listMyShoutOuts = this.$store.getters['is/getMyShoutOuts']
-      return listMyShoutOuts.map(shoutout => ({
-        ...shoutout,
-        traveller: profile,
-      }))
-    },
-    showTabs() {
-      const role = this.$store.getters['ps/getProfile'].userRole
-      return !role || role === 'both'
-    },
-    userRole() {
-      return this.$store.getters['ps/getProfile'].userRole
-    },
   },
   created() {
     this.$store.commit('ui/showBackButton')
@@ -147,8 +134,8 @@ export default {
       })
       return groupedShoutOuts
     },
-    onShoutOutSelected(index) {
-      this.$router.push({ name: 'shoutout', params: { id: index } })
+    onShoutOutSelected({ index, isMine }) {
+      this.$router.push({ name: 'shoutout', params: { id: index, isMine } })
     },
     formatDate(date) {
       return date

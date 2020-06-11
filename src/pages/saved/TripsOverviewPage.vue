@@ -170,18 +170,6 @@ export default {
         )
       })
   },
-  beforeRouteEnter: beforeRouteEnter({
-    selectedTab: number => {
-      return number || 0
-    },
-    tripsSearchTime: searchtime => searchtime || 'Future',
-  }),
-  beforeRouteLeave: beforeRouteLeave({
-    selectedTab: number => {
-      return number || 0
-    },
-    tripsSearchTime: searchtime => searchtime,
-  }),
   methods: {
     parseDate(dateString) {
       return moment(dateString)
