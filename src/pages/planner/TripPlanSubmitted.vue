@@ -1,13 +1,17 @@
 <template>
-  <v-container>
-    <v-layout column justify-center fill-height>
-      <v-flex shrink mb-4>
+  <content-pane>
+    <v-row class="ma-auto mt-2">
+      <v-col>
         <h1>Reis gepland! 🎉</h1>
-      </v-flex>
-      <v-flex shrink>
-        Jouw reis is bevestigd. We sturen je een herrinnering voor jouw vertrek.
-      </v-flex>
-      <v-flex shrink>
+      </v-col>
+    </v-row>
+    <v-row class="ma-auto mt-2">
+      <v-col>
+        Jouw reis is bevestigd. We sturen je een herinnering voor jouw vertrek.
+      </v-col>
+    </v-row>
+    <v-row class="ma-auto mt-2">
+      <v-col>
         <v-btn
           block
           rounded
@@ -15,20 +19,20 @@
           class="my-3 button"
           @click="swapLocations()"
         >
-          Plan direct je terugreis</v-btn
-        >
+          Plan direct je terugreis
+        </v-btn>
         <v-btn block rounded depressed outlined color="primary" to="/plan">
-          Plan een nieuwe rit</v-btn
-        >
-      </v-flex>
-    </v-layout>
-  </v-container>
+          Plan een nieuwe rit
+        </v-btn>
+      </v-col>
+    </v-row>
+  </content-pane>
 </template>
 
 <script>
 export default {
   name: 'TripPlanSubmitted',
-  data: function() {
+  data() {
     return {}
   },
   methods: {
