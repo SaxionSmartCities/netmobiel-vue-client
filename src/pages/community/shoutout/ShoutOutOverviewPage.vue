@@ -28,6 +28,7 @@
             <grouped-shout-outs
               :label="formatDate(group)"
               :btn-text="mySoBtnText"
+              :my-shout-out="true"
               :shoutouts="groupedMyShoutOuts[group]"
               @shoutoutSelected="onShoutOutSelected"
             />
