@@ -11,29 +11,29 @@
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="4">Datum</v-col>
+      <v-col cols="3">Datum:</v-col>
       <v-col cols="8" class="departure-date">
         {{ formatDate() }}
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="4">Reisduur</v-col>
+      <v-col cols="3">Reisduur:</v-col>
       <v-col cols="8">
         {{ formatDuration() }}
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="4">Boekingen</v-col>
+      <v-col cols="3">Boekingen:</v-col>
       <v-col cols="8">
-        {{ ride.bookings.length }}
+        {{ numBookings }}
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="4">Auto</v-col>
-      <v-col cols="8">{{ ride.car.brand }} {{ ride.car.model }}</v-col>
+      <v-col cols="3">Auto:</v-col>
+      <v-col cols="8">{{ carBrandModel }}</v-col>
     </v-row>
     <v-row v-if="ride.recurrence" dense>
-      <v-col cols="4">Herhalen</v-col>
+      <v-col cols="3">Herhalen:</v-col>
       <v-col cols="8">
         {{ formatRecurrence() }}
         <table v-if="ride.recurrence.unit == 'WEEK'" class="equal-width">
@@ -68,7 +68,7 @@
     >
       <itinerary-leg :leg="leg" />
     </v-row>
-    <v-row v-if="ride.bookings.length > 0">
+    <v-row v-if="numBookings > 0">
       <v-col class="mx-1">
         <v-btn
           large
@@ -100,11 +100,11 @@
               Weet u dit zeker?
             </v-card-title>
 
-            <v-card-text v-if="ride.bookings.length > 0">
+            <v-card-text v-if="numBookings > 0">
               <p>
                 Op dit moment heeft uw reis
-                {{ ride.bookings.length }} boekingen, wilt u uw passagier(s) een
-                reden geven waarom u de reis annuleert.
+                {{ numBookings }} boekingen, wilt u uw passagier(s) een reden
+                geven waarom u de reis annuleert.
               </p>
               <v-textarea
                 outlined
@@ -160,10 +160,6 @@ export default {
   },
   data() {
     return {
-      // for now, assume the ride is always available (may change when deeplinking from a notification)
-      ride: this.$store.getters['cs/getRides'].find(
-        ride => ride.id === this.id
-      ),
       selectedLeg: null,
       warningDialog: false,
       cancelReason: '',
@@ -172,18 +168,37 @@ export default {
   },
   computed: {
     passengersInBookings() {
-      return this.ride.bookings.map(booking => {
-        return {
-          name:
-            booking.passenger.givenName + ' ' + booking.passenger.familyName,
-          passengerRef: booking.passengerRef,
-          ...booking.passenger,
-        }
-      })
+      let bookings = !this.ride
+        ? []
+        : this.ride.bookings.map(booking => {
+            return {
+              name: `${booking.passenger.givenName} ${
+                booking.passenger.familyName
+              }`,
+              passengerRef: booking.passengerRef,
+              ...booking.passenger,
+            }
+          })
+      return bookings
+    },
+    ride() {
+      return this.$store.getters['cs/getSelectedRide']
+    },
+    numBookings() {
+      return !this.ride.bookings ? 0 : this.ride.bookings.length
+    },
+    carBrandModel() {
+      return !this.ride.car
+        ? ''
+        : `${this.ride.car.brand} ${this.ride.car.model}`
     },
   },
-  created: function() {
+  created() {
     this.$store.commit('ui/showBackButton')
+  },
+  mounted() {
+    // Fetch the ride on details page. This is needed for deeplinking.
+    this.$store.dispatch('cs/fetchRide', { id: this.id })
   },
   methods: {
     formatDate() {
@@ -192,7 +207,7 @@ export default {
         .format('dddd DD-MM-YYYY')
     },
     formatDuration() {
-      const seconds = this.ride.estimatedDrivingTime,
+      const seconds = this.ride.duration,
         minutes = Math.round(seconds / 60)
       return minutes < 60
         ? `${minutes} minuten`
@@ -210,21 +225,52 @@ export default {
     },
     generateSteps() {
       const { ride } = this
-      const departure = moment(ride.departureTime),
-        arrival = moment(ride.estimatedArrivalTime)
-      return [
-        {
-          mode: 'CAR',
-          startTime: departure.toDate().getTime(),
-          endTime: arrival.toDate().getTime(),
-          from: { name: ride.fromPlace.label },
-        },
-        {
-          mode: 'ARRIVAL',
-          startTime: arrival.toDate().getTime(),
-          from: { name: ride.toPlace.label },
-        },
-      ]
+      if (!ride.id) return []
+      let result = []
+      let bookingDict = this.generateBookingDictionary(ride.bookings)
+      for (let i = 0; i < this.ride.legs.length - 1; i++) {
+        let currentLeg = this.ride.legs[i]
+        // TODO: Check why modality is not provided
+        currentLeg.mode = 'CAR'
+        let passenger = bookingDict.find(b => b.legRef == currentLeg.legRef)
+        if (passenger) currentLeg.passenger = passenger
+        let nextLeg = this.ride.legs[i + 1]
+        result.push(currentLeg)
+
+        // We won't show any waiting times < 60 sec -- should be made a config
+        if (nextLeg.startTime - currentLeg.endTime > 60 * 1000) {
+          // Add "WAIT" element (not from OTP).
+          result.push({
+            mode: 'WAIT',
+            startTime: currentLeg.endTime,
+            endTime: nextLeg.startTime,
+            duration: (nextLeg.startTime - currentLeg.endTime) / 1000,
+          })
+        }
+      }
+      let lastLeg = this.ride.legs[this.ride.legs.length - 1]
+      lastLeg.mode = 'CAR'
+      result.push(lastLeg)
+
+      // Finally, we push the "FINISH" element (not from OTP)
+      result.push({
+        mode: 'FINISH',
+        startTime: lastLeg.endTime,
+        to: lastLeg.to,
+      })
+      return result
+    },
+    generateBookingDictionary(bookings) {
+      let dict = []
+      for (var i = 0; i < bookings.length; i++) {
+        let map = bookings[i].legs.map(l => {
+          let dictItem = { ...bookings[i].passenger }
+          dictItem.legRef = l.legRef
+          return dictItem
+        })
+        dict = dict.concat(map)
+      }
+      return dict
     },
     onLegSelected(leg) {
       this.selectedLeg = leg
@@ -290,6 +336,7 @@ export default {
 <style scoped>
 .departure-date {
   text-transform: lowercase;
+  padding-left: 0;
 }
 .departure-date::first-letter {
   text-transform: uppercase;
