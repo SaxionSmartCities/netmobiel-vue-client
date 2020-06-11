@@ -141,20 +141,33 @@ export default {
         )
       })
   },
-  fetchTrips: (context, payload) => {
-    const offset = payload.offset
-    const maxResults = payload.maxResults
-    const URL = `${BASE_URL}/planner/trips?maxResults=${maxResults}&offset=${offset}`
+  fetchTrips: (context, { pastTrips, offset, maxResults, until, since }) => {
+    const params = {}
+    params['maxResults'] = maxResults || 10
+    params['offset'] = offset || 0
+    until && (params['until'] = until)
+    since && (params['since'] = since)
+
+    const URL = `${BASE_URL}/planner/trips`
     axios
-      .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
+      .get(URL, {
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+        params: params,
+      })
       .then(response => {
-        if (response.status == 200 && response.data.data.length > 0) {
-          if (offset == 0) {
-            context.commit('setPlannedTrips', response.data.data)
+        if (response.status === 200 && response.data.data.length > 0) {
+          if (offset === 0) {
+            pastTrips
+              ? context.commit('setPastTrips', response.data.data)
+              : context.commit('setPlannedTrips', response.data.data)
           } else {
-            context.commit('appendPlannedTrips', response.data.data)
+            pastTrips
+              ? context.commit('appendPastTrips', response.data.data)
+              : context.commit('appendPlannedTrips', response.data.data)
           }
-          context.commit('setPlannedTripsCount', response.data.totalCount)
+          pastTrips
+            ? context.commit('setPastTripsCount', response.data.totalCount)
+            : context.commit('setPlannedTripsCount', response.data.totalCount)
         }
       })
       .catch(error => {

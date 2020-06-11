@@ -16,6 +16,8 @@ export default {
     shoutOutsTotalCount: 0,
     plannedTripsCount: 0,
     plannedTrips: [],
+    pastTripsCount: 0,
+    pastTrips: [],
     planningRequest: {
       fromPlace: { lat: 0.0, lon: 0.0 },
       toPlace: { lat: 0.0, lon: 0.0 },

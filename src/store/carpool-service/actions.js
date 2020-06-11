@@ -1,6 +1,5 @@
 import axios from 'axios'
 import config from '@/config/config'
-import moment from 'moment'
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_RIDESHARE_SERVICE_API_KEY =
@@ -25,7 +24,6 @@ export default {
         context.commit('setSearchResult', resp.data)
       })
       .catch(function(error) {
-        // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
         if (!!error.response && error.response.status == 404) {
@@ -61,9 +59,16 @@ export default {
         }
       })
       .catch(function(error) {
-        // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: `Onbekende fout bij ophalen van de autos.`,
+            timeout: 3000,
+          },
+          { root: true }
+        )
       })
   },
   submitCar: (context, payload) => {
@@ -78,7 +83,6 @@ export default {
         context.dispatch('fetchCars')
       })
       .catch(function(error) {
-        // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
         if (!!error.response && error.response.status == 409) {
@@ -106,13 +110,33 @@ export default {
         context.dispatch('fetchCars')
       })
       .catch(function(error) {
-        // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
+        if (!!error.response && error.response.status == 403) {
+          context.dispatch(
+            'ui/queueNotification',
+            {
+              message: `Niet toegestaan auto (${
+                payload.licensePlate
+              }) te verwijderen.`,
+              timeout: 0,
+            },
+            { root: true }
+          )
+        } else if (!!error.response && error.response.status == 404) {
+          context.dispatch(
+            'ui/queueNotification',
+            {
+              message: `Onbekende kenteken ${payload.licensePlate}.`,
+              timeout: 0,
+            },
+            { root: true }
+          )
+        }
       })
   },
   submitRide: (context, payload) => {
-    const { ridePlanOptions, selectedTime, from, to, recurrence } = payload
+    const { ridePlanOptions, timestamp, from, to, recurrence } = payload
     if (ridePlanOptions.selectedCarId < 0) {
       context.dispatch(
         'ui/queueNotification',
@@ -126,9 +150,6 @@ export default {
     }
     const request = {
       carRef: 'urn:nb:rs:car:' + ridePlanOptions.selectedCarId,
-      // only departure time possible?
-      // this conflicts with UI that supports departure or arrival time
-      departureTime: moment(selectedTime).format('YYYY-MM-DDTHH:mm:ss'),
       recurrence,
       fromPlace: {
         label: `${from.title} ${from.vicinity}`,
@@ -144,6 +165,14 @@ export default {
       nrSeatsAvailable: ridePlanOptions.numPassengers,
       maxDetourSeconds: ridePlanOptions.maxMinutesDetour * 60,
     }
+    // Set arrival or departure time.
+    const formattedDate = timestamp.when.toISOString()
+    if (timestamp.arriving) {
+      request.arrivalTime = formattedDate
+    } else {
+      request.departureTime = formattedDate
+    }
+
     const axiosConfig = {
       method: 'POST',
       url: BASE_URL + `/rideshare/rides`,
@@ -158,10 +187,8 @@ export default {
         context.dispatch('fetchRides', { offset: 0, maxResults: 10 })
       })
       .catch(function(error) {
-        // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
-
         context.dispatch(
           'ui/queueNotification',
           {
@@ -193,13 +220,35 @@ export default {
         context.commit('setPlannedRidesCount', resp.data.totalCount)
       })
       .catch(function(error) {
-        // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
         context.dispatch(
           'ui/queueNotification',
           {
             message: 'Fout bij het ophalen van uw rit-aanbod.',
+            timeout: 0,
+          },
+          { root: true }
+        )
+      })
+  },
+  fetchRide: (context, payload) => {
+    const rideId = payload.id
+    const URL = `${BASE_URL}/rideshare/rides/${rideId}`
+    axios
+      .get(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(resp => {
+        context.commit('setSelectedRide', resp.data)
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het ophalen van uw rit.',
             timeout: 0,
           },
           { root: true }
@@ -229,9 +278,16 @@ export default {
         }
       })
       .catch(function(error) {
-        // TODO: Proper error handling.
         // eslint-disable-next-line
         console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het verwijderen van uw rit-aanbod.',
+            timeout: 0,
+          },
+          { root: true }
+        )
       })
   },
   fetchUser: (context, { userRef }) => {
@@ -242,9 +298,6 @@ export default {
       })
       .then(function(resp) {
         return resp.data
-        // if (resp.status == 200) {
-        //   context.commit('setAvailableCars', resp.data)
-        // }
       })
       .catch(function(error) {
         // TODO: Proper error handling.

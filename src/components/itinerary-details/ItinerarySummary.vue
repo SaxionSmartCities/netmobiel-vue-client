@@ -3,7 +3,7 @@
     <v-col>
       <v-row>
         <v-col cols="3" xs3>Datum:</v-col>
-        <v-col>{{ printableDate }}</v-col>
+        <v-col class="departure-date">{{ printableDate }}</v-col>
       </v-row>
       <v-row no-gutters>
         <v-col cols="3" xs3>Reisduur:</v-col>
@@ -31,10 +31,18 @@ export default {
     printableDate() {
       return moment(this.date)
         .locale('nl')
-        .format('dddd DD MMMM')
+        .format('dddd DD-MM-YYYY')
     },
   },
 }
 </script>
 
-<style lang="scss"></style>
+<style scoped>
+.departure-date {
+  text-transform: lowercase;
+  padding-left: 0;
+}
+.departure-date::first-letter {
+  text-transform: uppercase;
+}
+</style>

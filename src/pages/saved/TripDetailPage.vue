@@ -94,6 +94,7 @@
         <itinerary-options
           :selected-trip="selectedTrip"
           @tripCancelled="onTripCancelled"
+          @tripReview="onTripReview"
         >
         </itinerary-options>
       </v-col>
@@ -247,6 +248,16 @@ export default {
           tripContext: leg.tripId,
         })
       }
+    },
+    onTripReview(trip) {
+      this.$router.push({
+        name: 'reviewDriver',
+        params: {
+          tripContext: trip.tripRef,
+          //TODO get drive name via profile service for the review text TripMade?
+          // driverName: trip.
+        },
+      })
     },
     onTripCancelled(selectedTrip) {
       this.$store.dispatch('is/deleteSelectedTrip', selectedTrip)

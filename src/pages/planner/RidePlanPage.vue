@@ -150,7 +150,7 @@ export default {
         to,
         ridePlanOptions: this.$store.getters['ps/getProfile'].ridePlanOptions,
         recurrence: this.recurrence,
-        selectedTime: this.journeyMoment.when,
+        timestamp: this.journeyMoment,
       })
       this.$router.push('/planSubmitted')
     },

@@ -91,6 +91,8 @@ export default {
             ...context.state.user.profile,
             ...response.data.profiles[0],
           }
+          const imgSrc = `${BASE_URL}${response.data.profiles[0].image}`
+          profile.image = imgSrc
           context.commit('setProfile', profile)
         }
       })
