@@ -8,4 +8,5 @@ export default {
   getPastTripsCount: state => state.pastTripsCount,
   getShoutOuts: state => state.shoutOuts,
   getShoutOutsTotalCount: state => state.shoutOutsTotalCount,
+  getMyShoutOuts: state => state.myShoutOuts,
 }
