@@ -35,7 +35,7 @@
           <div v-if="travelMode === 'WALK'" class="borderstopped borderwidth" />
           <div v-else-if="travelMode === 'ARRIVAL'" class="no-border" />
           <div v-else-if="showdottedline" class="borderstopped borderwidth" />
-          <div v-else-if="isRideShare" class="borderrs borderwidth" />
+          <!-- <div v-else-if="isRideShare" class="borderrs borderwidth" /> -->
           <div v-else class="border borderwidth" />
         </v-col>
         <v-col class="description pl-2 pb-3">
