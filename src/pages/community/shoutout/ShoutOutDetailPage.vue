@@ -66,6 +66,16 @@
         <v-btn large rounded block outlined color="primary" to="/community">
           Bericht sturen naar passagier
         </v-btn>
+        <v-btn
+          large
+          rounded
+          block
+          outlined
+          color="primary"
+          :to="{ name: 'tripUpdate' }"
+        >
+          Wijzigen
+        </v-btn>
       </v-col>
     </v-row>
   </content-pane>
