@@ -30,7 +30,7 @@ export default {
     ContentPane,
     SearchOptions,
   },
-  data: function() {
+  data() {
     return {
       searchPreferences: {},
     }
