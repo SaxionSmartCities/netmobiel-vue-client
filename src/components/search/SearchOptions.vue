@@ -37,6 +37,7 @@
             </v-expansion-panel>
             <search-options-icon-expansion-panel
               v-model="luggage"
+              class="pa-0"
               @onChanged="
                 newLugagge => {
                   luggage = newLugagge
@@ -52,7 +53,11 @@
                 </v-row>
                 <v-row no-gutters>
                   <v-col class="text-end pr-3">
-                    <v-icon v-if="value.allowTransfer">check</v-icon>
+                    <v-icon v-if="value.allowFirstLegTransfer">check</v-icon>
+                    <v-icon v-else color="red">close</v-icon>
+                  </v-col>
+                  <v-col class="text-end shrink pr-3">
+                    <v-icon v-if="value.allowLastLegTransfer">check</v-icon>
                     <v-icon v-else color="red">close</v-icon>
                   </v-col>
                 </v-row>
@@ -65,20 +70,39 @@
                       type="warning"
                       color="orange"
                     >
-                      Let op: Als overstappen wordt uitgeschakeld is het alleen
-                      mogelijk om u te matchen met een directe rit. In veel
-                      gevallen zal dit niet mogelijk zijn. Het uitzetten van
-                      deze optie zal resulteren in een sterk verminderd aantal
-                      reisopties.
+                      Let op: Als overstappen aan het begin en/of aan het einde
+                      van uw reis wordt uitgeschakeld is het alleen mogelijk om
+                      u te matchen met een gehele reis met het openbaar vervoer
+                      of een directe rit. In veel gevallen zal dit niet mogelijk
+                      zijn. Het uitzetten van deze optie zal resulteren in
+                      snellere zoekresultaten maar ook in een sterk verminderd
+                      aantal reisopties.
                     </v-alert>
                   </v-col>
                 </v-row>
                 <v-row no-gutters>
-                  <v-col>
-                    Overstappen
+                  <v-col class="shrink" cols="10">
+                    Meerijden bij begin van de reis:
                   </v-col>
-                  <v-col>
-                    <v-switch v-model="value.allowTransfer" color="green">
+                  <v-col class="shrink">
+                    <v-switch
+                      v-model="value.allowFirstLegTransfer"
+                      class="switch-overwrite"
+                      color="green"
+                    >
+                    </v-switch>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col class="my-0" cols="10">
+                    Meerijden bij einde van de reis:
+                  </v-col>
+                  <v-col class="my-0">
+                    <v-switch
+                      v-model="value.allowLastLegTransfer"
+                      class="switch-overwrite"
+                      color="green"
+                    >
                     </v-switch>
                   </v-col>
                 </v-row>
@@ -229,9 +253,18 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .v-expansion-panel-header {
   padding: 10px 0;
   box-shadow: none;
+}
+
+.switch-overwrite {
+  &.v-input--selection-controls {
+    margin-top: 0px;
+  }
+}
+.v-input__control {
+  height: 32px !important;
 }
 </style>
