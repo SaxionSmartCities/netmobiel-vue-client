@@ -22,6 +22,9 @@ export default {
       nrSeats: payload.searchPreferences.numPassengers,
       modalities: payload.searchPreferences.allowedTravelModes.toString(),
       maxWalkDistance: payload.searchPreferences.maximumTransferTime,
+      firstLegRideshare:
+        payload.searchPreferences.allowFirstLegTransfer || false,
+      lastLegRideshare: payload.searchPreferences.allowLastLegTransfer || false,
     }
     const formattedDate = timestamp.when.format()
     if (timestamp.arriving) {
