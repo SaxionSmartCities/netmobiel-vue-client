@@ -173,7 +173,6 @@ export default {
   },
   saveModel(model) {
     if (model) {
-      console.log('saving model: ', model)
       return {
         when: model.when.format(TIMESTAMP_FORMAT),
         arriving: model.arriving,
@@ -182,7 +181,6 @@ export default {
   },
   restoreModel(json) {
     if (json) {
-      console.log('restoring model: ', json)
       return {
         when: moment(json.when, TIMESTAMP_FORMAT),
         arriving: json.arriving,
