@@ -44,6 +44,7 @@
 <script>
 import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import { defaultProfileImage } from '@/constants/constants'
 
 export default {
   name: 'ShoutOut',
@@ -55,13 +56,10 @@ export default {
   },
   computed: {
     profile() {
-      return this.$store.getters['ps/getUser']
-    },
-    myProfileImage() {
-      return this.$store.getters['ps/getUser'].profile.image
+      return this.$store.getters['ps/getUser'].profile
     },
     profileImage() {
-      return this.isMine ? this.myProfileImage : this.profile.image
+      return this.isMine ? this.profile.image : defaultProfileImage
     },
   },
   methods: {
