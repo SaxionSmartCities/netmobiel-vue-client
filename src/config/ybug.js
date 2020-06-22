@@ -9,14 +9,18 @@ export default function init(user) {
     // any other info you need to identify the user
   })
 
+  Ybug.on('load', function() {
+    console.log('Ybug loaded and ready')
+  })
+
   Ybug.on('open', function() {
     console.log('opened')
   })
   Ybug.on('beforesend', function(report) {
-    console.log('Before report is sent', report)
-    setTimeout(() => {
-      Ybug.close()
-    }, 100)
+    console.log('Before report is sent: '+JSON.stringify(report))
+    // setTimeout(() => {
+    //   Ybug.close()
+    // }, 100)
   })
   Ybug.on('cancel', function() {
     console.log('canceled')
