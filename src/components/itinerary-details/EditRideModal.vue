@@ -10,29 +10,43 @@
           Let op! je gaat een rit wijzigen die ingevoerd is als reeks. Wat wil
           je wijzigen?
         </p>
-      </v-card-text>
-      <v-radio-group v-model="radioRide">
-        <v-radio
-          label="Alleen deze rit"
-          value="editTripCurrent"
-          selected
-        ></v-radio>
-        <v-radio
-          label="Deze en alle volgende ritten"
-          value="EditTripCurrentAndPlanned"
-          disabled
-        ></v-radio>
-        <v-radio label="Alle ritten" value="EditTripAll" disabled></v-radio>
-      </v-radio-group>
-      <v-card-actions>
-        <v-btn text color="primary" @click="deleteTrip()">
-          Ja
-        </v-btn>
 
-        <v-btn text color="primary">
-          Nee
-        </v-btn>
-      </v-card-actions>
+        <v-radio-group v-model="radioRide">
+          <v-radio
+            label="Alleen deze rit"
+            value="editTripCurrent"
+            selected
+          ></v-radio>
+          <v-radio
+            label="Deze en alle volgende ritten"
+            value="EditTripCurrentAndPlanned"
+            disabled
+          ></v-radio>
+          <v-radio label="Alle ritten" value="EditTripAll" disabled></v-radio>
+        </v-radio-group>
+        <v-row>
+          <v-col>
+            <v-btn
+              large
+              rounded
+              block
+              mb-4
+              depressed
+              color="button"
+              max-width="400"
+            >
+              Wijzigen
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-btn large rounded outlined block mb-4 depressed color="primary">
+              Annuleren
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card-text>
     </v-card>
   </v-dialog>
 </template>
