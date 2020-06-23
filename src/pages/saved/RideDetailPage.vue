@@ -152,6 +152,7 @@
     <edit-ride-modal
       v-if="showEditRideModal"
       :show="showEditRideModal"
+      @close="showEditRideModal = false"
     ></edit-ride-modal>
   </content-pane>
 </template>

@@ -11,7 +11,7 @@
           je wijzigen?
         </p>
 
-        <v-radio-group v-model="radioRide">
+        <v-radio-group v-model="rideChoiceRadio">
           <v-radio
             label="Alleen deze rit"
             value="editTripCurrent"
@@ -41,7 +41,16 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-btn large rounded outlined block mb-4 depressed color="primary">
+            <v-btn
+              large
+              rounded
+              outlined
+              block
+              mb-4
+              depressed
+              color="primary"
+              @click="showDialog = false"
+            >
               Annuleren
             </v-btn>
           </v-col>
@@ -58,10 +67,11 @@ export default {
     show: {
       type: Boolean,
     },
-    users: {
-      type: Array,
-      default: () => [],
-    },
+  },
+  data() {
+    return {
+      rideChoiceRadio: 'rideradio-1',
+    }
   },
   computed: {
     showDialog: {
