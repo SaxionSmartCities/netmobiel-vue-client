@@ -66,7 +66,7 @@
         <v-btn large rounded block outlined color="primary" to="/community">
           Bericht sturen naar passagier
         </v-btn>
-        <v-btn large rounded block outlined color="primary" :to="tripEdit()">
+        <v-btn large rounded block outlined color="primary" @click="tripEdit()">
           Wijzigen
         </v-btn>
       </v-col>
