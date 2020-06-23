@@ -144,9 +144,12 @@ export default {
     bottom(bottom) {
       if (bottom) {
         if (this.selectedTab === 0) {
-          this.tripsSearchTime === 'Future'
-            ? this.fetchTrips(this.getPlannedTrips.length)
-            : this.fetchPastTrips(this.getPastTripsCount)
+          if (this.tripsSearchTime === 'Future') {
+            this.fetchTrips(this.getPlannedTrips.length)
+          } else {
+            console.log('planned trips count', this.getPlannedTripsCount)
+            this.fetchPastTrips(this.getPlannedTripsCount)
+          }
         } else if (this.selectedTab === 1) {
           this.fetchRides(this.getPlannedRides.length)
         }
@@ -195,13 +198,22 @@ export default {
       })
     },
     fetchPastTrips(offset = 0) {
+      console.log(
+        'fetching past trips (offset, maxResults)',
+        offset,
+        offset + this.maxResultsPastTrips
+      )
+      const pastTripsTotalCount = this.$store.getters[
+        'is/getPastTripsTotalCount'
+      ]
+      console.log('pastTripsTotalCount', pastTripsTotalCount)
       this.$store.dispatch('is/fetchTrips', {
         pastTrips: true,
         maxResults: offset + this.maxResultsPastTrips,
         offset: offset,
         sortDir: 'DESC',
         since: moment()
-          .subtract(1, 'week')
+          .subtract(1, 'month')
           .format(),
         until: moment().format(),
       })

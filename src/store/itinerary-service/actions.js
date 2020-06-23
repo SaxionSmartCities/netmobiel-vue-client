@@ -173,8 +173,8 @@ export default {
               : context.commit('appendPlannedTrips', response.data.data)
           }
           pastTrips
-            ? context.commit('setPastTripsCount', response.data.totalCount)
-            : context.commit('setPlannedTripsCount', response.data.totalCount)
+            ? context.commit('setPastTripsCount', response.data.count)
+            : context.commit('setPlannedTripsCount', response.data.count)
         }
       })
       .catch(error => {
