@@ -25,7 +25,7 @@
           </v-row>
         </v-col>
       </v-row>
-      <v-row v-if="travelMode !== 'FINISH'" no-gutters>
+      <v-row no-gutters>
         <v-col cols="2" class="pl-2">
           <v-icon v-if="showicon" :class="{ rideshare: isRideShare }">
             {{ icon }}
@@ -34,6 +34,7 @@
         <v-col cols="1" justify="center" align="center" fill-height>
           <div v-if="travelMode === 'WALK'" class="borderstopped borderwidth" />
           <div v-else-if="travelMode === 'ARRIVAL'" class="no-border" />
+          <div v-else-if="travelMode === 'FINISH'" class="no-border" />
           <div v-else-if="showdottedline" class="borderstopped borderwidth" />
           <!-- <div v-else-if="isRideShare" class="borderrs borderwidth" /> -->
           <div v-else class="border borderwidth" />
@@ -121,7 +122,8 @@ const descriptions = {
     return `${this.leg.from.label} - ${this.leg.to.label}`
   },
   CAR() {
-    return this.leg.from.label
+    //HACK: In trips label is used, in shoutouts name.
+    return this.leg.from.label || this.leg.from.name
   },
   RIDESHARE() {
     return `Meerijden met ${this.leg.driverName}`
@@ -136,10 +138,12 @@ const descriptions = {
     return `${this.leg.from.label} - ${this.leg.to.label}`
   },
   WAIT: '',
-  FINISH: '',
+  FINISH() {
+    return this.leg.to.label
+  },
   ARRIVAL() {
     // car arrival when sharing a ride
-    return this.leg.from.label
+    return this.leg.from.name
   },
   SUBWAY() {
     return `${this.leg.from.name} - ${this.leg.to.name}`

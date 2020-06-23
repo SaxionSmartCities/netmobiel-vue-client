@@ -2,16 +2,18 @@
   <v-card
     outlined
     class="shoutout-container"
-    @click="$emit('shoutoutSelected', shoutoutId)"
+    @click="$emit('shoutoutSelected', shoutout.id)"
   >
     <v-row class="mb-2">
       <v-col class="shrink">
-        <v-img class="shoutout-image" :src="profile.image" />
+        <v-img class="shoutout-image" :src="profileImage" />
       </v-col>
       <v-col>
         <p class="font-weight-regular header mb-0">Reiziger</p>
         <p class="font-weight-light subtitle-1 mb-0">
-          {{ shoutout.traveller.givenName }}
+          {{
+            isMine ? shoutout.traveller.firstName : shoutout.traveller.givenName
+          }}
         </p>
       </v-col>
       <v-col class="shrink align-center">
@@ -31,7 +33,9 @@
         <strong class="text-color-primary ">5 credits</strong>
       </v-col>
       <v-col align="end">
-        <v-btn small rounded depressed color="button">Rit aanbieden</v-btn>
+        <v-btn small rounded depressed color="button">
+          {{ btnText }}
+        </v-btn>
       </v-col>
     </v-row>
   </v-card>
@@ -40,19 +44,22 @@
 <script>
 import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import constants from '@/constants/constants'
 
 export default {
   name: 'ShoutOut',
   components: { ItineraryLeg },
   props: {
     shoutout: { type: Object, required: true },
+    btnText: { type: String, required: true },
+    isMine: { type: Boolean, required: true },
   },
   computed: {
-    shoutoutId() {
-      return this.shoutout.id
-    },
     profile() {
-      return this.$store.getters['ps/getUser']
+      return this.$store.getters['ps/getUser'].profile
+    },
+    profileImage() {
+      return this.isMine ? this.profile.image : constants.defaultProfileImage
     },
   },
   methods: {
