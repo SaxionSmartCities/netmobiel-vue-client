@@ -94,6 +94,7 @@
         <itinerary-options
           :selected-trip="selectedTrip"
           @tripCancelled="onTripCancelled"
+          @tripReview="onTripReview"
         >
         </itinerary-options>
       </v-col>
@@ -248,50 +249,65 @@ export default {
         })
       }
     },
+    onTripReview(trip) {
+      this.$router.push({
+        name: 'reviewDriver',
+        params: {
+          tripContext: trip.tripRef,
+          //TODO get drive name via profile service for the review text TripMade?
+          // driverName: trip.
+        },
+      })
+    },
     onTripCancelled(selectedTrip) {
       this.$store.dispatch('is/deleteSelectedTrip', selectedTrip)
       this.$router.push('/tripCancelledPage')
     },
-    async onDriverSelectForMessage(event) {
+    onDriverSelectForMessage(event) {
       //The backend sends an urn for now so we need to split on ':' and get the last element
       //Maybe this will later change to an id and we can delete the split code... :)
       const driverUrn = event.id
       const driverId = driverUrn.split(':').splice(-1)[0]
       //Gets the driver his profile
-      const driverProfile = await this.$store.dispatch('cs/fetchUser', {
-        userRef: driverId,
-      })
-      this.routeToConversation(event.tripContext, driverProfile)
+      this.$store
+        .dispatch('cs/fetchUser', {
+          userRef: driverId,
+        })
+        .then(driverProfile => {
+          this.routeToConversation(event.tripContext, driverProfile)
+        })
     },
-    async routeToConversation(ctx, driverProfile) {
-      const conversations = await this.$store.dispatch('ms/fetchConversations')
-      const index = conversations.findIndex(
-        conversation => conversation.context === ctx
-      )
-      let params = null
-      if (index !== -1) {
-        //So if the conversation already exists...
-        params = conversations[index]
-      } else {
-        //If the conversation does not exists
-        //Then create a ghost conversation
-        params = {
-          context: ctx,
-          participants: [
-            {
-              managedIdentity: this.$store.getters['ps/getProfile'].id,
-              urn: '',
-            },
-            {
-              ...driverProfile,
-              urn: this.getRideShareDriver,
-            },
-          ],
+    routeToConversation(ctx, driverProfile) {
+      //Get the conversations and see if it already exists
+      this.$store.dispatch('ms/fetchConversations').then(conversations => {
+        const index = conversations.findIndex(
+          conversation => conversation.context === ctx
+        )
+        let params = null
+        if (index !== -1) {
+          //So if the conversation already exists...
+          params = conversations[index]
+        } else {
+          //If the conversation does not exists
+          //Then create a ghost conversation
+          params = {
+            context: ctx,
+            participants: [
+              {
+                managedIdentity: this.$store.getters['ps/getProfile'].id,
+                urn: '',
+              },
+              {
+                ...driverProfile,
+                urn: this.getRideShareDriver,
+              },
+            ],
+          }
         }
-      }
-      this.$router.push({
-        name: `conversation`,
-        params: params,
+        this.$router.push({
+          name: `conversation`,
+          params: params,
+        })
       })
     },
   },

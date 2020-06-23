@@ -1,12 +1,12 @@
 <template>
   <v-expansion-panel>
     <v-expansion-panel-header>
-      <v-row dense>
+      <v-row no-gutters>
         <v-col>
           <span>{{ value.title }}</span>
         </v-col>
       </v-row>
-      <v-row dense justify="end" class="pr-1">
+      <v-row no-gutters justify="end" class="pr-1">
         <v-col v-for="(option, index) in selectedOptions" :key="index" cols="2">
           <v-icon>{{ option.icon }}</v-icon>
         </v-col>
@@ -50,4 +50,9 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.v-expansion-panel-header {
+  padding: 10px 0;
+  box-shadow: none;
+}
+</style>

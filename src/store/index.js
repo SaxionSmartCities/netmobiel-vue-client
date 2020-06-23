@@ -8,6 +8,7 @@ import messageService from './message-service'
 import notificationService from './notification-service'
 import profileService from './profile-service'
 import registrationService from './registration-service'
+import goalsService from './goals-service'
 import ui from './ui'
 
 Vue.use(Vuex)
@@ -22,6 +23,7 @@ export default new Vuex.Store({
     pn: notificationService,
     ps: profileService,
     rs: registrationService,
+    gos: goalsService,
     ui: ui,
   },
 })

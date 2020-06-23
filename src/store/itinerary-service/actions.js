@@ -22,6 +22,9 @@ export default {
       nrSeats: payload.searchPreferences.numPassengers,
       modalities: payload.searchPreferences.allowedTravelModes.toString(),
       maxWalkDistance: payload.searchPreferences.maximumTransferTime,
+      firstLegRideshare:
+        payload.searchPreferences.allowFirstLegTransfer || false,
+      lastLegRideshare: payload.searchPreferences.allowLastLegTransfer || false,
     }
     const formattedDate = timestamp.when.format()
     if (timestamp.arriving) {
@@ -141,20 +144,33 @@ export default {
         )
       })
   },
-  fetchTrips: (context, payload) => {
-    const offset = payload.offset
-    const maxResults = payload.maxResults
-    const URL = `${BASE_URL}/planner/trips?maxResults=${maxResults}&offset=${offset}`
+  fetchTrips: (context, { pastTrips, offset, maxResults, until, since }) => {
+    const params = {}
+    params['maxResults'] = maxResults || 10
+    params['offset'] = offset || 0
+    until && (params['until'] = until)
+    since && (params['since'] = since)
+
+    const URL = `${BASE_URL}/planner/trips`
     axios
-      .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
+      .get(URL, {
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+        params: params,
+      })
       .then(response => {
-        if (response.status == 200 && response.data.data.length > 0) {
-          if (offset == 0) {
-            context.commit('setPlannedTrips', response.data.data)
+        if (response.status === 200 && response.data.data.length > 0) {
+          if (offset === 0) {
+            pastTrips
+              ? context.commit('setPastTrips', response.data.data)
+              : context.commit('setPlannedTrips', response.data.data)
           } else {
-            context.commit('appendPlannedTrips', response.data.data)
+            pastTrips
+              ? context.commit('appendPastTrips', response.data.data)
+              : context.commit('appendPlannedTrips', response.data.data)
           }
-          context.commit('setPlannedTripsCount', response.data.totalCount)
+          pastTrips
+            ? context.commit('setPastTripsCount', response.data.totalCount)
+            : context.commit('setPlannedTripsCount', response.data.totalCount)
         }
       })
       .catch(error => {
@@ -189,6 +205,29 @@ export default {
           context.commit('setShoutOutsTotalCount', response.data.totalCount)
           response.data.data.length > 0 &&
             context.commit('setShoutOuts', response.data.data)
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  },
+  fetchMyShoutOuts: (context, { offset: offset }) => {
+    const params = {
+      offset,
+      state: 'PLANNING',
+    }
+    axios
+      .get(BASE_URL + '/planner/trips', {
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+        params: params,
+      })
+      .then(response => {
+        if (response.status === 200) {
+          // When you using a offset you want to append the shoutouts and not clear the already fetched shoutouts.
+          if (offset > 0)
+            context.commit('appendMyShoutOuts', response.data.data)
+          else context.commit('setMyShoutOuts', response.data.data)
         }
       })
       .catch(error => {
