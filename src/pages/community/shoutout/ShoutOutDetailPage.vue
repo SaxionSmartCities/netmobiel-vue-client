@@ -109,8 +109,8 @@ export default {
     tripEdit() {
       this.$router.push({
         name: 'tripUpdate',
-        params: { tripId: this.selectedTrip.tripdId },
-        query: { shoutOut: false },
+        params: { tripId: this.id },
+        query: { shoutOut: true },
       })
     },
     formatDate() {
