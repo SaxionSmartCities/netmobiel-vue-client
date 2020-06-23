@@ -16,7 +16,6 @@ export default {
     shoutOutsTotalCount: 0,
     plannedTripsCount: 0,
     plannedTrips: [],
-    pastTripsTotalCount: 0,
     pastTripsCount: 0,
     pastTrips: [],
     planningRequest: {

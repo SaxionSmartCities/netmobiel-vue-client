@@ -46,14 +46,6 @@ export default {
     state.pastTrips = state.pastTrips.concat(payload)
   },
   setPastTripsCount: (state, payload) => {
-    console.log(
-      'settings past trips count',
-      payload,
-      '(was' + state.pastTripsCount + ')'
-    )
     state.pastTripsCount += payload
-  },
-  setPastTripsTotalCount: (state, payload) => {
-    state.pastTripsTotalCount = payload
   },
 }

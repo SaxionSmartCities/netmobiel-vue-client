@@ -147,8 +147,8 @@ export default {
           if (this.tripsSearchTime === 'Future') {
             this.fetchTrips(this.getPlannedTrips.length)
           } else {
-            console.log('planned trips count', this.getPlannedTripsCount)
-            this.fetchPastTrips(this.getPlannedTripsCount)
+            console.log('getPastTrips length', this.getPastTrips.length)
+            this.fetchPastTrips(this.getPastTrips.length)
           }
         } else if (this.selectedTab === 1) {
           this.fetchRides(this.getPlannedRides.length)
