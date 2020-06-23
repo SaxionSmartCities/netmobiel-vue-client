@@ -93,6 +93,7 @@
       <v-col>
         <itinerary-options
           :selected-trip="selectedTrip"
+          @tripEdit="onTripEdit"
           @tripCancelled="onTripCancelled"
           @tripReview="onTripReview"
         >
@@ -262,6 +263,13 @@ export default {
     onTripCancelled(selectedTrip) {
       this.$store.dispatch('is/deleteSelectedTrip', selectedTrip)
       this.$router.push('/tripCancelledPage')
+    },
+    onTripEdit({ tripId }) {
+      this.$router.push({
+        name: 'tripUpdate',
+        params: { tripId },
+        query: { shoutOut: false },
+      })
     },
     onDriverSelectForMessage(event) {
       //The backend sends an urn for now so we need to split on ':' and get the last element

@@ -117,7 +117,7 @@ export default {
   methods: {
     editTrip() {
       // eslint-disable-next-line
-      console.log('Method not implemented!')
+      this.$emit('tripEdit', { tripId: this.selectedTrip.id })
     },
     replanSameRoute() {
       // eslint-disable-next-line

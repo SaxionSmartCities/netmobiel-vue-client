@@ -66,14 +66,7 @@
         <v-btn large rounded block outlined color="primary" to="/community">
           Bericht sturen naar passagier
         </v-btn>
-        <v-btn
-          large
-          rounded
-          block
-          outlined
-          color="primary"
-          :to="{ name: 'tripUpdate' }"
-        >
+        <v-btn large rounded block outlined color="primary" :to="tripEdit()">
           Wijzigen
         </v-btn>
       </v-col>
@@ -112,6 +105,13 @@ export default {
   methods: {
     bookTrip() {
       //TODO:
+    },
+    tripEdit() {
+      this.$router.push({
+        name: 'tripUpdate',
+        params: { tripId: this.selectedTrip.tripdId },
+        query: { shoutOut: false },
+      })
     },
     formatDate() {
       return this.selectedTrip.departureTime

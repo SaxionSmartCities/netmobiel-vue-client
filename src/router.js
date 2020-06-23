@@ -267,7 +267,7 @@ const router = new Router({
       name: 'tripConfirmedPage',
     },
     {
-      path: '/tripUpdate',
+      path: '/tripUpdate/:tripId',
       component: TripUpdatePage,
       name: 'tripUpdate',
       props: true,
