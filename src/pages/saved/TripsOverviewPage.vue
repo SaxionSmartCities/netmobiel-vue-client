@@ -33,6 +33,7 @@
             </v-radio-group>
           </v-col>
         </v-row>
+        <div style="height: 70%">...</div>
         <v-row v-if="tripsSearchTime === 'Past'">
           <v-col v-if="getPastTrips.length === 0">
             U heeft nog niet meegereden.
@@ -113,7 +114,7 @@ export default {
       selectedTab: 0,
       bottom: false,
       maxResults: constants.fetchTripsMaxResults,
-      maxResultsPastTrips: constants.fetchTripsMaxResults,
+      maxResultsPastTrips: constants.fetchPastTripsMaxResults,
       tripsSearchTime: 'Future',
     }
   },
@@ -143,7 +144,9 @@ export default {
     bottom(bottom) {
       if (bottom) {
         if (this.selectedTab === 0) {
-          this.fetchTrips(this.getPlannedTrips.length)
+          this.tripsSearchTime === 'Future'
+            ? this.fetchTrips(this.getPlannedTrips.length)
+            : this.fetchPastTrips(this.getPastTripsCount)
         } else if (this.selectedTab === 1) {
           this.fetchRides(this.getPlannedRides.length)
         }
@@ -194,8 +197,9 @@ export default {
     fetchPastTrips(offset = 0) {
       this.$store.dispatch('is/fetchTrips', {
         pastTrips: true,
-        maxResults: this.maxResultsPastTrips,
+        maxResults: offset + this.maxResultsPastTrips,
         offset: offset,
+        sortDir: 'DESC',
         since: moment()
           .subtract(1, 'week')
           .format(),
