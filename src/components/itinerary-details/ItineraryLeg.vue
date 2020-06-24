@@ -128,7 +128,7 @@ const descriptions = {
   WAIT: '',
   FINISH: '',
   ARRIVAL() {
-    // car arrival when sharing a ride
+    // car arrival when sharing a rideg
     return this.leg.from.name
   },
   SUBWAY() {
