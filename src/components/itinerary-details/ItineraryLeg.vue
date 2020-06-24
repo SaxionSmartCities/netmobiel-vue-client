@@ -118,7 +118,9 @@ const descriptions = {
   },
   RAIL() {
     // add platform to departure and arrival
-    return `${this.leg.from.label} perron ${this.leg.from.platformCode} - ${this.leg.to.label} perron ${this.leg.to.platformCode}`
+    return `${this.leg.from.label} perron ${this.leg.from.platformCode} - ${
+      this.leg.to.label
+    } perron ${this.leg.to.platformCode}`
   },
   BUS() {
     return `${this.leg.from.label} - ${this.leg.to.label}`
