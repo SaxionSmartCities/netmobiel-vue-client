@@ -70,7 +70,7 @@ export default {
   },
   data() {
     return {
-      rideChoiceRadio: 'rideradio-1',
+      rideChoiceRadio: 'editTripCurrent',
     }
   },
   computed: {
