@@ -85,6 +85,15 @@
     <v-row class="mb-2">
       <v-col>
         <h3 class="mb-2">Wijzigen</h3>
+        <v-row @click="editRide">
+          <v-col cols="3" class="text-center">
+            <v-icon>fa-pencil-alt</v-icon>
+          </v-col>
+          <v-col>
+            Wijzig deze rit
+          </v-col>
+        </v-row>
+        <v-divider></v-divider>
         <v-divider />
         <v-row @click="checkDeleteTrip()">
           <v-col cols="3" class="text-center">
@@ -140,6 +149,11 @@
       @close="showContactTravellerModal = false"
       @select="onTravellerSelectForMessage"
     ></contact-traveller-modal>
+    <edit-ride-modal
+      v-if="showEditRideModal"
+      :show="showEditRideModal"
+      @close="showEditRideModal = false"
+    ></edit-ride-modal>
   </content-pane>
 </template>
 
@@ -148,10 +162,16 @@ import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ContentPane from '@/components/common/ContentPane.vue'
 import ContactTravellerModal from '@/components/itinerary-details/ContactTravellerModal'
+import EditRideModal from '../../components/itinerary-details/EditRideModal'
 
 export default {
   name: 'RideDetailPage',
-  components: { ContactTravellerModal, ContentPane, ItineraryLeg },
+  components: {
+    EditRideModal,
+    ContactTravellerModal,
+    ContentPane,
+    ItineraryLeg,
+  },
   props: {
     id: {
       type: Number,
@@ -164,6 +184,7 @@ export default {
       warningDialog: false,
       cancelReason: '',
       showContactTravellerModal: false,
+      showEditRideModal: false,
     }
   },
   computed: {
@@ -299,6 +320,9 @@ export default {
       } else {
         this.onTravellerSelectForMessage(this.passengersInBookings[0])
       }
+    },
+    editRide() {
+      this.showEditRideModal = true
     },
     routeToConversation(ctx, passengerProfile) {
       this.$store.dispatch('ms/fetchConversations').then(conversations => {
