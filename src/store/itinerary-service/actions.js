@@ -144,12 +144,16 @@ export default {
         )
       })
   },
-  fetchTrips: (context, { pastTrips, offset, maxResults, until, since }) => {
+  fetchTrips: (
+    context,
+    { pastTrips, offset, maxResults, until, since, sortDir }
+  ) => {
     const params = {}
     params['maxResults'] = maxResults || 10
     params['offset'] = offset || 0
     until && (params['until'] = until)
     since && (params['since'] = since)
+    sortDir && (params['sortDir'] = sortDir)
 
     const URL = `${BASE_URL}/planner/trips`
     axios

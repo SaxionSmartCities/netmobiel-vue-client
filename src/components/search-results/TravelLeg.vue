@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     getIcon() {
-      return travelModes[this.leg.traverseMode].icon
+      return travelModes[this.leg.traverseMode]?.icon
     },
   },
 }
