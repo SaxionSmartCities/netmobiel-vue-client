@@ -194,6 +194,7 @@ export default {
       this.$store.dispatch('is/fetchTrips', {
         maxResults: this.maxResults,
         offset: offset,
+        since: moment().format(),
       })
     },
     fetchPastTrips(offset = 0) {
