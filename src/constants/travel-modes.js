@@ -51,7 +51,7 @@ export default {
     visible: false,
     mode: 'FINISH',
     label: 'Eindpunt',
-    icon: 'outlined_flag',
+    icon: '',
   },
   ARRIVAL: {
     visible: false,

@@ -27,6 +27,8 @@
           <v-col class="py-0">
             <grouped-shout-outs
               :label="formatDate(group)"
+              :btn-text="mySoBtnText"
+              :my-shout-out="true"
               :shoutouts="groupedMyShoutOuts[group]"
               @shoutoutSelected="onShoutOutSelected"
             />
@@ -49,6 +51,7 @@
         <v-col class="py-0">
           <grouped-shout-outs
             :label="formatDate(group)"
+            :btn-text="communitySoBtnText"
             :shoutouts="groupedShoutOuts[group]"
             @shoutoutSelected="onShoutOutSelected"
           />
@@ -72,6 +75,8 @@ export default {
     return {
       selectedTab: 0,
       baseLocation: 'Home',
+      communitySoBtnText: 'Rit aanbieden',
+      mySoBtnText: 'Bekijk shoutout',
     }
   },
   computed: {
@@ -130,8 +135,8 @@ export default {
       })
       return groupedShoutOuts
     },
-    onShoutOutSelected(index) {
-      this.$router.push({ name: 'shoutout', params: { id: index } })
+    onShoutOutSelected({ index, isMine }) {
+      this.$router.push({ name: 'shoutout', params: { id: index, isMine } })
     },
     formatDate(date) {
       return date
