@@ -85,6 +85,7 @@ export default {
   components: { ContentPane, ItineraryLeg },
   props: {
     id: { type: Number, required: true },
+    isMine: { type: Boolean, required: true },
   },
   data() {
     return {
@@ -95,6 +96,9 @@ export default {
     ...mapGetters({
       selectedTrip: 'is/getSelectedTrip',
     }),
+    shoutout() {
+      return {}
+    },
   },
   mounted() {
     this.$store.dispatch('is/fetchTrip', { id: this.id })

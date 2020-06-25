@@ -22,7 +22,7 @@
           Plan direct je terugreis
         </v-btn>
         <v-btn block rounded depressed outlined color="primary" to="/plan">
-          Plan een nieuwe rit
+          Plan een nieuwe reis
         </v-btn>
       </v-col>
     </v-row>

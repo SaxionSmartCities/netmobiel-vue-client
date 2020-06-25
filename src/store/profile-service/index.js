@@ -14,7 +14,6 @@ export default {
       familyName: undefined,
       fullName: undefined,
       email: undefined,
-      image: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
       rating: 2,
       maxRating: 3,
 

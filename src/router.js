@@ -240,7 +240,7 @@ const router = new Router({
       name: 'shoutouts',
     },
     {
-      path: '/shoutout/:id',
+      path: '/shoutout/:id;:isMine',
       component: ShoutOutDetailPage,
       name: 'shoutout',
       props: true,
