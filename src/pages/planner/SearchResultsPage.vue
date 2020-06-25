@@ -1,7 +1,9 @@
 <template>
   <content-pane>
     <v-row dense class="d-flex flex-column">
-      <v-col><h1>Reisopties</h1></v-col>
+      <v-col>
+        <search-criteria :planning-request="planningRequest"></search-criteria>
+      </v-col>
       <v-col my-2>
         <v-col v-if="plan.itineraries == undefined" my-4>
           Helaas, er zijn geen ritten gevonden!
@@ -103,10 +105,12 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import TravelCard from '@/components/search-results/TravelCard.vue'
 import SearchOptionsSummaryCard from '@/components/search-results/SearchOptionsSummaryCard.vue'
 import moment from 'moment'
+import SearchCriteria from '@/components/common/SearchCriteria'
 
 export default {
   name: 'SearchResultsPage',
   components: {
+    SearchCriteria,
     ContentPane,
     TravelCard,
     SearchOptionsSummaryCard,
@@ -121,6 +125,9 @@ export default {
     }
   },
   computed: {
+    planningRequest() {
+      return this.$store.getters['is/getPlanningRequest']?.result?.plan
+    },
     selectedSortModus() {
       return this.sortModi[this.selectedSortModusIndex]
     },
