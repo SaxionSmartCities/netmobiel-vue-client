@@ -46,6 +46,6 @@ export default {
     state.pastTrips = state.pastTrips.concat(payload)
   },
   setPastTripsCount: (state, payload) => {
-    state.pastTripsCount += payload
+    state.pastTripsCount = payload
   },
 }

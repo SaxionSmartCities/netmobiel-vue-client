@@ -153,7 +153,7 @@ export default {
     params['offset'] = offset || 0
     until && (params['until'] = until)
     since && (params['since'] = since)
-    since && (params['sortDir'] = sortDir)
+    sortDir && (params['sortDir'] = sortDir)
 
     const URL = `${BASE_URL}/planner/trips`
     axios
@@ -173,8 +173,8 @@ export default {
               : context.commit('appendPlannedTrips', response.data.data)
           }
           pastTrips
-            ? context.commit('setPastTripsCount', response.data.count)
-            : context.commit('setPlannedTripsCount', response.data.count)
+            ? context.commit('setPastTripsCount', response.data.totalCount)
+            : context.commit('setPlannedTripsCount', response.data.totalCount)
         }
       })
       .catch(error => {
