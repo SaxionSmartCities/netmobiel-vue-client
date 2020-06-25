@@ -10,7 +10,11 @@
           <v-icon color="white">commute</v-icon>
           <span>
             Reizen
-            <sup>{{ getPlannedTripsCount }}</sup>
+            <sup>{{
+              tripsSearchTime === 'Future'
+                ? getPlannedTripsCount
+                : getPastTripsCount
+            }}</sup>
           </span>
         </template>
 
@@ -33,7 +37,6 @@
             </v-radio-group>
           </v-col>
         </v-row>
-        <!--                <div style="height: 70%">...</div>-->
         <v-row v-if="tripsSearchTime === 'Past'">
           <v-col v-if="getPastTrips.length === 0">
             U heeft nog niet meegereden.
@@ -198,16 +201,15 @@ export default {
       })
     },
     fetchPastTrips(offset = 0) {
-      this.$store.dispatch('is/fetchTrips', {
-        pastTrips: true,
-        maxResults: offset + this.maxResultsPastTrips,
-        offset: offset,
-        sortDir: 'DESC',
-        since: moment()
-          .subtract(1, 'month')
-          .format(),
-        until: moment().format(),
-      })
+      if (offset == 0 || offset < this.getPastTripsCount) {
+        this.$store.dispatch('is/fetchTrips', {
+          pastTrips: true,
+          maxResults: this.maxResultsPastTrips,
+          offset: offset,
+          sortDir: 'DESC',
+          until: moment().format(),
+        })
+      }
     },
     fetchRides(offset = 0) {
       this.$store.dispatch('cs/fetchRides', {
