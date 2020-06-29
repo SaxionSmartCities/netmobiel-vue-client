@@ -43,13 +43,13 @@ export default {
       let location = this.$store.getters['gs/getPickedLocation'].from
       return !location.title
         ? 'Klik hier voor vertrekplek'
-        : `${location.title} ${location.vicinity}`
+        : `${location.title} ${location.vicinity || ''}`
     },
     toLocationLabel() {
       let location = this.$store.getters['gs/getPickedLocation'].to
       return !location.title
         ? 'Klik hier voor bestemming'
-        : `${location.title} ${location.vicinity}`
+        : `${location.title} ${location.vicinity || ''}`
     },
     swapLocations() {
       this.$store.commit('gs/swapLocations')

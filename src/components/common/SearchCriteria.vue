@@ -2,14 +2,48 @@
   <v-row class="">
     <v-col class="py-0">
       <div>
+        <v-btn
+          v-if="enableEdit"
+          small
+          color="primary"
+          icon
+          class="mr-5"
+          @click="$emit('change', 'from')"
+        >
+          <v-icon x-small>edit</v-icon>
+        </v-btn>
         <v-icon small>my_location</v-icon>
-        <span class="caption ml-1">{{ planningRequest.from.label }}</span>
+        <span v-if="planningRequest.from" class="caption ml-1">{{
+          planningRequest.from.label
+        }}</span>
       </div>
       <div>
+        <v-btn
+          v-if="enableEdit"
+          small
+          color="primary"
+          icon
+          class="mr-5"
+          @click="$emit('change', 'to')"
+        >
+          <v-icon x-small>edit</v-icon>
+        </v-btn>
         <v-icon small>location_on</v-icon>
-        <span class="caption ml-1">{{ planningRequest.to.label }}</span>
+        <span v-if="planningRequest.to" class="caption ml-1">{{
+          planningRequest.to.label
+        }}</span>
       </div>
       <div>
+        <v-btn
+          v-if="enableEdit"
+          small
+          color="primary"
+          icon
+          class="mr-5"
+          @click="$emit('change', 'date-time ')"
+        >
+          <v-icon x-small>edit</v-icon>
+        </v-btn>
         <v-icon small>access_time</v-icon>
         <span class="caption">
           {{ time(planningRequest).isArrival ? '(aankomst) ' : '(vertrek) ' }}
@@ -45,6 +79,7 @@ export default {
   components: { SearchOptionsSummaryCard },
   props: {
     planningRequest: { type: Object, required: true },
+    enableEdit: { type: Boolean, required: false, default: false },
   },
   data() {
     return { expandRidePrefs: false }

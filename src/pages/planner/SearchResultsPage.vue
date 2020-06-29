@@ -27,7 +27,7 @@
           <!--          </v-row>-->
           <!--          <v-divider />-->
           <v-row justify="end">
-            <v-col class="shrink pb-0 mt-2">
+            <v-col class="shrink pb-0">
               <v-btn
                 color="primary"
                 rounded
