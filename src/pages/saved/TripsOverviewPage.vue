@@ -10,7 +10,11 @@
           <v-icon color="white">commute</v-icon>
           <span>
             Reizen
-            <sup>{{ getPlannedTripsCount }}</sup>
+            <sup>{{
+              tripsSearchTime === 'Future'
+                ? getPlannedTripsCount
+                : getPastTripsCount
+            }}</sup>
           </span>
         </template>
 
@@ -113,7 +117,7 @@ export default {
       selectedTab: 0,
       bottom: false,
       maxResults: constants.fetchTripsMaxResults,
-      maxResultsPastTrips: constants.fetchTripsMaxResults,
+      maxResultsPastTrips: constants.fetchPastTripsMaxResults,
       tripsSearchTime: 'Future',
     }
   },
@@ -143,7 +147,11 @@ export default {
     bottom(bottom) {
       if (bottom) {
         if (this.selectedTab === 0) {
-          this.fetchTrips(this.getPlannedTrips.length)
+          if (this.tripsSearchTime === 'Future') {
+            this.fetchTrips(this.getPlannedTrips.length)
+          } else {
+            this.fetchPastTrips(this.getPastTrips.length)
+          }
         } else if (this.selectedTab === 1) {
           this.fetchRides(this.getPlannedRides.length)
         }
@@ -189,18 +197,19 @@ export default {
       this.$store.dispatch('is/fetchTrips', {
         maxResults: this.maxResults,
         offset: offset,
+        since: moment().format(),
       })
     },
     fetchPastTrips(offset = 0) {
-      this.$store.dispatch('is/fetchTrips', {
-        pastTrips: true,
-        maxResults: this.maxResultsPastTrips,
-        offset: offset,
-        since: moment()
-          .subtract(1, 'week')
-          .format(),
-        until: moment().format(),
-      })
+      if (offset == 0 || offset < this.getPastTripsCount) {
+        this.$store.dispatch('is/fetchTrips', {
+          pastTrips: true,
+          maxResults: this.maxResultsPastTrips,
+          offset: offset,
+          sortDir: 'DESC',
+          until: moment().format(),
+        })
+      }
     },
     fetchRides(offset = 0) {
       this.$store.dispatch('cs/fetchRides', {
