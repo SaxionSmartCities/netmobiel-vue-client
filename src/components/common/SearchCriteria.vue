@@ -11,11 +11,10 @@
       </div>
       <div>
         <v-icon small>access_time</v-icon>
-        <span class="caption ml-1">{{
-          planningRequest.arrivalTime
-            ? formatDateTime(planningRequest.arrivalTime)
-            : formatDateTime(planningRequest.departureTime)
-        }}</span>
+        <span class="caption ml-1">
+          {{ time(planningRequest).isArrival ? '(aankomst) ' : '(vertrek) ' }}
+          {{ time(planningRequest).time }}
+        </span>
       </div>
     </v-col>
   </v-row>
@@ -30,6 +29,19 @@ export default {
     planningRequest: { type: Object, required: true },
   },
   methods: {
+    time(planningRequest) {
+      if (planningRequest.arrivalTime) {
+        return {
+          time: this.formatDateTime(planningRequest.arrivalTime),
+          isArrival: true,
+        }
+      } else {
+        return {
+          time: this.formatDateTime(planningRequest.departureTime),
+          isArrival: false,
+        }
+      }
+    },
     formatDateTime(dateTime) {
       return moment(dateTime)
         .locale('nl')
