@@ -10,27 +10,29 @@
         </v-col>
         <v-col v-else class="px-0 pb-0">
           <v-divider />
-          <v-row>
-            <v-col class="py-0">
-              <v-expansion-panels>
-                <v-expansion-panel>
-                  <v-expansion-panel-header>
-                    Reisvoorkeuren tonen
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    <search-options-summary-card />
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-              </v-expansion-panels>
-            </v-col>
-          </v-row>
-          <v-divider />
+
+          <!--          <v-row>-->
+          <!--            <v-col class="py-0">-->
+          <!--              <v-expansion-panels>-->
+          <!--                <v-expansion-panel>-->
+          <!--                  <v-expansion-panel-header>-->
+          <!--                    Reisvoorkeuren tonen-->
+          <!--                  </v-expansion-panel-header>-->
+          <!--                  <v-expansion-panel-content>-->
+          <!--                    <search-options-summary-card />-->
+          <!--                  </v-expansion-panel-content>-->
+          <!--                </v-expansion-panel>-->
+          <!--              </v-expansion-panels>-->
+          <!--            </v-col>-->
+          <!--          </v-row>-->
+          <!--          <v-divider />-->
           <v-row justify="end">
             <v-col class="shrink pb-0 mt-2">
               <v-btn
                 color="primary"
                 rounded
                 outlined
+                small
                 @click="toggleSelectedSortModus()"
               >
                 {{ selectedSortModus.title }}
@@ -103,7 +105,6 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import TravelCard from '@/components/search-results/TravelCard.vue'
-import SearchOptionsSummaryCard from '@/components/search-results/SearchOptionsSummaryCard.vue'
 import moment from 'moment'
 import SearchCriteria from '@/components/common/SearchCriteria'
 
@@ -113,7 +114,6 @@ export default {
     SearchCriteria,
     ContentPane,
     TravelCard,
-    SearchOptionsSummaryCard,
   },
   data() {
     return {
