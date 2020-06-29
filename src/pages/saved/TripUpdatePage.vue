@@ -56,12 +56,6 @@ export default {
       console.log('onChangeProperty', value)
     },
     toSearch() {
-      this.$store.commit('is/setInitSearchRequest', {
-        to: this.trip.to,
-        from: this.trip.from,
-        trip: this.trip,
-      })
-      console.log('12')
       const result = {
         from: {
           title: this.trip.from.label,
