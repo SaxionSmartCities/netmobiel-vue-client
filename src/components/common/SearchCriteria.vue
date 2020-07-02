@@ -2,53 +2,53 @@
   <v-row class="">
     <v-col class="py-0">
       <div>
+        <v-icon small>my_location</v-icon>
+        <span v-if="planningRequest.from" class="caption ml-1">
+          {{ planningRequest.from.label }}
+        </span>
         <v-btn
           v-if="enableEdit"
           small
           color="primary"
           icon
-          class="mr-5"
+          class="mr-3"
           @click="$emit('change', 'from')"
         >
           <v-icon x-small>edit</v-icon>
         </v-btn>
-        <v-icon small>my_location</v-icon>
-        <span v-if="planningRequest.from" class="caption ml-1">{{
-          planningRequest.from.label
-        }}</span>
       </div>
       <div>
+        <v-icon small>location_on</v-icon>
+        <span v-if="planningRequest.to" class="caption ml-1"
+          >{{ planningRequest.to.label }}
+        </span>
         <v-btn
           v-if="enableEdit"
           small
           color="primary"
           icon
-          class="mr-5"
+          class="mr-3"
           @click="$emit('change', 'to')"
         >
           <v-icon x-small>edit</v-icon>
         </v-btn>
-        <v-icon small>location_on</v-icon>
-        <span v-if="planningRequest.to" class="caption ml-1">{{
-          planningRequest.to.label
-        }}</span>
       </div>
       <div>
-        <v-btn
-          v-if="enableEdit"
-          small
-          color="primary"
-          icon
-          class="mr-5"
-          @click="$emit('change', 'date-time ')"
-        >
-          <v-icon x-small>edit</v-icon>
-        </v-btn>
         <v-icon small>access_time</v-icon>
         <span class="caption">
           {{ time(planningRequest).isArrival ? '(aankomst) ' : '(vertrek) ' }}
           {{ time(planningRequest).time }}
         </span>
+        <v-btn
+          v-if="enableEdit"
+          small
+          color="primary"
+          icon
+          class="mr-3"
+          @click="$emit('change', 'date-time ')"
+        >
+          <v-icon x-small>edit</v-icon>
+        </v-btn>
       </div>
       <div>
         <v-icon v-if="!expandRidePrefs" small>
@@ -73,6 +73,7 @@
 <script>
 import moment from 'moment'
 import SearchOptionsSummaryCard from '@/components/search-results/SearchOptionsSummaryCard'
+import { TIMESTAMP_FORMAT } from '@/utils/datetime'
 
 export default {
   name: 'SearchCriteria',
@@ -99,7 +100,7 @@ export default {
       }
     },
     formatDateTime(dateTime) {
-      return moment(dateTime)
+      return moment(dateTime, TIMESTAMP_FORMAT)
         .locale('nl')
         .calendar()
     },

@@ -2,18 +2,25 @@
   <content-pane>
     <v-row dense class="d-flex flex-column">
       <v-col>
-        <search-criteria :planning-request="planningRequest"></search-criteria>
+        <search-criteria
+          :enable-edit="true"
+          :planning-request="planningRequest"
+          @change="onChangePlanProperty"
+        ></search-criteria>
       </v-col>
       <v-col class="py-0">
         <v-divider />
         <v-row justify="space-between">
           <v-col>
-            <v-progress-circular
-              v-if="planningStatus.status === 'PENDING'"
-              indeterminate
-              color="primary"
-            ></v-progress-circular
-          ></v-col>
+            <div v-if="planningStatus.status === 'PENDING'">
+              <h3>Zoekopdracht is verstuurd!</h3>
+              <p>Even geduld...</p>
+              <v-progress-circular
+                indeterminate
+                color="primary"
+              ></v-progress-circular>
+            </div>
+          </v-col>
           <v-col class="shrink pb-0">
             <v-btn
               v-if="plan && plan.itineraries.length !== 0"
@@ -32,36 +39,6 @@
         <v-col v-if="plan && plan.itineraries.length === 0" my-4>
           Helaas, er zijn geen ritten gevonden!
         </v-col>
-        <!--        <v-col v-else class="px-0 pb-0">-->
-        <!--                    <v-row>-->
-        <!--                      <v-col class="py-0">-->
-        <!--                        <v-expansion-panels>-->
-        <!--                          <v-expansion-panel>-->
-        <!--                            <v-expansion-panel-header>-->
-        <!--                              Reisvoorkeuren tonen-->
-        <!--                            </v-expansion-panel-header>-->
-        <!--                            <v-expansion-panel-content>-->
-        <!--                              <search-options-summary-card />-->
-        <!--                            </v-expansion-panel-content>-->
-        <!--                          </v-expansion-panel>-->
-        <!--                        </v-expansion-panels>-->
-        <!--                      </v-col>-->
-        <!--                    </v-row>-->
-        <!--                    <v-divider />-->
-        <!--          <v-row justify="end">-->
-        <!--            <v-col class="shrink pb-0">-->
-        <!--              <v-btn-->
-        <!--                      color="primary"-->
-        <!--                      rounded-->
-        <!--                      outlined-->
-        <!--                      small-->
-        <!--                      @click="toggleSelectedSortModus()"-->
-        <!--              >-->
-        <!--                {{ selectedSortModus.title }}-->
-        <!--              </v-btn>-->
-        <!--            </v-col>        -->
-        <!--          </v-row>-->
-        <!--        </v-col>-->
       </v-col>
       <v-col>
         <section
@@ -137,9 +114,6 @@ export default {
     ContentPane,
     TravelCard,
   },
-  props: {
-    editTrip: { type: Boolean, required: false, default: false },
-  },
   data() {
     return {
       selectedSortModusIndex: 0,
@@ -151,12 +125,9 @@ export default {
   },
   computed: {
     planningRequest() {
-      // if (!this.editTrip)
-      //   return this.$store.getters['is/getPlanningRequest']?.result?.plan
-
+      console.log('computed plannign request')
       const { from, to } = this.$store.getters['gs/getPickedLocation']
       const { when, arriving } = this.$store.getters['gs/getPreFilledTime']
-      console.log('planningRequest', from, to)
       const result = {
         from: { label: from.title },
         to: { label: to.title },
@@ -178,10 +149,23 @@ export default {
       return this.$store.getters['is/getPlanningResults'].plan
     },
   },
+  watch: {
+    planningRequest(newValue) {
+      console.log('IN THE WATCHER', newValue)
+    },
+  },
   created() {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
+    search() {
+      // this.$store.dispatch('is/submitPlanningsRequest', {
+      //   from: result.from,
+      //   to: result.to,
+      //   searchPreferences,
+      //   timestamp: journeyMoment,
+      // })
+    },
     getAllDifferentDays(itineraries) {
       let differentDays = []
       itineraries.forEach(it => {
@@ -200,6 +184,11 @@ export default {
           moment(sectionDay, 'LL').isSame(dateToCheck, 'month')
         )
       })
+    },
+    onChangePlanProperty(value) {
+      console.log('onChangePlanProperty ', value)
+      if (value === 'from' || value === 'to')
+        this.$router.push({ name: 'searchLocation', params: { field: value } })
     },
     formatToCategoryDate(date) {
       return moment(date, 'LL')
