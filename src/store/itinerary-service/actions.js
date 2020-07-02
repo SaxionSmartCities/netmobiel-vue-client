@@ -40,6 +40,7 @@ export default {
       })
       .then(function(res) {
         context.commit('setPlanningStatus', { status: 'SUCCESS' })
+        console.log('planning result', res.data)
         context.commit('setPlanningResults', { data: res.data })
       })
       .catch(function(error) {

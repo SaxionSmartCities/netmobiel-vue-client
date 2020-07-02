@@ -13,6 +13,7 @@
           @change="onChangeProperty"
         ></search-criteria>
         <v-btn @click="toSearch()">To Search</v-btn>
+        <v-btn @click="timeFormatTest()">test time format</v-btn>
       </v-col>
     </v-row>
   </content-pane>
@@ -21,6 +22,8 @@
 <script>
 import ContentPane from '@/components/common/ContentPane'
 import SearchCriteria from '@/components/common/SearchCriteria'
+import { TIMESTAMP_FORMAT } from '@/utils/datetime'
+import moment from 'moment'
 export default {
   name: 'TripUpdatePageVue',
   components: { SearchCriteria, ContentPane },
@@ -53,9 +56,17 @@ export default {
   },
   methods: {
     onChangeProperty(value) {
-      console.log('onChangeProperty', value)
+      console.log('onChangeProperty', value, this.trip)
+    },
+    timeFormatTest() {
+      console.log('Time:', this.trip.arrivalTime)
+      console.log(
+        'Time Formatted:',
+        moment(moment(this.trip.arrivalTime), TIMESTAMP_FORMAT)
+      )
     },
     toSearch() {
+      const isArrival = !!this.trip.arrivalTime
       const result = {
         from: {
           title: this.trip.from.label,
@@ -66,8 +77,26 @@ export default {
           position: [this.trip.to.latitude, this.trip.to.longitude],
         },
       }
+      const journeyMoment = {
+        when: isArrival
+          ? // The dates must be wrapped in a moment() object, else some values will be misinterpreted by Moment
+            moment(moment(this.trip.arrivalTime), TIMESTAMP_FORMAT)
+          : moment(moment(this.trip.departureTime), TIMESTAMP_FORMAT),
+        arriving: isArrival,
+      }
       this.$store.commit('gs/setGeoLocationsPicked', result)
-      this.$router.push({ name: 'searchRide', params: { new: false } })
+      this.$store.commit('gs/setPreFilledTime', journeyMoment)
+
+      const { searchPreferences } = this.$store.getters['ps/getProfile']
+      this.$store.dispatch('is/submitPlanningsRequest', {
+        from: result.from,
+        to: result.to,
+        searchPreferences,
+        timestamp: journeyMoment,
+      })
+      this.$store.commit('is/clearPlanningPlan')
+
+      this.$router.push({ name: 'searchResults', params: { editTrip: true } })
     },
   },
 }

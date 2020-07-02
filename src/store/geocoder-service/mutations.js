@@ -8,6 +8,9 @@ export default {
   setGeoLocationsPicked: (state, payload) => {
     state.geocoder.pickedLocations = payload
   },
+  setPreFilledTime: (state, payload) => {
+    state.geocoder.preFilledTime = payload
+  },
   swapLocations: state => {
     let tmp = state.geocoder.pickedLocations.to
     state.geocoder.pickedLocations.to = state.geocoder.pickedLocations.from

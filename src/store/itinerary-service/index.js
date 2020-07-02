@@ -27,7 +27,7 @@ export default {
         message: '',
       },
       result: {
-        plan: [],
+        plan: null,
       },
     },
   },

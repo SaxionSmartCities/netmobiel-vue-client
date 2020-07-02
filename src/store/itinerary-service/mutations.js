@@ -13,6 +13,9 @@ export default {
   clearPlanningResults: state => {
     state.planningRequest.result.data = ''
   },
+  clearPlanningPlan: state => {
+    state.planningRequest.plan = undefined
+  },
   clearPlanningRequest: state => {
     state.planningRequest.submitStatus = {
       status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'

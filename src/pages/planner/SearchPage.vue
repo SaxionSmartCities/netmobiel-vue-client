@@ -129,7 +129,7 @@ export default {
   watch: {
     journeyMoment(newValue) {
       // If the selected date is in the past
-      if (moment(newValue.when) < moment()) {
+      if (moment(newValue?.when) < moment()) {
         this.$store.dispatch(
           'ui/queueNotification',
           {
@@ -142,10 +142,27 @@ export default {
     },
     getSubmitStatus(newValue) {
       if (newValue.status === 'SUCCESS') {
-        this.$router.push('/searchResults')
+        this.$router.push({
+          name: 'searchResults',
+          params: { editTrip: true },
+        })
         this.$store.commit('is/clearPlanningRequest')
       }
     },
+  },
+  mounted() {
+    // const preFilledTime = this.$store.getters['gs/getPreFilledTime']
+    // if (preFilledTime) {
+    //   this.journeyMoment = {
+    //     when: preFilledTime.when,
+    //     ...preFilledTime,
+    //   }
+    //   this.journeyMoment = {}
+    //   this.$set(this .journeyMoment, 'when', preFilledTime.when)
+    //   this.$set(this.journeyMoment, 'arrival', preFilledTime.arriving)
+    //   const { from, to } = this.$store.getters['gs/getPickedLocation']
+    //   console.log('from title and to title', from.title, to.title)
+    // }
   },
   beforeRouteEnter: beforeRouteEnter({
     journeyMoment: DateTimeSelector.restoreModel,
@@ -160,12 +177,17 @@ export default {
     submitForm() {
       const { from, to } = this.$store.getters['gs/getPickedLocation']
       const { searchPreferences } = this.$store.getters['ps/getProfile']
+
       this.$store.dispatch('is/submitPlanningsRequest', {
         from,
         to,
         searchPreferences,
         timestamp: this.journeyMoment,
       })
+
+      this.$store.commit('gs/setPreFilledTime', this.journeyMoment)
+
+      this.$router.push({ name: 'searchResults', editTrip: true })
     },
     allowedDates(v) {
       return moment(v) >= moment().startOf('day')

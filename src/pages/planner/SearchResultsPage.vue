@@ -4,42 +4,64 @@
       <v-col>
         <search-criteria :planning-request="planningRequest"></search-criteria>
       </v-col>
+      <v-col class="py-0">
+        <v-divider />
+        <v-row justify="space-between">
+          <v-col>
+            <v-progress-circular
+              v-if="planningStatus.status === 'PENDING'"
+              indeterminate
+              color="primary"
+            ></v-progress-circular
+          ></v-col>
+          <v-col class="shrink pb-0">
+            <v-btn
+              v-if="plan && plan.itineraries.length !== 0"
+              color="primary"
+              rounded
+              outlined
+              small
+              @click="toggleSelectedSortModus()"
+            >
+              {{ selectedSortModus.title }}
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-col>
       <v-col my-2>
-        <v-col v-if="plan.itineraries == undefined" my-4>
+        <v-col v-if="plan && plan.itineraries.length === 0" my-4>
           Helaas, er zijn geen ritten gevonden!
         </v-col>
-        <v-col v-else class="px-0 pb-0">
-          <v-divider />
-
-          <!--          <v-row>-->
-          <!--            <v-col class="py-0">-->
-          <!--              <v-expansion-panels>-->
-          <!--                <v-expansion-panel>-->
-          <!--                  <v-expansion-panel-header>-->
-          <!--                    Reisvoorkeuren tonen-->
-          <!--                  </v-expansion-panel-header>-->
-          <!--                  <v-expansion-panel-content>-->
-          <!--                    <search-options-summary-card />-->
-          <!--                  </v-expansion-panel-content>-->
-          <!--                </v-expansion-panel>-->
-          <!--              </v-expansion-panels>-->
-          <!--            </v-col>-->
-          <!--          </v-row>-->
-          <!--          <v-divider />-->
-          <v-row justify="end">
-            <v-col class="shrink pb-0">
-              <v-btn
-                color="primary"
-                rounded
-                outlined
-                small
-                @click="toggleSelectedSortModus()"
-              >
-                {{ selectedSortModus.title }}
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-col>
+        <!--        <v-col v-else class="px-0 pb-0">-->
+        <!--                    <v-row>-->
+        <!--                      <v-col class="py-0">-->
+        <!--                        <v-expansion-panels>-->
+        <!--                          <v-expansion-panel>-->
+        <!--                            <v-expansion-panel-header>-->
+        <!--                              Reisvoorkeuren tonen-->
+        <!--                            </v-expansion-panel-header>-->
+        <!--                            <v-expansion-panel-content>-->
+        <!--                              <search-options-summary-card />-->
+        <!--                            </v-expansion-panel-content>-->
+        <!--                          </v-expansion-panel>-->
+        <!--                        </v-expansion-panels>-->
+        <!--                      </v-col>-->
+        <!--                    </v-row>-->
+        <!--                    <v-divider />-->
+        <!--          <v-row justify="end">-->
+        <!--            <v-col class="shrink pb-0">-->
+        <!--              <v-btn-->
+        <!--                      color="primary"-->
+        <!--                      rounded-->
+        <!--                      outlined-->
+        <!--                      small-->
+        <!--                      @click="toggleSelectedSortModus()"-->
+        <!--              >-->
+        <!--                {{ selectedSortModus.title }}-->
+        <!--              </v-btn>-->
+        <!--            </v-col>        -->
+        <!--          </v-row>-->
+        <!--        </v-col>-->
       </v-col>
       <v-col>
         <section
@@ -115,6 +137,9 @@ export default {
     ContentPane,
     TravelCard,
   },
+  props: {
+    editTrip: { type: Boolean, required: false, default: false },
+  },
   data() {
     return {
       selectedSortModusIndex: 0,
@@ -126,7 +151,25 @@ export default {
   },
   computed: {
     planningRequest() {
-      return this.$store.getters['is/getPlanningRequest']?.result?.plan
+      // if (!this.editTrip)
+      //   return this.$store.getters['is/getPlanningRequest']?.result?.plan
+
+      const { from, to } = this.$store.getters['gs/getPickedLocation']
+      const { when, arriving } = this.$store.getters['gs/getPreFilledTime']
+      console.log('planningRequest', from, to)
+      const result = {
+        from: { label: from.title },
+        to: { label: to.title },
+        isArrival: arriving,
+      }
+
+      if (arriving) result['arrivalTime'] = when
+      else result['departureTime'] = when
+
+      return result
+    },
+    planningStatus() {
+      return this.$store.getters['is/getPlanningStatus']
     },
     selectedSortModus() {
       return this.sortModi[this.selectedSortModusIndex]
@@ -164,7 +207,7 @@ export default {
         .format('dddd DD MMMM')
     },
     sortedItineraries() {
-      const list = Object.assign([], this.plan.itineraries)
+      const list = Object.assign([], this.plan?.itineraries)
       if (this.selectedSortModus.value === 'fastest') {
         list.sort((a, b) => {
           return new Date(a.duration) - new Date(b.duration)
