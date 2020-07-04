@@ -149,7 +149,6 @@ export default {
       useAsArrivalTime: timestamp.arriving,
       planType: 'SHOUT_OUT',
     }
-    //TODO: earliestDepartureTime and latestArrivalTime ?
     const URL = BASE_URL + '/planner/plans'
     axios
       .post(URL, payload, {
@@ -251,12 +250,9 @@ export default {
       })
   },
   fetchMyShoutOuts: (context, { offset: offset }) => {
-    const params = {
-      offset,
-      state: 'PLANNING',
-    }
+    const params = { offset, state: 'PLANNING', planType: 'SHOUT_OUT' }
     axios
-      .get(BASE_URL + '/planner/trips', {
+      .get(BASE_URL + '/planner/plans', {
         headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
         params: params,
       })
@@ -271,6 +267,28 @@ export default {
       .catch(error => {
         // eslint-disable-next-line
         console.log(error)
+      })
+  },
+  fetchShoutOut: (context, { id }) => {
+    const URL = `${BASE_URL}/planner/plans/${id}`
+    axios
+      .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
+      .then(response => {
+        if (response.status == 200) {
+          context.commit('setSelectedTrip', response.data)
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'Fout bij het ophalen van de reis.',
+            timeout: 0,
+          },
+          { root: true }
+        )
       })
   },
   fetchTrip: (context, payload) => {

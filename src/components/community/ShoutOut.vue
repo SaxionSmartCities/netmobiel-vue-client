@@ -2,7 +2,7 @@
   <v-card
     outlined
     class="shoutout-container"
-    @click="$emit('shoutoutSelected', shoutout.id)"
+    @click="$emit('shoutoutSelected', shoutout.planRef)"
   >
     <v-row class="mb-2">
       <v-col class="shrink">
@@ -40,9 +40,9 @@
 </template>
 
 <script>
-import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import constants from '@/constants/constants'
+import { generateShoutOutDetailSteps } from '@/utils/itinerary_steps.js'
 
 export default {
   name: 'ShoutOut',
@@ -62,22 +62,7 @@ export default {
   },
   methods: {
     generateSteps() {
-      const ride = this.shoutout
-      const departure = moment(ride.departureTime),
-        arrival = moment(ride.estimatedArrivalTime)
-      return [
-        {
-          mode: 'CAR',
-          startTime: departure.toDate().getTime(),
-          endTime: arrival.toDate().getTime(),
-          from: { name: ride.from.label },
-        },
-        {
-          mode: 'ARRIVAL',
-          startTime: arrival.toDate().getTime(),
-          from: { name: ride.to.label },
-        },
-      ]
+      return generateShoutOutDetailSteps(this.shoutout)
     },
   },
 }

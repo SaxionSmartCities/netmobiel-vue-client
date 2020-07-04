@@ -2,7 +2,7 @@
   <v-row no-gutters>
     <v-col>
       <v-row no-gutters align="center" justify="center">
-        <v-col cols="2" class="time px-0">
+        <v-col cols="2" class="time px-0 mx-a">
           {{ time }}
         </v-col>
         <v-col cols="1" align="center">
@@ -73,9 +73,11 @@ export default {
       return travelModes[this.travelMode].icon
     },
     time() {
-      return moment(this.leg.startTime)
-        .locale('nl')
-        .format('LT')
+      return this.leg.startTime
+        ? moment(this.leg.startTime)
+            .locale('nl')
+            .format('LT')
+        : '- - : - -'
     },
     header() {
       return delegation(this, this.travelMode, headers)

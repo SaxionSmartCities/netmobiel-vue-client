@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 const MIN_WAITING_TIME = 60 // Time in seconds
 
 export function generateItineraryDetailSteps(itinerary) {
@@ -32,4 +34,32 @@ export function generateItineraryDetailSteps(itinerary) {
     to: lastLeg.to,
   })
   return steps
+}
+
+export function generateShoutOutDetailSteps(shoutout) {
+  const departure = shoutout.useAsArrivalTime
+    ? null
+    : moment(shoutout.travelTime)
+        .toDate()
+        .getTime()
+  const arrival = shoutout.useAsArrivalTime
+    ? moment(shoutout.travelTime)
+        .toDate()
+        .getTime()
+    : null
+  const from = shoutout.from ? shoutout.from.label : '',
+    to = shoutout.to ? shoutout.to.label : ''
+  return [
+    {
+      mode: 'CAR',
+      startTime: departure,
+      endTime: arrival,
+      from: { name: from },
+    },
+    {
+      mode: 'ARRIVAL',
+      startTime: arrival,
+      from: { name: to },
+    },
+  ]
 }
