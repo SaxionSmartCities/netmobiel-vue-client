@@ -1,43 +1,12 @@
 <template>
   <content-pane>
-    <v-row v-if="selectedLegs && showMap" class="pa-0">
-      <v-col class="pa-0">
-        <route-map
-          ref="mapComp"
-          :legs="selectedLegs"
-          :map-size-prop="mapSize"
-          @sizeChanged="onMapSizeChanged"
-          @closeMap="showMap = false"
-        >
-        </route-map>
-      </v-col>
-    </v-row>
-    <v-row dense class="d-flex flex-column">
-      <v-col><h1>Reisdetails</h1></v-col>
-      <v-col><v-divider /></v-col>
+    <v-row>
       <v-col class="py-0">
-        <itinerary-summary
-          :date="selectedTrip.itinerary.departureTime"
-          :duration="selectedTrip.itinerary.duration"
-          :cost="5"
+        <trip-details
+          :trip="selectedTrip"
+          :show-map="showMap"
+          @closeMap="showMap = false"
         />
-      </v-col>
-      <v-col><v-divider /></v-col>
-      <v-col class="py-4">
-        <v-row class="flex-column">
-          <v-col
-            v-for="(leg, index) in generateSteps"
-            :key="index"
-            class="py-0"
-          >
-            <itinerary-leg
-              :is-map-active="selectedLegsIndex === index"
-              :step="index"
-              :leg="leg"
-              @legSelect="onLegSelected"
-            />
-          </v-col>
-        </v-row>
       </v-col>
     </v-row>
     <v-row>
@@ -75,35 +44,23 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
-import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
-import RouteMap from '@/components/itinerary-details/RouteMap.vue'
-
-import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
+import TripDetails from '@/components/itinerary-details/TripDetails.vue'
 
 export default {
   name: 'ItineraryDetailPage',
   components: {
-    RouteMap,
     ContentPane,
-    ItinerarySummary,
-    ItineraryLeg,
+    TripDetails,
   },
   data() {
     return {
-      selectedLegs: null,
-      selectedLegsIndex: null,
-      showMap: true,
-      mapSize: 'small',
+      showMap: false,
       showConfirmationButton: true,
     }
   },
   computed: {
     selectedTrip() {
       return this.$store.getters['is/getSelectedTrip']
-    },
-    generateSteps() {
-      return generateItineraryDetailSteps(this.selectedTrip.itinerary)
     },
     showSection() {
       return this.showConfirmationButton
@@ -116,36 +73,13 @@ export default {
     }
   },
   methods: {
-    onMapSizeChanged({ size }) {
-      this.mapSize = size
-    },
     saveTrip() {
       this.$store
         .dispatch('is/storeSelectedTrip', this.selectedTrip)
         .then(() => this.$router.push('/tripPlanSubmitted'))
     },
-    onLegSelected({ leg, step }) {
-      if (this.selectedLegsIndex === step && this.showMap) {
-        this.showMap = false
-        this.selectedLegsIndex = null
-      } else {
-        this.selectedLegs = [leg]
-        this.selectedLegsIndex = step
-        this.forceRerender()
-      }
-    },
-    forceRerender() {
-      // Remove my-component from the DOM
-      this.showMap = false
-      this.$nextTick(() => {
-        // Add the component back in
-        this.showMap = true
-      })
-    },
     showFullRouteOnMap() {
-      this.mapSize = 'fullscreen'
-      this.selectedLegs = this.selectedTrip.itinerary.legs
-      this.forceRerender()
+      this.showMap = true
     },
   },
 }
