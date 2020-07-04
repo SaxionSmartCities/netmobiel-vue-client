@@ -88,7 +88,9 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
-import RouteMap from '@/components/itinerary-details/RouteMap'
+import RouteMap from '@/components/itinerary-details/RouteMap.vue'
+
+import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
 
 export default {
   name: 'ItineraryDetailPage',
@@ -112,37 +114,7 @@ export default {
       return this.$store.getters['is/getSelectedTrip']
     },
     generateSteps() {
-      let itinerary = this.selectedTrip.itinerary
-      if (!itinerary.legs || itinerary.legs.length == 0) {
-        return []
-      }
-      let result = []
-      for (let i = 0; i < itinerary.legs.length - 1; i++) {
-        let currentLeg = itinerary.legs[i]
-        let nextLeg = itinerary.legs[i + 1]
-        result.push(currentLeg)
-
-        // We won't show any waiting times < 60 sec -- should be made a config
-        if (nextLeg.startTime - currentLeg.endTime > 60 * 1000) {
-          // Add "WAIT" element (not from OTP).
-          result.push({
-            mode: 'WAIT',
-            startTime: currentLeg.endTime,
-            endTime: nextLeg.startTime,
-            duration: (nextLeg.startTime - currentLeg.endTime) / 1000,
-          })
-        }
-      }
-      let lastLeg = itinerary.legs[itinerary.legs.length - 1]
-      result.push(lastLeg)
-
-      // Finally, we push the "FINISH" element (not from OTP)
-      result.push({
-        mode: 'FINISH',
-        startTime: lastLeg.endTime,
-        to: lastLeg.to,
-      })
-      return result
+      return generateItineraryDetailSteps(this.selectedTrip.itinerary)
     },
     showSection() {
       return this.showConfirmationButton
