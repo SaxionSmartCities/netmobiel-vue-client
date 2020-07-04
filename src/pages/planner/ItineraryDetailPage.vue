@@ -131,9 +131,8 @@ export default {
       this.mapSize = size
     },
     saveTrip() {
-      const selectedTrip = this.$store.getters['is/getSelectedTrip']
       this.$store
-        .dispatch('is/storeSelectedTrip', selectedTrip)
+        .dispatch('is/storeSelectedTrip', this.selectedTrip)
         .then(() => this.$router.push('/tripPlanSubmitted'))
     },
     onLegSelected({ leg, step }) {
