@@ -131,7 +131,52 @@ export default {
         console.log(error)
         context.dispatch(
           'ui/queueNotification',
-          { message: 'Fout bij het annuleren van de reis.', timeout: 0 },
+          { message: 'Fout bij het opslaan van de reis.', timeout: 0 },
+          { root: true }
+        )
+      })
+  },
+  storeShoutOut: (context, { from, to, timestamp, preferences }) => {
+    let payload = {
+      from,
+      to,
+      nrSeats: preferences.numPassengers,
+      modalities: preferences.allowedTravelModes,
+      maxWalkDistance: preferences.maximumTransferTime,
+      firstLegRideshare: preferences.allowFirstLegTransfer || false,
+      lastLegRideshare: preferences.allowLastLegTransfer || false,
+      travelTime: timestamp.when.format(),
+      useAsArrivalTime: timestamp.arriving,
+      planType: 'SHOUT_OUT',
+    }
+    //TODO: earliestDepartureTime and latestArrivalTime ?
+    const URL = BASE_URL + '/planner/plans'
+    axios
+      .post(URL, payload, {
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      })
+      .then(response => {
+        if (response.status == 201) {
+          let message = 'Oproep naar de community is geplaatst'
+          context.dispatch(
+            'ui/queueNotification',
+            { message: message, timeout: 3000 },
+            { root: true }
+          )
+        } else {
+          context.dispatch(
+            'ui/queueNotification',
+            { message: response.data.message, timeout: 0 },
+            { root: true }
+          )
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          { message: 'Fout bij het opslaan van uw oproep.', timeout: 0 },
           { root: true }
         )
       })
