@@ -172,6 +172,9 @@ function humanDistance(meters) {
 }
 .header {
   font-size: 0.9em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .description {
   font-size: 0.7em;
