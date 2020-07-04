@@ -173,7 +173,8 @@ export default {
       let selectedTrip = {
         from: this.plan.from,
         to: this.plan.to,
-        ...this.plan.itineraries[index],
+        nrSeats: this.plan.nrSeats,
+        itinerary: this.plan.itineraries[index],
       }
       this.$store.commit('is/setSelectedTrip', selectedTrip)
       this.$router.push('/itineraryDetailPage')
