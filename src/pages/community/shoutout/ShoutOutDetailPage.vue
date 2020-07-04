@@ -3,12 +3,13 @@
     <v-row>
       <v-col class="py-0">
         <v-row dense class="d-flex flex-column">
-          <v-col><h1>Reisdetails</h1></v-col>
+          <v-col><h1>Oproep details</h1></v-col>
           <v-col><v-divider /></v-col>
           <v-col class="py-0">
             <itinerary-summary
+              :from="trip.from.label"
+              :to="trip.to.label"
               :date="trip.travelTime"
-              :duration="180"
               :revenue="15"
             />
           </v-col>
@@ -21,9 +22,17 @@
             >
               <itinerary-leg :leg="leg" />
             </v-row>
-
-            <v-row class="mb-0">
-              <v-col class="pb-0">
+            <v-row dense class="d-flex flex-column">
+              <v-col><v-divider /></v-col>
+              <v-col>
+                <h3>Rit aanbod</h3>
+              </v-col>
+              <v-col class="py-3">
+                <em>Er zijn nog geen ritten aangeboden.</em>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="pt-3 pb-0">
                 <h3>Wijzigen</h3>
               </v-col>
             </v-row>
