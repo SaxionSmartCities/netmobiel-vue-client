@@ -26,7 +26,7 @@
       </v-col>
     </v-row>
     <v-row v-if="!isShoutOut">
-      <v-col>
+      <v-col class="pt-0">
         <v-btn
           large
           rounded
