@@ -13,6 +13,7 @@
     <v-row class="ma-auto mt-2">
       <v-col>
         <v-btn
+          large
           block
           rounded
           depressed
@@ -21,7 +22,15 @@
         >
           Plan direct je terugreis
         </v-btn>
-        <v-btn block rounded depressed outlined color="primary" to="/plan">
+        <v-btn
+          large
+          block
+          rounded
+          depressed
+          outlined
+          color="primary"
+          to="/plan"
+        >
           Plan een nieuwe reis
         </v-btn>
       </v-col>
