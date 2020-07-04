@@ -21,9 +21,9 @@
       </v-col>
       <v-col class="py-0">
         <itinerary-summary
-          :date="selectedTrip.departureTime"
+          :date="selectedTrip.itinerary.departureTime"
           :cost="5"
-          :duration="selectedTrip.duration"
+          :duration="selectedTrip.itinerary.duration"
         >
         </itinerary-summary>
       </v-col>
@@ -112,13 +112,14 @@ export default {
       return this.$store.getters['is/getSelectedTrip']
     },
     generateSteps() {
-      if (!this.selectedTrip.legs || this.selectedTrip.legs.length == 0) {
+      let itinerary = this.selectedTrip.itinerary
+      if (!itinerary.legs || itinerary.legs.length == 0) {
         return []
       }
       let result = []
-      for (let i = 0; i < this.selectedTrip.legs.length - 1; i++) {
-        let currentLeg = this.selectedTrip.legs[i]
-        let nextLeg = this.selectedTrip.legs[i + 1]
+      for (let i = 0; i < itinerary.legs.length - 1; i++) {
+        let currentLeg = itinerary.legs[i]
+        let nextLeg = itinerary.legs[i + 1]
         result.push(currentLeg)
 
         // We won't show any waiting times < 60 sec -- should be made a config
@@ -132,7 +133,7 @@ export default {
           })
         }
       }
-      let lastLeg = this.selectedTrip.legs[this.selectedTrip.legs.length - 1]
+      let lastLeg = itinerary.legs[itinerary.legs.length - 1]
       result.push(lastLeg)
 
       // Finally, we push the "FINISH" element (not from OTP)
