@@ -9,9 +9,9 @@
         <v-col cols="3" class="bold">Reisduur</v-col>
         <v-col>{{ Math.round(duration / 60) }} minuten</v-col>
       </v-row>
-      <v-row no-gutters>
+      <v-row v-if="cost" no-gutters>
         <v-col cols="3" class="bold">Kosten</v-col>
-        <v-col>Onbekend aantal credits</v-col>
+        <v-col>{{ cost }} credits</v-col>
       </v-row>
     </v-col>
   </v-row>
