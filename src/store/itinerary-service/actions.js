@@ -109,7 +109,8 @@ export default {
         )
       })
   },
-  storeSelectedTrip: (context, payload) => {
+  storeSelectedTrip: (context, { from, to, nrSeats, itineraryRef }) => {
+    let payload = { from, to, nrSeats, itineraryRef }
     const URL = BASE_URL + '/planner/trips'
     axios
       .post(URL, payload, {
@@ -117,10 +118,7 @@ export default {
       })
       .then(response => {
         if (response.status == 201) {
-          let message = 'Oproep naar de community is geplaatst'
-          if (payload.legs && payload.legs.length > 0) {
-            message = 'Reis bevestigd'
-          }
+          let message = 'Uw reis is bevestigd!'
           context.dispatch(
             'ui/queueNotification',
             { message: message, timeout: 3000 },
