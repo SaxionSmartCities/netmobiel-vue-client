@@ -12,25 +12,19 @@ function generateHeader(key) {
 }
 
 export default {
-  submitPlanningsRequest: (context, payload) => {
-    context.commit('storePlanningRequest', payload)
+  submitPlanningsRequest: (context, { from, to, timestamp, preferences }) => {
+    context.commit('storePlanningRequest', { from, to, timestamp, preferences })
     const URL = BASE_URL + '/planner/search/plan'
-    const { from, to, timestamp } = payload
     const params = {
       from: `${from.title}::${from.position[0]},${from.position[1]}`,
       to: `${to.title}::${to.position[0]},${to.position[1]}`,
-      nrSeats: payload.searchPreferences.numPassengers,
-      modalities: payload.searchPreferences.allowedTravelModes.toString(),
-      maxWalkDistance: payload.searchPreferences.maximumTransferTime,
-      firstLegRideshare:
-        payload.searchPreferences.allowFirstLegTransfer || false,
-      lastLegRideshare: payload.searchPreferences.allowLastLegTransfer || false,
-    }
-    const formattedDate = timestamp.when.format()
-    if (timestamp.arriving) {
-      params['arrivalTime'] = formattedDate
-    } else {
-      params['departureTime'] = formattedDate
+      nrSeats: preferences.numPassengers,
+      modalities: preferences.allowedTravelModes.toString(),
+      maxWalkDistance: preferences.maximumTransferTime,
+      firstLegRideshare: preferences.allowFirstLegTransfer || false,
+      lastLegRideshare: preferences.allowLastLegTransfer || false,
+      travelTime: timestamp.when.format(),
+      useAsArrivalTime: timestamp.arriving,
     }
     context.commit('setPlanningStatus', { status: 'PENDING' })
     axios

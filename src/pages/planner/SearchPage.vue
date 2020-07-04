@@ -163,7 +163,7 @@ export default {
       this.$store.dispatch('is/submitPlanningsRequest', {
         from,
         to,
-        searchPreferences,
+        preferences: searchPreferences,
         timestamp: this.journeyMoment,
       })
     },
