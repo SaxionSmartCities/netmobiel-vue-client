@@ -56,8 +56,8 @@
         <v-expand-transition>
           <v-row
             v-if="
-              getSubmitStatus.status === 'PENDING' ||
-                getSubmitStatus.status === 'SUCCESS'
+              planningResponse.status === 'PENDING' ||
+                planningResponse.status === 'SUCCESS'
             "
           >
             <v-col class="box-widget background-white" shrink>
@@ -66,8 +66,8 @@
                   <v-progress-circular
                     indeterminate
                     :class="{
-                      makeBlue: getSubmitStatus.status === 'PENDING',
-                      rotate: getSubmitStatus.status === 'SUCCESS',
+                      makeBlue: planningResponse.status === 'PENDING',
+                      rotate: planningResponse.status === 'SUCCESS',
                     }"
                   >
                   </v-progress-circular>
@@ -99,7 +99,7 @@ export default {
     FromToFields,
     DateTimeSelector,
   },
-  data: function() {
+  data() {
     return {
       journeyMoment: undefined,
       pickedLocationState: 'NOTHING',
@@ -107,7 +107,7 @@ export default {
     }
   },
   computed: {
-    disabledSubmit: function() {
+    disabledSubmit() {
       const { from, to } = this.$store.getters['gs/getPickedLocation']
       return (
         !from.title ||
@@ -116,13 +116,13 @@ export default {
         this.journeyMoment.when < moment().add(1, 'hour')
       )
     },
-    showForm: function() {
+    showForm() {
       return (
-        this.getSubmitStatus.status === 'UNSUBMITTED' ||
-        this.getSubmitStatus.status === 'FAILED'
+        this.planningResponse.status === 'UNSUBMITTED' ||
+        this.planningResponse.status === 'FAILED'
       )
     },
-    getSubmitStatus() {
+    planningResponse() {
       return this.$store.getters['is/getPlanningStatus']
     },
   },
@@ -140,7 +140,7 @@ export default {
         )
       }
     },
-    getSubmitStatus(newValue) {
+    planningResponse(newValue) {
       if (newValue.status === 'SUCCESS') {
         this.$router.push('/searchResults')
         this.$store.commit('is/clearPlanningRequest')
