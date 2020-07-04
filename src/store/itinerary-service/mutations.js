@@ -1,8 +1,9 @@
 export default {
   storePlanningRequest: (state, payload) => {
-    state.planningRequest.fromPlace = payload.fromPlace
-    state.planningRequest.toPlace = payload.toPlace
-    state.planningRequest.selectedTime = payload.timestamp
+    state.planningRequest.from = payload.from
+    state.planningRequest.to = payload.to
+    state.planningRequest.timestamp = payload.timestamp
+    state.planningRequest.preferences = payload.preferences
   },
   setPlanningStatus: (state, payload) => {
     state.planningRequest.submitStatus = payload
