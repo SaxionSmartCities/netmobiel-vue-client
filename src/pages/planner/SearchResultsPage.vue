@@ -175,6 +175,7 @@ export default {
         to: this.plan.to,
         nrSeats: this.plan.nrSeats,
         itinerary: this.plan.itineraries[index],
+        itineraryRef: this.plan.itineraries[index].itineraryRef,
       }
       this.$store.commit('is/setSelectedTrip', selectedTrip)
       this.$router.push('/itineraryDetailPage')
