@@ -53,14 +53,6 @@
             </v-col>
           </v-row>
         </v-expand-transition>
-        <v-expand-transition>
-          <search-status
-            v-if="
-              planningResponse.status === 'PENDING' ||
-                planningResponse.status === 'SUCCESS'
-            "
-          />
-        </v-expand-transition>
       </v-col>
     </v-row>
   </content-pane>
@@ -71,7 +63,6 @@ import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
-import SearchStatus from '@/components/search/SearchStatus.vue'
 
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 
@@ -80,7 +71,6 @@ export default {
     ContentPane,
     FromToFields,
     DateTimeSelector,
-    SearchStatus,
   },
   data() {
     return {
@@ -99,9 +89,6 @@ export default {
         this.journeyMoment.when < moment().add(1, 'hour')
       )
     },
-    planningResponse() {
-      return this.$store.getters['is/getPlanningStatus']
-    },
   },
   watch: {
     journeyMoment(newValue) {
@@ -115,15 +102,6 @@ export default {
           },
           { root: true }
         )
-      }
-    },
-    planningResponse(newValue) {
-      if (newValue.status === 'SUCCESS') {
-        this.$router.push({
-          name: 'searchResults',
-          params: { editTrip: true },
-        })
-        this.$store.commit('is/clearPlanningRequest')
       }
     },
   },
@@ -154,16 +132,13 @@ export default {
     submitForm() {
       const { from, to } = this.$store.getters['gs/getPickedLocation']
       const { searchPreferences } = this.$store.getters['ps/getProfile']
-
       this.$store.dispatch('is/submitPlanningsRequest', {
         from,
         to,
         preferences: searchPreferences,
         timestamp: this.journeyMoment,
       })
-
       this.$store.commit('gs/setPreFilledTime', this.journeyMoment)
-
       this.$router.push({ name: 'searchResults', editTrip: true })
     },
     allowedDates(v) {

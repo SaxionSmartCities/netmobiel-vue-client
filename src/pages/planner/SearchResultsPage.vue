@@ -182,6 +182,9 @@ export default {
     planRequest() {
       return this.$store.getters['is/getPlanningRequest']
     },
+    planningResponse() {
+      return this.$store.getters['is/getPlanningStatus']
+    },
     planResult() {
       return this.$store.getters['is/getPlanningResults'].plan
     },
@@ -192,6 +195,15 @@ export default {
   watch: {
     planningRequest(newValue) {
       console.log('IN THE WATCHER', newValue)
+    },
+    planningResponse(newValue) {
+      if (newValue.status === 'SUCCESS') {
+        this.$router.push({
+          name: 'searchResults',
+          params: { editTrip: true },
+        })
+        this.$store.commit('is/clearPlanningRequest')
+      }
     },
   },
   created() {
