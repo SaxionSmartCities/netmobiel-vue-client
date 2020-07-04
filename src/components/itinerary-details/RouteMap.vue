@@ -16,12 +16,12 @@
       <mgl-marker
         v-if="destinationCoordinates.length > 1"
         :coordinates="destinationCoordinates"
-        color="red"
+        color="#ff8500"
       />
     </mgl-map>
     <div class="ghost-map"></div>
     <v-row v-if="!isLoading">
-      <v-col>
+      <v-col class="py-0">
         <v-btn
           v-if="mapSize !== 'fullscreen'"
           fab
@@ -33,9 +33,9 @@
         </v-btn>
         <v-btn
           v-if="mapSize === 'fullscreen'"
-          class="map-fullscreen-exit"
           fab
           small
+          class="map-fullscreen-exit"
           @click="mapSize = 'small'"
         >
           <v-icon>
@@ -43,7 +43,7 @@
           </v-icon>
         </v-btn>
       </v-col>
-      <v-col>
+      <v-col class="py-0">
         <v-btn fab small class="map-close" @click="$emit('closeMap')">
           <v-icon>close</v-icon>
         </v-btn>
@@ -194,7 +194,7 @@ export default {
         },
         paint: {
           'line-width': 4,
-          'line-color': '#007cbf',
+          'line-color': '#2e8997',
           'line-dasharray': [2, 4],
         },
       })
@@ -256,8 +256,8 @@ export default {
           'line-cap': 'round',
         },
         paint: {
-          'line-color': '#007cbf',
-          'line-width': 1,
+          'line-color': '#2e8997',
+          'line-width': 4,
         },
       })
       const finalDestinationCoordinates =

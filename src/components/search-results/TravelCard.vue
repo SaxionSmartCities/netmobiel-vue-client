@@ -7,7 +7,10 @@
     <v-row no-gutters>
       <v-col>
         <v-card-title class="d-flex justify-space-between">
-          <h4>Vertrek</h4>
+          <v-row no-gutters>
+            <v-col cols="9" class="subtitle-1">Vertrek</v-col>
+            <v-col class="subtitle-1" align="left">Aankomst</v-col>
+          </v-row>
           <div v-if="needsReview" class="not-confirmed">
             Niet bevestigd!
             <!-- <v-btn
@@ -22,7 +25,10 @@
           </div>
         </v-card-title>
         <v-card-subtitle>
-          {{ formatDateTime(departureTime) }}
+          <v-row no-gutters class="pb-2">
+            <v-col cols="9">{{ formatDateTime(departureTime) }}</v-col>
+            <v-col>{{ formatDateTime(arrivalTime) }}</v-col>
+          </v-row>
         </v-card-subtitle>
         <v-card-text>
           <v-row no-gutters class="pb-2">
@@ -78,7 +84,7 @@ export default {
     formatDateTime(dateTime) {
       return moment(dateTime)
         .locale('nl')
-        .calendar()
+        .format('HH:mm uur')
     },
     // Function to pre-determine the divions of column per leg
     calculateLegDivison() {

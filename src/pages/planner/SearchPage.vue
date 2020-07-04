@@ -54,31 +54,12 @@
           </v-row>
         </v-expand-transition>
         <v-expand-transition>
-          <v-row
+          <search-status
             v-if="
-              getSubmitStatus.status === 'PENDING' ||
-                getSubmitStatus.status === 'SUCCESS'
+              planningResponse.status === 'PENDING' ||
+                planningResponse.status === 'SUCCESS'
             "
-          >
-            <v-col class="box-widget background-white" shrink>
-              <v-row>
-                <v-col cols="3" xs-3 mt-2>
-                  <v-progress-circular
-                    indeterminate
-                    :class="{
-                      makeBlue: getSubmitStatus.status === 'PENDING',
-                      rotate: getSubmitStatus.status === 'SUCCESS',
-                    }"
-                  >
-                  </v-progress-circular>
-                </v-col>
-                <v-col>
-                  <h3>Zoekopdracht is verstuurd!</h3>
-                  <p>Even geduld...</p>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
+          />
         </v-expand-transition>
       </v-col>
     </v-row>
@@ -90,6 +71,7 @@ import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
+import SearchStatus from '@/components/search/SearchStatus.vue'
 
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 
@@ -98,8 +80,9 @@ export default {
     ContentPane,
     FromToFields,
     DateTimeSelector,
+    SearchStatus,
   },
-  data: function() {
+  data() {
     return {
       journeyMoment: undefined,
       pickedLocationState: 'NOTHING',
@@ -107,7 +90,7 @@ export default {
     }
   },
   computed: {
-    disabledSubmit: function() {
+    disabledSubmit() {
       const { from, to } = this.$store.getters['gs/getPickedLocation']
       return (
         !from.title ||
@@ -116,13 +99,13 @@ export default {
         this.journeyMoment.when < moment().add(1, 'hour')
       )
     },
-    showForm: function() {
+    showForm() {
       return (
-        this.getSubmitStatus.status === 'UNSUBMITTED' ||
-        this.getSubmitStatus.status === 'FAILED'
+        this.planningResponse.status === 'UNSUBMITTED' ||
+        this.planningResponse.status === 'FAILED'
       )
     },
-    getSubmitStatus() {
+    planningResponse() {
       return this.$store.getters['is/getPlanningStatus']
     },
   },
@@ -140,7 +123,7 @@ export default {
         )
       }
     },
-    getSubmitStatus(newValue) {
+    planningResponse(newValue) {
       if (newValue.status === 'SUCCESS') {
         this.$router.push('/searchResults')
         this.$store.commit('is/clearPlanningRequest')
@@ -163,7 +146,7 @@ export default {
       this.$store.dispatch('is/submitPlanningsRequest', {
         from,
         to,
-        searchPreferences,
+        preferences: searchPreferences,
         timestamp: this.journeyMoment,
       })
     },
@@ -174,11 +157,4 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.makeBlue {
-  color: blue;
-}
-.rotate {
-  color: #ff8500;
-}
-</style>
+<style scoped lang="scss"></style>

@@ -32,14 +32,14 @@
         <v-row dense>
           <v-col>
             <v-radio-group v-model="tripsSearchTime" class="mt-1" row>
-              <v-radio label="Geplande reizen" value="Future"></v-radio>
               <v-radio label="Afgelopen reizen" value="Past"></v-radio>
+              <v-radio label="Geplande reizen" value="Future"></v-radio>
             </v-radio-group>
           </v-col>
         </v-row>
         <v-row v-if="tripsSearchTime === 'Past'">
-          <v-col v-if="getPastTrips.length === 0">
-            U heeft nog niet meegereden.
+          <v-col v-if="getPastTrips.length === 0" align="center">
+            <em>U heeft nog geen reizen gemaakt.</em>
           </v-col>
           <v-col v-else class="past-rides-column py-0">
             <travel-card
@@ -70,9 +70,10 @@
               :index="index"
               :from="trip.from"
               :to="trip.to"
-              :arrival-time="parseDate(trip.arrivalTime)"
-              :departure-time="parseDate(trip.departureTime)"
-              :legs="trip.legs"
+              :arrival-time="parseDate(trip.itinerary.arrivalTime)"
+              :departure-time="parseDate(trip.itinerary.departureTime)"
+              :duration="trip.itinerary.duration"
+              :legs="trip.itinerary.legs"
               @onTripSelected="onTripSelected"
             />
           </v-col>
@@ -240,7 +241,8 @@ export default {
 
 <style lang="scss">
 .trip-card {
-  margin: 4px 0;
+  margin: 0;
+  margin-bottom: 8px;
 }
 .saved {
   background-color: $color-green;

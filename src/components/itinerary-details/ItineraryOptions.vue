@@ -10,8 +10,8 @@
           Wijzig deze reis
         </v-col>
       </v-row>
-      <v-divider></v-divider>
-      <v-row @click="replanSameRoute">
+      <v-divider v-if="!isShoutOut"></v-divider>
+      <v-row v-if="!isShoutOut" @click="replanSameRoute">
         <v-col cols="1">
           <v-icon>fa-redo</v-icon>
         </v-col>
@@ -112,6 +112,9 @@ export default {
     },
     isRideShareTrip() {
       return !!this.selectedTrip.legs.find(l => l.traverseMode == 'RIDESHARE')
+    },
+    isShoutOut() {
+      return this.selectedTrip.planType === 'SHOUT_OUT' || false
     },
   },
   methods: {
