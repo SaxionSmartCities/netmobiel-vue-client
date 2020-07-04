@@ -1,13 +1,17 @@
 <template>
-  <v-row no-gutters>
+  <v-row>
     <v-col>
-      <v-row>
-        <v-col cols="3" xs3>Datum:</v-col>
+      <v-row no-gutters>
+        <v-col cols="3" class="bold">Datum</v-col>
         <v-col class="departure-date">{{ printableDate }}</v-col>
       </v-row>
       <v-row no-gutters>
-        <v-col cols="3" xs3>Reisduur:</v-col>
+        <v-col cols="3" class="bold">Reisduur</v-col>
         <v-col>{{ Math.round(duration / 60) }} minuten</v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col cols="3" class="bold">Kosten</v-col>
+        <v-col>Onbekend aantal credits</v-col>
       </v-row>
     </v-col>
   </v-row>
@@ -38,6 +42,9 @@ export default {
 </script>
 
 <style scoped>
+.bold {
+  font-weight: 400;
+}
 .departure-date {
   text-transform: lowercase;
   padding-left: 0;
