@@ -13,7 +13,7 @@
             />
           </v-col>
           <v-col><v-divider /></v-col>
-          <v-col v-if="isMine">
+          <v-col v-if="isMine" class="mt-3">
             <v-row
               v-for="(leg, index) in generateSteps()"
               :key="index"
@@ -21,33 +21,59 @@
             >
               <itinerary-leg :leg="leg" />
             </v-row>
+
+            <v-row class="mb-0">
+              <v-col class="pb-0">
+                <h3>Wijzigen</h3>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <itinerary-options
+                  :selected-trip="trip"
+                  @tripCancelled="onTripCancelled"
+                >
+                </itinerary-options>
+              </v-col>
+            </v-row>
           </v-col>
           <v-col v-else>
-            chauffeur
+            <v-row dense class="d-flex flex-column">
+              <v-col>
+                <search-status />
+              </v-col>
+              <v-col class="pt-3">
+                <v-btn
+                  :disabled="planningResponse.status != 'SUCCESS'"
+                  large
+                  rounded
+                  block
+                  mb-4
+                  depressed
+                  color="button"
+                  @click="bookTrip"
+                >
+                  Rit aanbieden
+                </v-btn>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="pt-1">
+                <v-btn
+                  :disabled="planningResponse.status != 'SUCCESS'"
+                  large
+                  rounded
+                  block
+                  outlined
+                  color="primary"
+                  to="/community"
+                >
+                  Bericht sturen naar passagier
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-col>
         </v-row>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-btn
-          large
-          rounded
-          block
-          mb-4
-          depressed
-          color="button"
-          @click="bookTrip"
-        >
-          Rit aanbieden
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col class="pt-0">
-        <v-btn large rounded block outlined color="primary" to="/community">
-          Bericht sturen naar passagier
-        </v-btn>
       </v-col>
     </v-row>
   </content-pane>
@@ -55,14 +81,22 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ContentPane from '@/components/common/ContentPane.vue'
+import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
+import SearchStatus from '@/components/search/SearchStatus.vue'
 import { generateShoutOutDetailSteps } from '@/utils/itinerary_steps.js'
 
 export default {
   name: 'ShoutOutDetailPage',
-  components: { ContentPane, ItineraryLeg, ItinerarySummary },
+  components: {
+    ContentPane,
+    ItineraryLeg,
+    ItineraryOptions,
+    ItinerarySummary,
+    SearchStatus,
+  },
   props: {
     id: { type: String, required: true },
     isMine: { type: Boolean, required: true },
@@ -71,6 +105,9 @@ export default {
     return {
       ride: null,
       showMap: false,
+      planningResponse: {
+        status: 'PENDING',
+      },
     }
   },
   computed: {
@@ -93,6 +130,9 @@ export default {
     },
     generateSteps() {
       return generateShoutOutDetailSteps(this.trip)
+    },
+    onTripCancelled() {
+      //TODO:
     },
   },
 }

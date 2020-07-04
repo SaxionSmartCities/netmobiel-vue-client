@@ -54,31 +54,12 @@
           </v-row>
         </v-expand-transition>
         <v-expand-transition>
-          <v-row
+          <search-status
             v-if="
               planningResponse.status === 'PENDING' ||
                 planningResponse.status === 'SUCCESS'
             "
-          >
-            <v-col class="box-widget background-white" shrink>
-              <v-row>
-                <v-col cols="3" xs-3 mt-2>
-                  <v-progress-circular
-                    indeterminate
-                    :class="{
-                      makeBlue: planningResponse.status === 'PENDING',
-                      rotate: planningResponse.status === 'SUCCESS',
-                    }"
-                  >
-                  </v-progress-circular>
-                </v-col>
-                <v-col>
-                  <h3>Zoekopdracht is verstuurd!</h3>
-                  <p>Even geduld...</p>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
+          />
         </v-expand-transition>
       </v-col>
     </v-row>
@@ -90,6 +71,7 @@ import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
+import SearchStatus from '@/components/search/SearchStatus.vue'
 
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 
@@ -98,6 +80,7 @@ export default {
     ContentPane,
     FromToFields,
     DateTimeSelector,
+    SearchStatus,
   },
   data() {
     return {
@@ -174,11 +157,4 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.makeBlue {
-  color: blue;
-}
-.rotate {
-  color: #ff8500;
-}
-</style>
+<style scoped lang="scss"></style>
