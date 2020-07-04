@@ -38,11 +38,11 @@ export default {
         headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
         params: params,
       })
-      .then(function(res) {
+      .then(response => {
         context.commit('setPlanningStatus', { status: 'SUCCESS' })
-        context.commit('setPlanningResults', { data: res.data })
+        context.commit('setPlanningResults', { data: response.data })
       })
-      .catch(function(error) {
+      .catch(error => {
         context.commit('setPlanningStatus', { status: 'FAILED' })
         context.dispatch(
           'ui/queueNotification',
