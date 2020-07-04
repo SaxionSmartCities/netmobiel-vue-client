@@ -12,32 +12,21 @@
         </route-map>
       </v-col>
     </v-row>
-    <v-row class=" flex-column">
-      <v-col class="mb-3 py-0">
-        <h1>Reisdetails</h1>
-      </v-col>
-      <v-col class="py-0">
-        <v-divider />
-      </v-col>
+    <v-row dense class="d-flex flex-column">
+      <v-col><h1>Reisdetails</h1></v-col>
+      <v-col><v-divider /></v-col>
       <v-col class="py-0">
         <itinerary-summary
           :date="selectedTrip.itinerary.departureTime"
-          :cost="5"
           :duration="selectedTrip.itinerary.duration"
-        >
-        </itinerary-summary>
+          :cost="5"
+        />
       </v-col>
-      <v-col>
-        <v-divider />
-      </v-col>
-      <v-col class="px-6">
+      <v-col><v-divider /></v-col>
+      <v-col class="py-4">
         <v-row class="flex-column">
-          <v-col v-if="generateSteps.length === 0">
-            Shoutout
-          </v-col>
           <v-col
             v-for="(leg, index) in generateSteps"
-            v-else
             :key="index"
             class="py-0"
           >
@@ -50,7 +39,9 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col>
+    </v-row>
+    <v-row>
+      <v-col class="py-0">
         <v-btn
           v-show="showSection"
           large
@@ -64,8 +55,6 @@
           Deze reis bevestigen
         </v-btn>
       </v-col>
-    </v-row>
-    <v-row>
       <v-col>
         <v-btn
           large
