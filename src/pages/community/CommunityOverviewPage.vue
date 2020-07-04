@@ -44,6 +44,7 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import CommunityButton from '@/components/community/CommunityButton.vue'
 import { mapGetters } from 'vuex'
+
 export default {
   components: {
     CommunityButton: CommunityButton,
@@ -53,7 +54,10 @@ export default {
     ...mapGetters({ shoutOutsTotalCount: 'is/getShoutOutsTotalCount' }),
   },
   mounted() {
+    const address = this.$store.getters['ps/getProfile'].address
     this.$store.dispatch('is/fetchShoutOuts', {
+      latitude: address.location.coordinates[1],
+      longitude: address.location.coordinates[0],
       maxResults: 0,
     })
   },

@@ -227,14 +227,11 @@ export default {
         )
       })
   },
-  fetchShoutOuts: (
-    context,
-    { latitude: lat = 52.2224, longitude: lon = 5.28248, maxResults }
-  ) => {
+  fetchShoutOuts: (context, { latitude, longitude, maxResults }) => {
     const params = {
       maxResults: maxResults,
-      location: `${lat},${lon}`,
-      depArrRadius: 1000000,
+      location: `${latitude},${longitude}`,
+      depArrRadius: constants.defaultShoutOutRadius,
     }
     axios
       .get(BASE_URL + '/planner/shout-outs', {
