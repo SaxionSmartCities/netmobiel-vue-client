@@ -30,8 +30,11 @@
 </template>
 
 <script>
+import ContentPane from '@/components/common/ContentPane.vue'
+
 export default {
   name: 'TripPlanSubmitted',
+  components: { ContentPane },
   data() {
     return {}
   },
