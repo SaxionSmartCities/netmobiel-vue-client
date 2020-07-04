@@ -7,7 +7,6 @@
           forward="inbox"
           icon="fa-comments"
           naam="Berichten"
-          :aantal-berichten="2"
         ></community-button>
       </v-col>
       <v-col>
