@@ -53,6 +53,14 @@
             </v-col>
           </v-row>
         </v-expand-transition>
+        <v-expand-transition>
+          <search-status
+            v-if="
+              planningResponse.status === 'PENDING' ||
+                planningResponse.status === 'SUCCESS'
+            "
+          />
+        </v-expand-transition>
       </v-col>
     </v-row>
   </content-pane>
@@ -63,6 +71,7 @@ import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
+import SearchStatus from '@/components/search/SearchStatus.vue'
 
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 
@@ -71,8 +80,9 @@ export default {
     ContentPane,
     FromToFields,
     DateTimeSelector,
+    SearchStatus,
   },
-  data: function() {
+  data() {
     return {
       journeyMoment: undefined,
       pickedLocationState: 'NOTHING',
@@ -80,7 +90,7 @@ export default {
     }
   },
   computed: {
-    disabledSubmit: function() {
+    disabledSubmit() {
       const { from, to } = this.$store.getters['gs/getPickedLocation']
       return (
         !from.title ||
@@ -89,7 +99,7 @@ export default {
         this.journeyMoment.when < moment().add(1, 'hour')
       )
     },
-    getSubmitStatus() {
+    planningResponse() {
       return this.$store.getters['is/getPlanningStatus']
     },
   },
@@ -107,7 +117,7 @@ export default {
         )
       }
     },
-    getSubmitStatus(newValue) {
+    planningResponse(newValue) {
       if (newValue.status === 'SUCCESS') {
         this.$router.push({
           name: 'searchResults',
@@ -148,7 +158,7 @@ export default {
       this.$store.dispatch('is/submitPlanningsRequest', {
         from,
         to,
-        searchPreferences,
+        preferences: searchPreferences,
         timestamp: this.journeyMoment,
       })
 
@@ -163,11 +173,4 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.makeBlue {
-  color: blue;
-}
-.rotate {
-  color: #ff8500;
-}
-</style>
+<style scoped lang="scss"></style>

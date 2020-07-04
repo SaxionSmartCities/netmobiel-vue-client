@@ -23,7 +23,7 @@
           </v-col>
           <v-col class="shrink pb-0">
             <v-btn
-              v-if="plan && plan.itineraries.length !== 0"
+              v-if="planResult.itineraries == undefined"
               color="primary"
               rounded
               outlined
@@ -36,8 +36,40 @@
         </v-row>
       </v-col>
       <v-col my-2>
-        <v-col v-if="plan && plan.itineraries.length === 0" my-4>
+        <v-col v-if="planResult.itineraries == undefined" my-4>
           Helaas, er zijn geen ritten gevonden!
+        </v-col>
+        <v-col v-else class="px-0 pb-0">
+          <v-divider />
+          <v-row>
+            <v-col class="py-0">
+              <v-expansion-panels>
+                <v-expansion-panel>
+                  <v-expansion-panel-header>
+                    Reisvoorkeuren tonen
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <search-options-summary-card
+                      :preferences="searchPreferences"
+                    />
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+            </v-col>
+          </v-row>
+          <v-divider />
+          <v-row justify="end">
+            <v-col class="shrink pb-0 mt-2">
+              <v-btn
+                color="primary"
+                rounded
+                outlined
+                @click="toggleSelectedSortModus()"
+              >
+                {{ selectedSortModus.title }}
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-col>
       </v-col>
       <v-col>
@@ -57,8 +89,8 @@
           >
             <travel-card
               :index="indx"
-              :from="plan.from"
-              :to="plan.to"
+              :from="planResult.from"
+              :to="planResult.to"
               :arrival-time="toDate(itinerary.arrivalTime)"
               :departure-time="toDate(itinerary.departureTime)"
               :duration="itinerary.duration"
@@ -104,12 +136,14 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import TravelCard from '@/components/search-results/TravelCard.vue'
+import SearchOptionsSummaryCard from '@/components/search-results/SearchOptionsSummaryCard.vue'
 import moment from 'moment'
 import SearchCriteria from '@/components/common/SearchCriteria'
 
 export default {
   name: 'SearchResultsPage',
   components: {
+    SearchOptionsSummaryCard,
     SearchCriteria,
     ContentPane,
     TravelCard,
@@ -145,8 +179,14 @@ export default {
     selectedSortModus() {
       return this.sortModi[this.selectedSortModusIndex]
     },
-    plan() {
+    planRequest() {
+      return this.$store.getters['is/getPlanningRequest']
+    },
+    planResult() {
       return this.$store.getters['is/getPlanningResults'].plan
+    },
+    searchPreferences() {
+      return this.planRequest.preferences
     },
   },
   watch: {
@@ -196,7 +236,7 @@ export default {
         .format('dddd DD MMMM')
     },
     sortedItineraries() {
-      const list = Object.assign([], this.plan?.itineraries)
+      const list = Object.assign([], this.planResult.itineraries)
       if (this.selectedSortModus.value === 'fastest') {
         list.sort((a, b) => {
           return new Date(a.duration) - new Date(b.duration)
@@ -210,30 +250,23 @@ export default {
     },
     onTripSelected(index) {
       let selectedTrip = {
-        from: this.plan.from,
-        to: this.plan.to,
-        ...this.plan.itineraries[index],
+        from: this.planResult.from,
+        to: this.planResult.to,
+        nrSeats: this.planResult.nrSeats,
+        itinerary: this.planResult.itineraries[index],
+        itineraryRef: this.planResult.itineraries[index].itineraryRef,
       }
       this.$store.commit('is/setSelectedTrip', selectedTrip)
       this.$router.push('/itineraryDetailPage')
     },
     shoutOut() {
       const shoutOutTrip = {
-        from: this.plan.from,
-        to: this.plan.to,
-        arrivalTime: this.plan.arrivalTime
-          ? this.plan.arrivalTime
-          : `${moment(this.plan.departureTime)
-              .startOf('day')
-              .format('YYYY-MM-DDTHH:mm:ss')}Z`,
-        departureTime: this.plan.departureTime
-          ? this.plan.departureTime
-          : `${moment(this.plan.arrivalTime)
-              .add(1, 'day')
-              .startOf('day')
-              .format('YYYY-MM-DDTHH:mm:ss')}Z`,
+        from: this.planResult.from,
+        to: this.planResult.to,
+        timestamp: this.planRequest.timestamp,
+        preferences: this.planRequest.preferences,
       }
-      this.$store.dispatch('is/storeSelectedTrip', shoutOutTrip)
+      this.$store.dispatch('is/storeShoutOut', shoutOutTrip)
     },
     toDate(string) {
       return moment(string)

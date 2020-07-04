@@ -8,35 +8,19 @@
       >
         <template v-slot:firstTab>
           <span>
-            Mijn oproepen
-            <sup>{{ myShoutOuts.length }}</sup>
-          </span>
-        </template>
-
-        <template v-slot:secondTab>
-          <span>
             Community
             <sup>{{ allShoutOuts.length }}</sup>
           </span>
         </template>
+        <template v-slot:secondTab>
+          <span>
+            Mijn oproepen
+            <sup>{{ myShoutOuts.length }}</sup>
+          </span>
+        </template>
       </tab-bar>
     </template>
-    <v-row v-if="selectedTab === 0 || userRole === 'passenger'">
-      <v-col class="py-0">
-        <v-row v-for="group in Object.keys(groupedMyShoutOuts)" :key="group">
-          <v-col class="py-0">
-            <grouped-shout-outs
-              :label="formatDate(group)"
-              :btn-text="mySoBtnText"
-              :my-shout-out="true"
-              :shoutouts="groupedMyShoutOuts[group]"
-              @shoutoutSelected="onShoutOutSelected"
-            />
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <template v-if="selectedTab === 1 || userRole === 'driver'">
+    <template v-if="selectedTab === 0 || userRole === 'driver'">
       <v-row>
         <v-col class="py-0">
           <h3>Community oproepen</h3>
@@ -58,6 +42,21 @@
         </v-col>
       </v-row>
     </template>
+    <v-row v-if="selectedTab === 1 || userRole === 'passenger'">
+      <v-col class="py-0">
+        <v-row v-for="group in Object.keys(groupedMyShoutOuts)" :key="group">
+          <v-col class="py-0">
+            <grouped-shout-outs
+              :label="formatDate(group)"
+              :btn-text="mySoBtnText"
+              :my-shout-out="true"
+              :shoutouts="groupedMyShoutOuts[group]"
+              @shoutoutSelected="onShoutOutSelected"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 
@@ -115,9 +114,10 @@ export default {
     selectedTab: number => number || 0,
   }),
   mounted() {
+    const address = this.$store.getters['ps/getProfile'].address
     this.$store.dispatch('is/fetchShoutOuts', {
-      latitude: 52.2224,
-      longitude: 5.28248,
+      latitude: address.location.coordinates[1],
+      longitude: address.location.coordinates[0],
     })
     this.$store.dispatch('is/fetchMyShoutOuts', {
       offset: 0,
@@ -127,7 +127,7 @@ export default {
     groupShoutOuts(shoutouts) {
       let groupedShoutOuts = {}
       shoutouts.map(s => {
-        const date = moment(s.departureTime).format('YYYYMMDD')
+        const date = moment(s.travelTime).format('YYYYMMDD')
         if (!groupedShoutOuts[date]) {
           groupedShoutOuts[date] = []
         }

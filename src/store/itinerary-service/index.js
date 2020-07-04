@@ -19,9 +19,10 @@ export default {
     pastTripsCount: 0,
     pastTrips: [],
     planningRequest: {
-      fromPlace: { lat: 0.0, lon: 0.0 },
-      toPlace: { lat: 0.0, lon: 0.0 },
-      selectedTime: {},
+      from: null,
+      to: null,
+      timestamp: null,
+      preferences: null,
       submitStatus: {
         status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
         message: '',
