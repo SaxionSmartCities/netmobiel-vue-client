@@ -144,7 +144,7 @@ export default {
     },
     showFullRouteOnMap() {
       this.mapSize = 'fullscreen'
-      this.selectedLegs = this.selectedTrip.legs
+      this.selectedLegs = this.selectedTrip.itinerary.legs
       this.forceRerender()
     },
   },
