@@ -27,15 +27,13 @@ export default {
     planningRequest: {
       from: null,
       to: null,
-      timestamp: null,
+      travelTime: null,
       preferences: null,
       submitStatus: {
         status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
         message: '',
       },
-      result: {
-        plan: null,
-      },
+      result: null,
     },
   },
   getters,

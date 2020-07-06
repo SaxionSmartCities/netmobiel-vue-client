@@ -8,19 +8,20 @@ export default {
   storePlanningRequest: (state, payload) => {
     state.planningRequest.from = payload.from
     state.planningRequest.to = payload.to
-    state.planningRequest.timestamp = payload.timestamp
+    state.planningRequest.travelTime = payload.travelTime
     state.planningRequest.preferences = payload.preferences
   },
   setPlanningStatus: (state, payload) => {
     state.planningRequest.submitStatus = payload
   },
   setPlanningResults: (state, payload) => {
-    state.planningRequest.result.plan = payload.data
+    state.planningRequest.result = payload.data
   },
   clearPlanningResults: state => {
-    state.planningRequest.result.plan = undefined
+    state.planningRequest.result = null
   },
   clearPlanningRequest: state => {
+    state.planningRequest.travelTime = null
     state.planningRequest.submitStatus = {
       status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
       message: '',

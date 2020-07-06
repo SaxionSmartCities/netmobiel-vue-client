@@ -137,7 +137,7 @@ export default {
       return this.$store.getters['is/getPlanningRequest']
     },
     planResult() {
-      return this.$store.getters['is/getPlanningResults'].plan
+      return this.$store.getters['is/getPlanningResults']
     },
     searchPreferences() {
       return this.planRequest.preferences
