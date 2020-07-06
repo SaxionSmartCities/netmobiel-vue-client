@@ -10,7 +10,7 @@
             readonly
             dense
             label="Van"
-            :value="fromLocationLabel()"
+            :value="fromLocationLabel"
           >
           </v-text-field>
         </v-col>
@@ -24,7 +24,7 @@
             readonly
             dense
             label="Naar"
-            :value="toLocationLabel()"
+            :value="toLocationLabel"
           >
           </v-text-field>
         </v-col>
@@ -39,24 +39,25 @@
 <script>
 export default {
   name: 'FromToFields',
-  computed: {},
-  methods: {
+  props: {
+    value: { type: Object, default: () => undefined },
+  },
+  computed: {
     fromLocationLabel() {
-      let location = this.$store.getters['gs/getPickedLocation'].from
-      return !location.title
-        ? 'Klik hier voor vertrekplek'
-        : `${location.title} ${location.vicinity || ''}`
+      return this.value?.from?.label || 'Klik hier voor vertrekplek'
     },
     toLocationLabel() {
-      let location = this.$store.getters['gs/getPickedLocation'].to
-      return !location.title
-        ? 'Klik hier voor bestemming'
-        : `${location.title} ${location.vicinity || ''}`
+      return this.value?.to?.label || 'Klik hier voor bestemming'
     },
+  },
+  methods: {
     swapLocations() {
+      //TODO: move this out of this component.
       this.$store.commit('gs/swapLocations')
+      this.$emit('swapLocations')
     },
     toLocationSuggestionsPage(field) {
+      this.$emit('fieldSelected', { field })
       this.$router.push({ name: 'searchLocation', params: { field: field } })
     },
   },
