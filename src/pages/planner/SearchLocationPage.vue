@@ -15,7 +15,6 @@
       >
       </v-text-field>
     </template>
-
     <v-row v-if="showSuggestionsList" class="align-self-start">
       <locations-list
         :locations="suggestions"
@@ -25,24 +24,18 @@
         @onUnFavoriteClicked="removeFavorite"
       />
     </v-row>
-    <v-row v-if="favorites.length > 0" class="align-self-start" dense>
-      <v-col>
-        <v-row>
-          <v-col>
-            <span class="text-uppercase text-color-primary">
-              Mijn favorieten
-            </span>
-          </v-col>
-        </v-row>
-        <v-row>
-          <locations-list
-            :locations="favorites"
-            :show-highlighted-text="false"
-            @onItemClicked="completeSearch($event)"
-            @onUnFavoriteClicked="removeFavorite"
-          />
-        </v-row>
-      </v-col>
+    <v-row
+      v-if="favorites.length > 0 && !showSuggestionsList"
+      class="d-flex flex-column align-self-start"
+      dense
+    >
+      <v-col><h4 class="netmobiel">Mijn favorieten</h4></v-col>
+      <locations-list
+        :locations="favorites"
+        :show-highlighted-text="false"
+        @onItemClicked="completeSearch($event)"
+        @onUnFavoriteClicked="removeFavorite"
+      />
     </v-row>
     <add-favorite-dialog
       v-if="selectedLocation"
