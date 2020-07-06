@@ -329,6 +329,7 @@ export default {
       params.travelTime = travelTime.when.format()
       params.useAsArrivalTime = travelTime.arriving
     }
+    context.commit('storePlanningRequest', { from, travelTime })
     context.commit('setPlanningStatus', { status: 'PENDING' })
     axios
       .get(URL, {
