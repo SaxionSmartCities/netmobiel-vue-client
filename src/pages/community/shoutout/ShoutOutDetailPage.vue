@@ -160,7 +160,6 @@ export default {
       return this.trip?.to?.label
     },
     tripDuration() {
-      console.log(this.itineraries[0])
       if (this.itineraries.length > 0) {
         return this.itineraries[0].duration
       }

@@ -147,9 +147,6 @@ export default {
     },
   },
   watch: {
-    planningRequest(newValue) {
-      console.log('IN THE WATCHER', newValue)
-    },
     planningStatus(newValue) {
       if (newValue.status === 'SUCCESS') {
         this.$store.commit('is/clearPlanningRequest')
@@ -177,7 +174,6 @@ export default {
         )
       }
       this.$store.commit('is/setSearchCriteria', newCriteria)
-      console.log('CriteriaChanged: ' + JSON.stringify(newCriteria))
       //HACK: preferences here are different from the profile.
       const { from, to, travelTime } = this.searchCriteria
       this.$store.dispatch('is/submitPlanningsRequest', {
