@@ -14,9 +14,10 @@
             />
           </v-col>
           <v-col><v-divider /></v-col>
+          <!-- Passenger -->
           <v-col v-if="isMine" class="mt-3">
             <v-row
-              v-for="(leg, index) in generateSteps()"
+              v-for="(leg, index) in generateShoutOutSteps()"
               :key="index"
               class="mx-3 py-0"
             >
@@ -47,14 +48,33 @@
               </v-col>
             </v-row>
           </v-col>
+          <!-- Chauffeur -->
           <v-col v-else>
             <v-row dense class="d-flex flex-column">
-              <v-col>
+              <v-col v-if="planningStatus.status === 'PENDING'">
                 <search-status />
+              </v-col>
+              <v-col v-else>
+                <v-row>
+                  <v-col v-if="planResult.plan.itineraries.length == 0" my-4>
+                    Helaas, er zijn geen ritten gevonden!
+                  </v-col>
+                  <v-col v-else>
+                    <v-row
+                      v-for="(leg, index) in generateSteps(
+                        planResult.plan.itineraries[0]
+                      )"
+                      :key="index"
+                      class="mx-3 py-0"
+                    >
+                      <itinerary-leg :leg="leg" />
+                    </v-row>
+                  </v-col>
+                </v-row>
               </v-col>
               <v-col class="pt-3">
                 <v-btn
-                  :disabled="planningResponse.status != 'SUCCESS'"
+                  :disabled="planningStatus.status != 'SUCCESS'"
                   large
                   rounded
                   block
@@ -96,7 +116,10 @@ import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
 import SearchStatus from '@/components/search/SearchStatus.vue'
-import { generateShoutOutDetailSteps } from '@/utils/itinerary_steps.js'
+import {
+  generateShoutOutDetailSteps,
+  generateItineraryDetailSteps,
+} from '@/utils/itinerary_steps.js'
 
 export default {
   name: 'ShoutOutDetailPage',
@@ -123,6 +146,8 @@ export default {
   computed: {
     ...mapGetters({
       trip: 'is/getSelectedTrip',
+      planningStatus: 'is/getPlanningStatus',
+      planResult: 'is/getPlanningResults',
     }),
     tripFromLabel() {
       return this.trip?.from?.label
@@ -136,13 +161,29 @@ export default {
   },
   mounted() {
     this.$store.dispatch('is/fetchShoutOut', { id: this.id })
+    if (!this.isMine) {
+      // Propose a ride to the chauffeur based on his address and the shoutout.
+      const { address } = this.$store.getters['ps/getUser'].profile
+      let payload = {
+        id: this.id,
+        from: {
+          label: 'Woonplaats',
+          latitude: address?.location?.coordinates[1],
+          longitude: address?.location?.coordinates[0],
+        },
+      }
+      this.$store.dispatch('is/submitShoutOutPlanningsRequest', payload)
+    }
   },
   created() {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
-    generateSteps() {
+    generateShoutOutSteps() {
       return generateShoutOutDetailSteps(this.trip)
+    },
+    generateSteps(itinerary) {
+      return generateItineraryDetailSteps(itinerary)
     },
     bookTrip() {
       //TODO:

@@ -280,6 +280,7 @@ export default {
       .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
       .then(response => {
         if (response.status == 200) {
+          console.log(response.data)
           context.commit('setSelectedTrip', response.data)
         }
       })
@@ -313,6 +314,36 @@ export default {
           'ui/queueNotification',
           {
             message: 'Fout bij het ophalen van de reis.',
+            timeout: 0,
+          },
+          { root: true }
+        )
+      })
+  },
+  submitShoutOutPlanningsRequest: (context, payload) => {
+    const { id, from } = payload
+    const URL = `${BASE_URL}/planner/shout-outs/${id}/plan`
+    const params = {
+      from: `${from.label}::${from.latitude},${from.longitude}`,
+    }
+    context.commit('setPlanningStatus', { status: 'PENDING' })
+    axios
+      .get(URL, {
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+        params: params,
+      })
+      .then(response => {
+        context.commit('setPlanningStatus', { status: 'SUCCESS' })
+        context.commit('setPlanningResults', { data: response.data })
+      })
+      .catch(error => {
+        context.commit('setPlanningStatus', { status: 'FAILED' })
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: error.response
+              ? error.response.data.message
+              : 'Network failure',
             timeout: 0,
           },
           { root: true }
