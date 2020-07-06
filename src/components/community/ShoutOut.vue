@@ -11,8 +11,7 @@
       <v-col>
         <p class="font-weight-regular header mb-0">Reiziger</p>
         <p class="font-weight-light subtitle-1 mb-0">
-          {{ shoutout.traveller.givenName }}
-          {{ shoutout.traveller.familyName }}
+          {{ travellerName }}
         </p>
       </v-col>
       <v-col class="shrink align-center">
@@ -59,6 +58,13 @@ export default {
     },
     profileImage() {
       return this.isMine ? this.profile.image : constants.defaultProfileImage
+    },
+    travellerName() {
+      const { traveller } = this.shoutout
+      if (this.isMine) {
+        return `${traveller.firstName} ${traveller.lastName}`
+      }
+      return `${traveller.givenName} ${traveller.familyName}`
     },
   },
   methods: {
