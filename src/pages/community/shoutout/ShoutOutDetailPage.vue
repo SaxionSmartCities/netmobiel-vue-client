@@ -56,7 +56,7 @@
               </v-col>
               <v-col v-else>
                 <v-row>
-                  <v-col v-if="planResult.plan.itineraries.length == 0" my-4>
+                  <v-col v-if="itineraries.length == 0" my-4>
                     Helaas, er is geen route gevonden!
                   </v-col>
                   <v-col v-else>
@@ -156,8 +156,8 @@ export default {
     tripToLabel() {
       return this.trip?.to?.label
     },
-    shoutout() {
-      return {}
+    itineraries() {
+      return this.planResult?.plan?.itineraries || []
     },
   },
   mounted() {
