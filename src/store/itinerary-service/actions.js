@@ -12,8 +12,13 @@ function generateHeader(key) {
 }
 
 export default {
-  submitPlanningsRequest: (context, { from, to, timestamp, preferences }) => {
-    context.commit('storePlanningRequest', { from, to, timestamp, preferences })
+  submitPlanningsRequest: (context, { from, to, travelTime, preferences }) => {
+    context.commit('storePlanningRequest', {
+      from,
+      to,
+      travelTime,
+      preferences,
+    })
     const URL = BASE_URL + '/planner/search/plan'
     const params = {
       from: `${from.label}::${from.latitude},${from.longitude}`,
@@ -23,8 +28,8 @@ export default {
       maxWalkDistance: preferences.maximumTransferTime,
       firstLegRideshare: preferences.allowFirstLegTransfer || false,
       lastLegRideshare: preferences.allowLastLegTransfer || false,
-      travelTime: timestamp.when.format(),
-      useAsArrivalTime: timestamp.arriving,
+      travelTime: travelTime.when.format(),
+      useAsArrivalTime: travelTime.arriving,
     }
     context.commit('setPlanningStatus', { status: 'PENDING' })
     axios

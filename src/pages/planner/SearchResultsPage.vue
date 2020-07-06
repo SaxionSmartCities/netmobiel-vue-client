@@ -32,7 +32,7 @@
       </v-col>
       <v-col v-else>
         <v-row justify="space-between">
-          <v-col v-if="planResult.itineraries == undefined" my-4>
+          <v-col v-if="planResult.itineraries.length == 0" my-4>
             Helaas, er zijn geen ritten gevonden!
           </v-col>
           <v-col v-else>
@@ -186,8 +186,8 @@ export default {
       this.$store.dispatch('is/submitPlanningsRequest', {
         from,
         to,
+        travelTime,
         preferences: this.searchPreferences,
-        timestamp: travelTime,
       })
     },
     getAllDifferentDays(itineraries) {

@@ -170,23 +170,21 @@ export default {
     },
     onTripEdit(trip) {
       console.log(trip)
+      const { from, to, itinerary, arrivalTimeIsPinned } = trip
       const { searchPreferences } = this.$store.getters['ps/getProfile']
-      //TODO: Fix the inconsistency of the to and from fields.
-      this.$store.dispatch('is/submitPlanningsRequest', {
-        from: {
-          title: trip.from.label,
-          position: [trip.from.latitude, trip.from.longitude],
-        },
-        to: {
-          title: trip.to.label,
-          position: [trip.to.latitude, trip.to.longitude],
-        },
+      let searchCriteria = {
+        from,
+        to,
         preferences: searchPreferences,
-        timestamp: {
-          when: moment(trip.itinerary.arrivalTime),
-          arriving: true,
+        travelTime: {
+          when: arrivalTimeIsPinned
+            ? moment(itinerary.arrivalTime)
+            : moment(itinerary.departureTime),
+          arriving: arrivalTimeIsPinned,
         },
-      })
+      }
+      this.$store.commit('is/setSearchCriteria', searchCriteria)
+      this.$store.dispatch('is/submitPlanningsRequest', searchCriteria)
       this.$router.push({ name: 'searchResults', editTrip: true })
     },
     onDriverSelectForMessage(event) {

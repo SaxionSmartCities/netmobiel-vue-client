@@ -137,13 +137,7 @@ export default {
       this.$router.push({ name: 'searchOptions' })
     },
     submitForm() {
-      const { from, to, travelTime, preferences } = this.searchCriteria
-      this.$store.dispatch('is/submitPlanningsRequest', {
-        from,
-        to,
-        preferences,
-        timestamp: travelTime,
-      })
+      this.$store.dispatch('is/submitPlanningsRequest', this.searchCriteria)
       this.$router.push({ name: 'searchResults', editTrip: true })
     },
   },

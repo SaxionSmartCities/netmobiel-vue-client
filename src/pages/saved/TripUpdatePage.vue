@@ -92,7 +92,7 @@ export default {
         from: result.from,
         to: result.to,
         searchPreferences,
-        timestamp: journeyMoment,
+        travelTime: journeyMoment,
       })
       this.$store.commit('is/clearPlanningPlan')
 
