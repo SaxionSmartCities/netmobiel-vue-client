@@ -35,7 +35,7 @@
         <v-col class="py-0">
           <grouped-shout-outs
             :label="formatDate(group)"
-            :btn-text="communitySoBtnText"
+            :btn-text="'Rit aanbieden'"
             :shoutouts="groupedShoutOuts[group]"
             @shoutoutSelected="onShoutOutSelected"
           />
@@ -48,7 +48,7 @@
           <v-col class="py-0">
             <grouped-shout-outs
               :label="formatDate(group)"
-              :btn-text="mySoBtnText"
+              :btn-text="'Bekijk shoutout'"
               :my-shout-out="true"
               :shoutouts="groupedMyShoutOuts[group]"
               @shoutoutSelected="onShoutOutSelected"
@@ -74,8 +74,6 @@ export default {
     return {
       selectedTab: 0,
       baseLocation: 'Home',
-      communitySoBtnText: 'Rit aanbieden',
-      mySoBtnText: 'Bekijk shoutout',
     }
   },
   computed: {
