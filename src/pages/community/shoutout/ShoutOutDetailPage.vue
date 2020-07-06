@@ -192,8 +192,8 @@ export default {
     onTripEdit() {
       const { searchPreferences } = this.$store.getters['ps/getProfile']
       let searchCriteria = {
-        from,
-        to,
+        from: this.trip.from,
+        to: this.trip.to,
         preferences: searchPreferences,
         travelTime: {
           when: this.trip.useAsArrivalTime
