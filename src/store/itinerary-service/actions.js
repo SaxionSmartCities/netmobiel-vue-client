@@ -141,7 +141,7 @@ export default {
         )
       })
   },
-  storeShoutOut: (context, { from, to, timestamp, preferences }) => {
+  storeShoutOut: (context, { from, to, travelTime, preferences }) => {
     let payload = {
       from,
       to,
@@ -150,8 +150,8 @@ export default {
       maxWalkDistance: preferences.maximumTransferTime,
       firstLegRideshare: preferences.allowFirstLegTransfer || false,
       lastLegRideshare: preferences.allowLastLegTransfer || false,
-      travelTime: timestamp.when.format(),
-      useAsArrivalTime: timestamp.arriving,
+      travelTime: travelTime.when.format(),
+      useAsArrivalTime: travelTime.arriving,
       planType: 'SHOUT_OUT',
     }
     const URL = BASE_URL + '/planner/plans'
