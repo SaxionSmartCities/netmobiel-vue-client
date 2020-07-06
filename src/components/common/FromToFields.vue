@@ -1,9 +1,10 @@
 <template>
   <v-row dense>
-    <v-col id="vannaar" cols="10">
+    <v-col cols="11">
       <v-row dense>
         <v-col id="van" @click="toLocationSuggestionsPage('from')">
           <v-text-field
+            class="bg-white"
             hide-details
             outlined
             readonly
@@ -17,6 +18,7 @@
       <v-row dense>
         <v-col @click="toLocationSuggestionsPage('to')">
           <v-text-field
+            class="bg-white"
             hide-details
             outlined
             readonly
@@ -28,7 +30,7 @@
         </v-col>
       </v-row>
     </v-col>
-    <v-col id="heenweericoon" class="text-center align-self-center">
+    <v-col cols="1" class="text-center align-self-center">
       <v-icon @click="swapLocations()">import_export</v-icon>
     </v-col>
   </v-row>
@@ -61,4 +63,8 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.bg-white {
+  background-color: white !important;
+}
+</style>

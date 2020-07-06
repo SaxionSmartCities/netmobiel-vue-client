@@ -1,6 +1,6 @@
 <template>
   <v-row dense>
-    <v-col cols="6">
+    <v-col cols="5">
       <v-dialog v-model="showDatePicker" persistent>
         <template v-slot:activator="{ on }">
           <v-text-field
@@ -193,5 +193,9 @@ export default {
 <style scoped>
 .time-picker {
   border-radius: 0px !important;
+}
+
+.bg-white {
+  background-color: white !important;
 }
 </style>

@@ -120,7 +120,7 @@ export default {
   methods: {
     editTrip() {
       // eslint-disable-next-line
-      this.$emit('tripEdit', { tripId: this.selectedTrip.id })
+      this.$emit('tripEdit', this.selectedTrip)
     },
     replanSameRoute() {
       // eslint-disable-next-line

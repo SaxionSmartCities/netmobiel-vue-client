@@ -1,131 +1,94 @@
 <template>
   <content-pane>
+    <template v-slot:header>
+      <v-row class="d-flex flex-column search-header px-3">
+        <v-col class="py-0">
+          <search-criteria />
+        </v-col>
+        <v-col class="py-0">
+          <v-expansion-panels>
+            <v-expansion-panel>
+              <v-expansion-panel-header class="search-header pl-0">
+                Reisvoorkeuren tonen
+              </v-expansion-panel-header>
+              <v-expansion-panel-content class="search-header">
+                <search-options-summary-card :preferences="searchPreferences" />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="py-0"><v-divider /></v-col>
+      </v-row>
+    </template>
     <v-row dense class="d-flex flex-column">
-      <v-col>
-        <search-criteria
-          :enable-edit="true"
-          :planning-request="planningRequest"
-          @change="onChangePlanProperty"
-        ></search-criteria>
+      <v-col v-if="planningStatus.status === 'PENDING'">
+        <search-status />
       </v-col>
-      <v-col class="py-0">
-        <v-divider />
+      <v-col v-else>
         <v-row justify="space-between">
-          <v-col>
-            <div v-if="planningStatus.status === 'PENDING'">
-              <h3>Zoekopdracht is verstuurd!</h3>
-              <p>Even geduld...</p>
-              <v-progress-circular
-                indeterminate
-                color="primary"
-              ></v-progress-circular>
-            </div>
+          <v-col v-if="planResult.itineraries == undefined" my-4>
+            Helaas, er zijn geen ritten gevonden!
           </v-col>
-          <v-col class="shrink pb-0">
-            <v-btn
-              v-if="planResult.itineraries == undefined"
-              color="primary"
-              rounded
-              outlined
-              small
-              @click="toggleSelectedSortModus()"
+          <v-col v-else>
+            <section
+              v-for="(date, index) in getAllDifferentDays(sortedItineraries())"
+              :key="index"
+              class="px-0"
             >
-              {{ selectedSortModus.title }}
-            </v-btn>
+              <h4 class="netmobiel py-1">{{ formatToCategoryDate(date) }}</h4>
+              <v-col
+                v-for="(itinerary, indx) in getItinerariesForThatDay(
+                  sortedItineraries(),
+                  date
+                )"
+                :key="indx"
+                class="px-0 py-1"
+              >
+                <travel-card
+                  :index="indx"
+                  :from="planResult.from"
+                  :to="planResult.to"
+                  :arrival-time="toDate(itinerary.arrivalTime)"
+                  :departure-time="toDate(itinerary.departureTime)"
+                  :duration="itinerary.duration"
+                  :legs="itinerary.legs"
+                  @onTripSelected="onTripSelected"
+                >
+                </travel-card>
+              </v-col>
+            </section>
           </v-col>
         </v-row>
-      </v-col>
-      <v-col my-2>
-        <v-col v-if="planResult.itineraries == undefined" my-4>
-          Helaas, er zijn geen ritten gevonden!
-        </v-col>
-        <v-col v-else class="px-0 pb-0">
-          <v-divider />
-          <v-row>
-            <v-col class="py-0">
-              <v-expansion-panels>
-                <v-expansion-panel>
-                  <v-expansion-panel-header>
-                    Reisvoorkeuren tonen
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    <search-options-summary-card
-                      :preferences="searchPreferences"
-                    />
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-              </v-expansion-panels>
-            </v-col>
-          </v-row>
-          <v-divider />
-          <v-row justify="end">
-            <v-col class="shrink pb-0 mt-2">
-              <v-btn
-                color="primary"
-                rounded
-                outlined
-                @click="toggleSelectedSortModus()"
-              >
-                {{ selectedSortModus.title }}
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-col>
-      <v-col>
-        <section
-          v-for="(date, index) in getAllDifferentDays(sortedItineraries())"
-          :key="index"
-          class="px-0"
-        >
-          <h4 class="netmobiel py-1">{{ formatToCategoryDate(date) }}</h4>
-          <v-col
-            v-for="(itinerary, indx) in getItinerariesForThatDay(
-              sortedItineraries(),
-              date
-            )"
-            :key="indx"
-            class="px-0 py-1"
-          >
-            <travel-card
-              :index="indx"
-              :from="planResult.from"
-              :to="planResult.to"
-              :arrival-time="toDate(itinerary.arrivalTime)"
-              :departure-time="toDate(itinerary.departureTime)"
-              :duration="itinerary.duration"
-              :legs="itinerary.legs"
-              @onTripSelected="onTripSelected"
-            >
-            </travel-card>
-          </v-col>
-        </section>
-      </v-col>
-      <v-col mt-3>
-        <v-row class="flex-column">
-          <v-col class="py-0">
-            <a href="#" @click="shoutOut()">
-              <v-row>
-                <v-col class="col-2 ml-2">
-                  <v-icon>fa-volume-up</v-icon>
-                </v-col>
-                <v-col>
-                  <span>Plaats oproep in de community</span>
-                </v-col>
-              </v-row>
-            </a>
-          </v-col>
-          <v-col class="py-0">
-            <a href="tel:0900-9874">
-              <v-row>
-                <v-col class="col-2 ml-2">
-                  <v-icon>phone_in_talk</v-icon>
-                </v-col>
-                <v-col>
-                  <span>Bel de ZOOV regiotaxi</span>
-                </v-col>
-              </v-row>
-            </a>
+        <v-row>
+          <v-col mt-3>
+            <v-row class="flex-column">
+              <v-col class="py-0">
+                <a href="#" @click="shoutOut()">
+                  <v-row>
+                    <v-col class="col-2 ml-2">
+                      <v-icon>fa-volume-up</v-icon>
+                    </v-col>
+                    <v-col>
+                      <span>Plaats oproep in de community</span>
+                    </v-col>
+                  </v-row>
+                </a>
+              </v-col>
+              <v-col class="py-0">
+                <a href="tel:0900-9874">
+                  <v-row>
+                    <v-col class="col-2 ml-2">
+                      <v-icon>phone_in_talk</v-icon>
+                    </v-col>
+                    <v-col>
+                      <span>Bel de ZOOV regiotaxi</span>
+                    </v-col>
+                  </v-row>
+                </a>
+              </v-col>
+            </v-row>
           </v-col>
         </v-row>
       </v-col>
@@ -137,14 +100,16 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import TravelCard from '@/components/search-results/TravelCard.vue'
 import SearchOptionsSummaryCard from '@/components/search-results/SearchOptionsSummaryCard.vue'
+import SearchCriteria from '@/components/common/SearchCriteria.vue'
+import SearchStatus from '@/components/search/SearchStatus.vue'
 import moment from 'moment'
-import SearchCriteria from '@/components/common/SearchCriteria'
 
 export default {
   name: 'SearchResultsPage',
   components: {
     SearchOptionsSummaryCard,
     SearchCriteria,
+    SearchStatus,
     ContentPane,
     TravelCard,
   },
@@ -198,10 +163,6 @@ export default {
     },
     planningResponse(newValue) {
       if (newValue.status === 'SUCCESS') {
-        this.$router.push({
-          name: 'searchResults',
-          params: { editTrip: true },
-        })
         this.$store.commit('is/clearPlanningRequest')
       }
     },
@@ -307,5 +268,9 @@ a {
   span {
     font-size: 1em;
   }
+}
+
+.search-header {
+  background-color: rgba(46, 137, 151, 0.1);
 }
 </style>
