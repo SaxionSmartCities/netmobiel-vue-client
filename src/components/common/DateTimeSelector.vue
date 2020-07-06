@@ -141,7 +141,7 @@ export default {
     emitInput() {
       const { date, time } = this
       if (date && time) {
-        this.$emit('input', {
+        this.$emit('dateTimeChanged', {
           when: moment(`${this.date} ${this.time}`, TIMESTAMP_FORMAT),
           arriving: this.arriving,
         })
@@ -164,6 +164,7 @@ export default {
       this.pickedArriving = this.arriving
     },
     confirmTime() {
+      //TODO: Check time in the past here.
       this.showTimePicker = false
       this.time = this.pickedTime
       this.arriving = this.pickedArriving
