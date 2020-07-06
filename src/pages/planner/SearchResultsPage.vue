@@ -5,6 +5,7 @@
         <v-col class="py-0">
           <search-criteria
             v-model="searchCriteria"
+            @locationFieldSelected="onLocationFieldSelected"
             @criteriaChanged="onCriteriaChanged"
           />
         </v-col>
@@ -68,7 +69,7 @@
           <v-col mt-3>
             <v-row class="flex-column">
               <v-col class="py-0">
-                <a href="#" @click="shoutOut()">
+                <a href="#" @click="createShoutOut()">
                   <v-row>
                     <v-col class="col-2 ml-2">
                       <v-icon>fa-volume-up</v-icon>
@@ -162,13 +163,32 @@ export default {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
-    search() {
-      // this.$store.dispatch('is/submitPlanningsRequest', {
-      //   from: result.from,
-      //   to: result.to,
-      //   searchPreferences,
-      //   timestamp: journeyMoment,
-      // })
+    onLocationFieldSelected(newField) {
+      this.$router.push({ name: 'searchLocation', params: newField })
+    },
+    onCriteriaChanged(newCriteria) {
+      //TODO: Do the valid time check in the search criteria component.
+      // If the selected date is in the past show an error.
+      if (moment(newCriteria?.travelTime?.when) < moment()) {
+        this.$store.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'De geselecteerde tijd ligt in het verleden.',
+            timeout: 0,
+          },
+          { root: true }
+        )
+      }
+      this.$store.commit('is/setSearchCriteria', newCriteria)
+      console.log('CriteriaChanged: ' + JSON.stringify(newCriteria))
+      //HACK: preferences here are different from the profile.
+      const { from, to, travelTime } = this.searchCriteria
+      this.$store.dispatch('is/submitPlanningsRequest', {
+        from,
+        to,
+        preferences: this.searchPreferences,
+        timestamp: travelTime,
+      })
     },
     getAllDifferentDays(itineraries) {
       let differentDays = []
@@ -188,11 +208,6 @@ export default {
           moment(sectionDay, 'LL').isSame(dateToCheck, 'month')
         )
       })
-    },
-    onChangePlanProperty(value) {
-      console.log('onChangePlanProperty ', value)
-      if (value === 'from' || value === 'to')
-        this.$router.push({ name: 'searchLocation', params: { field: value } })
     },
     formatToCategoryDate(date) {
       return moment(date, 'LL')
@@ -223,7 +238,7 @@ export default {
       this.$store.commit('is/setSelectedTrip', selectedTrip)
       this.$router.push('/itineraryDetailPage')
     },
-    shoutOut() {
+    createShoutOut() {
       const shoutOutTrip = {
         from: this.planResult.from,
         to: this.planResult.to,
@@ -235,20 +250,10 @@ export default {
     toDate(string) {
       return moment(string)
     },
+    //TODO: Add sorting again.
     toggleSelectedSortModus() {
       this.selectedSortModusIndex =
         (this.selectedSortModusIndex + 1) % this.sortModi.length
-    },
-    onCriteriaChanged(newCriteria) {
-      console.log('CriteriaChanged: ' + JSON.stringify(newCriteria))
-      //HACK: preferences here are different from the profile.
-      const { from, to, travelTime } = this.searchCriteria
-      this.$store.dispatch('is/submitPlanningsRequest', {
-        from,
-        to,
-        preferences: this.searchPreferences,
-        timestamp: travelTime,
-      })
     },
   },
 }

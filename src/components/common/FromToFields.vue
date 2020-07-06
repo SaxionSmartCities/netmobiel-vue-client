@@ -2,7 +2,7 @@
   <v-row dense>
     <v-col cols="11">
       <v-row dense>
-        <v-col id="van" @click="toLocationSuggestionsPage('from')">
+        <v-col @click="$emit('fieldSelected', { field: 'from' })">
           <v-text-field
             class="bg-white"
             hide-details
@@ -16,7 +16,7 @@
         </v-col>
       </v-row>
       <v-row dense>
-        <v-col @click="toLocationSuggestionsPage('to')">
+        <v-col @click="$emit('fieldSelected', { field: 'to' })">
           <v-text-field
             class="bg-white"
             hide-details
@@ -51,15 +51,11 @@ export default {
     },
   },
   methods: {
-    swapLocations() {
-      //TODO: Move this out of this component.
-      this.$store.commit('gs/swapLocations')
-      this.$emit('swapLocations')
-    },
     toLocationSuggestionsPage(field) {
-      //TODO: Move router push to page.
       this.$emit('fieldSelected', { field })
-      this.$router.push({ name: 'searchLocation', params: { field: field } })
+    },
+    swapLocations() {
+      this.$emit('swapLocations')
     },
   },
 }

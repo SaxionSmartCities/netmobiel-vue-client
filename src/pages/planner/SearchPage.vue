@@ -15,6 +15,7 @@
                   <v-col>
                     <search-criteria
                       v-model="searchCriteria"
+                      @locationFieldSelected="onLocationFieldSelected"
                       @criteriaChanged="onCriteriaChanged"
                     />
                   </v-col>
@@ -114,6 +115,9 @@ export default {
       }
       this.$store.commit('is/setSearchCriteria', newCriteria)
     },
+    onLocationFieldSelected(newField) {
+      this.$router.push({ name: 'searchLocation', params: newField })
+    },
     onCriteriaChanged(newCriteria) {
       //TODO: Do the valid time check in the search criteria component.
       // If the selected date is in the past show an error.
@@ -127,6 +131,7 @@ export default {
           { root: true }
         )
       }
+      this.$store.commit('is/setSearchCriteria', newCriteria)
     },
     toSearchPreferences() {
       this.$router.push({ name: 'searchOptions' })

@@ -1,7 +1,11 @@
 <template>
   <v-row dense class="d-flex flex-column">
     <v-col dense>
-      <from-to-fields v-model="localCriteria" />
+      <from-to-fields
+        v-model="localCriteria"
+        @fieldSelected="onFieldSelected"
+        @swapLocations="onSwapLocations"
+      />
     </v-col>
     <v-col class="py-0">
       <date-time-selector
@@ -42,6 +46,17 @@ export default {
   methods: {
     allowedDates(v) {
       return moment(v) >= moment().startOf('day')
+    },
+    onFieldSelected(newField) {
+      this.$emit('locationFieldSelected', newField)
+    },
+    onSwapLocations() {
+      const { from, to } = this.value
+      this.localCriteria = {
+        ...this.value,
+        from: to,
+        to: from,
+      }
     },
     onDateTimeChanged(newDateTime) {
       this.localCriteria = {
