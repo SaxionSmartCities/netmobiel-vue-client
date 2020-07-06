@@ -56,8 +56,8 @@
               </v-col>
               <v-col v-else>
                 <v-row>
-                  <v-col v-if="itineraries.length == 0" my-4>
-                    Helaas, er is geen route gevonden!
+                  <v-col v-if="itineraries.length == 0" py-4>
+                    <em>Helaas, er is geen route gevonden!</em>
                   </v-col>
                   <v-col v-else>
                     <v-row
@@ -69,28 +69,30 @@
                     >
                       <itinerary-leg :leg="leg" />
                     </v-row>
+                    <v-row>
+                      <v-col class="pt-3">
+                        <v-btn
+                          :disabled="planningStatus.status != 'SUCCESS'"
+                          large
+                          rounded
+                          block
+                          mb-4
+                          depressed
+                          color="button"
+                          @click="bookTrip"
+                        >
+                          Rit aanbieden
+                        </v-btn>
+                      </v-col>
+                    </v-row>
                   </v-col>
                 </v-row>
-              </v-col>
-              <v-col class="pt-3">
-                <v-btn
-                  :disabled="planningStatus.status != 'SUCCESS'"
-                  large
-                  rounded
-                  block
-                  mb-4
-                  depressed
-                  color="button"
-                  @click="bookTrip"
-                >
-                  Rit aanbieden
-                </v-btn>
               </v-col>
             </v-row>
             <v-row>
               <v-col class="pt-1">
                 <v-btn
-                  :disabled="planningResponse.status != 'SUCCESS'"
+                  :disabled="planningStatus.status != 'SUCCESS'"
                   large
                   rounded
                   block
