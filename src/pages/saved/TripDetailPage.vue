@@ -68,6 +68,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import TripDetails from '@/components/itinerary-details/TripDetails.vue'
 import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
@@ -167,12 +168,26 @@ export default {
       this.$store.dispatch('is/deleteSelectedTrip', selectedTrip)
       this.$router.push('/tripCancelledPage')
     },
-    onTripEdit({ tripId }) {
-      this.$router.push({
-        name: 'tripUpdate',
-        params: { tripId },
-        query: { shoutOut: false },
+    onTripEdit(trip) {
+      console.log(trip)
+      const { searchPreferences } = this.$store.getters['ps/getProfile']
+      //TODO: Fix the inconsistency of the to and from fields.
+      this.$store.dispatch('is/submitPlanningsRequest', {
+        from: {
+          title: trip.from.label,
+          position: [trip.from.latitude, trip.from.longitude],
+        },
+        to: {
+          title: trip.to.label,
+          position: [trip.to.latitude, trip.to.longitude],
+        },
+        preferences: searchPreferences,
+        timestamp: {
+          when: moment(trip.itinerary.arrivalTime),
+          arriving: true,
+        },
       })
+      this.$router.push({ name: 'searchResults', editTrip: true })
     },
     onDriverSelectForMessage(event) {
       //The backend sends an urn for now so we need to split on ':' and get the last element
