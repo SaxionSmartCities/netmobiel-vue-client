@@ -46,7 +46,6 @@ import TripReviewedPage from './pages/review/TripReviewedPage'
 import TripConfirmedPage from './pages/review/TripConfirmedPage'
 import SupportGoal from './pages/community/goals/SupportGoal'
 import Donated from './pages/community/goals/Donated'
-import TripUpdatePage from '@/pages/saved/TripUpdatePage'
 
 const router = new Router({
   mode: 'history',
@@ -265,12 +264,6 @@ const router = new Router({
       path: '/tripConfirmed',
       component: TripConfirmedPage,
       name: 'tripConfirmedPage',
-    },
-    {
-      path: '/tripUpdate/:tripId',
-      component: TripUpdatePage,
-      name: 'tripUpdate',
-      props: true,
     },
   ],
 })
