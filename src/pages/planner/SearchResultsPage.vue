@@ -136,9 +136,6 @@ export default {
     planRequest() {
       return this.$store.getters['is/getPlanningRequest']
     },
-    planningResponse() {
-      return this.$store.getters['is/getPlanningStatus']
-    },
     planResult() {
       return this.$store.getters['is/getPlanningResults'].plan
     },
@@ -153,7 +150,7 @@ export default {
     planningRequest(newValue) {
       console.log('IN THE WATCHER', newValue)
     },
-    planningResponse(newValue) {
+    planningStatus(newValue) {
       if (newValue.status === 'SUCCESS') {
         this.$store.commit('is/clearPlanningRequest')
       }
