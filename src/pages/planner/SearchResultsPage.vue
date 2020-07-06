@@ -3,7 +3,10 @@
     <template v-slot:header>
       <v-row class="d-flex flex-column search-header px-3">
         <v-col class="py-0">
-          <search-criteria />
+          <search-criteria
+            v-model="searchCriteria"
+            @criteriaChanged="onCriteriaChanged"
+          />
         </v-col>
         <v-col class="py-0">
           <v-expansion-panels>
@@ -123,26 +126,11 @@ export default {
     }
   },
   computed: {
-    planningRequest() {
-      console.log('computed plannign request')
-      const { from, to } = this.$store.getters['gs/getPickedLocation']
-      const { when, arriving } = this.$store.getters['gs/getPreFilledTime']
-      const result = {
-        from: { label: from.title },
-        to: { label: to.title },
-        isArrival: arriving,
-      }
-
-      if (arriving) result['arrivalTime'] = when
-      else result['departureTime'] = when
-
-      return result
+    searchCriteria() {
+      return this.$store.getters['is/getSearchCriteria']
     },
     planningStatus() {
       return this.$store.getters['is/getPlanningStatus']
-    },
-    selectedSortModus() {
-      return this.sortModi[this.selectedSortModusIndex]
     },
     planRequest() {
       return this.$store.getters['is/getPlanningRequest']
@@ -155,6 +143,9 @@ export default {
     },
     searchPreferences() {
       return this.planRequest.preferences
+    },
+    selectedSortModus() {
+      return this.sortModi[this.selectedSortModusIndex]
     },
   },
   watch: {
@@ -247,6 +238,17 @@ export default {
     toggleSelectedSortModus() {
       this.selectedSortModusIndex =
         (this.selectedSortModusIndex + 1) % this.sortModi.length
+    },
+    onCriteriaChanged(newCriteria) {
+      console.log('CriteriaChanged: ' + JSON.stringify(newCriteria))
+      //HACK: preferences here are different from the profile.
+      const { from, to, travelTime } = this.searchCriteria
+      this.$store.dispatch('is/submitPlanningsRequest', {
+        from,
+        to,
+        preferences: this.searchPreferences,
+        timestamp: travelTime,
+      })
     },
   },
 }

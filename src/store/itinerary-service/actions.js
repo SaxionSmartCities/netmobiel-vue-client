@@ -16,8 +16,8 @@ export default {
     context.commit('storePlanningRequest', { from, to, timestamp, preferences })
     const URL = BASE_URL + '/planner/search/plan'
     const params = {
-      from: `${from.title}::${from.position[0]},${from.position[1]}`,
-      to: `${to.title}::${to.position[0]},${to.position[1]}`,
+      from: `${from.label}::${from.latitude},${from.longitude}`,
+      to: `${to.label}::${to.latitude},${to.longitude}`,
       nrSeats: preferences.numPassengers,
       modalities: preferences.allowedTravelModes.toString(),
       maxWalkDistance: preferences.maximumTransferTime,

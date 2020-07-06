@@ -13,7 +13,10 @@
                 </v-row>
                 <v-row dense>
                   <v-col>
-                    <search-criteria />
+                    <search-criteria
+                      v-model="searchCriteria"
+                      @criteriaChanged="onCriteriaChanged"
+                    />
                   </v-col>
                 </v-row>
                 <v-row>
@@ -35,7 +38,7 @@
                   <v-col
                     class="body-2 text-center"
                     transition="slide-x-transition"
-                    @click="toRidePreferences"
+                    @click="toSearchPreferences"
                   >
                     <v-icon>settings</v-icon>
                     <span class="ml-1">Reisvoorkeuren</span>
@@ -55,84 +58,88 @@ import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import SearchCriteria from '@/components/common/SearchCriteria.vue'
 
-// import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
-
 export default {
   components: {
     ContentPane,
     SearchCriteria,
   },
-  data() {
-    return {
-      journeyMoment: undefined,
-      pickedLocationState: 'NOTHING',
-      showPicklocation: false,
-    }
-  },
   computed: {
+    searchCriteria() {
+      return this.$store.getters['is/getSearchCriteria']
+    },
     disabledSubmit() {
-      const { from, to } = this.$store.getters['gs/getPickedLocation']
-      return (
-        !from.title ||
-        !to.title ||
-        !this.journeyMoment ||
-        this.journeyMoment.when < moment().add(1, 'hour')
-      )
+      const { from, to, travelTime } = this.searchCriteria
+      return !from?.label || !to?.label || travelTime?.when < moment()
+    },
+    topOfTheHour() {
+      const now = moment()
+      return now.minute() || now.second() || now.millisecond()
+        ? now.add(1, 'hour').startOf('hour')
+        : now.startOf('hour')
     },
   },
-  watch: {
-    journeyMoment(newValue) {
-      // If the selected date is in the past
-      if (moment(newValue?.when) < moment()) {
+  mounted() {
+    this.initialize()
+  },
+  methods: {
+    initialize() {
+      const { searchPreferences } = this.$store.getters['ps/getProfile']
+      const { from, to } = this.$store.getters['gs/getPickedLocation']
+      const { travelTime } = this.searchCriteria
+      let newCriteria = {
+        ...this.searchCriteria,
+        preferences: searchPreferences,
+      }
+      //TODO: move mapping from geo location to geocode sevice.
+      if (from.position) {
+        newCriteria.from = {
+          label: `${from.title} ${from.vicinity || ''}`,
+          latitude: from.position[0],
+          longitude: from.position[1],
+        }
+      }
+      if (to.position) {
+        newCriteria.to = {
+          label: `${to.title} ${to.vicinity || ''}`,
+          latitude: to.position[0],
+          longitude: to.position[1],
+        }
+      }
+      if (!travelTime) {
+        // Set the default date and time to today and the next whole hour.
+        newCriteria.travelTime = {
+          when: this.topOfTheHour,
+          arriving: true,
+        }
+      }
+      this.$store.commit('is/setSearchCriteria', newCriteria)
+    },
+    onCriteriaChanged(newCriteria) {
+      //TODO: Do the valid time check in the search criteria component.
+      // If the selected date is in the past show an error.
+      if (moment(newCriteria?.travelTime?.when) < moment()) {
         this.$store.dispatch(
           'ui/queueNotification',
           {
             message: 'De geselecteerde tijd ligt in het verleden.',
-            timeout: 3000,
+            timeout: 0,
           },
           { root: true }
         )
       }
     },
-  },
-  mounted() {
-    // const preFilledTime = this.$store.getters['gs/getPreFilledTime']
-    // if (preFilledTime) {
-    //   this.journeyMoment = {
-    //     when: preFilledTime.when,
-    //     ...preFilledTime,
-    //   }
-    //   this.journeyMoment = {}
-    //   this.$set(this .journeyMoment, 'when', preFilledTime.when)
-    //   this.$set(this.journeyMoment, 'arrival', preFilledTime.arriving)
-    //   const { from, to } = this.$store.getters['gs/getPickedLocation']
-    //   console.log('from title and to title', from.title, to.title)
-    // }
-  },
-  // beforeRouteEnter: beforeRouteEnter({
-  //   journeyMoment: DateTimeSelector.restoreModel,
-  // }),
-  // beforeRouteLeave: beforeRouteLeave({
-  //   journeyMoment: DateTimeSelector.saveModel,
-  // }),
-  methods: {
-    toRidePreferences() {
+    toSearchPreferences() {
       this.$router.push({ name: 'searchOptions' })
     },
     submitForm() {
-      const { from, to } = this.$store.getters['gs/getPickedLocation']
-      const { searchPreferences } = this.$store.getters['ps/getProfile']
+      const { from, to, travelTime, preferences } = this.searchCriteria
       this.$store.dispatch('is/submitPlanningsRequest', {
         from,
         to,
-        preferences: searchPreferences,
-        timestamp: this.journeyMoment,
+        preferences,
+        timestamp: travelTime,
       })
-      this.$store.commit('gs/setPreFilledTime', this.journeyMoment)
       this.$router.push({ name: 'searchResults', editTrip: true })
-    },
-    allowedDates(v) {
-      return moment(v) >= moment().startOf('day')
     },
   },
 }

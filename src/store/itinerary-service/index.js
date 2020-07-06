@@ -18,6 +18,12 @@ export default {
     plannedTrips: [],
     pastTripsCount: 0,
     pastTrips: [],
+    searchCriteria: {
+      from: null,
+      to: null,
+      travelTime: null,
+      preferences: null,
+    },
     planningRequest: {
       from: null,
       to: null,

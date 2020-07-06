@@ -1,4 +1,10 @@
 export default {
+  setSearchCriteria: (state, payload) => {
+    state.searchCriteria.from = payload.from
+    state.searchCriteria.to = payload.to
+    state.searchCriteria.travelTime = payload.travelTime
+    state.searchCriteria.preferences = payload.preferences
+  },
   storePlanningRequest: (state, payload) => {
     state.planningRequest.from = payload.from
     state.planningRequest.to = payload.to

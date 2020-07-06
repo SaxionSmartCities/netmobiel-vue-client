@@ -52,11 +52,12 @@ export default {
   },
   methods: {
     swapLocations() {
-      //TODO: move this out of this component.
+      //TODO: Move this out of this component.
       this.$store.commit('gs/swapLocations')
       this.$emit('swapLocations')
     },
     toLocationSuggestionsPage(field) {
+      //TODO: Move router push to page.
       this.$emit('fieldSelected', { field })
       this.$router.push({ name: 'searchLocation', params: { field: field } })
     },

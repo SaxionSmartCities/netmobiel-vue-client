@@ -1,31 +1,53 @@
 <template>
   <v-row dense class="d-flex flex-column">
     <v-col dense>
-      <from-to-fields />
+      <from-to-fields v-model="localCriteria" />
     </v-col>
     <v-col class="py-0">
-      <date-time-selector v-model="value" :allowed-dates="allowedDates" />
+      <date-time-selector
+        v-model="localTravelTime"
+        :allowed-dates="allowedDates"
+        @dateTimeChanged="onDateTimeChanged"
+      />
     </v-col>
   </v-row>
 </template>
 <script>
+import moment from 'moment'
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
 
 export default {
   name: 'SearchCriteria',
-  components: {
-    FromToFields,
-    DateTimeSelector,
-  },
+  components: { FromToFields, DateTimeSelector },
   props: {
-    value: {
-      type: Object,
-      default: () => undefined,
+    value: { type: Object, default: () => undefined },
+  },
+  computed: {
+    localCriteria: {
+      get() {
+        return this.value
+      },
+      set(localCriteria) {
+        this.$emit('criteriaChanged', localCriteria)
+      },
     },
-    allowedDates: {
-      type: Function,
-      default: () => true,
+    localTravelTime() {
+      if (this.value) {
+        return this.value.travelTime
+      }
+      return undefined
+    },
+  },
+  methods: {
+    allowedDates(v) {
+      return moment(v) >= moment().startOf('day')
+    },
+    onDateTimeChanged(newDateTime) {
+      this.localCriteria = {
+        ...this.value,
+        travelTime: newDateTime,
+      }
     },
   },
 }

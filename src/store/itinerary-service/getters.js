@@ -10,4 +10,5 @@ export default {
   getShoutOuts: state => state.shoutOuts,
   getShoutOutsTotalCount: state => state.shoutOutsTotalCount,
   getMyShoutOuts: state => state.myShoutOuts,
+  getSearchCriteria: state => state.searchCriteria,
 }
