@@ -99,7 +99,7 @@
                   block
                   outlined
                   color="primary"
-                  to="/community"
+                  @click="contactPassenger"
                 >
                   Bericht sturen naar passagier
                 </v-btn>
@@ -204,6 +204,10 @@ export default {
     },
     bookTrip() {
       //TODO:
+      console.log('Method not implemented!')
+    },
+    contactPassenger() {
+      console.log('Method not implemented!')
     },
     onTripEdit() {
       const { searchPreferences } = this.$store.getters['ps/getProfile']
