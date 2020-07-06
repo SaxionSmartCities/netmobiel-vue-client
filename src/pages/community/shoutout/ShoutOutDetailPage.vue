@@ -71,7 +71,7 @@
                       <itinerary-leg :leg="leg" />
                     </v-row>
                     <v-row>
-                      <v-col class="pt-3">
+                      <v-col class="pt-3 pb-0">
                         <v-btn
                           :disabled="planningStatus.status != 'SUCCESS'"
                           large
@@ -91,7 +91,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col class="pt-1">
+              <v-col class="pt-0">
                 <v-btn
                   :disabled="planningStatus.status != 'SUCCESS'"
                   large
@@ -179,7 +179,7 @@ export default {
       let payload = {
         id: this.id,
         from: {
-          label: 'Woonplaats',
+          label: 'Thuis',
           latitude: address?.location?.coordinates[1],
           longitude: address?.location?.coordinates[0],
         },
