@@ -57,7 +57,7 @@
               <v-col v-else>
                 <v-row>
                   <v-col v-if="planResult.plan.itineraries.length == 0" my-4>
-                    Helaas, is geen route voorstel gevonden!
+                    Helaas, er is geen route gevonden!
                   </v-col>
                   <v-col v-else>
                     <v-row
