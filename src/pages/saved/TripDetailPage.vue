@@ -169,7 +169,6 @@ export default {
       this.$router.push('/tripCancelledPage')
     },
     onTripEdit(trip) {
-      console.log(trip)
       const { from, to, itinerary, arrivalTimeIsPinned } = trip
       const { searchPreferences } = this.$store.getters['ps/getProfile']
       let searchCriteria = {
