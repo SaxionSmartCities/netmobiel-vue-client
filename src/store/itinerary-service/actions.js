@@ -320,10 +320,14 @@ export default {
       })
   },
   submitShoutOutPlanningsRequest: (context, payload) => {
-    const { id, from } = payload
+    const { id, from, travelTime } = payload
     const URL = `${BASE_URL}/planner/shout-outs/${id}/plan`
     const params = {
       from: `${from.label}::${from.latitude},${from.longitude}`,
+    }
+    if (travelTime) {
+      params.travelTime = travelTime.when.format()
+      params.useAsArrivalTime = travelTime.arriving
     }
     context.commit('setPlanningStatus', { status: 'PENDING' })
     axios

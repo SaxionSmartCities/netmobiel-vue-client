@@ -60,7 +60,67 @@
                   <v-col v-if="itineraries.length == 0" py-4>
                     <em>Helaas, er is geen route gevonden!</em>
                   </v-col>
-                  <v-col v-else>
+                  <v-col v-else class="py-0">
+                    <v-row v-if="editDepart" class="bg-light-green pt-0 mb-4">
+                      <v-col cols="3">
+                        <v-dialog v-model="showTimePicker" persistent>
+                          <template v-slot:activator="{ on }">
+                            <v-text-field
+                              class="bg-white"
+                              dense
+                              hide-details
+                              outlined
+                              readonly
+                              label="Vertrek"
+                              :value="pickedTime"
+                              v-on="on"
+                            />
+                          </template>
+                          <v-card>
+                            <!-- v-if forces initialization of time picker when dialog is reopened -->
+                            <v-time-picker
+                              v-if="showTimePicker"
+                              v-model="pickedTime"
+                              full-width
+                              scrollable
+                              :allowed-minutes="allowedMinutes"
+                              format="24hr"
+                              class="time-picker"
+                            />
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                text
+                                color="primary"
+                                @click="showTimePicker = false"
+                              >
+                                Annuleren
+                              </v-btn>
+                              <v-btn
+                                text
+                                color="primary"
+                                :disabled="!pickedTime"
+                                @click="confirmTime"
+                              >
+                                Ok
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </v-dialog>
+                      </v-col>
+                      <v-col cols="8">
+                        <v-text-field
+                          class="bg-white"
+                          dense
+                          hide-details
+                          outlined
+                          readonly
+                          label="Van"
+                          :value="itineraryDeparture.from.label"
+                          @click="onDepartureSelected"
+                        />
+                      </v-col>
+                    </v-row>
                     <v-row
                       v-for="(leg, index) in generateSteps(
                         planResult.plan.itineraries[0]
@@ -91,7 +151,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col class="pt-0">
+              <v-col class="pt-1">
                 <v-btn
                   :disabled="planningStatus.status != 'SUCCESS'"
                   large
@@ -120,6 +180,7 @@ import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
 import SearchStatus from '@/components/search/SearchStatus.vue'
+import { DATE_FORMAT_INPUT, TIMESTAMP_FORMAT } from '@/utils/datetime.js'
 import {
   generateShoutOutDetailSteps,
   generateItineraryDetailSteps,
@@ -141,11 +202,15 @@ export default {
     // boolan here then we get a type conversion error. The 'localIsMine'
     // computed property let's us treat it as a boolean.
     isMine: { type: String, default: null, required: true },
+    allowedMinutes: { type: Function, default: m => m % 5 == 0 },
   },
   data() {
     return {
       ride: null,
       showMap: false,
+      editDepart: false,
+      showTimePicker: false,
+      pickedTime: null,
       planningResponse: {
         status: 'PENDING',
       },
@@ -168,8 +233,17 @@ export default {
       return this.trip?.to?.label
     },
     tripDuration() {
+      return this.itinerary?.duration
+    },
+    itineraryDepartureTime() {
+      return moment(this.itineraryDeparture.from.departureTime).format('HH:mm')
+    },
+    itineraryDeparture() {
+      return this.generateSteps(this.itinerary)[0]
+    },
+    itinerary() {
       if (this.itineraries.length > 0) {
-        return this.itineraries[0].duration
+        return this.itineraries[0]
       }
       return null
     },
@@ -225,9 +299,27 @@ export default {
     },
     onLegEdit({ step }) {
       if (step == 0) {
-        let params = { field: 'ridefrom' }
-        this.$router.push({ name: 'searchLocation', params })
+        this.pickedTime = this.itineraryDepartureTime
+        this.editDepart = !this.editDepart
       }
+    },
+    onDepartureSelected() {
+      let params = { field: 'ridefrom' }
+      this.$router.push({ name: 'searchLocation', params })
+    },
+    confirmTime() {
+      this.showTimePicker = false
+      const { label, latitude, longitude } = this.itineraryDeparture.from
+      const depart = moment(this.itineraryDeparture.from.departureTime)
+      let timestamp = `${depart.format(DATE_FORMAT_INPUT)} ${this.pickedTime}`
+      this.$store.dispatch('is/submitShoutOutPlanningsRequest', {
+        id: this.id,
+        from: { label, latitude, longitude },
+        travelTime: {
+          when: moment(timestamp, TIMESTAMP_FORMAT),
+          arriving: false,
+        },
+      })
     },
     bookTrip() {
       //TODO:
@@ -272,5 +364,8 @@ export default {
 .equal-width td {
   width: 14.14%;
   text-align: center;
+}
+.bg-light-green {
+  background-color: rgba(46, 137, 151, 0.1);
 }
 </style>
