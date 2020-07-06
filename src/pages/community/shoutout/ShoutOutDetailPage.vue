@@ -181,6 +181,7 @@ import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vu
 import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
 import SearchStatus from '@/components/search/SearchStatus.vue'
 import { DATE_FORMAT_INPUT, TIMESTAMP_FORMAT } from '@/utils/datetime.js'
+import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import {
   generateShoutOutDetailSteps,
   generateItineraryDetailSteps,
@@ -283,6 +284,14 @@ export default {
   created() {
     this.$store.commit('ui/showBackButton')
   },
+  beforeRouteEnter: beforeRouteEnter({
+    editDepart: editing => editing || false,
+    pickedTime: timestamp => timestamp || null,
+  }),
+  beforeRouteLeave: beforeRouteLeave({
+    editDepart: editing => editing || false,
+    pickedTime: timestamp => timestamp || null,
+  }),
   methods: {
     generateShoutOutSteps() {
       return generateShoutOutDetailSteps(this.trip)
