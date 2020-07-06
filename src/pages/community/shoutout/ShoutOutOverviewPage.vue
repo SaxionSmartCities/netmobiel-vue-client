@@ -134,7 +134,13 @@ export default {
       return groupedShoutOuts
     },
     onShoutOutSelected({ index, isMine }) {
-      this.$router.push({ name: 'shoutout', params: { id: index, isMine } })
+      this.$router.push({
+        name: 'shoutout',
+        params: {
+          id: index,
+          isMine: isMine.toString(),
+        },
+      })
     },
     formatDate(date) {
       return date

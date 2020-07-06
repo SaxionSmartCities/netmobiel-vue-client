@@ -16,7 +16,7 @@
           </v-col>
           <v-col><v-divider /></v-col>
           <!-- Passenger -->
-          <v-col v-if="isMine" class="mt-3">
+          <v-col v-if="localIsMine" class="mt-3">
             <v-row
               v-for="(leg, index) in generateShoutOutSteps()"
               :key="index"
@@ -68,7 +68,7 @@
                       :key="index"
                       class="mx-3 py-0"
                     >
-                      <itinerary-leg :leg="leg" />
+                      <itinerary-leg :leg="leg" @legEdit="onLegEdit" />
                     </v-row>
                     <v-row>
                       <v-col class="pt-3 pb-0">
@@ -136,7 +136,11 @@ export default {
   },
   props: {
     id: { type: String, required: true },
-    isMine: { type: Boolean, required: true },
+    // isMine is a string because it is a path parameter. When routing back from
+    // picking a location the path param is sent as a string. If we make it a
+    // boolan here then we get a type conversion error. The 'localIsMine'
+    // computed property let's us treat it as a boolean.
+    isMine: { type: String, default: null, required: true },
   },
   data() {
     return {
@@ -152,7 +156,11 @@ export default {
       trip: 'is/getSelectedTrip',
       planningStatus: 'is/getPlanningStatus',
       planResult: 'is/getPlanningResults',
+      pickedLocations: 'gs/getPickedLocation',
     }),
+    localIsMine() {
+      return this.isMine === 'true'
+    },
     tripFromLabel() {
       return this.trip?.from?.label
     },
@@ -172,18 +180,30 @@ export default {
   mounted() {
     this.$store.commit('is/clearPlanningResults')
     this.$store.dispatch('is/fetchShoutOut', { id: this.id })
-    if (!this.isMine) {
+    if (!this.localIsMine) {
       // Propose a ride to the chauffeur based on his address and the shoutout.
+      const { ridefrom } = this.$store.getters['gs/getPickedLocation']
       const { address } = this.$store.getters['ps/getUser'].profile
-      let payload = {
+      const from = ridefrom
+        ? {
+            label:
+              ridefrom.label || `${ridefrom.title} ${ridefrom.vicinity || ''}`,
+            latitude: ridefrom.position[0],
+            longitude: ridefrom.position[1],
+          }
+        : {
+            label: 'Thuis',
+            latitude: address?.location?.coordinates[1],
+            longitude: address?.location?.coordinates[0],
+          }
+      this.$store.commit('gs/setGeoLocationPicked', {
+        field: 'ridefrom',
+        suggestion: null,
+      })
+      this.$store.dispatch('is/submitShoutOutPlanningsRequest', {
         id: this.id,
-        from: {
-          label: 'Thuis',
-          latitude: address?.location?.coordinates[1],
-          longitude: address?.location?.coordinates[0],
-        },
-      }
-      this.$store.dispatch('is/submitShoutOutPlanningsRequest', payload)
+        from: from,
+      })
     }
   },
   created() {
@@ -195,12 +215,19 @@ export default {
     },
     generateSteps(itinerary) {
       let itinerarySteps = generateItineraryDetailSteps(itinerary)
+      itinerarySteps[0].isEditable = true
       if (itinerarySteps.length > 2) {
         itinerarySteps[itinerarySteps.length - 2].passenger = {
           ...this.trip.traveller,
         }
       }
       return itinerarySteps
+    },
+    onLegEdit({ step }) {
+      if (step == 0) {
+        let params = { field: 'ridefrom' }
+        this.$router.push({ name: 'searchLocation', params })
+      }
     },
     bookTrip() {
       //TODO:
