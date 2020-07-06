@@ -23,16 +23,23 @@
         <v-card-actions>
           <v-row justify="end">
             <v-col>
-              <v-btn text block @click="favoriteModal = false">
+              <v-btn
+                rounded
+                block
+                outlined
+                color="primary"
+                @click="favoriteModal = false"
+              >
                 Annuleer
               </v-btn>
             </v-col>
             <v-col>
               <v-btn
-                :disabled="!favoriteLabel"
                 rounded
                 block
+                depressed
                 color="button"
+                :disabled="!favoriteLabel"
                 @click="
                   makeFavorite()
                   favoriteModal = false
