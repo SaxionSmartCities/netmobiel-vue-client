@@ -7,8 +7,8 @@
           <v-col><v-divider /></v-col>
           <v-col class="py-0">
             <itinerary-summary
-              :from="trip.from.label"
-              :to="trip.to.label"
+              :from="tripFromLabel"
+              :to="tripToLabel"
               :date="trip.travelTime"
               :revenue="15"
             />
@@ -124,6 +124,12 @@ export default {
     ...mapGetters({
       trip: 'is/getSelectedTrip',
     }),
+    tripFromLabel() {
+      return this.trip?.from?.label
+    },
+    tripToLabel() {
+      return this.trip?.to?.label
+    },
     shoutout() {
       return {}
     },
