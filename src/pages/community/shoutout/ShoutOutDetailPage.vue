@@ -10,6 +10,7 @@
               :from="tripFromLabel"
               :to="tripToLabel"
               :date="trip.travelTime"
+              :duration="tripDuration"
               :revenue="15"
             />
           </v-col>
@@ -157,6 +158,13 @@ export default {
     },
     tripToLabel() {
       return this.trip?.to?.label
+    },
+    tripDuration() {
+      console.log(this.itineraries[0])
+      if (this.itineraries.length > 0) {
+        return this.itineraries[0].duration
+      }
+      return null
     },
     itineraries() {
       return this.planResult?.plan?.itineraries || []
