@@ -110,6 +110,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { mapGetters } from 'vuex'
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
@@ -189,11 +190,21 @@ export default {
       //TODO:
     },
     onTripEdit() {
-      this.$router.push({
-        name: 'tripUpdate',
-        params: { tripId: this.id },
-        query: { shoutOut: true },
-      })
+      const { searchPreferences } = this.$store.getters['ps/getProfile']
+      let searchCriteria = {
+        from,
+        to,
+        preferences: searchPreferences,
+        travelTime: {
+          when: this.trip.useAsArrivalTime
+            ? moment(this.trip.latestArrivalTime)
+            : moment(this.trip.earliestDepartureTime),
+          arriving: this.trip.useAsArrivalTime,
+        },
+      }
+      this.$store.commit('is/setSearchCriteria', searchCriteria)
+      this.$store.dispatch('is/submitPlanningsRequest', searchCriteria)
+      this.$router.push({ name: 'searchResults', editTrip: true })
     },
     onTripCancelled() {
       //TODO:
