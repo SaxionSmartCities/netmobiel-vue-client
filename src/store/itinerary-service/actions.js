@@ -280,7 +280,6 @@ export default {
       .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
       .then(response => {
         if (response.status == 200) {
-          console.log(response.data)
           context.commit('setSelectedTrip', response.data)
         }
       })
