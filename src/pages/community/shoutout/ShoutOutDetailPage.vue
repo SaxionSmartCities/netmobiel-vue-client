@@ -171,6 +171,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.commit('is/clearPlanningResults')
     this.$store.dispatch('is/fetchShoutOut', { id: this.id })
     if (!this.isMine) {
       // Propose a ride to the chauffeur based on his address and the shoutout.

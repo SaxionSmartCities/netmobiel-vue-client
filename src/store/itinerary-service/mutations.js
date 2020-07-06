@@ -18,10 +18,7 @@ export default {
     state.planningRequest.result.plan = payload.data
   },
   clearPlanningResults: state => {
-    state.planningRequest.result.data = ''
-  },
-  clearPlanningPlan: state => {
-    state.planningRequest.plan = undefined
+    state.planningRequest.result.plan = undefined
   },
   clearPlanningRequest: state => {
     state.planningRequest.submitStatus = {
