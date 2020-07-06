@@ -49,15 +49,12 @@
 </template>
 
 <script>
-import suggestions from '@/constants/suggestions.js'
+import constants from '@/constants/constants.js'
 
 export default {
   name: 'AddFavoriteDialog',
   props: {
-    location: {
-      type: Object,
-      required: true,
-    },
+    location: { type: Object, required: true },
   },
   data() {
     return {
@@ -77,7 +74,10 @@ export default {
       })
     },
     iconicCategory(category) {
-      return suggestions.CATEGORY_ICONS[category] || 'fa-map-marker-alt'
+      return (
+        constants.searchSuggestionCategoryIcons[category] ||
+        constants.searchSuggestionDefaultIcon
+      )
     },
   },
 }
