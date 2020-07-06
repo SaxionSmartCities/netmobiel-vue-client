@@ -194,7 +194,13 @@ export default {
       return generateShoutOutDetailSteps(this.trip)
     },
     generateSteps(itinerary) {
-      return generateItineraryDetailSteps(itinerary)
+      let itinerarySteps = generateItineraryDetailSteps(itinerary)
+      if (itinerarySteps.length > 2) {
+        itinerarySteps[itinerarySteps.length - 2].passenger = {
+          ...this.trip.traveller,
+        }
+      }
+      return itinerarySteps
     },
     bookTrip() {
       //TODO:
