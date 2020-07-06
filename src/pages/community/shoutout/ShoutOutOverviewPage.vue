@@ -111,7 +111,6 @@ export default {
   beforeRouteLeave: beforeRouteLeave({
     selectedTab: number => number || 0,
     editDepart: editing => editing || false,
-    pickedTime: timestamp => timestamp || null,
   }),
   mounted() {
     const address = this.$store.getters['ps/getProfile'].address
@@ -122,6 +121,7 @@ export default {
     this.$store.dispatch('is/fetchMyShoutOuts', {
       offset: 0,
     })
+    this.$store.commit('is/clearPlanningRequest')
   },
   methods: {
     groupShoutOuts(shoutouts) {

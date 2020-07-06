@@ -57,76 +57,78 @@
               </v-col>
               <v-col v-else>
                 <v-row>
+                  <v-row v-if="editDepart" class="bg-light-green pt-0 mb-4">
+                    <v-col cols="3">
+                      <v-dialog v-model="showTimePicker" persistent>
+                        <template v-slot:activator="{ on }">
+                          <v-text-field
+                            class="bg-white"
+                            dense
+                            hide-details
+                            outlined
+                            readonly
+                            label="Vertrek"
+                            :value="pickedTime"
+                            v-on="on"
+                          />
+                        </template>
+                        <v-card>
+                          <!-- v-if forces initialization of time picker when dialog is reopened -->
+                          <v-time-picker
+                            v-if="showTimePicker"
+                            v-model="pickedTime"
+                            full-width
+                            scrollable
+                            :allowed-minutes="allowedMinutes"
+                            format="24hr"
+                            class="time-picker"
+                          />
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                              text
+                              color="primary"
+                              @click="showTimePicker = false"
+                            >
+                              Annuleren
+                            </v-btn>
+                            <v-btn
+                              text
+                              color="primary"
+                              :disabled="!pickedTime"
+                              @click="confirmTime"
+                            >
+                              Ok
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                    </v-col>
+                    <v-col cols="9">
+                      <v-text-field
+                        class="bg-white"
+                        dense
+                        hide-details
+                        outlined
+                        readonly
+                        label="Van"
+                        :value="itineraryDepartureLabel"
+                        append-icon="close"
+                        @click:append="onClearDeparture"
+                        @click="onDepartureSelected"
+                      />
+                    </v-col>
+                  </v-row>
                   <v-col v-if="itineraries.length == 0" py-4>
                     <em>Helaas, er is geen route gevonden!</em>
                   </v-col>
                   <v-col v-else class="py-0">
-                    <v-row v-if="editDepart" class="bg-light-green pt-0 mb-4">
-                      <v-col cols="3">
-                        <v-dialog v-model="showTimePicker" persistent>
-                          <template v-slot:activator="{ on }">
-                            <v-text-field
-                              class="bg-white"
-                              dense
-                              hide-details
-                              outlined
-                              readonly
-                              label="Vertrek"
-                              :value="pickedTime"
-                              v-on="on"
-                            />
-                          </template>
-                          <v-card>
-                            <!-- v-if forces initialization of time picker when dialog is reopened -->
-                            <v-time-picker
-                              v-if="showTimePicker"
-                              v-model="pickedTime"
-                              full-width
-                              scrollable
-                              :allowed-minutes="allowedMinutes"
-                              format="24hr"
-                              class="time-picker"
-                            />
-                            <v-card-actions>
-                              <v-spacer></v-spacer>
-                              <v-btn
-                                text
-                                color="primary"
-                                @click="showTimePicker = false"
-                              >
-                                Annuleren
-                              </v-btn>
-                              <v-btn
-                                text
-                                color="primary"
-                                :disabled="!pickedTime"
-                                @click="confirmTime"
-                              >
-                                Ok
-                              </v-btn>
-                            </v-card-actions>
-                          </v-card>
-                        </v-dialog>
-                      </v-col>
-                      <v-col cols="8">
-                        <v-text-field
-                          class="bg-white"
-                          dense
-                          hide-details
-                          outlined
-                          readonly
-                          label="Van"
-                          :value="itineraryDeparture.from.label"
-                          @click="onDepartureSelected"
-                        />
-                      </v-col>
-                    </v-row>
                     <v-row
                       v-for="(leg, index) in generateSteps(
-                        planResult.plan.itineraries[0]
+                        planResult.itineraries[0]
                       )"
                       :key="index"
-                      class="mx-3 py-0"
+                      class="mx-1 py-0"
                     >
                       <itinerary-leg :leg="leg" @legEdit="onLegEdit" />
                     </v-row>
@@ -220,6 +222,7 @@ export default {
   computed: {
     ...mapGetters({
       trip: 'is/getSelectedTrip',
+      planningRequest: 'is/getPlanningRequest',
       planningStatus: 'is/getPlanningStatus',
       planResult: 'is/getPlanningResults',
       pickedLocations: 'gs/getPickedLocation',
@@ -236,8 +239,11 @@ export default {
     tripDuration() {
       return this.itinerary?.duration
     },
+    itineraryDepartureLabel() {
+      return this.itineraryDeparture?.from?.label || 'Onbekende locatie'
+    },
     itineraryDepartureTime() {
-      return moment(this.itineraryDeparture.from.departureTime).format('HH:mm')
+      return moment(this.itinerary.departureTime).format('HH:mm')
     },
     itineraryDeparture() {
       return this.generateSteps(this.itinerary)[0]
@@ -249,7 +255,14 @@ export default {
       return null
     },
     itineraries() {
-      return this.planResult?.plan?.itineraries || []
+      return this.planResult?.itineraries || []
+    },
+  },
+  watch: {
+    planResult(newResults) {
+      if (newResults?.travelTime) {
+        this.pickedTime = moment(newResults.travelTime).format('HH:mm')
+      }
     },
   },
   mounted() {
@@ -259,6 +272,7 @@ export default {
       // Propose a ride to the chauffeur based on his address and the shoutout.
       const { ridefrom } = this.$store.getters['gs/getPickedLocation']
       const { address } = this.$store.getters['ps/getUser'].profile
+      const { travelTime } = this.planningRequest
       const from = ridefrom
         ? {
             label:
@@ -275,10 +289,12 @@ export default {
         field: 'ridefrom',
         suggestion: null,
       })
-      this.$store.dispatch('is/submitShoutOutPlanningsRequest', {
-        id: this.id,
-        from: from,
-      })
+      let request = { id: this.id, from: from }
+      if (travelTime) {
+        request.travelTime = travelTime
+        this.pickedTime = moment(travelTime.when).format('HH:mm')
+      }
+      this.$store.dispatch('is/submitShoutOutPlanningsRequest', request)
     }
   },
   created() {
@@ -298,8 +314,8 @@ export default {
     },
     generateSteps(itinerary) {
       let itinerarySteps = generateItineraryDetailSteps(itinerary)
-      itinerarySteps[0].isEditable = true
       if (itinerarySteps.length > 2) {
+        itinerarySteps[0].isEditable = true
         itinerarySteps[itinerarySteps.length - 2].passenger = {
           ...this.trip.traveller,
         }
@@ -319,7 +335,7 @@ export default {
     confirmTime() {
       this.showTimePicker = false
       const { label, latitude, longitude } = this.itineraryDeparture.from
-      const depart = moment(this.itineraryDeparture.from.departureTime)
+      const depart = moment(this.itinerary.departureTime)
       let timestamp = `${depart.format(DATE_FORMAT_INPUT)} ${this.pickedTime}`
       this.$store.dispatch('is/submitShoutOutPlanningsRequest', {
         id: this.id,
@@ -330,11 +346,25 @@ export default {
         },
       })
     },
+    onClearDeparture() {
+      const { address } = this.$store.getters['ps/getUser'].profile
+      this.$store.dispatch('is/submitShoutOutPlanningsRequest', {
+        id: this.id,
+        from: {
+          label: 'Thuis',
+          latitude: address?.location?.coordinates[1],
+          longitude: address?.location?.coordinates[0],
+        },
+      })
+    },
     bookTrip() {
-      //TODO:
+      //TODO: Implement storage trip in backend
+      // eslint-disable-next-line
       console.log('Method not implemented!')
     },
     contactPassenger() {
+      //TODO: Implement communication with passenger
+      // eslint-disable-next-line
       console.log('Method not implemented!')
     },
     onTripEdit() {
