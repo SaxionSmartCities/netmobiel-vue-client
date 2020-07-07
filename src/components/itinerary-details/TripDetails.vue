@@ -80,7 +80,7 @@ export default {
       if (this.selectedLegsIndex != null) {
         return [this.trip.itinerary.legs[this.selectedLegsIndex]]
       } else {
-        return this.trip.itinerary.legs
+        return this.trip?.itinerary?.legs
       }
     },
   },
