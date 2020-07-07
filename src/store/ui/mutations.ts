@@ -1,4 +1,7 @@
-export default {
+import { MutationTree } from 'vuex'
+import { UiState, UiNotification, UiUpdateMessage } from './types'
+
+export const mutations: MutationTree<UiState> = {
   enableHeader: state => {
     state.header.visible = true
   },
@@ -23,33 +26,23 @@ export default {
   hideNotificationBar: state => {
     state.notificationBarVisible = false
   },
-  pushNotificationToQueue: (state, payload) => {
+  pushNotificationToQueue: (state, payload: UiNotification) => {
     state.notificationQueue.push(payload)
   },
   removeFirstNotificationFromQueue: state => {
     state.notificationQueue = state.notificationQueue.slice(1)
   },
-  clearTempValue(state) {
-    state.temp = {}
-  },
-  setTempValue: (state, payload) => {
-    Object.keys(payload)
-      .filter(key => payload.hasOwnProperty(key))
-      .forEach(key => {
-        state.temp[key] = payload[key]
-      })
-  },
-  setSelectedNav: (state, payload) => {
+  setSelectedNav: (state, payload: string) => {
     state.footer.selectedNav = payload
   },
   shiftUpdateMessage: state => {
     state.updateMessages.shift()
   },
-  pushUpdate: (state, payload) => {
+  pushUpdate: (state, payload: UiUpdateMessage) => {
     state.updateMessages.push(payload)
   },
-  removeUpdate: (state, update) => {
-    let indexOf = state.updateMessages.indexOf(update)
+  removeUpdate: (state, payload: UiUpdateMessage) => {
+    let indexOf = state.updateMessages.indexOf(payload)
     state.updateMessages.splice(indexOf, 1)
   },
 }

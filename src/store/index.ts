@@ -13,7 +13,9 @@ import ui from './ui'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+export interface RootState {}
+
+export default new Vuex.Store<RootState>({
   strict: process.env.NODE_ENV !== 'production',
   modules: {
     cs: carpoolService,
