@@ -1,4 +1,8 @@
-export default {
+import { ActionTree } from 'vuex'
+import { UiState } from './types'
+import { RootState } from '../'
+
+export const actions: ActionTree<UiState, RootState> = {
   queueNotification: (context, payload) => {
     context.commit('pushNotificationToQueue', payload)
 
