@@ -119,12 +119,10 @@ export default {
   },
   methods: {
     editTrip() {
-      // eslint-disable-next-line
       this.$emit('tripEdit', this.selectedTrip)
     },
     replanSameRoute() {
-      // eslint-disable-next-line
-      console.log('Method not implemented!')
+      this.$emit('tripReplan', this.selectedTrip)
     },
     openConfirmationDialog() {
       this.dialog = true

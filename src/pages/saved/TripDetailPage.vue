@@ -51,6 +51,7 @@
         <itinerary-options
           :selected-trip="selectedTrip"
           @tripEdit="onTripEdit"
+          @tripReplan="onTripReplan"
           @tripCancelled="onTripCancelled"
           @tripReview="onTripReview"
         >
@@ -153,6 +154,13 @@ export default {
           tripContext: leg.tripId,
         })
       }
+    },
+    onTripReplan(trip) {
+      this.$store.commit('is/setSearchCriteria', {
+        from: trip.from,
+        to: trip.to,
+      })
+      this.$router.push('/search')
     },
     onTripReview(trip) {
       this.$router.push({
