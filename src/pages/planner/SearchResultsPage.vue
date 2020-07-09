@@ -71,7 +71,7 @@
       <v-col mt-3>
         <v-row class="flex-column">
           <v-col class="py-0">
-            <a href="#" @click="shoutOut()">
+            <a href="#" @click="createShoutOut()">
               <v-row>
                 <v-col class="col-2 ml-2">
                   <v-icon>fa-volume-up</v-icon>
@@ -188,7 +188,7 @@ export default {
       this.$store.commit('is/setSelectedTrip', selectedTrip)
       this.$router.push('/itineraryDetailPage')
     },
-    shoutOut() {
+    createShoutOut() {
       const shoutOutTrip = {
         from: this.planResult.from,
         to: this.planResult.to,
