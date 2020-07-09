@@ -134,6 +134,7 @@ export default {
           field: this.$route.params.field,
           value: fieldValue,
         })
+        this.sendPlanningRequest()
       } else {
         this.$store.commit('gs/setGeoLocationPicked', {
           field: this.$route.params.field,
@@ -145,6 +146,18 @@ export default {
       }
 
       this.$router.go(-1)
+    },
+    sendPlanningRequest() {
+      const searchCriteria = this.$store.getters['is/getSearchCriteria']
+      const preferences = this.$store.getters['is/getPlanningRequest']
+        ?.preferences
+      const { from, to, travelTime } = searchCriteria
+      this.$store.dispatch('is/submitPlanningsRequest', {
+        from,
+        to,
+        travelTime,
+        preferences: preferences,
+      })
     },
     clearSearchInput() {
       this.searchInput = ''
