@@ -1,34 +1,36 @@
 <template>
   <v-row dense>
-    <v-col id="vannaar" cols="10">
+    <v-col cols="11">
       <v-row dense>
-        <v-col id="van" @click="toLocationSuggestionsPage('from')">
+        <v-col @click="$emit('fieldSelected', { field: 'from' })">
           <v-text-field
+            class="bg-white"
             hide-details
             outlined
             readonly
             dense
             label="Van"
-            :value="fromLocationLabel()"
+            :value="fromLocationLabel"
           >
           </v-text-field>
         </v-col>
       </v-row>
       <v-row dense>
-        <v-col @click="toLocationSuggestionsPage('to')">
+        <v-col @click="$emit('fieldSelected', { field: 'to' })">
           <v-text-field
+            class="bg-white"
             hide-details
             outlined
             readonly
             dense
             label="Naar"
-            :value="toLocationLabel()"
+            :value="toLocationLabel"
           >
           </v-text-field>
         </v-col>
       </v-row>
     </v-col>
-    <v-col id="heenweericoon" class="text-center align-self-center">
+    <v-col cols="1" class="text-center align-self-center">
       <v-icon @click="swapLocations()">import_export</v-icon>
     </v-col>
   </v-row>
@@ -37,28 +39,30 @@
 <script>
 export default {
   name: 'FromToFields',
-  computed: {},
-  methods: {
+  props: {
+    value: { type: Object, default: () => undefined },
+  },
+  computed: {
     fromLocationLabel() {
-      let location = this.$store.getters['gs/getPickedLocation'].from
-      return !location.title
-        ? 'Klik hier voor vertrekplek'
-        : `${location.title} ${location.vicinity}`
+      return this.value?.from?.label || 'Klik hier voor vertrekplek'
     },
     toLocationLabel() {
-      let location = this.$store.getters['gs/getPickedLocation'].to
-      return !location.title
-        ? 'Klik hier voor bestemming'
-        : `${location.title} ${location.vicinity}`
+      return this.value?.to?.label || 'Klik hier voor bestemming'
+    },
+  },
+  methods: {
+    toLocationSuggestionsPage(field) {
+      this.$emit('fieldSelected', { field })
     },
     swapLocations() {
-      this.$store.commit('gs/swapLocations')
-    },
-    toLocationSuggestionsPage(field) {
-      this.$router.push({ name: 'searchLocation', params: { field: field } })
+      this.$emit('swapLocations')
     },
   },
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.bg-white {
+  background-color: white !important;
+}
+</style>

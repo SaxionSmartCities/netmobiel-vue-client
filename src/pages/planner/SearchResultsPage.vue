@@ -1,98 +1,98 @@
 <template>
   <content-pane>
+    <template v-slot:header>
+      <v-row class="d-flex flex-column search-header px-3">
+        <v-col class="py-0">
+          <search-criteria
+            v-model="searchCriteria"
+            @locationFieldSelected="onLocationFieldSelected"
+            @criteriaChanged="onCriteriaChanged"
+          />
+        </v-col>
+        <v-col class="py-0">
+          <v-expansion-panels>
+            <v-expansion-panel>
+              <v-expansion-panel-header class="search-header pl-0">
+                Reisvoorkeuren tonen
+              </v-expansion-panel-header>
+              <v-expansion-panel-content class="search-header">
+                <search-options-summary-card :preferences="searchPreferences" />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="py-0"><v-divider /></v-col>
+      </v-row>
+    </template>
     <v-row dense class="d-flex flex-column">
-      <v-col><h1>Reisopties</h1></v-col>
-      <v-col my-2>
-        <v-col v-if="planResult.itineraries == undefined" my-4>
-          Helaas, er zijn geen ritten gevonden!
-        </v-col>
-        <v-col v-else class="px-0 pb-0">
-          <v-divider />
-          <v-row>
-            <v-col class="py-0">
-              <v-expansion-panels>
-                <v-expansion-panel>
-                  <v-expansion-panel-header>
-                    Reisvoorkeuren tonen
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    <search-options-summary-card
-                      :preferences="searchPreferences"
-                    />
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-              </v-expansion-panels>
-            </v-col>
-          </v-row>
-          <v-divider />
-          <v-row justify="end">
-            <v-col class="shrink pb-0 mt-2">
-              <v-btn
-                color="primary"
-                rounded
-                outlined
-                @click="toggleSelectedSortModus()"
-              >
-                {{ selectedSortModus.title }}
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-col>
+      <v-col v-if="planningStatus.status === 'PENDING'">
+        <search-status />
       </v-col>
-      <v-col>
-        <section
-          v-for="(date, index) in getAllDifferentDays(sortedItineraries())"
-          :key="index"
-          class="px-0"
-        >
-          <h4 class="netmobiel py-1">{{ formatToCategoryDate(date) }}</h4>
-          <v-col
-            v-for="(itinerary, indx) in getItinerariesForThatDay(
-              sortedItineraries(),
-              date
-            )"
-            :key="indx"
-            class="px-0 py-1"
-          >
-            <travel-card
-              :index="indx"
-              :from="planResult.from"
-              :to="planResult.to"
-              :arrival-time="toDate(itinerary.arrivalTime)"
-              :departure-time="toDate(itinerary.departureTime)"
-              :duration="itinerary.duration"
-              :legs="itinerary.legs"
-              @onTripSelected="onTripSelected"
+      <v-col v-else>
+        <v-row justify="space-between">
+          <v-col v-if="planResult.itineraries.length == 0" my-4>
+            Helaas, er zijn geen ritten gevonden!
+          </v-col>
+          <v-col v-else>
+            <section
+              v-for="(date, index) in getAllDifferentDays(sortedItineraries())"
+              :key="index"
+              class="px-0"
             >
-            </travel-card>
+              <h4 class="netmobiel py-1">{{ formatToCategoryDate(date) }}</h4>
+              <v-col
+                v-for="(itinerary, indx) in getItinerariesForThatDay(
+                  sortedItineraries(),
+                  date
+                )"
+                :key="indx"
+                class="px-0 py-1"
+              >
+                <travel-card
+                  :index="indx"
+                  :from="planResult.from"
+                  :to="planResult.to"
+                  :arrival-time="toDate(itinerary.arrivalTime)"
+                  :departure-time="toDate(itinerary.departureTime)"
+                  :duration="itinerary.duration"
+                  :legs="itinerary.legs"
+                  @onTripSelected="onTripSelected"
+                >
+                </travel-card>
+              </v-col>
+            </section>
           </v-col>
-        </section>
-      </v-col>
-      <v-col mt-3>
-        <v-row class="flex-column">
-          <v-col class="py-0">
-            <a href="#" @click="shoutOut()">
-              <v-row>
-                <v-col class="col-2 ml-2">
-                  <v-icon>fa-volume-up</v-icon>
-                </v-col>
-                <v-col>
-                  <span>Plaats oproep in de community</span>
-                </v-col>
-              </v-row>
-            </a>
-          </v-col>
-          <v-col class="py-0">
-            <a href="tel:0900-9874">
-              <v-row>
-                <v-col class="col-2 ml-2">
-                  <v-icon>phone_in_talk</v-icon>
-                </v-col>
-                <v-col>
-                  <span>Bel de ZOOV regiotaxi</span>
-                </v-col>
-              </v-row>
-            </a>
+        </v-row>
+        <v-row>
+          <v-col mt-3>
+            <v-row class="flex-column">
+              <v-col class="py-0">
+                <a href="#" @click="createShoutOut()">
+                  <v-row>
+                    <v-col class="col-2 ml-2">
+                      <v-icon>fa-volume-up</v-icon>
+                    </v-col>
+                    <v-col>
+                      <span>Plaats oproep in de community</span>
+                    </v-col>
+                  </v-row>
+                </a>
+              </v-col>
+              <v-col class="py-0">
+                <a href="tel:0900-9874">
+                  <v-row>
+                    <v-col class="col-2 ml-2">
+                      <v-icon>phone_in_talk</v-icon>
+                    </v-col>
+                    <v-col>
+                      <span>Bel de ZOOV regiotaxi</span>
+                    </v-col>
+                  </v-row>
+                </a>
+              </v-col>
+            </v-row>
           </v-col>
         </v-row>
       </v-col>
@@ -104,14 +104,18 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import TravelCard from '@/components/search-results/TravelCard.vue'
 import SearchOptionsSummaryCard from '@/components/search-results/SearchOptionsSummaryCard.vue'
+import SearchCriteria from '@/components/common/SearchCriteria.vue'
+import SearchStatus from '@/components/search/SearchStatus.vue'
 import moment from 'moment'
 
 export default {
   name: 'SearchResultsPage',
   components: {
+    SearchOptionsSummaryCard,
+    SearchCriteria,
+    SearchStatus,
     ContentPane,
     TravelCard,
-    SearchOptionsSummaryCard,
   },
   data() {
     return {
@@ -123,23 +127,65 @@ export default {
     }
   },
   computed: {
-    selectedSortModus() {
-      return this.sortModi[this.selectedSortModusIndex]
+    searchCriteria() {
+      return this.$store.getters['is/getSearchCriteria']
+    },
+    planningStatus() {
+      return this.$store.getters['is/getPlanningStatus']
     },
     planRequest() {
       return this.$store.getters['is/getPlanningRequest']
     },
     planResult() {
-      return this.$store.getters['is/getPlanningResults'].plan
+      return this.$store.getters['is/getPlanningResults']
     },
     searchPreferences() {
       return this.planRequest.preferences
+    },
+    selectedSortModus() {
+      return this.sortModi[this.selectedSortModusIndex]
+    },
+  },
+  watch: {
+    planningStatus(newValue) {
+      if (newValue.status === 'SUCCESS') {
+        this.$store.commit('is/clearPlanningRequest')
+      }
     },
   },
   created() {
     this.$store.commit('ui/showBackButton')
   },
   methods: {
+    onLocationFieldSelected(newField) {
+      this.$router.push({
+        name: 'searchLocation',
+        params: { field: newField.field, editSearchCriteria: true.toString() },
+      })
+    },
+    onCriteriaChanged(newCriteria) {
+      //TODO: Do the valid time check in the search criteria component.
+      // If the selected date is in the past show an error.
+      if (moment(newCriteria?.travelTime?.when) < moment()) {
+        this.$store.dispatch(
+          'ui/queueNotification',
+          {
+            message: 'De geselecteerde tijd ligt in het verleden.',
+            timeout: 0,
+          },
+          { root: true }
+        )
+      }
+      this.$store.commit('is/setSearchCriteria', newCriteria)
+      //HACK: preferences here are different from the profile.
+      const { from, to, travelTime } = this.searchCriteria
+      this.$store.dispatch('is/submitPlanningsRequest', {
+        from,
+        to,
+        travelTime,
+        preferences: this.searchPreferences,
+      })
+    },
     getAllDifferentDays(itineraries) {
       let differentDays = []
       itineraries.forEach(it => {
@@ -188,7 +234,7 @@ export default {
       this.$store.commit('is/setSelectedTrip', selectedTrip)
       this.$router.push('/itineraryDetailPage')
     },
-    shoutOut() {
+    createShoutOut() {
       const shoutOutTrip = {
         from: this.planResult.from,
         to: this.planResult.to,
@@ -200,6 +246,7 @@ export default {
     toDate(string) {
       return moment(string)
     },
+    //TODO: Add sorting again.
     toggleSelectedSortModus() {
       this.selectedSortModusIndex =
         (this.selectedSortModusIndex + 1) % this.sortModi.length
@@ -224,5 +271,9 @@ a {
   span {
     font-size: 1em;
   }
+}
+
+.search-header {
+  background-color: $background-light-green;
 }
 </style>

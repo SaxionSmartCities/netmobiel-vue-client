@@ -127,9 +127,10 @@ const router = new Router({
       name: 'searchOptions',
     },
     {
-      path: '/searchLocation/:field',
+      path: '/searchLocation/:field;:editSearchCriteria',
       component: SearchLocationPage,
       name: 'searchLocation',
+      props: true,
     },
     {
       path: '/searchResults',

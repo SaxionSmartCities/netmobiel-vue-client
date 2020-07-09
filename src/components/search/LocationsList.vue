@@ -1,8 +1,8 @@
 <template>
-  <v-list width="100%">
+  <v-list>
     <v-list-item-group v-model="selectedListItem">
       <template v-for="(location, index) in locations">
-        <v-divider v-if="index > 0" :key="index" class="mx-3" />
+        <v-divider :key="index" />
         <v-list-item :key="location.id">
           <v-list-item-icon @click="$emit('onItemClicked', location)">
             <v-icon>{{ iconicCategory(location.category) }}</v-icon>
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import suggestions from '@/constants/suggestions.js'
+import constants from '@/constants/constants.js'
 
 export default {
   name: 'LocationsList',
@@ -67,7 +67,10 @@ export default {
   },
   methods: {
     iconicCategory(category) {
-      return suggestions.CATEGORY_ICONS[category] || 'fa-map-marker-alt'
+      return (
+        constants.searchSuggestionCategoryIcons[category] ||
+        constants.searchSuggestionDefaultIcon
+      )
     },
     stripBreakLines(value) {
       return value.replace(/<br>/gi, '')
