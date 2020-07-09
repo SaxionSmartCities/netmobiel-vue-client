@@ -116,7 +116,10 @@ export default {
       this.$store.commit('is/setSearchCriteria', newCriteria)
     },
     onLocationFieldSelected(newField) {
-      this.$router.push({ name: 'searchLocation', params: newField })
+      this.$router.push({
+        name: 'searchLocation',
+        params: { field: newField.field, editSearchCriteria: false.toString() },
+      })
     },
     onCriteriaChanged(newCriteria) {
       //TODO: Do the valid time check in the search criteria component.

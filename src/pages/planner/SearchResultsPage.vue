@@ -158,7 +158,10 @@ export default {
   },
   methods: {
     onLocationFieldSelected(newField) {
-      this.$router.push({ name: 'searchLocation', params: newField })
+      this.$router.push({
+        name: 'searchLocation',
+        params: { field: newField.field, editSearchCriteria: true.toString() },
+      })
     },
     onCriteriaChanged(newCriteria) {
       //TODO: Do the valid time check in the search criteria component.

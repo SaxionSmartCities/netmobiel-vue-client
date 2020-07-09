@@ -329,7 +329,7 @@ export default {
       }
     },
     onDepartureSelected() {
-      let params = { field: 'ridefrom' }
+      let params = { field: 'ridefrom', editSearchCriteria: false.toString() }
       this.$router.push({ name: 'searchLocation', params })
     },
     confirmTime() {

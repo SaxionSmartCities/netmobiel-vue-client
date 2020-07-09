@@ -64,6 +64,13 @@ export default {
     LocationsList,
     AddFavoriteDialog,
   },
+  props: {
+    editSearchCriteria: {
+      type: String,
+      default: 'false',
+      required: false,
+    },
+  },
   data() {
     return {
       searchInput: '',
@@ -89,6 +96,9 @@ export default {
       }))
       return favorited
     },
+    localEditSearchCriteria() {
+      return this.editSearchCriteria === 'true'
+    },
   },
   watch: {
     searchInput: throttle(function(val) {
@@ -112,13 +122,28 @@ export default {
       return `${suggestion.highlightedTitle} ${suggestion.highlightedVicinity}`
     },
     completeSearch(suggestion) {
-      this.$store.commit('gs/setGeoLocationPicked', {
-        field: this.$route.params.field,
-        suggestion: {
-          ...suggestion,
-          vicinity: suggestion.vicinity.replace('<br/>', ' '),
-        },
-      })
+      if (this.localEditSearchCriteria) {
+        const vicinity = suggestion?.vicinity.replace('<br/>', ' ')
+        const fieldValue = {
+          label: `${suggestion.title} ${vicinity || ''}`,
+          latitude: suggestion.position[0],
+          longitude: suggestion.position[1],
+        }
+
+        this.$store.commit('is/setSearchCriteriaField', {
+          field: this.$route.params.field,
+          value: fieldValue,
+        })
+      } else {
+        this.$store.commit('gs/setGeoLocationPicked', {
+          field: this.$route.params.field,
+          suggestion: {
+            ...suggestion,
+            vicinity: suggestion.vicinity.replace('<br/>', ' '),
+          },
+        })
+      }
+
       this.$router.go(-1)
     },
     clearSearchInput() {
