@@ -62,7 +62,7 @@
             U heeft geen bewaarde reizen. Ga naar de planner om uw reis te
             plannen.
           </v-col>
-          <v-col class="past-rides-column py-0">
+          <v-col v-else class="past-rides-column py-0">
             <travel-card
               v-for="(trip, index) in getPlannedTrips"
               :key="index"
