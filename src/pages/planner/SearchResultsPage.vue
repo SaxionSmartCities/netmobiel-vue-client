@@ -117,6 +117,12 @@ export default {
     ContentPane,
     TravelCard,
   },
+  props: {
+    tripId: {
+      type: Number,
+      required: true,
+    },
+  },
   data() {
     return {
       selectedSortModusIndex: 0,

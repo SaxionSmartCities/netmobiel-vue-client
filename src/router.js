@@ -133,9 +133,10 @@ const router = new Router({
       props: true,
     },
     {
-      path: '/searchResults',
+      path: '/searchResults/:tridId',
       component: SearchResultsPage,
       name: 'searchResults',
+      props: true,
     },
     {
       path: '/termsOfUse',

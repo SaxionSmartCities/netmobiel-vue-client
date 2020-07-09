@@ -141,7 +141,7 @@ export default {
     },
     submitForm() {
       this.$store.dispatch('is/submitPlanningsRequest', this.searchCriteria)
-      this.$router.push({ name: 'searchResults', editTrip: true })
+      this.$router.push({ name: 'searchResults', tripdId: -1 })
     },
   },
 }

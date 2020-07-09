@@ -383,7 +383,7 @@ export default {
       }
       this.$store.commit('is/setSearchCriteria', searchCriteria)
       this.$store.dispatch('is/submitPlanningsRequest', searchCriteria)
-      this.$router.push({ name: 'searchResults', editTrip: true })
+      this.$router.push({ name: 'searchResults', tripId: this.id })
     },
     onTripCancelled() {
       //TODO:
