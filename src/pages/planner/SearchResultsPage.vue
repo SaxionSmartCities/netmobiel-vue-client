@@ -235,13 +235,7 @@ export default {
       this.$router.push('/itineraryDetailPage')
     },
     createShoutOut() {
-      const shoutOutTrip = {
-        from: this.planResult.from,
-        to: this.planResult.to,
-        timestamp: this.planRequest.timestamp,
-        preferences: this.planRequest.preferences,
-      }
-      this.$store.dispatch('is/storeShoutOut', shoutOutTrip)
+      this.$store.dispatch('is/storeShoutOut', this.searchCriteria)
     },
     toDate(string) {
       return moment(string)
