@@ -391,7 +391,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .departure-date {
   text-transform: lowercase;
 }
@@ -406,6 +406,6 @@ export default {
   text-align: center;
 }
 .bg-light-green {
-  background-color: rgba(46, 137, 151, 0.1);
+  background-color: $background-light-green;
 }
 </style>

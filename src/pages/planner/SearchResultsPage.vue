@@ -274,6 +274,6 @@ a {
 }
 
 .search-header {
-  background-color: rgba(46, 137, 151, 0.1);
+  background-color: $background-light-green;
 }
 </style>
