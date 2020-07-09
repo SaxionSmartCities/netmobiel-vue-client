@@ -11,7 +11,8 @@
               :to="tripToLabel"
               :date="trip.travelTime"
               :duration="tripDuration"
-              :revenue="15"
+              :cost="localIsMine ? 15 : null"
+              :revenue="localIsMine ? null : 15"
             />
           </v-col>
           <v-col><v-divider /></v-col>
