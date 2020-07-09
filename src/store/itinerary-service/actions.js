@@ -38,8 +38,8 @@ export default {
         params: params,
       })
       .then(response => {
-        context.commit('setPlanningStatus', { status: 'SUCCESS' })
         context.commit('setPlanningResults', { data: response.data })
+        context.commit('setPlanningStatus', { status: 'SUCCESS' })
       })
       .catch(error => {
         context.commit('setPlanningStatus', { status: 'FAILED' })

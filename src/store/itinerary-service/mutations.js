@@ -5,6 +5,9 @@ export default {
     state.searchCriteria.travelTime = payload.travelTime
     state.searchCriteria.preferences = payload.preferences
   },
+  setSearchCriteriaField: (state, payload) => {
+    state.searchCriteria[payload.field] = payload.value
+  },
   storePlanningRequest: (state, payload) => {
     state.planningRequest.from = payload.from
     state.planningRequest.to = payload.to
