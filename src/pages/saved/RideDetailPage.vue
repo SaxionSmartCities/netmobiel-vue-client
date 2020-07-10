@@ -25,6 +25,7 @@
     <v-row class="mb-2">
       <v-col>
         <h3 class="mb-2">Wijzigen</h3>
+        <v-divider />
         <v-row @click="editRide">
           <v-col cols="3" class="text-center">
             <v-icon>fa-pencil-alt</v-icon>
