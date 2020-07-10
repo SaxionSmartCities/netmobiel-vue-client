@@ -33,7 +33,6 @@
             Wijzig deze rit
           </v-col>
         </v-row>
-        <v-divider></v-divider>
         <v-divider />
         <v-row @click="checkDeleteTrip()">
           <v-col cols="3" class="text-center">
