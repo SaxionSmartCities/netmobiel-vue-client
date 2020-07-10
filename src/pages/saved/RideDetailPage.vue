@@ -1,66 +1,6 @@
 <template>
   <content-pane>
-    <v-row dense class="pa-0">
-      <v-col class="mb-3 py-0">
-        <h1>Rit details</h1>
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col class="py-0">
-        <v-divider />
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col cols="3">Datum:</v-col>
-      <v-col cols="8" class="departure-date">
-        {{ formatDate() }}
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col cols="3">Reisduur:</v-col>
-      <v-col cols="8">
-        {{ formatDuration() }}
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col cols="3">Boekingen:</v-col>
-      <v-col cols="8">
-        {{ numBookings }}
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col cols="3">Auto:</v-col>
-      <v-col cols="8">{{ carBrandModel }}</v-col>
-    </v-row>
-    <v-row v-if="ride.recurrence" dense>
-      <v-col cols="3">Herhalen:</v-col>
-      <v-col cols="8">
-        {{ formatRecurrence() }}
-        <table v-if="ride.recurrence.unit == 'WEEK'" class="equal-width">
-          <tr>
-            <td>ma</td>
-            <td>di</td>
-            <td>wo</td>
-            <td>do</td>
-            <td>vr</td>
-            <td>za</td>
-            <td>zo</td>
-          </tr>
-          <tr>
-            <td v-for="day in [0, 1, 2, 3, 4, 5, 6]" :key="day">
-              <v-icon>
-                {{ recursOn(day) ? 'done' : '' }}
-              </v-icon>
-            </td>
-          </tr>
-        </table>
-      </v-col>
-    </v-row>
-    <v-row class="pb-3">
-      <v-col>
-        <v-divider />
-      </v-col>
-    </v-row>
+    <ride-details :ride="ride" class="mb-4" />
     <v-row
       v-for="(leg, index) in generateSteps()"
       :key="index"
@@ -158,11 +98,11 @@
 </template>
 
 <script>
-import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ContentPane from '@/components/common/ContentPane.vue'
 import ContactTravellerModal from '@/components/itinerary-details/ContactTravellerModal'
 import EditRideModal from '../../components/itinerary-details/EditRideModal'
+import RideDetails from '@/components/itinerary-details/RideDetails.vue'
 
 export default {
   name: 'RideDetailPage',
@@ -171,6 +111,7 @@ export default {
     ContactTravellerModal,
     ContentPane,
     ItineraryLeg,
+    RideDetails,
   },
   props: {
     id: {
@@ -208,11 +149,6 @@ export default {
     numBookings() {
       return !this.ride.bookings ? 0 : this.ride.bookings.length
     },
-    carBrandModel() {
-      return !this.ride.car
-        ? ''
-        : `${this.ride.car.brand} ${this.ride.car.model}`
-    },
   },
   created() {
     this.$store.commit('ui/showBackButton')
@@ -222,28 +158,6 @@ export default {
     this.$store.dispatch('cs/fetchRide', { id: this.id })
   },
   methods: {
-    formatDate() {
-      return moment(this.ride.departureTime)
-        .locale('nl')
-        .format('dddd DD-MM-YYYY')
-    },
-    formatDuration() {
-      const seconds = this.ride.duration,
-        minutes = Math.round(seconds / 60)
-      return minutes < 60
-        ? `${minutes} minuten`
-        : `${Math.floor(minutes / 60)} uur ${minutes % 60} minuten`
-    },
-    formatRecurrence() {
-      const { unit, interval } = this.ride.recurrence
-      if (unit === 'DAY') {
-        return 'Dagelijks'
-      }
-      return interval === 1 ? 'Wekelijks op' : `Elke ${interval} weken op`
-    },
-    recursOn(weekday) {
-      return this.ride.recurrence.daysOfWeekMask & (1 << weekday)
-    },
     generateSteps() {
       const { ride } = this
       if (!ride.id) return []
