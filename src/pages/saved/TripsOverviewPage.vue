@@ -52,7 +52,7 @@
               :to="trip.to"
               :arrival-time="parseDate(trip.arrivalTime)"
               :departure-time="parseDate(trip.departureTime)"
-              :legs="trip.legs"
+              :legs="trip.itinerary.legs"
               @onTripSelected="onTripSelected"
             />
           </v-col>
@@ -185,7 +185,10 @@ export default {
     },
     needsReview(trip) {
       //TODO: Base this on the status for the trip.
-      return !!trip.legs.find(l => l.traverseMode == 'RIDESHARE')
+      if (trip?.legs) {
+        return trip.legs.find(l => l.traverseMode == 'RIDESHARE')
+      }
+      return false
     },
     bottomVisible(element) {
       const scrollY = element.scrollTop
