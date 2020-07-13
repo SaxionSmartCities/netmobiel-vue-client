@@ -2,7 +2,7 @@
   <v-row dense class="d-flex flex-column">
     <v-col><h1>Rit details</h1></v-col>
     <v-col><v-divider /></v-col>
-    <v-col class="py-2">
+    <v-col class="py-0">
       <itinerary-summary-list :items="items" />
     </v-col>
     <v-col><v-divider /></v-col>

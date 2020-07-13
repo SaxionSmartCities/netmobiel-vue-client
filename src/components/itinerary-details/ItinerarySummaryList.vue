@@ -1,5 +1,5 @@
 <template>
-  <v-row class="d-flex flex-column">
+  <v-row class="d-flex flex-column py-3">
     <v-col v-for="(item, index) of items" :key="index" class="py-0">
       <v-row no-gutters>
         <v-col cols="3" class="bold">{{ item.label }}</v-col>

@@ -1,6 +1,10 @@
 <template>
   <content-pane>
-    <ride-details :ride="ride" class="mb-4" />
+    <v-row>
+      <v-col class="py-0">
+        <ride-details :ride="ride" class="mb-4" />
+      </v-col>
+    </v-row>
     <v-row
       v-for="(leg, index) in generateSteps()"
       :key="index"
