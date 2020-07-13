@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import moment from 'moment'
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
+import { formatDateTimeLong } from '@/utils/datetime.js'
 
 export default {
   name: 'RideDetails',
@@ -23,7 +23,7 @@ export default {
     items() {
       let result = []
       const { departureTime, duration, bookings, car, recurrence } = this.ride
-      result.push({ label: 'Datum', value: this.printableDate(departureTime) })
+      result.push({ label: 'Datum', value: formatDateTimeLong(departureTime) })
       if (duration) {
         const reisduur = `${Math.round(duration / 60)} minuten`
         result.push({ label: 'Reisduur', value: reisduur })
@@ -43,13 +43,6 @@ export default {
         })
       }
       return result
-    },
-  },
-  methods: {
-    printableDate(date) {
-      return moment(date)
-        .locale('nl')
-        .format('dddd DD-MM-YYYY')
     },
   },
 }
