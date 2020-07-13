@@ -17,11 +17,7 @@
         <v-col><h1>Reis details</h1></v-col>
         <v-col><v-divider /></v-col>
         <v-col class="py-0">
-          <itinerary-summary
-            :date="trip.itinerary.departureTime"
-            :duration="trip.itinerary.duration"
-            :cost="5"
-          />
+          <itinerary-summary-list :items="items" />
         </v-col>
         <v-col><v-divider /></v-col>
         <v-col class="py-4">
@@ -46,16 +42,17 @@
 </template>
 
 <script>
-import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
+import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import RouteMap from '@/components/itinerary-details/RouteMap.vue'
 import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
+import { formatDateTimeLong } from '@/utils/datetime.js'
 
 export default {
   name: 'TripDetails',
   components: {
     RouteMap,
-    ItinerarySummary,
+    ItinerarySummaryList,
     ItineraryLeg,
   },
   props: {
@@ -70,6 +67,23 @@ export default {
     }
   },
   computed: {
+    items() {
+      let result = []
+      if (this.trip.itinerary) {
+        const { departureTime, duration } = this.trip.itinerary
+        result.push({
+          label: 'Datum',
+          value: formatDateTimeLong(departureTime),
+        })
+        if (duration) {
+          const reisduur = `${Math.round(duration / 60)} minuten`
+          result.push({ label: 'Reisduur', value: reisduur })
+        }
+        //TODO: Determine the real cost.
+        result.push({ label: 'Kosten', value: '5 credits' })
+      }
+      return result
+    },
     generateSteps() {
       return generateItineraryDetailSteps(this.trip.itinerary)
     },
