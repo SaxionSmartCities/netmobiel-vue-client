@@ -2,12 +2,15 @@
   <v-card outlined @click="$emit('rideSelected', index)">
     <v-row no-gutters>
       <v-col>
-        <v-card-title justify-center>
-          <span>Vertrek</span>
-          <v-spacer />
-          <span class="booking-count">
-            {{ ride.bookings.length }} boekingen
-          </span>
+        <v-card-title class="d-flex justify-space-between">
+          <v-row no-gutters>
+            <v-col class="d-flex justify-space-between subtitle-1">
+              <span>Vertrek</span>
+              <span class="booking-count">
+                {{ ride.bookings.length }} boekingen
+              </span>
+            </v-col>
+          </v-row>
         </v-card-title>
         <v-card-subtitle>
           <span>{{ formatTime() }}</span>
@@ -76,6 +79,6 @@ export default {
 <style scoped>
 .booking-count {
   color: rgba(0, 0, 0, 0.54);
-  font-size: 75%;
+  font-size: 0.8em;
 }
 </style>

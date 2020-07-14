@@ -6,14 +6,7 @@
           <v-col><h1>Oproep details</h1></v-col>
           <v-col><v-divider /></v-col>
           <v-col class="py-0">
-            <itinerary-summary
-              :from="tripFromLabel"
-              :to="tripToLabel"
-              :date="trip.travelTime"
-              :duration="tripDuration"
-              :cost="localIsMine ? 15 : null"
-              :revenue="localIsMine ? null : 15"
-            />
+            <itinerary-summary-list :items="items" />
           </v-col>
           <v-col><v-divider /></v-col>
           <!-- Passenger -->
@@ -181,10 +174,14 @@ import { mapGetters } from 'vuex'
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
-import ItinerarySummary from '@/components/itinerary-details/ItinerarySummary.vue'
+import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
 import SearchStatus from '@/components/search/SearchStatus.vue'
-import { DATE_FORMAT_INPUT, TIMESTAMP_FORMAT } from '@/utils/datetime.js'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
+import {
+  DATE_FORMAT_INPUT,
+  TIMESTAMP_FORMAT,
+  formatDateTimeLong,
+} from '@/utils/datetime.js'
 import {
   generateShoutOutDetailSteps,
   generateItineraryDetailSteps,
@@ -196,7 +193,7 @@ export default {
     ContentPane,
     ItineraryLeg,
     ItineraryOptions,
-    ItinerarySummary,
+    ItinerarySummaryList,
     SearchStatus,
   },
   props: {
@@ -228,17 +225,35 @@ export default {
       planResult: 'is/getPlanningResults',
       pickedLocations: 'gs/getPickedLocation',
     }),
+    items() {
+      let result = []
+      const { from, to, travelTime } = this.trip
+      if (from) {
+        result.push({ label: 'Van', value: from.label })
+      }
+      if (to) {
+        result.push({ label: 'Naar', value: to.label })
+      }
+      if (travelTime) {
+        result.push({ label: 'Datum', value: formatDateTimeLong(travelTime) })
+      }
+      if (this.itinerary?.duration) {
+        const { duration } = this.itinerary
+        const reisduur = `${Math.round(duration / 60)} minuten`
+        result.push({ label: 'Reisduur', value: reisduur })
+      } else {
+        result.push({ label: 'Reisduur', value: 'Onbekend' })
+      }
+      //TODO: Determine the real cost.
+      if (this.localIsMine) {
+        result.push({ label: 'Kosten', value: '15 credits' })
+      } else {
+        result.push({ label: 'Opbrengst', value: '15 credits' })
+      }
+      return result
+    },
     localIsMine() {
       return this.isMine === 'true'
-    },
-    tripFromLabel() {
-      return this.trip?.from?.label
-    },
-    tripToLabel() {
-      return this.trip?.to?.label
-    },
-    tripDuration() {
-      return this.itinerary?.duration
     },
     itineraryDepartureLabel() {
       return this.itineraryDeparture?.from?.label || 'Onbekende locatie'
