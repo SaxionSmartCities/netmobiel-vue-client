@@ -52,7 +52,7 @@
               :to="trip.to"
               :arrival-time="parseDate(trip.arrivalTime)"
               :departure-time="parseDate(trip.departureTime)"
-              :legs="trip.legs"
+              :legs="trip.itinerary.legs"
               @onTripSelected="onTripSelected"
             />
           </v-col>
@@ -62,7 +62,7 @@
             U heeft geen bewaarde reizen. Ga naar de planner om uw reis te
             plannen.
           </v-col>
-          <v-col class="past-rides-column py-0">
+          <v-col v-else class="past-rides-column py-0">
             <travel-card
               v-for="(trip, index) in getPlannedTrips"
               :key="index"
@@ -185,7 +185,10 @@ export default {
     },
     needsReview(trip) {
       //TODO: Base this on the status for the trip.
-      return !!trip.legs.find(l => l.traverseMode == 'RIDESHARE')
+      if (trip?.legs) {
+        return trip.legs.find(l => l.traverseMode == 'RIDESHARE')
+      }
+      return false
     },
     bottomVisible(element) {
       const scrollY = element.scrollTop
