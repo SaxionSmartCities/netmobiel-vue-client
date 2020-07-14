@@ -2,6 +2,7 @@
   <v-card
     outlined
     :ripple="!needsReview"
+    :disabled="disabled"
     @click="$emit('onTripSelected', index)"
   >
     <v-row no-gutters>
