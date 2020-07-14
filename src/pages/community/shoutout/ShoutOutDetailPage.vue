@@ -219,6 +219,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      profile: 'ps/getProfile',
       trip: 'is/getSelectedTrip',
       planningRequest: 'is/getPlanningRequest',
       planningStatus: 'is/getPlanningStatus',
@@ -363,7 +364,7 @@ export default {
       })
     },
     onClearDeparture() {
-      const { address } = this.$store.getters['ps/getUser'].profile
+      const { address } = this.profile
       this.$store.dispatch('is/submitShoutOutPlanningsRequest', {
         id: this.id,
         from: {
@@ -374,9 +375,18 @@ export default {
       })
     },
     bookTrip() {
-      //TODO: Implement storage trip in backend
-      // eslint-disable-next-line
-      console.log('Method not implemented!')
+      const { selectedCarId } = this.profile?.ridePlanOptions
+      if (selectedCarId) {
+        const travelOffer = {
+          shoutoutPlanId: this.id,
+          planRef: this.planResult.planRef,
+          vehicleRef: `urn:nb:rs:car:${selectedCarId}`,
+        }
+        this.$store.dispatch('is/storeTravelOffer', travelOffer)
+      } else {
+        //TODO: error handling.
+        console.log('No default car!')
+      }
     },
     contactPassenger() {
       //TODO: Implement communication with passenger
@@ -384,7 +394,7 @@ export default {
       console.log('Method not implemented!')
     },
     onTripEdit() {
-      const { searchPreferences } = this.$store.getters['ps/getProfile']
+      const { searchPreferences } = this.profile
       let searchCriteria = {
         from: this.trip.from,
         to: this.trip.to,

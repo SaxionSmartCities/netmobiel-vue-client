@@ -185,6 +185,42 @@ export default {
         )
       })
   },
+  storeTravelOffer: (
+    context,
+    { shoutoutPlanId, planRef, vehicleRef, driverRef }
+  ) => {
+    let payload = { planRef, vehicleRef, driverRef }
+    const URL = `${BASE_URL}/shout-outs/${shoutoutPlanId}`
+    axios
+      .post(URL, payload, {
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      })
+      .then(response => {
+        if (response.status == 201) {
+          let message = 'Je aanbod is verstuurd'
+          context.dispatch(
+            'ui/queueNotification',
+            { message: message, timeout: 3000 },
+            { root: true }
+          )
+        } else {
+          context.dispatch(
+            'ui/queueNotification',
+            { message: response.data.message, timeout: 0 },
+            { root: true }
+          )
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line
+        console.log(error)
+        context.dispatch(
+          'ui/queueNotification',
+          { message: 'Fout bij het opslaan van uw oproep.', timeout: 0 },
+          { root: true }
+        )
+      })
+  },
   fetchTrips: (
     context,
     { pastTrips, offset, maxResults, until, since, sortDir }
