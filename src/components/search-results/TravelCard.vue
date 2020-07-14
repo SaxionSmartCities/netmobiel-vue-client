@@ -70,6 +70,7 @@ export default {
     duration: { type: Number, required: false, default: 0 },
     legs: { type: Array, required: true },
     needsReview: { type: Boolean, required: false, default: false },
+    disabled: { type: Boolean, required: false, default: false },
   },
   data() {
     return {

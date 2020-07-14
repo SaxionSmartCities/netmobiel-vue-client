@@ -144,7 +144,7 @@ export default {
       this.$router.push({
         name: 'searchResults',
         params: {
-          tripdId: -1,
+          tripId: -1,
         },
       })
     },

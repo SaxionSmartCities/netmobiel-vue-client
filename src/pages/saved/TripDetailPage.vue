@@ -192,7 +192,6 @@ export default {
       }
       this.$store.commit('is/setSearchCriteria', searchCriteria)
       this.$store.dispatch('is/submitPlanningsRequest', searchCriteria)
-      console.log('selected trip:', this.selectedTrip)
       this.$router.push({
         name: 'searchResults',
         params: { tripId: this.selectedTrip.id },

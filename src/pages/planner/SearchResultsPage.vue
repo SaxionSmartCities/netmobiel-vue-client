@@ -23,7 +23,18 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col class="py-0"><v-divider /></v-col>
+        <v-col class="py-0">
+          <v-divider />
+          <div
+            v-if="tripId !== -1 && tripId"
+            class="px-4 py-2 d-flex flex-row align-center edit-container"
+          >
+            <v-icon small color="button">warning</v-icon>
+            <span class="caption ml-3 secondary-color">
+              LET OP! U bent aan het wijzigen.</span
+            >
+          </div>
+        </v-col>
       </v-row>
     </template>
     <v-row dense class="d-flex flex-column">
@@ -281,5 +292,9 @@ a {
 
 .search-header {
   background-color: $background-light-green;
+}
+
+.edit-container {
+  background-color: rgba($color-orange, 0.15);
 }
 </style>
