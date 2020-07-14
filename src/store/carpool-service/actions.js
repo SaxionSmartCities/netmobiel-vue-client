@@ -116,7 +116,9 @@ export default {
           context.dispatch(
             'ui/queueNotification',
             {
-              message: `Niet toegestaan auto (${payload.licensePlate}) te verwijderen.`,
+              message: `Niet toegestaan auto (${
+                payload.licensePlate
+              }) te verwijderen.`,
               timeout: 0,
             },
             { root: true }
