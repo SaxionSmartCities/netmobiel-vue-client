@@ -196,6 +196,7 @@ export default {
         preferences: this.planRequest.preferences,
       }
       this.$store.dispatch('is/storeShoutOut', shoutOutTrip)
+      this.$router.push('/shoutoutSubmittedPage')
     },
     toDate(string) {
       return moment(string)
