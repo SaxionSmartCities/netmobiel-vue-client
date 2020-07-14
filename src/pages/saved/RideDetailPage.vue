@@ -154,7 +154,9 @@ export default {
         ? []
         : this.ride.bookings.map(booking => {
             return {
-              name: `${booking.passenger.givenName} ${booking.passenger.familyName}`,
+              name: `${booking.passenger.givenName} ${
+                booking.passenger.familyName
+              }`,
               passengerRef: booking.passengerRef,
               ...booking.passenger,
             }
