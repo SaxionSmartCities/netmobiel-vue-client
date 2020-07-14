@@ -12,19 +12,24 @@ function generateHeader(key) {
 }
 
 export default {
-  submitPlanningsRequest: (context, { from, to, timestamp, preferences }) => {
-    context.commit('storePlanningRequest', { from, to, timestamp, preferences })
+  submitPlanningsRequest: (context, { from, to, travelTime, preferences }) => {
+    context.commit('storePlanningRequest', {
+      from,
+      to,
+      travelTime,
+      preferences,
+    })
     const URL = BASE_URL + '/planner/search/plan'
     const params = {
-      from: `${from.title}::${from.position[0]},${from.position[1]}`,
-      to: `${to.title}::${to.position[0]},${to.position[1]}`,
+      from: `${from.label}::${from.latitude},${from.longitude}`,
+      to: `${to.label}::${to.latitude},${to.longitude}`,
       nrSeats: preferences.numPassengers,
       modalities: preferences.allowedTravelModes.toString(),
       maxWalkDistance: preferences.maximumTransferTime,
       firstLegRideshare: preferences.allowFirstLegTransfer || false,
       lastLegRideshare: preferences.allowLastLegTransfer || false,
-      travelTime: timestamp.when.format(),
-      useAsArrivalTime: timestamp.arriving,
+      travelTime: travelTime.when.format(),
+      useAsArrivalTime: travelTime.arriving,
     }
     context.commit('setPlanningStatus', { status: 'PENDING' })
     axios
@@ -33,8 +38,8 @@ export default {
         params: params,
       })
       .then(response => {
-        context.commit('setPlanningStatus', { status: 'SUCCESS' })
         context.commit('setPlanningResults', { data: response.data })
+        context.commit('setPlanningStatus', { status: 'SUCCESS' })
       })
       .catch(error => {
         context.commit('setPlanningStatus', { status: 'FAILED' })
@@ -136,7 +141,7 @@ export default {
         )
       })
   },
-  storeShoutOut: (context, { from, to, timestamp, preferences }) => {
+  storeShoutOut: (context, { from, to, travelTime, preferences }) => {
     let payload = {
       from,
       to,
@@ -145,8 +150,8 @@ export default {
       maxWalkDistance: preferences.maximumTransferTime,
       firstLegRideshare: preferences.allowFirstLegTransfer || false,
       lastLegRideshare: preferences.allowLastLegTransfer || false,
-      travelTime: timestamp.when.format(),
-      useAsArrivalTime: timestamp.arriving,
+      travelTime: travelTime.when.format(),
+      useAsArrivalTime: travelTime.arriving,
       planType: 'SHOUT_OUT',
     }
     const URL = BASE_URL + '/planner/plans'
@@ -308,6 +313,41 @@ export default {
           'ui/queueNotification',
           {
             message: 'Fout bij het ophalen van de reis.',
+            timeout: 0,
+          },
+          { root: true }
+        )
+      })
+  },
+  submitShoutOutPlanningsRequest: (context, payload) => {
+    const { id, from, travelTime } = payload
+    const URL = `${BASE_URL}/planner/shout-outs/${id}/plan`
+    const params = {
+      from: `${from.label}::${from.latitude},${from.longitude}`,
+    }
+    if (travelTime) {
+      params.travelTime = travelTime.when.format()
+      params.useAsArrivalTime = travelTime.arriving
+    }
+    context.commit('storePlanningRequest', { from, travelTime })
+    context.commit('setPlanningStatus', { status: 'PENDING' })
+    axios
+      .get(URL, {
+        headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+        params: params,
+      })
+      .then(response => {
+        context.commit('setPlanningStatus', { status: 'SUCCESS' })
+        context.commit('setPlanningResults', { data: response.data })
+      })
+      .catch(error => {
+        context.commit('setPlanningStatus', { status: 'FAILED' })
+        context.dispatch(
+          'ui/queueNotification',
+          {
+            message: error.response
+              ? error.response.data.message
+              : 'Network failure',
             timeout: 0,
           },
           { root: true }

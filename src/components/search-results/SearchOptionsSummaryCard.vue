@@ -52,10 +52,6 @@ import travelModes from '@/constants/travel-modes.js'
 
 export default {
   name: 'SearchOptionsSummaryCard',
-
-  data: function() {
-    return {}
-  },
   computed: {
     getSearchPreferences() {
       return this.$store.getters['ps/getProfile'].searchPreferences

@@ -36,9 +36,6 @@ import ContentPane from '@/components/common/ContentPane.vue'
 export default {
   name: 'RidePlanSubmitted',
   components: { ContentPane },
-  data() {
-    return {}
-  },
 }
 </script>
 

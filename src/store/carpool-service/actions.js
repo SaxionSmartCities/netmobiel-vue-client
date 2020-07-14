@@ -136,7 +136,7 @@ export default {
       })
   },
   submitRide: (context, payload) => {
-    const { ridePlanOptions, timestamp, from, to, recurrence } = payload
+    const { from, to, ridePlanOptions, recurrence, travelTime } = payload
     if (ridePlanOptions.selectedCarId < 0) {
       context.dispatch(
         'ui/queueNotification',
@@ -151,23 +151,15 @@ export default {
     const request = {
       carRef: 'urn:nb:rs:car:' + ridePlanOptions.selectedCarId,
       recurrence,
-      fromPlace: {
-        label: `${from.title} ${from.vicinity}`,
-        latitude: from.position[0],
-        longitude: from.position[1],
-      },
-      toPlace: {
-        label: `${to.title} ${to.vicinity}`,
-        latitude: to.position[0],
-        longitude: to.position[1],
-      },
+      fromPlace: from,
+      toPlace: to,
       remarks: 'What does this do?',
       nrSeatsAvailable: ridePlanOptions.numPassengers,
       maxDetourSeconds: ridePlanOptions.maxMinutesDetour * 60,
     }
     // Set arrival or departure time.
-    const formattedDate = timestamp.when.toISOString()
-    if (timestamp.arriving) {
+    const formattedDate = travelTime.when.toISOString()
+    if (travelTime.arriving) {
       request.arrivalTime = formattedDate
     } else {
       request.departureTime = formattedDate

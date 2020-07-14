@@ -15,7 +15,6 @@
       >
       </v-text-field>
     </template>
-
     <v-row v-if="showSuggestionsList" class="align-self-start">
       <locations-list
         :locations="suggestions"
@@ -25,24 +24,18 @@
         @onUnFavoriteClicked="removeFavorite"
       />
     </v-row>
-    <v-row v-if="favorites.length > 0" class="align-self-start" dense>
-      <v-col>
-        <v-row>
-          <v-col>
-            <span class="text-uppercase text-color-primary">
-              Mijn favorieten
-            </span>
-          </v-col>
-        </v-row>
-        <v-row>
-          <locations-list
-            :locations="favorites"
-            :show-highlighted-text="false"
-            @onItemClicked="completeSearch($event)"
-            @onUnFavoriteClicked="removeFavorite"
-          />
-        </v-row>
-      </v-col>
+    <v-row
+      v-if="favorites.length > 0 && !showSuggestionsList"
+      class="d-flex flex-column align-self-start"
+      dense
+    >
+      <v-col><h4 class="netmobiel">Mijn favorieten</h4></v-col>
+      <locations-list
+        :locations="favorites"
+        :show-highlighted-text="false"
+        @onItemClicked="completeSearch($event)"
+        @onUnFavoriteClicked="removeFavorite"
+      />
     </v-row>
     <add-favorite-dialog
       v-if="selectedLocation"
@@ -71,6 +64,13 @@ export default {
     LocationsList,
     AddFavoriteDialog,
   },
+  props: {
+    editSearchCriteria: {
+      type: String,
+      default: 'false',
+      required: false,
+    },
+  },
   data() {
     return {
       searchInput: '',
@@ -96,6 +96,9 @@ export default {
       }))
       return favorited
     },
+    localEditSearchCriteria() {
+      return this.editSearchCriteria === 'true'
+    },
   },
   watch: {
     searchInput: throttle(function(val) {
@@ -119,14 +122,41 @@ export default {
       return `${suggestion.highlightedTitle} ${suggestion.highlightedVicinity}`
     },
     completeSearch(suggestion) {
-      this.$store.commit('gs/setGeoLocationPicked', {
-        field: this.$route.params.field,
-        suggestion: {
-          ...suggestion,
-          vicinity: suggestion.vicinity.replace('<br/>', ' '),
-        },
-      })
+      if (this.localEditSearchCriteria) {
+        const vicinity = suggestion?.vicinity.replace('<br/>', ' ')
+        const fieldValue = {
+          label: `${suggestion.title} ${vicinity || ''}`,
+          latitude: suggestion.position[0],
+          longitude: suggestion.position[1],
+        }
+
+        this.$store.commit('is/setSearchCriteriaField', {
+          field: this.$route.params.field,
+          value: fieldValue,
+        })
+        this.sendPlanningRequest()
+      } else {
+        this.$store.commit('gs/setGeoLocationPicked', {
+          field: this.$route.params.field,
+          suggestion: {
+            ...suggestion,
+            vicinity: suggestion.vicinity.replace('<br/>', ' '),
+          },
+        })
+      }
       this.$router.go(-1)
+    },
+    sendPlanningRequest() {
+      const searchCriteria = this.$store.getters['is/getSearchCriteria']
+      const preferences = this.$store.getters['is/getPlanningRequest']
+        ?.preferences
+      const { from, to, travelTime } = searchCriteria
+      this.$store.dispatch('is/submitPlanningsRequest', {
+        from,
+        to,
+        travelTime,
+        preferences: preferences,
+      })
     },
     clearSearchInput() {
       this.searchInput = ''

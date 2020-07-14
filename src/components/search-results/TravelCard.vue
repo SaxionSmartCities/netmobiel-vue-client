@@ -8,8 +8,10 @@
       <v-col>
         <v-card-title class="d-flex justify-space-between">
           <v-row no-gutters>
-            <v-col cols="9" class="subtitle-1">Vertrek</v-col>
-            <v-col class="subtitle-1" align="left">Aankomst</v-col>
+            <v-col class="d-flex justify-space-between subtitle-1">
+              <span>Vertrek</span>
+              <span class="pr-1">Aankomst</span>
+            </v-col>
           </v-row>
           <div v-if="needsReview" class="not-confirmed">
             Niet bevestigd!

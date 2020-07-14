@@ -1,20 +1,30 @@
 export default {
+  setSearchCriteria: (state, payload) => {
+    state.searchCriteria.from = payload.from
+    state.searchCriteria.to = payload.to
+    state.searchCriteria.travelTime = payload.travelTime
+    state.searchCriteria.preferences = payload.preferences
+  },
+  setSearchCriteriaField: (state, payload) => {
+    state.searchCriteria[payload.field] = payload.value
+  },
   storePlanningRequest: (state, payload) => {
     state.planningRequest.from = payload.from
     state.planningRequest.to = payload.to
-    state.planningRequest.timestamp = payload.timestamp
+    state.planningRequest.travelTime = payload.travelTime
     state.planningRequest.preferences = payload.preferences
   },
   setPlanningStatus: (state, payload) => {
     state.planningRequest.submitStatus = payload
   },
   setPlanningResults: (state, payload) => {
-    state.planningRequest.result.plan = payload.data
+    state.planningRequest.result = payload.data
   },
   clearPlanningResults: state => {
-    state.planningRequest.result.data = ''
+    state.planningRequest.result = null
   },
   clearPlanningRequest: state => {
+    state.planningRequest.travelTime = null
     state.planningRequest.submitStatus = {
       status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
       message: '',

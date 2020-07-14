@@ -12,3 +12,9 @@ export function formatDateInputFromPicker(pickedDate) {
 export function formatDatePickerFromInput(date) {
   return moment(date, DATE_FORMAT_INPUT).format(DATE_FORMAT_PICKER)
 }
+
+export function formatDateTimeLong(date) {
+  return moment(date)
+    .locale('nl')
+    .format('dddd DD-MM-YYYY')
+}

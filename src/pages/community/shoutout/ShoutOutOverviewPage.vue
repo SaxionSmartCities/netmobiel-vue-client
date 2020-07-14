@@ -35,7 +35,7 @@
         <v-col class="py-0">
           <grouped-shout-outs
             :label="formatDate(group)"
-            :btn-text="communitySoBtnText"
+            :btn-text="'Rit aanbieden'"
             :shoutouts="groupedShoutOuts[group]"
             @shoutoutSelected="onShoutOutSelected"
           />
@@ -48,7 +48,7 @@
           <v-col class="py-0">
             <grouped-shout-outs
               :label="formatDate(group)"
-              :btn-text="mySoBtnText"
+              :btn-text="'Bekijk shoutout'"
               :my-shout-out="true"
               :shoutouts="groupedMyShoutOuts[group]"
               @shoutoutSelected="onShoutOutSelected"
@@ -74,8 +74,6 @@ export default {
     return {
       selectedTab: 0,
       baseLocation: 'Home',
-      communitySoBtnText: 'Rit aanbieden',
-      mySoBtnText: 'Bekijk shoutout',
     }
   },
   computed: {
@@ -112,6 +110,7 @@ export default {
   }),
   beforeRouteLeave: beforeRouteLeave({
     selectedTab: number => number || 0,
+    editDepart: editing => editing || false,
   }),
   mounted() {
     const address = this.$store.getters['ps/getProfile'].address
@@ -122,6 +121,7 @@ export default {
     this.$store.dispatch('is/fetchMyShoutOuts', {
       offset: 0,
     })
+    this.$store.commit('is/clearPlanningRequest')
   },
   methods: {
     groupShoutOuts(shoutouts) {
@@ -136,7 +136,13 @@ export default {
       return groupedShoutOuts
     },
     onShoutOutSelected({ index, isMine }) {
-      this.$router.push({ name: 'shoutout', params: { id: index, isMine } })
+      this.$router.push({
+        name: 'shoutout',
+        params: {
+          id: index,
+          isMine: isMine.toString(),
+        },
+      })
     },
     formatDate(date) {
       return date
