@@ -23,8 +23,20 @@
               <v-col>
                 <h3>Rit aanbod</h3>
               </v-col>
-              <v-col class="py-3">
+              <v-col v-if="trip.itineraries.length == 0" class="py-3">
                 <em>Er zijn nog geen ritten aangeboden.</em>
+              </v-col>
+              <v-col v-else class="py-3">
+                <v-row
+                  v-for="(offer, index) in trip.itineraries"
+                  :key="index"
+                  class="dense px-2 pt-0 pb-1"
+                >
+                  <travel-proposal-summary
+                    :index="index + 1"
+                    :itinerary="offer"
+                  />
+                </v-row>
               </v-col>
             </v-row>
             <v-row>
@@ -175,6 +187,7 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
+import TravelProposalSummary from '@/components/community/TravelProposalSummary.vue'
 import SearchStatus from '@/components/search/SearchStatus.vue'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import {
@@ -194,6 +207,7 @@ export default {
     ItineraryLeg,
     ItineraryOptions,
     ItinerarySummaryList,
+    TravelProposalSummary,
     SearchStatus,
   },
   props: {
@@ -376,6 +390,7 @@ export default {
     },
     bookTrip() {
       const { selectedCarId } = this.profile?.ridePlanOptions
+
       if (selectedCarId) {
         const travelOffer = {
           shoutoutPlanId: this.id,
