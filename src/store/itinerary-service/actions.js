@@ -190,7 +190,7 @@ export default {
     { shoutoutPlanId, planRef, vehicleRef, driverRef }
   ) => {
     let payload = { planRef, vehicleRef, driverRef }
-    const URL = `${BASE_URL}/shout-outs/${shoutoutPlanId}`
+    const URL = `${BASE_URL}/planner/shout-outs/${shoutoutPlanId}`
     axios
       .post(URL, payload, {
         headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
