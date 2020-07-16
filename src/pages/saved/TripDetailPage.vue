@@ -192,7 +192,10 @@ export default {
       }
       this.$store.commit('is/setSearchCriteria', searchCriteria)
       this.$store.dispatch('is/submitPlanningsRequest', searchCriteria)
-      this.$router.push({ name: 'searchResults', editTrip: true })
+      this.$router.push({
+        name: 'searchResults',
+        params: { tripId: this.selectedTrip.id },
+      })
     },
     onDriverSelectForMessage(event) {
       //The backend sends an urn for now so we need to split on ':' and get the last element
