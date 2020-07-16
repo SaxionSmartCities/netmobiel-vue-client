@@ -18,18 +18,22 @@ export default {
     plannedTrips: [],
     pastTripsCount: 0,
     pastTrips: [],
+    searchCriteria: {
+      from: null,
+      to: null,
+      travelTime: null,
+      preferences: null,
+    },
     planningRequest: {
       from: null,
       to: null,
-      timestamp: null,
+      travelTime: null,
       preferences: null,
       submitStatus: {
         status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
         message: '',
       },
-      result: {
-        plan: [],
-      },
+      result: null,
     },
   },
   getters,

@@ -12,6 +12,7 @@ export default {
         to: { address: undefined, displayPosition: undefined },
         from: { address: undefined, displayPosition: undefined },
       },
+      preFilledTime: null,
     },
   },
   getters,

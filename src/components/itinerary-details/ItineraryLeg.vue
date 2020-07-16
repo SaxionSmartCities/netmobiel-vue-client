@@ -13,14 +13,20 @@
             <v-col class="header py-0">
               {{ header }}
             </v-col>
-            <v-col cols="2" class="map-icon-height py-0">
+            <v-col
+              v-if="leg.traverseMode === 'WALK'"
+              cols="2"
+              class="map-icon-height py-0"
+            >
               <v-icon
-                v-if="leg.traverseMode === 'WALK'"
                 :class="{ 'active-map': isMapActive }"
                 @click="$emit('legSelect', { leg, step })"
               >
                 map
               </v-icon>
+            </v-col>
+            <v-col v-if="leg.isEditable" cols="2" class="map-icon-height py-0">
+              <v-icon @click="$emit('legEdit', { leg, step })">edit</v-icon>
             </v-col>
           </v-row>
         </v-col>
@@ -128,7 +134,7 @@ const descriptions = {
     return this.leg.from.label || this.leg.from.name
   },
   RIDESHARE() {
-    return `Meerijden met ${this.leg.driverName}`
+    return `Meerijden met ${this.leg.driverName} vanaf ${this.leg.from.label}`
   },
   RAIL() {
     // add platform to departure and arrival

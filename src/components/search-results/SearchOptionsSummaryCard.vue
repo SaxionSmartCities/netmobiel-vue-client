@@ -37,9 +37,9 @@
         </v-col>
       </v-row>
       <v-row dense>
-        <v-col>Max. looptijd</v-col>
+        <v-col>Max. loopafstand</v-col>
         <v-col class="text-right">
-          {{ getSearchPreferences.maximumTransferTime }} minuten
+          {{ getSearchPreferences.maximumTransferTime }} meters
         </v-col>
       </v-row>
     </v-col>
@@ -52,10 +52,6 @@ import travelModes from '@/constants/travel-modes.js'
 
 export default {
   name: 'SearchOptionsSummaryCard',
-
-  data: function() {
-    return {}
-  },
   computed: {
     getSearchPreferences() {
       return this.$store.getters['ps/getProfile'].searchPreferences

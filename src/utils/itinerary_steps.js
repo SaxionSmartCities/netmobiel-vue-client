@@ -4,7 +4,7 @@ const MIN_WAITING_TIME = 60 // Time in seconds
 
 export function generateItineraryDetailSteps(itinerary) {
   // Guard: If we have no legs then we have no steps.
-  if (!itinerary.legs || itinerary.legs.length == 0) {
+  if (itinerary == null || !itinerary.legs || itinerary.legs.length == 0) {
     return []
   }
   let steps = []

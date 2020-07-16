@@ -50,6 +50,8 @@
       <v-col>
         <itinerary-options
           :selected-trip="selectedTrip"
+          @tripEdit="onTripEdit"
+          @tripReplan="onTripReplan"
           @tripCancelled="onTripCancelled"
           @tripReview="onTripReview"
         >
@@ -67,6 +69,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import TripDetails from '@/components/itinerary-details/TripDetails.vue'
 import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
@@ -152,6 +155,13 @@ export default {
         })
       }
     },
+    onTripReplan(trip) {
+      this.$store.commit('is/setSearchCriteria', {
+        from: trip.from,
+        to: trip.to,
+      })
+      this.$router.push('/search')
+    },
     onTripReview(trip) {
       this.$router.push({
         name: 'reviewDriver',
@@ -165,6 +175,27 @@ export default {
     onTripCancelled(selectedTrip) {
       this.$store.dispatch('is/deleteSelectedTrip', selectedTrip)
       this.$router.push('/tripCancelledPage')
+    },
+    onTripEdit(trip) {
+      const { from, to, itinerary, arrivalTimeIsPinned } = trip
+      const { searchPreferences } = this.$store.getters['ps/getProfile']
+      let searchCriteria = {
+        from,
+        to,
+        preferences: searchPreferences,
+        travelTime: {
+          when: arrivalTimeIsPinned
+            ? moment(itinerary.arrivalTime)
+            : moment(itinerary.departureTime),
+          arriving: arrivalTimeIsPinned,
+        },
+      }
+      this.$store.commit('is/setSearchCriteria', searchCriteria)
+      this.$store.dispatch('is/submitPlanningsRequest', searchCriteria)
+      this.$router.push({
+        name: 'searchResults',
+        params: { tripId: this.selectedTrip.id },
+      })
     },
     onDriverSelectForMessage(event) {
       //The backend sends an urn for now so we need to split on ':' and get the last element

@@ -127,14 +127,16 @@ const router = new Router({
       name: 'searchOptions',
     },
     {
-      path: '/searchLocation/:field',
+      path: '/searchLocation/:field;:editSearchCriteria',
       component: SearchLocationPage,
       name: 'searchLocation',
+      props: true,
     },
     {
-      path: '/searchResults',
+      path: '/searchResults/:tripId',
       component: SearchResultsPage,
       name: 'searchResults',
+      props: true,
     },
     {
       path: '/termsOfUse',
