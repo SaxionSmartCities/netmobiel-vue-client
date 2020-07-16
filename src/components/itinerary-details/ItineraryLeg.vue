@@ -134,7 +134,7 @@ const descriptions = {
     return this.leg.from.label || this.leg.from.name
   },
   RIDESHARE() {
-    return `Meerijden met ${this.leg.driverName}`
+    return `Meerijden met ${this.leg.driverName} vanaf ${this.leg.from.label}`
   },
   RAIL() {
     // add platform to departure and arrival
