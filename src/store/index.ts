@@ -9,11 +9,19 @@ import notificationService from './notification-service'
 import profileService from './profile-service'
 import registrationService from './registration-service'
 import goalsService from './goals-service'
-import ui from './ui'
+import './ui'
 
 Vue.use(Vuex)
 
 export interface RootState {}
+
+import { getStoreBuilder } from 'vuex-typex'
+import { UiState } from '@/store/ui/types'
+
+export const storeBuilder = getStoreBuilder<RootState>()
+
+// eslint-disable-next-line no-redeclare
+const ui = storeBuilder.module<UiState>('ui', new UiState())
 
 export default new Vuex.Store<RootState>({
   strict: process.env.NODE_ENV !== 'production',
