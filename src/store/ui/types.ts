@@ -1,10 +1,12 @@
+export class UiState implements UiState {}
+
 export interface UiState {
-  header: UiHeader,
-  footer: UiFooter,
-  backButtonVisible: boolean,
-  notificationBarVisible: boolean,
-  notificationQueue: UiNotification[],
-  updateMessages: UiUpdateMessage[],
+  header: UiHeader
+  footer: UiFooter
+  backButtonVisible: boolean
+  notificationBarVisible: boolean
+  notificationQueue: UiNotification[]
+  updateMessages: UiUpdateMessage[]
 }
 
 export interface UiHeader {
@@ -12,22 +14,22 @@ export interface UiHeader {
 }
 
 export interface UiFooter {
-  visible: boolean,
+  visible: boolean
   selectedNav: string
 }
 
 export interface UiNotification {
-  message: string,
+  message: string
   timeout: number
 }
 
 export interface UiUpdateMessage {
-  title: string,
-  content: string,
+  title: string
+  content: string
   link: UiUpdateMessageLink
 }
 
 export interface UiUpdateMessageLink {
-  label: string,
-  to: string,
+  label: string
+  to: string
 }
