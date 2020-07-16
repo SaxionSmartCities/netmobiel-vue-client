@@ -36,7 +36,6 @@ export default {
   mounted() {
     let update = constants.COMPLETE_PROFILE_UPDATE
     this.$store.commit('ui/removeUpdate', update)
-    mutations.removeUpdate()
   },
 }
 </script>
