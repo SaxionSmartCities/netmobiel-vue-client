@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined>
+  <v-card outlined @click="$emit('travelProposalSelected', itinerary)">
     <v-row no-gutters>
       <v-col>
         <v-card-title class="py-2">
