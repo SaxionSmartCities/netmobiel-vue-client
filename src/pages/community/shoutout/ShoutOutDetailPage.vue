@@ -35,6 +35,7 @@
                   <travel-proposal-summary
                     :index="index + 1"
                     :itinerary="offer"
+                    @travelProposalSelected="onTravelProposalSelected"
                   />
                 </v-row>
               </v-col>
@@ -427,6 +428,15 @@ export default {
     },
     onTripCancelled() {
       //TODO:
+    },
+    onTravelProposalSelected(itinerary) {
+      console.log('onTravelOfferSelected: ', itinerary)
+      const { from, to, nrSeats } = this.trip
+      const { itineraryRef } = itinerary
+      const trip = { from, to, nrSeats, itineraryRef }
+      console.log(trip)
+      // this.$store.dispatch('is/storeSelectedTrip', trip)
+      this.$router.push({ name: 'shoutouts' })
     },
   },
 }
