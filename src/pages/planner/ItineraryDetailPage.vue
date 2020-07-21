@@ -52,6 +52,7 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import TripDetails from '@/components/itinerary-details/TripDetails.vue'
 import CoronaCheck from '@/components/common/CoronaCheck'
+import coronaCheckMixin from '@/mixins/coronaCheckMixin'
 
 export default {
   name: 'ItineraryDetailPage',
@@ -60,6 +61,7 @@ export default {
     ContentPane,
     TripDetails,
   },
+  mixins: [coronaCheckMixin],
   data() {
     return {
       showMap: false,
@@ -72,12 +74,6 @@ export default {
     },
     showSection() {
       return this.showConfirmationButton
-    },
-    coronaCheck() {
-      return this.$store.getters['ps/getCoronaCheck']
-    },
-    passedCoronaCheck() {
-      return this.$store.getters['ps/passedCoronaCheck']
     },
   },
   created() {
@@ -94,9 +90,6 @@ export default {
     },
     showFullRouteOnMap() {
       this.showMap = true
-    },
-    onCoronaCheckDone(val) {
-      this.$store.commit('ps/setCoronaCheck', val)
     },
   },
 }
