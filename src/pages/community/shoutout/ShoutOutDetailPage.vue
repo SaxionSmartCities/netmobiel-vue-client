@@ -128,8 +128,16 @@
                     </v-row>
                     <v-row>
                       <v-col class="pt-3 pb-0">
+                        <corona-check
+                          :value="coronaCheck"
+                          class="mb-2"
+                          @done="onCoronaCheckDone"
+                        ></corona-check>
                         <v-btn
-                          :disabled="planningStatus.status != 'SUCCESS'"
+                          :disabled="
+                            planningStatus.status != 'SUCCESS' ||
+                              !passedCoronaCheck
+                          "
                           large
                           rounded
                           block
@@ -149,7 +157,9 @@
             <v-row>
               <v-col class="pt-1">
                 <v-btn
-                  :disabled="planningStatus.status != 'SUCCESS'"
+                  :disabled="
+                    planningStatus.status != 'SUCCESS' || !passedCoronaCheck
+                  "
                   large
                   rounded
                   block
@@ -186,16 +196,20 @@ import {
   generateShoutOutDetailSteps,
   generateItineraryDetailSteps,
 } from '@/utils/itinerary_steps.js'
+import CoronaCheck from '@/components/common/CoronaCheck'
+import coronaCheckMixin from '@/mixins/coronaCheckMixin'
 
 export default {
   name: 'ShoutOutDetailPage',
   components: {
+    CoronaCheck,
     ContentPane,
     ItineraryLeg,
     ItineraryOptions,
     ItinerarySummaryList,
     SearchStatus,
   },
+  mixins: [coronaCheckMixin],
   props: {
     id: { type: String, required: true },
     // isMine is a string because it is a path parameter. When routing back from

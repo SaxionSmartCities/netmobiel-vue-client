@@ -56,13 +56,18 @@
               </v-row>
               <v-row dense>
                 <v-col>
+                  <corona-check
+                    :value="coronaCheck"
+                    class="mb-2"
+                    @done="onCoronaCheckDone"
+                  ></corona-check>
                   <v-btn
                     large
                     rounded
                     block
                     depressed
                     color="button"
-                    :disabled="disabledRideAddition"
+                    :disabled="disabledRideAddition || !spassedCoronaCheck"
                     @click="submitForm()"
                   >
                     Rit aanbieden
@@ -93,14 +98,18 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import SearchCriteria from '@/components/common/SearchCriteria.vue'
 import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
+import CoronaCheck from '@/components/common/CoronaCheck'
+import coronaCheckMixin from '@/mixins/coronaCheckMixin'
 
 export default {
   name: 'RidePlanPage',
   components: {
+    CoronaCheck,
     ContentPane,
     SearchCriteria,
     RecurrenceEditor,
   },
+  mixins: [coronaCheckMixin],
   data() {
     return {
       recurrence: undefined,
