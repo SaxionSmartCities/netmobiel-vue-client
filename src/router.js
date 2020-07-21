@@ -46,6 +46,8 @@ import TripReviewedPage from './pages/review/TripReviewedPage'
 import TripConfirmedPage from './pages/review/TripConfirmedPage'
 import SupportGoal from './pages/community/goals/SupportGoal'
 import Donated from './pages/community/goals/Donated'
+import RideSafeNetmobiel from '@/pages/profile/RideSafeNetmobiel'
+import About from '@/pages/profile/About'
 
 const router = new Router({
   mode: 'history',
@@ -266,6 +268,16 @@ const router = new Router({
       path: '/tripConfirmed',
       component: TripConfirmedPage,
       name: 'tripConfirmedPage',
+    },
+    {
+      path: '/about',
+      component: About,
+      name: 'about',
+    },
+    {
+      path: '/rideSafeNetmobiel',
+      component: RideSafeNetmobiel,
+      name: 'rideSafeNetmobiel',
     },
   ],
 })
