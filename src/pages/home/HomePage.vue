@@ -105,7 +105,7 @@
     </v-row>
     <v-snackbar v-model="snackbar" :timeout="5000" type="warning" class="mb-12">
       Lees hier onze corona adviezen
-      <v-btn @click="$router.push({ name: 'rideSafeNetmobiel' })" text>
+      <v-btn text @click="$router.push({ name: 'rideSafeNetmobiel' })">
         Lees meer
       </v-btn>
     </v-snackbar>
