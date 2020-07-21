@@ -1,6 +1,6 @@
 <template>
   <div class="main-container">
-    <div class="text--white">
+    <div>
       <v-btn
         small
         :color="buttonColor()"
@@ -19,12 +19,12 @@
 
         <v-card-text class="mt-2">
           <v-checkbox
-            v-model="houseHoldHadCorona"
+            v-model="coronaSymptoms"
             label="De afgelopen 14 dagen is er bij mij en bij niemand in mijn huishouden corona vastgesteld"
             hide-details
           ></v-checkbox>
           <v-checkbox
-            v-model="coronaSymptoms"
+            v-model="houseHoldHadCorona"
             label="Ik ben vrij van coronaklachten: koorts, hoesten, verkoudheid of benauwdheid"
             hide-details
           ></v-checkbox>
@@ -35,9 +35,6 @@
           <v-btn depressed color="primary" @click="done()">
             klaar
           </v-btn>
-          <v-btn color="primary-btn" text @click="showModel = false">
-            sluit
-          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -47,11 +44,14 @@
 <script>
 export default {
   name: 'CoronaCheck',
+  props: {
+    value: { type: Object, default: () => undefined },
+  },
   data() {
     return {
       showModel: false,
-      coronaSymptoms: false,
-      houseHoldHadCorona: false,
+      coronaSymptoms: this.value.coronaSymptoms,
+      houseHoldHadCorona: this.value.houseHoldHadCorona,
     }
   },
   methods: {
@@ -72,5 +72,8 @@ export default {
 
 <style lang="scss" scoped>
 .main-container {
+  .v-btn {
+    color: white;
+  }
 }
 </style>

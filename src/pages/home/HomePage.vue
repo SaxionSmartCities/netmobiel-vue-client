@@ -18,11 +18,6 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
-        <corona-check> </corona-check>
-      </v-col>
-    </v-row>
-    <v-row>
       <v-col class="px-1">
         <span>
           Welkom bij Netmobiel, dé mobiliteitsapp van de Achterhoek en
@@ -116,13 +111,10 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import RideCard from '@/components/rides/RideCard.vue'
 import UpdateCard from '@/components/home/UpdateCard.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
-
 import moment from 'moment'
-import CoronaCheck from '@/components/common/CoronaCheck'
 
 export default {
   components: {
-    CoronaCheck,
     ContentPane,
     RideCard,
     UpdateCard,

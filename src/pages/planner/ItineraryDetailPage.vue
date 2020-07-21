@@ -11,6 +11,11 @@
     </v-row>
     <v-row>
       <v-col class="py-0">
+        <corona-check
+          :value="coronaCheck"
+          class="mb-2"
+          @done="onCoronaCheckDone"
+        ></corona-check>
         <v-btn
           v-show="showSection"
           large
@@ -19,6 +24,7 @@
           mb-4
           depressed
           color="button"
+          :disabled="!passedCoronaCheck"
           @click="saveTrip"
         >
           Deze reis bevestigen
@@ -45,10 +51,12 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import TripDetails from '@/components/itinerary-details/TripDetails.vue'
+import CoronaCheck from '@/components/common/CoronaCheck'
 
 export default {
   name: 'ItineraryDetailPage',
   components: {
+    CoronaCheck,
     ContentPane,
     TripDetails,
   },
@@ -65,6 +73,12 @@ export default {
     showSection() {
       return this.showConfirmationButton
     },
+    coronaCheck() {
+      return this.$store.getters['ps/getCoronaCheck']
+    },
+    passedCoronaCheck() {
+      return this.$store.getters['ps/passedCoronaCheck']
+    },
   },
   created() {
     this.$store.commit('ui/showBackButton')
@@ -80,6 +94,9 @@ export default {
     },
     showFullRouteOnMap() {
       this.showMap = true
+    },
+    onCoronaCheckDone(val) {
+      this.$store.commit('ps/setCoronaCheck', val)
     },
   },
 }
