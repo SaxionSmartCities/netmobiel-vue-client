@@ -73,4 +73,7 @@ export default {
       }
     })
   },
+  setCoronaCheck: (state, payload) => {
+    state.user.coronaCheck = payload
+  },
 }
