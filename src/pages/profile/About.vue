@@ -4,6 +4,9 @@
       <v-col>
         <v-btn
           color="button"
+          depressed
+          block
+          outlined
           @click="$router.push({ name: 'rideSafeNetmobiel' })"
           >Corona-adviezen
         </v-btn>
