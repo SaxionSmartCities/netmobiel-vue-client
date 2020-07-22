@@ -10,14 +10,16 @@
       </v-col>
       <v-col>
         <div class="d-flex flex-column">
-          <span class="headline">{{
-            user.firstName + ' ' + user.lastName
-          }}</span>
-          <span class="body-1">{{ 'Aalten' }}</span>
+          <span class="headline">
+            {{ user.firstName + ' ' + user.lastName }}
+          </span>
+          <span class="body-1">{{ user.address.locality }}</span>
         </div>
         <div class="d-flex flex-column mt-5">
           <span class="subtitle-1">35-40 jaar</span>
-          <span class="subtitle-1">Houdt van: lezen, reizen</span>
+          <span class="subtitle-1">
+            Houdt van: {{ user.interests.join(', ') }}
+          </span>
         </div>
         <v-btn depressed color="button" rounded class="mt-4" small>
           <v-icon>add</v-icon>
