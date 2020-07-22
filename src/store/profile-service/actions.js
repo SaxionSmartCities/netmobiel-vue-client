@@ -39,6 +39,17 @@ export default {
         console.log(error)
       })
   },
+  fetchUserProfile: (context, { profileId }) => {
+    const URL = BASE_URL + '/profiles'
+    axios
+      .get(URL, {
+        headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+        params: { profileId: profileId },
+      })
+      .then(response => {
+        console.log('response after fetching user profile', response.data)
+      })
+  },
   fetchUser: async (context, { userId }) => {
     const URL = BASE_URL + `/rideshare/users/${userId}`
     return axios

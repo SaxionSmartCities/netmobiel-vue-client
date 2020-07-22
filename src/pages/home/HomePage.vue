@@ -11,6 +11,7 @@
         </router-link>
       </v-col>
       <v-col>
+        <v-btn @click="goToUserProfile()" color="button">user profile</v-btn>
         <h1>
           {{ timeOfDayGreeting }},
           {{ user.fullName }}
@@ -165,6 +166,12 @@ export default {
       this.$router.push({
         name: 'rideDetailPage',
         params: { ride, id: ride.id },
+      })
+    },
+    goToUserProfile() {
+      this.$router.push({
+        name: 'userProfile',
+        params: { profileId: '5c76c977-2ffd-4100-a8c0-77db7129660d' },
       })
     },
   },

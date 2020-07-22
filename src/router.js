@@ -46,6 +46,7 @@ import TripReviewedPage from './pages/review/TripReviewedPage'
 import TripConfirmedPage from './pages/review/TripConfirmedPage'
 import SupportGoal from './pages/community/goals/SupportGoal'
 import Donated from './pages/community/goals/Donated'
+import UserProfile from '@/pages/profile/UserProfile'
 
 const router = new Router({
   mode: 'history',
@@ -266,6 +267,12 @@ const router = new Router({
       path: '/tripConfirmed',
       component: TripConfirmedPage,
       name: 'tripConfirmedPage',
+    },
+    {
+      path: 'userProfilePage/:profileId',
+      component: UserProfile,
+      name: 'userProfile',
+      props: true,
     },
   ],
 })
