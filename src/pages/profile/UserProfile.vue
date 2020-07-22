@@ -1,6 +1,6 @@
 <template>
   <content-pane>
-    <v-row>
+    <v-row v-if="user">
       <v-col class="shrink">
         <round-user-image
           :profile-image="userProfileImage()"
@@ -60,6 +60,11 @@
         </div>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col>
+        <compliments></compliments>
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 
@@ -67,10 +72,11 @@
 import ContentPane from '@/components/common/ContentPane'
 import RoundUserImage from '@/components/common/RoundUserImage'
 import config from '@/config/config'
+import Compliments from '@/components/profile/Compliments'
 
 export default {
   name: 'UserProfile',
-  components: { RoundUserImage, ContentPane },
+  components: { Compliments, RoundUserImage, ContentPane },
   props: {
     profileId: { type: String, required: true },
   },
@@ -86,6 +92,13 @@ export default {
       })
       .then(res => {
         this.user = res
+      })
+    this.$store
+      .dispatch('ps/fetchUserCompliments', {
+        profileId: this.profileId,
+      })
+      .then(res => {
+        console.log('response of compliments', res.data)
       })
   },
   methods: {

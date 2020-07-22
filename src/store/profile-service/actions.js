@@ -6,6 +6,8 @@ const BASE_URL = config.BASE_URL
 const GRAVITEE_PROFILE_SERVICE_API_KEY = config.GRAVITEE_PROFILE_SERVICE_API_KEY
 const GRAVITEE_RIDESHARE_SERVICE_API_KEY =
   config.GRAVITEE_RIDESHARE_SERVICE_API_KEY
+const GRAVITEE_COMPLIMENTS_SERVICE_API_KEY =
+  config.GRAVITEE_COMPLIMENTS_SERVICE_API_KEY
 
 function generateHeader(key) {
   return {
@@ -48,6 +50,18 @@ export default {
       })
       .then(response => {
         return response.data.profiles[0]
+      })
+  },
+  fetchUserCompliments: (context, { profileId }) => {
+    const URL = BASE_URL + '/compliments'
+    console.log('URL', URL)
+    return axios
+      .get(URL, {
+        headers: generateHeader(GRAVITEE_COMPLIMENTS_SERVICE_API_KEY),
+        params: { receiverId: profileId },
+      })
+      .then(response => {
+        return response
       })
   },
   fetchUser: async (context, { userId }) => {
