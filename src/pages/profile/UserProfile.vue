@@ -9,14 +9,14 @@
       </v-col>
       <v-col>
         <div class="d-flex flex-column">
-          <span class="body-1">{{ 'Karen Alberts' }}</span>
-          <span class="caption">{{ 'Aalten' }}</span>
+          <span class="headline">{{ 'Karen Alberts' }}</span>
+          <span class="body-1">{{ 'Aalten' }}</span>
         </div>
         <div class="d-flex flex-column mt-5">
-          <span>35-40 jaar</span>
-          <span>Houdt van: lezen, reizen</span>
+          <span class="subtitle-1">35-40 jaar</span>
+          <span class="subtitle-1">Houdt van: lezen, reizen</span>
         </div>
-        <v-btn depressed color="button" rounded class="mt-3" small>
+        <v-btn depressed color="button" rounded class="mt-4" small>
           <v-icon>add</v-icon>
           Toevoegen als vriend
         </v-btn>
@@ -25,7 +25,7 @@
     <v-row>
       <v-col>
         <div class="user-info-highlight">
-          <div class="d-flex flex-column text-center">
+          <div class="d-flex flex-column">
             <span class="text-color-primary">
               205
             </span>
@@ -68,11 +68,19 @@ export default {
   props: {
     profileId: { type: String, required: true },
   },
+  data() {
+    return {
+      user: null,
+    }
+  },
   mounted() {
-    //TODO Do request
-    this.$store.dispatch('ps/fetchUserProfile', {
-      profileId: this.profileId,
-    })
+    this.$store
+      .dispatch('ps/fetchUserProfile', {
+        profileId: this.profileId,
+      })
+      .then(res => {
+        this.user = res
+      })
   },
 }
 </script>
@@ -82,14 +90,18 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  border: 1px solid lightgray;
+  border: 1px solid $color-light-grey;
   border-radius: $border-radius;
   padding: 10px;
+  margin-top: 20px;
+  * {
+    text-align: left;
+  }
   div {
     &:nth-child(2) {
       padding: 0 10px;
-      border-right: 1px solid lightgray;
-      border-left: 1px solid lightgray;
+      border-right: 1px solid $color-white-grey;
+      border-left: 1px solid $color-white-grey;
     }
   }
 }

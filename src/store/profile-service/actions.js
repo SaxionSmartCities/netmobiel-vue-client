@@ -40,14 +40,14 @@ export default {
       })
   },
   fetchUserProfile: (context, { profileId }) => {
-    const URL = BASE_URL + '/profiles'
-    axios
+    const URL = BASE_URL + '/profiles/' + profileId
+    console.log('URL', URL)
+    return axios
       .get(URL, {
         headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
-        params: { profileId: profileId },
       })
       .then(response => {
-        console.log('response after fetching user profile', response.data)
+        return response.data.profiles[0]
       })
   },
   fetchUser: async (context, { userId }) => {
