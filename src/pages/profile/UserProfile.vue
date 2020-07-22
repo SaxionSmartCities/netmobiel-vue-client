@@ -3,13 +3,16 @@
     <v-row>
       <v-col class="shrink">
         <round-user-image
+          :profile-image="userProfileImage()"
           :image-size="100"
           :avatar-size="105"
         ></round-user-image>
       </v-col>
       <v-col>
         <div class="d-flex flex-column">
-          <span class="headline">{{ 'Karen Alberts' }}</span>
+          <span class="headline">{{
+            user.firstName + ' ' + user.lastName
+          }}</span>
           <span class="body-1">{{ 'Aalten' }}</span>
         </div>
         <div class="d-flex flex-column mt-5">
@@ -61,6 +64,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane'
 import RoundUserImage from '@/components/common/RoundUserImage'
+import config from '@/config/config'
 
 export default {
   name: 'UserProfile',
@@ -81,6 +85,11 @@ export default {
       .then(res => {
         this.user = res
       })
+  },
+  methods: {
+    userProfileImage() {
+      return config.BASE_URL + this.user.image
+    },
   },
 }
 </script>
