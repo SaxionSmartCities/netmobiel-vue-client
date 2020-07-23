@@ -43,7 +43,6 @@ export default {
   },
   fetchUserProfile: (context, { profileId }) => {
     const URL = BASE_URL + '/profiles/' + profileId
-    console.log('URL', URL)
     return axios
       .get(URL, {
         headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
@@ -54,7 +53,6 @@ export default {
   },
   fetchUserCompliments: (context, { profileId }) => {
     const URL = BASE_URL + '/compliments'
-    console.log('URL', URL)
     return axios
       .get(URL, {
         headers: generateHeader(GRAVITEE_COMPLIMENTS_SERVICE_API_KEY),
@@ -66,7 +64,6 @@ export default {
   },
   giveUserCompliment: (context, { sender, receiver, complimentType }) => {
     const URL = BASE_URL + '/compliments'
-    console.log('URL', URL)
     return axios
       .post(
         URL,

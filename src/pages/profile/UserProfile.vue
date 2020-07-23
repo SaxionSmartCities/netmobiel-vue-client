@@ -84,6 +84,7 @@ export default {
   data() {
     return {
       user: null,
+      compliments: null,
     }
   },
   computed: {
@@ -104,43 +105,12 @@ export default {
         profileId: this.profileId,
       })
       .then(res => {
-        console.log('response of compliments', res.data)
+        this.compliments = res.data
       })
   },
   methods: {
     userProfileImage() {
       return config.BASE_URL + this.user.image
-    },
-    giveCompliment() {
-      // const sender = {
-      //   id: this.me.id,
-      //   firstName: this.me.firstName,
-      //   lastName: this.me.lastName,
-      // }
-      // const receiver = {
-      //   id: this.user.id,
-      //   firstName: this.user.firstName,
-      //   lastName: this.user.lastName,
-      // }
-      const compliments = [
-        'Zelfde interesses',
-        'Op tijd',
-        'Soepele communicatie',
-        'Gezellig',
-        'Netjes',
-        'Goede auto',
-      ]
-
-      for (let i = 0; i < 150; i++) {
-        const randomIndex = Math.floor(Math.random() * compliments.length)
-        console.log('randomIndex', randomIndex)
-      }
-      //
-      // this.$store.dispatch('ps/giveUserCompliment', {
-      //   sender,
-      //   receiver,
-      //   complimentType: 'Zelfde interesses',
-      // })
     },
   },
 }
