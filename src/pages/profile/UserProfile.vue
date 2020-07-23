@@ -63,6 +63,7 @@
     <v-row>
       <v-col>
         <compliments></compliments>
+        <v-btn @click="giveCompliment()">Compliment</v-btn>
       </v-col>
     </v-row>
   </content-pane>
@@ -85,6 +86,11 @@ export default {
       user: null,
     }
   },
+  computed: {
+    me() {
+      return this.$store.getters['ps/getProfile']
+    },
+  },
   mounted() {
     this.$store
       .dispatch('ps/fetchUserProfile', {
@@ -104,6 +110,37 @@ export default {
   methods: {
     userProfileImage() {
       return config.BASE_URL + this.user.image
+    },
+    giveCompliment() {
+      // const sender = {
+      //   id: this.me.id,
+      //   firstName: this.me.firstName,
+      //   lastName: this.me.lastName,
+      // }
+      // const receiver = {
+      //   id: this.user.id,
+      //   firstName: this.user.firstName,
+      //   lastName: this.user.lastName,
+      // }
+      const compliments = [
+        'Zelfde interesses',
+        'Op tijd',
+        'Soepele communicatie',
+        'Gezellig',
+        'Netjes',
+        'Goede auto',
+      ]
+
+      for (let i = 0; i < 150; i++) {
+        const randomIndex = Math.floor(Math.random() * compliments.length)
+        console.log('randomIndex', randomIndex)
+      }
+      //
+      // this.$store.dispatch('ps/giveUserCompliment', {
+      //   sender,
+      //   receiver,
+      //   complimentType: 'Zelfde interesses',
+      // })
     },
   },
 }

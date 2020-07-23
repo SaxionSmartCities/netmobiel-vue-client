@@ -64,6 +64,22 @@ export default {
         return response
       })
   },
+  giveUserCompliment: (context, { sender, receiver, complimentType }) => {
+    const URL = BASE_URL + '/compliments'
+    console.log('URL', URL)
+    return axios
+      .post(
+        URL,
+        { sender, receiver, complimentType },
+        {
+          headers: generateHeader(GRAVITEE_COMPLIMENTS_SERVICE_API_KEY),
+        }
+      )
+      .then(response => {
+        console.log('response for GIVING compliment', response)
+        return response
+      })
+  },
   fetchUser: async (context, { userId }) => {
     const URL = BASE_URL + `/rideshare/users/${userId}`
     return axios
