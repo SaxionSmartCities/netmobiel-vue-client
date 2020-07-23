@@ -40,8 +40,12 @@
             </span>
           </div>
           <div class="d-flex flex-column text-center">
-            <span class="text-color-primary">
-              189
+            <span v-if="compliments" class="text-color-primary">
+              {{
+                Object.values(refinedCompliments).reduce(
+                  (acc, curr) => acc + curr
+                )
+              }}
             </span>
             <span>
               Complimenten <br />
@@ -62,8 +66,10 @@
     </v-row>
     <v-row>
       <v-col>
-        <compliments></compliments>
-        <v-btn @click="giveCompliment()">Compliment</v-btn>
+        <compliments
+          v-if="compliments"
+          :compliments="refinedCompliments"
+        ></compliments>
       </v-col>
     </v-row>
   </content-pane>
@@ -91,6 +97,17 @@ export default {
     me() {
       return this.$store.getters['ps/getProfile']
     },
+    refinedCompliments() {
+      const result = {}
+      for (const comp of this.compliments) {
+        if (!result[comp.complimentType]) {
+          result[comp.complimentType] = 1
+        } else {
+          result[comp.complimentType]++
+        }
+      }
+      return result
+    },
   },
   mounted() {
     this.$store
@@ -105,7 +122,7 @@ export default {
         profileId: this.profileId,
       })
       .then(res => {
-        this.compliments = res.data
+        this.compliments = res.data.compliments
       })
   },
   methods: {
