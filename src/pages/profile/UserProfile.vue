@@ -66,8 +66,10 @@
     </v-row>
     <v-row>
       <v-col>
+        <span class="text-color-primary body-2">Complimenten</span>
         <compliments
           v-if="compliments"
+          class="mt-2"
           :compliments="refinedCompliments"
         ></compliments>
       </v-col>
@@ -141,7 +143,6 @@ export default {
   border: 1px solid $color-light-grey;
   border-radius: $border-radius;
   padding: 10px;
-  margin-top: 20px;
   * {
     text-align: left;
   }
