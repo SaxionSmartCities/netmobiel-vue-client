@@ -15,13 +15,13 @@
           </span>
           <span class="body-1">{{ user.address.locality }}</span>
         </div>
-        <div class="d-flex flex-column mt-5">
+        <div class="d-flex flex-column mt-3">
           <span class="subtitle-1">35-40 jaar</span>
           <span class="subtitle-1">
             Houdt van: {{ user.interests.join(', ') }}
           </span>
         </div>
-        <v-btn depressed color="button" rounded class="mt-4" small>
+        <v-btn depressed color="button" rounded class="mt-2" small>
           <v-icon>add</v-icon>
           Toevoegen als vriend
         </v-btn>
@@ -29,7 +29,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <div class="user-info-highlight">
+        <div class="user-info-highlight mt-2">
           <div class="d-flex flex-column">
             <span class="text-color-primary">
               205
@@ -66,12 +66,21 @@
     </v-row>
     <v-row>
       <v-col>
-        <span class="text-color-primary body-2">Complimenten</span>
+        <span class="text-color-primary caption text-uppercase">
+          Complimenten
+        </span>
         <compliments
           v-if="compliments"
           class="mt-2"
           :compliments="refinedCompliments"
         ></compliments>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <span class="text-color-primary caption text-uppercase">
+          Reviews
+        </span>
       </v-col>
     </v-row>
   </content-pane>
