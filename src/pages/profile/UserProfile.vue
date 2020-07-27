@@ -81,13 +81,11 @@
         <span class="text-color-primary caption text-uppercase">
           Reviews
         </span>
-      </v-col>
-      <v-col>
-        <div class="reviews-container">
+        <div class="reviews-container mt-3">
           <review-item
             v-for="(review, index) in reviews"
-            :review="review"
             :key="index"
+            :review="review"
           >
           </review-item>
         </div>

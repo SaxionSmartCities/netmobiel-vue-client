@@ -89,7 +89,7 @@ export default {
   },
   /**
    * Fetches the reviews of a user based on the profileId
-   * @returns {Array<Object>} Returns an Array of reviews in the response.data
+   * @returns {Array<Object>} Returns an Array of reviews in the response.data.reviews
    */
   fetchUserReviews: (context, { profileId }) => {
     const URL = BASE_URL + '/reviews'
@@ -99,7 +99,7 @@ export default {
         params: { receiverId: profileId },
       })
       .then(response => {
-        return response.data
+        return response.data.reviews
       })
   },
   /**
