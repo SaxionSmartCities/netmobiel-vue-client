@@ -73,4 +73,7 @@ export default {
       }
     })
   },
+  setComplimentTypes: (state, complimentTypes) => {
+    state.complimentTypes = complimentTypes
+  },
 }

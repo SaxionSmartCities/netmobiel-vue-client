@@ -158,6 +158,7 @@ export default {
   mounted() {
     //TODO: How many cards do we want?
     this.$store.dispatch('cs/fetchRides', { offset: 0, maxResults: 2 })
+    this.$store.dispatch('ps/fetchComplimentTypes')
   },
   methods: {
     onRideSelected(index) {

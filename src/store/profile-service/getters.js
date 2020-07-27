@@ -3,4 +3,5 @@ export default {
   getProfile: state => state.user.profile,
   getCreditAmount: state => state.user.credits.creditAmount,
   getCreditHistory: state => state.user.credits.creditHistory,
+  getComplimentTypes: state => state.complimentTypes,
 }
