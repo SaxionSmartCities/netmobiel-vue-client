@@ -89,6 +89,9 @@
           >
           </review-item>
         </div>
+        <v-btn class="float-right" color="primary" rounded outlined small>
+          Bekijk alle reviews
+        </v-btn>
       </v-col>
     </v-row>
   </content-pane>
@@ -137,6 +140,17 @@ export default {
     userProfileImage() {
       return config.BASE_URL + this.user.image
     },
+    fetchProfileImages() {
+      this.reviews.forEach(review => {
+        this.$store
+          .dispatch('ps/fetchUserProfile', {
+            profileId: review.sender.id,
+          })
+          .then(res => {
+            review.sender.image = res.image
+          })
+      })
+    },
     fetchProfilePageInformation() {
       //Fetch profile of user
       this.$store
@@ -159,6 +173,7 @@ export default {
         .dispatch('ps/fetchUserReviews', { profileId: this.profileId })
         .then(res => {
           this.reviews = res
+          this.fetchProfileImages()
         })
     },
   },
