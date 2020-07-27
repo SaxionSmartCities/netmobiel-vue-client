@@ -60,6 +60,7 @@ export default {
         creditHistory: [],
       },
     },
+    complimentTypes: null,
   },
   actions,
   getters,

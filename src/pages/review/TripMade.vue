@@ -9,9 +9,9 @@
         <v-col>
           <v-row dense>
             <v-col>
-              <span class="subtitle-2 text-no-wrap pr-2">{{
-                trip.legs[0].driverName
-              }}</span>
+              <span class="subtitle-2 text-no-wrap pr-2">
+                {{ itinerary.legs[0].driverName }}
+              </span>
               <br />
               <span class="overline">
                 Van {{ trip.from.label }} naar {{ trip.to.label }}
@@ -29,25 +29,25 @@
         <v-col>
           <span>
             Hoe heb jij deze reis ervaren? Geef jouw mening en laat
-            {{ trip.legs[0].driverName }} weten wat jij er van vond.
+            {{ itinerary.legs[0].driverName }} weten wat jij er van vond.
           </span>
         </v-col>
       </v-row>
       <v-row>
-        <v-col v-if="showChips">
+        <v-col v-if="showChips && availableCompliments">
           <v-chip
-            v-for="(compliment, index) in availableCompliments"
-            :key="index"
+            v-for="compliment in availableCompliments"
+            :key="compliment"
             :ripple="false"
             class="compliment-chip"
             :class="{
               'compliment-chip-active':
-                compliments.findIndex(c => c.value === compliment.value) !== -1,
+                compliments.findIndex(c => c === compliment) !== -1,
             }"
-            :value="compliment.value"
+            :value="compliment"
             @click="addCompliment(compliment)"
           >
-            {{ compliment.title }}
+            {{ compliment }}
           </v-chip>
         </v-col>
         <v-col v-else>
@@ -56,9 +56,9 @@
             :key="index"
             :ripple="false"
             class="compliment-chip compliment-chip-active"
-            :value="compliment.value"
+            :value="compliment"
           >
-            {{ compliment.title }}
+            {{ compliment }}
           </v-chip>
           <v-textarea
             v-model="inputTextArea"
@@ -92,7 +92,6 @@
 
 <script>
 import RoundUserImage from '@/components/common/RoundUserImage'
-import trip_made_config from '../../config/review/trip_made_config'
 
 export default {
   name: 'TripMade',
@@ -102,18 +101,23 @@ export default {
   },
   data() {
     return {
-      availableCompliments: trip_made_config,
       compliments: [],
       feedbackMessage: '',
       showChips: true,
       inputTextArea: null,
     }
   },
+  computed: {
+    itinerary() {
+      return this.trip?.itinerary
+    },
+    availableCompliments() {
+      return this.$store.getters['ps/getComplimentTypes']
+    },
+  },
   methods: {
     addCompliment(compliment) {
-      const index = this.compliments.findIndex(
-        c => c.value === compliment.value
-      )
+      const index = this.compliments.findIndex(c => c === compliment)
       if (index === -1) this.compliments.push(compliment)
       else this.compliments.splice(index, 1)
     },

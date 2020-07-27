@@ -68,6 +68,20 @@ export default {
       })
   },
   /**
+   * Fetches the available compliments and sets the compliment types
+   * that are available in the store
+   */
+  fetchComplimentTypes: context => {
+    const URL = BASE_URL + '/compliments/types'
+    axios
+      .get(URL, {
+        headers: generateHeader(GRAVITEE_COMPLIMENT_SERVICE_API_KEY),
+      })
+      .then(response => {
+        context.commit('setComplimentTypes', response.data.complimentTypes)
+      })
+  },
+  /**
    * Adds a compliment to the user in the profile-service
    * @param sender: {id, firstName, lastName}
    * @param receiver: {id, firstName, lastName}
