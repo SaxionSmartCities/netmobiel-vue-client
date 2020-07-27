@@ -269,7 +269,7 @@ const router = new Router({
       name: 'tripConfirmedPage',
     },
     {
-      path: 'userProfilePage/:profileId',
+      path: '/userProfilePage/:profileId',
       component: UserProfile,
       name: 'userProfile',
       props: true,

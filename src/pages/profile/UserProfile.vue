@@ -86,6 +86,7 @@
             v-for="(review, index) in reviews"
             :key="index"
             :review="review"
+            :profile-image="profileImages ? profileImages[index] : null"
           >
           </review-item>
         </div>
@@ -115,6 +116,7 @@ export default {
       user: null,
       compliments: null,
       reviews: null,
+      profileImages: [],
     }
   },
   computed: {
@@ -147,7 +149,7 @@ export default {
             profileId: review.sender.id,
           })
           .then(res => {
-            review.sender.image = res.image
+            this.profileImages.push(config.BASE_URL + res.image)
           })
       })
     },

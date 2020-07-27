@@ -3,9 +3,7 @@
     <div class="info-row mb-2">
       <div>
         <round-user-image
-          :profile-image="
-            review.sender.image ? BASE_URL + review.sender.image : ''
-          "
+          :profile-image="profileImage"
           :image-size="32"
           :avatar-size="37"
         >
@@ -32,18 +30,13 @@
 <script>
 import RoundUserImage from '@/components/common/RoundUserImage'
 import moment from 'moment'
-import config from '@/config/config'
 
 export default {
   name: 'ReviewItem',
   components: { RoundUserImage },
   props: {
     review: { type: Object, required: true },
-  },
-  data() {
-    return {
-      BASE_URL: config.BASE_URL,
-    }
+    profileImage: { type: String, required: false, default: '' },
   },
   methods: {
     formatDate(date) {
