@@ -1,6 +1,6 @@
 <template>
   <div class="review mb-4">
-    <div class="info-row">
+    <div class="info-row mb-2">
       <div>
         <round-user-image
           :profile-image="
@@ -14,7 +14,7 @@
           {{ review.sender.firstName + ' ' + review.sender.lastName }}
         </span>
       </div>
-      <span class="caption align-self-center my-4">
+      <span class="caption align-self-center">
         {{ formatDate(review.pusblished) }}
       </span>
     </div>

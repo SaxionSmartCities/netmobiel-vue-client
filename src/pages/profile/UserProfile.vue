@@ -200,5 +200,7 @@ export default {
   }
 }
 .reviews-container {
+  max-height: 750px;
+  overflow: auto;
 }
 </style>
