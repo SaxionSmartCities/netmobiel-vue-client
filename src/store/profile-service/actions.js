@@ -6,8 +6,9 @@ const BASE_URL = config.BASE_URL
 const GRAVITEE_PROFILE_SERVICE_API_KEY = config.GRAVITEE_PROFILE_SERVICE_API_KEY
 const GRAVITEE_RIDESHARE_SERVICE_API_KEY =
   config.GRAVITEE_RIDESHARE_SERVICE_API_KEY
-const GRAVITEE_COMPLIMENTS_SERVICE_API_KEY =
-  config.GRAVITEE_COMPLIMENTS_SERVICE_API_KEY
+const GRAVITEE_COMPLIMENT_SERVICE_API_KEY =
+  config.GRAVITEE_COMPLIMENT_SERVICE_API_KEY
+const GRAVITEE_REVIEW_SERVICE_API_KEY = config.GRAVITEE_REVIEW_SERVICE_API_KEY
 
 function generateHeader(key) {
   return {
@@ -55,7 +56,7 @@ export default {
     const URL = BASE_URL + '/compliments'
     return axios
       .get(URL, {
-        headers: generateHeader(GRAVITEE_COMPLIMENTS_SERVICE_API_KEY),
+        headers: generateHeader(GRAVITEE_COMPLIMENT_SERVICE_API_KEY),
         params: { receiverId: profileId },
       })
       .then(response => {
@@ -69,7 +70,7 @@ export default {
         URL,
         { sender, receiver, complimentType },
         {
-          headers: generateHeader(GRAVITEE_COMPLIMENTS_SERVICE_API_KEY),
+          headers: generateHeader(GRAVITEE_COMPLIMENT_SERVICE_API_KEY),
         }
       )
       .then(response => {
@@ -77,6 +78,19 @@ export default {
         return response
       })
   },
+  fetchUserReviews: (context, { profileId }) => {
+    const URL = BASE_URL + '/reviews'
+    return axios
+      .get(URL, {
+        headers: generateHeader(GRAVITEE_REVIEW_SERVICE_API_KEY),
+        params: { receiverId: profileId },
+      })
+      .then(response => {
+        console.log('response for fetching user reviews', response.data)
+        return response
+      })
+  },
+  // addUserReview: (context, { sender, receiver, complimentType }) => {},
   fetchUser: async (context, { userId }) => {
     const URL = BASE_URL + `/rideshare/users/${userId}`
     return axios

@@ -9,8 +9,8 @@
         ></round-user-image>
       </v-col>
       <v-col>
-        <div class="d-flex flex-column">
-          <span class="headline">
+        <div class="d-flex flex-column shrink">
+          <span class="title">
             {{ user.firstName + ' ' + user.lastName }}
           </span>
           <span class="body-1">{{ user.address.locality }}</span>
@@ -34,7 +34,7 @@
             <span class="text-color-primary">
               205
             </span>
-            <span>
+            <span class="subtitle-1">
               Ritten <br />
               gereden
             </span>
@@ -47,7 +47,7 @@
                 )
               }}
             </span>
-            <span>
+            <span class="subtitle-1">
               Complimenten <br />
               gekregen
             </span>
@@ -56,7 +56,7 @@
             <span class="text-color-primary">
               169
             </span>
-            <span>
+            <span class="subtitle-1">
               Credits <br />
               gedoneerd
             </span>
@@ -83,6 +83,7 @@
         </span>
       </v-col>
     </v-row>
+    <v-btn @click="fetchReviews()">Fetch reviews</v-btn>
   </content-pane>
 </template>
 
@@ -139,6 +140,9 @@ export default {
   methods: {
     userProfileImage() {
       return config.BASE_URL + this.user.image
+    },
+    fetchReviews() {
+      this.$store.dispatch('ps/fetchUserReviews', { profileId: this.profileId })
     },
   },
 }
