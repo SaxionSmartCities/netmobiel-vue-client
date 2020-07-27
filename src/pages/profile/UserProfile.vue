@@ -82,8 +82,17 @@
           Reviews
         </span>
       </v-col>
+      <v-col>
+        <div class="reviews-container">
+          <review-item
+            v-for="(review, index) in reviews"
+            :review="review"
+            :key="index"
+          >
+          </review-item>
+        </div>
+      </v-col>
     </v-row>
-    <v-btn @click="fetchReviews()">Fetch reviews</v-btn>
   </content-pane>
 </template>
 
@@ -92,10 +101,11 @@ import ContentPane from '@/components/common/ContentPane'
 import RoundUserImage from '@/components/common/RoundUserImage'
 import config from '@/config/config'
 import Compliments from '@/components/profile/Compliments'
+import ReviewItem from '@/components/profile/ReviewItem'
 
 export default {
   name: 'UserProfile',
-  components: { Compliments, RoundUserImage, ContentPane },
+  components: { ReviewItem, Compliments, RoundUserImage, ContentPane },
   props: {
     profileId: { type: String, required: true },
   },
@@ -103,6 +113,7 @@ export default {
     return {
       user: null,
       compliments: null,
+      reviews: null,
     }
   },
   computed: {
@@ -122,27 +133,35 @@ export default {
     },
   },
   mounted() {
-    this.$store
-      .dispatch('ps/fetchUserProfile', {
-        profileId: this.profileId,
-      })
-      .then(res => {
-        this.user = res
-      })
-    this.$store
-      .dispatch('ps/fetchUserCompliments', {
-        profileId: this.profileId,
-      })
-      .then(res => {
-        this.compliments = res.data.compliments
-      })
+    this.fetchProfilePageInformation()
   },
   methods: {
     userProfileImage() {
       return config.BASE_URL + this.user.image
     },
-    fetchReviews() {
-      this.$store.dispatch('ps/fetchUserReviews', { profileId: this.profileId })
+    fetchProfilePageInformation() {
+      //Fetch profile of user
+      this.$store
+        .dispatch('ps/fetchUserProfile', {
+          profileId: this.profileId,
+        })
+        .then(res => {
+          this.user = res
+        })
+      //Fetch compliments of user
+      this.$store
+        .dispatch('ps/fetchUserCompliments', {
+          profileId: this.profileId,
+        })
+        .then(res => {
+          this.compliments = res.compliments
+        })
+      //Fetch reviews of user
+      this.$store
+        .dispatch('ps/fetchUserReviews', { profileId: this.profileId })
+        .then(res => {
+          this.reviews = res
+        })
     },
   },
 }
@@ -166,5 +185,7 @@ export default {
       border-left: 1px solid $color-white-grey;
     }
   }
+}
+.reviews-container {
 }
 </style>

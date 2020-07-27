@@ -52,6 +52,10 @@ export default {
         return response.data.profiles[0]
       })
   },
+  /**
+   * @param profileId: the user his managed Identity (keycloak)
+   * @returns {Array<Object>} returns Array of compliments in the response.data
+   */
   fetchUserCompliments: (context, { profileId }) => {
     const URL = BASE_URL + '/compliments'
     return axios
@@ -60,10 +64,16 @@ export default {
         params: { receiverId: profileId },
       })
       .then(response => {
-        return response
+        return response.data
       })
   },
-  giveUserCompliment: (context, { sender, receiver, complimentType }) => {
+  /**
+   * Adds a compliment to the user in the profile-service
+   * @param sender: {id, firstName, lastName}
+   * @param receiver: {id, firstName, lastName}
+   * @returns {Object} Returns the compliment object in the response.data
+   */
+  addUserCompliment: (context, { sender, receiver, complimentType }) => {
     const URL = BASE_URL + '/compliments'
     return axios
       .post(
@@ -74,10 +84,13 @@ export default {
         }
       )
       .then(response => {
-        console.log('response for GIVING compliment', response)
         return response
       })
   },
+  /**
+   * Fetches the reviews of a user based on the profileId
+   * @returns {Array<Object>} Returns an Array of reviews in the response.data
+   */
   fetchUserReviews: (context, { profileId }) => {
     const URL = BASE_URL + '/reviews'
     return axios
@@ -86,11 +99,30 @@ export default {
         params: { receiverId: profileId },
       })
       .then(response => {
-        console.log('response for fetching user reviews', response.data)
+        return response.data
+      })
+  },
+  /**
+   * Adds a review to the user in the profile-service
+   * @param sender: {id, firstName, lastName}
+   * @param receiver: {id, firstName, lastName}
+   * @returns {Object} Returns the review object in the response.data
+   */
+  addUserReview: (context, { sender, receiver, review }) => {
+    const URL = BASE_URL + '/reviews'
+    return axios
+      .post(
+        URL,
+        { sender, receiver, review },
+        {
+          headers: generateHeader(GRAVITEE_REVIEW_SERVICE_API_KEY),
+        }
+      )
+      .then(response => {
+        console.log('response for adding review', response)
         return response
       })
   },
-  // addUserReview: (context, { sender, receiver, complimentType }) => {},
   fetchUser: async (context, { userId }) => {
     const URL = BASE_URL + `/rideshare/users/${userId}`
     return axios
