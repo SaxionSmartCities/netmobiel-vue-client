@@ -1,7 +1,7 @@
 <template>
   <content-pane>
     <v-row>
-      <v-col>
+      <v-col class="py-0">
         <v-stepper v-model="step" class="stepper" :elevation="0">
           <v-stepper-header>
             <v-stepper-step step="1"></v-stepper-step>
@@ -15,7 +15,7 @@
     </v-row>
     <template v-if="step === 1">
       <v-row>
-        <v-col class="flex-column">
+        <v-col class="flex-column py-0">
           <h3>Bevestig jouw reis</h3>
         </v-col>
       </v-row>
