@@ -1,5 +1,5 @@
 <template>
-  <div class="review mt-4">
+  <div class="review mb-4">
     <div class="info-row">
       <div>
         <round-user-image :image-size="32" :avatar-size="37">
@@ -8,14 +8,16 @@
           {{ review.sender.firstName + ' ' + review.sender.lastName }}
         </span>
       </div>
-      <span class="caption align-self-center my-4">Gisteren</span>
+      <span class="caption align-self-center my-4">
+        {{ formatDate(review.pusblished) }}
+      </span>
     </div>
     <div>
       <span class="body-2">
         {{ review.review }}
       </span>
     </div>
-    <div class="mt-4">
+    <div class="mt-2">
       <v-divider></v-divider>
     </div>
   </div>
@@ -23,11 +25,20 @@
 
 <script>
 import RoundUserImage from '@/components/common/RoundUserImage'
+import moment from 'moment'
+
 export default {
   name: 'ReviewItem',
   components: { RoundUserImage },
   props: {
     review: { type: Object, required: true },
+  },
+  methods: {
+    formatDate(date) {
+      return moment(date)
+        .locale('nl')
+        .calendar()
+    },
   },
 }
 </script>

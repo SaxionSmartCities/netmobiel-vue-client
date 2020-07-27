@@ -27,9 +27,9 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="mt-2">
       <v-col>
-        <div class="user-info-highlight mt-2">
+        <div class="user-info-highlight">
           <div class="d-flex flex-column">
             <span class="text-color-primary">
               205
@@ -64,7 +64,7 @@
         </div>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="mt-2">
       <v-col>
         <span class="text-color-primary caption text-uppercase">
           Complimenten
@@ -76,12 +76,12 @@
         ></compliments>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="mt-2">
       <v-col>
         <span class="text-color-primary caption text-uppercase">
           Reviews
         </span>
-        <div class="reviews-container mt-3">
+        <div class="reviews-container mt-1">
           <review-item
             v-for="(review, index) in reviews"
             :key="index"
