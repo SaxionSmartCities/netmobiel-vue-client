@@ -299,12 +299,13 @@ export default {
   fetchTrip: (context, payload) => {
     const tripId = payload.id
     const URL = `${BASE_URL}/planner/trips/${tripId}`
-    axios
+    return axios
       .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
       .then(response => {
         if (response.status == 200) {
           context.commit('setSelectedTrip', response.data)
         }
+        return response.data
       })
       .catch(error => {
         // eslint-disable-next-line

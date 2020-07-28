@@ -69,6 +69,7 @@
         :is="getCurrentStepComponent()"
         v-if="trip"
         :trip="trip"
+        :driver-profile="driverProfile"
         @tripNotMade="onTripNotMade"
         @rateTrip="onTripMade"
         @nextStep="step++"
@@ -84,6 +85,7 @@ import TripMade from './TripMade'
 import TripNotMade from './TripNotMade'
 import moment from 'moment'
 import Stepper from '@/components/other/Stepper'
+import config from '@/config/config'
 // import { maxCompliments } from '@/config/review/trip_made_config'
 
 export default {
@@ -98,6 +100,7 @@ export default {
       isTripMade: null,
       review: true,
       fromNotification: false,
+      driverProfile: null,
     }
   },
   computed: {
@@ -127,7 +130,11 @@ export default {
     if (!this.trip) {
       this.fromNotification = true
       const tripId = this.tripContext.split(':').slice(-1)
-      this.$store.dispatch('is/fetchTrip', { id: tripId })
+      this.$store.dispatch('is/fetchTrip', { id: tripId }).then(() => {
+        this.fetchDriverProfile()
+      })
+    } else {
+      this.fetchDriverProfile()
     }
   },
   methods: {
@@ -198,6 +205,29 @@ export default {
       // eslint-disable-next-line
       console.log('trip was not made: ', reason)
       this.$router.push({ name: 'tripConfirmedPage' })
+    },
+    fetchDriverProfile() {
+      //First fetch the driver properties via the carpool service
+      this.$store
+        .dispatch('cs/fetchUser', {
+          userRef: this.trip.itinerary.legs[0].driverId,
+        })
+        .then(response => {
+          //Fetch the profile of the driver via the profile-service (for the image)
+          this.$store
+            .dispatch('ps/fetchUserProfile', {
+              profileId: response.managedIdentity,
+            })
+            .then(res => {
+              this.driverProfile = {
+                managedIdentity: response.managedIdentity,
+                firstName: response.givenName,
+                lastName: response.familyName,
+                email: response.email,
+                image: config.BASE_URL + res.image,
+              }
+            })
+        })
     },
   },
 }
