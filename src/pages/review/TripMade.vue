@@ -22,51 +22,49 @@
       </v-row>
       <v-row>
         <v-col>
-          <h3>Beoordeel jouw reis</h3>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <span>
-            Hoe heb jij deze reis ervaren? Geef jouw mening en laat
-            {{ itinerary.legs[0].driverName }} weten wat jij er van vond.
-          </span>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col v-if="showChips && availableCompliments">
-          <v-chip
-            v-for="compliment in availableCompliments"
-            :key="compliment"
-            :ripple="false"
-            class="compliment-chip"
-            :class="{
-              'compliment-chip-active':
-                compliments.findIndex(c => c === compliment) !== -1,
-            }"
-            :value="compliment"
-            @click="addCompliment(compliment)"
-          >
-            {{ compliment }}
-          </v-chip>
-        </v-col>
-        <v-col v-else>
-          <v-chip
-            v-for="(compliment, index) in compliments"
-            :key="index"
-            :ripple="false"
-            class="compliment-chip compliment-chip-active"
-            :value="compliment"
-          >
-            {{ compliment }}
-          </v-chip>
-          <v-textarea
-            v-model="inputTextArea"
-            class="pt-2"
-            placeholder="Beschrijving..."
-            :hide-details="true"
-            outlined
-          ></v-textarea>
+          <div>
+            <h3>Beoordeel jouw reis</h3>
+            <span class="body-2">
+              Hoe heb jij deze reis ervaren? Geef jouw mening en laat
+              {{ itinerary.legs[0].driverName }} weten wat jij er van vond.
+            </span>
+            <div class="mt-4">
+              <div v-if="showChips && availableCompliments">
+                <v-chip
+                  v-for="compliment in availableCompliments"
+                  :key="compliment"
+                  :ripple="false"
+                  class="compliment-chip body-2"
+                  :class="{
+                    'compliment-chip-active':
+                      compliments.findIndex(c => c === compliment) !== -1,
+                  }"
+                  :value="compliment"
+                  @click="addCompliment(compliment)"
+                >
+                  {{ compliment }}
+                </v-chip>
+              </div>
+              <div v-else>
+                <v-chip
+                  v-for="(compliment, index) in compliments"
+                  :key="index"
+                  :ripple="false"
+                  class="compliment-chip compliment-chip-active"
+                  :value="compliment"
+                >
+                  {{ compliment }}
+                </v-chip>
+                <v-textarea
+                  v-model="inputTextArea"
+                  class="pt-2"
+                  placeholder="Beschrijving..."
+                  :hide-details="true"
+                  outlined
+                ></v-textarea>
+              </div>
+            </div>
+          </div>
         </v-col>
       </v-row>
       <v-row>
