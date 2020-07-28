@@ -13,7 +13,7 @@
         </span>
       </div>
       <span class="caption align-self-center">
-        {{ formatDate(review.pusblished) }}
+        {{ formatDate(review.published) }}
       </span>
     </div>
     <div>
