@@ -435,7 +435,7 @@ export default {
       const { itineraryRef } = itinerary
       const trip = { from, to, nrSeats, itineraryRef }
       console.log(trip)
-      // this.$store.dispatch('is/storeSelectedTrip', trip)
+      this.$store.dispatch('is/storeSelectedTrip', trip)
       this.$router.push({ name: 'shoutouts' })
     },
   },
