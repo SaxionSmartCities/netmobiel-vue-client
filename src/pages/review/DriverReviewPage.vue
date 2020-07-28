@@ -13,7 +13,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <span>
+          <span class="body-2">
             Heb je op <em>{{ tripDepartureDate }}</em> om
             {{ tripDepartureTime }} een reis van
             <b>{{ trip.from.label }}</b> naar
