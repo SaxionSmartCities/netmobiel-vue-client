@@ -86,6 +86,7 @@
 
 <script>
 import RoundUserImage from '@/components/common/RoundUserImage'
+import { maxCompliments } from '@/config/review/trip_made_config'
 
 export default {
   name: 'TripMade',
@@ -100,6 +101,7 @@ export default {
       showChips: true,
       inputTextArea: null,
       driverProfile: '',
+      maxCompliments: maxCompliments,
     }
   },
   computed: {
@@ -113,8 +115,21 @@ export default {
   methods: {
     addCompliment(compliment) {
       const index = this.compliments.findIndex(c => c === compliment)
-      if (index === -1) this.compliments.push(compliment)
-      else this.compliments.splice(index, 1)
+      if (this.compliments.length < this.maxCompliments && index === -1) {
+        //Not reached the limit of compliments and the compliment is NOT in the list yet.
+        this.compliments.push(compliment)
+      } else if (
+        // Limit reached and the compliment is not in the list.
+        // Remove the first compliment selected and add the one selected
+        this.compliments.length === this.maxCompliments &&
+        index === -1
+      ) {
+        this.compliments.splice(index, 1)
+        this.compliments.push(compliment)
+      } else {
+        // If a compliment gets selected when it already is, then it will be removed.
+        this.compliments.splice(index, 1)
+      }
     },
     back() {
       this.$emit('back', {})

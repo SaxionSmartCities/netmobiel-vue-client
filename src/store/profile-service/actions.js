@@ -83,8 +83,17 @@ export default {
   },
   /**
    * Adds a compliment to the user in the profile-service
+   * @param context
    * @param sender: {id, firstName, lastName}
    * @param receiver: {id, firstName, lastName}
+   * @param complimentType: enum [
+   'Zelfde interesses',
+   'Op tijd',
+   'Soepele communicatie',
+   'Gezellig',
+   'Netjes',
+   'Goede auto',
+   ]
    * @returns {Object} Returns the compliment object in the response.data
    */
   addUserCompliment: (context, { sender, receiver, complimentType }) => {

@@ -141,10 +141,10 @@ export default {
       else this.setTripMade(false)
     },
     onTripMade(rate) {
-      // eslint-disable-next-line
-      console.log('the rate of the trip >> ', rate)
       //TODO: Send rating to backend.
-      this.$router.push({ name: 'tripReviewedPage' })
+      console.log('feedback value', rate)
+      // this.$router.push({ name: 'tripReviewedPage' })
+      this.step++
     },
     onTripNotMade(reason) {
       // eslint-disable-next-line
