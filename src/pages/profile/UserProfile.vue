@@ -41,11 +41,7 @@
           </div>
           <div class="d-flex flex-column text-center">
             <span v-if="compliments" class="text-color-primary">
-              {{
-                Object.values(refinedCompliments).reduce(
-                  (acc, curr) => acc + curr
-                )
-              }}
+              {{ totalCompliments }}
             </span>
             <span class="subtitle-1">
               Complimenten <br />
@@ -120,9 +116,6 @@ export default {
     }
   },
   computed: {
-    me() {
-      return this.$store.getters['ps/getProfile']
-    },
     refinedCompliments() {
       const result = {}
       for (const comp of this.compliments) {
@@ -134,13 +127,22 @@ export default {
       }
       return result
     },
+    totalCompliments() {
+      if (Object.values([]).length === 0) {
+        return 0
+      }
+      return Object.values(this.refinedCompliments)?.reduce(
+        (acc, curr) => acc + curr
+      )
+    },
   },
   mounted() {
     this.fetchProfilePageInformation()
   },
   methods: {
     userProfileImage() {
-      return config.BASE_URL + this.user.image
+      if (this.user.image) return config.BASE_URL + this.user.image
+      else return null
     },
     fetchProfileImages() {
       this.reviews.forEach(review => {
