@@ -80,6 +80,7 @@ import ContentPane from '../../components/common/ContentPane'
 import TripMade from './TripMade'
 import TripNotMade from './TripNotMade'
 import moment from 'moment'
+import { maxCompliments } from '@/config/review/trip_made_config'
 
 export default {
   name: 'DriverReviewPage',
@@ -143,7 +144,48 @@ export default {
     onTripMade(rate) {
       //TODO: Send rating to backend.
       console.log('feedback value', rate)
-      // this.$router.push({ name: 'tripReviewedPage' })
+      const {
+        id: myId,
+        firstName: myFirstName,
+        lastName: myLastName,
+      } = this.$store.getters['ps/getProfile']
+      const [
+        receiverFirstName,
+        receiverLastName,
+      ] = this.trip.itinerary.legs[0].driverName.split(' ')
+      //For each compliment given do a call to the backend
+      //Can be changed in the future to a call that possibly accepts array if >1 compliments can be given
+      for (let i = 0; i < maxCompliments; i++) {
+        const compliment = rate.compliments[i]
+        const sender = {
+          id: myId,
+          firstName: myFirstName,
+          lastName: myLastName,
+        }
+        const receiver = {
+          //id: 'TODO NEEDS TO BE SET (CANNOT BE FETCHED FROM BACKEND YET...',
+          firstName: receiverFirstName,
+          lastName: receiverLastName,
+        }
+        console.log(
+          'sender',
+          sender,
+          'receiver',
+          receiver,
+          'compliment:',
+          compliment
+        )
+        // this.$store.dispatch('ps/addUserCompliment', {
+        // sender,
+        // receiver,
+        // complimentType: compliment
+        // })
+      }
+
+      if (rate.review) {
+        console.log(rate.review)
+      }
+      this.$router.push({ name: 'tripReviewedPage' })
       this.step++
     },
     onTripNotMade(reason) {
