@@ -7,20 +7,16 @@
           </round-user-image>
         </v-col>
         <v-col>
-          <v-row dense>
-            <v-col>
-              <span class="subtitle-2 text-no-wrap pr-2">
-                {{ itinerary.legs[0].driverName }}
-              </span>
-              <br />
-              <span class="overline">
-                Van {{ trip.from.label }} naar {{ trip.to.label }}
-              </span>
-            </v-col>
-          </v-row>
+          <span class="subtitle-2 text-no-wrap pr-2">
+            {{ itinerary.legs[0].driverName }}
+          </span>
+          <br />
+          <span class="caption">
+            Van {{ trip.from.label }} naar {{ trip.to.label }}
+          </span>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row class="mt-4">
         <v-col>
           <div>
             <h3>Beoordeel jouw reis</h3>
@@ -103,6 +99,7 @@ export default {
       feedbackMessage: '',
       showChips: true,
       inputTextArea: null,
+      driverProfile: '',
     }
   },
   computed: {
