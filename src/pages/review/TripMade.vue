@@ -3,7 +3,11 @@
     <v-col class="pt-0">
       <v-row dense>
         <v-col cols="3">
-          <round-user-image :image-size="60" :avatar-size="66">
+          <round-user-image
+            :profile-image="driverProfile.image || null"
+            :image-size="60"
+            :avatar-size="66"
+          >
           </round-user-image>
         </v-col>
         <v-col>
@@ -93,6 +97,10 @@ export default {
   components: { RoundUserImage },
   props: {
     trip: { type: Object, required: true },
+    driverProfile: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -100,7 +108,6 @@ export default {
       feedbackMessage: '',
       showChips: true,
       inputTextArea: null,
-      driverProfile: '',
       maxCompliments: maxCompliments,
     }
   },
