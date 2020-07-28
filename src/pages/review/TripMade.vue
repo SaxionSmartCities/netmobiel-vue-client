@@ -12,7 +12,7 @@
           </span>
           <br />
           <span class="caption">
-            Van {{ trip.from.label }} naar {{ trip.to.label }}
+            van <b>{{ trip.from.label }} </b> naar <b> {{ trip.to.label }} </b>
           </span>
         </v-col>
       </v-row>
