@@ -3,13 +3,17 @@
     <template v-for="step in steps">
       <div
         :key="step"
-        :class="{ 'step-active': step <= value, 'step-outlined': step > value }"
+        :class="{
+          'step-active': step <= value,
+          'step-outlined': step > value,
+          'step-transition': transition,
+        }"
       >
         <span class="body-2">{{ step }}</span>
       </div>
       <div
         :key="'line' + step"
-        :class="{ 'line-active': step < value }"
+        :class="{ 'line-active': step < value, 'line-transition': transition }"
         class="lines"
       ></div>
     </template>
@@ -22,6 +26,7 @@ export default {
   props: {
     value: { type: Number, required: false, default: 0 },
     steps: { type: Number, required: true },
+    transition: { type: Boolean, required: false, default: false },
   },
 }
 </script>
@@ -43,7 +48,13 @@ export default {
   .line-active {
     background-color: $color-primary;
   }
+  .line-transition {
+    transition: background-color 0.4s ease-out;
+  }
 
+  .step-transition {
+    transition: background-color 0.5s ease-out;
+  }
   .step-active {
     display: flex;
     justify-content: center;
