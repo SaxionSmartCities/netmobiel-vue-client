@@ -46,7 +46,7 @@
                   v-for="(compliment, index) in compliments"
                   :key="index"
                   :ripple="false"
-                  class="compliment-chip compliment-chip-active"
+                  class="compliment-chip body-2 compliment-chip-active"
                   :value="compliment"
                 >
                   {{ compliment }}
