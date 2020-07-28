@@ -4,7 +4,7 @@
       <v-row dense>
         <v-col cols="3">
           <round-user-image
-            :profile-image="driverProfile.image || null"
+            :profile-image="driverProfileImage()"
             :image-size="60"
             :avatar-size="66"
           >
@@ -91,6 +91,7 @@
 <script>
 import RoundUserImage from '@/components/common/RoundUserImage'
 import { maxCompliments } from '@/config/review/trip_made_config'
+import config from '@/config/config'
 
 export default {
   name: 'TripMade',
@@ -152,6 +153,11 @@ export default {
           feedbackMessage: this.inputTextArea,
         })
       }
+    },
+    driverProfileImage() {
+      if (this.driverProfile.image)
+        return config.BASE_URL + this.driverProfile.image
+      else return null
     },
   },
 }

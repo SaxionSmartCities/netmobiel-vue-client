@@ -85,8 +85,7 @@ import TripMade from './TripMade'
 import TripNotMade from './TripNotMade'
 import moment from 'moment'
 import Stepper from '@/components/other/Stepper'
-import config from '@/config/config'
-// import { maxCompliments } from '@/config/review/trip_made_config'
+import { maxCompliments } from '@/config/review/trip_made_config'
 
 export default {
   name: 'DriverReviewPage',
@@ -153,7 +152,6 @@ export default {
       else this.setTripMade(false)
     },
     onTripMade(rate) {
-      console.log('ID needs to be implemented to save to the backend', rate)
       const {
         id: myId,
         firstName: myFirstName,
@@ -163,6 +161,7 @@ export default {
         receiverFirstName,
         receiverLastName,
       ] = this.trip.itinerary.legs[0].driverName.split(' ')
+
       //For each compliment given do a call to the backend
       //Can be changed in the future to a call that possibly accepts array if >1 compliments can be given
       const sender = {
@@ -171,32 +170,25 @@ export default {
         lastName: myLastName,
       }
       const receiver = {
-        //id: 'TODO NEEDS TO BE SET (CANNOT BE FETCHED FROM BACKEND YET...',
+        id: this.driverProfile.managedIdentity,
         firstName: receiverFirstName,
         lastName: receiverLastName,
       }
-      // for (let i = 0; i < maxCompliments; i++) {
-      // const compliment = rate.compliments[i]
-      // this.$store.dispatch('ps/addUserCompliment', {
-      // sender,
-      // receiver,
-      // complimentType: compliment
-      // })
-      // }
-      console.log(
-        'sender',
-        sender,
-        'receiver',
-        receiver
-        // 'compliment:',
-        // compliment
-      )
-      if (rate.review) {
-        // this.$store.dispatch('ps/addUserReview', {
-        //   sender,
-        //   receiver,
-        //   review: rate.review,
-        // })
+      for (let i = 0; i < maxCompliments; i++) {
+        const compliment = rate.compliments[i]
+        this.$store.dispatch('ps/addUserCompliment', {
+          sender,
+          receiver,
+          complimentType: compliment,
+        })
+      }
+
+      if (rate.feedbackMessage) {
+        this.$store.dispatch('ps/addUserReview', {
+          sender,
+          receiver,
+          review: rate.feedbackMessage,
+        })
       }
       this.$router.push({ name: 'tripReviewedPage' })
       this.step++
@@ -224,8 +216,8 @@ export default {
                 firstName: response.givenName,
                 lastName: response.familyName,
                 email: response.email,
-                image: config.BASE_URL + res.image,
               }
+              res.image && (this.driverProfile.image = res.image)
             })
         })
     },
