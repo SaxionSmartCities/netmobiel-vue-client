@@ -26,7 +26,7 @@ export default {
   props: {
     value: { type: Number, required: false, default: 0 },
     steps: { type: Number, required: true },
-    transition: { type: Boolean, required: false, default: false },
+    transition: { type: Boolean, required: false, default: true },
   },
 }
 </script>
@@ -53,7 +53,7 @@ export default {
   }
 
   .step-transition {
-    transition: background-color 0.5s ease-out;
+    transition: all 0.5s ease-out;
   }
   .step-active {
     display: flex;

@@ -1,7 +1,9 @@
 <template>
   <content-pane>
-    <v-row>
-      <v-col class="py-0"> </v-col>
+    <v-row class="mb-5">
+      <v-col class="py-0">
+        <stepper v-model="step" :steps="3" />
+      </v-col>
     </v-row>
     <template v-if="step === 1">
       <v-row>
@@ -19,6 +21,7 @@
           </span>
           <v-checkbox
             v-model="review"
+            class="body-2"
             label="Ik wil ook een review achterlaten?"
           ></v-checkbox>
         </v-col>
@@ -80,11 +83,12 @@ import ContentPane from '../../components/common/ContentPane'
 import TripMade from './TripMade'
 import TripNotMade from './TripNotMade'
 import moment from 'moment'
+import Stepper from '@/components/other/Stepper'
 // import { maxCompliments } from '@/config/review/trip_made_config'
 
 export default {
   name: 'DriverReviewPage',
-  components: { TripNotMade, TripMade, ContentPane },
+  components: { Stepper, TripNotMade, TripMade, ContentPane },
   props: {
     tripContext: { type: String, required: true },
   },
