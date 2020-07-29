@@ -29,35 +29,10 @@
     </v-row>
     <v-row class="mt-2">
       <v-col>
-        <div class="user-info-highlight">
-          <div class="d-flex flex-column">
-            <span class="text-color-primary">
-              205
-            </span>
-            <span class="subtitle-1">
-              Ritten <br />
-              gereden
-            </span>
-          </div>
-          <div class="d-flex flex-column text-center">
-            <span v-if="compliments" class="text-color-primary">
-              {{ totalCompliments }}
-            </span>
-            <span class="subtitle-1">
-              Complimenten <br />
-              gekregen
-            </span>
-          </div>
-          <div class="d-flex flex-column text-center">
-            <span class="text-color-primary">
-              169
-            </span>
-            <span class="subtitle-1">
-              Credits <br />
-              gedoneerd
-            </span>
-          </div>
-        </div>
+        <highlighted-info
+          v-if="totalCompliments"
+          :compliments-received="totalCompliments"
+        ></highlighted-info>
       </v-col>
     </v-row>
     <v-row class="mt-2">
@@ -100,10 +75,17 @@ import RoundUserImage from '@/components/common/RoundUserImage'
 import config from '@/config/config'
 import Compliments from '@/components/profile/Compliments'
 import ReviewItem from '@/components/profile/ReviewItem'
+import HighlightedInfo from '@/components/profile/HighlightedInfo'
 
 export default {
   name: 'UserProfile',
-  components: { ReviewItem, Compliments, RoundUserImage, ContentPane },
+  components: {
+    HighlightedInfo,
+    ReviewItem,
+    Compliments,
+    RoundUserImage,
+    ContentPane,
+  },
   props: {
     profileId: { type: String, required: true },
   },
@@ -185,24 +167,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.user-info-highlight {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  border: 1px solid $color-light-grey;
-  border-radius: $border-radius;
-  padding: 10px;
-  * {
-    text-align: left;
-  }
-  div {
-    &:nth-child(2) {
-      padding: 0 10px;
-      border-right: 1px solid $color-white-grey;
-      border-left: 1px solid $color-white-grey;
-    }
-  }
-}
 .reviews-container {
   max-height: 750px;
   overflow: auto;
