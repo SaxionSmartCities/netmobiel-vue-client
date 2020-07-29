@@ -3,6 +3,7 @@ import { RootState, storeBuilder } from '@/store/Rootstate'
 import { BareActionContext } from 'vuex-typex'
 import uiGetters from '@/store/ui/getters'
 import uiMutations from '@/store/ui/mutations'
+import uiActions from '@/store/ui/actions'
 
 export const state: UiState = {
   header: {
@@ -18,29 +19,12 @@ export const state: UiState = {
   updateMessages: [],
 }
 
-export const uiBuilder = storeBuilder.module<UiState>('ui', new UiState())
+// export const uiBuilder = storeBuilder.module<UiState>('ui', new UiState())
 export const getters = uiGetters
 export const mutations = uiMutations
+export const actions = uiActions
 
-// actions
-type ActionContext = BareActionContext<UiState, RootState>
 
-async function fakeAction(context: ActionContext, payload: boolean) {
-  const res = await fakeUserLoginService(payload)
-  console.log('result is ', res, payload)
-  if (res) {
-    mutations.setBackButtonVisible(res)
-  }
-}
-
-export const actions = {
-  fakeAction: uiBuilder.dispatch(fakeAction),
-}
-
-// fake async call
-async function fakeUserLoginService(bool: boolean): Promise<boolean | null> {
-  return bool
-}
 // export const getters: {
 //
 //   'isHeaderVisible': state => state.header.visible,
