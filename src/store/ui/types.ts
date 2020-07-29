@@ -3,8 +3,8 @@ export class UiState {
   footer: UiFooter | null = null
   backButtonVisible: boolean | null = false
   notificationBarVisible: boolean | null = false
-  notificationQueue: UiNotification[] | null = null
-  updateMessages: UiUpdateMessage[] | null = null
+  notificationQueue: UiNotification[] = []
+  updateMessages: UiUpdateMessage[] = []
 }
 
 export interface UiHeader {

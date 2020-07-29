@@ -51,6 +51,7 @@ export default {
     return getSelectedNav()
   },
   get getUpdateMessages() {
+    console.log('getting the updatemssages')
     return getUpdateMessages()
   },
 }

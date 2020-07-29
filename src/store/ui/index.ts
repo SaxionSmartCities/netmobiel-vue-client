@@ -24,7 +24,6 @@ export const getters = uiGetters
 export const mutations = uiMutations
 export const actions = uiActions
 
-
 // export const getters: {
 //
 //   'isHeaderVisible': state => state.header.visible,
