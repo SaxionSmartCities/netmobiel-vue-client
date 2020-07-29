@@ -13,15 +13,9 @@ import './ui'
 
 Vue.use(Vuex)
 
-export interface RootState {}
+import { RootState, storeBuilder } from './Rootstate'
 
-import { getStoreBuilder } from 'vuex-typex'
-import { UiState } from '@/store/ui/types'
-
-export const storeBuilder = getStoreBuilder<RootState>()
-
-// eslint-disable-next-line no-redeclare
-const ui = storeBuilder.module<UiState>('ui', new UiState())
+export const stbuilder = storeBuilder.vuexStore()
 
 export default new Vuex.Store<RootState>({
   strict: process.env.NODE_ENV !== 'production',
@@ -34,6 +28,5 @@ export default new Vuex.Store<RootState>({
     ps: profileService,
     rs: registrationService,
     gos: goalsService,
-    ui: ui,
   },
 })

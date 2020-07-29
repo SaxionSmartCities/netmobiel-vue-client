@@ -46,6 +46,7 @@ import TripReviewedPage from './pages/review/TripReviewedPage'
 import TripConfirmedPage from './pages/review/TripConfirmedPage'
 import SupportGoal from './pages/community/goals/SupportGoal'
 import Donated from './pages/community/goals/Donated'
+import TypTest from '@/pages/TypTest'
 
 const router = new Router({
   mode: 'history',
@@ -267,8 +268,14 @@ const router = new Router({
       component: TripConfirmedPage,
       name: 'tripConfirmedPage',
     },
+    {
+      path: '/typTest',
+      component: TypTest,
+      name: 'tt',
+    },
   ],
 })
+import * as uiStore from '@/store/ui'
 
 router.beforeEach((to, from, next) => {
   store.commit('ui/hideBackButton')

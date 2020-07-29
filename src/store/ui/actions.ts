@@ -1,6 +1,6 @@
 import { ActionTree } from 'vuex'
 import { UiState } from './types'
-import { RootState } from '../'
+import { RootState } from '@/store/Rootstate'
 
 export const actions: ActionTree<UiState, RootState> = {
   queueNotification: (context, payload) => {

@@ -1,12 +1,10 @@
-export class UiState implements UiState {}
-
-export interface UiState {
-  header: UiHeader
-  footer: UiFooter
-  backButtonVisible: boolean
-  notificationBarVisible: boolean
-  notificationQueue: UiNotification[]
-  updateMessages: UiUpdateMessage[]
+export class UiState {
+  header: UiHeader | null = null
+  footer: UiFooter | null = null
+  backButtonVisible: boolean | null = false
+  notificationBarVisible: boolean | null = false
+  notificationQueue: UiNotification[] | null = null
+  updateMessages: UiUpdateMessage[] | null = null
 }
 
 export interface UiHeader {
