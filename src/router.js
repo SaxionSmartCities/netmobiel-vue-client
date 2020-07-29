@@ -279,9 +279,9 @@ const router = new Router({
 import * as uiStore from '@/store/ui'
 
 router.beforeEach((to, from, next) => {
-  store.commit('ui/hideBackButton')
-  store.commit('ui/enableFooter')
-  store.commit('ui/enableHeader')
+  uiStore.mutations.hideBackButton
+  uiStore.mutations.enableFooter
+  uiStore.mutations.enableHeader
 
   if (
     to.path !== '/' &&

@@ -111,7 +111,7 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import RideCard from '@/components/rides/RideCard.vue'
 import UpdateCard from '@/components/home/UpdateCard.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
-
+import * as uiStore from '@/store/ui'
 import moment from 'moment'
 
 export default {
@@ -149,7 +149,9 @@ export default {
       }
     },
     updateMessages() {
-      return this.$store.getters['ui/getUpdateMessages']
+      console.log('returning', uiStore.getters.getUpdateMessages)
+      return uiStore.getters.getUpdateMessages
+      // return this.$store.getters['ui/getUpdateMessages']
     },
     profileImage() {
       return this.$store.getters['ps/getUser'].profile.image
