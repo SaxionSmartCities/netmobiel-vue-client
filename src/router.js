@@ -276,6 +276,7 @@ const router = new Router({
     },
   ],
 })
+import * as uiStore from '@/store/ui'
 
 router.beforeEach((to, from, next) => {
   store.commit('ui/hideBackButton')

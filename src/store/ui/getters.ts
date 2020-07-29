@@ -1,13 +1,56 @@
-import { GetterTree } from 'vuex'
-import { UiState } from './types'
-import { RootState } from '../'
+import { getStoreBuilder, ModuleBuilder } from 'vuex-typex'
+import { UiState } from '@/store/ui/types'
+// @ts-ignore
+const uiBuilder: ModuleBuilder = getStoreBuilder().module('ui')
 
-export const getters: GetterTree<UiState, RootState> = {
-  isHeaderVisible: state => state.header.visible,
-  isFooterVisible: state => state.footer.visible,
-  isBackButtonVisible: state => state.backButtonVisible,
-  getNotificationQueue: state => state.notificationQueue,
-  isNotificationBarVisible: state => state.notificationBarVisible,
-  getSelectedNav: state => state.footer.selectedNav,
-  getUpdateMessages: state => state.updateMessages,
+const isHeaderVisible = uiBuilder.read((state: UiState) => {
+  return state.header!.visible
+}, 'isHeaderVisible')
+
+const isFooterVisible = uiBuilder.read((state: UiState) => {
+  return state.footer!.visible
+}, 'isFooterVisible')
+
+const isBackButtonVisible = uiBuilder.read((state: UiState) => {
+  return state.backButtonVisible
+}, 'isBackButtonVisible')
+
+const getNotificationQueue = uiBuilder.read((state: UiState) => {
+  return state.notificationQueue
+}, 'getNotificationQueue')
+
+const isNotificationBarVisible = uiBuilder.read((state: UiState) => {
+  return state.notificationBarVisible
+}, 'isNotificationBarVisible')
+
+const getSelectedNav = uiBuilder.read((state: UiState) => {
+  return state.footer!.selectedNav
+}, 'getSelectedNav')
+
+const getUpdateMessages = uiBuilder.read((state: UiState) => {
+  return state.updateMessages
+}, 'getUpdateMessages')
+
+export default {
+  get isHeaderVisible() {
+    return isHeaderVisible()
+  },
+  get isFooterVisible() {
+    return isFooterVisible()
+  },
+  get isBackButtonVisible() {
+    return isBackButtonVisible()
+  },
+  get getNotificationQueue() {
+    return getNotificationQueue()
+  },
+  get isNotificationBarVisible() {
+    return isNotificationBarVisible()
+  },
+  get getSelectedNav() {
+    return getSelectedNav()
+  },
+  get getUpdateMessages() {
+    return getUpdateMessages()
+  },
 }
