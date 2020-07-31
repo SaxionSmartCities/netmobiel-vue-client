@@ -19,7 +19,7 @@ export const state: UiState = {
   updateMessages: [],
 }
 
-// export const uiBuilder = storeBuilder.module<UiState>('ui', new UiState())
+export const uiBuilder = storeBuilder.module<UiState>('ui', new UiState())
 export const getters = uiGetters
 export const mutations = uiMutations
 export const actions = uiActions

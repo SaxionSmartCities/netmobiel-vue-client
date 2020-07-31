@@ -1,8 +1,10 @@
 export class UiState {
-  header: UiHeader | null = null
-  footer: UiFooter | null = null
-  backButtonVisible: boolean | null = false
-  notificationBarVisible: boolean | null = false
+  header: UiHeader = {
+    visible: false,
+  }
+  footer: UiFooter = { selectedNav: '', visible: false }
+  backButtonVisible: boolean = false
+  notificationBarVisible: boolean = false
   notificationQueue: UiNotification[] = []
   updateMessages: UiUpdateMessage[] = []
 }
