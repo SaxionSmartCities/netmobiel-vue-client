@@ -149,7 +149,6 @@ export default {
       }
     },
     updateMessages() {
-      console.log('returning', uiStore.getters.getUpdateMessages)
       return uiStore.getters.getUpdateMessages
       // return this.$store.getters['ui/getUpdateMessages']
     },

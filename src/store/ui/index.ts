@@ -5,20 +5,6 @@ import uiGetters from '@/store/ui/getters'
 import uiMutations from '@/store/ui/mutations'
 import uiActions from '@/store/ui/actions'
 
-export const state: UiState = {
-  header: {
-    visible: true,
-  },
-  footer: {
-    visible: true,
-    selectedNav: 'home',
-  },
-  backButtonVisible: false,
-  notificationBarVisible: false,
-  notificationQueue: [],
-  updateMessages: [],
-}
-
 export const uiBuilder = storeBuilder.module<UiState>('ui', new UiState())
 export const getters = uiGetters
 export const mutations = uiMutations
