@@ -1,8 +1,8 @@
 export class UiState {
   header: UiHeader = {
-    visible: false,
+    visible: true,
   }
-  footer: UiFooter = { selectedNav: '', visible: false }
+  footer: UiFooter = { selectedNav: '', visible: true }
   backButtonVisible: boolean = false
   notificationBarVisible: boolean = false
   notificationQueue: UiNotification[] = []

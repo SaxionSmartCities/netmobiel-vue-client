@@ -62,6 +62,7 @@
 import constants from '@/constants/update-messages.js'
 import hash from 'raw-loader!@/assets/current.hash'
 import ybug from './config/ybug'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'App',
@@ -72,43 +73,45 @@ export default {
   computed: {
     selectedNav: {
       get: function() {
-        return this.$store.getters['ui/getSelectedNav']
+        return uiStore.getters.getSelectedNav
       },
       set: function(value) {
-        this.$store.commit('ui/setSelectedNav', value)
+        uiStore.mutations.setSelectedNav(value)
+        // this.$store.commit('ui/setSelectedNav', value)
       },
     },
     isHeaderVisible: function() {
-      return this.$store.getters['ui/isHeaderVisible']
+      return uiStore.getters.isHeaderVisible
     },
     isFooterVisible: function() {
-      return this.$store.getters['ui/isFooterVisible']
+      return uiStore.getters.isFooterVisible
     },
     notificationQueue: function() {
-      return this.$store.getters['ui/getNotificationQueue']
+      return uiStore.getters.getNotificationQueue
     },
     notificationColor: function() {
       const queue = this.notificationQueue
       return queue.length && !queue[0].timeout ? 'error' : 'inform'
     },
     isNotificationBarVisible: function() {
-      return this.$store.getters['ui/isNotificationBarVisible']
+      return uiStore.getters.isNotificationBarVisible
     },
     currentNotification: function() {
-      return this.$store.getters['ui/getNotificationQueue'][0]
+      return uiStore.getters.getNotificationQueue[0]
     },
     getProfile() {
       return this.$store.getters['ps/getProfile']
     },
     isBackButtonVisible: function() {
-      return this.$store.getters['ui/isBackButtonVisible']
+      return uiStore.getters.isBackButtonVisible
     },
   },
   watch: {
     getProfile(newProfile) {
       if (!this.isProfileComplete(newProfile)) {
         let update = constants.COMPLETE_PROFILE_UPDATE
-        this.$store.dispatch('ui/addUpdate', update)
+        uiStore.actions.addUpdate(update)
+        // this.$store.dispatch('ui/addUpdate', update)
       }
       // Update profile if the passed FCM token is different compared
       // to the one in the profile.
@@ -133,7 +136,8 @@ export default {
   },
   methods: {
     finishNotification: function() {
-      this.$store.dispatch('ui/finishNotification')
+      uiStore.actions.finishNotification()
+      // this.$store.dispatch('ui/finishNotification')
     },
     goBack: function() {
       this.$router.go(-1)
