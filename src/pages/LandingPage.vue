@@ -33,8 +33,8 @@
 import * as uiStore from '@/store/ui'
 export default {
   beforeCreate() {
-    uiStore.mutations.disableHeader
-    uiStore.mutations.disableFooter
+    uiStore.mutations.disableFooter()
+    uiStore.mutations.disableFooter()
   },
   mounted() {
     if (this.$keycloak.authenticated) {
