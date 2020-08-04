@@ -10,6 +10,8 @@ import profileService from './profile-service'
 import registrationService from './registration-service'
 import goalsService from './goals-service'
 import { RootState, storeBuilder } from './Rootstate'
+
+// NEED TO IMPORT THE STRONGLY TYPES STORES HERE, ELSE THE STORES WON'T BE BUILT!!!
 import './ui'
 import './charity-service'
 
