@@ -43,6 +43,8 @@
 </template>
 
 <script>
+import * as uiStore from '@/store/ui'
+
 export default {
   name: 'PrivacySecurity',
   data() {
@@ -56,7 +58,7 @@ export default {
     },
   },
   created: function() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   methods: {
     toPrivacyStatement() {

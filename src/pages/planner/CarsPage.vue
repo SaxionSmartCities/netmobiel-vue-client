@@ -53,6 +53,7 @@
 import luggageTypes from '@/constants/luggage-types.js'
 import ContentPane from '@/components/common/ContentPane.vue'
 import CarCard from '@/components/cars/CarCard.vue'
+import * as uiStore from '@/store/ui'
 
 function luggageLabel(option) {
   return luggageTypes[option].label
@@ -90,7 +91,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
     this.$store.dispatch('cs/fetchCars')
   },
   methods: {

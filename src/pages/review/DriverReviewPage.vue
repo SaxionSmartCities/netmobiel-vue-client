@@ -86,6 +86,7 @@ import TripNotMade from './TripNotMade'
 import moment from 'moment'
 import Stepper from '@/components/other/Stepper'
 import { maxCompliments } from '@/config/review/trip_made_config'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'DriverReviewPage',
@@ -124,7 +125,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
     //When coming from a notification the state will be empty, so a query must be done to fetch the trip
     if (!this.trip) {
       this.fromNotification = true

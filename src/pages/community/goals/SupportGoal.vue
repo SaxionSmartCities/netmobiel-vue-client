@@ -72,6 +72,7 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
+import * as uiStore from '@/store/ui'
 export default {
   name: 'SupportGoal',
   components: { ContentPane },
@@ -93,7 +94,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   methods: {
     donate() {

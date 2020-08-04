@@ -53,6 +53,7 @@ import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
 // map category to Material icon name (needs more work...)
 // show at most 8 suitable suggestions
 import { throttle } from 'lodash'
+import * as uiStore from '@/store/ui'
 const highlightMarker = 'class="search-hit"'
 const skipCategories = new Set(['intersection'])
 const maxSuggestions = 8
@@ -115,7 +116,7 @@ export default {
     }, 500),
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   methods: {
     parseHighlightedLabel(suggestion) {

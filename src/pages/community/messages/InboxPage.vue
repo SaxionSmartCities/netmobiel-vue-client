@@ -53,6 +53,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import TabBar from '../../../components/common/TabBar'
+import * as uiStore from '@/store/ui'
 
 export default {
   components: {
@@ -77,7 +78,7 @@ export default {
     },
   },
   created: function() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
     this.$store.dispatch('ms/fetchConversations')
   },
   methods: {

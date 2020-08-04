@@ -103,6 +103,7 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import SearchOptionsIconExpansionPanel from '@/components/search/SearchOptionsIconExpansionPanel.vue'
 import luggageTypes from '@/constants/luggage-types.js'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'RidePreferences',
@@ -144,7 +145,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
     // Clone search preferences so we can pass it as v-model and persist it
     // when onSearchOptionsSave is emitted.
     this.ridePlanOptions = {

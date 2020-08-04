@@ -48,7 +48,7 @@ export default {
     }
   },
   beforeCreate() {
-    this.$store.commit('ui/disableFooter')
+    uiStore.mutations.disableFooter()
   },
   methods: {
     submitForm: function() {

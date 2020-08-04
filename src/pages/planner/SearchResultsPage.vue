@@ -118,6 +118,7 @@ import SearchOptionsSummaryCard from '@/components/search-results/SearchOptionsS
 import SearchCriteria from '@/components/common/SearchCriteria.vue'
 import SearchStatus from '@/components/search/SearchStatus.vue'
 import moment from 'moment'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'SearchResultsPage',
@@ -171,7 +172,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   methods: {
     onLocationFieldSelected(newField) {

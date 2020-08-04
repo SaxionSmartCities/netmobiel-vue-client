@@ -45,6 +45,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import TripDetails from '@/components/itinerary-details/TripDetails.vue'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'ItineraryDetailPage',
@@ -67,7 +68,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
     if (this.selectedTrip.state === 'SCHEDULED') {
       this.showConfirmationButton = false
     }

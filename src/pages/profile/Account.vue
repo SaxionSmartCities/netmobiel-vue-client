@@ -71,6 +71,7 @@
 import ContentPane from '@/components/common/ContentPane'
 import account_config from '@/config/account_config'
 import { get, set, isEqual } from 'lodash'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'Account',
@@ -112,7 +113,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   methods: {
     get: get,

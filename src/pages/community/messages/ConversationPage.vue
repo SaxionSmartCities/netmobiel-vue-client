@@ -71,6 +71,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import MessageCard from '@/components/community/MessageCard.vue'
+import * as uiStore from '@/store/ui'
 
 export default {
   components: {
@@ -121,7 +122,7 @@ export default {
     },
   },
   mounted() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   updated() {
     this.scrollToBottomMessageContainer()
@@ -141,10 +142,10 @@ export default {
   },
   methods: {
     onInputMessageFocus() {
-      this.$store.commit('ui/disableFooter')
+      uiStore.mutations.disableFooter()
     },
     onInputMessageFocusOut() {
-      this.$store.commit('ui/enableFooter')
+      uiStore.mutations.enableFooter()
     },
     isMessageSendByMe(id) {
       return id === this.$store.getters['ps/getProfile'].id

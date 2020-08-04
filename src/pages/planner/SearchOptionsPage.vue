@@ -23,6 +23,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import SearchOptions from '@/components/search/SearchOptions.vue'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'SearchOptionsPage',
@@ -36,7 +37,7 @@ export default {
     }
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
     // Clone search preferences so we can pass it as v-model and persist it
     // when onSearchOptionsSave is emitted.
     this.searchPreferences = {

@@ -76,6 +76,7 @@ import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vu
 import ContactDriverModal from '@/components/itinerary-details/ContactDriverModal'
 import travelModes from '@/constants/travel-modes.js'
 import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'TripDetailPage',
@@ -126,7 +127,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
     if (this.selectedTrip.state === 'SCHEDULED') {
       this.showConfirmationButton = false
     }
