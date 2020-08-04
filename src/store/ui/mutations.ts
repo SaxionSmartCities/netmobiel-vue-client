@@ -4,14 +4,12 @@ import { getStoreBuilder, ModuleBuilder } from 'vuex-typex'
 const uiBuilder: ModuleBuilder = getStoreBuilder().module('ui')
 
 function enableHeader(state: UiState) {
-  console.log('enabling header')
   state.header!.visible = true
 }
 function disableHeader(state: UiState) {
   state.header!.visible = false
 }
 function enableFooter(state: UiState) {
-  console.log('enabling footer')
   state.footer!.visible = true
 }
 function disableFooter(state: UiState) {
