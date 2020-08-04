@@ -33,7 +33,7 @@
 import * as uiStore from '@/store/ui'
 export default {
   beforeCreate() {
-    uiStore.mutations.disableFooter()
+    uiStore.mutations.disableHeader()
     uiStore.mutations.disableFooter()
   },
   mounted() {
