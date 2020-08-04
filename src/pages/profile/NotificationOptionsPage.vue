@@ -70,6 +70,7 @@ import ContentPane from '../../components/common/ContentPane'
 import notification_settings from '../../config/notification_settings'
 import SingleSelect from '../../components/profile/SingleSelect'
 import { throttle } from 'lodash'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'NotificationOptions',
@@ -98,7 +99,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
     if (!this.userRole) {
       this.selectedMode = 'both'
     } else {

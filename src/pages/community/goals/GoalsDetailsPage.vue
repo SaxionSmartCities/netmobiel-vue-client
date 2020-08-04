@@ -90,6 +90,7 @@
 import ContentPane from '@/components/common/ContentPane'
 import DonorsList from '@/components/community/goals/DonorsList'
 import GoalProgressBar from '@/components/community/goals/GoalProgressBar'
+import * as uiStore from '@/store/ui'
 export default {
   name: 'GoalsDetailsPage',
   components: { GoalProgressBar, DonorsList, ContentPane },
@@ -107,7 +108,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
 }
 </script>

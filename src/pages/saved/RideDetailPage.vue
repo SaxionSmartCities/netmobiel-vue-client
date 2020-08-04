@@ -107,6 +107,7 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import ContactTravellerModal from '@/components/itinerary-details/ContactTravellerModal'
 import EditRideModal from '../../components/itinerary-details/EditRideModal'
 import RideDetails from '@/components/itinerary-details/RideDetails.vue'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'RideDetailPage',
@@ -155,7 +156,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   mounted() {
     // Fetch the ride on details page. This is needed for deeplinking.

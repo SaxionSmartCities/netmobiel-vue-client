@@ -58,6 +58,7 @@
 import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import SearchCriteria from '@/components/common/SearchCriteria.vue'
+import * as uiStore from '@/store/ui'
 
 export default {
   components: {
@@ -125,8 +126,7 @@ export default {
       //TODO: Do the valid time check in the search criteria component.
       // If the selected date is in the past show an error.
       if (moment(newCriteria?.travelTime?.when) < moment()) {
-        this.$store.dispatch(
-          'ui/queueNotification',
+        uiStore.actions.queueNotification(
           {
             message: 'De geselecteerde tijd ligt in het verleden.',
             timeout: 0,

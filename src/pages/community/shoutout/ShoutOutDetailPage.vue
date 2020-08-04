@@ -186,6 +186,7 @@ import {
   generateShoutOutDetailSteps,
   generateItineraryDetailSteps,
 } from '@/utils/itinerary_steps.js'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'ShoutOutDetailPage',
@@ -314,7 +315,7 @@ export default {
     }
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   beforeRouteEnter: beforeRouteEnter({
     editDepart: editing => editing || false,

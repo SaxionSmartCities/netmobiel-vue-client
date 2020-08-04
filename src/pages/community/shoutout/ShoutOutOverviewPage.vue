@@ -66,6 +66,7 @@ import ContentPane from '@/components/common/ContentPane'
 import GroupedShoutOuts from '@/components/community/GroupedShoutOuts'
 import TabBar from '../../../components/common/TabBar'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'ShoutOutOverview',
@@ -103,7 +104,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   beforeRouteEnter: beforeRouteEnter({
     selectedTab: number => number || 0,

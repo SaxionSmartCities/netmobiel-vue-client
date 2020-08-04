@@ -86,6 +86,7 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'ProfileAddCar',
@@ -115,14 +116,14 @@ export default {
     this.$store.commit('cs/clearSearchResult')
   },
   created: function() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   methods: {
     addCar(car) {
       const cars = this.$store.getters['cs/getAvailableCars']
       let storedCar = cars.find(c => c.licensePlate === car.licensePlate)
       if (storedCar) {
-        this.$store.dispatch('ui/queueNotification', {
+        uiStore.actions.queueNotification({
           message: 'Auto is al opgeslagen aan uw profiel.',
           timeout: 0,
         })

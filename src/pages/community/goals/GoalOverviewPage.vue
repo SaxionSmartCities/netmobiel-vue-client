@@ -75,6 +75,8 @@ import GoalCard from '@/components/community/goals/GoalCard'
 import ContentPane from '@/components/common/ContentPane'
 import DonorsList from '@/components/community/goals/DonorsList'
 import { mapGetters } from 'vuex'
+import * as chsStore from '@/store/charity-service'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'GoalOverviewPage',
@@ -86,7 +88,8 @@ export default {
     }),
   },
   created: function() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
+    chsStore.actions.fetchCharities()
   },
 }
 </script>

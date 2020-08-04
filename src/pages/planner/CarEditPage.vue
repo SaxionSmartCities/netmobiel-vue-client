@@ -97,6 +97,7 @@
 <script>
 import luggageTypes from '@/constants/luggage-types.js'
 import ContentPane from '@/components/common/ContentPane.vue'
+import * as uiStore from '@/store/ui'
 
 const BAD_PERSON_COUNT = 'Voer een geheel getal tussen 1 en 6.'
 
@@ -149,7 +150,7 @@ export default {
     this.personCount = this.car.nrSeats > 1 ? this.car.nrSeats - 1 : 2
   },
   created: function() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
 }
 </script>

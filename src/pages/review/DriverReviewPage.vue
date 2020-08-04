@@ -90,6 +90,7 @@ import ContentPane from '../../components/common/ContentPane'
 import TripMade from './TripMade'
 import TripNotMade from './TripNotMade'
 import moment from 'moment'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'DriverReviewPage',
@@ -127,7 +128,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
     //When coming from a notification the state will be empty, so a query must be done to fetch the trip
     if (!this.trip) {
       this.fromNotification = true
