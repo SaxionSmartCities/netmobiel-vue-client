@@ -11,6 +11,7 @@ import registrationService from './registration-service'
 import goalsService from './goals-service'
 import { RootState, storeBuilder } from './Rootstate'
 import './ui'
+import './charity-service'
 
 /**
  * Now using both the normal vuex store than can be accessed through this.$store...
