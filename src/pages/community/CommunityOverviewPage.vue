@@ -33,7 +33,7 @@
           class="mx-auto"
           icon="fa-bullseye"
           naam="doelen"
-          forward="goalOverviewPage"
+          forward="charityOverviewPage"
         ></community-button>
       </v-col>
     </v-row>

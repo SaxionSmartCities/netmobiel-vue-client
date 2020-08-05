@@ -1,39 +1,39 @@
 <template>
-  <v-card outlined>
+  <v-card max-width="500px" class="pa-5" outlined>
     <v-row>
-      <v-col cols="4" class="pl-8">
-        <round-user-image :image-size="69" :avatar-size="75">
-        </round-user-image>
+      <v-col class="shrink py-0">
+        <v-img
+          class="charity-card-image"
+          alt="Geen afbeelding beschikbaar"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/24436_Leeuwarden_St._Bonifatiuskerk_07.JPG/1200px-24436_Leeuwarden_St._Bonifatiuskerk_07.JPG"
+        />
       </v-col>
-      <v-col class="mx-auto">
-        <v-row>
-          <span class="subtitle-2 text-no-wrap pr-2">
-            {{ charity.place }}
-          </span>
-        </v-row>
-        <v-row>
+      <v-col class="py-0 pl-1">
+        <div class="d-flex flex-column">
+          <span class="body-2">{{ charity.name }}</span>
           <span class="overline">{{ charity.place }}</span>
-        </v-row>
+        </div>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="mt-2">
       <v-col>
-        <v-progress-linear :value="0"></v-progress-linear>
+        <v-progress-linear v-model="charity.progress" rounded>
+          <template v-slot="{ value }">
+            <strong class="progressbar-text">{{ Math.ceil(value) }}%</strong>
+          </template>
+        </v-progress-linear>
       </v-col>
     </v-row>
-    <v-row class="mx-auto">
-      <v-col>
-        <span class="pl-2 subtitle-1 font-weight-light">
-          nog {{ creditsRemaining }} credits
-        </span>
+    <v-row justify="space-between" class="mx-auto">
+      <v-col class="px-0 pb-0">
+        <span class="body-1"> nog {{ creditsRemaining }} credits </span>
       </v-col>
-      <v-col class="pr-4"
-        ><v-btn
+      <v-col class="px-0 pb-0">
+        <v-btn
           color="primary"
           class="font-weight-bold"
           small
           rounded
-          block
           depressed
           outlined
           @click="showDetails(id)"
@@ -46,13 +46,9 @@
 </template>
 
 <script>
-import RoundUserImage from '@/components/common/RoundUserImage'
-
 export default {
   name: 'CharityCard',
-  components: {
-    RoundUserImage,
-  },
+  components: {},
   props: {
     charity: { type: Object, required: true },
   },
@@ -65,4 +61,15 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.charity-card-image {
+  width: 75px;
+  height: 75px;
+  border-radius: 10px;
+}
+
+.progressbar-text {
+  position: absolute;
+  z-index: 4;
+}
+</style>

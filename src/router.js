@@ -85,9 +85,9 @@ const router = new Router({
       name: 'planRide',
     },
     {
-      path: '/goalOverviewPage',
+      path: '/charityOverviewPage',
       component: CharityOverviewPage,
-      name: 'goalOverviewPage',
+      name: 'charityOverviewPage',
     },
     {
       path: '/goalDetails/:id',

@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     supportGoal() {
-      this.$router.push({ name: 'goalOverviewPage' })
+      this.$router.push({ name: 'charityOverviewPage' })
     },
     showAllDonations() {
       this.$router.push({ path: `/goalDetails/${this.id}` })

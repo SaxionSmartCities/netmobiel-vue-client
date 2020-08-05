@@ -26,7 +26,11 @@
         </h4>
         <div class="charity-list">
           <template v-for="charity in charities">
-            <charity-card :key="charity.id" :charity="charity"></charity-card>
+            <charity-card
+              :key="charity.id"
+              class="charity-card mr-3"
+              :charity="charity"
+            ></charity-card>
           </template>
         </div>
       </v-col>
@@ -48,7 +52,7 @@ import * as uiStore from '@/store/ui'
 import CharityCard from '@/components/community/goals/CharityCard'
 
 export default {
-  name: 'GoalOverviewPage',
+  name: 'CharityOverviewPage',
   components: { CharityCard, ContentPane },
   computed: {
     charities() {
@@ -64,10 +68,12 @@ export default {
 
 <style lang="scss">
 .charity-list {
-  scroll-direction: horizontal;
-  overflow-x: hidden;
-  overflow-y: auto;
-  height: 300px;
+  overflow: auto;
+  white-space: nowrap;
+
+  .charity-card {
+    display: inline-block;
+  }
 }
 /**
 makes sure that cards are aligned on small devices, but still show arrows(prev&next) on desktop
