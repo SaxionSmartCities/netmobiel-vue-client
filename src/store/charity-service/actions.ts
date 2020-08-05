@@ -16,8 +16,15 @@ function fetchCharities(context: ActionContext, params: any): void {
   })
 }
 
+function searchCharities(context: ActionContext, params: any): void {
+  axios.get(BASE_URL + '/api/charity', { params: {} }).then(resp => {
+    mutations.setCharitySearchResults(resp.data.charities)
+  })
+}
+
 const actions = {
   fetchCharities: chsBuilder.dispatch(fetchCharities),
+  searchCharities: chsBuilder.dispatch(searchCharities),
 }
 
 export default actions
