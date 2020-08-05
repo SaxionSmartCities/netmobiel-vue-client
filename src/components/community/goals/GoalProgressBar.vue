@@ -1,10 +1,10 @@
 <template>
   <v-row no-gutters>
-    <v-col class="text-center">
+    <v-col class="text-center font-weight-bold">
       <v-progress-circular
         :rotate="-90"
-        :size="100"
-        :width="11"
+        :size="75"
+        :width="8"
         :value="computedProgress"
         color="primary"
       >

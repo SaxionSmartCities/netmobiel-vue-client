@@ -23,32 +23,32 @@
     </v-row>
     <v-row>
       <v-col pt-0>
-        <h1 class="netmobiel"></h1>
-        <span class="overline">{{}}</span>
+        <h1 class="netmobiel">{{ charity.name }}</h1>
+        <span class="overline">{{ charity.place }}</span>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <span>{{}}</span>
+        <span class="body-1">{{ charity.description }}</span>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <!--        <goal-progress-bar name="Donateurs" :value-current="">-->
-        <!--        </goal-progress-bar>-->
+        <goal-progress-bar name="Donateurs" :value-current="49">
+        </goal-progress-bar>
       </v-col>
       <v-col>
-        <!--        <goal-progress-bar name="Credits" :value-current="">-->
-        <!--        </goal-progress-bar>-->
+        <goal-progress-bar name="Credits" :value-current="6">
+        </goal-progress-bar>
       </v-col>
       <v-col>
-        <!--        <goal-progress-bar-->
-        <!--          name="Behaald"-->
-        <!--          :display-percentage="true"-->
-        <!--          :value-current=""-->
-        <!--          :value-total=""-->
-        <!--        >-->
-        <!--        </goal-progress-bar>-->
+        <goal-progress-bar
+          name="Behaald"
+          :display-percentage="true"
+          :value-current="40"
+          :value-total="60"
+        >
+        </goal-progress-bar>
       </v-col>
     </v-row>
     <v-row>
@@ -60,7 +60,7 @@
           mb-4
           depressed
           color="button"
-          @click="$router.push({ name: 'supportGoal' })"
+          @click="supportCharity()"
         >
           Steun dit doel
         </v-btn>
@@ -68,9 +68,9 @@
     </v-row>
     <v-row>
       <v-col>
-        <h4 class="netmobiel my-3">
-          Top donateurs
-        </h4>
+        <h6 class="text-color-primary text-uppercase my-3">
+          Donateurs
+        </h6>
         <v-divider />
         <!--        <donors-list :donors=""></donors-list>-->
       </v-col>
@@ -81,18 +81,18 @@
 <script>
 import ContentPane from '@/components/common/ContentPane'
 // import DonorsList from '@/components/community/goals/DonorsList'
-// import GoalProgressBar from '@/components/community/goals/GoalProgressBar'
+import GoalProgressBar from '@/components/community/goals/GoalProgressBar'
 import * as uiStore from '@/store/ui'
 import * as chsStore from '@/store/charity-service'
 
 export default {
   name: 'CharityDetailPage',
-  components: { ContentPane },
+  components: { ContentPane, GoalProgressBar },
   props: {
     id: { type: String, required: true },
   },
   computed: {
-    selectedCharity() {
+    charity() {
       return chsStore.getters.getSelectedCharity
     },
     donors() {
@@ -102,6 +102,11 @@ export default {
   created() {
     uiStore.mutations.showBackButton()
     chsStore.actions.lookupCharity(this.id)
+  },
+  methods: {
+    supportCharity() {
+      // this.$router.push({ name: 'supportGoal' })
+    },
   },
 }
 </script>
