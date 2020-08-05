@@ -1,0 +1,83 @@
+<template>
+  <content-pane :clearpadding="true">
+    <v-row mb-3>
+      <v-col ml-3>
+        <h1 class="netmobiel">
+          Doelen
+        </h1>
+        <v-divider class="mt-2"></v-divider>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="">
+        <v-text-field
+          dense
+          outlined
+          label="Zoeken"
+          hide-details
+          prepend-inner-icon="search"
+        ></v-text-field>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <h4 class="title text-color-primary mb-2">
+          Populair in de buurt
+        </h4>
+        <div class="charity-list">
+          <template v-for="charity in charities">
+            <charity-card :key="charity.id" :charity="charity"></charity-card>
+          </template>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row>
+      <!--      <v-col>-->
+      <!--        <h4 class="netmobiel my-3">Top donateurs</h4>-->
+      <!--        <v-divider />-->
+      <!--        <donors-list :donors="getTopDonors"> </donors-list>-->
+      <!--      </v-col>-->
+    </v-row>
+  </content-pane>
+</template>
+
+<script>
+import ContentPane from '@/components/common/ContentPane'
+import * as chsStore from '@/store/charity-service'
+import * as uiStore from '@/store/ui'
+import CharityCard from '@/components/community/goals/CharityCard'
+
+export default {
+  name: 'GoalOverviewPage',
+  components: { CharityCard, ContentPane },
+  computed: {
+    charities() {
+      return chsStore.getters.getCharities
+    },
+  },
+  created() {
+    uiStore.mutations.showBackButton()
+    chsStore.actions.fetchCharities()
+  },
+}
+</script>
+
+<style lang="scss">
+.charity-list {
+  scroll-direction: horizontal;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 300px;
+}
+/**
+makes sure that cards are aligned on small devices, but still show arrows(prev&next) on desktop
+ */
+@media (max-width: 767.98px) {
+  .v-slide-group__prev {
+    display: none !important;
+  }
+  .v-slide-group__next {
+    display: none !important;
+  }
+}
+</style>

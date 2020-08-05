@@ -7,23 +7,25 @@
       </v-col>
       <v-col class="mx-auto">
         <v-row>
-          <span class="subtitle-2 text-no-wrap pr-2"> {{ titel }} </span>
+          <span class="subtitle-2 text-no-wrap pr-2">
+            {{ charity.place }}
+          </span>
         </v-row>
         <v-row>
-          <span class="overline">{{ plaatsnaam }}</span>
+          <span class="overline">{{ charity.place }}</span>
         </v-row>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <v-progress-linear :value="creditsDonated"></v-progress-linear>
+        <v-progress-linear :value="0"></v-progress-linear>
       </v-col>
     </v-row>
     <v-row class="mx-auto">
-      <v-col
-        ><span class="pl-2 subtitle-1 font-weight-light"
-          >nog {{ creditsRemaining }} credits</span
-        >
+      <v-col>
+        <span class="pl-2 subtitle-1 font-weight-light">
+          nog {{ creditsRemaining }} credits
+        </span>
       </v-col>
       <v-col class="pr-4"
         ><v-btn
@@ -47,29 +49,19 @@
 import RoundUserImage from '@/components/common/RoundUserImage'
 
 export default {
-  name: 'GoalCard',
+  name: 'CharityCard',
   components: {
     RoundUserImage,
   },
   props: {
-    id: { type: Number, required: true },
-    titel: { type: String, required: true },
-    plaatsnaam: { type: String, required: true },
-    creditsDonated: { type: Number, default: 0 },
-    creditsTotal: { type: Number, default: 125 },
+    charity: { type: Object, required: true },
   },
   computed: {
     creditsRemaining() {
-      return this.creditsTotal - this.creditsDonated
+      return 20
     },
   },
-  methods: {
-    showDetails(id) {
-      this.$router.push({
-        path: `/goalDetails/${id}`,
-      })
-    },
-  },
+  methods: {},
 }
 </script>
 
