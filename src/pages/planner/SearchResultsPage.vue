@@ -26,7 +26,7 @@
         <v-col class="py-0">
           <v-divider />
           <div
-            v-if="tripId !== -1 && tripId"
+            v-if="localTripId !== -1 && tripId"
             class="px-4 py-2 d-flex flex-row align-center edit-container"
           >
             <v-icon small color="button">warning</v-icon>
@@ -131,7 +131,7 @@ export default {
   },
   props: {
     tripId: {
-      type: Number,
+      type: String,
       required: true,
     },
   },
@@ -162,6 +162,9 @@ export default {
     },
     selectedSortModus() {
       return this.sortModi[this.selectedSortModusIndex]
+    },
+    localTripId() {
+      return Number.parseInt(this.tripId)
     },
   },
   watch: {

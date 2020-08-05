@@ -195,7 +195,7 @@ export default {
       this.$store.dispatch('is/submitPlanningsRequest', searchCriteria)
       this.$router.push({
         name: 'searchResults',
-        params: { tripId: this.selectedTrip.id },
+        params: { tripId: String(this.selectedTrip.id) },
       })
     },
     onDriverSelectForMessage(event) {

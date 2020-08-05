@@ -402,7 +402,7 @@ export default {
       this.$router.push({
         name: 'searchResults',
         params: {
-          tripId: this.id,
+          tripId: String(this.id),
         },
       })
     },
