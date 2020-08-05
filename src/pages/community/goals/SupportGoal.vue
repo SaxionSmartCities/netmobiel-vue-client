@@ -16,9 +16,9 @@
     <v-row>
       <v-col pt-0>
         <h2 class="netmobiel">
-          {{ selectedGoal.title }}
+          {{ charity ? charity.name : '' }}
         </h2>
-        <span class=" overline">{{ selectedGoal.location }}</span>
+        <span class=" overline">{{ charity ? charity.placec : '' }}</span>
       </v-col>
     </v-row>
     <v-row class="flex-column">
@@ -73,6 +73,8 @@
 <script>
 import ContentPane from '@/components/common/ContentPane'
 import * as uiStore from '@/store/ui'
+import * as chsStore from '@/store/charity-service'
+
 export default {
   name: 'SupportGoal',
   components: { ContentPane },
@@ -87,10 +89,8 @@ export default {
     }
   },
   computed: {
-    selectedGoal() {
-      return this.$store.getters['gos/getGoals'].find(
-        goal => goal.id === Number(this.id)
-      )
+    charity() {
+      return chsStore.getters.getSelectedCharity
     },
   },
   created() {
@@ -98,9 +98,21 @@ export default {
   },
   methods: {
     donate() {
+      const { id, firstName, lastName } = this.$store.getters['ps/getProfile']
+      chsStore.actions.donate({
+        id: this.id,
+        amount: this.donationAmount,
+        message: this.donationMessage,
+        isAnonymouse: this.isAnonymouse,
+        sender: {
+          id,
+          firstName,
+          lastName,
+        },
+      })
       this.$router.push({
         name: 'donated',
-        params: { id: this.id },
+        params: { name: this.charity.name },
       })
     },
   },

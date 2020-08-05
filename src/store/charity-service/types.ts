@@ -5,6 +5,7 @@ export class CharityState {
 }
 
 export interface Charity {
+  _id: string
   owner: { id: string; firstName: string; lastName: string }
   name: string
   place: string

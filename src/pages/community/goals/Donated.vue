@@ -46,30 +46,20 @@
 
 <script>
 import ContentPane from '../../../components/common/ContentPane'
+import * as chsStore from '@/store/charity-service'
 export default {
   name: 'Donated',
   components: { ContentPane },
   props: {
-    id: { type: String, required: true },
-  },
-  data() {
-    return {}
-  },
-  computed: {
-    name() {
-      return (
-        this.$store.getters['gos/getGoals'].find(
-          goal => goal.id === Number(this.id)
-        ).title || 'Onbekend'
-      )
-    },
+    name: { type: String, required: true },
   },
   methods: {
     supportGoal() {
       this.$router.push({ name: 'charityOverviewPage' })
     },
     showAllDonations() {
-      this.$router.push({ path: `/goalDetails/${this.id}` })
+      const charity = chsStore.getters.getSelectedCharity
+      this.$router.push({ name: 'charityDetails', params: { id: charity._id } })
     },
   },
 }

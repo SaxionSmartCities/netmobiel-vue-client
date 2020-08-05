@@ -34,10 +34,28 @@ function searchCharities(context: ActionContext, params: any): void {
   })
 }
 
+function donate(
+  context: ActionContext,
+  { id, amount, message, isAnonymouse, sender }: any
+): void {
+  const data = {
+    sender,
+    id,
+    message,
+    amount,
+    isAnonymouse,
+  }
+  console.log('pushing this data', data)
+  // axios.post(BASE_URL + '/api/donation', data).then(resp => {
+  //   console.log('donated succesfully?', resp.data)
+  // })
+}
+
 const actions = {
   fetchCharities: chsBuilder.dispatch(fetchCharities),
   lookupCharity: chsBuilder.dispatch(lookupCharity),
   searchCharities: chsBuilder.dispatch(searchCharities),
+  donate: chsBuilder.dispatch(donate),
 }
 
 export default actions

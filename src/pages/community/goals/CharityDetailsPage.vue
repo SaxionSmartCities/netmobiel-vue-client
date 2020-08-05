@@ -23,13 +23,13 @@
     </v-row>
     <v-row>
       <v-col pt-0>
-        <h1 class="netmobiel">{{ charity.name }}</h1>
-        <span class="overline">{{ charity.place }}</span>
+        <h1 class="netmobiel">{{ charity ? charity.name : '' }}</h1>
+        <span class="overline">{{ charity ? charity.place : '' }}</span>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <span class="body-1">{{ charity.description }}</span>
+        <span class="body-1">{{ charity ? charity.description : '' }}</span>
       </v-col>
     </v-row>
     <v-row>
@@ -105,7 +105,7 @@ export default {
   },
   methods: {
     supportCharity() {
-      // this.$router.push({ name: 'supportGoal' })
+      this.$router.push({ name: 'supportGoal' })
     },
   },
 }
