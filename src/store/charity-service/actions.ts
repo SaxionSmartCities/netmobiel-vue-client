@@ -40,15 +40,14 @@ function donate(
 ): void {
   const data = {
     sender,
-    id,
     message,
-    amount,
+    charityId: id,
+    credits: amount,
     isAnonymouse,
   }
-  console.log('pushing this data', data)
-  // axios.post(BASE_URL + '/api/donation', data).then(resp => {
-  //   console.log('donated succesfully?', resp.data)
-  // })
+  axios.post(BASE_URL + '/api/donate', data).then(resp => {
+    console.log('donated succesfully?', resp.data)
+  })
 }
 
 const actions = {

@@ -22,13 +22,13 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col pt-0>
+      <v-col class="pt-0">
         <h1 class="netmobiel">{{ charity ? charity.name : '' }}</h1>
         <span class="overline">{{ charity ? charity.place : '' }}</span>
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col class="pt-0">
         <span class="body-1">{{ charity ? charity.description : '' }}</span>
       </v-col>
     </v-row>

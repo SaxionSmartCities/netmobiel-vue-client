@@ -50,6 +50,7 @@
           v-model="isAnonymouse"
           color="primary"
           hide-details
+          inset
           :label="'Maak mijn donatie anoniem.'"
         >
         </v-switch>
