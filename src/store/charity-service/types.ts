@@ -1,6 +1,7 @@
 export class CharityState {
   charities: Charity[] = []
   charitySearchResults: Charity[] = []
+  charity: Charity | null = null
 }
 
 export interface Charity {

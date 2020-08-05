@@ -11,7 +11,12 @@ function setCharitySearchResults(state: CharityState, payload: Charity[]) {
   state.charitySearchResults = payload
 }
 
+function setCharity(state: CharityState, payload: Charity) {
+  state.charity = payload
+}
+
 export default {
   setCharities: chsBuilder.commit(setCharities),
+  setCharity: chsBuilder.commit(setCharity),
   setCharitySearchResults: chsBuilder.commit(setCharitySearchResults),
 }

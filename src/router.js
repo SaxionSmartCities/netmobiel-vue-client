@@ -90,9 +90,9 @@ const router = new Router({
       name: 'charityOverviewPage',
     },
     {
-      path: '/goalDetails/:id',
+      path: '/charityDetailsPage/:id',
       component: CharityDetailPage,
-      name: 'goalDetailsPage',
+      name: 'charityDetails',
       props: true,
     },
     {

@@ -36,7 +36,7 @@
           rounded
           depressed
           outlined
-          @click="showDetails(id)"
+          @click="$emit('lookupCharity', charity._id)"
         >
           Bekijk dit doel
         </v-btn>

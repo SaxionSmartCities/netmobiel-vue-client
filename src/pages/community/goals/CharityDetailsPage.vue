@@ -23,40 +23,32 @@
     </v-row>
     <v-row>
       <v-col pt-0>
-        <h1 class="netmobiel">
-          {{ selectedGoal.title }}
-        </h1>
-        <span class="overline">{{ selectedGoal.location }}</span>
+        <h1 class="netmobiel"></h1>
+        <span class="overline">{{}}</span>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <span>{{ selectedGoal.description }}</span>
+        <span>{{}}</span>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <goal-progress-bar
-          name="Donateurs"
-          :value-current="selectedGoal.donors.length"
-        >
-        </goal-progress-bar>
+        <!--        <goal-progress-bar name="Donateurs" :value-current="">-->
+        <!--        </goal-progress-bar>-->
       </v-col>
       <v-col>
-        <goal-progress-bar
-          name="Credits"
-          :value-current="selectedGoal.creditsDonated"
-        >
-        </goal-progress-bar>
+        <!--        <goal-progress-bar name="Credits" :value-current="">-->
+        <!--        </goal-progress-bar>-->
       </v-col>
       <v-col>
-        <goal-progress-bar
-          name="Behaald"
-          :display-percentage="true"
-          :value-current="selectedGoal.creditsDonated"
-          :value-total="selectedGoal.creditsGoal"
-        >
-        </goal-progress-bar>
+        <!--        <goal-progress-bar-->
+        <!--          name="Behaald"-->
+        <!--          :display-percentage="true"-->
+        <!--          :value-current=""-->
+        <!--          :value-total=""-->
+        <!--        >-->
+        <!--        </goal-progress-bar>-->
       </v-col>
     </v-row>
     <v-row>
@@ -80,7 +72,7 @@
           Top donateurs
         </h4>
         <v-divider />
-        <donors-list :donors="donors"></donors-list>
+        <!--        <donors-list :donors=""></donors-list>-->
       </v-col>
     </v-row>
   </content-pane>
@@ -88,20 +80,20 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
-import DonorsList from '@/components/community/goals/DonorsList'
-import GoalProgressBar from '@/components/community/goals/GoalProgressBar'
+// import DonorsList from '@/components/community/goals/DonorsList'
+// import GoalProgressBar from '@/components/community/goals/GoalProgressBar'
 import * as uiStore from '@/store/ui'
+import * as chsStore from '@/store/charity-service'
+
 export default {
-  name: 'GoalsDetailsPage',
-  components: { GoalProgressBar, DonorsList, ContentPane },
+  name: 'CharityDetailPage',
+  components: { ContentPane },
   props: {
     id: { type: String, required: true },
   },
   computed: {
-    selectedGoal() {
-      return this.$store.getters['gos/getGoals'].find(
-        goal => goal.id == this.id
-      )
+    selectedCharity() {
+      return chsStore.getters.getSelectedCharity
     },
     donors() {
       return this.selectedGoal.donors
@@ -109,6 +101,7 @@ export default {
   },
   created() {
     uiStore.mutations.showBackButton()
+    chsStore.actions.lookupCharity(this.id)
   },
 }
 </script>

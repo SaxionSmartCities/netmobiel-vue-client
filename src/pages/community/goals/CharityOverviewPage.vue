@@ -30,6 +30,7 @@
               :key="charity.id"
               class="charity-card mr-3"
               :charity="charity"
+              @lookupCharity="onCharityCardClick"
             ></charity-card>
           </template>
         </div>
@@ -62,6 +63,11 @@ export default {
   created() {
     uiStore.mutations.showBackButton()
     chsStore.actions.fetchCharities()
+  },
+  methods: {
+    onCharityCardClick(val) {
+      this.$router.push({ name: 'charityDetails', params: { id: val } })
+    },
   },
 }
 </script>

@@ -16,6 +16,18 @@ function fetchCharities(context: ActionContext, params: any): void {
   })
 }
 
+function lookupCharity(context: ActionContext, id: string): void {
+  axios
+    .get(BASE_URL + '/api/charity', {
+      params: {
+        id,
+      },
+    })
+    .then(resp => {
+      mutations.setCharity(resp.data.charities[0])
+    })
+}
+
 function searchCharities(context: ActionContext, params: any): void {
   axios.get(BASE_URL + '/api/charity', { params: {} }).then(resp => {
     mutations.setCharitySearchResults(resp.data.charities)
@@ -24,6 +36,7 @@ function searchCharities(context: ActionContext, params: any): void {
 
 const actions = {
   fetchCharities: chsBuilder.dispatch(fetchCharities),
+  lookupCharity: chsBuilder.dispatch(lookupCharity),
   searchCharities: chsBuilder.dispatch(searchCharities),
 }
 
