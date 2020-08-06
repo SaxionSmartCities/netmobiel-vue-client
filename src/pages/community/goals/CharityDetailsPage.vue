@@ -95,8 +95,8 @@ export default {
     charity() {
       return chsStore.getters.getSelectedCharity
     },
-    donors() {
-      return this.selectedGoal.donors
+    donations() {
+      return chsStore.getters.getSelectedCharityDonations
     },
   },
   created() {
