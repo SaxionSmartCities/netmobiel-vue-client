@@ -36,17 +36,24 @@ function searchCharities(context: ActionContext, params: any): void {
 
 function donate(
   context: ActionContext,
-  { id, amount, message, isAnonymouse, sender }: any
+  { id, amount, message, isAnonymous, sender }: any
 ): void {
   const data = {
     sender,
     message,
     charityId: id,
     credits: amount,
-    isAnonymouse,
+    isAnonymous,
   }
-  axios.post(BASE_URL + '/api/donate', data).then(resp => {
+  axios.post(BASE_URL + '/api/donation', data).then(resp => {
     console.log('donated succesfully?', resp.data)
+  })
+}
+
+function fetchDonationsFromCharity(context: ActionContext, id: string): void {
+  axios.get(BASE_URL + '/api/donation', { params: { id } }).then(resp => {
+    console.log('fetched donations succesfullys?', resp.data)
+    mutations.setCharityDonations(resp.data.donations)
   })
 }
 
@@ -55,6 +62,7 @@ const actions = {
   lookupCharity: chsBuilder.dispatch(lookupCharity),
   searchCharities: chsBuilder.dispatch(searchCharities),
   donate: chsBuilder.dispatch(donate),
+  fetchDonationsFromCharity: chsBuilder.dispatch(fetchDonationsFromCharity),
 }
 
 export default actions

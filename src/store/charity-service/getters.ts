@@ -15,6 +15,10 @@ const getSelectedCharity = chsBuilder.read((state: CharityState) => {
   return state.charity
 }, 'getSelectedCharity')
 
+const getSelectedCharityDonations = chsBuilder.read((state: CharityState) => {
+  return state.charityDonations
+}, 'getSelectedCharityDonations')
+
 export default {
   get getCharities() {
     return getCharities()
@@ -24,5 +28,8 @@ export default {
   },
   get getSelectedCharity() {
     return getSelectedCharity()
+  },
+  get getSelectedCharityDonations() {
+    return getSelectedCharityDonations()
   },
 }

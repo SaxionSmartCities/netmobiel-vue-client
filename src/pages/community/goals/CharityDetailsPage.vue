@@ -72,7 +72,7 @@
           Donateurs
         </h6>
         <v-divider />
-        <!--        <donors-list :donors=""></donors-list>-->
+        <donation-list v-if="donations" :donations="donations"></donation-list>
       </v-col>
     </v-row>
   </content-pane>
@@ -80,14 +80,14 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
-// import DonorsList from '@/components/community/goals/DonorsList'
 import GoalProgressBar from '@/components/community/goals/GoalProgressBar'
 import * as uiStore from '@/store/ui'
 import * as chsStore from '@/store/charity-service'
+import DonationList from '@/components/community/charity/DonationList'
 
 export default {
   name: 'CharityDetailPage',
-  components: { ContentPane, GoalProgressBar },
+  components: { DonationList, ContentPane, GoalProgressBar },
   props: {
     id: { type: String, required: true },
   },
@@ -102,6 +102,7 @@ export default {
   created() {
     uiStore.mutations.showBackButton()
     chsStore.actions.lookupCharity(this.id)
+    chsStore.actions.fetchDonationsFromCharity(this.id)
   },
   methods: {
     supportCharity() {

@@ -47,7 +47,7 @@
           hide-details
         ></v-textarea>
         <v-switch
-          v-model="isAnonymouse"
+          v-model="isAnonymous"
           color="primary"
           hide-details
           inset
@@ -86,7 +86,7 @@ export default {
     return {
       donationAmount: 0,
       donationMessage: '',
-      isAnonymouse: false,
+      isAnonymous: false,
     }
   },
   computed: {
@@ -104,7 +104,7 @@ export default {
         id: this.id,
         amount: this.donationAmount,
         message: this.donationMessage,
-        isAnonymouse: this.isAnonymouse,
+        isAnonymous: this.isAnonymous,
         sender: {
           id,
           firstName,

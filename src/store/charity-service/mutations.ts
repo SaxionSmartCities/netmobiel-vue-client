@@ -1,5 +1,5 @@
 import { getStoreBuilder, ModuleBuilder } from 'vuex-typex'
-import { Charity, CharityState } from '@/store/charity-service/types'
+import { Charity, CharityState, Donation } from '@/store/charity-service/types'
 // @ts-ignore
 const chsBuilder: ModuleBuilder = getStoreBuilder().module('chs')
 
@@ -15,8 +15,13 @@ function setCharity(state: CharityState, payload: Charity) {
   state.charity = payload
 }
 
+function setCharityDonations(state: CharityState, donations: Donation[]) {
+  state.charityDonations = donations
+}
+
 export default {
   setCharities: chsBuilder.commit(setCharities),
   setCharity: chsBuilder.commit(setCharity),
   setCharitySearchResults: chsBuilder.commit(setCharitySearchResults),
+  setCharityDonations: chsBuilder.commit(setCharityDonations),
 }

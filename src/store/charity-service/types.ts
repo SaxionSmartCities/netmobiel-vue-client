@@ -2,6 +2,7 @@ export class CharityState {
   charities: Charity[] = []
   charitySearchResults: Charity[] = []
   charity: Charity | null = null
+  charityDonations: Donation[] = []
 }
 
 export interface Charity {
@@ -16,5 +17,18 @@ export interface Charity {
     lat: ''
   }
   image: string
+  published: Date
+}
+
+export interface Donation {
+  sender: {
+    id: string
+    firstName: string
+    lastName: string
+  } | null
+  charityId: string
+  credits: number
+  message: string
+  isAnonymous: boolean
   published: Date
 }
