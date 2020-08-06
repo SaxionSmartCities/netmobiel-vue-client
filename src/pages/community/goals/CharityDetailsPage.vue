@@ -29,7 +29,9 @@
     </v-row>
     <v-row>
       <v-col class="pt-0">
-        <span class="body-1">{{ charity ? charity.description : '' }}</span>
+        <span class="body-1 charity-description">{{
+          charity ? charity.description : ''
+        }}</span>
       </v-col>
     </v-row>
     <v-row>
@@ -80,7 +82,7 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
-import GoalProgressBar from '@/components/community/goals/GoalProgressBar'
+import GoalProgressBar from '@/components/community/charity/GoalProgressBar'
 import * as uiStore from '@/store/ui'
 import * as chsStore from '@/store/charity-service'
 import DonationList from '@/components/community/charity/DonationList'
@@ -115,5 +117,8 @@ export default {
 <style scoped>
 .goal-jumbo-image {
   border-radius: 10px;
+}
+.charity-description {
+  height: 20px;
 }
 </style>

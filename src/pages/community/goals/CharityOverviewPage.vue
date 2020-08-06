@@ -67,7 +67,7 @@
 import ContentPane from '@/components/common/ContentPane'
 import * as chsStore from '@/store/charity-service'
 import * as uiStore from '@/store/ui'
-import CharityCard from '@/components/community/goals/CharityCard'
+import CharityCard from '@/components/community/charity/CharityCard'
 import TopDonorList from '@/components/community/charity/TopDonorList'
 
 export default {

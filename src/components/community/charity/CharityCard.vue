@@ -15,12 +15,15 @@
         </div>
       </v-col>
     </v-row>
-    <v-row class="mt-2">
-      <v-col>
+    <v-row>
+      <v-col class="pt-0">
+        <span
+          class="progressbar-text text-color-primary caption"
+          :style="{ left: (charity.progress || 0) - 3 + '%' }"
+        >
+          {{ charity.progress || 0 }}%
+        </span>
         <v-progress-linear v-model="charity.progress" rounded>
-          <template v-slot="{ value }">
-            <strong class="progressbar-text">{{ Math.ceil(value) }}%</strong>
-          </template>
         </v-progress-linear>
       </v-col>
     </v-row>
@@ -69,7 +72,6 @@ export default {
 }
 
 .progressbar-text {
-  position: absolute;
-  z-index: 4;
+  position: relative;
 }
 </style>
