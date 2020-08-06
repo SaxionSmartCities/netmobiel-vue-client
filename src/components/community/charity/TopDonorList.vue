@@ -1,11 +1,11 @@
 <template>
   <v-row>
     <v-col>
-      <div v-for="(donation, index) in donations" :key="index">
-        <div class="d-flex flex-row mt-1 mb-2">
+      <div v-for="(donor, index) in donors" :key="index">
+        <div class="d-flex flex-row  mb-3">
           <round-user-image
             :profile-image="
-              donation.isAnonymous
+              donor.image
                 ? ''
                 : ' https://api.netmobiel.eu/gwapi/acc/images/5f/1591722701725.png'
             "
@@ -16,20 +16,27 @@
           <div class="d-flex flex-column ml-4">
             <span class="body-1 font-weight-medium ">
               {{
-                donation.isAnonymous
+                donor.isAnonymous
                   ? '-'
-                  : donation.sender.firstName + ' ' + donation.sender.lastName
+                  : donor.sender.firstName + ' ' + donor.sender.lastName
               }}
             </span>
             <span class="body-2 grey--text">
-              {{ donation.credits + ' credits gedoneerd' }}
-            </span>
-            <span class="subtitle-1 mt-2">
-              {{ donation.message }}
+              {{ donor.credits + ' credits gedoneerd' }}
             </span>
           </div>
+          <v-spacer></v-spacer>
+          <v-btn
+            class="align-self-center"
+            color="primary"
+            small
+            outlined
+            @click="addDonor(donor)"
+          >
+            Add
+          </v-btn>
         </div>
-        <v-divider class="mb-3"></v-divider>
+        <v-divider class="mb-2"></v-divider>
       </div>
     </v-col>
   </v-row>
@@ -37,10 +44,18 @@
 
 <script>
 import RoundUserImage from '@/components/common/RoundUserImage'
+
 export default {
-  name: 'DonationList',
+  name: 'TopDonorList',
   components: { RoundUserImage },
-  props: { donations: { type: Array, required: true } },
+  props: {
+    donors: { type: Array, required: true },
+  },
+  methods: {
+    addDonor(donor) {
+      console.log('Adding donor still needs to be implemented')
+    },
+  },
 }
 </script>
 

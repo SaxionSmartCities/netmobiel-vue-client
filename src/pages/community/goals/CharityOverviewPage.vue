@@ -54,10 +54,11 @@
       </v-col>
     </v-row>
     <v-row>
-            <v-col>
-              <h4 class="netmobiel my-3">Top donateurs</h4>
-              <v-divider />
-            </v-col>
+      <v-col>
+        <h4 class="netmobiel my-3">Top donateurs</h4>
+        <v-divider />
+        <top-donor-list :donors="topDonors"></top-donor-list>
+      </v-col>
     </v-row>
   </content-pane>
 </template>
@@ -67,10 +68,11 @@ import ContentPane from '@/components/common/ContentPane'
 import * as chsStore from '@/store/charity-service'
 import * as uiStore from '@/store/ui'
 import CharityCard from '@/components/community/goals/CharityCard'
+import TopDonorList from '@/components/community/charity/TopDonorList'
 
 export default {
   name: 'CharityOverviewPage',
-  components: { CharityCard, ContentPane },
+  components: { TopDonorList, CharityCard, ContentPane },
   computed: {
     charities() {
       return chsStore.getters.getCharities
@@ -78,11 +80,15 @@ export default {
     previouslyDonatedCharities() {
       return chsStore.getters.getPreviouslyDonatedCharities
     },
+    topDonors() {
+      return chsStore.getters.getTopDonors
+    },
   },
   created() {
     uiStore.mutations.showBackButton()
     chsStore.actions.fetchCharities()
     chsStore.actions.fetchPreviouslyDonatedCharities()
+    chsStore.actions.fetchTopDonors()
   },
   methods: {
     onCharityCardClick(val) {

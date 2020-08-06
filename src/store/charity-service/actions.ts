@@ -65,7 +65,7 @@ function fetchDonationsFromCharity(context: ActionContext, id: string): void {
   })
 }
 
-function fetchTopDonators(context: ActionContext, id: string): void {
+function fetchTopDonors(context: ActionContext, id: string): void {
   axios.get(BASE_URL + '/api/donation/top', { params: { id } }).then(resp => {
     console.log('fetched donations top?', resp.data)
     mutations.setTopDonors(resp.data.donors)
@@ -78,6 +78,7 @@ const actions = {
   searchCharities: chsBuilder.dispatch(searchCharities),
   donate: chsBuilder.dispatch(donate),
   fetchDonationsFromCharity: chsBuilder.dispatch(fetchDonationsFromCharity),
+  fetchTopDonors: chsBuilder.dispatch(fetchTopDonors),
   fetchPreviouslyDonatedCharities: chsBuilder.dispatch(
     fetchPreviouslyDonatedCharities
   ),
