@@ -37,11 +37,27 @@
       </v-col>
     </v-row>
     <v-row>
-      <!--      <v-col>-->
-      <!--        <h4 class="netmobiel my-3">Top donateurs</h4>-->
-      <!--        <v-divider />-->
-      <!--        <donors-list :donors="getTopDonors"> </donors-list>-->
-      <!--      </v-col>-->
+      <v-col>
+        <h4 class="title text-color-primary mb-2">
+          Eerder gedoneerd
+        </h4>
+        <div class="charity-list">
+          <template v-for="charity in previouslyDonatedCharities">
+            <charity-card
+              :key="charity.id"
+              class="charity-card mr-3"
+              :charity="charity"
+              @lookupCharity="onCharityCardClick"
+            ></charity-card>
+          </template>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row>
+            <v-col>
+              <h4 class="netmobiel my-3">Top donateurs</h4>
+              <v-divider />
+            </v-col>
     </v-row>
   </content-pane>
 </template>
@@ -59,10 +75,14 @@ export default {
     charities() {
       return chsStore.getters.getCharities
     },
+    previouslyDonatedCharities() {
+      return chsStore.getters.getPreviouslyDonatedCharities
+    },
   },
   created() {
     uiStore.mutations.showBackButton()
     chsStore.actions.fetchCharities()
+    chsStore.actions.fetchPreviouslyDonatedCharities()
   },
   methods: {
     onCharityCardClick(val) {

@@ -14,15 +14,17 @@
           >
           </round-user-image>
           <div class="d-flex flex-column ml-4">
-            <span class="body-1">{{
-              donation.isAnonymous
-                ? '-'
-                : donation.sender.firstName + ' ' + donation.sender.lastName
-            }}</span>
+            <span class="body-1 font-weight-medium ">
+              {{
+                donation.isAnonymous
+                  ? '-'
+                  : donation.sender.firstName + ' ' + donation.sender.lastName
+              }}
+            </span>
             <span class="body-2 grey--text">
               {{ donation.credits + ' credits gedoneerd' }}
             </span>
-            <span class="subtitle-1 font-weight-light my-3">
+            <span class="subtitle-1 my-3">
               {{ donation.message }}
             </span>
           </div>

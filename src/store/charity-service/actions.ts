@@ -16,6 +16,15 @@ function fetchCharities(context: ActionContext, params: any): void {
   })
 }
 
+function fetchPreviouslyDonatedCharities(
+  context: ActionContext,
+  params: any
+): void {
+  axios.get(BASE_URL + '/api/charity').then(resp => {
+    mutations.setPreviouslyDonatedCharities(resp.data.charities)
+  })
+}
+
 function lookupCharity(context: ActionContext, id: string): void {
   axios
     .get(BASE_URL + '/api/charity', {
@@ -52,8 +61,14 @@ function donate(
 
 function fetchDonationsFromCharity(context: ActionContext, id: string): void {
   axios.get(BASE_URL + '/api/donation', { params: { id } }).then(resp => {
-    console.log('fetched donations succesfullys?', resp.data)
     mutations.setCharityDonations(resp.data.donations)
+  })
+}
+
+function fetchTopDonators(context: ActionContext, id: string): void {
+  axios.get(BASE_URL + '/api/donation/top', { params: { id } }).then(resp => {
+    console.log('fetched donations top?', resp.data)
+    mutations.setTopDonors(resp.data.donors)
   })
 }
 
@@ -63,6 +78,9 @@ const actions = {
   searchCharities: chsBuilder.dispatch(searchCharities),
   donate: chsBuilder.dispatch(donate),
   fetchDonationsFromCharity: chsBuilder.dispatch(fetchDonationsFromCharity),
+  fetchPreviouslyDonatedCharities: chsBuilder.dispatch(
+    fetchPreviouslyDonatedCharities
+  ),
 }
 
 export default actions

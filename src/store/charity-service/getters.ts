@@ -19,6 +19,14 @@ const getSelectedCharityDonations = chsBuilder.read((state: CharityState) => {
   return state.charityDonations
 }, 'getSelectedCharityDonations')
 
+const getPreviouslyDonatedCharities = chsBuilder.read((state: CharityState) => {
+  return state.previouslyDonatedCharities
+}, 'getPreviouslyDonatedCharities')
+
+const getTopDonors = chsBuilder.read((state: CharityState) => {
+  return state.topDonors
+}, 'getTopDonors')
+
 export default {
   get getCharities() {
     return getCharities()
@@ -31,5 +39,11 @@ export default {
   },
   get getSelectedCharityDonations() {
     return getSelectedCharityDonations()
+  },
+  get getPreviouslyDonatedCharities() {
+    return getPreviouslyDonatedCharities()
+  },
+  get getTopDonors() {
+    return getTopDonors()
   },
 }
