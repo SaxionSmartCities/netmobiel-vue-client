@@ -1,11 +1,11 @@
 <template>
   <v-row>
     <v-col>
-      <div v-for="(donor, index) in donors" :key="index">
+      <div v-for="({ totalDonated, user }, index) in donors" :key="index">
         <div class="d-flex flex-row  mb-3">
           <round-user-image
             :profile-image="
-              donor.image
+              user.image
                 ? ''
                 : ' https://api.netmobiel.eu/gwapi/acc/images/5f/1591722701725.png'
             "
@@ -16,13 +16,11 @@
           <div class="d-flex flex-column ml-4">
             <span class="body-1 font-weight-medium ">
               {{
-                donor.isAnonymous
-                  ? '-'
-                  : donor.sender.firstName + ' ' + donor.sender.lastName
+                user.isAnonymous ? '-' : user.firstName + ' ' + user.lastName
               }}
             </span>
             <span class="body-2 grey--text">
-              {{ donor.credits + ' credits gedoneerd' }}
+              {{ totalDonated + ' credits gedoneerd' }}
             </span>
           </div>
           <v-spacer></v-spacer>
@@ -31,9 +29,9 @@
             color="primary"
             small
             outlined
-            @click="addDonor(donor)"
+            @click="addDonor(user)"
           >
-            Add
+            Voeg toe
           </v-btn>
         </div>
         <v-divider class="mb-2"></v-divider>
@@ -53,7 +51,7 @@ export default {
   },
   methods: {
     addDonor(donor) {
-      console.log('Adding donor still needs to be implemented')
+      console.log('Adding donor still needs to be implemented', donor)
     },
   },
 }

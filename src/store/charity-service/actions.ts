@@ -20,7 +20,7 @@ function fetchPreviouslyDonatedCharities(
   context: ActionContext,
   params: any
 ): void {
-  axios.get(BASE_URL + '/api/charity').then(resp => {
+  axios.get(BASE_URL + '/api/donation/previous').then(resp => {
     mutations.setPreviouslyDonatedCharities(resp.data.charities)
   })
 }
