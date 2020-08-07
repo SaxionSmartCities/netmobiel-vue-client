@@ -7,6 +7,12 @@ export class CharityState {
   topDonors: Donor[] = []
 }
 
+export enum STORE_STATE_OPTIONS {
+  PREVIOUS,
+  INIT,
+  SEARCH,
+}
+
 export interface Charity {
   _id: string
   owner: { id: string; firstName: string; lastName: string }
