@@ -36,19 +36,22 @@
     </v-row>
     <v-row>
       <v-col>
-        <goal-progress-bar name="Donateurs" :value-current="49">
+        <goal-progress-bar
+          name="Donateurs"
+          :value-current="charity.totalDonors"
+        >
         </goal-progress-bar>
       </v-col>
       <v-col>
-        <goal-progress-bar name="Credits" :value-current="6">
+        <goal-progress-bar name="Credits" :value-current="charity.credits">
         </goal-progress-bar>
       </v-col>
       <v-col>
         <goal-progress-bar
           name="Behaald"
           :display-percentage="true"
-          :value-current="40"
-          :value-total="60"
+          :value-current="charity.credits"
+          :value-total="charity.goal"
         >
         </goal-progress-bar>
       </v-col>
