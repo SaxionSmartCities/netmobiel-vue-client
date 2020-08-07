@@ -112,6 +112,7 @@ import RideCard from '@/components/rides/RideCard.vue'
 import UpdateCard from '@/components/home/UpdateCard.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
 import * as uiStore from '@/store/ui'
+import * as chsStore from '@/store/charity-service'
 import moment from 'moment'
 
 export default {
@@ -160,6 +161,7 @@ export default {
     //TODO: How many cards do we want?
     this.$store.dispatch('cs/fetchRides', { offset: 0, maxResults: 2 })
     this.$store.dispatch('ps/fetchComplimentTypes')
+    chsStore.actions.lookupCharity()
   },
   methods: {
     onRideSelected(index) {

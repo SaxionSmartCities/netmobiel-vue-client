@@ -19,17 +19,24 @@
       <v-col class="pt-0">
         <span
           class="progressbar-text text-color-primary caption"
-          :style="{ left: (charity.progress || 0) - 3 + '%' }"
+          :style="{
+            left: Math.ceil((charity.credits / charity.goal) * 100) - 3 + '%',
+          }"
         >
-          {{ charity.progress || 0 }}%
+          {{ Math.ceil((charity.credits / charity.goal) * 100) || 0 }}%
         </span>
-        <v-progress-linear v-model="charity.progress" rounded>
+        <v-progress-linear
+          :value="Math.ceil((charity.credits / charity.goal) * 100)"
+          rounded
+        >
         </v-progress-linear>
       </v-col>
     </v-row>
     <v-row justify="space-between" class="mx-auto">
       <v-col class="px-0 pb-0">
-        <span class="body-1"> nog {{ creditsRemaining }} credits </span>
+        <span class="caption">
+          nog {{ charity.goal - charity.credits || 0 }} credits
+        </span>
       </v-col>
       <v-col class="px-0 pb-0">
         <v-btn

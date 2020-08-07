@@ -14,12 +14,15 @@ export interface Charity {
   place: string
   description: string
   goal: number
+  credits: number
   geoLocation: {
     lon: ''
     lat: ''
   }
   image: string
   published: Date
+  donors: string[]
+  totalDonors: number
 }
 
 export interface Donation {
@@ -36,9 +39,9 @@ export interface Donation {
 }
 
 export interface Donor {
-  firstName: string
-  lastName: string
-  id: string
-  credits: number
-  image?: string
+  totalDonated: number
+  user: {
+    firstName: string
+    lastName: string
+  }
 }

@@ -10,9 +10,17 @@ type ActionContext = BareActionContext<CharityState, RootState>
 
 const BASE_URL = 'http://localhost:3000'
 
-function fetchCharities(context: ActionContext, params: any): void {
-  axios.get(BASE_URL + '/api/charity').then(resp => {
-    mutations.setCharities(resp.data.charities)
+function fetchCharities(context: ActionContext, payload: any): void {
+  const params: any = {}
+  if (payload && payload.q) params['q'] = payload.q
+  axios.get(BASE_URL + '/api/charity', { params: params }).then(resp => {
+    console.log('charities?', resp)
+    const charities = resp.data.charities
+    if (!payload) {
+      mutations.setCharities(charities)
+    } else if (payload.store === 'previous') {
+      mutations.setPreviouslyDonatedCharities(charities)
+    }
   })
 }
 
@@ -21,7 +29,7 @@ function fetchPreviouslyDonatedCharities(
   params: any
 ): void {
   axios.get(BASE_URL + '/api/donation/previous').then(resp => {
-    mutations.setPreviouslyDonatedCharities(resp.data.charities)
+    actions.fetchCharities({ q: resp.data.charities, store: 'previous' })
   })
 }
 
@@ -29,7 +37,7 @@ function lookupCharity(context: ActionContext, id: string): void {
   axios
     .get(BASE_URL + '/api/charity', {
       params: {
-        id,
+        q: id,
       },
     })
     .then(resp => {
@@ -67,7 +75,6 @@ function fetchDonationsFromCharity(context: ActionContext, id: string): void {
 
 function fetchTopDonors(context: ActionContext, id: string): void {
   axios.get(BASE_URL + '/api/donation/top', { params: { id } }).then(resp => {
-    console.log('fetched donations top?', resp.data)
     mutations.setTopDonors(resp.data.donors)
   })
 }
