@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import uiStore from '@/store/message-service'
+
 export default {
   name: 'HomeTownCard',
   props: {

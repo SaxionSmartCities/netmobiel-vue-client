@@ -63,6 +63,7 @@ import constants from '@/constants/update-messages.js'
 import hash from 'raw-loader!@/assets/current.hash'
 import ybug from './config/ybug'
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'App',
@@ -100,7 +101,7 @@ export default {
       return uiStore.getters.getNotificationQueue[0]
     },
     getProfile() {
-      return this.$store.getters['ps/getProfile']
+      return psStore.getters.getProfile
     },
     isBackButtonVisible: function() {
       return uiStore.getters.isBackButtonVisible
@@ -117,7 +118,7 @@ export default {
       // to the one in the profile.
       let passedFcmToken = localStorage.fcm
       if (passedFcmToken && passedFcmToken !== newProfile.fcmToken) {
-        this.$store.dispatch('ps/storeFcmToken', { fcmToken: passedFcmToken })
+        psStore.actions.storeFcmToken({ fcmToken: passedFcmToken })
       }
     },
   },
@@ -131,7 +132,7 @@ export default {
     }
     // Only fetch profile of user has been authenticated
     if (this.$keycloak.authenticated) {
-      this.$store.dispatch('ps/fetchProfile')
+      psStore.actions.fetchProfile
     }
   },
   methods: {

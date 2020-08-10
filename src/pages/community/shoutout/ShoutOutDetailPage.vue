@@ -187,6 +187,7 @@ import {
   generateItineraryDetailSteps,
 } from '@/utils/itinerary_steps.js'
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'ShoutOutDetailPage',
@@ -288,7 +289,7 @@ export default {
     if (!this.localIsMine) {
       // Propose a ride to the chauffeur based on his address and the shoutout.
       const { ridefrom } = this.$store.getters['gs/getPickedLocation']
-      const { address } = this.$store.getters['ps/getUser'].profile
+      const { address } = psStore.getters.getUser.profile
       const { travelTime } = this.planningRequest
       const from = ridefrom
         ? {
@@ -364,7 +365,7 @@ export default {
       })
     },
     onClearDeparture() {
-      const { address } = this.$store.getters['ps/getUser'].profile
+      const { address } = psStore.getters.getUser.profile
       this.$store.dispatch('is/submitShoutOutPlanningsRequest', {
         id: this.id,
         from: {
@@ -385,7 +386,7 @@ export default {
       console.log('Method not implemented!')
     },
     onTripEdit() {
-      const { searchPreferences } = this.$store.getters['ps/getProfile']
+      const { searchPreferences } = psStore.getters.getProfile
       let searchCriteria = {
         from: this.trip.from,
         to: this.trip.to,

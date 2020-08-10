@@ -96,6 +96,7 @@ import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import * as uiStore from '@/store/ui'
 
 import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'RidePlanPage',
@@ -114,8 +115,8 @@ export default {
       return this.$store.getters['is/getSearchCriteria']
     },
     selectedCar() {
-      const selectedCarId = this.$store.getters['ps/getProfile'].ridePlanOptions
-          .selectedCarId,
+      const selectedCarId =
+          psStore.getters.getProfile.ridePlanOptions.selectedCarId,
         cars = csStore.getters.getAvailableCars
       return cars.find(car => car.id === selectedCarId)
     },
@@ -195,7 +196,7 @@ export default {
       this.$store.commit('is/setSearchCriteria', newCriteria)
     },
     submitForm() {
-      const { ridePlanOptions } = this.$store.getters['ps/getProfile']
+      const { ridePlanOptions } = psStore.getters.getProfile
       csStore.actions.submitRide({
         ...this.searchCriteria,
         recurrence: this.recurrence,

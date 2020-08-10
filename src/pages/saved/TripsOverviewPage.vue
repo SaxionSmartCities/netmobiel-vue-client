@@ -110,6 +110,7 @@ import constants from '../../constants/constants'
 import TabBar from '../../components/common/TabBar'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'TripsOverviewPage',
@@ -137,15 +138,15 @@ export default {
       return csStore.getters.getPlannedRides
     },
     showTabs() {
-      const role = this.$store.getters['ps/getProfile'].userRole
+      const role = psStore.getters.getProfile.userRole
       return !role || role === 'both'
     },
     isPassenger() {
-      const role = this.$store.getters['ps/getProfile'].userRole
+      const role = psStore.getters.getProfile.userRole
       return role === 'passenger'
     },
     isDriver() {
-      const role = this.$store.getters['ps/getProfile'].userRole
+      const role = psStore.getters.getProfile.userRole
       return role === 'driver'
     },
   },

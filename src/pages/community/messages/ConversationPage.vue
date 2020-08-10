@@ -72,6 +72,7 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import MessageCard from '@/components/community/MessageCard.vue'
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 
 export default {
   components: {
@@ -108,13 +109,13 @@ export default {
       })
     },
     recipient() {
-      const myId = this.$store.getters['ps/getProfile'].id
+      const myId = psStore.getters.getProfile.id
       return this.participants.find(
         recipient => recipient.managedIdentity !== myId
       )
     },
     profile() {
-      return this.$store.getters['ps/getUser']
+      return psStore.getters.getUser
     },
     sender() {
       return this.$store.getters['ms/getConversationByContext'](this.context)
@@ -148,7 +149,7 @@ export default {
       uiStore.mutations.enableFooter()
     },
     isMessageSendByMe(id) {
-      return id === this.$store.getters['ps/getProfile'].id
+      return id === psStore.getters.getProfile.id
     },
     scrollToBottomMessageContainer(animation = false) {
       var items = document.getElementById('message-container')
@@ -173,7 +174,7 @@ export default {
           context: this.context,
           deliveryMode: 'ALL',
           envelopes: envelopes,
-          managedIdentity: this.$store.getters['ps/getProfile'].id,
+          managedIdentity: psStore.getters.getProfile.id,
           subject: 'Van A naar B',
         })
         .then(() => {

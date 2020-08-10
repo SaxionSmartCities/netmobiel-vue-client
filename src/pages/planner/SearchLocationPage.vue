@@ -54,6 +54,7 @@ import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
 // show at most 8 suitable suggestions
 import { throttle } from 'lodash'
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 const highlightMarker = 'class="search-hit"'
 const skipCategories = new Set(['intersection'])
 const maxSuggestions = 8
@@ -81,7 +82,7 @@ export default {
   },
   computed: {
     favorites() {
-      return this.$store.getters['ps/getProfile'].favoriteLocations
+      return psStore.getters.getProfile.favoriteLocations
     },
     suggestions() {
       let suggestions = this.$store.getters['gs/getGeocoderSuggestions']
@@ -167,7 +168,7 @@ export default {
       this.selectedLocation = suggestion
     },
     addFavorite(favorite) {
-      let profile = this.$store.getters['ps/getProfile']
+      let profile = psStore.getters.getProfile
       let duplicate = profile.favoriteLocations.find(
         x => x.label === favorite.label
       )
@@ -180,16 +181,16 @@ export default {
       } else {
         let favoriteLocations = profile.favoriteLocations.slice(0)
         favoriteLocations.push(favorite)
-        this.$store.dispatch('ps/storeFavoriteLocations', favoriteLocations)
+        psStore.actions.storeFavoriteLocations(favoriteLocations)
       }
       this.selectedLocation = undefined
     },
     removeFavorite(favorite) {
-      let profile = this.$store.getters['ps/getProfile']
+      let profile = psStore.getters.getProfile
       let favoriteLocations = profile.favoriteLocations.filter(
         x => x.id !== favorite.id
       )
-      this.$store.dispatch('ps/storeFavoriteLocations', favoriteLocations)
+      psStore.actions.storeFavoriteLocations(favoriteLocations)
     },
   },
 }

@@ -59,6 +59,7 @@
 
 <script>
 import moment from 'moment'
+import * as psStore from '@/store/profile-service'
 
 export default {
   data: function() {
@@ -79,9 +80,9 @@ export default {
   },
   methods: {
     nextStep: function() {
-      let profile = { ...this.$store.getters['ps/getProfile'] }
+      let profile = { ...psStore.getters.getProfile }
       profile.dateOfBirth = moment(this.date)
-      this.$store.dispatch('ps/updateProfile', profile)
+      psStore.actions.updateProfile(profile)
       this.$emit('next-step')
     },
     prevStep: function() {

@@ -71,6 +71,7 @@ import notification_settings from '../../config/notification_settings'
 import SingleSelect from '../../components/profile/SingleSelect'
 import { throttle } from 'lodash'
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'NotificationOptions',
@@ -89,13 +90,13 @@ export default {
   },
   computed: {
     notificationOptions() {
-      return this.$store.getters['ps/getUser'].notificationOptions
+      return psStore.getters.getUser.notificationOptions
     },
     tripOptions() {
-      return this.$store.getters['ps/getUser'].tripOptions
+      return psStore.getters.getUser.tripOptions
     },
     userRole() {
-      return this.$store.getters['ps/getProfile'].userRole
+      return psStore.getters.getProfile.userRole
     },
   },
   created() {
@@ -109,9 +110,9 @@ export default {
   methods: {
     onModeChange: throttle(function(option) {
       this.selectedMode = option.value
-      let profile = { ...this.$store.getters['ps/getProfile'] }
+      let profile = { ...psStore.getters.getProfile }
       profile.userRole = option.value
-      this.$store.dispatch('ps/updateProfile', profile)
+      psStore.actions.updateProfile(profile)
     }),
   },
 }

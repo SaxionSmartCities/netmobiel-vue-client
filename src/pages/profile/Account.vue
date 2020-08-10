@@ -72,6 +72,7 @@ import ContentPane from '@/components/common/ContentPane'
 import account_config from '@/config/account_config'
 import { get, set, isEqual } from 'lodash'
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'Account',
@@ -84,7 +85,7 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.getters['ps/getUser'].profile
+      return psStore.getters.getUser.profile
     },
     suggestions() {
       return this.$store.getters['gs/getGeocoderSuggestions']
@@ -107,7 +108,7 @@ export default {
               address.position[0], // Latitude
             ],
           }
-          this.$store.dispatch('ps/updateProfile', newProfile)
+          psStore.actions.updateProfile(newProfile)
         }
       }
     },
@@ -124,7 +125,7 @@ export default {
       // state outside mutation handlers." error.
       let newProfile = JSON.parse(JSON.stringify(this.user))
       set(newProfile, this.selectedProperty, input)
-      this.$store.dispatch('ps/updateProfile', newProfile)
+      psStore.actions.updateProfile(newProfile)
 
       // Fetch geocode for address if different.
       if (!isEqual(this.user.address, newProfile.address)) {

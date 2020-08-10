@@ -99,6 +99,7 @@ import luggageTypes from '@/constants/luggage-types.js'
 import ContentPane from '@/components/common/ContentPane.vue'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
 
 const BAD_PERSON_COUNT = 'Voer een geheel getal tussen 1 en 6.'
 
@@ -144,7 +145,7 @@ export default {
     this.car = result.id
       ? result
       : // if car with same license plate is part of profile, edit/remove car from profile
-        this.$store.getters['ps/getUser'].profile.ridePlanOptions.cars.find(
+        psStore.getters.getUser.profile.ridePlanOptions.cars.find(
           candidate => candidate.licensePlate === result.licensePlate
         ) ||
         // otherwise add new car to profile

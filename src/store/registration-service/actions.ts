@@ -20,7 +20,7 @@ function generateHeader(key: any) {
 function submitRegistrationRequest(context: ActionContext, payload: any): void {
   mutations.storeRegistrationRequest(payload)
 
-  var axiosConfig = {
+  const axiosConfig = {
     method: 'POST',
     url: BASE_URL + '/profiles',
     data: context.state.registrationRequest,
@@ -33,7 +33,7 @@ function submitRegistrationRequest(context: ActionContext, payload: any): void {
     })
     .catch(function(error) {
       const status = error.response.status
-      var errorMsg = ''
+      let errorMsg = ''
       if (status === 422) {
         errorMsg = 'Ontbrekende data (email, voornaam of achternaam).'
       } else if (status === 451) {

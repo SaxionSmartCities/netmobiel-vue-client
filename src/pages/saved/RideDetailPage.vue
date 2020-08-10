@@ -109,6 +109,7 @@ import EditRideModal from '../../components/itinerary-details/EditRideModal'
 import RideDetails from '@/components/itinerary-details/RideDetails.vue'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'RideDetailPage',
@@ -260,7 +261,7 @@ export default {
             context: ctx,
             participants: [
               {
-                managedIdentity: this.$store.getters['ps/getProfile'].id,
+                managedIdentity: psStore.getters.getProfile.id,
                 urn: '',
               },
               {

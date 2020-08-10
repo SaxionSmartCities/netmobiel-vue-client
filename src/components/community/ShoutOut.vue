@@ -43,6 +43,7 @@
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import constants from '@/constants/constants'
 import { generateShoutOutDetailSteps } from '@/utils/itinerary_steps.js'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'ShoutOut',
@@ -54,7 +55,7 @@ export default {
   },
   computed: {
     profile() {
-      return this.$store.getters['ps/getUser'].profile
+      return psStore.getters.getUser.profile
     },
     profileImage() {
       return this.isMine ? this.profile.image : constants.defaultProfileImage

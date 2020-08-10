@@ -87,6 +87,8 @@ import moment from 'moment'
 import Stepper from '@/components/other/Stepper'
 import { maxCompliments } from '@/config/review/trip_made_config'
 import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'DriverReviewPage',
@@ -157,7 +159,7 @@ export default {
         id: myId,
         firstName: myFirstName,
         lastName: myLastName,
-      } = this.$store.getters['ps/getProfile']
+      } = psStore.getters.getProfile
       const [
         receiverFirstName,
         receiverLastName,
@@ -177,7 +179,7 @@ export default {
       }
       for (let i = 0; i < maxCompliments; i++) {
         const compliment = rate.compliments[i]
-        this.$store.dispatch('ps/addUserCompliment', {
+        psStore.actions.addUserCompliment({
           sender,
           receiver,
           complimentType: compliment,
@@ -185,7 +187,7 @@ export default {
       }
 
       if (rate.feedbackMessage) {
-        this.$store.dispatch('ps/addUserReview', {
+        psStore.actions.addUserReview({
           sender,
           receiver,
           review: rate.feedbackMessage,

@@ -77,6 +77,8 @@ import ContactDriverModal from '@/components/itinerary-details/ContactDriverModa
 import travelModes from '@/constants/travel-modes.js'
 import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
 import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'TripDetailPage',
@@ -179,7 +181,7 @@ export default {
     },
     onTripEdit(trip) {
       const { from, to, itinerary, arrivalTimeIsPinned } = trip
-      const { searchPreferences } = this.$store.getters['ps/getProfile']
+      const { searchPreferences } = psStore.getters.getProfile
       let searchCriteria = {
         from,
         to,
@@ -229,7 +231,7 @@ export default {
             context: ctx,
             participants: [
               {
-                managedIdentity: this.$store.getters['ps/getProfile'].id,
+                managedIdentity: psStore.getters.getProfile.id,
                 urn: '',
               },
               {

@@ -59,6 +59,7 @@ import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import SearchCriteria from '@/components/common/SearchCriteria.vue'
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 
 export default {
   components: {
@@ -85,7 +86,7 @@ export default {
   },
   methods: {
     initialize() {
-      const { searchPreferences } = this.$store.getters['ps/getProfile']
+      const { searchPreferences } = psStore.getters.getProfile
       const { from, to } = this.$store.getters['gs/getPickedLocation']
       const { travelTime } = this.searchCriteria
       let newCriteria = {

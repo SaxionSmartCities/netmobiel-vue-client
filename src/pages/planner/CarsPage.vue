@@ -55,6 +55,7 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import CarCard from '@/components/cars/CarCard.vue'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
 
 function luggageLabel(option) {
   return luggageTypes[option].label
@@ -83,12 +84,10 @@ export default {
         .join(', ')
     },
     passengerCount() {
-      return this.$store.getters['ps/getUser'].profile.ridePlanOptions
-        .numPassengers
+      return psStore.getters.getUser.profile.ridePlanOptions.numPassengers
     },
     selectedCarId() {
-      return this.$store.getters['ps/getUser'].profile.ridePlanOptions
-        .selectedCarId
+      return psStore.getters.getUser.profile.ridePlanOptions.selectedCarId
     },
   },
   created() {
@@ -97,8 +96,8 @@ export default {
   },
   methods: {
     selectAlternativeCar(car) {
-      const profile = this.$store.getters['ps/getUser'].profile
-      this.$store.dispatch('ps/updateProfile', {
+      const profile = psStore.getters.getUser.profile
+      psStore.actions.updateProfile({
         ...profile,
         ridePlanOptions: {
           ...profile.ridePlanOptions,

@@ -37,7 +37,7 @@ function appendRides(state: CarpoolState, payload: any) {
 }
 
 function deleteRides(state: CarpoolState, payload: any) {
-  for (var i = state.rides.length - 1; i >= 0; --i) {
+  for (let i = state.rides.length - 1; i >= 0; --i) {
     // @ts-ignore
     if (state.rides[i].id == payload) {
       state.rides.splice(i, 1)

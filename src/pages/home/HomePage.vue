@@ -116,6 +116,7 @@ import * as chsStore from '@/store/charity-service'
 import moment from 'moment'
 
 import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
 
 export default {
   components: {
@@ -126,7 +127,7 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.getters['ps/getUser']
+      return psStore.getters.getUser
     },
     rides() {
       //HACK: Only display first 3 rides.
@@ -156,13 +157,13 @@ export default {
       // return this.$store.getters['ui/getUpdateMessages']
     },
     profileImage() {
-      return this.$store.getters['ps/getUser'].profile.image
+      return psStore.getters.getUser.profile.image
     },
   },
   mounted() {
     //TODO: How many cards do we want?
     csStore.actions.fetchRides({ offset: 0, maxResults: 2 })
-    this.$store.dispatch('ps/fetchComplimentTypes')
+    psStore.actions.fetchComplimentTypes
     chsStore.actions.lookupCharity()
   },
   methods: {

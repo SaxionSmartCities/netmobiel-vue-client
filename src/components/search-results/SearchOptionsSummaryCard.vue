@@ -49,12 +49,13 @@
 <script>
 import luggageTypes from '@/constants/luggage-types.js'
 import travelModes from '@/constants/travel-modes.js'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'SearchOptionsSummaryCard',
   computed: {
     getSearchPreferences() {
-      return this.$store.getters['ps/getProfile'].searchPreferences
+      return psStore.getters.getProfile.searchPreferences
     },
     luggageOptions() {
       return this.getSearchPreferences.luggageOptions.map(x => luggageTypes[x])

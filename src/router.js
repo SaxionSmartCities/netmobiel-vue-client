@@ -277,6 +277,7 @@ const router = new Router({
   ],
 })
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 
 router.beforeEach((to, from, next) => {
   uiStore.mutations.hideBackButton()
@@ -286,7 +287,7 @@ router.beforeEach((to, from, next) => {
   if (
     to.path !== '/' &&
     to.path !== '/createUser' &&
-    store.getters['ps/getUser'].accessToken === undefined
+    psStore.getters.getUser.accessToken === undefined
   ) {
     next('/')
   } else {

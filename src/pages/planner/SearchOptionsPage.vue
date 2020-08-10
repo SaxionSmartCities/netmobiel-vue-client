@@ -24,6 +24,7 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import SearchOptions from '@/components/search/SearchOptions.vue'
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'SearchOptionsPage',
@@ -41,12 +42,12 @@ export default {
     // Clone search preferences so we can pass it as v-model and persist it
     // when onSearchOptionsSave is emitted.
     this.searchPreferences = {
-      ...this.$store.getters['ps/getProfile'].searchPreferences,
+      ...psStore.getters.getProfile.searchPreferences,
     }
   },
   methods: {
     saveSearchOptions() {
-      this.$store.dispatch('ps/storeSearchPreferences', this.searchPreferences)
+      psStore.actions.storeSearchPreferences(this.searchPreferences)
       this.$router.go(-1)
     },
   },

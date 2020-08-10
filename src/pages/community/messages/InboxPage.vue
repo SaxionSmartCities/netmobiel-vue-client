@@ -54,6 +54,7 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import TabBar from '../../../components/common/TabBar'
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 
 export default {
   components: {
@@ -71,10 +72,10 @@ export default {
       return this.$store.getters['ms/getConversations']
     },
     profile() {
-      return this.$store.getters['ps/getUser']
+      return psStore.getters.getUser
     },
     myId() {
-      return this.$store.getters['ps/getProfile'].id
+      return psStore.getters.getProfile.id
     },
   },
   created: function() {

@@ -75,6 +75,8 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import CreditHistoryLine from '@/components/profile/CreditHistoryLine.vue'
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
+
 export default {
   name: 'Credits',
   components: {
@@ -88,16 +90,16 @@ export default {
   },
   computed: {
     creditAmount() {
-      return this.$store.getters['ps/getCreditAmount']
+      return psStore.getters.getCreditAmount
     },
     creditHistory() {
-      return this.$store.getters['ps/getCreditHistory']
+      return psStore.getters.getCreditHistory
     },
   },
   created() {
     uiStore.mutations.showBackButton()
-    this.$store.dispatch('ps/fetchCreditAmount')
-    this.$store.dispatch('ps/fetchCreditHistory')
+    psStore.actions.fetchCreditAmount
+    psStore.actions.fetchCreditHistory
   },
 }
 </script>

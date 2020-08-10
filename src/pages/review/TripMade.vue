@@ -92,6 +92,7 @@
 import RoundUserImage from '@/components/common/RoundUserImage'
 import { maxCompliments } from '@/config/review/trip_made_config'
 import config from '@/config/config'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'TripMade',
@@ -117,7 +118,7 @@ export default {
       return this.trip?.itinerary
     },
     availableCompliments() {
-      return this.$store.getters['ps/getComplimentTypes']
+      return psStore.getters.getComplimentTypes
     },
   },
   methods: {

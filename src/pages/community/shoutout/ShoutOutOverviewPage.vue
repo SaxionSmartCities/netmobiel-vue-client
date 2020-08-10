@@ -67,6 +67,7 @@ import GroupedShoutOuts from '@/components/community/GroupedShoutOuts'
 import TabBar from '../../../components/common/TabBar'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'ShoutOutOverview',
@@ -85,7 +86,7 @@ export default {
       return this.groupShoutOuts(this.allShoutOuts)
     },
     myShoutOuts() {
-      const profile = this.$store.getters['ps/getProfile']
+      const profile = psStore.getters.getProfile
       const listMyShoutOuts = this.$store.getters['is/getMyShoutOuts']
       return listMyShoutOuts.map(shoutout => ({
         ...shoutout,
@@ -96,11 +97,11 @@ export default {
       return this.groupShoutOuts(this.myShoutOuts)
     },
     showTabs() {
-      const role = this.$store.getters['ps/getProfile'].userRole
+      const role = psStore.getters.getProfile.userRole
       return !role || role === 'both'
     },
     userRole() {
-      return this.$store.getters['ps/getProfile'].userRole
+      return psStore.getters.getProfile.userRole
     },
   },
   created() {
@@ -114,7 +115,7 @@ export default {
     editDepart: editing => editing || false,
   }),
   mounted() {
-    const address = this.$store.getters['ps/getProfile'].address
+    const address = psStore.getters.getProfile.address
     this.$store.dispatch('is/fetchShoutOuts', {
       latitude: address.location.coordinates[1],
       longitude: address.location.coordinates[0],

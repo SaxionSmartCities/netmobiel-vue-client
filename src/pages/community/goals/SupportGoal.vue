@@ -75,6 +75,7 @@
 import ContentPane from '@/components/common/ContentPane'
 import * as uiStore from '@/store/ui'
 import * as chsStore from '@/store/charity-service'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'SupportGoal',
@@ -99,7 +100,7 @@ export default {
   },
   methods: {
     donate() {
-      const { id, firstName, lastName } = this.$store.getters['ps/getProfile']
+      const { id, firstName, lastName } = psStore.getters.getProfile
       chsStore.actions.donate({
         id: this.id,
         amount: this.donationAmount,

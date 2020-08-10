@@ -31,6 +31,8 @@
 
 <script>
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
+
 export default {
   beforeCreate() {
     uiStore.mutations.disableHeader()
@@ -38,7 +40,7 @@ export default {
   },
   mounted() {
     if (this.$keycloak.authenticated) {
-      this.$store.commit('ps/setUserToken', this.$keycloak.token)
+      psStore.mutations.setUserToken(this.$keycloak.token)
       // Preserve query string when routing to home.
       this.$router.push({ path: '/home', query: this.$route.query })
     }

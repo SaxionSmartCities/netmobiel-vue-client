@@ -85,6 +85,8 @@
 </template>
 
 <script>
+import * as uiStore from '@/store/ui'
+
 export default {
   name: 'NewAccountCard',
   props: {
