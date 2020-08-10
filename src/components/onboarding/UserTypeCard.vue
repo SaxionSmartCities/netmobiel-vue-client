@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import uiStore from '@/store/message-service'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'HomeTownCard',
