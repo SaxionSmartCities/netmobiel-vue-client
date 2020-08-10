@@ -132,7 +132,7 @@ export default {
     }
     // Only fetch profile of user has been authenticated
     if (this.$keycloak.authenticated) {
-      psStore.actions.fetchProfile
+      psStore.actions.fetchProfile()
     }
   },
   methods: {

@@ -163,7 +163,7 @@ export default {
   mounted() {
     //TODO: How many cards do we want?
     csStore.actions.fetchRides({ offset: 0, maxResults: 2 })
-    psStore.actions.fetchComplimentTypes
+    psStore.actions.fetchComplimentTypes()
     chsStore.actions.lookupCharity()
   },
   methods: {

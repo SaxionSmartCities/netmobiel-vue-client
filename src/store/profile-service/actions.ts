@@ -2,7 +2,7 @@ import config from '@/config/config'
 import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
 import { ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
-import { mutations } from '@/store/profile-service/index'
+import { mutations } from '@/store/profile-service'
 import axios from 'axios'
 import moment from 'moment'
 // @ts-ignore

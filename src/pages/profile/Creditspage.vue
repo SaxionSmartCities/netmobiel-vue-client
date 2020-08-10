@@ -98,8 +98,8 @@ export default {
   },
   created() {
     uiStore.mutations.showBackButton()
-    psStore.actions.fetchCreditAmount
-    psStore.actions.fetchCreditHistory
+    psStore.actions.fetchCreditAmount()
+    psStore.actions.fetchCreditHistory()
   },
 }
 </script>
