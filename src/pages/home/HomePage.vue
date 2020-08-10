@@ -154,7 +154,6 @@ export default {
     },
     updateMessages() {
       return uiStore.getters.getUpdateMessages
-      // return this.$store.getters['ui/getUpdateMessages']
     },
     profileImage() {
       return psStore.getters.getUser.profile.image

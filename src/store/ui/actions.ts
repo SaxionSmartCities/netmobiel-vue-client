@@ -28,15 +28,15 @@ function queueNotification(context: ActionContext, payload: any) {
     let currentNotification = context.state.notificationQueue![0]
     if (currentNotification.timeout > 0) {
       setTimeout(() => {
-        actions.finishNotification
+        actions.finishNotification()
       }, currentNotification.timeout)
     }
   }
 }
 
 function finishNotification(context: ActionContext, payload: any) {
-  mutations.hideNotificationBar
-  mutations.removeFirstNotificationFromQueue
+  mutations.hideNotificationBar()
+  mutations.removeFirstNotificationFromQueue()
 
   // Kick off next notification if there are others to do.
   if (context.state.notificationQueue!.length > 0) {
