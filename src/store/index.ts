@@ -4,7 +4,6 @@ import Vuex from 'vuex'
 import geocoderService from './geocoder-service'
 import itineraryService from './itinerary-service'
 import messageService from './message-service'
-import notificationService from './notification-service'
 import { RootState, storeBuilder } from './Rootstate'
 
 // NEED TO IMPORT THE STRONGLY TYPES STORES HERE, ELSE THE STORES WON'T BE BUILT!!!
@@ -13,6 +12,7 @@ import './charity-service'
 import './carpool-service'
 import './registration-service'
 import './profile-service'
+import './notification-service'
 
 /**
  * Now using both the normal vuex store than can be accessed through this.$store...
@@ -28,6 +28,5 @@ export default new Vuex.Store<RootState>({
     gs: geocoderService,
     is: itineraryService,
     ms: messageService,
-    pn: notificationService,
   },
 })

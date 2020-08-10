@@ -1,4 +1,3 @@
-import { ActionTree } from 'vuex'
 import { UiState } from './types'
 import { RootState } from '@/store/Rootstate'
 import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
