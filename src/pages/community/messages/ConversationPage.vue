@@ -73,6 +73,7 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import MessageCard from '@/components/community/MessageCard.vue'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import * as msStore from '@/store/message-service'
 
 export default {
   components: {
@@ -98,10 +99,7 @@ export default {
   },
   computed: {
     sortedMessages() {
-      let messages = Object.assign(
-        [],
-        this.$store.getters['ms/getActiveMessages']
-      )
+      let messages = Object.assign([], msStore.getters.getActiveMessages)
       return messages.sort(function(a, b) {
         a = new Date(a.creationTime)
         b = new Date(b.creationTime)
@@ -118,8 +116,7 @@ export default {
       return psStore.getters.getUser
     },
     sender() {
-      return this.$store.getters['ms/getConversationByContext'](this.context)
-        .sender
+      return msStore.getters.getConversationByContext(this.context).sender
     },
   },
   mounted() {
@@ -131,8 +128,8 @@ export default {
   created() {
     //This.context is the urn as path parameter in URL.
     //In this URN the ':' needs to be replaced cause javascript wont like it being used as a key
-    this.$store
-      .dispatch('ms/fetchMessagesByParams', {
+    msStore.actions
+      .fetchMessagesByParams({
         context: this.context,
         participant: this.recipient.managedIdentity,
       })
@@ -168,8 +165,8 @@ export default {
       const envelopes = [
         { recipient: { familyName, givenName, managedIdentity } },
       ]
-      this.$store
-        .dispatch('ms/sendMessage', {
+      msStore.actions
+        .sendMessage({
           body: this.newMessage,
           context: this.context,
           deliveryMode: 'ALL',

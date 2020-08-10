@@ -110,6 +110,7 @@ import RideDetails from '@/components/itinerary-details/RideDetails.vue'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
+import * as msStore from '@/store/message-service'
 
 export default {
   name: 'RideDetailPage',
@@ -246,7 +247,7 @@ export default {
       this.showEditRideModal = true
     },
     routeToConversation(ctx, passengerProfile) {
-      this.$store.dispatch('ms/fetchConversations').then(conversations => {
+      msStore.actions.fetchConversations().then(conversation => {
         const index = conversations.findIndex(
           conversation => conversation.context === ctx
         )

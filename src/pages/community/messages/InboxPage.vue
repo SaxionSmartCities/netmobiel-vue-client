@@ -55,6 +55,7 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import TabBar from '../../../components/common/TabBar'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import * as msStore from '@/store/message-service'
 
 export default {
   components: {
@@ -69,7 +70,7 @@ export default {
   },
   computed: {
     conversations() {
-      return this.$store.getters['ms/getConversations']
+      return msStore.getters.getConversations
     },
     profile() {
       return psStore.getters.getUser
@@ -80,7 +81,7 @@ export default {
   },
   created: function() {
     uiStore.mutations.showBackButton()
-    this.$store.dispatch('ms/fetchConversations')
+    msStore.actions.fetchConversations()
   },
   methods: {
     getReceiverViaConversationParticipants(participants) {

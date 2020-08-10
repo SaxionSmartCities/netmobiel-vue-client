@@ -77,6 +77,7 @@ import ContactDriverModal from '@/components/itinerary-details/ContactDriverModa
 import travelModes from '@/constants/travel-modes.js'
 import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
 import * as uiStore from '@/store/ui'
+import * as msStore from '@/store/message-service'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 
@@ -216,7 +217,7 @@ export default {
     },
     routeToConversation(ctx, driverProfile) {
       //Get the conversations and see if it already exists
-      this.$store.dispatch('ms/fetchConversations').then(conversations => {
+      msStore.actions.fetchConversations().then(conversations => {
         const index = conversations.findIndex(
           conversation => conversation.context === ctx
         )
