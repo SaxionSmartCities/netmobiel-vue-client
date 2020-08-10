@@ -98,6 +98,7 @@
 import luggageTypes from '@/constants/luggage-types.js'
 import ContentPane from '@/components/common/ContentPane.vue'
 import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
 
 const BAD_PERSON_COUNT = 'Voer een geheel getal tussen 1 en 6.'
 
@@ -133,7 +134,8 @@ export default {
   },
   mounted() {
     // either result from RDW search or car from user profile
-    const result = this.$store.getters['cs/getSearchResult']
+    const result = csStore.getters.getSearchResult
+
     if (!result) {
       // unexpected navigation to this page. go back to home
       this.$router.replace('/home')

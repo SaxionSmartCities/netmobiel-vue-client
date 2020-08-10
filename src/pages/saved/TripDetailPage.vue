@@ -204,8 +204,8 @@ export default {
       const driverUrn = event.id
       const driverId = driverUrn.split(':').splice(-1)[0]
       //Gets the driver his profile
-      this.$store
-        .dispatch('cs/fetchUser', {
+      csStore.actions
+        .fetchUser({
           userRef: driverId,
         })
         .then(driverProfile => {

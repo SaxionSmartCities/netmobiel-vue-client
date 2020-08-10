@@ -54,6 +54,7 @@ import luggageTypes from '@/constants/luggage-types.js'
 import ContentPane from '@/components/common/ContentPane.vue'
 import CarCard from '@/components/cars/CarCard.vue'
 import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
 
 function luggageLabel(option) {
   return luggageTypes[option].label
@@ -72,7 +73,7 @@ export default {
   },
   computed: {
     availableCars() {
-      return this.$store.getters['cs/getAvailableCars']
+      return csStore.getters.getAvailableCars
     },
     luggageOptions() {
       return this.$store.getters[
@@ -92,7 +93,7 @@ export default {
   },
   created() {
     uiStore.mutations.showBackButton()
-    this.$store.dispatch('cs/fetchCars')
+    csStore.actions.fetchCars()
   },
   methods: {
     selectAlternativeCar(car) {
@@ -112,7 +113,7 @@ export default {
     removeCar(car) {
       this.dialog = false
       // Remove car in the backend.
-      this.$store.dispatch('cs/removeCar', car)
+      csStore.actions.removeCar(car)
       // Update profile if the car that has been removed the default car is.
       if (this.selectedCarId === car.id) {
         this.selectAlternativeCar(this.availableCars[0])

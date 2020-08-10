@@ -95,6 +95,8 @@ import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import * as uiStore from '@/store/ui'
 
+import * as csStore from '@/store/carpool-service'
+
 export default {
   name: 'RidePlanPage',
   components: {
@@ -114,7 +116,7 @@ export default {
     selectedCar() {
       const selectedCarId = this.$store.getters['ps/getProfile'].ridePlanOptions
           .selectedCarId,
-        cars = this.$store.getters['cs/getAvailableCars']
+        cars = csStore.getters.getAvailableCars
       return cars.find(car => car.id === selectedCarId)
     },
     disabledRideAddition() {
@@ -129,7 +131,7 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('cs/fetchCars')
+    csStore.actions.fetchCars()
     this.initialize()
   },
   beforeRouteEnter: beforeRouteEnter({
@@ -194,7 +196,7 @@ export default {
     },
     submitForm() {
       const { ridePlanOptions } = this.$store.getters['ps/getProfile']
-      this.$store.dispatch('cs/submitRide', {
+      csStore.actions.submitRide({
         ...this.searchCriteria,
         recurrence: this.recurrence,
         ridePlanOptions,

@@ -109,6 +109,7 @@ import RideCard from '@/components/rides/RideCard.vue'
 import constants from '../../constants/constants'
 import TabBar from '../../components/common/TabBar'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
+import * as csStore from '@/store/carpool-service'
 
 export default {
   name: 'TripsOverviewPage',
@@ -128,9 +129,13 @@ export default {
       getPlannedTrips: 'is/getPlannedTrips',
       getPastTripsCount: 'is/getPastTripsCount',
       getPastTrips: 'is/getPastTrips',
-      getPlannedRidesCount: 'cs/getPlannedRidesCount',
-      getPlannedRides: 'cs/getRides',
     }),
+    getPlannedRidesCount() {
+      return csStore.getters.getPlannedRidesCount
+    },
+    getPlannedRides() {
+      return csStore.getters.getPlannedRides
+    },
     showTabs() {
       const role = this.$store.getters['ps/getProfile'].userRole
       return !role || role === 'both'
@@ -216,7 +221,7 @@ export default {
       }
     },
     fetchRides(offset = 0) {
-      this.$store.dispatch('cs/fetchRides', {
+      csStore.actions.fetchRides({
         offset: offset,
         maxResults: this.maxResults,
       })

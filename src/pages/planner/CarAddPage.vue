@@ -87,6 +87,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
 
 export default {
   name: 'ProfileAddCar',
@@ -100,27 +101,28 @@ export default {
   },
   computed: {
     searchResult() {
-      return this.$store.getters['cs/getSearchResult']
+      return csStore.getters.getSearchResult
     },
   },
   watch: {
     searchLicensePlate(newValue) {
       if (newValue.length == 8) {
-        this.$store.dispatch('cs/fetchLicense', newValue)
+        csStore.actions.fetchLicense(newValue)
       } else {
-        this.$store.commit('cs/clearSearchResult')
+        csStore.mutations.clearSearchResult()
       }
     },
   },
   mounted() {
-    this.$store.commit('cs/clearSearchResult')
+    csStore.mutations.clearSearchResult()
   },
   created: function() {
     uiStore.mutations.showBackButton()
   },
   methods: {
     addCar(car) {
-      const cars = this.$store.getters['cs/getAvailableCars']
+      const cars = csStore.getters.getAvailableCars
+
       let storedCar = cars.find(c => c.licensePlate === car.licensePlate)
       if (storedCar) {
         uiStore.actions.queueNotification({
@@ -128,8 +130,8 @@ export default {
           timeout: 0,
         })
       } else {
-        this.$store.dispatch('cs/submitCar', car).then(() => {
-          this.$store.dispatch('cs/fetchCars')
+        csStore.actions.submitCar(car).then(() => {
+          csStore.actions.fetchCars()
           this.$router.go(-1)
         })
       }

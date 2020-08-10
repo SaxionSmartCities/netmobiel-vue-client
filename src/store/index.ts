@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import carpoolService from './carpool-service'
 import geocoderService from './geocoder-service'
 import itineraryService from './itinerary-service'
 import messageService from './message-service'
@@ -14,6 +13,7 @@ import { RootState, storeBuilder } from './Rootstate'
 // NEED TO IMPORT THE STRONGLY TYPES STORES HERE, ELSE THE STORES WON'T BE BUILT!!!
 import './ui'
 import './charity-service'
+import './carpool-service'
 
 /**
  * Now using both the normal vuex store than can be accessed through this.$store...
@@ -26,7 +26,6 @@ storeBuilder.vuexStore()
 export default new Vuex.Store<RootState>({
   strict: process.env.NODE_ENV !== 'production',
   modules: {
-    cs: carpoolService,
     gs: geocoderService,
     is: itineraryService,
     ms: messageService,

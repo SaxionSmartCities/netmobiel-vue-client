@@ -38,3 +38,13 @@ function setPreviouslyDonatedCharities(
   state.previouslyDonatedCharities = charities
 }
 
+export default {
+  setCharities: chsBuilder.commit(setCharities),
+  setCharity: chsBuilder.commit(setCharity),
+  setCharitySearchResults: chsBuilder.commit(setCharitySearchResults),
+  setCharityDonations: chsBuilder.commit(setCharityDonations),
+  setTopDonors: chsBuilder.commit(setTopDonors),
+  setPreviouslyDonatedCharities: chsBuilder.commit(
+    setPreviouslyDonatedCharities
+  ),
+}

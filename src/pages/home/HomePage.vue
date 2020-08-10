@@ -115,6 +115,8 @@ import * as uiStore from '@/store/ui'
 import * as chsStore from '@/store/charity-service'
 import moment from 'moment'
 
+import * as csStore from '@/store/carpool-service'
+
 export default {
   components: {
     ContentPane,
@@ -129,7 +131,7 @@ export default {
     rides() {
       //HACK: Only display first 3 rides.
       let sortedList = []
-      const rides = this.$store.getters['cs/getRides']
+      const rides = csStore.getters.getRides
       if (rides) {
         sortedList = rides.slice(0, 3)
         sortedList.sort((a, b) => {
@@ -159,7 +161,7 @@ export default {
   },
   mounted() {
     //TODO: How many cards do we want?
-    this.$store.dispatch('cs/fetchRides', { offset: 0, maxResults: 2 })
+    csStore.actions.fetchRides({ offset: 0, maxResults: 2 })
     this.$store.dispatch('ps/fetchComplimentTypes')
     chsStore.actions.lookupCharity()
   },

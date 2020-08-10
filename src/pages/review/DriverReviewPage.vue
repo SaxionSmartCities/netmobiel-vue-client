@@ -201,8 +201,8 @@ export default {
     },
     fetchDriverProfile() {
       //First fetch the driver properties via the carpool service
-      this.$store
-        .dispatch('cs/fetchUser', {
+      csStore.actions
+        .fetchUser({
           userRef: this.trip.itinerary.legs[0].driverId,
         })
         .then(response => {

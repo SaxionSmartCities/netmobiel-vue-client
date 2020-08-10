@@ -108,6 +108,7 @@ import ContactTravellerModal from '@/components/itinerary-details/ContactTravell
 import EditRideModal from '../../components/itinerary-details/EditRideModal'
 import RideDetails from '@/components/itinerary-details/RideDetails.vue'
 import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
 
 export default {
   name: 'RideDetailPage',
@@ -149,7 +150,7 @@ export default {
       return bookings
     },
     ride() {
-      return this.$store.getters['cs/getSelectedRide']
+      return csStore.getters.getSelectedRide
     },
     numBookings() {
       return !this.ride.bookings ? 0 : this.ride.bookings.length
@@ -160,7 +161,7 @@ export default {
   },
   mounted() {
     // Fetch the ride on details page. This is needed for deeplinking.
-    this.$store.dispatch('cs/fetchRide', { id: this.id })
+    csStore.actions.fetchRide({ id: this.id })
   },
   methods: {
     generateSteps() {
@@ -199,7 +200,7 @@ export default {
     },
     generateBookingDictionary(bookings) {
       let dict = []
-      for (var i = 0; i < bookings.length; i++) {
+      for (let i = 0; i < bookings.length; i++) {
         let map = bookings[i].legs.map(l => {
           let dictItem = { ...bookings[i].passenger }
           dictItem.legRef = l.legRef
@@ -220,7 +221,7 @@ export default {
     },
     deleteTrip() {
       this.warningDialog = false
-      this.$store.dispatch('cs/deleteRide', {
+      csStore.actions.deleteRide({
         id: this.id,
         cancelReason: this.cancelReason,
       })
