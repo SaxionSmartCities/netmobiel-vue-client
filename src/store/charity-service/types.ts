@@ -6,7 +6,6 @@ export class CharityState {
   previouslyDonatedCharities: Charity[] = []
   topDonors: Donor[] = []
 }
-
 export enum STORE_STATE_OPTIONS {
   PREVIOUS,
   INIT,
