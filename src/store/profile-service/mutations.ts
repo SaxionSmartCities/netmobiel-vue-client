@@ -7,7 +7,6 @@ const psBuilder: ModuleBuilder = getStoreBuilder().module('ps')
 
 function setUserToken(state: ProfileState, token: any) {
   state.user.accessToken = token
-
   let decodedObject = VueJwtDecode.decode(token)
   state.user.givenName = decodedObject['given_name']
   state.user.familyName = decodedObject['family_name']

@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane v-if="ride">
     <v-row>
       <v-col class="py-0">
         <ride-details :ride="ride" class="mb-4" />
@@ -152,6 +152,7 @@ export default {
       return bookings
     },
     ride() {
+      console.log('getter selectedRide', csStore.getters.getSelectedRide)
       return csStore.getters.getSelectedRide
     },
     numBookings() {
@@ -214,9 +215,11 @@ export default {
     },
     setPassenger(leg, bookingDict) {
       // TODO: Check why modality is not provided
-      leg.mode = 'CAR'
-      let passenger = bookingDict.find(b => b.legRef == leg.legRef)
-      if (passenger) leg.passenger = passenger
+      if (leg) {
+        leg.mode = 'CAR'
+        let passenger = bookingDict.find(b => b.legRef == leg.legRef)
+        if (passenger) leg.passenger = passenger
+      }
     },
     onLegSelected(leg) {
       this.selectedLeg = leg
