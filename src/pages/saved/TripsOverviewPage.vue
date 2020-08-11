@@ -135,7 +135,7 @@ export default {
       return csStore.getters.getPlannedRidesCount
     },
     getPlannedRides() {
-      return csStore.getters.getPlannedRides
+      return csStore.getters.getRides
     },
     showTabs() {
       const role = psStore.getters.getProfile.userRole
