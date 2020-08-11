@@ -4,12 +4,20 @@ import { CharityState } from '@/store/charity-service/types'
 import { CarpoolState } from '@/store/carpool-service/types'
 import { ProfileState } from '@/store/profile-service/types'
 import { NotificationState } from '@/store/notification-service/types'
+import { GeoCoderState } from '@/store/geocoder-service/types'
+import { ItineraryState } from '@/store/itinerary-service/types'
+import { MessageState } from '@/store/message-service/types'
+import { RegistrationState } from '@/store/registration-service/types'
 
 export interface RootState {
-  ns: NotificationState
-  ps: ProfileState
   cs: CarpoolState
   chs: CharityState
+  gs: GeoCoderState
+  is: ItineraryState
+  ms: MessageState
+  ns: NotificationState
+  ps: ProfileState
+  rs: RegistrationState
   ui: UiState
 }
 
