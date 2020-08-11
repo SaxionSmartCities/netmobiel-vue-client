@@ -68,6 +68,7 @@ import TabBar from '../../../components/common/TabBar'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'ShoutOutOverview',
@@ -80,14 +81,14 @@ export default {
   },
   computed: {
     allShoutOuts() {
-      return this.$store.getters['is/getShoutOuts']
+      return isStore.getters.getShoutOuts
     },
     groupedShoutOuts() {
       return this.groupShoutOuts(this.allShoutOuts)
     },
     myShoutOuts() {
       const profile = psStore.getters.getProfile
-      const listMyShoutOuts = this.$store.getters['is/getMyShoutOuts']
+      const listMyShoutOuts = isStore.getters.getMyShoutOuts
       return listMyShoutOuts.map(shoutout => ({
         ...shoutout,
         traveller: profile,
@@ -116,14 +117,14 @@ export default {
   }),
   mounted() {
     const address = psStore.getters.getProfile.address
-    this.$store.dispatch('is/fetchShoutOuts', {
+    isStore.actions.fetchShoutOuts({
       latitude: address.location.coordinates[1],
       longitude: address.location.coordinates[0],
     })
-    this.$store.dispatch('is/fetchMyShoutOuts', {
+    isStore.actions.fetchMyShoutOuts({
       offset: 0,
     })
-    this.$store.commit('is/clearPlanningRequest')
+    isStore.mutations.clearPlanningRequest()
   },
   methods: {
     groupShoutOuts(shoutouts) {

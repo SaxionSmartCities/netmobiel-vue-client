@@ -76,6 +76,7 @@ import config from '@/config/config'
 import Compliments from '@/components/profile/Compliments'
 import ReviewItem from '@/components/profile/ReviewItem'
 import HighlightedInfo from '@/components/profile/HighlightedInfo'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'UserProfile',
@@ -128,8 +129,8 @@ export default {
     },
     fetchProfileImages() {
       this.reviews.forEach(review => {
-        this.$store
-          .dispatch('ps/fetchUserProfile', {
+        psStore.actions
+          .fetchUserProfile({
             profileId: review.sender.id,
           })
           .then(res => {
@@ -139,24 +140,24 @@ export default {
     },
     fetchProfilePageInformation() {
       //Fetch profile of user
-      this.$store
-        .dispatch('ps/fetchUserProfile', {
+      psStore.actions
+        .fetchUser({
           profileId: this.profileId,
         })
         .then(res => {
           this.user = res
         })
       //Fetch compliments of user
-      this.$store
-        .dispatch('ps/fetchUserCompliments', {
+      psStore.actions
+        .fetchUserCompliments({
           profileId: this.profileId,
         })
         .then(res => {
           this.compliments = res.compliments
         })
       //Fetch reviews of user
-      this.$store
-        .dispatch('ps/fetchUserReviews', { profileId: this.profileId })
+      psStore.actions
+        .fetchUserReviews({ profileId: this.profileId })
         .then(res => {
           this.reviews = res
           this.fetchProfileImages()

@@ -189,6 +189,7 @@ import {
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as gsStore from '@/store/geocoder-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'ShoutOutDetailPage',
@@ -221,12 +222,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      trip: 'is/getSelectedTrip',
-      planningRequest: 'is/getPlanningRequest',
-      planningStatus: 'is/getPlanningStatus',
-      planResult: 'is/getPlanningResults',
-    }),
+    ...{
+      trip: () => isStore.getters.getSelectedTrip,
+      planningRequest: () => isStore.getters.getPlanningRequest,
+      planningStatus: () => isStore.getters.getPlanningStatus,
+      planResult: () => isStore.getters.getPlanningResults,
+    },
     pickedLocations() {
       return gsStore.getters.getPickedLocation
     },
@@ -287,8 +288,8 @@ export default {
     },
   },
   mounted() {
-    this.$store.commit('is/clearPlanningResults')
-    this.$store.dispatch('is/fetchShoutOut', { id: this.id })
+    isStore.mutations.clearPlanningResults()
+    isStore.actions.fetchShoutOut({ id: this.id })
     if (!this.localIsMine) {
       // Propose a ride to the chauffeur based on his address and the shoutout.
       const { ridefrom } = gsStore.getters.getPickedLocation
@@ -315,7 +316,7 @@ export default {
         request.travelTime = travelTime
         this.pickedTime = moment(travelTime.when).format('HH:mm')
       }
-      this.$store.dispatch('is/submitShoutOutPlanningsRequest', request)
+      isStore.actions.submitShoutOutPlanningsRequest(request)
     }
   },
   created() {
@@ -358,7 +359,7 @@ export default {
       const { label, latitude, longitude } = this.itineraryDeparture.from
       const depart = moment(this.itinerary.departureTime)
       let timestamp = `${depart.format(DATE_FORMAT_INPUT)} ${this.pickedTime}`
-      this.$store.dispatch('is/submitShoutOutPlanningsRequest', {
+      isStore.actions.submitShoutOutPlanningsRequest({
         id: this.id,
         from: { label, latitude, longitude },
         travelTime: {
@@ -369,7 +370,7 @@ export default {
     },
     onClearDeparture() {
       const { address } = psStore.getters.getUser.profile
-      this.$store.dispatch('is/submitShoutOutPlanningsRequest', {
+      isStore.actions.submitShoutOutPlanningsRequest({
         id: this.id,
         from: {
           label: 'Thuis',
@@ -401,8 +402,8 @@ export default {
           arriving: this.trip.useAsArrivalTime,
         },
       }
-      this.$store.commit('is/setSearchCriteria', searchCriteria)
-      this.$store.dispatch('is/submitPlanningsRequest', searchCriteria)
+      isStore.mutations.setSearchCriteria(searchCriteria)
+      isStore.actions.submitPlanningsRequest(searchCriteria)
       this.$router.push({
         name: 'searchResults',
         params: {

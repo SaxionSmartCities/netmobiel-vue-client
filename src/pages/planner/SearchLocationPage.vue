@@ -54,6 +54,7 @@ import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
 import { throttle } from 'lodash'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import * as isStore from '@/store/itinerary-service'
 import * as gsStore from '@/store/geocoder-service'
 const highlightMarker = 'class="search-hit"'
 const skipCategories = new Set(['intersection'])
@@ -131,8 +132,7 @@ export default {
           latitude: suggestion.position[0],
           longitude: suggestion.position[1],
         }
-
-        this.$store.commit('is/setSearchCriteriaField', {
+        isStore.mutations.setSearchCriteriaField({
           field: this.$route.params.field,
           value: fieldValue,
         })
@@ -149,11 +149,10 @@ export default {
       this.$router.go(-1)
     },
     sendPlanningRequest() {
-      const searchCriteria = this.$store.getters['is/getSearchCriteria']
-      const preferences = this.$store.getters['is/getPlanningRequest']
-        ?.preferences
+      const searchCriteria = isStore.getters.getSearchCriteria
+      const preferences = isStore.getters.getPlanningRequest?.preferences
       const { from, to, travelTime } = searchCriteria
-      this.$store.dispatch('is/submitPlanningsRequest', {
+      isStore.actions.submitPlanningsRequest({
         from,
         to,
         travelTime,

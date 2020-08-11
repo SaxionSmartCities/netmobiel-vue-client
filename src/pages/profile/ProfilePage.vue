@@ -110,6 +110,7 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
 import { scaleImageDown } from '../../utils/image_scaling'
 import * as psStore from '@/store/profile-service'
+import * as uiStore from '@/store/ui'
 
 export default {
   components: {
@@ -172,7 +173,7 @@ export default {
     },
     logOut: function() {
       this.$keycloak.logoutFn()
-      this.$store.commit('ui/deleteAccessToken')
+      uiStore.mutations.deleteAccessToken()
     },
     readFile(event) {
       if (event.target.files[0]) {

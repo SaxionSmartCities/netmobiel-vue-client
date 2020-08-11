@@ -102,7 +102,6 @@
 
 <script>
 import moment from 'moment'
-import { mapGetters } from 'vuex'
 import ContentPane from '@/components/common/ContentPane.vue'
 import TravelCard from '@/components/search-results/TravelCard.vue'
 import RideCard from '@/components/rides/RideCard.vue'
@@ -111,6 +110,7 @@ import TabBar from '../../components/common/TabBar'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'TripsOverviewPage',
@@ -125,12 +125,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      getPlannedTripsCount: 'is/getPlannedTripsCount',
-      getPlannedTrips: 'is/getPlannedTrips',
-      getPastTripsCount: 'is/getPastTripsCount',
-      getPastTrips: 'is/getPastTrips',
-    }),
+    ...{
+      getPlannedTripsCount: () => isStore.getters.getPlannedTripsCount,
+      getPlannedTrips: () => isStore.getters.getPlannedTrips,
+      getPastTripsCount: () => isStore.getters.getPastTripsCount,
+      getPastTrips: () => isStore.getters.getPastTrips,
+    },
     getPlannedRidesCount() {
       return csStore.getters.getPlannedRidesCount
     },
@@ -204,7 +204,7 @@ export default {
       return bottomOfPage || pageHeight < visible
     },
     fetchTrips(offset = 0) {
-      this.$store.dispatch('is/fetchTrips', {
+      isStore.actions.fetchTrips({
         maxResults: this.maxResults,
         offset: offset,
         since: moment().format(),
@@ -212,7 +212,7 @@ export default {
     },
     fetchPastTrips(offset = 0) {
       if (offset == 0 || offset < this.getPastTripsCount) {
-        this.$store.dispatch('is/fetchTrips', {
+        isStore.actions.fetchTrips({
           pastTrips: true,
           maxResults: this.maxResultsPastTrips,
           offset: offset,
@@ -234,7 +234,7 @@ export default {
       } else {
         tripId = this.getPastTrips[index].id
       }
-      this.$store.dispatch('is/fetchTrip', { id: tripId })
+      isStore.actions.fetchTrip({ id: tripId })
       this.$router.push('/tripDetailPage')
     },
     onRideSelected(index) {

@@ -77,9 +77,7 @@ export default {
       return csStore.getters.getAvailableCars
     },
     luggageOptions() {
-      return this.$store.getters[
-        'ps/getUser'
-      ].profile.ridePlanOptions.luggageOptions
+      return psStore.getters.getUser.profile.ridePlanOptions.luggageOptions
         .map(luggageLabel)
         .join(', ')
     },

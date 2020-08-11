@@ -78,7 +78,6 @@ export default {
       },
       set: function(value) {
         uiStore.mutations.setSelectedNav(value)
-        // this.$store.commit('ui/setSelectedNav', value)
       },
     },
     isHeaderVisible: function() {
@@ -112,7 +111,6 @@ export default {
       if (!this.isProfileComplete(newProfile)) {
         let update = constants.COMPLETE_PROFILE_UPDATE
         uiStore.actions.addUpdate(update)
-        // this.$store.dispatch('ui/addUpdate', update)
       }
       // Update profile if the passed FCM token is different compared
       // to the one in the profile.
@@ -138,7 +136,6 @@ export default {
   methods: {
     finishNotification: function() {
       uiStore.actions.finishNotification()
-      // this.$store.dispatch('ui/finishNotification')
     },
     goBack: function() {
       this.$router.go(-1)

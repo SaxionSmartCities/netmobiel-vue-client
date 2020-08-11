@@ -97,6 +97,7 @@ import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as gsStore from '@/store/geocoder-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'RidePlanPage',
@@ -112,7 +113,7 @@ export default {
   },
   computed: {
     searchCriteria() {
-      return this.$store.getters['is/getSearchCriteria']
+      return isStore.getters.getSearchCriteria
     },
     selectedCar() {
       const selectedCarId =
@@ -170,7 +171,7 @@ export default {
           arriving: true,
         }
       }
-      this.$store.commit('is/setSearchCriteria', newCriteria)
+      isStore.mutations.setSearchCriteria(newCriteria)
     },
     toRidePlanOptions() {
       this.$router.push('/planOptions')
@@ -193,7 +194,7 @@ export default {
           { root: true }
         )
       }
-      this.$store.commit('is/setSearchCriteria', newCriteria)
+      isStore.mutations.setSearchCriteria(newCriteria)
     },
     submitForm() {
       const { ridePlanOptions } = psStore.getters.getProfile

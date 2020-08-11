@@ -80,6 +80,7 @@ import * as uiStore from '@/store/ui'
 import * as msStore from '@/store/message-service'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'TripDetailPage',
@@ -124,7 +125,7 @@ export default {
       return null
     },
     selectedTrip() {
-      let trip = this.$store.getters['is/getSelectedTrip']
+      let trip = isStore.getters.getSelectedTrip
       trip.legs = generateItineraryDetailSteps(trip.itinerary)
       return trip
     },
@@ -137,9 +138,9 @@ export default {
   },
   methods: {
     saveTrip() {
-      const selectedTrip = this.$store.getters['is/getSelectedTrip']
-      this.$store
-        .dispatch('is/storeSelectedTrip', selectedTrip)
+      const selectedTrip = isStore.getters.getSelectedTrip
+      isStore.actions
+        .storeSelectedTrip(selectedTrip)
         .then(() => this.$router.push('/tripPlanSubmitted'))
     },
     showFullRouteOnMap() {
@@ -160,7 +161,7 @@ export default {
       }
     },
     onTripReplan(trip) {
-      this.$store.commit('is/setSearchCriteria', {
+      isStore.mutations.setSearchCriteria({
         from: trip.from,
         to: trip.to,
       })
@@ -177,7 +178,7 @@ export default {
       })
     },
     onTripCancelled(selectedTrip) {
-      this.$store.dispatch('is/deleteSelectedTrip', selectedTrip)
+      isStore.actions.deleteSelectedTrip(selectedTrip)
       this.$router.push('/tripCancelledPage')
     },
     onTripEdit(trip) {
@@ -194,8 +195,8 @@ export default {
           arriving: arrivalTimeIsPinned,
         },
       }
-      this.$store.commit('is/setSearchCriteria', searchCriteria)
-      this.$store.dispatch('is/submitPlanningsRequest', searchCriteria)
+      isStore.mutations.setSearchCriteria(searchCriteria)
+      isStore.actions.submitPlanningsRequest(searchCriteria)
       this.$router.push({
         name: 'searchResults',
         params: { tripId: String(this.selectedTrip.id) },

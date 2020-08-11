@@ -119,6 +119,7 @@ import SearchCriteria from '@/components/common/SearchCriteria.vue'
 import SearchStatus from '@/components/search/SearchStatus.vue'
 import moment from 'moment'
 import * as uiStore from '@/store/ui'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'SearchResultsPage',
@@ -146,16 +147,16 @@ export default {
   },
   computed: {
     searchCriteria() {
-      return this.$store.getters['is/getSearchCriteria']
+      return isStore.getters.getSearchCriteria
     },
     planningStatus() {
-      return this.$store.getters['is/getPlanningStatus']
+      return isStore.getters.getPlanningStatus
     },
     planRequest() {
-      return this.$store.getters['is/getPlanningRequest']
+      return isStore.getters.getPlanningRequest
     },
     planResult() {
-      return this.$store.getters['is/getPlanningResults']
+      return isStore.getters.getPlanningResults
     },
     searchPreferences() {
       return this.planRequest.preferences
@@ -170,7 +171,7 @@ export default {
   watch: {
     planningStatus(newValue) {
       if (newValue.status === 'SUCCESS') {
-        this.$store.commit('is/clearPlanningRequest')
+        isStore.mutations.clearPlanningRequest()
       }
     },
   },
@@ -188,8 +189,7 @@ export default {
       //TODO: Do the valid time check in the search criteria component.
       // If the selected date is in the past show an error.
       if (moment(newCriteria?.travelTime?.when) < moment()) {
-        this.$store.dispatch(
-          'ui/queueNotification',
+        uiStore.actions.queueNotification(
           {
             message: 'De geselecteerde tijd ligt in het verleden.',
             timeout: 0,
@@ -197,10 +197,10 @@ export default {
           { root: true }
         )
       }
-      this.$store.commit('is/setSearchCriteria', newCriteria)
+      isStore.mutations.setSearchCriteria(newCriteria)
       //HACK: preferences here are different from the profile.
       const { from, to, travelTime } = this.searchCriteria
-      this.$store.dispatch('is/submitPlanningsRequest', {
+      isStore.actions.submitPlanningsRequest({
         from,
         to,
         travelTime,
@@ -252,11 +252,11 @@ export default {
         itinerary: this.planResult.itineraries[index],
         itineraryRef: this.planResult.itineraries[index].itineraryRef,
       }
-      this.$store.commit('is/setSelectedTrip', selectedTrip)
+      isStore.mutations.setSelectedTrip(selectedTrip)
       this.$router.push('/itineraryDetailPage')
     },
     createShoutOut() {
-      this.$store.dispatch('is/storeShoutOut', this.searchCriteria)
+      isStore.actions.storeShoutOut(this.searchCriteria)
     },
     toDate(string) {
       return moment(string)

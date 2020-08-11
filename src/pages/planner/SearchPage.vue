@@ -61,6 +61,7 @@ import SearchCriteria from '@/components/common/SearchCriteria.vue'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as gsStore from '@/store/geocoder-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   components: {
@@ -69,7 +70,7 @@ export default {
   },
   computed: {
     searchCriteria() {
-      return this.$store.getters['is/getSearchCriteria']
+      return isStore.getters.getSearchCriteria
     },
     disabledSubmit() {
       const { from, to, travelTime } = this.searchCriteria
@@ -116,7 +117,7 @@ export default {
           arriving: true,
         }
       }
-      this.$store.commit('is/setSearchCriteria', newCriteria)
+      isStore.mutations.setSearchCriteria(newCriteria)
     },
     onLocationFieldSelected(newField) {
       this.$router.push({
@@ -136,13 +137,13 @@ export default {
           { root: true }
         )
       }
-      this.$store.commit('is/setSearchCriteria', newCriteria)
+      isStore.mutations.setSearchCriteria(newCriteria)
     },
     toSearchPreferences() {
       this.$router.push({ name: 'searchOptions' })
     },
     submitForm() {
-      this.$store.dispatch('is/submitPlanningsRequest', this.searchCriteria)
+      isStore.actions.submitPlanningsRequest(this.searchCriteria)
       this.$router.push({
         name: 'searchResults',
         params: {

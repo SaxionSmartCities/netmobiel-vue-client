@@ -89,6 +89,7 @@ import { maxCompliments } from '@/config/review/trip_made_config'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'DriverReviewPage',
@@ -110,8 +111,8 @@ export default {
       // When coming from a notification this function must look at the selectedTrip
       // Because the trip is fetched separately and will be stores separately (it won't be in the pastTrips array)
       return this.fromNotification
-        ? this.$store.getters['is/getSelectedTrip']
-        : this.$store.getters['is/getPastTrips'].find(
+        ? isStore.getters.getSelectedTrip
+        : isStore.getters.getPastTrips.find(
             trip => trip.tripRef === this.tripContext
           )
     },
@@ -132,7 +133,7 @@ export default {
     if (!this.trip) {
       this.fromNotification = true
       const tripId = this.tripContext.split(':').slice(-1)
-      this.$store.dispatch('is/fetchTrip', { id: tripId }).then(() => {
+      isStore.actions.fetchTrip({ id: tripId }).then(() => {
         this.fetchDriverProfile()
       })
     } else {
@@ -209,8 +210,8 @@ export default {
         })
         .then(response => {
           //Fetch the profile of the driver via the profile-service (for the image)
-          this.$store
-            .dispatch('ps/fetchUserProfile', {
+          psStore.actions
+            .fetchUser({
               profileId: response.managedIdentity,
             })
             .then(res => {
