@@ -21,9 +21,10 @@ import './itinerary-service'
  * 'import * as uiStore from '@/store/ui''
  */
 Vue.use(Vuex)
-storeBuilder.vuexStore()
 
-export default new Vuex.Store<RootState>({
-  strict: process.env.NODE_ENV !== 'production',
-  modules: {},
-})
+export default storeBuilder.vuexStore()
+
+// new Vuex.Store<RootState>({
+//   strict: process.env.NODE_ENV !== 'production',
+//   modules: {},
+// })
