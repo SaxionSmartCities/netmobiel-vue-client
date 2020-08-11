@@ -10,6 +10,13 @@ type ActionContext = BareActionContext<CharityState, RootState>
 
 const BASE_URL = 'http://localhost:3000'
 
+/**
+ * @param context
+ * @param payload
+ * @param payload.q = being sent to the backend to query on id(s).
+ * q can be a single id, an array of id's. (id = managed identity) or nothing.
+ * @params payload.store = the place to store the result of the response
+ */
 function fetchCharities(context: ActionContext, payload: any = {}): void {
   const params: any = {}
   if (payload.q) params['q'] = payload.q
