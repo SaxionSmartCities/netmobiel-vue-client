@@ -2,6 +2,7 @@ import { UiState } from './types'
 import { RootState } from '@/store/Rootstate'
 import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
 import { mutations } from '@/store/ui/index'
+import axios from 'axios'
 
 // @ts-ignore
 const uiBuilder: ModuleBuilder = getStoreBuilder().module('ui')
