@@ -60,6 +60,7 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import SearchCriteria from '@/components/common/SearchCriteria.vue'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import * as gsStore from '@/store/geocoder-service'
 
 export default {
   components: {
@@ -87,7 +88,7 @@ export default {
   methods: {
     initialize() {
       const { searchPreferences } = psStore.getters.getProfile
-      const { from, to } = this.$store.getters['gs/getPickedLocation']
+      const { from, to } = gsStore.getters.getPickedLocation
       const { travelTime } = this.searchCriteria
       let newCriteria = {
         ...this.searchCriteria,

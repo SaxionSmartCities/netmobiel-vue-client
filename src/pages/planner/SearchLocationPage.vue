@@ -49,12 +49,12 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import LocationsList from '@/components/search/LocationsList.vue'
 import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
-
 // map category to Material icon name (needs more work...)
 // show at most 8 suitable suggestions
 import { throttle } from 'lodash'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import * as gsStore from '@/store/geocoder-service'
 const highlightMarker = 'class="search-hit"'
 const skipCategories = new Set(['intersection'])
 const maxSuggestions = 8
@@ -85,7 +85,7 @@ export default {
       return psStore.getters.getProfile.favoriteLocations
     },
     suggestions() {
-      let suggestions = this.$store.getters['gs/getGeocoderSuggestions']
+      let suggestions = gsStore.getters.getGeocoderSuggestions
       const highlighted = suggestions.filter(
         suggestion =>
           suggestion.highlightedTitle.indexOf(highlightMarker) > 0 &&
@@ -107,7 +107,7 @@ export default {
       if (val != null) {
         const show = (this.showSuggestionsList = val.length > 3)
         if (show) {
-          this.$store.dispatch('gs/fetchGeocoderSuggestions', {
+          gsStore.actions.fetchGeocoderSuggestions({
             query: val,
             hlStart: `<span ${highlightMarker}>`,
             hlEnd: '</span>',
@@ -138,7 +138,7 @@ export default {
         })
         this.sendPlanningRequest()
       } else {
-        this.$store.commit('gs/setGeoLocationPicked', {
+        gsStore.mutations.setGeoLocationPicked({
           field: this.$route.params.field,
           suggestion: {
             ...suggestion,
@@ -174,7 +174,7 @@ export default {
       )
       if (duplicate) {
         //TODO: Check why this does not fire.
-        this.$store.dispatch('ui/queueNotification', {
+        uiStore.actions.queueNotification({
           message: 'Favoriet is al opgeslagen aan uw profiel.',
           timeout: 3000,
         })

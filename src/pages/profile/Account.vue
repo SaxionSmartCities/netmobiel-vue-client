@@ -73,6 +73,7 @@ import account_config from '@/config/account_config'
 import { get, set, isEqual } from 'lodash'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import * as gsStore from '@/store/geocoder-service'
 
 export default {
   name: 'Account',
@@ -88,7 +89,7 @@ export default {
       return psStore.getters.getUser.profile
     },
     suggestions() {
-      return this.$store.getters['gs/getGeocoderSuggestions']
+      return gsStore.getters.getGeocoderSuggestions
     },
     sections() {
       return Object.keys(account_config)
@@ -130,8 +131,7 @@ export default {
       // Fetch geocode for address if different.
       if (!isEqual(this.user.address, newProfile.address)) {
         const query = this.addressQuery(newProfile.address)
-        if (query)
-          this.$store.dispatch('gs/fetchGeocoderSuggestions', { query: query })
+        if (query) gsStore.actions.fetchGeocoderSuggestions({ query: query })
       }
     },
     addressQuery(address) {

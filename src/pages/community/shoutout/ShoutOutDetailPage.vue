@@ -188,6 +188,7 @@ import {
 } from '@/utils/itinerary_steps.js'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import * as gsStore from '@/store/geocoder-service'
 
 export default {
   name: 'ShoutOutDetailPage',
@@ -225,8 +226,10 @@ export default {
       planningRequest: 'is/getPlanningRequest',
       planningStatus: 'is/getPlanningStatus',
       planResult: 'is/getPlanningResults',
-      pickedLocations: 'gs/getPickedLocation',
     }),
+    pickedLocations() {
+      return gsStore.getters.getPickedLocation
+    },
     items() {
       let result = []
       const { from, to, travelTime } = this.trip
@@ -288,7 +291,7 @@ export default {
     this.$store.dispatch('is/fetchShoutOut', { id: this.id })
     if (!this.localIsMine) {
       // Propose a ride to the chauffeur based on his address and the shoutout.
-      const { ridefrom } = this.$store.getters['gs/getPickedLocation']
+      const { ridefrom } = gsStore.getters.getPickedLocation
       const { address } = psStore.getters.getUser.profile
       const { travelTime } = this.planningRequest
       const from = ridefrom
@@ -303,7 +306,7 @@ export default {
             latitude: address?.location?.coordinates[1],
             longitude: address?.location?.coordinates[0],
           }
-      this.$store.commit('gs/setGeoLocationPicked', {
+      gsStore.mutations.setGeoLocationPicked({
         field: 'ridefrom',
         suggestion: null,
       })

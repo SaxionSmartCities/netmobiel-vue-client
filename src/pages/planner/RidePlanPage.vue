@@ -94,9 +94,9 @@ import SearchCriteria from '@/components/common/SearchCriteria.vue'
 import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import * as uiStore from '@/store/ui'
-
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
+import * as gsStore from '@/store/geocoder-service'
 
 export default {
   name: 'RidePlanPage',
@@ -143,7 +143,7 @@ export default {
   }),
   methods: {
     initialize() {
-      const { from, to } = this.$store.getters['gs/getPickedLocation']
+      const { from, to } = gsStore.getters.getPickedLocation
       const { travelTime } = this.searchCriteria
       let newCriteria = {
         ...this.searchCriteria,
