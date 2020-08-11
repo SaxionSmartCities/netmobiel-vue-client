@@ -1,14 +1,15 @@
+import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
 import { CharityState, STORE_STATE_OPTIONS } from './types'
 import { RootState } from '@/store/Rootstate'
-import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
-import axios from 'axios'
 import { mutations } from '@/store/charity-service/index'
+import axios from 'axios'
+import config from '@/config/config'
 
 // @ts-ignore
 const chsBuilder: ModuleBuilder = getStoreBuilder().module('chs')
 type ActionContext = BareActionContext<CharityState, RootState>
 
-const BASE_URL = 'http://localhost:3000'
+const BASE_URL = config.BASE_URL
 
 /**
  * @param context

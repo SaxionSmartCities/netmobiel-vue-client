@@ -90,7 +90,7 @@
 
 <script>
 import RoundUserImage from '@/components/common/RoundUserImage'
-import { maxCompliments } from '@/config/review/trip_made_config'
+import constants from '@/constants/constants'
 import config from '@/config/config'
 import * as psStore from '@/store/profile-service'
 
@@ -110,7 +110,6 @@ export default {
       feedbackMessage: '',
       showChips: true,
       inputTextArea: null,
-      maxCompliments: maxCompliments,
     }
   },
   computed: {
@@ -124,13 +123,16 @@ export default {
   methods: {
     addCompliment(compliment) {
       const index = this.compliments.findIndex(c => c === compliment)
-      if (this.compliments.length < this.maxCompliments && index === -1) {
+      if (
+        this.compliments.length < constants.maxComplimentsAllowed &&
+        index === -1
+      ) {
         //Not reached the limit of compliments and the compliment is NOT in the list yet.
         this.compliments.push(compliment)
       } else if (
         // Limit reached and the compliment is not in the list.
         // Remove the first compliment selected and add the one selected
-        this.compliments.length === this.maxCompliments &&
+        this.compliments.length === constants.maxComplimentsAllowed &&
         index === -1
       ) {
         this.compliments.splice(index, 1)

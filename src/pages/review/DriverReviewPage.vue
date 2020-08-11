@@ -85,7 +85,7 @@ import TripMade from './TripMade'
 import TripNotMade from './TripNotMade'
 import moment from 'moment'
 import Stepper from '@/components/other/Stepper'
-import { maxCompliments } from '@/config/review/trip_made_config'
+import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
@@ -178,7 +178,7 @@ export default {
         firstName: receiverFirstName,
         lastName: receiverLastName,
       }
-      for (let i = 0; i < maxCompliments; i++) {
+      for (let i = 0; i < constants.maxComplimentsAllowed; i++) {
         const compliment = rate.compliments[i]
         psStore.actions.addUserCompliment({
           sender,
