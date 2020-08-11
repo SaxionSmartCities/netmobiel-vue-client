@@ -241,7 +241,7 @@ export default {
       const ride = this.getPlannedRides[index]
       this.$router.push({
         name: 'rideDetailPage',
-        params: { ride, id: ride.id },
+        params: { ride, id: ride.id.toString() },
       })
     },
   },

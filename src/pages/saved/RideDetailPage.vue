@@ -1,5 +1,5 @@
 <template>
-  <content-pane v-if="ride">
+  <content-pane v-if="ride && ride.bookings">
     <v-row>
       <v-col class="py-0">
         <ride-details :ride="ride" class="mb-4" />
@@ -123,7 +123,7 @@ export default {
   },
   props: {
     id: {
-      type: Number,
+      type: String,
       required: true,
     },
   },
@@ -137,6 +137,9 @@ export default {
     }
   },
   computed: {
+    localId() {
+      return parseInt(this.id)
+    },
     passengersInBookings() {
       let bookings = !this.ride
         ? []
@@ -152,7 +155,6 @@ export default {
       return bookings
     },
     ride() {
-      console.log('getter selectedRide', csStore.getters.getSelectedRide)
       return csStore.getters.getSelectedRide
     },
     numBookings() {
@@ -164,7 +166,7 @@ export default {
   },
   mounted() {
     // Fetch the ride on details page. This is needed for deeplinking.
-    csStore.actions.fetchRide({ id: this.id })
+    csStore.actions.fetchRide({ id: this.localId })
   },
   methods: {
     generateSteps() {
@@ -179,7 +181,7 @@ export default {
         result.push(currentLeg)
 
         // We won't show any waiting times < 60 sec -- should be made a config
-        if (nextLeg.startTime - currentLeg.endTime > 60 * 1000) {
+        if (nextLeg.startTime - currentLeg?.endTime > 60 * 1000) {
           // Add "WAIT" element (not from OTP).
           result.push({
             mode: 'WAIT',
@@ -190,16 +192,19 @@ export default {
         }
       }
       let lastLeg = this.ride.legs[this.ride.legs.length - 1]
-      this.setPassenger(lastLeg, bookingDict)
-      result.push(lastLeg)
+      if (lastLeg) {
+        this.setPassenger(lastLeg, bookingDict)
+        result.push(lastLeg)
 
-      // Finally, we push the "FINISH" element (not from OTP)
-      result.push({
-        mode: 'FINISH',
-        startTime: lastLeg.endTime,
-        to: lastLeg.to,
-      })
-      return result
+        // Finally, we push the "FINISH" element (not from OTP)
+        result.push({
+          mode: 'FINISH',
+          startTime: lastLeg.endTime,
+          to: lastLeg.to,
+        })
+        return result
+      }
+      return []
     },
     generateBookingDictionary(bookings) {
       let dict = []
@@ -227,7 +232,7 @@ export default {
     deleteTrip() {
       this.warningDialog = false
       csStore.actions.deleteRide({
-        id: this.id,
+        id: this.localId,
         cancelReason: this.cancelReason,
       })
       this.$router.push('/tripsOverviewPage')
