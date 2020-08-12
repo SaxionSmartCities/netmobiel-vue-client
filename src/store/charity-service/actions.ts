@@ -1,12 +1,10 @@
-import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
-import { CharityState, STORE_STATE_OPTIONS } from './types'
+import { BareActionContext, ModuleBuilder } from 'vuex-typex'
+import { Charity, CharityState, STORE_STATE_OPTIONS } from './types'
 import { RootState } from '@/store/Rootstate'
 import { mutations } from '@/store/charity-service/index'
 import axios from 'axios'
 import config from '@/config/config'
 
-// @ts-ignore
-const chsBuilder: ModuleBuilder = getStoreBuilder().module('chs')
 type ActionContext = BareActionContext<CharityState, RootState>
 
 const BASE_URL = config.BASE_URL
@@ -45,7 +43,7 @@ function fetchPreviouslyDonatedCharities(
   params: any
 ): void {
   axios.get(BASE_URL + '/api/donation/previous').then(resp => {
-    actions.fetchCharities({
+    fetchCharities(context, {
       q: resp.data.charities,
       store: STORE_STATE_OPTIONS.PREVIOUS,
     })
@@ -90,15 +88,17 @@ function fetchTopDonors(context: ActionContext, id: string): void {
   })
 }
 
-const actions = {
-  fetchCharities: chsBuilder.dispatch(fetchCharities),
-  lookupCharity: chsBuilder.dispatch(lookupCharity),
-  donate: chsBuilder.dispatch(donate),
-  fetchDonationsFromCharity: chsBuilder.dispatch(fetchDonationsFromCharity),
-  fetchTopDonors: chsBuilder.dispatch(fetchTopDonors),
-  fetchPreviouslyDonatedCharities: chsBuilder.dispatch(
-    fetchPreviouslyDonatedCharities
-  ),
+export const buildActions = (
+  chsBuilder: ModuleBuilder<CharityState, RootState>
+) => {
+  return {
+    fetchCharities: chsBuilder.dispatch(fetchCharities),
+    lookupCharity: chsBuilder.dispatch(lookupCharity),
+    donate: chsBuilder.dispatch(donate),
+    fetchDonationsFromCharity: chsBuilder.dispatch(fetchDonationsFromCharity),
+    fetchTopDonors: chsBuilder.dispatch(fetchTopDonors),
+    fetchPreviouslyDonatedCharities: chsBuilder.dispatch(
+      fetchPreviouslyDonatedCharities
+    ),
+  }
 }
-
-export default actions

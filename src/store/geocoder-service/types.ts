@@ -12,10 +12,12 @@ export class GeoCoderState {
 
 export interface GeoCoder {
   query: string
-  suggestions: any[]
   pickedLocations: {
     to: { address?: string; displayPosition?: string }
     from: { address?: string; displayPosition?: string }
   }
   preFilledTime?: any
+  suggestions: GeoCoderSuggestion[]
 }
+
+export interface GeoCoderSuggestion {}

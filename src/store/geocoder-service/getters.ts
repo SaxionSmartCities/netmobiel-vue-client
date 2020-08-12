@@ -1,29 +1,31 @@
-import { getStoreBuilder, ModuleBuilder } from 'vuex-typex'
+import { ModuleBuilder } from 'vuex-typex'
 import { GeoCoderState } from './types'
+import { RootState } from '@/store/Rootstate'
 
-// @ts-ignore
-const gsBuilder: ModuleBuilder = getStoreBuilder().module('gc')
+export const buildGetters = (
+  gsBuilder: ModuleBuilder<GeoCoderState, RootState>
+) => {
+  const getGeocoderSuggestions = gsBuilder.read((state: GeoCoderState) => {
+    return state.geocoder.suggestions
+  }, 'getGeocoderSuggestions')
 
-const getGeocoderSuggestions = gsBuilder.read((state: GeoCoderState) => {
-  return state.geocoder.suggestions
-}, 'getGeocoderSuggestions')
+  const getPickedLocation = gsBuilder.read((state: GeoCoderState) => {
+    return state.geocoder.pickedLocations
+  }, 'getPickedLocation')
 
-const getPickedLocation = gsBuilder.read((state: GeoCoderState) => {
-  return state.geocoder.pickedLocations
-}, 'getPickedLocation')
+  const getPreFilledTime = gsBuilder.read((state: GeoCoderState) => {
+    return state.geocoder.preFilledTime
+  }, 'getPreFilledTime')
 
-const getPreFilledTime = gsBuilder.read((state: GeoCoderState) => {
-  return state.geocoder.preFilledTime
-}, 'getPreFilledTime')
-
-export default {
-  get getGeocoderSuggestions() {
-    return getGeocoderSuggestions()
-  },
-  get getPickedLocation() {
-    return getPickedLocation()
-  },
-  get getPreFilledTime() {
-    return getPreFilledTime()
-  },
+  return {
+    get getGeocoderSuggestions() {
+      return getGeocoderSuggestions()
+    },
+    get getPickedLocation() {
+      return getPickedLocation()
+    },
+    get getPreFilledTime() {
+      return getPreFilledTime()
+    },
+  }
 }

@@ -11,8 +11,9 @@ export class CarpoolState {
 
 export interface Car {}
 export interface Ride {}
+export interface SearchResult {}
 
-interface Search {
-  licensePlate: number | null
-  result: object | null
+export interface Search {
+  licensePlate: string | null
+  result: SearchResult | null
 }

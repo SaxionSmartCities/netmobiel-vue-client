@@ -1,13 +1,13 @@
 import { CharityState } from './types'
 import { storeBuilder } from '@/store/Rootstate'
-import chsGetters from '@/store/charity-service/getters'
-import chsMutations from '@/store/charity-service/mutations'
-import chsActions from '@/store/charity-service/actions'
+import { buildGetters } from '@/store/charity-service/getters'
+import { buildMutations } from '@/store/charity-service/mutations'
+import { buildActions } from '@/store/charity-service/actions'
 
 export const chsBuilder = storeBuilder.module<CharityState>(
   'chs',
   new CharityState()
 )
-export const getters = chsGetters
-export const mutations = chsMutations
-export const actions = chsActions
+export const getters = buildGetters(chsBuilder)
+export const mutations = buildMutations(chsBuilder)
+export const actions = buildActions(chsBuilder)

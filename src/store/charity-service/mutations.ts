@@ -1,12 +1,12 @@
-import { getStoreBuilder, ModuleBuilder } from 'vuex-typex'
+import { ModuleBuilder } from 'vuex-typex'
 import {
   Charity,
   CharityState,
   Donation,
   Donor,
 } from '@/store/charity-service/types'
-// @ts-ignore
-const chsBuilder: ModuleBuilder = getStoreBuilder().module('chs')
+import { UiState } from '@/store/ui/types'
+import { RootState } from '@/store/Rootstate'
 
 function setCharities(state: CharityState, payload: Charity[]) {
   state.charities = payload
@@ -37,14 +37,17 @@ function setPreviouslyDonatedCharities(
 ) {
   state.previouslyDonatedCharities = charities
 }
-
-export default {
-  setCharities: chsBuilder.commit(setCharities),
-  setCharity: chsBuilder.commit(setCharity),
-  setCharitySearchResults: chsBuilder.commit(setCharitySearchResults),
-  setCharityDonations: chsBuilder.commit(setCharityDonations),
-  setTopDonors: chsBuilder.commit(setTopDonors),
-  setPreviouslyDonatedCharities: chsBuilder.commit(
-    setPreviouslyDonatedCharities
-  ),
+export const buildMutations = (
+  chsBuilder: ModuleBuilder<CharityState, RootState>
+) => {
+  return {
+    setCharities: chsBuilder.commit(setCharities),
+    setCharity: chsBuilder.commit(setCharity),
+    setCharitySearchResults: chsBuilder.commit(setCharitySearchResults),
+    setCharityDonations: chsBuilder.commit(setCharityDonations),
+    setTopDonors: chsBuilder.commit(setTopDonors),
+    setPreviouslyDonatedCharities: chsBuilder.commit(
+      setPreviouslyDonatedCharities
+    ),
+  }
 }

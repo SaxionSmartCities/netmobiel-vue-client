@@ -1,10 +1,11 @@
-import { getStoreBuilder, ModuleBuilder } from 'vuex-typex'
-import { GeoCoderState } from './types'
+import { ModuleBuilder } from 'vuex-typex'
+import { GeoCoderState, GeoCoderSuggestion } from './types'
+import { RootState } from '@/store/Rootstate'
 
-// @ts-ignore
-const gsBuilder: ModuleBuilder = getStoreBuilder().module('gc')
-
-function setGeocoderSuggestions(state: GeoCoderState, payload: any) {
+function setGeocoderSuggestions(
+  state: GeoCoderState,
+  payload: GeoCoderSuggestion[]
+) {
   state.geocoder.suggestions = payload
 }
 
@@ -27,10 +28,14 @@ function swapLocations(state: GeoCoderState, payload: any) {
   state.geocoder.pickedLocations.from = tmp
 }
 
-export default {
-  setGeocoderSuggestions: gsBuilder.commit(setGeocoderSuggestions),
-  setGeoLocationPicked: gsBuilder.commit(setGeoLocationPicked),
-  setGeoLocationsPicked: gsBuilder.commit(setGeoLocationsPicked),
-  setPreFilledTime: gsBuilder.commit(setPreFilledTime),
-  swapLocations: gsBuilder.commit(swapLocations),
+export const buildMutations = (
+  gsBuilder: ModuleBuilder<GeoCoderState, RootState>
+) => {
+  return {
+    setGeocoderSuggestions: gsBuilder.commit(setGeocoderSuggestions),
+    setGeoLocationPicked: gsBuilder.commit(setGeoLocationPicked),
+    setGeoLocationsPicked: gsBuilder.commit(setGeoLocationsPicked),
+    setPreFilledTime: gsBuilder.commit(setPreFilledTime),
+    swapLocations: gsBuilder.commit(swapLocations),
+  }
 }

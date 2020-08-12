@@ -1,13 +1,11 @@
 import { CarpoolState } from './types'
 import { RootState } from '@/store/Rootstate'
-import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
+import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { mutations } from '@/store/carpool-service/index'
 import * as uiStore from '@/store/ui'
 import axios from 'axios'
 import config from '@/config/config'
 
-// @ts-ignore
-const csBuilder: ModuleBuilder = getStoreBuilder().module('cs')
 type ActionContext = BareActionContext<CarpoolState, RootState>
 
 const BASE_URL = config.BASE_URL
@@ -48,7 +46,7 @@ function fetchLicense(context: ActionContext, payload: any): void {
     })
 }
 
-function fetchCars(context: ActionContext, payload: any) {
+function fetchCars(context: ActionContext) {
   const URL = BASE_URL + `/rideshare/cars`
   axios
     .get(URL, {
@@ -78,7 +76,7 @@ function submitCar(context: ActionContext, payload: any) {
     .then(function(resp) {
       // eslint-disable-next-line
       console.log(resp)
-      actions.fetchCars()
+      fetchCars(context)
     })
     .catch(function(error) {
       // eslint-disable-next-line
@@ -99,10 +97,10 @@ function removeCar(context: ActionContext, payload: any) {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
     })
     .then(function(resp) {
-      actions.fetchCars()
+      fetchCars(context)
       // eslint-disable-next-line
       console.log(resp)
-      actions.fetchCars()
+      fetchCars(context)
     })
     .catch(function(error) {
       // eslint-disable-next-line
@@ -162,7 +160,7 @@ function submitRide(context: ActionContext, payload: any) {
     .then(function(res) {
       // eslint-disable-next-line
       console.log(res)
-      actions.fetchRides({ offset: 0, maxResults: 10 })
+      fetchRides(context, { offset: 0, maxResults: 10 })
     })
     .catch(function(error) {
       // eslint-disable-next-line
@@ -269,16 +267,18 @@ function fetchUser(context: ActionContext, { userRef }: any) {
     })
 }
 
-const actions = {
-  fetchLicense: csBuilder.dispatch(fetchLicense),
-  fetchCars: csBuilder.dispatch(fetchCars),
-  submitCar: csBuilder.dispatch(submitCar),
-  removeCar: csBuilder.dispatch(removeCar),
-  submitRide: csBuilder.dispatch(submitRide),
-  fetchRides: csBuilder.dispatch(fetchRides),
-  fetchRide: csBuilder.dispatch(fetchRide),
-  deleteRide: csBuilder.dispatch(deleteRide),
-  fetchUser: csBuilder.dispatch(fetchUser),
+export const buildActions = (
+  csBuilder: ModuleBuilder<CarpoolState, RootState>
+) => {
+  return {
+    fetchLicense: csBuilder.dispatch(fetchLicense),
+    fetchCars: csBuilder.dispatch(fetchCars),
+    submitCar: csBuilder.dispatch(submitCar),
+    removeCar: csBuilder.dispatch(removeCar),
+    submitRide: csBuilder.dispatch(submitRide),
+    fetchRides: csBuilder.dispatch(fetchRides),
+    fetchRide: csBuilder.dispatch(fetchRide),
+    deleteRide: csBuilder.dispatch(deleteRide),
+    fetchUser: csBuilder.dispatch(fetchUser),
+  }
 }
-
-export default actions

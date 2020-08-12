@@ -6,8 +6,6 @@ import { RootState } from '@/store/Rootstate'
 import { mutations } from '@/store/geocoder-service/index'
 import * as uiStore from '@/store/ui'
 
-// @ts-ignore
-const gsBuilder: ModuleBuilder = getStoreBuilder().module('gc')
 type ActionContext = BareActionContext<GeoCoderState, RootState>
 
 const GEOCODER_BASE_URL = config.BASE_URL
@@ -49,7 +47,10 @@ async function fetchGeocoderSuggestions(
   }
 }
 
-const actions = {
-  fetchGeocoderSuggestions: gsBuilder.dispatch(fetchGeocoderSuggestions),
+export const buildActions = (
+  gsBuilder: ModuleBuilder<GeoCoderState, RootState>
+) => {
+  return {
+    fetchGeocoderSuggestions: gsBuilder.dispatch(fetchGeocoderSuggestions),
+  }
 }
-export default actions
