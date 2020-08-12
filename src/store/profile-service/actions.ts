@@ -299,6 +299,7 @@ function fetchCreditHistory(context: ActionContext, payload: any) {
       type: 'addedCredits',
     },
   ]
+  // @ts-ignore
   mutations.setCreditHistory(creditHistory)
 }
 

@@ -1,9 +1,12 @@
 // @ts-ignore
 import VueJwtDecode from 'vue-jwt-decode'
-import { getStoreBuilder, ModuleBuilder } from 'vuex-typex'
-import { ProfileState } from '@/store/profile-service/types'
-// @ts-ignore
-const psBuilder: ModuleBuilder = getStoreBuilder().module('ps')
+import { ModuleBuilder } from 'vuex-typex'
+import {
+  ComplimentType,
+  Profile,
+  ProfileState,
+} from '@/store/profile-service/types'
+import { RootState } from '@/store/Rootstate'
 
 function setUserToken(state: ProfileState, token: any) {
   state.user.accessToken = token
@@ -14,15 +17,15 @@ function setUserToken(state: ProfileState, token: any) {
   state.user.fullName = decodedObject['name']
 }
 
-function deleteAccessToken(state: ProfileState, payload: any) {
+function deleteAccessToken(state: ProfileState) {
   state.user.accessToken = null
 }
 
-function setProfile(state: ProfileState, payload: any) {
+function setProfile(state: ProfileState, payload: Profile) {
   state.user.profile = payload
 }
 
-function setProfileImage(state: ProfileState, payload: any) {
+function setProfileImage(state: ProfileState, payload: string) {
   state.user.profile.image = payload
 }
 
@@ -44,10 +47,10 @@ function setTripOptionsValue(state: ProfileState, payload: any) {
   })
 }
 
-function setCreditAmount(state: ProfileState, payload: any) {
+function setCreditAmount(state: ProfileState, payload: number) {
   state.user.credits.creditAmount = payload
 }
-function setCreditHistory(state: ProfileState, payload: any) {
+function setCreditHistory(state: ProfileState, payload: []) {
   state.user.credits.creditHistory = payload
 }
 function setReviewOptionsValue(state: ProfileState, payload: any) {
@@ -86,22 +89,29 @@ function setPrivacySecurityValue(state: ProfileState, payload: any) {
   })
 }
 
-function setComplimentTypes(state: ProfileState, complimentTypes: any) {
+function setComplimentTypes(
+  state: ProfileState,
+  complimentTypes: ComplimentType[]
+) {
   state.complimentTypes = complimentTypes
 }
 
-export default {
-  setUserToken: psBuilder.commit(setUserToken),
-  deleteAccessToken: psBuilder.commit(deleteAccessToken),
-  setProfile: psBuilder.commit(setProfile),
-  setProfileImage: psBuilder.commit(setProfileImage),
-  setNotificationOptionsValue: psBuilder.commit(setNotificationOptionsValue),
-  setTripOptionsValue: psBuilder.commit(setTripOptionsValue),
-  setCreditAmount: psBuilder.commit(setCreditAmount),
-  setCreditHistory: psBuilder.commit(setCreditHistory),
-  setReviewOptionsValue: psBuilder.commit(setReviewOptionsValue),
-  setRidePlanOptions: psBuilder.commit(setRidePlanOptions),
-  addRidePlanOptionsCar: psBuilder.commit(addRidePlanOptionsCar),
-  setPrivacySecurityValue: psBuilder.commit(setPrivacySecurityValue),
-  setComplimentTypes: psBuilder.commit(setComplimentTypes),
+export const buildMutations = (
+  psBuilder: ModuleBuilder<ProfileState, RootState>
+) => {
+  return {
+    setUserToken: psBuilder.commit(setUserToken),
+    deleteAccessToken: psBuilder.commit(deleteAccessToken),
+    setProfile: psBuilder.commit(setProfile),
+    setProfileImage: psBuilder.commit(setProfileImage),
+    setNotificationOptionsValue: psBuilder.commit(setNotificationOptionsValue),
+    setTripOptionsValue: psBuilder.commit(setTripOptionsValue),
+    setCreditAmount: psBuilder.commit(setCreditAmount),
+    setCreditHistory: psBuilder.commit(setCreditHistory),
+    setReviewOptionsValue: psBuilder.commit(setReviewOptionsValue),
+    setRidePlanOptions: psBuilder.commit(setRidePlanOptions),
+    addRidePlanOptionsCar: psBuilder.commit(addRidePlanOptionsCar),
+    setPrivacySecurityValue: psBuilder.commit(setPrivacySecurityValue),
+    setComplimentTypes: psBuilder.commit(setComplimentTypes),
+  }
 }
