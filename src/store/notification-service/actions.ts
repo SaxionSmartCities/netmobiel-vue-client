@@ -29,25 +29,19 @@ function sendNotification(context: ActionContext, payload: any) {
       // eslint-disable-next-line
       console.log(response)
       if (response.status == 200) {
-        uiStore.actions.queueNotification(
-          {
-            message: 'Er is een bericht naar de chauffeur verstuurd.',
-            timeout: 3000,
-          },
-          { root: true }
-        )
+        uiStore.actions.queueNotification({
+          message: 'Er is een bericht naar de chauffeur verstuurd.',
+          timeout: 3000,
+        })
       }
     })
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification(
-        {
-          message: 'Fout bij het versturen van een gebruikersnotificatie.',
-          timeout: 0,
-        },
-        { root: true }
-      )
+      uiStore.actions.queueNotification({
+        message: 'Fout bij het versturen van een gebruikersnotificatie.',
+        timeout: 0,
+      })
     })
 }
 

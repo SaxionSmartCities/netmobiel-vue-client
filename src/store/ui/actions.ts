@@ -1,7 +1,7 @@
-import { UiState } from './types'
+import { UiState, UiNotification } from './types'
 import { RootState } from '@/store/Rootstate'
 import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
-import { mutations } from '@/store/ui'
+import { actions, mutations } from '@/store/ui'
 
 // @ts-ignore
 const uiBuilder: ModuleBuilder = getStoreBuilder().module('ui')
@@ -16,7 +16,7 @@ function addUpdate(context: ActionContext, update: any): void {
   }
 }
 
-function queueNotification(context: ActionContext, payload: any) {
+function queueNotification(context: ActionContext, payload: UiNotification) {
   mutations.pushNotificationToQueue(payload)
 
   // If the notification that was just pushed is the first (in a while),
@@ -52,10 +52,11 @@ function finishNotification(context: ActionContext, payload: any) {
     }, 250)
   }
 }
-const actions = {
-  addUpdate: uiBuilder.dispatch(addUpdate),
-  queueNotification: uiBuilder.dispatch(queueNotification),
-  finishNotification: uiBuilder.dispatch(finishNotification),
-}
 
-export default actions
+export const buildActions = (builder: ModuleBuilder<UiState, RootState>) => {
+  return {
+    addUpdate: builder.dispatch(addUpdate),
+    queueNotification: builder.dispatch(queueNotification),
+    finishNotification: builder.dispatch(finishNotification),
+  }
+}
