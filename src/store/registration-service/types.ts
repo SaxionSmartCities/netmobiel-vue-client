@@ -5,9 +5,14 @@ export class RegistrationState {
     email: '',
     firstName: '',
     lastName: '',
-    submitStatus: { message: '', success: null },
+    submitStatus: { message: '', success: false },
     userRole: '',
   }
+}
+
+export interface SubmitStatus {
+  success: boolean
+  message: string
 }
 
 export interface RegistrationRequest {
@@ -22,8 +27,5 @@ export interface RegistrationRequest {
     olderThanSixteen: false
     acceptedTerms: false
   }
-  submitStatus: {
-    success: null
-    message: ''
-  }
+  submitStatus: SubmitStatus
 }

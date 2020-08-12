@@ -1,15 +1,17 @@
-import { getStoreBuilder, ModuleBuilder } from 'vuex-typex'
+import { ModuleBuilder } from 'vuex-typex'
 import { RegistrationState } from './types'
+import { RootState } from '@/store/Rootstate'
 
-// @ts-ignore
-const rsBuilder: ModuleBuilder = getStoreBuilder().module('rs')
+export const buildGetters = (
+  rsBuilder: ModuleBuilder<RegistrationState, RootState>
+) => {
+  const getRegistrationStatus = rsBuilder.read((state: RegistrationState) => {
+    return state.registrationRequest.submitStatus
+  }, 'getRegistrationStatus')
 
-const getRegistrationStatus = rsBuilder.read((state: RegistrationState) => {
-  return state.registrationRequest.submitStatus
-}, 'getRegistrationStatus')
-
-export default {
-  get getRegistrationStatus() {
-    return getRegistrationStatus()
-  },
+  return {
+    get getRegistrationStatus() {
+      return getRegistrationStatus()
+    },
+  }
 }

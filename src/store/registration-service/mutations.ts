@@ -1,9 +1,11 @@
-import { getStoreBuilder, ModuleBuilder } from 'vuex-typex'
-import { RegistrationState } from './types'
-// @ts-ignore
-const rsBuilder: ModuleBuilder = getStoreBuilder().module('rs')
+import { ModuleBuilder } from 'vuex-typex'
+import { RegistrationRequest, RegistrationState, SubmitStatus } from './types'
+import { RootState } from '@/store/Rootstate'
 
-function storeRegistrationRequest(state: RegistrationState, payload: any) {
+function storeRegistrationRequest(
+  state: RegistrationState,
+  payload: RegistrationRequest
+) {
   state.registrationRequest.firstName = payload.firstName
   state.registrationRequest.lastName = payload.lastName
   state.registrationRequest.email = payload.email
@@ -12,11 +14,14 @@ function storeRegistrationRequest(state: RegistrationState, payload: any) {
   state.registrationRequest.consent = { ...payload.consent }
 }
 
-function setRegistrationStatus(state: RegistrationState, payload: any) {
+function setRegistrationStatus(
+  state: RegistrationState,
+  payload: SubmitStatus
+) {
   state.registrationRequest.submitStatus = payload
 }
 
-function clearRegistrationRequest(state: RegistrationState, payload: any) {
+function clearRegistrationRequest(state: RegistrationState) {
   state.registrationRequest = {
     firstName: '',
     lastName: '',
@@ -30,14 +35,17 @@ function clearRegistrationRequest(state: RegistrationState, payload: any) {
       acceptedTerms: false,
     },
     submitStatus: {
-      success: null,
+      success: false,
       message: '',
     },
   }
 }
-
-export default {
-  storeRegistrationRequest: rsBuilder.commit(storeRegistrationRequest),
-  setRegistrationStatus: rsBuilder.commit(setRegistrationStatus),
-  clearRegistrationRequest: rsBuilder.commit(clearRegistrationRequest),
+export const buildMutations = (
+  rsBuilder: ModuleBuilder<RegistrationState, RootState>
+) => {
+  return {
+    storeRegistrationRequest: rsBuilder.commit(storeRegistrationRequest),
+    setRegistrationStatus: rsBuilder.commit(setRegistrationStatus),
+    clearRegistrationRequest: rsBuilder.commit(clearRegistrationRequest),
+  }
 }

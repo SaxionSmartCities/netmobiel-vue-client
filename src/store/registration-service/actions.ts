@@ -1,8 +1,8 @@
 import axios from 'axios'
 import config from '@/config/config'
 import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
-import { RegistrationState } from './types'
-import { mutations } from '@/store/registration-service/index'
+import { RegistrationRequest, RegistrationState } from './types'
+import { mutations } from '@/store/registration-service'
 import { RootState } from '@/store/Rootstate'
 // @ts-ignore
 const rsBuilder: ModuleBuilder = getStoreBuilder().module('rs')
@@ -17,7 +17,10 @@ function generateHeader(key: any) {
   }
 }
 
-function submitRegistrationRequest(context: ActionContext, payload: any): void {
+function submitRegistrationRequest(
+  context: ActionContext,
+  payload: RegistrationRequest
+): void {
   mutations.storeRegistrationRequest(payload)
 
   const axiosConfig = {
