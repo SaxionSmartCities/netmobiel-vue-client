@@ -2,7 +2,7 @@ import { ProfileState } from './types'
 import { storeBuilder } from '@/store/Rootstate'
 import { buildGetters } from '@/store/profile-service/getters.ts'
 import { buildMutations } from '@/store/profile-service/mutations'
-import psActions from '@/store/profile-service/actions'
+import { buildActions } from '@/store/profile-service/actions'
 
 export const psBuilder = storeBuilder.module<ProfileState>(
   'ps',
@@ -10,4 +10,4 @@ export const psBuilder = storeBuilder.module<ProfileState>(
 )
 export const getters = buildGetters(psBuilder)
 export const mutations = buildMutations(psBuilder)
-export const actions = psActions
+export const actions = buildActions(psBuilder)

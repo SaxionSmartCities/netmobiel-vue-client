@@ -1,12 +1,10 @@
 import config from '@/config/config'
-import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
-import { ProfileState } from '@/store/profile-service/types'
+import { BareActionContext, ModuleBuilder } from 'vuex-typex'
+import { Profile, ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { mutations } from '@/store/profile-service'
 import axios from 'axios'
 import moment from 'moment'
-// @ts-ignore
-const psBuilder: ModuleBuilder = getStoreBuilder().module('ps')
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -38,7 +36,7 @@ function fetchProfile(context: ActionContext, payload: any) {
         profile.image = imgSrc
         if (!!localStorage.fcm && localStorage.fcm !== profile.fcmToken) {
           profile.fcmToken = localStorage.fcm
-          actions.updateProfile(profile)
+          updateProfile(context, profile)
         } else {
           mutations.setProfile(profile)
         }
@@ -183,7 +181,7 @@ function storeFavoriteLocations(context: ActionContext, payload: any) {
     ...context.state.user.profile,
     favoriteLocations: payload,
   }
-  actions.updateProfile(profile)
+  updateProfile(context, profile)
 }
 
 function storeSearchPreferences(context: ActionContext, payload: any) {
@@ -192,7 +190,7 @@ function storeSearchPreferences(context: ActionContext, payload: any) {
     ...context.state.user.profile,
     searchPreferences: { ...payload },
   }
-  actions.updateProfile(profile)
+  updateProfile(context, profile)
 }
 
 function storeRidePreferences(context: ActionContext, payload: any) {
@@ -201,16 +199,16 @@ function storeRidePreferences(context: ActionContext, payload: any) {
     ...context.state.user.profile,
     ridePlanOptions: { ...payload },
   }
-  actions.updateProfile(profile)
+  updateProfile(context, profile)
 }
 
-function storeFcmToken(context: ActionContext, payload: any) {
+function storeFcmToken(context: ActionContext, payload: { fcmToken: string }) {
   let profile = { ...context.state.user.profile }
   profile.fcmToken = payload.fcmToken
-  actions.updateProfile(profile)
+  updateProfile(context, profile)
 }
 
-function updateProfile(context: ActionContext, profile: any) {
+function updateProfile(context: ActionContext, profile: Profile) {
   const URL = BASE_URL + '/profiles/' + profile.id
   axios
     .put(URL, profile, {
@@ -303,23 +301,25 @@ function fetchCreditHistory(context: ActionContext, payload: any) {
   mutations.setCreditHistory(creditHistory)
 }
 
-const actions = {
-  fetchProfile: psBuilder.dispatch(fetchProfile),
-  fetchUserProfile: psBuilder.dispatch(fetchUserProfile),
-  fetchUserCompliments: psBuilder.dispatch(fetchUserCompliments),
-  fetchComplimentTypes: psBuilder.dispatch(fetchComplimentTypes),
-  addUserCompliment: psBuilder.dispatch(addUserCompliment),
-  fetchUserReviews: psBuilder.dispatch(fetchUserReviews),
-  addUserReview: psBuilder.dispatch(addUserReview),
-  fetchUser: psBuilder.dispatch(fetchUser),
-  storeFavoriteLocations: psBuilder.dispatch(storeFavoriteLocations),
-  storeSearchPreferences: psBuilder.dispatch(storeSearchPreferences),
-  storeRidePreferences: psBuilder.dispatch(storeRidePreferences),
-  storeFcmToken: psBuilder.dispatch(storeFcmToken),
-  updateProfile: psBuilder.dispatch(updateProfile),
-  updateProfileImage: psBuilder.dispatch(updateProfileImage),
-  fetchCreditAmount: psBuilder.dispatch(fetchCreditAmount),
-  fetchCreditHistory: psBuilder.dispatch(fetchCreditHistory),
+export const buildActions = (
+  psBuilder: ModuleBuilder<ProfileState, RootState>
+) => {
+  return {
+    fetchProfile: psBuilder.dispatch(fetchProfile),
+    fetchUserProfile: psBuilder.dispatch(fetchUserProfile),
+    fetchUserCompliments: psBuilder.dispatch(fetchUserCompliments),
+    fetchComplimentTypes: psBuilder.dispatch(fetchComplimentTypes),
+    addUserCompliment: psBuilder.dispatch(addUserCompliment),
+    fetchUserReviews: psBuilder.dispatch(fetchUserReviews),
+    addUserReview: psBuilder.dispatch(addUserReview),
+    fetchUser: psBuilder.dispatch(fetchUser),
+    storeFavoriteLocations: psBuilder.dispatch(storeFavoriteLocations),
+    storeSearchPreferences: psBuilder.dispatch(storeSearchPreferences),
+    storeRidePreferences: psBuilder.dispatch(storeRidePreferences),
+    storeFcmToken: psBuilder.dispatch(storeFcmToken),
+    updateProfile: psBuilder.dispatch(updateProfile),
+    updateProfileImage: psBuilder.dispatch(updateProfileImage),
+    fetchCreditAmount: psBuilder.dispatch(fetchCreditAmount),
+    fetchCreditHistory: psBuilder.dispatch(fetchCreditHistory),
+  }
 }
-
-export default actions

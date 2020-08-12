@@ -1,11 +1,9 @@
 import axios from 'axios'
 import config from '@/config/config'
-import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
+import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { RegistrationRequest, RegistrationState } from './types'
 import { mutations } from '@/store/registration-service'
 import { RootState } from '@/store/Rootstate'
-// @ts-ignore
-const rsBuilder: ModuleBuilder = getStoreBuilder().module('rs')
 type ActionContext = BareActionContext<RegistrationState, RootState>
 
 const BASE_URL = config.BASE_URL
@@ -55,6 +53,10 @@ function submitRegistrationRequest(
     })
 }
 
-export default {
-  submitRegistrationRequest: rsBuilder.dispatch(submitRegistrationRequest),
+export const buildActions = (
+  rsBuilder: ModuleBuilder<RegistrationState, RootState>
+) => {
+  return {
+    submitRegistrationRequest: rsBuilder.dispatch(submitRegistrationRequest),
+  }
 }

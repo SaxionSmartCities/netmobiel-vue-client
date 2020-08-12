@@ -1,18 +1,24 @@
 import Vue from 'vue'
 import { ModuleBuilder } from 'vuex-typex'
-import { Message, MessageState } from './types'
+import { Conversation, Message, MessageState } from './types'
 import { RootState } from '@/store/Rootstate'
 
-function setMessages(state: MessageState, { context, messages }: any) {
-  state.messages[context] = messages
+function setMessages(
+  state: MessageState,
+  { context, messages }: { context: string; messages: Message[] }
+) {
+  if (!state.messages.has(context)) {
+    state.messages.set(context, [])
+  }
+  state.messages.get(context)!.push(messages)
   state.activeMessages = messages
 }
 
-function setConversations(state: MessageState, payload: any) {
+function setConversations(state: MessageState, payload: Conversation[]) {
   state.conversations = payload
 }
 
-function addContext(state: MessageState, context: any) {
+function addContext(state: MessageState, context: string) {
   state.contexts.findIndex(id => id === context) !== -1 &&
     state.contexts.push(context)
 }

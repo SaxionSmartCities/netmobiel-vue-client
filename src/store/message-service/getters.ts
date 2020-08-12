@@ -7,7 +7,7 @@ export const buildGetters = (
 ) => {
   const getMessages = (urn: any) => {
     msBuilder.read((state: MessageState) => {
-      return state.messages[urn]
+      return state.messages.get(urn)
     }, 'getMessages')
   }
 

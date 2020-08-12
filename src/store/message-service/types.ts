@@ -1,8 +1,10 @@
 export class MessageState {
   conversations: any[] = []
-  messages: Message[] = []
+  messages: Map<string, Message[]> = new Map()
   contexts: any[] = []
   activeMessages: any[] = []
 }
 
-export class Message {}
+export interface Message {}
+
+export interface Conversation {}
