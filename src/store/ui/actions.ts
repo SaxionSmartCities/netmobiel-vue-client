@@ -1,8 +1,7 @@
 import { UiState } from './types'
 import { RootState } from '@/store/Rootstate'
 import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
-import { mutations } from '@/store/ui/index'
-import axios from 'axios'
+import { mutations } from '@/store/ui'
 
 // @ts-ignore
 const uiBuilder: ModuleBuilder = getStoreBuilder().module('ui')
@@ -13,7 +12,7 @@ function addUpdate(context: ActionContext, update: any): void {
   let updates = context.state.updateMessages
   let found = updates!.find(u => JSON.stringify(u) === JSON.stringify(update))
   if (found === undefined) {
-    mutations.pushUpdate('pushUpdate', update)
+    mutations.pushUpdate(update)
   }
 }
 
