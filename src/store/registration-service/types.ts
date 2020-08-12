@@ -12,7 +12,7 @@ export class RegistrationState {
 
 export interface SubmitStatus {
   success: boolean
-  message: string
+  message?: string
 }
 
 export interface RegistrationRequest {

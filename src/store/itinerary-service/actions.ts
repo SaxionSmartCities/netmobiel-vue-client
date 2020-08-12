@@ -1,15 +1,13 @@
 import axios from 'axios'
 import config from '@/config/config'
 import constants from '../../constants/constants'
-import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
+import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { ItineraryState } from '@/store/itinerary-service/types'
 import { RootState } from '../Rootstate'
 import { mutations } from '@/store/itinerary-service/index'
 import * as uiStore from '@/store/ui'
 type ActionContext = BareActionContext<ItineraryState, RootState>
 
-// @ts-ignore
-const isBuilder: ModuleBuilder = getStoreBuilder().module('is')
 const BASE_URL = config.BASE_URL
 const GRAVITEE_PLANNER_SERVICE_API_KEY = config.GRAVITEE_PLANNER_SERVICE_API_KEY
 
@@ -41,7 +39,7 @@ function submitPlanningsRequest(
     travelTime: travelTime.when.format(),
     useAsArrivalTime: travelTime.arriving,
   }
-  mutations.setPlanningStatus({ status: 'PENDING' })
+  mutations.setPlanningStatus({ status: 'PENDING', message: '' })
   axios
     .get(URL, {
       headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
@@ -75,7 +73,7 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
           message: 'Reis is succesvol geannuleerd',
           timeout: 3000,
         })
-        actions.fetchTrips({
+        fetchTrips(context, {
           maxResults: constants.fetchTripsMaxResults,
           offset: 0,
         })
@@ -343,19 +341,21 @@ function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
     })
 }
 
-const actions = {
-  submitPlanningsRequest: isBuilder.dispatch(submitPlanningsRequest),
-  deleteSelectedTrip: isBuilder.dispatch(deleteSelectedTrip),
-  storeSelectedTrip: isBuilder.dispatch(storeSelectedTrip),
-  storeShoutOut: isBuilder.dispatch(storeShoutOut),
-  fetchTrips: isBuilder.dispatch(fetchTrips),
-  fetchShoutOuts: isBuilder.dispatch(fetchShoutOuts),
-  fetchMyShoutOuts: isBuilder.dispatch(fetchMyShoutOuts),
-  fetchShoutOut: isBuilder.dispatch(fetchShoutOut),
-  fetchTrip: isBuilder.dispatch(fetchTrip),
-  submitShoutOutPlanningsRequest: isBuilder.dispatch(
-    submitShoutOutPlanningsRequest
-  ),
+export const buildActions = (
+  isBuilder: ModuleBuilder<ItineraryState, RootState>
+) => {
+  return {
+    submitPlanningsRequest: isBuilder.dispatch(submitPlanningsRequest),
+    deleteSelectedTrip: isBuilder.dispatch(deleteSelectedTrip),
+    storeSelectedTrip: isBuilder.dispatch(storeSelectedTrip),
+    storeShoutOut: isBuilder.dispatch(storeShoutOut),
+    fetchTrips: isBuilder.dispatch(fetchTrips),
+    fetchShoutOuts: isBuilder.dispatch(fetchShoutOuts),
+    fetchMyShoutOuts: isBuilder.dispatch(fetchMyShoutOuts),
+    fetchShoutOut: isBuilder.dispatch(fetchShoutOut),
+    fetchTrip: isBuilder.dispatch(fetchTrip),
+    submitShoutOutPlanningsRequest: isBuilder.dispatch(
+      submitShoutOutPlanningsRequest
+    ),
+  }
 }
-
-export default actions

@@ -5,20 +5,20 @@ export class ItineraryState {
     date: undefined,
     itinerary: {},
   }
-  shoutOuts = []
-  myShoutOuts = []
-  shoutOutsTotalCount = 0
-  plannedTripsCount = 0
-  plannedTrips = []
-  pastTripsCount = 0
-  pastTrips = []
+  shoutOuts: ShoutOut[] = []
+  myShoutOuts: ShoutOut[] = []
+  shoutOutsTotalCount: number = 0
+  plannedTripsCount: number = 0
+  plannedTrips: Trip[] = []
+  pastTripsCount: number = 0
+  pastTrips: Trip[] = []
   searchCriteria = {
     from: null,
     to: null,
     travelTime: null,
     preferences: null,
   }
-  planningRequest = {
+  planningRequest: PlanningRequest = {
     from: null,
     to: null,
     travelTime: null,
@@ -32,16 +32,25 @@ export class ItineraryState {
 }
 
 export interface ShoutOut {}
+
 export interface Trip {}
 
-interface PlanningRequest {
-  from: any
-  to: any
-  travelTime: string
-  preferences: any
-  submitStatus: {
-    status: string
-    message: string
-  }
-  result: any
+export interface SubmitStatus {
+  status?: string
+  message?: string
 }
+
+export interface PlanningRequest {
+  from: any
+  to?: any
+  travelTime: any
+  preferences?: any
+  submitStatus?: SubmitStatus
+  result?: PlanningResult | null
+}
+
+export interface PlanningResult {
+  data: any
+}
+
+export interface Itinerary {}
