@@ -53,15 +53,12 @@ function submitPlanningsRequest(
     })
     .catch(error => {
       mutations.setPlanningStatus({ status: 'FAILED' })
-      uiStore.actions.queueNotification(
-        {
-          message: error.response
-            ? error.response.data.message
-            : 'Network failure',
-          timeout: 0,
-        },
-        { root: true }
-      )
+      uiStore.actions.queueNotification({
+        message: error.response
+          ? error.response.data.message
+          : 'Network failure',
+        timeout: 0,
+      })
     })
 }
 
@@ -74,43 +71,40 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
     .then(response => {
       if (response.status === 204) {
         //Succesful response, trip is deleted.
-        uiStore.actions.queueNotification(
-          { message: 'Reis is succesvol geannuleerd', timeout: 3000 },
-          { root: true }
-        )
+        uiStore.actions.queueNotification({
+          message: 'Reis is succesvol geannuleerd',
+          timeout: 3000,
+        })
         actions.fetchTrips({
           maxResults: constants.fetchTripsMaxResults,
           offset: 0,
         })
       } else if (response.status === 404) {
         //requested trip could not be found
-        uiStore.actions.queueNotification(
-          {
-            message: 'De opgegeven reis kon niet worden gevonden.',
-            timeout: 0,
-          },
-          { root: true }
-        )
+        uiStore.actions.queueNotification({
+          message: 'De opgegeven reis kon niet worden gevonden.',
+          timeout: 0,
+        })
       } else if (response.status === 401) {
         //The requested object does no longer exist
-        uiStore.actions.queueNotification(
-          { message: 'Deze reis is al geannuleerd', timeout: 0 },
-          { root: true }
-        )
+        uiStore.actions.queueNotification({
+          message: 'Deze reis is al geannuleerd',
+          timeout: 0,
+        })
       } else {
-        uiStore.actions.queueNotification(
-          { message: response.data.message, timeout: 0 },
-          { root: true }
-        )
+        uiStore.actions.queueNotification({
+          message: response.data.message,
+          timeout: 0,
+        })
       }
     })
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification(
-        { message: 'fout bij het annuleren van de reis', timeout: 0 },
-        { root: true }
-      )
+      uiStore.actions.queueNotification({
+        message: 'fout bij het annuleren van de reis',
+        timeout: 0,
+      })
     })
 }
 
@@ -127,24 +121,21 @@ function storeSelectedTrip(
     .then(response => {
       if (response.status == 201) {
         let message = 'Uw reis is bevestigd!'
-        uiStore.actions.queueNotification(
-          { message: message, timeout: 3000 },
-          { root: true }
-        )
+        uiStore.actions.queueNotification({ message: message, timeout: 3000 })
       } else {
-        uiStore.actions.queueNotification(
-          { message: response.data.message, timeout: 0 },
-          { root: true }
-        )
+        uiStore.actions.queueNotification({
+          message: response.data.message,
+          timeout: 0,
+        })
       }
     })
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification(
-        { message: 'Fout bij het opslaan van de reis.', timeout: 0 },
-        { root: true }
-      )
+      uiStore.actions.queueNotification({
+        message: 'Fout bij het opslaan van de reis.',
+        timeout: 0,
+      })
     })
 }
 
@@ -172,24 +163,21 @@ function storeShoutOut(
     .then(response => {
       if (response.status == 201) {
         let message = 'Oproep naar de community is geplaatst'
-        uiStore.actions.queueNotification(
-          { message: message, timeout: 3000 },
-          { root: true }
-        )
+        uiStore.actions.queueNotification({ message: message, timeout: 3000 })
       } else {
-        uiStore.actions.queueNotification(
-          { message: response.data.message, timeout: 0 },
-          { root: true }
-        )
+        uiStore.actions.queueNotification({
+          message: response.data.message,
+          timeout: 0,
+        })
       }
     })
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification(
-        { message: 'Fout bij het opslaan van uw oproep.', timeout: 0 },
-        { root: true }
-      )
+      uiStore.actions.queueNotification({
+        message: 'Fout bij het opslaan van uw oproep.',
+        timeout: 0,
+      })
     })
 }
 
@@ -229,13 +217,10 @@ function fetchTrips(
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification(
-        {
-          message: 'Fout bij het ophalen van opgeslagen reizen.',
-          timeout: 0,
-        },
-        { root: true }
-      )
+      uiStore.actions.queueNotification({
+        message: 'Fout bij het ophalen van opgeslagen reizen.',
+        timeout: 0,
+      })
     })
 }
 
@@ -298,13 +283,10 @@ function fetchShoutOut(context: ActionContext, { id }: any) {
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification(
-        {
-          message: 'Fout bij het ophalen van de reis.',
-          timeout: 0,
-        },
-        { root: true }
-      )
+      uiStore.actions.queueNotification({
+        message: 'Fout bij het ophalen van de reis.',
+        timeout: 0,
+      })
     })
 }
 
@@ -322,13 +304,10 @@ function fetchTrip(context: ActionContext, payload: any) {
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification(
-        {
-          message: 'Fout bij het ophalen van de reis.',
-          timeout: 0,
-        },
-        { root: true }
-      )
+      uiStore.actions.queueNotification({
+        message: 'Fout bij het ophalen van de reis.',
+        timeout: 0,
+      })
     })
 }
 
@@ -355,15 +334,12 @@ function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
     })
     .catch(error => {
       mutations.setPlanningStatus({ status: 'FAILED' })
-      uiStore.actions.queueNotification(
-        {
-          message: error.response
-            ? error.response.data.message
-            : 'Network failure',
-          timeout: 0,
-        },
-        { root: true }
-      )
+      uiStore.actions.queueNotification({
+        message: error.response
+          ? error.response.data.message
+          : 'Network failure',
+        timeout: 0,
+      })
     })
 }
 

@@ -42,13 +42,10 @@ async function fetchGeocoderSuggestions(
     // console.log('response ', resp.data.data)
     mutations.setGeocoderSuggestions(resp.data.data)
   } catch (problem) {
-    uiStore.actions.queueNotification(
-      {
-        message: 'Fout bij het ophalen van locatiesuggesties.',
-        timeout: 0,
-      },
-      { root: true }
-    )
+    uiStore.actions.queueNotification({
+      message: 'Fout bij het ophalen van locatiesuggesties.',
+      timeout: 0,
+    })
   }
 }
 

@@ -35,21 +35,15 @@ function fetchLicense(context: ActionContext, payload: any): void {
       // eslint-disable-next-line
       console.log(error)
       if (!!error.response && error.response.status == 404) {
-        uiStore.actions.queueNotification(
-          {
-            message: `Geen auto gevonden voor kenteken ${plate}.`,
-            timeout: 3000,
-          },
-          { root: true }
-        )
+        uiStore.actions.queueNotification({
+          message: `Geen auto gevonden voor kenteken ${plate}.`,
+          timeout: 3000,
+        })
       } else {
-        uiStore.actions.queueNotification(
-          {
-            message: `Geen auto gevonden voor kenteken ${plate}.`,
-            timeout: 3000,
-          },
-          { root: true }
-        )
+        uiStore.actions.queueNotification({
+          message: `Geen auto gevonden voor kenteken ${plate}.`,
+          timeout: 3000,
+        })
       }
     })
 }
@@ -68,13 +62,10 @@ function fetchCars(context: ActionContext, payload: any) {
     .catch(function(error) {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification(
-        {
-          message: `Onbekende fout bij ophalen van de autos.`,
-          timeout: 3000,
-        },
-        { root: true }
-      )
+      uiStore.actions.queueNotification({
+        message: `Onbekende fout bij ophalen van de autos.`,
+        timeout: 3000,
+      })
     })
 }
 
@@ -93,13 +84,10 @@ function submitCar(context: ActionContext, payload: any) {
       // eslint-disable-next-line
       console.log(error)
       if (!!error.response && error.response.status == 409) {
-        uiStore.actions.queueNotification(
-          {
-            message: `Kenteken ${payload.licensePlate} is al geregistreerd.`,
-            timeout: 0,
-          },
-          { root: true }
-        )
+        uiStore.actions.queueNotification({
+          message: `Kenteken ${payload.licensePlate} is al geregistreerd.`,
+          timeout: 0,
+        })
       }
     })
 }
@@ -120,23 +108,17 @@ function removeCar(context: ActionContext, payload: any) {
       // eslint-disable-next-line
       console.log(error)
       if (!!error.response && error.response.status == 403) {
-        uiStore.actions.queueNotification(
-          {
-            message: `Niet toegestaan auto (${
-              payload.licensePlate
-            }) te verwijderen.`,
-            timeout: 0,
-          },
-          { root: true }
-        )
+        uiStore.actions.queueNotification({
+          message: `Niet toegestaan auto (${
+            payload.licensePlate
+          }) te verwijderen.`,
+          timeout: 0,
+        })
       } else if (!!error.response && error.response.status == 404) {
-        uiStore.actions.queueNotification(
-          {
-            message: `Onbekende kenteken ${payload.licensePlate}.`,
-            timeout: 0,
-          },
-          { root: true }
-        )
+        uiStore.actions.queueNotification({
+          message: `Onbekende kenteken ${payload.licensePlate}.`,
+          timeout: 0,
+        })
       }
     })
 }
@@ -144,13 +126,10 @@ function removeCar(context: ActionContext, payload: any) {
 function submitRide(context: ActionContext, payload: any) {
   const { from, to, ridePlanOptions, recurrence, travelTime } = payload
   if (ridePlanOptions.selectedCarId < 0) {
-    uiStore.actions.queueNotification(
-      {
-        message: 'Voeg eerst een auto toe.',
-        timeout: 0,
-      },
-      { root: true }
-    )
+    uiStore.actions.queueNotification({
+      message: 'Voeg eerst een auto toe.',
+      timeout: 0,
+    })
     return
   }
   const request = {
@@ -188,13 +167,10 @@ function submitRide(context: ActionContext, payload: any) {
     .catch(function(error) {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification(
-        {
-          message: 'Fout bij het versturen van uw rit-aanbod.',
-          timeout: 0,
-        },
-        { root: true }
-      )
+      uiStore.actions.queueNotification({
+        message: 'Fout bij het versturen van uw rit-aanbod.',
+        timeout: 0,
+      })
     })
 }
 
@@ -221,13 +197,10 @@ function fetchRides(context: ActionContext, payload: any) {
     .catch(function(error) {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification(
-        {
-          message: 'Fout bij het ophalen van uw rit-aanbod.',
-          timeout: 0,
-        },
-        { root: true }
-      )
+      uiStore.actions.queueNotification({
+        message: 'Fout bij het ophalen van uw rit-aanbod.',
+        timeout: 0,
+      })
     })
 }
 
@@ -244,13 +217,10 @@ function fetchRide(context: ActionContext, payload: any) {
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification(
-        {
-          message: 'Fout bij het ophalen van uw rit.',
-          timeout: 0,
-        },
-        { root: true }
-      )
+      uiStore.actions.queueNotification({
+        message: 'Fout bij het ophalen van uw rit.',
+        timeout: 0,
+      })
     })
 }
 
@@ -267,25 +237,19 @@ function deleteRide(context: ActionContext, payload: any) {
         mutations.deleteRides(payload.id)
         mutations.deleteRides(payload.id)
       } else {
-        uiStore.actions.queueNotification(
-          {
-            message: 'Fout bij het verwijderen van uw rit-aanbod.',
-            timeout: 0,
-          },
-          { root: true }
-        )
+        uiStore.actions.queueNotification({
+          message: 'Fout bij het verwijderen van uw rit-aanbod.',
+          timeout: 0,
+        })
       }
     })
     .catch(function(error) {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification(
-        {
-          message: 'Fout bij het verwijderen van uw rit-aanbod.',
-          timeout: 0,
-        },
-        { root: true }
-      )
+      uiStore.actions.queueNotification({
+        message: 'Fout bij het verwijderen van uw rit-aanbod.',
+        timeout: 0,
+      })
     })
 }
 
