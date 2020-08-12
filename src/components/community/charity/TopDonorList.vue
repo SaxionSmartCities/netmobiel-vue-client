@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     addDonor(donor) {
-      console.log('Adding donor still needs to be implemented', donor)
+      // console.log('Adding donor still needs to be implemented', donor)
     },
   },
 }
