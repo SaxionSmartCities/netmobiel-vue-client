@@ -1,6 +1,8 @@
 export class MessageState {
   conversations: any[] = []
-  messages: any = {}
+  messages: Message[] = []
   contexts: any[] = []
   activeMessages: any[] = []
 }
+
+export class Message {}

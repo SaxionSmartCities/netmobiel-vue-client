@@ -2,11 +2,8 @@ import axios from 'axios'
 import config from '@/config/config'
 import { MessageState } from './types'
 import { RootState } from '@/store/Rootstate'
-import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
+import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { mutations } from './index'
-
-// @ts-ignore
-const msBuilder: ModuleBuilder = getStoreBuilder().module('ms')
 
 type ActionContext = BareActionContext<MessageState, RootState>
 
@@ -117,11 +114,13 @@ async function sendMessage(context: ActionContext, payload: any) {
     })
 }
 
-const actions = {
-  fetchMessages: msBuilder.dispatch(fetchMessages),
-  fetchConversations: msBuilder.dispatch(fetchConversations),
-  fetchMessagesByParams: msBuilder.dispatch(fetchMessagesByParams),
-  sendMessage: msBuilder.dispatch(sendMessage),
+export const buildActions = (
+  msBuilder: ModuleBuilder<MessageState, RootState>
+) => {
+  return {
+    fetchMessages: msBuilder.dispatch(fetchMessages),
+    fetchConversations: msBuilder.dispatch(fetchConversations),
+    fetchMessagesByParams: msBuilder.dispatch(fetchMessagesByParams),
+    sendMessage: msBuilder.dispatch(sendMessage),
+  }
 }
-
-export default actions
