@@ -52,6 +52,7 @@ const router = new Router({
   routes: [
     {
       path: '/',
+      name: 'landing',
       component: LandingPage,
     },
     {
