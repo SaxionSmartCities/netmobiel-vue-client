@@ -132,6 +132,8 @@ export default {
     if (this.$keycloak.authenticated) {
       psStore.actions.fetchProfile()
       psStore.mutations.setUserToken(this.$keycloak.token)
+    } else {
+      this.$router.push({ name: 'landing' })
     }
   },
   methods: {
