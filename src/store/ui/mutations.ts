@@ -1,7 +1,6 @@
+import { ModuleBuilder } from 'vuex-typex'
+import { RootState } from '@/store/Rootstate'
 import { UiState, UiNotification, UiUpdateMessage } from '@/store/ui/types'
-import { getStoreBuilder, ModuleBuilder } from 'vuex-typex'
-// @ts-ignore
-const uiBuilder: ModuleBuilder = getStoreBuilder().module('ui')
 
 function enableHeader(state: UiState) {
   state.header!.visible = true
@@ -47,21 +46,23 @@ function removeUpdate(state: UiState, payload: UiUpdateMessage) {
   state.updateMessages!.splice(indexOf, 1)
 }
 
-export default {
-  enableHeader: uiBuilder.commit(enableHeader),
-  disableHeader: uiBuilder.commit(disableHeader),
-  enableFooter: uiBuilder.commit(enableFooter),
-  disableFooter: uiBuilder.commit(disableFooter),
-  hideBackButton: uiBuilder.commit(hideBackButton),
-  showBackButton: uiBuilder.commit(showBackButton),
-  showNotificationBar: uiBuilder.commit(showNotificationBar),
-  hideNotificationBar: uiBuilder.commit(hideNotificationBar),
-  pushNotificationToQueue: uiBuilder.commit(pushNotificationToQueue),
-  removeFirstNotificationFromQueue: uiBuilder.commit(
-    removeFirstNotificationFromQueue
-  ),
-  setSelectedNav: uiBuilder.commit(setSelectedNav),
-  shiftUpdateMessage: uiBuilder.commit(shiftUpdateMessage),
-  pushUpdate: uiBuilder.commit(pushUpdate),
-  removeUpdate: uiBuilder.commit(removeUpdate),
+export const buildMutations = (builder: ModuleBuilder<UiState, RootState>) => {
+  return {
+    enableHeader: builder.commit(enableHeader),
+    disableHeader: builder.commit(disableHeader),
+    enableFooter: builder.commit(enableFooter),
+    disableFooter: builder.commit(disableFooter),
+    hideBackButton: builder.commit(hideBackButton),
+    showBackButton: builder.commit(showBackButton),
+    showNotificationBar: builder.commit(showNotificationBar),
+    hideNotificationBar: builder.commit(hideNotificationBar),
+    pushNotificationToQueue: builder.commit(pushNotificationToQueue),
+    removeFirstNotificationFromQueue: builder.commit(
+      removeFirstNotificationFromQueue
+    ),
+    setSelectedNav: builder.commit(setSelectedNav),
+    shiftUpdateMessage: builder.commit(shiftUpdateMessage),
+    pushUpdate: builder.commit(pushUpdate),
+    removeUpdate: builder.commit(removeUpdate),
+  }
 }

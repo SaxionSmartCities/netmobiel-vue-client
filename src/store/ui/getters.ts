@@ -1,56 +1,57 @@
-import { getStoreBuilder, ModuleBuilder } from 'vuex-typex'
+import { ModuleBuilder } from 'vuex-typex'
 import { UiState } from '@/store/ui/types'
-// @ts-ignore
-const uiBuilder: ModuleBuilder = getStoreBuilder().module('ui')
+import { RootState } from '@/store/Rootstate'
 
-const isHeaderVisible = uiBuilder.read((state: UiState) => {
-  return state.header!.visible
-}, 'isHeaderVisible')
+export const buildGetters = (builder: ModuleBuilder<UiState, RootState>) => {
+  const isHeaderVisible = builder.read((state: UiState) => {
+    return state.header!.visible
+  }, 'isHeaderVisible')
 
-const isFooterVisible = uiBuilder.read((state: UiState) => {
-  return state.footer!.visible
-}, 'isFooterVisible')
+  const isFooterVisible = builder.read((state: UiState) => {
+    return state.footer!.visible
+  }, 'isFooterVisible')
 
-const isBackButtonVisible = uiBuilder.read((state: UiState) => {
-  return state.backButtonVisible
-}, 'isBackButtonVisible')
+  const isBackButtonVisible = builder.read((state: UiState) => {
+    return state.backButtonVisible
+  }, 'isBackButtonVisible')
 
-const getNotificationQueue = uiBuilder.read((state: UiState) => {
-  return state.notificationQueue
-}, 'getNotificationQueue')
+  const getNotificationQueue = builder.read((state: UiState) => {
+    return state.notificationQueue
+  }, 'getNotificationQueue')
 
-const isNotificationBarVisible = uiBuilder.read((state: UiState) => {
-  return state.notificationBarVisible
-}, 'isNotificationBarVisible')
+  const isNotificationBarVisible = builder.read((state: UiState) => {
+    return state.notificationBarVisible
+  }, 'isNotificationBarVisible')
 
-const getSelectedNav = uiBuilder.read((state: UiState) => {
-  return state.footer!.selectedNav
-}, 'getSelectedNav')
+  const getSelectedNav = builder.read((state: UiState) => {
+    return state.footer!.selectedNav
+  }, 'getSelectedNav')
 
-const getUpdateMessages = uiBuilder.read((state: UiState) => {
-  return state.updateMessages
-}, 'getUpdateMessages')
+  const getUpdateMessages = builder.read((state: UiState) => {
+    return state.updateMessages
+  }, 'getUpdateMessages')
 
-export default {
-  get isHeaderVisible() {
-    return isHeaderVisible()
-  },
-  get isFooterVisible() {
-    return isFooterVisible()
-  },
-  get isBackButtonVisible() {
-    return isBackButtonVisible()
-  },
-  get getNotificationQueue() {
-    return getNotificationQueue()
-  },
-  get isNotificationBarVisible() {
-    return isNotificationBarVisible()
-  },
-  get getSelectedNav() {
-    return getSelectedNav()
-  },
-  get getUpdateMessages() {
-    return getUpdateMessages()
-  },
+  return {
+    get isHeaderVisible() {
+      return isHeaderVisible()
+    },
+    get isFooterVisible() {
+      return isFooterVisible()
+    },
+    get isBackButtonVisible() {
+      return isBackButtonVisible()
+    },
+    get getNotificationQueue() {
+      return getNotificationQueue()
+    },
+    get isNotificationBarVisible() {
+      return isNotificationBarVisible()
+    },
+    get getSelectedNav() {
+      return getSelectedNav()
+    },
+    get getUpdateMessages() {
+      return getUpdateMessages()
+    },
+  }
 }
