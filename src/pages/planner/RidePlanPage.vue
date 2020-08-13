@@ -93,6 +93,11 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import SearchCriteria from '@/components/common/SearchCriteria.vue'
 import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
+import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
+import * as gsStore from '@/store/geocoder-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'RidePlanPage',
@@ -108,12 +113,12 @@ export default {
   },
   computed: {
     searchCriteria() {
-      return this.$store.getters['is/getSearchCriteria']
+      return isStore.getters.getSearchCriteria
     },
     selectedCar() {
-      const selectedCarId = this.$store.getters['ps/getProfile'].ridePlanOptions
-          .selectedCarId,
-        cars = this.$store.getters['cs/getAvailableCars']
+      const selectedCarId =
+          psStore.getters.getProfile.ridePlanOptions.selectedCarId,
+        cars = csStore.getters.getAvailableCars
       return cars.find(car => car.id === selectedCarId)
     },
     disabledRideAddition() {
@@ -128,7 +133,7 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('cs/fetchCars')
+    csStore.actions.fetchCars()
     this.initialize()
   },
   beforeRouteEnter: beforeRouteEnter({
@@ -139,7 +144,7 @@ export default {
   }),
   methods: {
     initialize() {
-      const { from, to } = this.$store.getters['gs/getPickedLocation']
+      const { from, to } = gsStore.getters.getPickedLocation
       const { travelTime } = this.searchCriteria
       let newCriteria = {
         ...this.searchCriteria,
@@ -166,7 +171,7 @@ export default {
           arriving: true,
         }
       }
-      this.$store.commit('is/setSearchCriteria', newCriteria)
+      isStore.mutations.setSearchCriteria(newCriteria)
     },
     toRidePlanOptions() {
       this.$router.push('/planOptions')
@@ -181,8 +186,7 @@ export default {
       //TODO: Do the valid time check in the search criteria component.
       // If the selected date is in the past show an error.
       if (moment(newCriteria?.travelTime?.when) < moment()) {
-        this.$store.dispatch(
-          'ui/queueNotification',
+        uiStore.actions.queueNotification(
           {
             message: 'De geselecteerde tijd ligt in het verleden.',
             timeout: 0,
@@ -190,11 +194,11 @@ export default {
           { root: true }
         )
       }
-      this.$store.commit('is/setSearchCriteria', newCriteria)
+      isStore.mutations.setSearchCriteria(newCriteria)
     },
     submitForm() {
-      const { ridePlanOptions } = this.$store.getters['ps/getProfile']
-      this.$store.dispatch('cs/submitRide', {
+      const { ridePlanOptions } = psStore.getters.getProfile
+      csStore.actions.submitRide({
         ...this.searchCriteria,
         recurrence: this.recurrence,
         ridePlanOptions,
