@@ -2,12 +2,10 @@ import axios from 'axios'
 import config from '@/config/config'
 import { NotificationState } from './types'
 import { RootState } from '@/store/Rootstate'
-import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
+import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import * as uiStore from '@/store/ui'
-type ActionContext = BareActionContext<NotificationState, RootState>
 
-// @ts-ignore
-const nsBuilder: ModuleBuilder = getStoreBuilder().module('ns')
+type ActionContext = BareActionContext<NotificationState, RootState>
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_NOTIFICATION_SERVICE_API_KEY =
@@ -45,8 +43,11 @@ function sendNotification(context: ActionContext, payload: any) {
     })
 }
 
-const actions = {
-  sendNotification: nsBuilder.dispatch(sendNotification),
+export const buildActions = (
+  builder: ModuleBuilder<NotificationState, RootState>
+) => {
+  return {
+    sendNotification: builder.dispatch(sendNotification),
+  }
 }
-
 export default actions
