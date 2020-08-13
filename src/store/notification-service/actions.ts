@@ -50,4 +50,3 @@ export const buildActions = (
     sendNotification: builder.dispatch(sendNotification),
   }
 }
-export default actions
