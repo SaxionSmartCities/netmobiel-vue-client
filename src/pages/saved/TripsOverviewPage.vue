@@ -85,7 +85,7 @@
         U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
         plannen.
       </v-col>
-      <v-col class="past-rides-column pa-0">
+      <v-col v-else class="past-rides-column pa-0">
         <v-row v-for="(ride, index) in getPlannedRides" :key="index">
           <v-col class="py-1">
             <ride-card
