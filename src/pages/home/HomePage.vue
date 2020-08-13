@@ -163,7 +163,6 @@ export default {
     //TODO: How many cards do we want?
     csStore.actions.fetchRides({ offset: 0, maxResults: 2 })
     psStore.actions.fetchComplimentTypes()
-    chsStore.actions.lookupCharity()
   },
   methods: {
     onRideSelected(index) {
