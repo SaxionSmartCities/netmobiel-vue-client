@@ -45,6 +45,8 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import TripDetails from '@/components/itinerary-details/TripDetails.vue'
+import * as uiStore from '@/store/ui'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'ItineraryDetailPage',
@@ -60,22 +62,22 @@ export default {
   },
   computed: {
     selectedTrip() {
-      return this.$store.getters['is/getSelectedTrip']
+      return isStore.getters.getSelectedTrip
     },
     showSection() {
       return this.showConfirmationButton
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
     if (this.selectedTrip.state === 'SCHEDULED') {
       this.showConfirmationButton = false
     }
   },
   methods: {
     saveTrip() {
-      this.$store
-        .dispatch('is/storeSelectedTrip', this.selectedTrip)
+      isStore.actions
+        .storeSelectedTrip(this.selectedTrip)
         .then(() => this.$router.push('/tripPlanSubmitted'))
     },
     showFullRouteOnMap() {

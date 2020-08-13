@@ -66,6 +66,9 @@ import ContentPane from '@/components/common/ContentPane'
 import GroupedShoutOuts from '@/components/community/GroupedShoutOuts'
 import TabBar from '../../../components/common/TabBar'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
+import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'ShoutOutOverview',
@@ -78,14 +81,14 @@ export default {
   },
   computed: {
     allShoutOuts() {
-      return this.$store.getters['is/getShoutOuts']
+      return isStore.getters.getShoutOuts
     },
     groupedShoutOuts() {
       return this.groupShoutOuts(this.allShoutOuts)
     },
     myShoutOuts() {
-      const profile = this.$store.getters['ps/getProfile']
-      const listMyShoutOuts = this.$store.getters['is/getMyShoutOuts']
+      const profile = psStore.getters.getProfile
+      const listMyShoutOuts = isStore.getters.getMyShoutOuts
       return listMyShoutOuts.map(shoutout => ({
         ...shoutout,
         traveller: profile,
@@ -95,15 +98,15 @@ export default {
       return this.groupShoutOuts(this.myShoutOuts)
     },
     showTabs() {
-      const role = this.$store.getters['ps/getProfile'].userRole
+      const role = psStore.getters.getProfile.userRole
       return !role || role === 'both'
     },
     userRole() {
-      return this.$store.getters['ps/getProfile'].userRole
+      return psStore.getters.getProfile.userRole
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   beforeRouteEnter: beforeRouteEnter({
     selectedTab: number => number || 0,
@@ -113,15 +116,15 @@ export default {
     editDepart: editing => editing || false,
   }),
   mounted() {
-    const address = this.$store.getters['ps/getProfile'].address
-    this.$store.dispatch('is/fetchShoutOuts', {
+    const address = psStore.getters.getProfile.address
+    isStore.actions.fetchShoutOuts({
       latitude: address.location.coordinates[1],
       longitude: address.location.coordinates[0],
     })
-    this.$store.dispatch('is/fetchMyShoutOuts', {
+    isStore.actions.fetchMyShoutOuts({
       offset: 0,
     })
-    this.$store.commit('is/clearPlanningRequest')
+    isStore.mutations.clearPlanningRequest()
   },
   methods: {
     groupShoutOuts(shoutouts) {

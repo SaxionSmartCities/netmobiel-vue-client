@@ -53,6 +53,9 @@
 import luggageTypes from '@/constants/luggage-types.js'
 import ContentPane from '@/components/common/ContentPane.vue'
 import CarCard from '@/components/cars/CarCard.vue'
+import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
 
 function luggageLabel(option) {
   return luggageTypes[option].label
@@ -71,32 +74,28 @@ export default {
   },
   computed: {
     availableCars() {
-      return this.$store.getters['cs/getAvailableCars']
+      return csStore.getters.getAvailableCars
     },
     luggageOptions() {
-      return this.$store.getters[
-        'ps/getUser'
-      ].profile.ridePlanOptions.luggageOptions
+      return psStore.getters.getUser.profile.ridePlanOptions.luggageOptions
         .map(luggageLabel)
         .join(', ')
     },
     passengerCount() {
-      return this.$store.getters['ps/getUser'].profile.ridePlanOptions
-        .numPassengers
+      return psStore.getters.getUser.profile.ridePlanOptions.numPassengers
     },
     selectedCarId() {
-      return this.$store.getters['ps/getUser'].profile.ridePlanOptions
-        .selectedCarId
+      return psStore.getters.getUser.profile.ridePlanOptions.selectedCarId
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
-    this.$store.dispatch('cs/fetchCars')
+    uiStore.mutations.showBackButton()
+    csStore.actions.fetchCars()
   },
   methods: {
     selectAlternativeCar(car) {
-      const profile = this.$store.getters['ps/getUser'].profile
-      this.$store.dispatch('ps/updateProfile', {
+      const profile = psStore.getters.getUser.profile
+      psStore.actions.updateProfile({
         ...profile,
         ridePlanOptions: {
           ...profile.ridePlanOptions,
@@ -111,7 +110,7 @@ export default {
     removeCar(car) {
       this.dialog = false
       // Remove car in the backend.
-      this.$store.dispatch('cs/removeCar', car)
+      csStore.actions.removeCar(car)
       // Update profile if the car that has been removed the default car is.
       if (this.selectedCarId === car.id) {
         this.selectAlternativeCar(this.availableCars[0])

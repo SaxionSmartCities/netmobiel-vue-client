@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane v-if="ride && ride.bookings">
     <v-row>
       <v-col class="py-0">
         <ride-details :ride="ride" class="mb-4" />
@@ -107,6 +107,10 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import ContactTravellerModal from '@/components/itinerary-details/ContactTravellerModal'
 import EditRideModal from '../../components/itinerary-details/EditRideModal'
 import RideDetails from '@/components/itinerary-details/RideDetails.vue'
+import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
+import * as msStore from '@/store/message-service'
 
 export default {
   name: 'RideDetailPage',
@@ -119,7 +123,7 @@ export default {
   },
   props: {
     id: {
-      type: Number,
+      type: String,
       required: true,
     },
   },
@@ -133,6 +137,9 @@ export default {
     }
   },
   computed: {
+    localId() {
+      return parseInt(this.id)
+    },
     passengersInBookings() {
       let bookings = !this.ride
         ? []
@@ -148,18 +155,18 @@ export default {
       return bookings
     },
     ride() {
-      return this.$store.getters['cs/getSelectedRide']
+      return csStore.getters.getSelectedRide
     },
     numBookings() {
       return !this.ride.bookings ? 0 : this.ride.bookings.length
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   mounted() {
     // Fetch the ride on details page. This is needed for deeplinking.
-    this.$store.dispatch('cs/fetchRide', { id: this.id })
+    csStore.actions.fetchRide({ id: this.localId })
   },
   methods: {
     generateSteps() {
@@ -174,7 +181,7 @@ export default {
         result.push(currentLeg)
 
         // We won't show any waiting times < 60 sec -- should be made a config
-        if (nextLeg.startTime - currentLeg.endTime > 60 * 1000) {
+        if (nextLeg.startTime - currentLeg?.endTime > 60 * 1000) {
           // Add "WAIT" element (not from OTP).
           result.push({
             mode: 'WAIT',
@@ -185,20 +192,23 @@ export default {
         }
       }
       let lastLeg = this.ride.legs[this.ride.legs.length - 1]
-      this.setPassenger(lastLeg, bookingDict)
-      result.push(lastLeg)
+      if (lastLeg) {
+        this.setPassenger(lastLeg, bookingDict)
+        result.push(lastLeg)
 
-      // Finally, we push the "FINISH" element (not from OTP)
-      result.push({
-        mode: 'FINISH',
-        startTime: lastLeg.endTime,
-        to: lastLeg.to,
-      })
-      return result
+        // Finally, we push the "FINISH" element (not from OTP)
+        result.push({
+          mode: 'FINISH',
+          startTime: lastLeg.endTime,
+          to: lastLeg.to,
+        })
+        return result
+      }
+      return []
     },
     generateBookingDictionary(bookings) {
       let dict = []
-      for (var i = 0; i < bookings.length; i++) {
+      for (let i = 0; i < bookings.length; i++) {
         let map = bookings[i].legs.map(l => {
           let dictItem = { ...bookings[i].passenger }
           dictItem.legRef = l.legRef
@@ -210,17 +220,19 @@ export default {
     },
     setPassenger(leg, bookingDict) {
       // TODO: Check why modality is not provided
-      leg.mode = 'CAR'
-      let passenger = bookingDict.find(b => b.legRef == leg.legRef)
-      if (passenger) leg.passenger = passenger
+      if (leg) {
+        leg.mode = 'CAR'
+        let passenger = bookingDict.find(b => b.legRef == leg.legRef)
+        if (passenger) leg.passenger = passenger
+      }
     },
     onLegSelected(leg) {
       this.selectedLeg = leg
     },
     deleteTrip() {
       this.warningDialog = false
-      this.$store.dispatch('cs/deleteRide', {
-        id: this.id,
+      csStore.actions.deleteRide({
+        id: this.localId,
         cancelReason: this.cancelReason,
       })
       this.$router.push('/tripsOverviewPage')
@@ -243,7 +255,7 @@ export default {
       this.showEditRideModal = true
     },
     routeToConversation(ctx, passengerProfile) {
-      this.$store.dispatch('ms/fetchConversations').then(conversations => {
+      msStore.actions.fetchConversations().then(conversation => {
         const index = conversations.findIndex(
           conversation => conversation.context === ctx
         )
@@ -258,7 +270,7 @@ export default {
             context: ctx,
             participants: [
               {
-                managedIdentity: this.$store.getters['ps/getProfile'].id,
+                managedIdentity: psStore.getters.getProfile.id,
                 urn: '',
               },
               {

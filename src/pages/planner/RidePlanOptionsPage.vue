@@ -103,6 +103,8 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import SearchOptionsIconExpansionPanel from '@/components/search/SearchOptionsIconExpansionPanel.vue'
 import luggageTypes from '@/constants/luggage-types.js'
+import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'RidePreferences',
@@ -144,11 +146,11 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
     // Clone search preferences so we can pass it as v-model and persist it
     // when onSearchOptionsSave is emitted.
     this.ridePlanOptions = {
-      ...this.$store.getters['ps/getProfile'].ridePlanOptions,
+      ...psStore.getters.getProfile.ridePlanOptions,
     }
     if (this.ridePlanOptions.numPassengers > this.maxNrOfPersons) {
       this.ridePlanOptions.numPassengers = this.maxNrOfPersons
@@ -156,7 +158,7 @@ export default {
   },
   methods: {
     save() {
-      this.$store.dispatch('ps/storeRidePreferences', this.ridePlanOptions)
+      psStore.actions.storeRidePreferences(this.ridePlanOptions)
       this.$router.go(-1)
     },
   },

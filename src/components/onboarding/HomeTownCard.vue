@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import * as uiStore from '@/store/ui'
+
 export default {
   name: 'HomeTownCard',
   props: {
@@ -63,7 +65,7 @@ export default {
     }
   },
   beforeCreate() {
-    this.$store.commit('ui/disableFooter')
+    uiStore.mutations.disableFooter()
   },
   methods: {
     submitForm: function() {

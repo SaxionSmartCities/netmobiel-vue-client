@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import store from './store'
 
 Vue.use(Router)
 
@@ -34,8 +33,8 @@ import RidePlanOptionsPage from './pages/planner/RidePlanOptionsPage.vue'
 import RidePlanSubmitted from './pages/planner/RidePlanSubmitted.vue'
 import TripPlanSubmitted from './pages/planner/TripPlanSubmitted.vue'
 import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
-import GoalOverviewPage from './pages/community/goals/GoalOverviewPage'
-import GoalsDetailsPage from './pages/community/goals/GoalsDetailsPage'
+import CharityOverviewPage from './pages/community/goals/CharityOverviewPage'
+import CharityDetailPage from './pages/community/goals/CharityDetailsPage'
 import TripCancelledPage from './pages/saved/TripCancelledPage'
 import TripDetailPage from './pages/saved/TripDetailPage'
 import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
@@ -46,12 +45,14 @@ import TripReviewedPage from './pages/review/TripReviewedPage'
 import TripConfirmedPage from './pages/review/TripConfirmedPage'
 import SupportGoal from './pages/community/goals/SupportGoal'
 import Donated from './pages/community/goals/Donated'
+import UserProfile from '@/pages/profile/UserProfile'
 
 const router = new Router({
   mode: 'history',
   routes: [
     {
       path: '/',
+      name: 'landing',
       component: LandingPage,
     },
     {
@@ -84,14 +85,14 @@ const router = new Router({
       name: 'planRide',
     },
     {
-      path: '/goalOverviewPage',
-      component: GoalOverviewPage,
-      name: 'goalOverviewPage',
+      path: '/charityOverviewPage',
+      component: CharityOverviewPage,
+      name: 'charityOverviewPage',
     },
     {
-      path: '/goalDetails/:id',
-      component: GoalsDetailsPage,
-      name: 'goalDetailsPage',
+      path: '/charityDetailsPage/:id',
+      component: CharityDetailPage,
+      name: 'charityDetails',
       props: true,
     },
     {
@@ -267,18 +268,26 @@ const router = new Router({
       component: TripConfirmedPage,
       name: 'tripConfirmedPage',
     },
+    {
+      path: '/userProfilePage/:profileId',
+      component: UserProfile,
+      name: 'userProfile',
+      props: true,
+    },
   ],
 })
+import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 
 router.beforeEach((to, from, next) => {
-  store.commit('ui/hideBackButton')
-  store.commit('ui/enableFooter')
-  store.commit('ui/enableHeader')
+  uiStore.mutations.hideBackButton()
+  uiStore.mutations.enableFooter()
+  uiStore.mutations.enableHeader()
 
   if (
     to.path !== '/' &&
     to.path !== '/createUser' &&
-    store.getters['ps/getUser'].accessToken === undefined
+    psStore.getters.getUser.accessToken === undefined
   ) {
     next('/')
   } else {

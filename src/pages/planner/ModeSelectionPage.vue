@@ -73,10 +73,12 @@
 </template>
 
 <script>
+import * as uiStore from '@/store/ui'
+
 export default {
   name: 'ModeSelectionPage',
   mounted: function() {
-    this.$store.commit('ui/setSelectedNav', 'planner')
+    uiStore.mutations.setSelectedNav('planner')
   },
 }
 </script>

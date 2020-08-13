@@ -111,8 +111,12 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import RideCard from '@/components/rides/RideCard.vue'
 import UpdateCard from '@/components/home/UpdateCard.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
-
+import * as uiStore from '@/store/ui'
+import * as chsStore from '@/store/charity-service'
 import moment from 'moment'
+
+import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
 
 export default {
   components: {
@@ -123,12 +127,12 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.getters['ps/getUser']
+      return psStore.getters.getUser
     },
     rides() {
       //HACK: Only display first 3 rides.
       let sortedList = []
-      const rides = this.$store.getters['cs/getRides']
+      const rides = csStore.getters.getRides
       if (rides) {
         sortedList = rides.slice(0, 3)
         sortedList.sort((a, b) => {
@@ -149,22 +153,23 @@ export default {
       }
     },
     updateMessages() {
-      return this.$store.getters['ui/getUpdateMessages']
+      return uiStore.getters.getUpdateMessages
     },
     profileImage() {
-      return this.$store.getters['ps/getUser'].profile.image
+      return psStore.getters.getUser.profile.image
     },
   },
   mounted() {
     //TODO: How many cards do we want?
-    this.$store.dispatch('cs/fetchRides', { offset: 0, maxResults: 2 })
+    csStore.actions.fetchRides({ offset: 0, maxResults: 2 })
+    psStore.actions.fetchComplimentTypes()
   },
   methods: {
     onRideSelected(index) {
       const ride = this.rides[index]
       this.$router.push({
         name: 'rideDetailPage',
-        params: { ride, id: ride.id },
+        params: { ride, id: ride.id.toString() },
       })
     },
   },

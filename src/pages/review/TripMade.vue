@@ -3,70 +3,68 @@
     <v-col class="pt-0">
       <v-row dense>
         <v-col cols="3">
-          <round-user-image :image-size="60" :avatar-size="66">
+          <round-user-image
+            :profile-image="driverProfileImage()"
+            :image-size="60"
+            :avatar-size="66"
+          >
           </round-user-image>
         </v-col>
         <v-col>
-          <v-row dense>
-            <v-col>
-              <span class="subtitle-2 text-no-wrap pr-2">{{
-                trip.legs[0].driverName
-              }}</span>
-              <br />
-              <span class="overline">
-                Van {{ trip.from.label }} naar {{ trip.to.label }}
-              </span>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <h3>Beoordeel jouw reis</h3>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <span>
-            Hoe heb jij deze reis ervaren? Geef jouw mening en laat
-            {{ trip.legs[0].driverName }} weten wat jij er van vond.
+          <span class="subtitle-2 text-no-wrap pr-2">
+            {{ itinerary.legs[0].driverName }}
+          </span>
+          <br />
+          <span class="caption">
+            van <b>{{ trip.from.label }} </b> naar <b> {{ trip.to.label }} </b>
           </span>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col v-if="showChips">
-          <v-chip
-            v-for="(compliment, index) in availableCompliments"
-            :key="index"
-            :ripple="false"
-            class="compliment-chip"
-            :class="{
-              'compliment-chip-active':
-                compliments.findIndex(c => c.value === compliment.value) !== -1,
-            }"
-            :value="compliment.value"
-            @click="addCompliment(compliment)"
-          >
-            {{ compliment.title }}
-          </v-chip>
-        </v-col>
-        <v-col v-else>
-          <v-chip
-            v-for="(compliment, index) in compliments"
-            :key="index"
-            :ripple="false"
-            class="compliment-chip compliment-chip-active"
-            :value="compliment.value"
-          >
-            {{ compliment.title }}
-          </v-chip>
-          <v-textarea
-            v-model="inputTextArea"
-            class="pt-2"
-            placeholder="Beschrijving..."
-            :hide-details="true"
-            outlined
-          ></v-textarea>
+      <v-row class="mt-4">
+        <v-col>
+          <div>
+            <h3>Beoordeel jouw reis</h3>
+            <span class="body-2">
+              Hoe heb jij deze reis ervaren? Geef jouw mening en laat
+              {{ itinerary.legs[0].driverName }} weten wat jij er van vond.
+            </span>
+            <div class="mt-4">
+              <div v-if="showChips && availableCompliments">
+                <v-chip
+                  v-for="compliment in availableCompliments"
+                  :key="compliment"
+                  :ripple="false"
+                  class="compliment-chip body-2"
+                  :class="{
+                    'compliment-chip-active':
+                      compliments.findIndex(c => c === compliment) !== -1,
+                  }"
+                  :value="compliment"
+                  @click="addCompliment(compliment)"
+                >
+                  {{ compliment }}
+                </v-chip>
+              </div>
+              <div v-else>
+                <v-chip
+                  v-for="(compliment, index) in compliments"
+                  :key="index"
+                  :ripple="false"
+                  class="compliment-chip body-2 compliment-chip-active"
+                  :value="compliment"
+                >
+                  {{ compliment }}
+                </v-chip>
+                <v-textarea
+                  v-model="inputTextArea"
+                  class="pt-2"
+                  placeholder="Beschrijving..."
+                  :hide-details="true"
+                  outlined
+                ></v-textarea>
+              </div>
+            </div>
+          </div>
         </v-col>
       </v-row>
       <v-row>
@@ -92,30 +90,57 @@
 
 <script>
 import RoundUserImage from '@/components/common/RoundUserImage'
-import trip_made_config from '../../config/review/trip_made_config'
+import constants from '@/constants/constants'
+import config from '@/config/config'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'TripMade',
   components: { RoundUserImage },
   props: {
     trip: { type: Object, required: true },
+    driverProfile: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
-      availableCompliments: trip_made_config,
       compliments: [],
       feedbackMessage: '',
       showChips: true,
       inputTextArea: null,
     }
   },
+  computed: {
+    itinerary() {
+      return this.trip?.itinerary
+    },
+    availableCompliments() {
+      return psStore.getters.getComplimentTypes
+    },
+  },
   methods: {
     addCompliment(compliment) {
-      const index = this.compliments.findIndex(
-        c => c.value === compliment.value
-      )
-      if (index === -1) this.compliments.push(compliment)
-      else this.compliments.splice(index, 1)
+      const index = this.compliments.findIndex(c => c === compliment)
+      if (
+        this.compliments.length < constants.maxComplimentsAllowed &&
+        index === -1
+      ) {
+        //Not reached the limit of compliments and the compliment is NOT in the list yet.
+        this.compliments.push(compliment)
+      } else if (
+        // Limit reached and the compliment is not in the list.
+        // Remove the first compliment selected and add the one selected
+        this.compliments.length === constants.maxComplimentsAllowed &&
+        index === -1
+      ) {
+        this.compliments.splice(index, 1)
+        this.compliments.push(compliment)
+      } else {
+        // If a compliment gets selected when it already is, then it will be removed.
+        this.compliments.splice(index, 1)
+      }
     },
     back() {
       this.$emit('back', {})
@@ -131,6 +156,11 @@ export default {
           feedbackMessage: this.inputTextArea,
         })
       }
+    },
+    driverProfileImage() {
+      if (this.driverProfile.image)
+        return config.BASE_URL + this.driverProfile.image
+      else return null
     },
   },
 }

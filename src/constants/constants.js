@@ -15,4 +15,5 @@ export default {
     'theatre-music-culture': 'theaters',
   },
   searchSuggestionDefaultIcon: 'fa-map-marker-alt',
+  maxComplimentsAllowed: 3,
 }
