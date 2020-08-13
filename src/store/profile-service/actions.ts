@@ -22,7 +22,7 @@ function generateHeader(key: any) {
   }
 }
 
-function fetchProfile(context: ActionContext, payload: any) {
+function fetchProfile(context: ActionContext) {
   const URL = BASE_URL + '/profiles'
   axios
     .get(URL, { headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY) })
@@ -79,7 +79,7 @@ function fetchUserCompliments(context: ActionContext, { profileId }: any) {
  * Fetches the available compliments and sets the compliment types
  * that are available in the store
  */
-function fetchComplimentTypes(context: ActionContext, payload: any) {
+function fetchComplimentTypes(context: ActionContext) {
   const URL = BASE_URL + '/compliments/types'
   axios
     .get(URL, {
@@ -253,7 +253,7 @@ function updateProfileImage(context: ActionContext, { id, image }: any) {
     })
 }
 
-function fetchCreditAmount(context: ActionContext, payload: any) {
+function fetchCreditAmount(context: ActionContext) {
   //TODO: Add backend call
   let amount = 89
   mutations.setCreditAmount(amount)
@@ -267,7 +267,7 @@ function addTransactionCreditAmount(context: ActionContext, transaction: any) {
   //TODO: Add backend call
 }
 
-function fetchCreditHistory(context: ActionContext, payload: any) {
+function fetchCreditHistory(context: ActionContext) {
   //TODO: Add backend call
   let creditHistory = [
     {

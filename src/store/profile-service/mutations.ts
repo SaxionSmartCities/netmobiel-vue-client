@@ -5,10 +5,11 @@ import {
   ComplimentType,
   Profile,
   ProfileState,
+  RidePlanOptions,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 
-function setUserToken(state: ProfileState, token: any) {
+function setUserToken(state: ProfileState, token: string) {
   state.user.accessToken = token
   let decodedObject = VueJwtDecode.decode(token)
   state.user.givenName = decodedObject['given_name']
@@ -62,7 +63,7 @@ function setReviewOptionsValue(state: ProfileState, payload: any) {
   })
 }
 
-function setRidePlanOptions(state: ProfileState, payload: any) {
+function setRidePlanOptions(state: ProfileState, payload: RidePlanOptions) {
   state.user.profile.ridePlanOptions = payload
 }
 
