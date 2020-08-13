@@ -2,6 +2,7 @@
   <v-card
     outlined
     :ripple="!needsReview"
+    :disabled="disabled"
     @click="$emit('onTripSelected', index)"
   >
     <v-row no-gutters>
@@ -72,6 +73,7 @@ export default {
     duration: { type: Number, required: false, default: 0 },
     legs: { type: Array, required: true },
     needsReview: { type: Boolean, required: false, default: false },
+    disabled: { type: Boolean, required: false, default: false },
   },
   data() {
     return {

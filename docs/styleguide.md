@@ -11,7 +11,7 @@ de back button wil tonen dmv.
 
 ```
  mounted() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   }
 ```
 

@@ -48,6 +48,7 @@
 <script>
 import moment from 'moment'
 import interests from '@/constants/interests.js'
+import * as psStore from '@/store/profile-service'
 
 export default {
   data: function() {
@@ -75,9 +76,9 @@ export default {
       this.$emit('prev-step')
     },
     nextStep: function() {
-      let profile = { ...this.$store.getters['ps/getProfile'] }
+      let profile = { ...psStore.getters.getProfile }
       profile.interests = this.selectedInterests
-      this.$store.dispatch('ps/updateProfile', profile)
+      psStore.actions.updateProfile(profile)
       this.$emit('next-step')
     },
   },
