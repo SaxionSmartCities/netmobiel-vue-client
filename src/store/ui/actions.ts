@@ -1,11 +1,11 @@
-import { UiState, UiNotification } from './types'
+import { UiState, UiNotification, UiUpdateMessage } from './types'
 import { RootState } from '@/store/Rootstate'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { actions, mutations } from '@/store/ui'
 
 type ActionContext = BareActionContext<UiState, RootState>
 
-function addUpdate(context: ActionContext, update: any): void {
+function addUpdate(context: ActionContext, update: UiUpdateMessage): void {
   let updates = context.state.updateMessages
   let found = updates!.find(u => JSON.stringify(u) === JSON.stringify(update))
   if (found === undefined) {
