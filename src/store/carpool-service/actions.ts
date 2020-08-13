@@ -1,4 +1,4 @@
-import { CarpoolState } from './types'
+import { CarpoolState, Car } from './types'
 import { RootState } from '@/store/Rootstate'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { mutations } from '@/store/carpool-service/index'
@@ -18,7 +18,7 @@ function generateHeaders(key: any) {
   }
 }
 
-function fetchLicense(context: ActionContext, payload: any): void {
+function fetchLicense(context: ActionContext, payload: string): void {
   mutations.setSearchLicensePlate(payload)
   const plate = payload
   const URL = BASE_URL + `/rideshare/carLicenses?country=NL&plate=${plate}`
@@ -67,7 +67,7 @@ function fetchCars(context: ActionContext) {
     })
 }
 
-function submitCar(context: ActionContext, payload: any) {
+function submitCar(context: ActionContext, payload: Car) {
   const URL = BASE_URL + `/rideshare/cars`
   axios
     .post(URL, payload, {
@@ -90,7 +90,7 @@ function submitCar(context: ActionContext, payload: any) {
     })
 }
 
-function removeCar(context: ActionContext, payload: any) {
+function removeCar(context: ActionContext, payload: Car) {
   const URL = BASE_URL + `/rideshare/cars/${payload.id}`
   axios
     .delete(URL, {

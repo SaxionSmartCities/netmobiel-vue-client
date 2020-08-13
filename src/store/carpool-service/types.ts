@@ -9,7 +9,10 @@ export class CarpoolState {
   }
 }
 
-export interface Car {}
+export interface Car {
+  id: string
+  licensePlate: string
+}
 export interface Ride {}
 export interface SearchResult {}
 

@@ -1,17 +1,13 @@
-import { getStoreBuilder, ModuleBuilder } from 'vuex-typex'
+import { ModuleBuilder } from 'vuex-typex'
 import {
   Car,
   CarpoolState,
   Ride,
   SearchResult,
 } from '@/store/carpool-service/types'
-import { UiState } from '@/store/ui/types'
 import { RootState } from '@/store/Rootstate'
 
-// @ts-ignore
-const csBuilder: ModuleBuilder = getStoreBuilder().module('cs')
-
-function addRideToList(state: CarpoolState, payload: any) {
+function addRideToList(state: CarpoolState, payload: Ride) {
   state.rides.push(payload)
 }
 
@@ -23,7 +19,7 @@ function setSearchResult(state: CarpoolState, payload: SearchResult) {
   state.search.result = payload
 }
 
-function clearSearchResult(state: CarpoolState, payload: any) {
+function clearSearchResult(state: CarpoolState) {
   state.search.result = null
 }
 
