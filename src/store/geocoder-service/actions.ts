@@ -1,6 +1,6 @@
 import axios from 'axios'
 import config from '@/config/config'
-import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
+import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { GeoCoderState } from './types'
 import { RootState } from '@/store/Rootstate'
 import { mutations } from '@/store/geocoder-service/index'
