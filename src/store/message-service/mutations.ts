@@ -27,18 +27,6 @@ function addActiveMessage(state: MessageState, message: Message) {
   state.activeMessages.push(message)
 }
 
-function addMessageToContext(state: MessageState, { context, message }: any) {
-  const urn: string = (' ' + context.replace(/:/gi, '')).slice(1)
-  const newMessage = {
-    body: message,
-    context: context,
-    creationTime: new Date(),
-    deliveryMode: 'MESSAGE',
-  }
-  // @ts-ignore
-  Vue.set(state.messages, urn, [...state.messages[urn], newMessage])
-}
-
 export const buildMutations = (
   msBuilder: ModuleBuilder<MessageState, RootState>
 ) => {
@@ -47,6 +35,5 @@ export const buildMutations = (
     setConversations: msBuilder.commit(setConversations),
     addContext: msBuilder.commit(addContext),
     addActiveMessage: msBuilder.commit(addActiveMessage),
-    addMessageToContext: msBuilder.commit(addMessageToContext),
   }
 }
