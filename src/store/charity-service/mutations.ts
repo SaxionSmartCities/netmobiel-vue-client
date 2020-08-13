@@ -5,7 +5,6 @@ import {
   Donation,
   Donor,
 } from '@/store/charity-service/types'
-import { UiState } from '@/store/ui/types'
 import { RootState } from '@/store/Rootstate'
 
 function setCharities(state: CharityState, payload: Charity[]) {
@@ -25,10 +24,6 @@ function setCharityDonations(state: CharityState, donations: Donation[]) {
 }
 function setTopDonors(state: CharityState, donors: Donor[]) {
   state.topDonors = donors
-}
-
-function addCharityDonations(state: CharityState, donations: Donation[]) {
-  state.charityDonations = state.charityDonations.concat(donations)
 }
 
 function setPreviouslyDonatedCharities(

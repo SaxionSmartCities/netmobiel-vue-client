@@ -38,10 +38,7 @@ function fetchCharities(context: ActionContext, payload: any = {}): void {
   })
 }
 
-function fetchPreviouslyDonatedCharities(
-  context: ActionContext,
-  params: any
-): void {
+function fetchPreviouslyDonatedCharities(context: ActionContext): void {
   axios.get(BASE_URL + '/api/donation/previous').then(resp => {
     fetchCharities(context, {
       q: resp.data.charities,
