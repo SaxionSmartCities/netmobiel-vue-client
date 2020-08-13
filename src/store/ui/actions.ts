@@ -1,10 +1,7 @@
 import { UiState, UiNotification } from './types'
 import { RootState } from '@/store/Rootstate'
-import { BareActionContext, getStoreBuilder, ModuleBuilder } from 'vuex-typex'
+import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { actions, mutations } from '@/store/ui'
-
-// @ts-ignore
-const uiBuilder: ModuleBuilder = getStoreBuilder().module('ui')
 
 type ActionContext = BareActionContext<UiState, RootState>
 
@@ -33,7 +30,7 @@ function queueNotification(context: ActionContext, payload: UiNotification) {
   }
 }
 
-function finishNotification(context: ActionContext, payload: any) {
+function finishNotification(context: ActionContext) {
   mutations.hideNotificationBar()
   mutations.removeFirstNotificationFromQueue()
 
