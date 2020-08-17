@@ -81,11 +81,7 @@
       </v-col>
     </v-row>
     <v-row v-if="(showTabs && selectedTab === 1) || isDriver" dense>
-      <v-col v-if="getPlannedRides.length === 0 && getPastRides.length === 0">
-        U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
-        plannen.
-      </v-col>
-      <v-col v-else class="past-rides-column pa-0">
+      <v-col class="past-rides-column pa-0">
         <v-row dense>
           <v-col>
             <v-radio-group v-model="ridesSearchTime" class="mt-1" row>
@@ -94,14 +90,34 @@
             </v-radio-group>
           </v-col>
         </v-row>
-        <v-row
-          v-for="(ride, index) in ridesSearchTime === 'Future'
-            ? getPlannedRides
-            : getPastRides"
-          :key="index"
-        >
-          <v-col class="py-1">
+        <v-row v-if="ridesSearchTime === 'Past'">
+          <v-col v-if="getPastRides.length === 0" class="py-1">
+            <span>
+              U heeft nog geen ritten gereden. Ga naar ritten om een nieuwe rit
+              te plannen.
+            </span>
+          </v-col>
+          <v-col v-else>
             <ride-card
+              v-for="(ride, index) in getPastRides"
+              :key="index"
+              :index="index"
+              :ride="ride"
+              @rideSelected="onRideSelected"
+            />
+          </v-col>
+        </v-row>
+        <v-row v-if="ridesSearchTime === 'Future'">
+          <v-col v-if="getPlannedRides.length === 0" class="py-1">
+            <span>
+              U heeft nog geen ritten gepland. Ga naar ritten om een nieuwe rit
+              te plannen.
+            </span>
+          </v-col>
+          <v-col v-else>
+            <ride-card
+              v-for="(ride, index) in getPlannedRides"
+              :key="index"
               :index="index"
               :ride="ride"
               @rideSelected="onRideSelected"
