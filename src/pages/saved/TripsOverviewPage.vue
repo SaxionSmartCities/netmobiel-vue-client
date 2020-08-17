@@ -27,8 +27,8 @@
         </template>
       </tab-bar>
     </template>
-    <v-row v-if="(showTabs && selectedTab === 0) || isPassenger">
-      <v-col class="px-0">
+    <v-row v-if="(showTabs && selectedTab === 0) || isPassenger" dense>
+      <v-col class="pa-0">
         <v-row dense>
           <v-col>
             <v-radio-group v-model="tripsSearchTime" class="mt-1" row>
@@ -81,12 +81,25 @@
       </v-col>
     </v-row>
     <v-row v-if="(showTabs && selectedTab === 1) || isDriver" dense>
-      <v-col v-if="getPlannedRides.length === 0">
+      <v-col v-if="getPlannedRides.length === 0 && getPastRides.length === 0">
         U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
         plannen.
       </v-col>
       <v-col v-else class="past-rides-column pa-0">
-        <v-row v-for="(ride, index) in getPlannedRides" :key="index">
+        <v-row dense>
+          <v-col>
+            <v-radio-group v-model="rideSearchTime" class="mt-1" row>
+              <v-radio label="Afgelopen ritten" value="Past"></v-radio>
+              <v-radio label="Geplande ritten" value="Future"></v-radio>
+            </v-radio-group>
+          </v-col>
+        </v-row>
+        <v-row
+          v-for="(ride, index) in rideSearchTime === 'Future'
+            ? getPlannedRides
+            : getPastRides"
+          :key="index"
+        >
           <v-col class="py-1">
             <ride-card
               :index="index"
@@ -123,6 +136,7 @@ export default {
       maxResultsPastRides: constants.fetchPastRidesMaxResults,
       maxResultsPastTrips: constants.fetchPastTripsMaxResults,
       tripsSearchTime: 'Future',
+      rideSearchTime: 'Future',
     }
   },
   computed: {
