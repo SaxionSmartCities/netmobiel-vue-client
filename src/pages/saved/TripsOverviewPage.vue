@@ -120,6 +120,7 @@ export default {
       selectedTab: 0,
       bottom: false,
       maxResults: constants.fetchTripsMaxResults,
+      maxResultsPastRides: constants.fetchPastRidesMaxResults,
       maxResultsPastTrips: constants.fetchPastTripsMaxResults,
       tripsSearchTime: 'Future',
     }
@@ -130,6 +131,7 @@ export default {
       getPlannedTrips: () => isStore.getters.getPlannedTrips,
       getPastTripsCount: () => isStore.getters.getPastTripsCount,
       getPastTrips: () => isStore.getters.getPastTrips,
+      getPastRides: () => csStore.getters.getPastRides,
     },
     getPlannedRidesCount() {
       return csStore.getters.getPlannedRidesCount
@@ -176,6 +178,7 @@ export default {
   mounted() {
     this.fetchTrips()
     this.fetchPastTrips()
+    this.fetchPastRides()
     this.fetchRides()
     document
       .getElementById('content-container')
@@ -225,6 +228,18 @@ export default {
       csStore.actions.fetchRides({
         offset: offset,
         maxResults: this.maxResults,
+      })
+    },
+    fetchPastRides(offset = 0) {
+      csStore.actions.fetchRides({
+        pastRides: true,
+        offset: offset,
+        maxResults: this.maxResultsPastRides,
+        sortDir: 'DESC',
+        since: moment()
+          .subtract(1, 'months')
+          .format(),
+        until: moment().format(),
       })
     },
     onTripSelected(index) {

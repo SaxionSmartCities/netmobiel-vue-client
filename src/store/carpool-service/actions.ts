@@ -5,6 +5,7 @@ import { mutations } from '@/store/carpool-service/index'
 import * as uiStore from '@/store/ui'
 import axios from 'axios'
 import config from '@/config/config'
+import moment from 'moment'
 
 type ActionContext = BareActionContext<CarpoolState, RootState>
 
@@ -172,23 +173,32 @@ function submitRide(context: ActionContext, payload: any) {
     })
 }
 
-function fetchRides(context: ActionContext, payload: any) {
-  const offset = payload.offset
-  const maxResults = payload.maxResults
+function fetchRides(
+  context: ActionContext,
+  { pastRides, offset, maxResults, until, since, sortDir }: any
+) {
   const URL = BASE_URL + `/rideshare/rides`
+  const params: any = {}
+  params['maxResults'] = maxResults || 10
+  params['offset'] = offset || 0
+  until && (params['until'] = until)
+  since && (params['since'] = since)
+  sortDir && (params['sortDir'] = sortDir)
+
   axios
     .get(URL, {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
-      params: {
-        offset: offset,
-        maxResults: maxResults,
-      },
+      params: params,
     })
     .then(function(resp) {
       if (offset == 0) {
-        mutations.saveRides(resp.data.data)
+        pastRides
+          ? mutations.savePastRides(resp.data.data)
+          : mutations.saveRides(resp.data.data)
       } else {
-        mutations.appendRides(resp.data.data)
+        pastRides
+          ? mutations.appendPastRides(resp.data.data)
+          : mutations.appendRides(resp.data.data)
       }
       mutations.setPlannedRidesCount(resp.data.totalCount)
     })

@@ -7,6 +7,7 @@ export class CarpoolState {
     licensePlate: null,
     result: {},
   }
+  pastRides: Ride[] = []
 }
 
 export interface Car {
