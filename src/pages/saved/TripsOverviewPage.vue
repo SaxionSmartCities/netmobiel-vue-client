@@ -88,14 +88,14 @@
       <v-col v-else class="past-rides-column pa-0">
         <v-row dense>
           <v-col>
-            <v-radio-group v-model="rideSearchTime" class="mt-1" row>
+            <v-radio-group v-model="ridesSearchTime" class="mt-1" row>
               <v-radio label="Afgelopen ritten" value="Past"></v-radio>
               <v-radio label="Geplande ritten" value="Future"></v-radio>
             </v-radio-group>
           </v-col>
         </v-row>
         <v-row
-          v-for="(ride, index) in rideSearchTime === 'Future'
+          v-for="(ride, index) in ridesSearchTime === 'Future'
             ? getPlannedRides
             : getPastRides"
           :key="index"
@@ -136,7 +136,7 @@ export default {
       maxResultsPastRides: constants.fetchPastRidesMaxResults,
       maxResultsPastTrips: constants.fetchPastTripsMaxResults,
       tripsSearchTime: 'Future',
-      rideSearchTime: 'Future',
+      ridesSearchTime: 'Future',
     }
   },
   computed: {
@@ -176,7 +176,11 @@ export default {
             this.fetchPastTrips(this.getPastTrips.length)
           }
         } else if (this.selectedTab === 1) {
-          this.fetchRides(this.getPlannedRides.length)
+          if (this.ridesSearchTime === 'Future') {
+            this.fetchRides(this.getPlannedRides.length)
+          } else {
+            this.fetchPastRides(this.getPastRides.length)
+          }
         }
       }
     },
@@ -192,8 +196,8 @@ export default {
   mounted() {
     this.fetchTrips()
     this.fetchPastTrips()
-    this.fetchPastRides()
     this.fetchRides()
+    this.fetchPastRides()
     document
       .getElementById('content-container')
       .addEventListener('scroll', () => {
