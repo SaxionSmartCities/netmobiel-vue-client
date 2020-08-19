@@ -6,7 +6,11 @@
         :key="index"
         class="mx-3"
       >
-        <itinerary-leg :leg="leg" />
+        <itinerary-leg
+          :leg="leg"
+          :showicon="showicon"
+          :showdottedline="showdottedline"
+        />
       </v-row>
       <v-row dense class="d-flex flex-column">
         <v-col><v-divider /></v-col>
@@ -38,9 +42,9 @@
 </template>
 
 <script>
+import { generateShoutOutDetailSteps } from '@/utils/itinerary_steps.js'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import TravelProposalSummary from '@/components/community/TravelProposalSummary.vue'
-import { generateShoutOutDetailSteps } from '@/utils/itinerary_steps.js'
 
 export default {
   name: 'ShoutOutDetailPassenger',
@@ -50,6 +54,19 @@ export default {
   },
   props: {
     trip: { type: Object, required: true },
+  },
+  data() {
+    return {
+      selectedOffer: null,
+    }
+  },
+  computed: {
+    showicon() {
+      return this.selectedOffer != null
+    },
+    showdottedline() {
+      return this.selectedOffer == null
+    },
   },
   methods: {
     generateShoutOutSteps() {
