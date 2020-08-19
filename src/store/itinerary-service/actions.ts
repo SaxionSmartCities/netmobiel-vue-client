@@ -171,7 +171,7 @@ function storeTravelOffer(
     .then(response => {
       if (response.status == 202) {
         let message = 'Je aanbod is verstuurd'
-        uiStore.actions.queueNotification(message)
+        uiStore.actions.queueInfoNotification(message)
       } else {
         uiStore.actions.queueErrorNotification(response.data.message)
       }
