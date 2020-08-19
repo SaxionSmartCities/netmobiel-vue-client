@@ -23,7 +23,10 @@
               <v-col>
                 <h3>Rit aanbod</h3>
               </v-col>
-              <v-col v-if="trip.itineraries.length == 0" class="py-3">
+              <v-col
+                v-if="!trip.itineraries || trip.itineraries.length == 0"
+                class="py-3"
+              >
                 <em>Er zijn nog geen ritten aangeboden.</em>
               </v-col>
               <v-col v-else class="py-3">
