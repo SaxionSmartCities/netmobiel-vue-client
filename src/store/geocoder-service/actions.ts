@@ -37,13 +37,11 @@ async function fetchGeocoderSuggestions(
         headers: generateHeaders(GRAVITEE_GEO_SERVICE_API_KEY),
       }
     )
-    // console.log('response ', resp.data.data)
     mutations.setGeocoderSuggestions(resp.data.data)
   } catch (problem) {
-    uiStore.actions.queueNotification({
-      message: 'Fout bij het ophalen van locatiesuggesties.',
-      timeout: 0,
-    })
+    uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van locatiesuggesties.'
+    )
   }
 }
 

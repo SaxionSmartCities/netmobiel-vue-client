@@ -6,19 +6,19 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="7" class="d-flex flex-column justify-center">
+      <v-col cols="8" class="d-flex flex-column justify-center">
         <span class="title font-weight-light">Voer het kenteken in:</span>
         <span class="caption font-weight-light ml-1">
           Vul zelf de middenstreepjes in
         </span>
       </v-col>
-      <v-col>
+      <v-col cols="4">
         <v-text-field
           v-model="searchLicensePlate"
           dense
           :hide-details="true"
           outlined
-          placeholder="bv. XX-XXX-XX"
+          placeholder="XX-XX-XX"
           class="search-license-plate"
           maxlength="8"
         />
@@ -125,10 +125,9 @@ export default {
 
       let storedCar = cars.find(c => c.licensePlate === car.licensePlate)
       if (storedCar) {
-        uiStore.actions.queueNotification({
-          message: 'Auto is al opgeslagen aan uw profiel.',
-          timeout: 0,
-        })
+        uiStore.actions.queueErrorNotification(
+          'Auto is al opgeslagen aan uw profiel.'
+        )
       } else {
         csStore.actions.submitCar(car).then(() => {
           csStore.actions.fetchCars()

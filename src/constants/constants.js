@@ -3,6 +3,7 @@ export default {
   fetchPastTripsMaxResults: 8,
   defaultProfileImage: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
   defaultShoutOutRadius: 1000000,
+  defaultNotificationTimeout: 3000,
   searchSuggestionCategoryIcons: {
     airport: 'local_airport',
     'city-town-village': 'location_city',
