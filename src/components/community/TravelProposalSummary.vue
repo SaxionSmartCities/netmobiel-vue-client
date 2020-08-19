@@ -1,46 +1,51 @@
 <template>
-  <v-card outlined @click="$emit('travelProposalSelected', itinerary)">
-    <v-row no-gutters>
-      <v-col>
-        <v-card-title class="py-2">
-          <v-row no-gutters>
-            <v-col class="d-flex justify-space-between subtitle-1">
-              <span>Vertrek</span>
-              <span class="capitalize">
-                {{ formatDateTime(itinerary.departureTime) }}
-              </span>
-            </v-col>
-          </v-row>
-          <v-row no-gutters>
-            <v-col class="d-flex justify-space-between subtitle-1">
-              <span>Aankomst</span>
-              <span class="capitalize">
-                {{ formatDateTime(itinerary.arrivalTime) }}
-              </span>
-            </v-col>
-          </v-row>
-        </v-card-title>
-      </v-col>
-      <v-card-actions>
-        <v-icon>keyboard_arrow_right</v-icon>
-      </v-card-actions>
-    </v-row>
-  </v-card>
+  <v-container fluid pa-0>
+    <v-card fluid outlined @click="$emit('travelProposalSelected', itinerary)">
+      <v-row>
+        <v-col class="shrink ml-2 mr-0 pr-0">
+          <round-user-image :avatar-size="60" :image-size="56" />
+        </v-col>
+        <v-col>
+          <p class="font-weight-regular header mb-0">
+            {{ driver }}
+          </p>
+          <p class="font-weight-light subtitle-1 mb-0">
+            <span>Vertrek: </span>
+            <span class="capitalize">
+              {{ formatDateTime(itinerary.departureTime) }}
+            </span>
+            <span> - Aankomst: </span>
+            <span class="capitalize">
+              {{ formatDateTime(itinerary.arrivalTime) }}
+            </span>
+          </p>
+        </v-col>
+      </v-row>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
 import moment from 'moment'
-import { TIMESTAMP_FORMAT } from '@/utils/datetime.js'
+import { TIME_FORMAT } from '@/utils/datetime.js'
+import RoundUserImage from '@/components/common/RoundUserImage'
 
 export default {
   name: 'TravelProposalSummary',
+  components: { RoundUserImage },
   props: {
     index: { type: Number, required: true },
     itinerary: { type: Object, required: true },
   },
+  computed: {
+    driver() {
+      const leg = this.itinerary.legs.find(l => l.agencyId === 'NB:RS')
+      return leg ? leg.driverName : 'Chauffeur'
+    },
+  },
   methods: {
     formatDateTime(date) {
-      return moment(date).format(TIMESTAMP_FORMAT)
+      return moment(date).format(TIME_FORMAT)
     },
   },
 }
