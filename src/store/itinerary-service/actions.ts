@@ -171,24 +171,17 @@ function storeTravelOffer(
     .then(response => {
       if (response.status == 202) {
         let message = 'Je aanbod is verstuurd'
-        uiStore.actions.queueNotification({
-          message: message,
-          timeout: 3000,
-        })
+        uiStore.actions.queueNotification(message)
       } else {
-        uiStore.actions.queueNotification({
-          message: response.data.message,
-          timeout: 0,
-        })
+        uiStore.actions.queueErrorNotification(response.data.message)
       }
     })
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification({
-        message: 'Fout bij het opslaan van uw oproep.',
-        timeout: 0,
-      })
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het opslaan van uw oproep.'
+      )
     })
 }
 
