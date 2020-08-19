@@ -8,9 +8,8 @@
           <v-col class="py-0">
             <itinerary-summary-list :items="items" />
           </v-col>
-          <v-col><v-divider /></v-col>
           <!-- Passenger -->
-          <v-col v-if="localIsMine" class="mt-3">
+          <v-col v-if="localIsMine">
             <shout-out-detail-passenger :trip="trip" />
             <v-row>
               <v-col class="pt-3 pb-0">
@@ -30,6 +29,7 @@
           </v-col>
           <!-- Chauffeur -->
           <v-col v-else>
+            <v-divider class="mb-3" />
             <v-row dense class="d-flex flex-column">
               <v-col v-if="planningStatus.status === 'PENDING'">
                 <search-status />
