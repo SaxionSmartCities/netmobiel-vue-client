@@ -11,38 +11,7 @@
           <v-col><v-divider /></v-col>
           <!-- Passenger -->
           <v-col v-if="localIsMine" class="mt-3">
-            <v-row
-              v-for="(leg, index) in generateShoutOutSteps()"
-              :key="index"
-              class="mx-3 py-0"
-            >
-              <itinerary-leg :leg="leg" />
-            </v-row>
-            <v-row dense class="d-flex flex-column">
-              <v-col><v-divider /></v-col>
-              <v-col>
-                <h3>Rit aanbod</h3>
-              </v-col>
-              <v-col
-                v-if="!trip.itineraries || trip.itineraries.length == 0"
-                class="py-3"
-              >
-                <em>Er zijn nog geen ritten aangeboden.</em>
-              </v-col>
-              <v-col v-else class="py-3">
-                <v-row
-                  v-for="(offer, index) in trip.itineraries"
-                  :key="index"
-                  class="dense px-2 pt-0 pb-1"
-                >
-                  <travel-proposal-summary
-                    :index="index + 1"
-                    :itinerary="offer"
-                    @travelProposalSelected="onTravelProposalSelected"
-                  />
-                </v-row>
-              </v-col>
-            </v-row>
+            <shout-out-detail-passenger :trip="trip" />
             <v-row>
               <v-col class="pt-3 pb-0">
                 <h3>Wijzigen</h3>
@@ -191,8 +160,8 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
-import TravelProposalSummary from '@/components/community/TravelProposalSummary.vue'
 import SearchStatus from '@/components/search/SearchStatus.vue'
+import ShoutOutDetailPassenger from '@/components/community/ShoutOutDetailPassenger.vue'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import {
   DATE_FORMAT_INPUT,
@@ -215,8 +184,8 @@ export default {
     ItineraryLeg,
     ItineraryOptions,
     ItinerarySummaryList,
-    TravelProposalSummary,
     SearchStatus,
+    ShoutOutDetailPassenger,
   },
   props: {
     id: { type: String, required: true },
@@ -250,13 +219,13 @@ export default {
     },
     items() {
       let result = []
-      const { from, to, travelTime } = this.trip
-      if (from) {
-        result.push({ label: 'Van', value: from.label })
-      }
-      if (to) {
-        result.push({ label: 'Naar', value: to.label })
-      }
+      const { travelTime } = this.trip
+      // if (from) {
+      //   result.push({ label: 'Van', value: from.label })
+      // }
+      // if (to) {
+      //   result.push({ label: 'Naar', value: to.label })
+      // }
       if (travelTime) {
         result.push({ label: 'Datum', value: formatDateTimeLong(travelTime) })
       }
@@ -443,12 +412,12 @@ export default {
     },
     onTravelProposalSelected(itinerary) {
       console.log('onTravelOfferSelected: ', itinerary)
-      const { from, to, nrSeats } = this.trip
-      const { itineraryRef } = itinerary
-      const trip = { from, to, nrSeats, itineraryRef }
-      console.log(trip)
-      this.$store.dispatch('is/storeSelectedTrip', trip)
-      this.$router.push({ name: 'shoutouts' })
+      // const { from, to, nrSeats } = this.trip
+      // const { itineraryRef } = itinerary
+      // const trip = { from, to, nrSeats, itineraryRef }
+      // console.log(trip)
+      // this.$store.dispatch('is/storeSelectedTrip', trip)
+      // this.$router.push({ name: 'shoutouts' })
     },
   },
 }
