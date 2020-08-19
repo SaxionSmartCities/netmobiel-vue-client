@@ -2,6 +2,7 @@ import { UiState, UiNotification, UiUpdateMessage } from './types'
 import { RootState } from '@/store/Rootstate'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { actions, mutations } from '@/store/ui'
+import constants from '@/constants/constants'
 
 type ActionContext = BareActionContext<UiState, RootState>
 
@@ -11,6 +12,17 @@ function addUpdate(context: ActionContext, update: UiUpdateMessage): void {
   if (found === undefined) {
     mutations.pushUpdate(update)
   }
+}
+
+function queueInfoNotification(context: ActionContext, payload: string) {
+  queueNotification(context, {
+    message: payload,
+    timeout: constants.defaultNotificationTimeout,
+  })
+}
+
+function queueErrorNotification(context: ActionContext, payload: string) {
+  queueNotification(context, { message: payload, timeout: 0 })
 }
 
 function queueNotification(context: ActionContext, payload: UiNotification) {
@@ -53,7 +65,8 @@ function finishNotification(context: ActionContext) {
 export const buildActions = (builder: ModuleBuilder<UiState, RootState>) => {
   return {
     addUpdate: builder.dispatch(addUpdate),
-    queueNotification: builder.dispatch(queueNotification),
+    queueErrorNotification: builder.dispatch(queueErrorNotification),
+    queueInfoNotification: builder.dispatch(queueInfoNotification),
     finishNotification: builder.dispatch(finishNotification),
   }
 }

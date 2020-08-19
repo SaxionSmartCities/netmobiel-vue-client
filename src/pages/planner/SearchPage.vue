@@ -129,12 +129,8 @@ export default {
       //TODO: Do the valid time check in the search criteria component.
       // If the selected date is in the past show an error.
       if (moment(newCriteria?.travelTime?.when) < moment()) {
-        uiStore.actions.queueNotification(
-          {
-            message: 'De geselecteerde tijd ligt in het verleden.',
-            timeout: 0,
-          },
-          { root: true }
+        uiStore.actions.queueErrorNotification(
+          'De geselecteerde tijd ligt in het verleden.'
         )
       }
       isStore.mutations.setSearchCriteria(newCriteria)
