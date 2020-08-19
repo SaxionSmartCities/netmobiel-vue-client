@@ -173,10 +173,9 @@ export default {
       )
       if (duplicate) {
         //TODO: Check why this does not fire.
-        uiStore.actions.queueNotification({
-          message: 'Favoriet is al opgeslagen aan uw profiel.',
-          timeout: 3000,
-        })
+        uiStore.actions.queueInfoNotification(
+          'Favoriet is al opgeslagen aan uw profiel.'
+        )
       } else {
         let favoriteLocations = profile.favoriteLocations.slice(0)
         favoriteLocations.push(favorite)
