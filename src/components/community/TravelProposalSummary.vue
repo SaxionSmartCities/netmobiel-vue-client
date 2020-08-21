@@ -8,7 +8,11 @@
     >
       <v-row>
         <v-col class="shrink ml-2 mr-0 pr-0">
-          <round-user-image :avatar-size="60" :image-size="56" />
+          <round-user-image
+            :avatar-size="60"
+            :image-size="56"
+            :class="{ 'selected-offer': selected }"
+          />
         </v-col>
         <v-col>
           <p class="font-weight-regular header mb-0">
