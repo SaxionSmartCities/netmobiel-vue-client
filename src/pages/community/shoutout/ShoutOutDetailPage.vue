@@ -415,7 +415,11 @@ export default {
       uiStore.actions.queueInfoNotification('Not yet implemented!')
     },
     onTravelOfferConfirmed(itinerary) {
-      uiStore.actions.queueInfoNotification('Not yet implemented!')
+      const { from, to, nrSeats } = this.trip
+      const { itineraryRef } = itinerary
+      const trip = { from, to, nrSeats, itineraryRef }
+      this.$store.dispatch('is/storeSelectedTrip', trip)
+      this.$router.push({ name: 'shoutouts' })
     },
   },
 }
