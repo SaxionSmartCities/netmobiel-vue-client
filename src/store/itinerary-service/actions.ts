@@ -257,7 +257,7 @@ function fetchShoutOuts(
 function fetchMyShoutOuts(context: ActionContext, { offset: offset }: any) {
   const params = {
     offset,
-    state: 'PLANNING',
+    inProgressOnly: true,
     planType: 'SHOUT_OUT',
     since: moment().format(),
   }
