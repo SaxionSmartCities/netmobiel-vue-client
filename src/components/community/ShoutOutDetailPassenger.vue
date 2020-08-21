@@ -10,19 +10,7 @@
       </v-row>
       <v-row v-if="selectedOffer != null">
         <v-col>
-          <v-btn
-            block
-            rounded
-            depressed
-            outlined
-            color="primary"
-            @click="onClear"
-          >
-            Opnieuw
-          </v-btn>
-        </v-col>
-        <v-col>
-          <v-btn block rounded depressed color="button">
+          <v-btn block rounded depressed color="button" @click="onConfirm">
             Bevestigen
           </v-btn>
         </v-col>
@@ -30,7 +18,7 @@
       <v-row dense class="d-flex flex-column">
         <v-col><v-divider /></v-col>
         <v-col class="mt-2">
-          <h3>Rit aanbod</h3>
+          <h3>Aangeboden ritten</h3>
         </v-col>
         <v-col v-if="!trip.itineraries || trip.itineraries.length == 0">
           <em>Er zijn nog geen ritten aangeboden.</em>
@@ -42,9 +30,10 @@
             class="dense px-2 pt-0 pb-1"
           >
             <travel-proposal-summary
-              :index="index + 1"
+              :index="index"
               :itinerary="offer"
-              @travelProposalSelected="onTravelProposalSelected"
+              :selected="index == selectedOfferIndex"
+              @travel-proposal-selected="onTravelProposalSelected"
             />
           </v-row>
         </v-col>
@@ -72,10 +61,17 @@ export default {
   },
   data() {
     return {
-      selectedOffer: null,
+      selectedOfferIndex: 0,
     }
   },
   computed: {
+    selectedOffer() {
+      const { itineraries } = this.trip
+      if (itineraries && itineraries.length > this.selectedOfferIndex) {
+        return itineraries[this.selectedOfferIndex]
+      }
+      return null
+    },
     showicon() {
       return this.selectedOffer != null
     },
@@ -90,9 +86,11 @@ export default {
     },
   },
   methods: {
-    onTravelProposalSelected(itinerary) {
-      console.log('onTravelOfferSelected: ', itinerary)
-      this.selectedOffer = itinerary
+    onTravelProposalSelected(index) {
+      this.selectedOfferIndex = index
+    },
+    onConfirm() {
+      this.$emit('travel-proposal-confirm', this.selectedOffer)
     },
     onClear() {
       this.selectedOffer = null

@@ -1,6 +1,11 @@
 <template>
   <v-container fluid pa-0>
-    <v-card fluid outlined @click="$emit('travelProposalSelected', itinerary)">
+    <v-card
+      fluid
+      outlined
+      :class="{ 'selected-offer': selected }"
+      @click="$emit('travel-proposal-selected', index)"
+    >
       <v-row>
         <v-col class="shrink ml-2 mr-0 pr-0">
           <round-user-image :avatar-size="60" :image-size="56" />
@@ -36,6 +41,7 @@ export default {
   props: {
     index: { type: Number, required: true },
     itinerary: { type: Object, required: true },
+    selected: { type: Boolean, required: true, default: false },
   },
   computed: {
     driver() {
@@ -57,5 +63,9 @@ export default {
 }
 .capitalize::first-letter {
   text-transform: uppercase;
+}
+.selected-offer {
+  border-color: $color-primary !important;
+  background-color: $background-light-green !important;
 }
 </style>

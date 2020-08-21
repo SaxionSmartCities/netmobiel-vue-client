@@ -10,7 +10,10 @@
           </v-col>
           <!-- Passenger -->
           <v-col v-if="localIsMine">
-            <shout-out-detail-passenger :trip="trip" />
+            <shout-out-detail-passenger
+              :trip="trip"
+              @travel-proposal-confirm="onTravelOfferConfirmed"
+            />
             <v-row>
               <v-col class="pt-3 pb-0">
                 <h3>Wijzigen</h3>
@@ -377,6 +380,7 @@ export default {
         isStore.actions.storeTravelOffer(travelOffer)
       } else {
         //TODO: error handling.
+        // eslint-disable-next-line
         console.log('No default car!')
       }
     },
@@ -408,16 +412,10 @@ export default {
       })
     },
     onTripCancelled() {
-      //TODO:
+      uiStore.actions.queueInfoNotification('Not yet implemented!')
     },
-    onTravelProposalSelected(itinerary) {
-      console.log('onTravelOfferSelected: ', itinerary)
-      // const { from, to, nrSeats } = this.trip
-      // const { itineraryRef } = itinerary
-      // const trip = { from, to, nrSeats, itineraryRef }
-      // console.log(trip)
-      // this.$store.dispatch('is/storeSelectedTrip', trip)
-      // this.$router.push({ name: 'shoutouts' })
+    onTravelOfferConfirmed(itinerary) {
+      uiStore.actions.queueInfoNotification('Not yet implemented!')
     },
   },
 }
