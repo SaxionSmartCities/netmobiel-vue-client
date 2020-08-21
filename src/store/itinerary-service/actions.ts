@@ -3,7 +3,7 @@ import moment from 'moment'
 import config from '@/config/config'
 import constants from '../../constants/constants'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
-import { ItineraryState } from '@/store/itinerary-service/types'
+import { ItineraryState, TripSelection } from '@/store/itinerary-service/types'
 import { RootState } from '../Rootstate'
 import { mutations } from '@/store/itinerary-service/index'
 import * as uiStore from '@/store/ui'
@@ -93,11 +93,7 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
     })
 }
 
-function storeSelectedTrip(
-  context: ActionContext,
-  { from, to, nrSeats, itineraryRef }: any
-) {
-  let payload = { from, to, nrSeats, itineraryRef }
+function storeSelectedTrip(context: ActionContext, payload: TripSelection) {
   const URL = BASE_URL + '/planner/trips'
   axios
     .post(URL, payload, {
