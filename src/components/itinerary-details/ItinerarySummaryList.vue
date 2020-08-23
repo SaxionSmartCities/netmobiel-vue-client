@@ -9,7 +9,38 @@
         >
           <recurrence-viewer :recurrence="item.value" />
         </v-col>
-        <v-col v-else class="capitalize pl-3">{{ item.value }}</v-col>
+        <v-col v-else class="capitalize pl-3">
+          <template v-if="item.label !== 'Boekingen'">
+            {{ item.value }}
+          </template>
+          <div v-else>
+            <v-row justify="space-between" dense>
+              <v-col class="py-0 shrink">
+                {{ item.value }}
+              </v-col>
+              <v-col class="py-0 shrink">
+                <v-btn
+                  color="primary"
+                  icon
+                  @click="expandBookings = !expandBookings"
+                >
+                  <v-icon>
+                    {{ !expandBookings ? 'expand_more' : 'expand_less' }}
+                  </v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+            <ul v-if="expandBookings" class="body-2 bookings-list pl-1">
+              <li v-for="booking in item.bookings" :key="booking.bookingRef">
+                {{
+                  booking.passenger.givenName +
+                    ' ' +
+                    booking.passenger.familyName
+                }}
+              </li>
+            </ul>
+          </div>
+        </v-col>
       </v-row>
     </v-col>
   </v-row>
@@ -24,6 +55,11 @@ export default {
   props: {
     items: { type: Array, default: () => [] },
   },
+  data() {
+    return {
+      expandBookings: false,
+    }
+  },
 }
 </script>
 
@@ -36,5 +72,9 @@ export default {
 }
 .capitalize::first-letter {
   text-transform: uppercase;
+}
+.bookings-list {
+  list-style: square inside
+    url('data:image/gif;base64,R0lGODlhBQAKAIABAAAAAP///yH5BAEAAAEALAAAAAAFAAoAAAIIjI+ZwKwPUQEAOw==');
 }
 </style>

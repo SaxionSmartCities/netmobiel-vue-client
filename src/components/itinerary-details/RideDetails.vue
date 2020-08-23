@@ -30,7 +30,7 @@ export default {
       }
       const boekingen =
         !!bookings && bookings.length > 0 ? bookings.length : 'Geen'
-      result.push({ label: 'Boekingen', value: boekingen })
+      result.push({ label: 'Boekingen', value: boekingen, bookings: bookings })
       const auto = car
         ? `${this.ride.car.brand} ${this.ride.car.model}`
         : 'Onbekend'
