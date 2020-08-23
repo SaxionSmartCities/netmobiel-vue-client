@@ -42,19 +42,21 @@
             <em>U heeft nog geen reizen gemaakt.</em>
           </v-col>
           <v-col v-else class="past-rides-column py-0">
-            <travel-card
-              v-for="(trip, index) in getPastTrips"
-              :key="index"
-              class="trip-card"
-              :needs-review="needsReview(trip)"
-              :index="index"
-              :from="trip.from"
-              :to="trip.to"
-              :arrival-time="parseDate(trip.arrivalTime)"
-              :departure-time="parseDate(trip.departureTime)"
-              :legs="trip.itinerary.legs"
-              @onTripSelected="onTripSelected"
-            />
+            <grouped-card-list :items="getPastTrips">
+              <template v-slot:card="{ trip, index }">
+                <travel-card
+                  class="trip-card"
+                  :needs-review="needsReview(trip)"
+                  :index="index"
+                  :from="trip.from"
+                  :to="trip.to"
+                  :arrival-time="parseDate(trip.arrivalTime)"
+                  :departure-time="parseDate(trip.departureTime)"
+                  :legs="trip.itinerary.legs"
+                  @onTripSelected="onTripSelected"
+                />
+              </template>
+            </grouped-card-list>
           </v-col>
         </v-row>
         <v-row v-if="tripsSearchTime === 'Future'">
