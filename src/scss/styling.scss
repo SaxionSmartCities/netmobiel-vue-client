@@ -95,3 +95,8 @@ h3 {
 .secondary-color {
   color: $color-orange;
 }
+
+.dashed-list {
+  list-style: square outside
+    url('data:image/gif;base64,R0lGODlhBQAKAIABAAAAAP///yH5BAEAAAEALAAAAAAFAAoAAAIIjI+ZwKwPUQEAOw==');
+}

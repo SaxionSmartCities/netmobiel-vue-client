@@ -30,7 +30,7 @@
                 </v-btn>
               </v-col>
             </v-row>
-            <ul v-if="expandBookings" class="body-2 bookings-list pl-1">
+            <ul v-if="expandBookings" class="body-2 dashed-list pl-4">
               <li v-for="booking in item.bookings" :key="booking.bookingRef">
                 {{
                   booking.passenger.givenName +
@@ -72,9 +72,5 @@ export default {
 }
 .capitalize::first-letter {
   text-transform: uppercase;
-}
-.bookings-list {
-  list-style: square inside
-    url('data:image/gif;base64,R0lGODlhBQAKAIABAAAAAP///yH5BAEAAAEALAAAAAAFAAoAAAIIjI+ZwKwPUQEAOw==');
 }
 </style>
