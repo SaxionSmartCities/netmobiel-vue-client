@@ -28,11 +28,9 @@
           </div>
         </v-card-title>
         <v-card-subtitle>
-          <v-row justify="space-between" no-gutters class="pb-2">
-            <v-col>{{ formatDateTime(departureTime) }}</v-col>
-            <v-col class="text-right">
-              {{ formatDateTime(arrivalTime, 'HH:mm uur') }}
-            </v-col>
+          <v-row no-gutters class="pb-2">
+            <v-col cols="9">{{ formatDateTime(departureTime) }}</v-col>
+            <v-col>{{ formatDateTime(arrivalTime) }}</v-col>
           </v-row>
         </v-card-subtitle>
         <v-card-text>
@@ -87,15 +85,10 @@ export default {
     this.calculateLegDivison()
   },
   methods: {
-    formatDateTime(dateTime, format) {
-      if (!format)
-        return moment(dateTime)
-          .locale('nl')
-          .calendar()
-      else
-        return moment(dateTime)
-          .local('nl')
-          .format(format)
+    formatDateTime(dateTime) {
+      return moment(dateTime)
+        .locale('nl')
+        .format('HH:mm uur')
     },
     // Function to pre-determine the divions of column per leg
     calculateLegDivison() {
