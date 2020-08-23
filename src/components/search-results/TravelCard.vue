@@ -87,7 +87,7 @@ export default {
     this.calculateLegDivison()
   },
   methods: {
-    formatDateTime(dateTime, format = null) {
+    formatDateTime(dateTime, format) {
       if (!format)
         return moment(dateTime)
           .locale('nl')
