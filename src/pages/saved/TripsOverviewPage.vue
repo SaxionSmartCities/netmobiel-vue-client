@@ -26,6 +26,24 @@
           </span>
         </template>
       </tab-bar>
+      <slide-show-cancelled-trips :trips="getCancelledTrips">
+        <template v-slot:card="{ trips }">
+          {{ trips.length }}
+          <travel-card
+            v-for="(trip, index) in trips"
+            :key="index"
+            class="trip-card"
+            :index="index"
+            :from="trip.from"
+            :to="trip.to"
+            :arrival-time="parseDate(trip.itinerary.arrivalTime)"
+            :departure-time="parseDate(trip.itinerary.departureTime)"
+            :duration="trip.itinerary.duration"
+            :legs="trip.itinerary.legs"
+            @onTripSelected="onTripSelected"
+          />
+        </template>
+      </slide-show-cancelled-trips>
     </template>
     <v-row v-if="(showTabs && selectedTab === 0) || isPassenger">
       <v-col class="px-0">
@@ -111,10 +129,17 @@ import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
+import SlideShowCancelledTrips from '@/components/other/SlideShowCancelledTrips'
 
 export default {
   name: 'TripsOverviewPage',
-  components: { TabBar, ContentPane, TravelCard, RideCard },
+  components: {
+    SlideShowCancelledTrips,
+    TabBar,
+    ContentPane,
+    TravelCard,
+    RideCard,
+  },
   data() {
     return {
       selectedTab: 0,
@@ -127,7 +152,10 @@ export default {
   computed: {
     ...{
       getPlannedTripsCount: () => isStore.getters.getPlannedTripsCount,
-      getPlannedTrips: () => isStore.getters.getPlannedTrips,
+      getPlannedTrips: () =>
+        isStore.getters.getPlannedTrips.filter(
+          trip => trip.state !== 'CANCELLED'
+        ),
       getPastTripsCount: () => isStore.getters.getPastTripsCount,
       getPastTrips: () => isStore.getters.getPastTrips,
     },
@@ -148,6 +176,9 @@ export default {
     isDriver() {
       const role = psStore.getters.getProfile.userRole
       return role === 'driver'
+    },
+    getCancelledTrips() {
+      return this.getPlannedTrips.filter(trip => trip.state === 'CANCELLED')
     },
   },
   watch: {
