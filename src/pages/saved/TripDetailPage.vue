@@ -1,5 +1,20 @@
 <template>
   <content-pane>
+    <template v-slot:header>
+      <v-row
+        v-if="selectedTrip.state === 'CANCELLED'"
+        class="cancelled-banner text-center py-1"
+        dense
+        no-gutters
+      >
+        <v-col>
+          <v-icon small class="color-alert-red mr-1">warning</v-icon>
+          <span class="body-2">
+            LET OP! Deze reis is niet meer beschikbaar.
+          </span>
+        </v-col>
+      </v-row>
+    </template>
     <v-row>
       <v-col class="py-0">
         <trip-details
@@ -253,4 +268,4 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped></style>

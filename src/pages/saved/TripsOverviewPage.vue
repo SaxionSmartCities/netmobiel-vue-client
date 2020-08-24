@@ -74,6 +74,7 @@
               :departure-time="parseDate(trip.itinerary.departureTime)"
               :duration="trip.itinerary.duration"
               :legs="trip.itinerary.legs"
+              :disabled="trip.state === 'CANCELLED'"
               @onTripSelected="onTripSelected"
             />
           </v-col>
