@@ -33,10 +33,8 @@
         "
         :trips="getCancelledTrips"
       >
-        <template v-slot:card="{ trips }">
+        <template v-slot:card="{ trip, index }">
           <travel-card
-            v-for="(trip, index) in trips"
-            :key="index"
             class="trip-card"
             :index="index"
             :from="trip.from"
