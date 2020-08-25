@@ -26,9 +26,14 @@
           </span>
         </template>
       </tab-bar>
-      <slide-show-cancelled-trips :trips="getCancelledTrips">
+      <slide-show-cancelled-trips
+        v-if="
+          ((showTabs && selectedTab === 0) || isPassenger) &&
+            getCancelledTrips.length > 0
+        "
+        :trips="getCancelledTrips"
+      >
         <template v-slot:card="{ trips }">
-          {{ trips.length }}
           <travel-card
             v-for="(trip, index) in trips"
             :key="index"
@@ -178,7 +183,9 @@ export default {
       return role === 'driver'
     },
     getCancelledTrips() {
-      return this.getPlannedTrips.filter(trip => trip.state === 'CANCELLED')
+      return isStore.getters.getPlannedTrips.filter(
+        trip => trip.state === 'CANCELLED'
+      )
     },
   },
   watch: {

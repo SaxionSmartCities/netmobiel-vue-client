@@ -1,6 +1,7 @@
 <template>
   <v-row class="slide-show-row">
-    <v-col>
+    <v-col class="text-center">
+      <span class="body-1">Klik hier om de geannuleerde trips te zien</span>
       <slot name="card"></slot>
     </v-col>
   </v-row>
@@ -17,6 +18,6 @@ export default {
 
 <style lang="scss" scoped>
 .slide-show-row {
-  background-color: $color-alertRed;
+  background-color: lighten($color-alertRed, 50%);
 }
 </style>
