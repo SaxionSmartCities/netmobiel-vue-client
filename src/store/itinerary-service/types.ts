@@ -29,6 +29,7 @@ export class ItineraryState {
     },
     result: null,
   }
+  cancelledTrips: Trip[] = []
 }
 
 export interface ShoutOut {}

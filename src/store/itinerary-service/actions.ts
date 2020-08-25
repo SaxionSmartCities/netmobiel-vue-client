@@ -313,6 +313,28 @@ function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
     })
 }
 
+function fetchCancelledTrips(context: ActionContext) {
+  const params: any = {}
+  params['state'] = 'CANCELLED'
+
+  const URL = `${BASE_URL}/planner/trips`
+  axios
+    .get(URL, {
+      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      params: params,
+    })
+    .then(response => {
+      mutations.setCancelledTrips(response.data.data)
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van geannuleerde reizen.'
+      )
+    })
+}
+
 export const buildActions = (
   isBuilder: ModuleBuilder<ItineraryState, RootState>
 ) => {
@@ -322,6 +344,7 @@ export const buildActions = (
     storeSelectedTrip: isBuilder.dispatch(storeSelectedTrip),
     storeShoutOut: isBuilder.dispatch(storeShoutOut),
     fetchTrips: isBuilder.dispatch(fetchTrips),
+    fetchCancelledTrips: isBuilder.dispatch(fetchCancelledTrips),
     fetchShoutOuts: isBuilder.dispatch(fetchShoutOuts),
     fetchMyShoutOuts: isBuilder.dispatch(fetchMyShoutOuts),
     fetchShoutOut: isBuilder.dispatch(fetchShoutOut),

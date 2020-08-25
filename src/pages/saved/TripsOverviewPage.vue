@@ -161,6 +161,7 @@ export default {
         ),
       getPastTripsCount: () => isStore.getters.getPastTripsCount,
       getPastTrips: () => isStore.getters.getPastTrips,
+      getCancelledTrips: () => isStore.getters.getCancelledTrips,
     },
     getPlannedRidesCount() {
       return csStore.getters.getPlannedRidesCount
@@ -179,11 +180,6 @@ export default {
     isDriver() {
       const role = psStore.getters.getProfile.userRole
       return role === 'driver'
-    },
-    getCancelledTrips() {
-      return isStore.getters.getPlannedTrips.filter(
-        trip => trip.state === 'CANCELLED'
-      )
     },
   },
   watch: {
@@ -213,6 +209,8 @@ export default {
     this.fetchTrips()
     this.fetchPastTrips()
     this.fetchRides()
+    isStore.actions.fetchCancelledTrips()
+
     document
       .getElementById('content-container')
       .addEventListener('scroll', () => {

@@ -53,6 +53,10 @@ export const buildGetters = (
     return state.searchCriteria
   }, 'getSearchCriteria')
 
+  const getCancelledTrips = isBuilder.read((state: ItineraryState) => {
+    return state.cancelledTrips
+  }, 'getCancelledTrips')
+
   return {
     get getPlanningRequest() {
       return getPlanningRequest()
@@ -89,6 +93,9 @@ export const buildGetters = (
     },
     get getSearchCriteria() {
       return getSearchCriteria()
+    },
+    get getCancelledTrips() {
+      return getCancelledTrips()
     },
   }
 }

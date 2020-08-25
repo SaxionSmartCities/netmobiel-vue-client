@@ -98,6 +98,9 @@ function setPastTripsCount(state: ItineraryState, payload: number) {
   state.pastTripsCount = payload
 }
 
+function setCancelledTrips(state: ItineraryState, payload: Trip[]) {
+  state.cancelledTrips = payload
+}
 export const buildMutations = (
   isBuilder: ModuleBuilder<ItineraryState, RootState>
 ) => {
@@ -121,5 +124,6 @@ export const buildMutations = (
     setPastTrips: isBuilder.commit(setPastTrips),
     appendPastTrips: isBuilder.commit(appendPastTrips),
     setPastTripsCount: isBuilder.commit(setPastTripsCount),
+    setCancelledTrips: isBuilder.commit(setCancelledTrips),
   }
 }
