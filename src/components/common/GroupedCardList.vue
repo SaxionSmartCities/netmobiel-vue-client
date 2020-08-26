@@ -1,12 +1,12 @@
 <template>
   <v-row v-if="items">
-    <v-col>
+    <v-col class="py-0">
       <section
         v-for="date in getAllDifferentDays(sortedTrips())"
         :key="date"
         class="px-0"
       >
-        <h4 class="netmobiel py-1">{{ formatToCategoryDate(date) }}</h4>
+        <h4 class="netmobiel pb-1">{{ formatToCategoryDate(date) }}</h4>
         <v-col
           v-for="(trip, index) in getItinerariesForThatDay(sortedTrips(), date)"
           :key="index"
