@@ -10,9 +10,12 @@
         <v-col
           v-for="(trip, index) in getItinerariesForThatDay(sortedTrips(), date)"
           :key="index"
-          class="px-0 py-1"
+          class="pa-0"
         >
           <slot name="card" :trip="trip" :index="index"> </slot>
+        </v-col>
+        <v-col class="py-1">
+          <!-- Trailing col for bottom spacing group -->
         </v-col>
       </section>
     </v-col>
