@@ -41,7 +41,7 @@
           <v-col v-if="getPastTrips.length === 0" align="center">
             <em>U heeft nog geen reizen gemaakt.</em>
           </v-col>
-          <v-col v-else class="past-rides-column py-0">
+          <v-col v-else class="py-0">
             <travel-card
               v-for="(trip, index) in getPastTrips"
               :key="index"
@@ -62,7 +62,7 @@
             U heeft geen bewaarde reizen. Ga naar de planner om uw reis te
             plannen.
           </v-col>
-          <v-col v-else class="past-rides-column py-0">
+          <v-col v-else class="py-0">
             <travel-card
               v-for="(trip, index) in getPlannedTrips"
               :key="index"
@@ -81,7 +81,7 @@
       </v-col>
     </v-row>
     <v-row v-if="(showTabs && selectedTab === 1) || isDriver" dense>
-      <v-col class="past-rides-column pa-0">
+      <v-col class="pa-0">
         <v-row dense>
           <v-col>
             <v-radio-group v-model="ridesSearchTime" class="mt-1" row>
