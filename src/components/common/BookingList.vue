@@ -12,7 +12,7 @@
         </v-btn>
       </v-col>
     </v-row>
-    <ul v-if="expandBookings" class="body-2 dashed-list pl-4">
+    <ul v-if="expandBookings" class="body-2 pl-4">
       <li v-for="booking in bookingList" :key="booking.bookingRef">
         {{ booking.passenger.givenName + ' ' + booking.passenger.familyName }}
       </li>
