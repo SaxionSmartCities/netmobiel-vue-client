@@ -5,12 +5,10 @@
         class="d-flex flex-row justify-space-between alert-red"
         @click="showCards = !showCards"
       >
-        <span class="body-2 bold">
-          Klik hier om de geannuleerde trips te zien ({{ trips.length }})
-        </span>
+        <span>Er zijn ook {{ trips.length }} geannuleerde reizen.</span>
         <v-icon class="alert-red">keyboard_arrow_down</v-icon>
       </div>
-      <div v-if="showCards" class="mt-1 cards-container">
+      <div v-if="showCards" class="mt-2 cards-container">
         <slot
           v-for="(trip, index) in trips"
           name="card"
