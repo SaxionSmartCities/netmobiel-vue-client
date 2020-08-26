@@ -186,7 +186,7 @@ function fetchTrips(
   { pastTrips, offset, maxResults, until, since, sortDir }: any
 ) {
   const params: any = {}
-  params['maxResults'] = maxResults || 10
+  params['maxResults'] = maxResults || constants.defaultMaxResults
   params['offset'] = offset || 0
   until && (params['until'] = until)
   since && (params['since'] = since)

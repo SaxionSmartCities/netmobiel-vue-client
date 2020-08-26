@@ -29,6 +29,10 @@ export const buildGetters = (
     return state.search.licensePlate
   }, 'getSearchLicensePlate')
 
+  const getPastRides = csBuilder.read((state: CarpoolState) => {
+    return state.pastRides
+  }, 'getPastRides')
+
   return {
     get getAvailableCars() {
       return getAvailableCars()
@@ -47,6 +51,9 @@ export const buildGetters = (
     },
     get getSearchLicensePlate() {
       return getSearchLicensePlate()
+    },
+    get getPastRides() {
+      return getPastRides()
     },
   }
 }
