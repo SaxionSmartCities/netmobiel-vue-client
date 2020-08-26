@@ -1,8 +1,9 @@
 import axios from 'axios'
+import moment from 'moment'
 import config from '@/config/config'
 import constants from '../../constants/constants'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
-import { ItineraryState } from '@/store/itinerary-service/types'
+import { ItineraryState, TripSelection } from '@/store/itinerary-service/types'
 import { RootState } from '../Rootstate'
 import { mutations } from '@/store/itinerary-service/index'
 import * as uiStore from '@/store/ui'
@@ -92,11 +93,7 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
     })
 }
 
-function storeSelectedTrip(
-  context: ActionContext,
-  { from, to, nrSeats, itineraryRef }: any
-) {
-  let payload = { from, to, nrSeats, itineraryRef }
+function storeSelectedTrip(context: ActionContext, payload: TripSelection) {
   const URL = BASE_URL + '/planner/trips'
   axios
     .post(URL, payload, {
@@ -143,6 +140,33 @@ function storeShoutOut(
     .then(response => {
       if (response.status == 201) {
         let message = 'Oproep naar de community is geplaatst'
+        uiStore.actions.queueInfoNotification(message)
+      } else {
+        uiStore.actions.queueErrorNotification(response.data.message)
+      }
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het opslaan van uw oproep.'
+      )
+    })
+}
+
+function storeTravelOffer(
+  context: ActionContext,
+  { shoutoutPlanId, planRef, vehicleRef, driverRef }: any
+) {
+  let payload = { planRef, vehicleRef, driverRef }
+  const URL = `${BASE_URL}/planner/shout-outs/${shoutoutPlanId}`
+  axios
+    .post(URL, payload, {
+      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+    })
+    .then(response => {
+      if (response.status == 202) {
+        let message = 'Je aanbod is verstuurd'
         uiStore.actions.queueInfoNotification(message)
       } else {
         uiStore.actions.queueErrorNotification(response.data.message)
@@ -227,7 +251,12 @@ function fetchShoutOuts(
 }
 
 function fetchMyShoutOuts(context: ActionContext, { offset: offset }: any) {
-  const params = { offset, state: 'PLANNING', planType: 'SHOUT_OUT' }
+  const params = {
+    offset,
+    inProgressOnly: true,
+    planType: 'SHOUT_OUT',
+    since: moment().format(),
+  }
   axios
     .get(BASE_URL + '/planner/plans', {
       headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
@@ -321,6 +350,7 @@ export const buildActions = (
     deleteSelectedTrip: isBuilder.dispatch(deleteSelectedTrip),
     storeSelectedTrip: isBuilder.dispatch(storeSelectedTrip),
     storeShoutOut: isBuilder.dispatch(storeShoutOut),
+    storeTravelOffer: isBuilder.dispatch(storeTravelOffer),
     fetchTrips: isBuilder.dispatch(fetchTrips),
     fetchShoutOuts: isBuilder.dispatch(fetchShoutOuts),
     fetchMyShoutOuts: isBuilder.dispatch(fetchMyShoutOuts),
