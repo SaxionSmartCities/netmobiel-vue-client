@@ -9,37 +9,16 @@
         >
           <recurrence-viewer :recurrence="item.value" />
         </v-col>
+        <v-col
+          v-else-if="item.renderingComponent === 'BookingList'"
+          class="pl-3"
+        >
+          <booking-list :booking-list="item.value" />
+        </v-col>
         <v-col v-else class="capitalize pl-3">
           <template v-if="item.label !== 'Boekingen'">
             {{ item.value }}
           </template>
-          <div v-else>
-            <v-row justify="space-between" dense>
-              <v-col class="py-0 shrink">
-                {{ item.value }}
-              </v-col>
-              <v-col class="py-0 shrink">
-                <v-btn
-                  color="primary"
-                  icon
-                  @click="expandBookings = !expandBookings"
-                >
-                  <v-icon>
-                    {{ !expandBookings ? 'expand_more' : 'expand_less' }}
-                  </v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
-            <ul v-if="expandBookings" class="body-2 dashed-list pl-4">
-              <li v-for="booking in item.bookings" :key="booking.bookingRef">
-                {{
-                  booking.passenger.givenName +
-                    ' ' +
-                    booking.passenger.familyName
-                }}
-              </li>
-            </ul>
-          </div>
         </v-col>
       </v-row>
     </v-col>
@@ -47,18 +26,14 @@
 </template>
 
 <script>
+import BookingList from '@/components/common/BookingList.vue'
 import RecurrenceViewer from '@/components/common/RecurrenceViewer.vue'
 
 export default {
   name: 'ItinerarySummaryList',
-  components: { RecurrenceViewer },
+  components: { BookingList, RecurrenceViewer },
   props: {
     items: { type: Array, default: () => [] },
-  },
-  data() {
-    return {
-      expandBookings: false,
-    }
   },
 }
 </script>
