@@ -91,16 +91,17 @@
           </v-col>
         </v-row>
         <v-row v-if="ridesSearchTime === 'Past'">
-          <v-col v-if="getPastRides.length === 0" class="py-1">
+          <v-col v-if="getPastRides.length === 0">
             <span>
               U heeft nog geen ritten gereden. Ga naar ritten om een nieuwe rit
               te plannen.
             </span>
           </v-col>
-          <v-col v-else>
+          <v-col v-else class="py-0">
             <ride-card
               v-for="(ride, index) in getPastRides"
               :key="index"
+              class="trip-card"
               :index="index"
               :ride="ride"
               @rideSelected="onRideSelected"
@@ -114,10 +115,11 @@
               te plannen.
             </span>
           </v-col>
-          <v-col v-else>
+          <v-col v-else class="py-0">
             <ride-card
               v-for="(ride, index) in getPlannedRides"
               :key="index"
+              class="trip-card"
               :index="index"
               :ride="ride"
               @rideSelected="onRideSelected"
