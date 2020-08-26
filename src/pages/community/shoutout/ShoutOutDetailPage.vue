@@ -8,25 +8,12 @@
           <v-col class="py-0">
             <itinerary-summary-list :items="items" />
           </v-col>
-          <v-col><v-divider /></v-col>
           <!-- Passenger -->
-          <v-col v-if="localIsMine" class="mt-3">
-            <v-row
-              v-for="(leg, index) in generateShoutOutSteps()"
-              :key="index"
-              class="mx-3 py-0"
-            >
-              <itinerary-leg :leg="leg" />
-            </v-row>
-            <v-row dense class="d-flex flex-column">
-              <v-col><v-divider /></v-col>
-              <v-col>
-                <h3>Rit aanbod</h3>
-              </v-col>
-              <v-col class="py-3">
-                <em>Er zijn nog geen ritten aangeboden.</em>
-              </v-col>
-            </v-row>
+          <v-col v-if="localIsMine">
+            <shout-out-detail-passenger
+              :trip="trip"
+              @travel-proposal-confirm="onTravelOfferConfirmed"
+            />
             <v-row>
               <v-col class="pt-3 pb-0">
                 <h3>Wijzigen</h3>
@@ -45,6 +32,7 @@
           </v-col>
           <!-- Chauffeur -->
           <v-col v-else>
+            <v-divider class="mb-3" />
             <v-row dense class="d-flex flex-column">
               <v-col v-if="planningStatus.status === 'PENDING'">
                 <search-status />
@@ -176,6 +164,7 @@ import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
 import SearchStatus from '@/components/search/SearchStatus.vue'
+import ShoutOutDetailPassenger from '@/components/community/ShoutOutDetailPassenger.vue'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import {
   DATE_FORMAT_INPUT,
@@ -199,6 +188,7 @@ export default {
     ItineraryOptions,
     ItinerarySummaryList,
     SearchStatus,
+    ShoutOutDetailPassenger,
   },
   props: {
     id: { type: String, required: true },
@@ -223,23 +213,22 @@ export default {
   },
   computed: {
     ...{
+      profile: () => psStore.getters.getProfile,
       trip: () => isStore.getters.getSelectedTrip,
       planningRequest: () => isStore.getters.getPlanningRequest,
       planningStatus: () => isStore.getters.getPlanningStatus,
       planResult: () => isStore.getters.getPlanningResults,
-    },
-    pickedLocations() {
-      return gsStore.getters.getPickedLocation
+      pickedLocations: () => gsStore.getters.getPickedLocation,
     },
     items() {
       let result = []
-      const { from, to, travelTime } = this.trip
-      if (from) {
-        result.push({ label: 'Van', value: from.label })
-      }
-      if (to) {
-        result.push({ label: 'Naar', value: to.label })
-      }
+      const { travelTime } = this.trip
+      // if (from) {
+      //   result.push({ label: 'Van', value: from.label })
+      // }
+      // if (to) {
+      //   result.push({ label: 'Naar', value: to.label })
+      // }
       if (travelTime) {
         result.push({ label: 'Datum', value: formatDateTimeLong(travelTime) })
       }
@@ -369,7 +358,7 @@ export default {
       })
     },
     onClearDeparture() {
-      const { address } = psStore.getters.getUser.profile
+      const { address } = this.profile
       isStore.actions.submitShoutOutPlanningsRequest({
         id: this.id,
         from: {
@@ -380,9 +369,20 @@ export default {
       })
     },
     bookTrip() {
-      //TODO: Implement storage trip in backend
-      // eslint-disable-next-line
-      console.log('Method not implemented!')
+      const { selectedCarId } = this.profile?.ridePlanOptions
+
+      if (selectedCarId) {
+        const travelOffer = {
+          shoutoutPlanId: this.id,
+          planRef: this.planResult.planRef,
+          vehicleRef: `urn:nb:rs:car:${selectedCarId}`,
+        }
+        isStore.actions.storeTravelOffer(travelOffer)
+      } else {
+        //TODO: error handling.
+        // eslint-disable-next-line
+        console.log('No default car!')
+      }
     },
     contactPassenger() {
       //TODO: Implement communication with passenger
@@ -390,7 +390,7 @@ export default {
       console.log('Method not implemented!')
     },
     onTripEdit() {
-      const { searchPreferences } = psStore.getters.getProfile
+      const { searchPreferences } = this.profile
       let searchCriteria = {
         from: this.trip.from,
         to: this.trip.to,
@@ -412,7 +412,14 @@ export default {
       })
     },
     onTripCancelled() {
-      //TODO:
+      uiStore.actions.queueInfoNotification('Not yet implemented!')
+    },
+    onTravelOfferConfirmed(itinerary) {
+      const { from, to, nrSeats } = this.trip
+      const { itineraryRef } = itinerary
+      const trip = { from, to, nrSeats, itineraryRef }
+      isStore.actions.storeSelectedTrip(trip)
+      this.$router.push({ name: 'shoutouts' })
     },
   },
 }

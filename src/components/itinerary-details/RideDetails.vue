@@ -28,13 +28,15 @@ export default {
         const reisduur = `${Math.round(duration / 60)} minuten`
         result.push({ label: 'Reisduur', value: reisduur })
       }
-      const boekingen =
-        !!bookings && bookings.length > 0 ? bookings.length : 'Geen'
-      result.push({ label: 'Boekingen', value: boekingen })
       const auto = car
         ? `${this.ride.car.brand} ${this.ride.car.model}`
         : 'Onbekend'
       result.push({ label: 'Auto', value: auto })
+      result.push({
+        label: 'Boekingen',
+        value: bookings,
+        renderingComponent: 'BookingList',
+      })
       if (recurrence) {
         result.push({
           label: 'Herhalen',
