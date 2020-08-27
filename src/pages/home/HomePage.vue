@@ -1,14 +1,12 @@
 <template>
   <content-pane>
     <v-row align="center">
-      <v-col cols="3" class="px-1">
-        <router-link to="/onboardingPage">
-          <round-user-image
-            :image-size="92"
-            :avatar-size="100"
-            :profile-image="profileImage"
-          ></round-user-image>
-        </router-link>
+      <v-col cols="3" class="px-0 mr-2">
+        <round-user-image
+          :image-size="92"
+          :avatar-size="100"
+          :profile-image="profileImage"
+        />
       </v-col>
       <v-col>
         <h1>
@@ -18,7 +16,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="px-1">
+      <v-col class="px-1 pt-0">
         <span>
           Welkom bij Netmobiel, dé mobiliteitsapp van de Achterhoek en
           omstreken.
@@ -29,6 +27,20 @@
       <v-col class="px-1">
         <v-btn large rounded block outlined color="primary" to="/howTo">
           Hoe werkt het?
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="px-1 pt-0">
+        <v-btn
+          large
+          rounded
+          block
+          outlined
+          color="button"
+          to="/rideSafeNetmobiel"
+        >
+          Corona adviezen
         </v-btn>
       </v-col>
     </v-row>
