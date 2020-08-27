@@ -8,10 +8,7 @@
         no-gutters
       >
         <v-col>
-          <v-icon small class="color-alert-red mr-1">warning</v-icon>
-          <span class="body-2">
-            LET OP! Deze reis is niet meer beschikbaar.
-          </span>
+          Deze reis is niet meer beschikbaar.
         </v-col>
       </v-row>
     </template>
