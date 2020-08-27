@@ -42,19 +42,21 @@
             <em>U heeft nog geen reizen gemaakt.</em>
           </v-col>
           <v-col v-else class="py-0">
-            <travel-card
-              v-for="(trip, index) in getPastTrips"
-              :key="index"
-              class="trip-card"
-              :needs-review="needsReview(trip)"
-              :index="index"
-              :from="trip.from"
-              :to="trip.to"
-              :arrival-time="parseDate(trip.arrivalTime)"
-              :departure-time="parseDate(trip.departureTime)"
-              :legs="trip.itinerary.legs"
-              @onTripSelected="onTripSelected"
-            />
+            <grouped-card-list :items="getPastTrips">
+              <template v-slot:card="{ trip, index }">
+                <travel-card
+                  class="trip-card"
+                  :needs-review="needsReview(trip)"
+                  :index="index"
+                  :from="trip.from"
+                  :to="trip.to"
+                  :arrival-time="parseDate(trip.arrivalTime)"
+                  :departure-time="parseDate(trip.departureTime)"
+                  :legs="trip.itinerary.legs"
+                  @onTripSelected="onTripSelected"
+                />
+              </template>
+            </grouped-card-list>
           </v-col>
         </v-row>
         <v-row v-if="tripsSearchTime === 'Future'">
@@ -63,19 +65,21 @@
             plannen.
           </v-col>
           <v-col v-else class="py-0">
-            <travel-card
-              v-for="(trip, index) in getPlannedTrips"
-              :key="index"
-              class="trip-card"
-              :index="index"
-              :from="trip.from"
-              :to="trip.to"
-              :arrival-time="parseDate(trip.itinerary.arrivalTime)"
-              :departure-time="parseDate(trip.itinerary.departureTime)"
-              :duration="trip.itinerary.duration"
-              :legs="trip.itinerary.legs"
-              @onTripSelected="onTripSelected"
-            />
+            <grouped-card-list :items="getPlannedTrips">
+              <template v-slot:card="{ trip, index }">
+                <travel-card
+                  class="trip-card"
+                  :index="index"
+                  :from="trip.from"
+                  :to="trip.to"
+                  :arrival-time="parseDate(trip.itinerary.arrivalTime)"
+                  :departure-time="parseDate(trip.itinerary.departureTime)"
+                  :duration="trip.itinerary.duration"
+                  :legs="trip.itinerary.legs"
+                  @onTripSelected="onTripSelected"
+                />
+              </template>
+            </grouped-card-list>
           </v-col>
         </v-row>
       </v-col>
@@ -142,10 +146,11 @@ import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
+import GroupedCardList from '@/components/common/GroupedCardList'
 
 export default {
   name: 'TripsOverviewPage',
-  components: { TabBar, ContentPane, TravelCard, RideCard },
+  components: { GroupedCardList, TabBar, ContentPane, TravelCard, RideCard },
   data() {
     return {
       selectedTab: 0,
