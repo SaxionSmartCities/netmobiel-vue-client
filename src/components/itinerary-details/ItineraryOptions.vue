@@ -108,7 +108,13 @@ export default {
   },
   computed: {
     isPastTrip() {
-      return moment(this.selectedTrip.arrivalTime).isBefore(moment())
+      if (this.selectedTrip.legs) {
+        const endTime = this.selectedTrip.legs[
+          this.selectedTrip.legs.length - 1
+        ]?.endTime
+        return moment(endTime).isBefore(moment()) || false
+      }
+      return false
     },
     isRideShareTrip() {
       return !!this.selectedTrip.legs.find(l => l.traverseMode == 'RIDESHARE')

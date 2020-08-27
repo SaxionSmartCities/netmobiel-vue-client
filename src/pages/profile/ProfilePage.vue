@@ -109,6 +109,8 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
 import { scaleImageDown } from '../../utils/image_scaling'
+import * as psStore from '@/store/profile-service'
+import * as uiStore from '@/store/ui'
 
 export default {
   components: {
@@ -146,7 +148,7 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.getters['ps/getUser']
+      return psStore.getters.getUser
     },
     userAddress() {
       let formatted = 'Onbekende woonplaats'
@@ -162,7 +164,7 @@ export default {
       return formatted
     },
     profileImage() {
-      return this.$store.getters['ps/getUser'].profile.image
+      return psStore.getters.getUser.profile.image
     },
   },
   methods: {
@@ -171,7 +173,7 @@ export default {
     },
     logOut: function() {
       this.$keycloak.logoutFn()
-      this.$store.commit('ui/deleteAccessToken')
+      uiStore.mutations.deleteAccessToken()
     },
     readFile(event) {
       if (event.target.files[0]) {
@@ -183,8 +185,8 @@ export default {
           this.isUploadingFile = false
           const imageString = fileReader.result
           scaleImageDown(imageString, 20).then(resizedImage => {
-            const profile = { ...this.$store.getters['ps/getProfile'] }
-            this.$store.dispatch('ps/updateProfileImage', {
+            const profile = { ...psStore.getters.getProfile }
+            psStore.actions.updateProfileImage({
               id: profile.id,
               image: resizedImage,
             })

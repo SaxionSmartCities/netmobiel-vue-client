@@ -1,27 +1,19 @@
 <template>
   <content-pane>
-    <v-row>
-      <v-col>
-        <v-stepper v-model="step" class="stepper" :elevation="0">
-          <v-stepper-header>
-            <v-stepper-step step="1"></v-stepper-step>
-            <v-divider></v-divider>
-            <v-stepper-step step="2"></v-stepper-step>
-            <v-divider></v-divider>
-            <v-stepper-step step="3"></v-stepper-step>
-          </v-stepper-header>
-        </v-stepper>
+    <v-row class="mb-5">
+      <v-col class="py-0">
+        <stepper v-model="step" :steps="3" />
       </v-col>
     </v-row>
     <template v-if="step === 1">
       <v-row>
-        <v-col class="flex-column">
+        <v-col class="flex-column py-0">
           <h3>Bevestig jouw reis</h3>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <span>
+          <span class="body-2">
             Heb je op <em>{{ tripDepartureDate }}</em> om
             {{ tripDepartureTime }} een reis van
             <b>{{ trip.from.label }}</b> naar
@@ -29,6 +21,7 @@
           </span>
           <v-checkbox
             v-model="review"
+            class="body-2"
             label="Ik wil ook een review achterlaten?"
           ></v-checkbox>
         </v-col>
@@ -76,6 +69,7 @@
         :is="getCurrentStepComponent()"
         v-if="trip"
         :trip="trip"
+        :driver-profile="driverProfile"
         @tripNotMade="onTripNotMade"
         @rateTrip="onTripMade"
         @nextStep="step++"
@@ -90,10 +84,16 @@ import ContentPane from '../../components/common/ContentPane'
 import TripMade from './TripMade'
 import TripNotMade from './TripNotMade'
 import moment from 'moment'
+import Stepper from '@/components/other/Stepper'
+import constants from '@/constants/constants'
+import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'DriverReviewPage',
-  components: { TripNotMade, TripMade, ContentPane },
+  components: { Stepper, TripNotMade, TripMade, ContentPane },
   props: {
     tripContext: { type: String, required: true },
   },
@@ -103,6 +103,7 @@ export default {
       isTripMade: null,
       review: true,
       fromNotification: false,
+      driverProfile: null,
     }
   },
   computed: {
@@ -110,8 +111,8 @@ export default {
       // When coming from a notification this function must look at the selectedTrip
       // Because the trip is fetched separately and will be stores separately (it won't be in the pastTrips array)
       return this.fromNotification
-        ? this.$store.getters['is/getSelectedTrip']
-        : this.$store.getters['is/getPastTrips'].find(
+        ? isStore.getters.getSelectedTrip
+        : isStore.getters.getPastTrips.find(
             trip => trip.tripRef === this.tripContext
           )
     },
@@ -127,12 +128,16 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
     //When coming from a notification the state will be empty, so a query must be done to fetch the trip
     if (!this.trip) {
       this.fromNotification = true
       const tripId = this.tripContext.split(':').slice(-1)
-      this.$store.dispatch('is/fetchTrip', { id: tripId })
+      isStore.actions.fetchTrip({ id: tripId }).then(() => {
+        this.fetchDriverProfile()
+      })
+    } else {
+      this.fetchDriverProfile()
     }
   },
   methods: {
@@ -151,15 +156,74 @@ export default {
       else this.setTripMade(false)
     },
     onTripMade(rate) {
-      // eslint-disable-next-line
-      console.log('the rate of the trip >> ', rate)
-      //TODO: Send rating to backend.
+      const {
+        id: myId,
+        firstName: myFirstName,
+        lastName: myLastName,
+      } = psStore.getters.getProfile
+      const [
+        receiverFirstName,
+        receiverLastName,
+      ] = this.trip.itinerary.legs[0].driverName.split(' ')
+
+      //For each compliment given do a call to the backend
+      //Can be changed in the future to a call that possibly accepts array if >1 compliments can be given
+      const sender = {
+        id: myId,
+        firstName: myFirstName,
+        lastName: myLastName,
+      }
+      const receiver = {
+        id: this.driverProfile.managedIdentity,
+        firstName: receiverFirstName,
+        lastName: receiverLastName,
+      }
+      for (let i = 0; i < constants.maxComplimentsAllowed; i++) {
+        const compliment = rate.compliments[i]
+        psStore.actions.addUserCompliment({
+          sender,
+          receiver,
+          complimentType: compliment,
+        })
+      }
+
+      if (rate.feedbackMessage) {
+        psStore.actions.addUserReview({
+          sender,
+          receiver,
+          review: rate.feedbackMessage,
+        })
+      }
       this.$router.push({ name: 'tripReviewedPage' })
+      this.step++
     },
     onTripNotMade(reason) {
       // eslint-disable-next-line
       console.log('trip was not made: ', reason)
       this.$router.push({ name: 'tripConfirmedPage' })
+    },
+    fetchDriverProfile() {
+      //First fetch the driver properties via the carpool service
+      csStore.actions
+        .fetchUser({
+          userRef: this.trip.itinerary.legs[0].driverId,
+        })
+        .then(response => {
+          //Fetch the profile of the driver via the profile-service (for the image)
+          psStore.actions
+            .fetchUser({
+              profileId: response.managedIdentity,
+            })
+            .then(res => {
+              this.driverProfile = {
+                managedIdentity: response.managedIdentity,
+                firstName: response.givenName,
+                lastName: response.familyName,
+                email: response.email,
+              }
+              res.image && (this.driverProfile.image = res.image)
+            })
+        })
     },
   },
 }

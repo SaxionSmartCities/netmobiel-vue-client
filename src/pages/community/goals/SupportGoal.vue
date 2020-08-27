@@ -16,9 +16,9 @@
     <v-row>
       <v-col pt-0>
         <h2 class="netmobiel">
-          {{ selectedGoal.title }}
+          {{ charity ? charity.name : '' }}
         </h2>
-        <span class=" overline">{{ selectedGoal.location }}</span>
+        <span class=" overline">{{ charity ? charity.placec : '' }}</span>
       </v-col>
     </v-row>
     <v-row class="flex-column">
@@ -47,9 +47,10 @@
           hide-details
         ></v-textarea>
         <v-switch
-          v-model="isAnonymouse"
+          v-model="isAnonymous"
           color="primary"
           hide-details
+          inset
           :label="'Maak mijn donatie anoniem.'"
         >
         </v-switch>
@@ -72,6 +73,10 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
+import * as uiStore from '@/store/ui'
+import * as chsStore from '@/store/charity-service'
+import * as psStore from '@/store/profile-service'
+
 export default {
   name: 'SupportGoal',
   components: { ContentPane },
@@ -82,24 +87,34 @@ export default {
     return {
       donationAmount: 0,
       donationMessage: '',
-      isAnonymouse: false,
+      isAnonymous: false,
     }
   },
   computed: {
-    selectedGoal() {
-      return this.$store.getters['gos/getGoals'].find(
-        goal => goal.id === Number(this.id)
-      )
+    charity() {
+      return chsStore.getters.getSelectedCharity
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   methods: {
     donate() {
+      const { id, firstName, lastName } = psStore.getters.getProfile
+      chsStore.actions.donate({
+        id: this.id,
+        amount: this.donationAmount,
+        message: this.donationMessage,
+        isAnonymous: this.isAnonymous,
+        sender: {
+          id,
+          firstName,
+          lastName,
+        },
+      })
       this.$router.push({
         name: 'donated',
-        params: { id: this.id },
+        params: { name: this.charity.name },
       })
     },
   },

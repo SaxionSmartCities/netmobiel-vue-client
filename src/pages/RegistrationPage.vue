@@ -83,6 +83,7 @@ import NewAccountCard from '@/components/onboarding/NewAccountCard.vue'
 import HomeTownCard from '@/components/onboarding/HomeTownCard.vue'
 import UserTypeCard from '@/components/onboarding/UserTypeCard.vue'
 import { setTimeout } from 'timers'
+import * as rsStore from '@/store/registration-service'
 
 export default {
   components: {
@@ -110,7 +111,7 @@ export default {
   },
   computed: {
     getRegistrationStatus() {
-      return this.$store.getters['rs/getRegistrationStatus']
+      return rsStore.getters.getRegistrationStatus
     },
   },
   watch: {
@@ -125,7 +126,7 @@ export default {
     getRegistrationStatus(newValue) {
       if (newValue.success === true) {
         setTimeout(() => {
-          this.$store.commit('rs/clearRegistrationRequest')
+          rsStore.mutations.clearRegistrationRequest()
           this.$router.push('/')
         }, 7000)
       }
@@ -133,14 +134,12 @@ export default {
   },
   methods: {
     submitForm: function() {
-      this.$store.commit('rs/setRegistrationStatus', {
+      rsStore.mutations.setRegistrationStatus({
         success: undefined,
         message: '',
       })
-      this.$store.dispatch(
-        'rs/submitRegistrationRequest',
-        this.registrationRequest
-      )
+
+      rsStore.actions.submitRegistrationRequest(this.registrationRequest)
     },
   },
 }
