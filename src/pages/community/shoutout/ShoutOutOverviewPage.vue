@@ -20,31 +20,57 @@
         </template>
       </tab-bar>
     </template>
-    <template v-if="selectedTab === 0 || userRole === 'driver'">
-      <v-row>
-        <v-col class="py-0">
-          <h3>Community oproepen</h3>
-          <p class="mt-2 mb-0">Gezochte reizen in de buurt van mijn:</p>
-          <v-radio-group v-model="baseLocation" class="mt-1" row>
-            <v-radio label="Woonplaats" value="Home" selected></v-radio>
-            <v-radio label="Huidige locatie" value="Here" disabled></v-radio>
-          </v-radio-group>
-        </v-col>
-      </v-row>
-      <v-row v-for="group in Object.keys(groupedShoutOuts)" :key="group">
-        <v-col class="py-0">
-          <grouped-shout-outs
-            :label="formatDate(group)"
-            :btn-text="'Rit aanbieden'"
-            :shoutouts="groupedShoutOuts[group]"
-            @shoutoutSelected="onShoutOutSelected"
-          />
-        </v-col>
-      </v-row>
-    </template>
-    <v-row v-if="selectedTab === 1 || userRole === 'passenger'">
+    <v-row
+      v-if="userRole === 'driver' || (userRole === 'both' && selectedTab === 0)"
+    >
       <v-col class="py-0">
-        <v-row v-for="group in Object.keys(groupedMyShoutOuts)" :key="group">
+        <v-row>
+          <v-col>
+            <h3>Community oproepen</h3>
+            <p class="mt-2 mb-0">Gezochte reizen in de buurt van mijn:</p>
+            <v-radio-group v-model="baseLocation" class="location" row>
+              <v-radio label="Woonplaats" value="Home" selected></v-radio>
+              <v-radio label="Huidige locatie" value="Here" disabled></v-radio>
+            </v-radio-group>
+          </v-col>
+        </v-row>
+        <v-row v-if="allShoutOuts.length == 0">
+          <v-col>
+            <em>Er zijn op dit moment opgeslagen oproepen in de buurt.</em>
+          </v-col>
+        </v-row>
+        <v-row
+          v-for="group in Object.keys(groupedShoutOuts)"
+          v-else
+          :key="group"
+        >
+          <v-col class="py-0">
+            <grouped-shout-outs
+              :label="formatDate(group)"
+              :btn-text="'Rit aanbieden'"
+              :shoutouts="groupedShoutOuts[group]"
+              @shoutoutSelected="onShoutOutSelected"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row
+      v-if="
+        userRole === 'passenger' || (userRole === 'both' && selectedTab === 1)
+      "
+    >
+      <v-col class="py-0">
+        <v-row v-if="myShoutOuts.length == 0">
+          <v-col>
+            <em>U heeft op dit moment geen opgeslagen oproepen.</em>
+          </v-col>
+        </v-row>
+        <v-row
+          v-for="group in Object.keys(groupedMyShoutOuts)"
+          v-else
+          :key="group"
+        >
           <v-col class="py-0">
             <grouped-shout-outs
               :label="formatDate(group)"
@@ -158,4 +184,9 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.location {
+  margin-top: 4px;
+  height: 30px;
+}
+</style>

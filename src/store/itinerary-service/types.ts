@@ -31,6 +31,19 @@ export class ItineraryState {
   }
 }
 
+export interface Location {
+  label: string
+  latitude: number
+  longitude: number
+}
+
+export interface TripSelection {
+  from: Location
+  to: Location
+  nrSeats: number
+  itineraryRef: string
+}
+
 export interface ShoutOut {}
 
 export interface Trip {}
