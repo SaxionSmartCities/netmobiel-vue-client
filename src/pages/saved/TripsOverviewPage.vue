@@ -52,6 +52,7 @@
                   :to="trip.to"
                   :arrival-time="parseDate(trip.arrivalTime)"
                   :departure-time="parseDate(trip.departureTime)"
+                  :duration="trip.itinerary.duration"
                   :legs="trip.itinerary.legs"
                   @onTripSelected="onTripSelected"
                 />
