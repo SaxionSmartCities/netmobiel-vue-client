@@ -14,7 +14,12 @@
         </v-icon>
       </div>
       <div v-if="showCards" class="carousel-container">
-        <v-carousel height="100%" hide-delimiter-background light>
+        <v-carousel
+          height="100%"
+          hide-delimiter-background
+          :continuous="false"
+          light
+        >
           <v-carousel-item v-for="(trip, index) in trips" :key="index">
             <div class="cards-container">
               <slot name="card" :trip="trip" :index="index"></slot>
