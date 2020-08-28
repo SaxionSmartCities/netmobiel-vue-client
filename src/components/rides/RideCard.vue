@@ -7,7 +7,11 @@
             <v-col class="d-flex justify-space-between subtitle-1">
               <span>Vertrek</span>
               <span class="booking-count">
-                {{ ride.bookings.length }} boekingen
+                {{
+                  ride.bookings.filter(booking => booking.state === 'CONFIRMED')
+                    .length
+                }}
+                boekingen
               </span>
             </v-col>
           </v-row>

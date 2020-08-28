@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     bookings() {
-      return this.bookingList.filter(booking => booking.state !== 'CANCELLED')
+      return this.bookingList.filter(booking => booking.state === 'CONFIRMED')
     },
     label() {
       return !!this.bookings && this.bookings.length > 0
