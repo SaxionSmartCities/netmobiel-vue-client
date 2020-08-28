@@ -21,8 +21,8 @@
         />
       </v-col>
     </v-row>
-    <v-row v-if="!isShoutOut && hasRideShareDriver">
-      <v-col>
+    <v-row class="flex-column">
+      <v-col v-if="selectedTrip.state === 'CANCELLED'">
         <v-btn
           large
           rounded
@@ -30,35 +30,47 @@
           block
           mb-4
           depressed
-          color="primary"
-          @click="contactDriver"
+          color="error"
+          @click="onTripReplan(selectedTrip)"
         >
-          Stuur bericht naar chauffeur
+          Maak nieuwe reis aan
         </v-btn>
       </v-col>
+      <template v-else>
+        <v-col v-if="!isShoutOut && hasRideShareDriver">
+          <v-btn
+            large
+            rounded
+            outlined
+            block
+            mb-4
+            depressed
+            color="primary"
+            @click="contactDriver"
+          >
+            Stuur bericht naar chauffeur
+          </v-btn>
+        </v-col>
+        <v-col v-if="!isShoutOut" class="pt-0">
+          <v-btn
+            large
+            rounded
+            outlined
+            block
+            mb-4
+            depressed
+            color="primary"
+            @click="showFullRouteOnMap()"
+          >
+            Bekijk op de kaart
+          </v-btn>
+        </v-col>
+      </template>
     </v-row>
-    <v-row v-if="!isShoutOut">
-      <v-col class="pt-0">
-        <v-btn
-          large
-          rounded
-          outlined
-          block
-          mb-4
-          depressed
-          color="primary"
-          @click="showFullRouteOnMap()"
-        >
-          Bekijk op de kaart
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row class="mb-0">
+    <v-row v-if="selectedTrip.state !== 'CANCELLED'" class="flex-column">
       <v-col class="pb-0">
         <h3>Wijzigen</h3>
       </v-col>
-    </v-row>
-    <v-row>
       <v-col>
         <itinerary-options
           :selected-trip="selectedTrip"
