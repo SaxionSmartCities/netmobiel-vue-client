@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined @click="$emit('rideSelected', index)">
+  <v-card outlined @click="$emit('rideSelected', ride.id)">
     <v-row no-gutters>
       <v-col>
         <v-card-title class="d-flex justify-space-between">
@@ -43,7 +43,6 @@
 import moment from 'moment'
 export default {
   props: {
-    index: { type: Number, required: true },
     ride: {
       type: Object,
       required: true,
