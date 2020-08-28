@@ -31,7 +31,7 @@
           mb-4
           depressed
           color="error"
-          @click="onTripReplan(selectedTrip)"
+          @click="onTripEdit(selectedTrip)"
         >
           Maak nieuwe reis aan
         </v-btn>
