@@ -52,6 +52,14 @@ export default {
   .v-carousel {
     padding-bottom: 20px;
   }
+  .cards-container {
+    .trip-card {
+      border-color: $color-alertRed !important;
+      .v-card__actions {
+        display: none;
+      }
+    }
+  }
   .v-carousel__controls {
     z-index: 4;
     position: absolute;
