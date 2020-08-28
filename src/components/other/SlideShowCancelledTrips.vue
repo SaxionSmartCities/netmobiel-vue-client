@@ -6,15 +6,21 @@
         @click="showCards = !showCards"
       >
         <span>Er zijn ook {{ trips.length }} geannuleerde reizen.</span>
-        <v-icon class="alert-red">keyboard_arrow_down</v-icon>
+        <v-icon v-if="showCards" class="alert-red">
+          keyboard_arrow_down
+        </v-icon>
+        <v-icon v-else class="alert-red">
+          keyboard_arrow_left
+        </v-icon>
       </div>
-      <div v-if="showCards" class="mt-2 cards-container">
-        <slot
-          v-for="(trip, index) in trips"
-          name="card"
-          :trip="trip"
-          :index="index"
-        ></slot>
+      <div v-if="showCards" class="carousel-container">
+        <v-carousel height="100%" hide-delimiter-background light>
+          <v-carousel-item v-for="(trip, index) in trips" :key="index">
+            <div class="cards-container">
+              <slot name="card" :trip="trip" :index="index"></slot>
+            </div>
+          </v-carousel-item>
+        </v-carousel>
       </div>
     </v-col>
   </v-row>
@@ -34,21 +40,30 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .slide-show-row {
   background-color: lighten($color-alertRed, 50%);
-  .cards-container {
-    overflow-x: scroll;
-    white-space: nowrap;
-    &,
-    .trip-card {
-      display: inline-block;
-      width: 100%;
-      margin-right: 8px;
-    }
-  }
   .alert-red {
     color: $color-alertRed;
+  }
+  z-index: 0;
+}
+.carousel-container {
+  .v-carousel {
+    padding-bottom: 20px;
+  }
+  .v-carousel__controls {
+    z-index: 4;
+    position: absolute;
+    padding-top: 20px !important;
+    .v-btn--icon.v-size--small {
+      height: 24px;
+      width: 24px;
+      svg {
+        width: 50%;
+        height: 50%;
+      }
+    }
   }
 }
 </style>
