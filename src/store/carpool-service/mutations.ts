@@ -53,6 +53,14 @@ function setSelectedRide(state: CarpoolState, payload: Ride) {
   state.selectedRide = payload
 }
 
+function savePastRides(state: CarpoolState, payload: Ride[]) {
+  state.pastRides = payload
+}
+
+function appendPastRides(state: CarpoolState, payload: Ride[]) {
+  state.pastRides = state.pastRides.concat(payload)
+}
+
 export const buildMutations = (
   csBuilder: ModuleBuilder<CarpoolState, RootState>
 ) => {
@@ -64,6 +72,8 @@ export const buildMutations = (
     setAvailableCars: csBuilder.commit(setAvailableCars),
     setPlannedRidesCount: csBuilder.commit(setPlannedRidesCount),
     saveRides: csBuilder.commit(saveRides),
+    savePastRides: csBuilder.commit(savePastRides),
+    appendPastRides: csBuilder.commit(appendPastRides),
     appendRides: csBuilder.commit(appendRides),
     deleteRides: csBuilder.commit(deleteRides),
     setSelectedRide: csBuilder.commit(setSelectedRide),

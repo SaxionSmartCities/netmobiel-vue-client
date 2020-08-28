@@ -2,7 +2,6 @@
   <v-card
     outlined
     :ripple="!needsReview"
-    :disabled="disabled"
     @click="$emit('onTripSelected', index)"
   >
     <v-row no-gutters>
@@ -40,7 +39,8 @@
               :key="indx"
               :cols="calculateWidth(indx)"
             >
-              <travel-leg :leg="leg"> </travel-leg>
+              <travel-leg :leg="leg" :is-cancelled="leg.state === 'CANCELLED'">
+              </travel-leg>
             </v-col>
           </v-row>
           <div v-if="duration">
