@@ -56,10 +56,18 @@ export default {
 .carousel-container {
   .v-carousel {
     padding-bottom: 20px;
+    .v-window__container {
+      .v-window__prev,
+      .v-window__next {
+        margin: 0 !important;
+      }
+    }
   }
   .cards-container {
     .trip-card {
       border-color: $color-alertRed !important;
+      width: 85%;
+      margin: auto;
       .v-card__actions {
         display: none;
       }
