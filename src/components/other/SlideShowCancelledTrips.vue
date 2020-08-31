@@ -64,6 +64,7 @@ export default {
     }
   }
   .cards-container {
+    padding: 8px 0;
     .trip-card {
       border-color: $color-alertRed !important;
       width: 85%;
