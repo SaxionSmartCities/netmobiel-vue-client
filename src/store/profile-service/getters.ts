@@ -25,6 +25,17 @@ export const buildGetters = (
     return state.complimentTypes
   }, 'getComplimentTypes')
 
+  const getCoronaCheck = psBuilder.read((state: ProfileState) => {
+    return state.user.coronaCheck
+  }, 'getCoronaCheck')
+
+  const passedCoronaCheck = psBuilder.read((state: ProfileState) => {
+    return (
+      state.user.coronaCheck.coronaSymptoms &&
+      state.user.coronaCheck.houseHoldHadCorona
+    )
+  }, 'passedCoronaCheck')
+
   return {
     get getUser() {
       return getUser()
@@ -40,6 +51,12 @@ export const buildGetters = (
     },
     get getComplimentTypes() {
       return getComplimentTypes()
+    },
+    get getCoronaCheck() {
+      return getCoronaCheck()
+    },
+    get passedCoronaCheck() {
+      return passedCoronaCheck()
     },
   }
 }
