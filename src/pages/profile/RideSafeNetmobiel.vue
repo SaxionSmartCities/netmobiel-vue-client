@@ -2,23 +2,23 @@
   <content-pane>
     <v-row>
       <v-col>
-        <h2>Veilig reizen met Netmobiel</h2>
-        <section class="mt-4">
-          <h3>
+        <h1>Veilig reizen met Netmobiel</h1>
+        <section>
+          <h2>
             Tijdens het boeken
-          </h3>
-          <p class="body-1">
+          </h2>
+          <p>
             Als je een rit aanbiedt of zoekt, moet je aangeven of jij en anderen
             in je huishouden gezond zijn. Je kunt geen reizen zoeken of ritten
             aanbieden als je coronaklachten hebt of anderen in je huishouden de
             laatste twee weken corona hebben gehad.
           </p>
         </section>
-        <section class="mt-4">
-          <h3>
+        <section>
+          <h2>
             Vijf tips voor tijdens de reis
-          </h3>
-          <ol class="body-1">
+          </h2>
+          <ol>
             <li>
               Gebruik net als in het openbaar vervoer een mondkapje. Dit is
               echter niet verplicht.
@@ -37,10 +37,11 @@
               achterin plaatsnemen.
             </li>
           </ol>
+          <p></p>
         </section>
-        <section class="mt-4">
-          <h3>Na de reis of rit</h3>
-          <p class="body-1">
+        <section>
+          <h2>Na de reis of rit</h2>
+          <p>
             Krijg je na de reis of rit corona-achtige klachten? Stuur dan je
             passagier of chauffeur dan meteen een bericht via de app, zodat
             hij/zij zich kan laten testen. Doe dit zelfs als je slechts milde
