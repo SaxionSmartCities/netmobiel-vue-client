@@ -95,3 +95,13 @@ h3 {
 .secondary-color {
   color: $color-orange;
 }
+
+.cancelled-banner {
+  font-weight: bold;
+  color: $color-alertRed;
+  background-color: lighten($color-alertRed, 50%) !important;
+}
+
+.color-alert-red {
+  color: $color-alertRed !important;
+}

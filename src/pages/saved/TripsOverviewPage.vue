@@ -97,6 +97,7 @@
                   :departure-time="parseDate(trip.itinerary.departureTime)"
                   :duration="trip.itinerary.duration"
                   :legs="trip.itinerary.legs"
+                  :disabled="trip.state === 'CANCELLED'"
                   @onTripSelected="onTripSelected"
                 />
               </template>
@@ -173,6 +174,7 @@ import GroupedCardList from '@/components/common/GroupedCardList'
 export default {
   name: 'TripsOverviewPage',
   components: {
+    GroupedCardList,
     SlideShowCancelledTrips,
     TabBar,
     ContentPane,
@@ -253,8 +255,9 @@ export default {
     this.fetchTrips()
     this.fetchPastTrips()
     this.fetchRides()
-    isStore.actions.fetchCancelledTrips()
     this.fetchPastRides()
+    isStore.actions.fetchCancelledTrips()
+
     document
       .getElementById('content-container')
       .addEventListener('scroll', () => {
