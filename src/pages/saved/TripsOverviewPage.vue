@@ -180,7 +180,6 @@ export default {
     ContentPane,
     TravelCard,
     RideCard,
-    GroupedCardList,
   },
   data() {
     return {
