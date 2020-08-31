@@ -11,6 +11,11 @@
     </v-row>
     <v-row>
       <v-col class="py-0">
+        <corona-check
+          :value="coronaCheck"
+          class="mb-2"
+          @done="onCoronaCheckDone"
+        ></corona-check>
         <v-btn
           v-show="showSection"
           large
@@ -19,6 +24,7 @@
           mb-4
           depressed
           color="button"
+          :disabled="!passedCoronaCheck"
           @click="saveTrip"
         >
           Deze reis bevestigen
@@ -45,15 +51,19 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import TripDetails from '@/components/itinerary-details/TripDetails.vue'
+import CoronaCheck from '@/components/common/CoronaCheck'
+import coronaCheckMixin from '@/mixins/coronaCheckMixin'
 import * as uiStore from '@/store/ui'
 import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'ItineraryDetailPage',
   components: {
+    CoronaCheck,
     ContentPane,
     TripDetails,
   },
+  mixins: [coronaCheckMixin],
   data() {
     return {
       showMap: false,

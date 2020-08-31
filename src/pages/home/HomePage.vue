@@ -1,14 +1,12 @@
 <template>
   <content-pane>
     <v-row align="center">
-      <v-col cols="3" class="px-1">
-        <router-link to="/onboardingPage">
-          <round-user-image
-            :image-size="92"
-            :avatar-size="100"
-            :profile-image="profileImage"
-          ></round-user-image>
-        </router-link>
+      <v-col cols="3" class="px-0 mr-2">
+        <round-user-image
+          :image-size="92"
+          :avatar-size="100"
+          :profile-image="profileImage"
+        />
       </v-col>
       <v-col>
         <h1>
@@ -18,7 +16,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="px-1">
+      <v-col class="px-1 pt-0">
         <span>
           Welkom bij Netmobiel, dé mobiliteitsapp van de Achterhoek en
           omstreken.
@@ -29,6 +27,20 @@
       <v-col class="px-1">
         <v-btn large rounded block outlined color="primary" to="/howTo">
           Hoe werkt het?
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="px-1 pt-0">
+        <v-btn
+          large
+          rounded
+          block
+          outlined
+          color="button"
+          to="/rideSafeNetmobiel"
+        >
+          Corona adviezen
         </v-btn>
       </v-col>
     </v-row>
@@ -103,6 +115,12 @@
         </v-row>
       </v-col>
     </v-row>
+    <v-snackbar v-model="snackbar" :timeout="5000" type="warning" class="mb-12">
+      Lees hier onze corona adviezen
+      <v-btn text @click="$router.push({ name: 'rideSafeNetmobiel' })">
+        Lees meer
+      </v-btn>
+    </v-snackbar>
   </content-pane>
 </template>
 
@@ -111,10 +129,9 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import RideCard from '@/components/rides/RideCard.vue'
 import UpdateCard from '@/components/home/UpdateCard.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
+import moment from 'moment'
 import * as uiStore from '@/store/ui'
 import * as chsStore from '@/store/charity-service'
-import moment from 'moment'
-
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 
@@ -124,6 +141,11 @@ export default {
     RideCard,
     UpdateCard,
     RoundUserImage,
+  },
+  data() {
+    return {
+      snackbar: false,
+    }
   },
   computed: {
     user() {

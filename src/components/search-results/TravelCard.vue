@@ -6,9 +6,11 @@
   >
     <v-row no-gutters>
       <v-col>
-        <v-card-title class="d-flex justify-space-between">
+        <v-card-title class="d-flex justify-space-between pt-2">
           <v-row no-gutters>
-            <v-col class="d-flex justify-space-between subtitle-1">
+            <v-col
+              class="d-flex justify-space-between subtitle-1 font-weight-bold"
+            >
               <span>Vertrek</span>
               <span class="pr-1">Aankomst</span>
             </v-col>
@@ -27,15 +29,15 @@
           </div>
         </v-card-title>
         <v-card-subtitle>
-          <v-row justify="space-between" no-gutters class="pb-2">
+          <v-row justify="space-between" no-gutters class="pb-0">
             <v-col>{{ formatDateTime(departureTime) }}</v-col>
             <v-col class="text-right">
               {{ formatDateTime(arrivalTime, 'HH:mm uur') }}
             </v-col>
           </v-row>
         </v-card-subtitle>
-        <v-card-text>
-          <v-row no-gutters class="pb-2">
+        <v-card-text class="pb-2">
+          <v-row no-gutters>
             <v-col
               v-for="(leg, indx) in legs"
               :key="indx"
