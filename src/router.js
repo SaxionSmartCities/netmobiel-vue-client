@@ -272,9 +272,10 @@ const router = new Router({
       name: 'tripConfirmedPage',
     },
     {
-      path: '/shoutoutSubmittedPage',
+      path: '/shoutoutSubmittedPage/:shoutout',
       component: ShoutoutSubmittedPage,
       name: 'shoutoutSubmittedPage',
+      props: true,
     },
     {
       path: '/about',

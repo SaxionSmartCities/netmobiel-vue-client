@@ -1,20 +1,30 @@
 <template>
   <content-pane>
-    <v-row class="ma-auto mt-2">
+    <v-row>
       <v-col>
-        <h1>Je oproep is verstuurd! 🎉</h1>
+        <h1>Je oproep is verstuurd 🎉</h1>
       </v-col>
     </v-row>
-    <v-row class="ma-auto mt-2">
-      <v-col>
-        Hier een korte uitleg over de shoutout
+    <v-row>
+      <v-col class="py-0">
+        Oproepen vind je terug onder de tab 'Community'.
       </v-col>
     </v-row>
-    <v-row class="ma-auto mt-2">
+    <v-row class="mb-2">
       <v-col>
-        <v-btn block rounded depressed class="my-3 button" to="/shoutouts">
+        <shout-out
+          :shoutout="shoutout"
+          :btn-text="'Bekijk shoutout'"
+          :is-mine="true"
+          @shoutoutSelected="onShoutoutSelected"
+        ></shout-out>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <!-- <v-btn block rounded depressed class="my-3 button" to="/shoutouts">
           Bekijk je oproepen
-        </v-btn>
+        </v-btn> -->
         <v-btn
           block
           rounded
@@ -32,12 +42,18 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
+import ShoutOut from '@/components/community/ShoutOut'
 
 export default {
   name: 'ShoutoutSubmittedPage',
-  components: { ContentPane },
-  data() {
-    return {}
+  components: { ContentPane, ShoutOut },
+  props: {
+    shoutout: { type: Object, required: true },
+  },
+  methods: {
+    onShoutoutSelected() {
+      this.$router.push('/shoutouts')
+    },
   },
 }
 </script>

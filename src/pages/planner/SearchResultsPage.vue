@@ -120,6 +120,7 @@ import SearchStatus from '@/components/search/SearchStatus.vue'
 import moment from 'moment'
 import * as uiStore from '@/store/ui'
 import * as isStore from '@/store/itinerary-service'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'SearchResultsPage',
@@ -253,7 +254,19 @@ export default {
     },
     createShoutOut() {
       isStore.actions.storeShoutOut(this.searchCriteria)
-      this.$router.push('/shoutoutSubmittedPage')
+      const { firstName, lastName } = psStore.getters.getUser.profile
+      const { from, to, travelTime } = this.searchCriteria
+      const shoutout = {
+        from,
+        to,
+        travelTime: travelTime.when.format(),
+        useAsArrivalTime: travelTime.arriving,
+        traveller: { firstName, lastName },
+      }
+      this.$router.push({
+        name: 'shoutoutSubmittedPage',
+        params: { shoutout: shoutout },
+      })
     },
     toDate(string) {
       return moment(string)
