@@ -1,9 +1,5 @@
 <template>
-  <v-card
-    outlined
-    :ripple="!needsReview"
-    @click="$emit('onTripSelected', index)"
-  >
+  <v-card outlined :ripple="!needsReview" @click="$emit('onTripSelected', id)">
     <v-row no-gutters>
       <v-col>
         <v-card-title class="d-flex justify-space-between pt-2">
@@ -70,6 +66,7 @@ export default {
   },
   props: {
     index: { type: Number, required: true },
+    id: { type: Number, required: true },
     from: { type: Object, required: true },
     to: { type: Object, required: true },
     arrivalTime: { type: Object, required: true },

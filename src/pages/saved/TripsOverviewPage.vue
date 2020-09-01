@@ -45,6 +45,7 @@
             <grouped-card-list :items="getPastTrips">
               <template v-slot:card="{ item: trip, index }">
                 <travel-card
+                  :id="trip.id"
                   class="trip-card"
                   :needs-review="needsReview(trip)"
                   :index="index"
@@ -69,6 +70,7 @@
             <grouped-card-list :items="getPlannedTrips">
               <template v-slot:card="{ item: trip, index }">
                 <travel-card
+                  :id="trip.id"
                   class="trip-card"
                   :index="index"
                   :from="trip.from"
@@ -288,14 +290,8 @@ export default {
         until: moment().format(),
       })
     },
-    onTripSelected(index) {
-      let tripId
-      if (this.tripsSearchTime === 'Future') {
-        tripId = this.getPlannedTrips[index].id
-      } else {
-        tripId = this.getPastTrips[index].id
-      }
-      isStore.actions.fetchTrip({ id: tripId })
+    onTripSelected(id) {
+      isStore.actions.fetchTrip({ id: id })
       this.$router.push('/tripDetailPage')
     },
     onRideSelected(id) {
