@@ -1,5 +1,5 @@
 const driver = {
-  notifications: [
+  melding: [
     { title: 'Bevestiging nieuwe reis', value: false },
     { title: 'Wijziging bewaarde reis', value: false },
     { title: 'Herinnering voor aanvang reis', value: false },
@@ -12,7 +12,7 @@ const driver = {
   ],
 }
 const passenger = {
-  notifications: [
+  melding: [
     { title: 'Bevestiging nieuwe reis', value: false },
     { title: 'Wijziging bewaarde reis', value: false },
     { title: 'Herinnering voor aanvang reis', value: false },

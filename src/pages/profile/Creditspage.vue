@@ -24,7 +24,7 @@
           outlined
           color="primary"
           disabled
-          @click="router.push('/addCredits')"
+          @click="$router.push('/addCredits')"
         >
           Doel steunen
         </v-btn>
@@ -36,7 +36,7 @@
           outlined
           disabled
           color="primary"
-          @click="router.push('/addCredits')"
+          @click="$router.push('/addCredits')"
         >
           Rewards
         </v-btn>
@@ -51,7 +51,7 @@
           depressed
           disabled
           color="button"
-          @click="router.push('/addCredits')"
+          @click="$router.push('/addCredits')"
         >
           Credits toevoegen
         </v-btn>
@@ -74,6 +74,9 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import CreditHistoryLine from '@/components/profile/CreditHistoryLine.vue'
+import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
+
 export default {
   name: 'Credits',
   components: {
@@ -87,16 +90,16 @@ export default {
   },
   computed: {
     creditAmount() {
-      return this.$store.getters['ps/getCreditAmount']
+      return psStore.getters.getCreditAmount
     },
     creditHistory() {
-      return this.$store.getters['ps/getCreditHistory']
+      return psStore.getters.getCreditHistory
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
-    this.$store.dispatch('ps/fetchCreditAmount')
-    this.$store.dispatch('ps/fetchCreditHistory')
+    uiStore.mutations.showBackButton()
+    psStore.actions.fetchCreditAmount()
+    psStore.actions.fetchCreditHistory()
   },
 }
 </script>

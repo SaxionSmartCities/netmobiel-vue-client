@@ -15,7 +15,10 @@
     <v-flex pt-1>
       <div
         class="travel-line"
-        :class="leg.traverseMode === 'WALK' ? 'dotted' : ''"
+        :class="{
+          'cancelled-leg': isCancelled,
+          dotted: leg.traverseMode === 'WALK',
+        }"
       ></div>
     </v-flex>
   </v-layout>
@@ -36,6 +39,7 @@ export default {
         }
       },
     },
+    isCancelled: { type: Boolean, required: false, default: false },
   },
   computed: {
     getIcon() {
@@ -70,5 +74,8 @@ export default {
 }
 .v-icon-ride {
   color: $color-secondary !important;
+}
+.cancelled-leg {
+  background: $color-alertRed !important;
 }
 </style>

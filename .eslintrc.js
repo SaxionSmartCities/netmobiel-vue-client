@@ -8,6 +8,7 @@ module.exports = {
     'eslint:recommended',
     'prettier/vue',
     'plugin:prettier/recommended',
+    '@vue/typescript',
   ],
   rules: {
     'vue/component-name-in-template-casing': ['error', 'kebab-case'],
@@ -15,6 +16,6 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
   },
   parserOptions: {
-    parser: 'babel-eslint',
+    parser: '@typescript-eslint/parser',
   },
 }

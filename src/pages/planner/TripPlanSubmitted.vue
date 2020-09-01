@@ -40,6 +40,7 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
+import * as gsStore from '@/store/geocoder-service'
 
 export default {
   name: 'TripPlanSubmitted',
@@ -49,7 +50,7 @@ export default {
   },
   methods: {
     swapLocations() {
-      this.$store.commit('gs/swapLocations')
+      gsStore.mutations.swapLocations
       this.$router.push('/search')
     },
   },

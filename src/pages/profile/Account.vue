@@ -71,6 +71,9 @@
 import ContentPane from '@/components/common/ContentPane'
 import account_config from '@/config/account_config'
 import { get, set, isEqual } from 'lodash'
+import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
+import * as gsStore from '@/store/geocoder-service'
 
 export default {
   name: 'Account',
@@ -83,10 +86,10 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.getters['ps/getUser'].profile
+      return psStore.getters.getUser.profile
     },
     suggestions() {
-      return this.$store.getters['gs/getGeocoderSuggestions']
+      return gsStore.getters.getGeocoderSuggestions
     },
     sections() {
       return Object.keys(account_config)
@@ -106,13 +109,13 @@ export default {
               address.position[0], // Latitude
             ],
           }
-          this.$store.dispatch('ps/updateProfile', newProfile)
+          psStore.actions.updateProfile(newProfile)
         }
       }
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   methods: {
     get: get,
@@ -123,13 +126,12 @@ export default {
       // state outside mutation handlers." error.
       let newProfile = JSON.parse(JSON.stringify(this.user))
       set(newProfile, this.selectedProperty, input)
-      this.$store.dispatch('ps/updateProfile', newProfile)
+      psStore.actions.updateProfile(newProfile)
 
       // Fetch geocode for address if different.
       if (!isEqual(this.user.address, newProfile.address)) {
         const query = this.addressQuery(newProfile.address)
-        if (query)
-          this.$store.dispatch('gs/fetchGeocoderSuggestions', { query: query })
+        if (query) gsStore.actions.fetchGeocoderSuggestions({ query: query })
       }
     },
     addressQuery(address) {

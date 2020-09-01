@@ -1,14 +1,12 @@
 <template>
-  <v-card
-    outlined
-    :ripple="!needsReview"
-    @click="$emit('onTripSelected', index)"
-  >
+  <v-card outlined :ripple="!needsReview" @click="$emit('onTripSelected', id)">
     <v-row no-gutters>
       <v-col>
-        <v-card-title class="d-flex justify-space-between">
+        <v-card-title class="d-flex justify-space-between pt-2">
           <v-row no-gutters>
-            <v-col class="d-flex justify-space-between subtitle-1">
+            <v-col
+              class="d-flex justify-space-between subtitle-1 font-weight-bold"
+            >
               <span>Vertrek</span>
               <span class="pr-1">Aankomst</span>
             </v-col>
@@ -27,19 +25,22 @@
           </div>
         </v-card-title>
         <v-card-subtitle>
-          <v-row no-gutters class="pb-2">
-            <v-col cols="9">{{ formatDateTime(departureTime) }}</v-col>
-            <v-col>{{ formatDateTime(arrivalTime) }}</v-col>
+          <v-row justify="space-between" no-gutters class="pb-0">
+            <v-col>{{ formatDateTime(departureTime) }}</v-col>
+            <v-col class="text-right">
+              {{ formatDateTime(arrivalTime, 'HH:mm uur') }}
+            </v-col>
           </v-row>
         </v-card-subtitle>
-        <v-card-text>
-          <v-row no-gutters class="pb-2">
+        <v-card-text class="pb-2">
+          <v-row no-gutters>
             <v-col
               v-for="(leg, indx) in legs"
               :key="indx"
               :cols="calculateWidth(indx)"
             >
-              <travel-leg :leg="leg"> </travel-leg>
+              <travel-leg :leg="leg" :is-cancelled="leg.state === 'CANCELLED'">
+              </travel-leg>
             </v-col>
           </v-row>
           <div v-if="duration">
@@ -65,6 +66,7 @@ export default {
   },
   props: {
     index: { type: Number, required: true },
+    id: { type: Number, required: true },
     from: { type: Object, required: true },
     to: { type: Object, required: true },
     arrivalTime: { type: Object, required: true },
@@ -72,6 +74,7 @@ export default {
     duration: { type: Number, required: false, default: 0 },
     legs: { type: Array, required: true },
     needsReview: { type: Boolean, required: false, default: false },
+    disabled: { type: Boolean, required: false, default: false },
   },
   data() {
     return {
@@ -83,10 +86,15 @@ export default {
     this.calculateLegDivison()
   },
   methods: {
-    formatDateTime(dateTime) {
-      return moment(dateTime)
-        .locale('nl')
-        .format('HH:mm uur')
+    formatDateTime(dateTime, format) {
+      if (!format)
+        return moment(dateTime)
+          .locale('nl')
+          .calendar()
+      else
+        return moment(dateTime)
+          .local('nl')
+          .format(format)
     },
     // Function to pre-determine the divions of column per leg
     calculateLegDivison() {

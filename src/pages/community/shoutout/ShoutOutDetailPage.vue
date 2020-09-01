@@ -8,25 +8,12 @@
           <v-col class="py-0">
             <itinerary-summary-list :items="items" />
           </v-col>
-          <v-col><v-divider /></v-col>
           <!-- Passenger -->
-          <v-col v-if="localIsMine" class="mt-3">
-            <v-row
-              v-for="(leg, index) in generateShoutOutSteps()"
-              :key="index"
-              class="mx-3 py-0"
-            >
-              <itinerary-leg :leg="leg" />
-            </v-row>
-            <v-row dense class="d-flex flex-column">
-              <v-col><v-divider /></v-col>
-              <v-col>
-                <h3>Rit aanbod</h3>
-              </v-col>
-              <v-col class="py-3">
-                <em>Er zijn nog geen ritten aangeboden.</em>
-              </v-col>
-            </v-row>
+          <v-col v-if="localIsMine">
+            <shout-out-detail-passenger
+              :trip="trip"
+              @travel-proposal-confirm="onTravelOfferConfirmed"
+            />
             <v-row>
               <v-col class="pt-3 pb-0">
                 <h3>Wijzigen</h3>
@@ -45,6 +32,7 @@
           </v-col>
           <!-- Chauffeur -->
           <v-col v-else>
+            <v-divider class="mb-3" />
             <v-row dense class="d-flex flex-column">
               <v-col v-if="planningStatus.status === 'PENDING'">
                 <search-status />
@@ -128,8 +116,16 @@
                     </v-row>
                     <v-row>
                       <v-col class="pt-3 pb-0">
+                        <corona-check
+                          :value="coronaCheck"
+                          class="mb-2"
+                          @done="onCoronaCheckDone"
+                        ></corona-check>
                         <v-btn
-                          :disabled="planningStatus.status != 'SUCCESS'"
+                          :disabled="
+                            planningStatus.status != 'SUCCESS' ||
+                              !passedCoronaCheck
+                          "
                           large
                           rounded
                           block
@@ -149,7 +145,9 @@
             <v-row>
               <v-col class="pt-1">
                 <v-btn
-                  :disabled="planningStatus.status != 'SUCCESS'"
+                  :disabled="
+                    planningStatus.status != 'SUCCESS' || !passedCoronaCheck
+                  "
                   large
                   rounded
                   block
@@ -176,6 +174,7 @@ import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
 import SearchStatus from '@/components/search/SearchStatus.vue'
+import ShoutOutDetailPassenger from '@/components/community/ShoutOutDetailPassenger.vue'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import {
   DATE_FORMAT_INPUT,
@@ -186,16 +185,25 @@ import {
   generateShoutOutDetailSteps,
   generateItineraryDetailSteps,
 } from '@/utils/itinerary_steps.js'
+import CoronaCheck from '@/components/common/CoronaCheck'
+import coronaCheckMixin from '@/mixins/coronaCheckMixin'
+import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
+import * as gsStore from '@/store/geocoder-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'ShoutOutDetailPage',
   components: {
+    CoronaCheck,
     ContentPane,
     ItineraryLeg,
     ItineraryOptions,
     ItinerarySummaryList,
     SearchStatus,
+    ShoutOutDetailPassenger,
   },
+  mixins: [coronaCheckMixin],
   props: {
     id: { type: String, required: true },
     // isMine is a string because it is a path parameter. When routing back from
@@ -218,22 +226,23 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      trip: 'is/getSelectedTrip',
-      planningRequest: 'is/getPlanningRequest',
-      planningStatus: 'is/getPlanningStatus',
-      planResult: 'is/getPlanningResults',
-      pickedLocations: 'gs/getPickedLocation',
-    }),
+    ...{
+      profile: () => psStore.getters.getProfile,
+      trip: () => isStore.getters.getSelectedTrip,
+      planningRequest: () => isStore.getters.getPlanningRequest,
+      planningStatus: () => isStore.getters.getPlanningStatus,
+      planResult: () => isStore.getters.getPlanningResults,
+      pickedLocations: () => gsStore.getters.getPickedLocation,
+    },
     items() {
       let result = []
-      const { from, to, travelTime } = this.trip
-      if (from) {
-        result.push({ label: 'Van', value: from.label })
-      }
-      if (to) {
-        result.push({ label: 'Naar', value: to.label })
-      }
+      const { travelTime } = this.trip
+      // if (from) {
+      //   result.push({ label: 'Van', value: from.label })
+      // }
+      // if (to) {
+      //   result.push({ label: 'Naar', value: to.label })
+      // }
       if (travelTime) {
         result.push({ label: 'Datum', value: formatDateTimeLong(travelTime) })
       }
@@ -282,12 +291,12 @@ export default {
     },
   },
   mounted() {
-    this.$store.commit('is/clearPlanningResults')
-    this.$store.dispatch('is/fetchShoutOut', { id: this.id })
+    isStore.mutations.clearPlanningResults()
+    isStore.actions.fetchShoutOut({ id: this.id })
     if (!this.localIsMine) {
       // Propose a ride to the chauffeur based on his address and the shoutout.
-      const { ridefrom } = this.$store.getters['gs/getPickedLocation']
-      const { address } = this.$store.getters['ps/getUser'].profile
+      const { ridefrom } = gsStore.getters.getPickedLocation
+      const { address } = psStore.getters.getUser.profile
       const { travelTime } = this.planningRequest
       const from = ridefrom
         ? {
@@ -301,7 +310,7 @@ export default {
             latitude: address?.location?.coordinates[1],
             longitude: address?.location?.coordinates[0],
           }
-      this.$store.commit('gs/setGeoLocationPicked', {
+      gsStore.mutations.setGeoLocationPicked({
         field: 'ridefrom',
         suggestion: null,
       })
@@ -310,11 +319,11 @@ export default {
         request.travelTime = travelTime
         this.pickedTime = moment(travelTime.when).format('HH:mm')
       }
-      this.$store.dispatch('is/submitShoutOutPlanningsRequest', request)
+      isStore.actions.submitShoutOutPlanningsRequest(request)
     }
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   beforeRouteEnter: beforeRouteEnter({
     editDepart: editing => editing || false,
@@ -353,7 +362,7 @@ export default {
       const { label, latitude, longitude } = this.itineraryDeparture.from
       const depart = moment(this.itinerary.departureTime)
       let timestamp = `${depart.format(DATE_FORMAT_INPUT)} ${this.pickedTime}`
-      this.$store.dispatch('is/submitShoutOutPlanningsRequest', {
+      isStore.actions.submitShoutOutPlanningsRequest({
         id: this.id,
         from: { label, latitude, longitude },
         travelTime: {
@@ -363,8 +372,8 @@ export default {
       })
     },
     onClearDeparture() {
-      const { address } = this.$store.getters['ps/getUser'].profile
-      this.$store.dispatch('is/submitShoutOutPlanningsRequest', {
+      const { address } = this.profile
+      isStore.actions.submitShoutOutPlanningsRequest({
         id: this.id,
         from: {
           label: 'Thuis',
@@ -374,9 +383,20 @@ export default {
       })
     },
     bookTrip() {
-      //TODO: Implement storage trip in backend
-      // eslint-disable-next-line
-      console.log('Method not implemented!')
+      const { selectedCarId } = this.profile?.ridePlanOptions
+
+      if (selectedCarId) {
+        const travelOffer = {
+          shoutoutPlanId: this.id,
+          planRef: this.planResult.planRef,
+          vehicleRef: `urn:nb:rs:car:${selectedCarId}`,
+        }
+        isStore.actions.storeTravelOffer(travelOffer)
+      } else {
+        //TODO: error handling.
+        // eslint-disable-next-line
+        console.log('No default car!')
+      }
     },
     contactPassenger() {
       //TODO: Implement communication with passenger
@@ -384,7 +404,7 @@ export default {
       console.log('Method not implemented!')
     },
     onTripEdit() {
-      const { searchPreferences } = this.$store.getters['ps/getProfile']
+      const { searchPreferences } = this.profile
       let searchCriteria = {
         from: this.trip.from,
         to: this.trip.to,
@@ -396,12 +416,24 @@ export default {
           arriving: this.trip.useAsArrivalTime,
         },
       }
-      this.$store.commit('is/setSearchCriteria', searchCriteria)
-      this.$store.dispatch('is/submitPlanningsRequest', searchCriteria)
-      this.$router.push({ name: 'searchResults', editTrip: true })
+      isStore.mutations.setSearchCriteria(searchCriteria)
+      isStore.actions.submitPlanningsRequest(searchCriteria)
+      this.$router.push({
+        name: 'searchResults',
+        params: {
+          tripId: String(this.id),
+        },
+      })
     },
     onTripCancelled() {
-      //TODO:
+      uiStore.actions.queueInfoNotification('Not yet implemented!')
+    },
+    onTravelOfferConfirmed(itinerary) {
+      const { from, to, nrSeats } = this.trip
+      const { itineraryRef } = itinerary
+      const trip = { from, to, nrSeats, itineraryRef }
+      isStore.actions.storeSelectedTrip(trip)
+      this.$router.push({ name: 'shoutouts' })
     },
   },
 }
