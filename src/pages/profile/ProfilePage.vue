@@ -89,17 +89,20 @@
               <v-icon>chevron_right</v-icon>
             </v-row>
           </v-flex>
+          <v-divider></v-divider>
         </v-layout>
       </v-col>
-      <v-col travel-card mt-2 mr-2 @click="logOut">
-        <v-layout column align-center my-2>
-          <v-flex>
-            <v-icon>exit_to_app</v-icon>
-          </v-flex>
-          <v-flex>
-            Log out
-          </v-flex>
-        </v-layout>
+      <v-col>
+        <v-card outlined class="mt-2" @click="logOut">
+          <v-row>
+            <v-col class="grow pl-6">
+              Uitloggen
+            </v-col>
+            <v-col class="shrink pr-5">
+              <v-icon>exit_to_app</v-icon>
+            </v-col>
+          </v-row>
+        </v-card>
       </v-col>
     </v-row>
   </content-pane>
