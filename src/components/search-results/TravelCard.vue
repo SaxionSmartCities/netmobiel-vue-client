@@ -26,7 +26,9 @@
         </v-card-title>
         <v-card-subtitle>
           <v-row justify="space-between" no-gutters class="pb-0">
-            <v-col>{{ formatDateTime(departureTime) }}</v-col>
+            <v-col class="capitalize">
+              {{ formatDateTime(departureTime) }}
+            </v-col>
             <v-col class="text-right">
               {{ formatDateTime(arrivalTime, 'HH:mm uur') }}
             </v-col>
