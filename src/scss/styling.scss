@@ -105,3 +105,10 @@ h3 {
 .color-alert-red {
   color: $color-alertRed !important;
 }
+
+.capitalize {
+  text-transform: lowercase;
+}
+.capitalize::first-letter {
+  text-transform: uppercase;
+}
