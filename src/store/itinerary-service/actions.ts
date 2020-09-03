@@ -343,9 +343,7 @@ function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
 }
 
 function fetchCancelledTrips(context: ActionContext) {
-  const params: any = {}
-  params['state'] = 'CANCELLED'
-
+  const params: any = { state: 'CANCELLED' }
   const URL = `${BASE_URL}/planner/trips`
   axios
     .get(URL, {
