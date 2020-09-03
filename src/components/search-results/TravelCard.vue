@@ -1,9 +1,5 @@
 <template>
-  <v-card
-    outlined
-    :ripple="!needsReview"
-    @click="$emit('onTripSelected', index)"
-  >
+  <v-card outlined :ripple="!needsReview" @click="$emit('onTripSelected', id)">
     <v-row no-gutters>
       <v-col>
         <v-card-title class="d-flex justify-space-between pt-2">
@@ -30,7 +26,9 @@
         </v-card-title>
         <v-card-subtitle>
           <v-row justify="space-between" no-gutters class="pb-0">
-            <v-col>{{ formatDateTime(departureTime) }}</v-col>
+            <v-col class="capitalize">
+              {{ formatDateTime(departureTime) }}
+            </v-col>
             <v-col class="text-right">
               {{ formatDateTime(arrivalTime, 'HH:mm uur') }}
             </v-col>
@@ -70,6 +68,7 @@ export default {
   },
   props: {
     index: { type: Number, required: true },
+    id: { type: Number, required: true },
     from: { type: Object, required: true },
     to: { type: Object, required: true },
     arrivalTime: { type: Object, required: true },

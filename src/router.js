@@ -39,6 +39,7 @@ import TripCancelledPage from './pages/saved/TripCancelledPage'
 import TripDetailPage from './pages/saved/TripDetailPage'
 import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
 import ShoutOutDetailPage from '@/pages/community/shoutout/ShoutOutDetailPage'
+import ShoutoutSubmittedPage from '@/pages/planner/ShoutoutSubmittedPage'
 import Account from '@/pages/profile/Account'
 import DriverReviewPage from './pages/review/DriverReviewPage'
 import TripReviewedPage from './pages/review/TripReviewedPage'
@@ -269,6 +270,12 @@ const router = new Router({
       path: '/tripConfirmed',
       component: TripConfirmedPage,
       name: 'tripConfirmedPage',
+    },
+    {
+      path: '/shoutoutSubmittedPage/:shoutout',
+      component: ShoutoutSubmittedPage,
+      name: 'shoutoutSubmittedPage',
+      props: true,
     },
     {
       path: '/about',

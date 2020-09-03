@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined @click="$emit('rideSelected', index)">
+  <v-card outlined @click="$emit('rideSelected', ride.id)">
     <v-row no-gutters>
       <v-col>
         <v-card-title class="d-flex justify-space-between pt-2">
@@ -9,14 +9,18 @@
             >
               <span>Vertrek</span>
               <span class="booking-count">
-                {{ ride.bookings.length }} boekingen
+                {{
+                  ride.bookings.filter(booking => booking.state === 'CONFIRMED')
+                    .length
+                }}
+                boekingen
               </span>
             </v-col>
           </v-row>
         </v-card-title>
         <v-card-subtitle>
           <v-row no-gutters class="justify-space-between pb-0">
-            <v-col>{{ formatTime() }}</v-col>
+            <v-col class="capitalize">{{ formatTime() }}</v-col>
             <v-col v-if="ride.recurrence" class="text-right">
               <v-icon>replay</v-icon>
               {{ formatRecurrence() }}
@@ -47,7 +51,6 @@
 import moment from 'moment'
 export default {
   props: {
-    index: { type: Number, required: true },
     ride: {
       type: Object,
       required: true,
