@@ -1,5 +1,17 @@
 <template>
   <content-pane>
+    <template v-slot:header>
+      <v-row
+        v-if="selectedTrip.state === 'CANCELLED'"
+        class="cancelled-banner text-center py-1"
+        dense
+        no-gutters
+      >
+        <v-col>
+          Deze reis is niet meer beschikbaar.
+        </v-col>
+      </v-row>
+    </template>
     <v-row>
       <v-col class="py-0">
         <trip-details
@@ -76,6 +88,11 @@ import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vu
 import ContactDriverModal from '@/components/itinerary-details/ContactDriverModal'
 import travelModes from '@/constants/travel-modes.js'
 import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
+import * as uiStore from '@/store/ui'
+import * as msStore from '@/store/message-service'
+import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'TripDetailPage',
@@ -120,22 +137,22 @@ export default {
       return null
     },
     selectedTrip() {
-      let trip = this.$store.getters['is/getSelectedTrip']
+      let trip = isStore.getters.getSelectedTrip
       trip.legs = generateItineraryDetailSteps(trip.itinerary)
       return trip
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
     if (this.selectedTrip.state === 'SCHEDULED') {
       this.showConfirmationButton = false
     }
   },
   methods: {
     saveTrip() {
-      const selectedTrip = this.$store.getters['is/getSelectedTrip']
-      this.$store
-        .dispatch('is/storeSelectedTrip', selectedTrip)
+      const selectedTrip = isStore.getters.getSelectedTrip
+      isStore.actions
+        .storeSelectedTrip(selectedTrip)
         .then(() => this.$router.push('/tripPlanSubmitted'))
     },
     showFullRouteOnMap() {
@@ -156,7 +173,7 @@ export default {
       }
     },
     onTripReplan(trip) {
-      this.$store.commit('is/setSearchCriteria', {
+      isStore.mutations.setSearchCriteria({
         from: trip.from,
         to: trip.to,
       })
@@ -173,12 +190,12 @@ export default {
       })
     },
     onTripCancelled(selectedTrip) {
-      this.$store.dispatch('is/deleteSelectedTrip', selectedTrip)
+      isStore.actions.deleteSelectedTrip(selectedTrip)
       this.$router.push('/tripCancelledPage')
     },
     onTripEdit(trip) {
       const { from, to, itinerary, arrivalTimeIsPinned } = trip
-      const { searchPreferences } = this.$store.getters['ps/getProfile']
+      const { searchPreferences } = psStore.getters.getProfile
       let searchCriteria = {
         from,
         to,
@@ -190,9 +207,12 @@ export default {
           arriving: arrivalTimeIsPinned,
         },
       }
-      this.$store.commit('is/setSearchCriteria', searchCriteria)
-      this.$store.dispatch('is/submitPlanningsRequest', searchCriteria)
-      this.$router.push({ name: 'searchResults', editTrip: true })
+      isStore.mutations.setSearchCriteria(searchCriteria)
+      isStore.actions.submitPlanningsRequest(searchCriteria)
+      this.$router.push({
+        name: 'searchResults',
+        params: { tripId: String(this.selectedTrip.id) },
+      })
     },
     onDriverSelectForMessage(event) {
       //The backend sends an urn for now so we need to split on ':' and get the last element
@@ -200,8 +220,8 @@ export default {
       const driverUrn = event.id
       const driverId = driverUrn.split(':').splice(-1)[0]
       //Gets the driver his profile
-      this.$store
-        .dispatch('cs/fetchUser', {
+      csStore.actions
+        .fetchUser({
           userRef: driverId,
         })
         .then(driverProfile => {
@@ -210,7 +230,7 @@ export default {
     },
     routeToConversation(ctx, driverProfile) {
       //Get the conversations and see if it already exists
-      this.$store.dispatch('ms/fetchConversations').then(conversations => {
+      msStore.actions.fetchConversations().then(conversations => {
         const index = conversations.findIndex(
           conversation => conversation.context === ctx
         )
@@ -225,7 +245,7 @@ export default {
             context: ctx,
             participants: [
               {
-                managedIdentity: this.$store.getters['ps/getProfile'].id,
+                managedIdentity: psStore.getters.getProfile.id,
                 urn: '',
               },
               {
@@ -245,4 +265,4 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped></style>

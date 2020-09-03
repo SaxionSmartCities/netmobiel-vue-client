@@ -11,6 +11,11 @@
     </v-row>
     <v-row>
       <v-col class="py-0">
+        <corona-check
+          :value="coronaCheck"
+          class="mb-2"
+          @done="onCoronaCheckDone"
+        ></corona-check>
         <v-btn
           v-show="showSection"
           large
@@ -19,6 +24,7 @@
           mb-4
           depressed
           color="button"
+          :disabled="!passedCoronaCheck"
           @click="saveTrip"
         >
           Deze reis bevestigen
@@ -45,13 +51,19 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import TripDetails from '@/components/itinerary-details/TripDetails.vue'
+import CoronaCheck from '@/components/common/CoronaCheck'
+import coronaCheckMixin from '@/mixins/coronaCheckMixin'
+import * as uiStore from '@/store/ui'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'ItineraryDetailPage',
   components: {
+    CoronaCheck,
     ContentPane,
     TripDetails,
   },
+  mixins: [coronaCheckMixin],
   data() {
     return {
       showMap: false,
@@ -60,22 +72,22 @@ export default {
   },
   computed: {
     selectedTrip() {
-      return this.$store.getters['is/getSelectedTrip']
+      return isStore.getters.getSelectedTrip
     },
     showSection() {
       return this.showConfirmationButton
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
     if (this.selectedTrip.state === 'SCHEDULED') {
       this.showConfirmationButton = false
     }
   },
   methods: {
     saveTrip() {
-      this.$store
-        .dispatch('is/storeSelectedTrip', this.selectedTrip)
+      isStore.actions
+        .storeSelectedTrip(this.selectedTrip)
         .then(() => this.$router.push('/tripPlanSubmitted'))
     },
     showFullRouteOnMap() {

@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import * as uiStore from '@/store/ui'
+
 export default {
   props: {
     updateMessage: {
@@ -39,7 +41,7 @@ export default {
   },
   methods: {
     popMessage: function() {
-      this.$store.commit('ui/shiftUpdateMessage')
+      uiStore.mutations.shiftUpdateMessage()
     },
   },
 }

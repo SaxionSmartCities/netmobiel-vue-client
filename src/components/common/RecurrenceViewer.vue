@@ -2,15 +2,15 @@
   <v-row dense no-gutters>
     <v-col>
       {{ formattedRecurrence }}
-      <table v-if="recurrence.unit == 'WEEK'">
+      <table v-if="recurrence.unit == 'WEEK'" id="overview">
         <tr>
-          <td class="pr-1">Ma</td>
-          <td class="pr-1">Di</td>
-          <td class="pr-1">Wo</td>
-          <td class="pr-1">Do</td>
-          <td class="pr-1">Vr</td>
-          <td class="pr-1">Za</td>
-          <td>Zo</td>
+          <th>Ma</th>
+          <th>Di</th>
+          <th>Wo</th>
+          <th>Do</th>
+          <th>Vr</th>
+          <th>Za</th>
+          <th>Zo</th>
         </tr>
         <tr>
           <td v-for="day in [0, 1, 2, 3, 4, 5, 6]" :key="day">
@@ -46,3 +46,23 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+#overview {
+  width: 100%;
+  margin-top: 4px;
+  border-collapse: collapse;
+}
+#overview td,
+#overview th {
+  border: 1px solid #ddd;
+  text-align: center;
+}
+#overview th {
+  font-weight: 400;
+  width: 13%;
+}
+#overview td {
+  padding: 0 2px 4px 2px;
+}
+</style>

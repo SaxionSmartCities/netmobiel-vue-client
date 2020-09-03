@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import * as uiStore from '@/store/ui'
+
 export default {
   name: 'TermsOfUsePage',
   data() {
@@ -46,7 +48,7 @@ export default {
     }
   },
   created: function() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
 }
 </script>

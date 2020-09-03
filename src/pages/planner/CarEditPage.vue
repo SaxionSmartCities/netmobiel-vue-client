@@ -97,6 +97,9 @@
 <script>
 import luggageTypes from '@/constants/luggage-types.js'
 import ContentPane from '@/components/common/ContentPane.vue'
+import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
 
 const BAD_PERSON_COUNT = 'Voer een geheel getal tussen 1 en 6.'
 
@@ -132,7 +135,8 @@ export default {
   },
   mounted() {
     // either result from RDW search or car from user profile
-    const result = this.$store.getters['cs/getSearchResult']
+    const result = csStore.getters.getSearchResult
+
     if (!result) {
       // unexpected navigation to this page. go back to home
       this.$router.replace('/home')
@@ -141,7 +145,7 @@ export default {
     this.car = result.id
       ? result
       : // if car with same license plate is part of profile, edit/remove car from profile
-        this.$store.getters['ps/getUser'].profile.ridePlanOptions.cars.find(
+        psStore.getters.getUser.profile.ridePlanOptions.cars.find(
           candidate => candidate.licensePlate === result.licensePlate
         ) ||
         // otherwise add new car to profile
@@ -149,7 +153,7 @@ export default {
     this.personCount = this.car.nrSeats > 1 ? this.car.nrSeats - 1 : 2
   },
   created: function() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
 }
 </script>

@@ -9,18 +9,29 @@
         >
           <recurrence-viewer :recurrence="item.value" />
         </v-col>
-        <v-col v-else class="capitalize pl-3">{{ item.value }}</v-col>
+        <v-col
+          v-else-if="item.renderingComponent === 'BookingList'"
+          class="pl-3"
+        >
+          <booking-list :booking-list="item.value" />
+        </v-col>
+        <v-col v-else class="capitalize pl-3">
+          <template v-if="item.label !== 'Boekingen'">
+            {{ item.value }}
+          </template>
+        </v-col>
       </v-row>
     </v-col>
   </v-row>
 </template>
 
 <script>
+import BookingList from '@/components/common/BookingList.vue'
 import RecurrenceViewer from '@/components/common/RecurrenceViewer.vue'
 
 export default {
   name: 'ItinerarySummaryList',
-  components: { RecurrenceViewer },
+  components: { BookingList, RecurrenceViewer },
   props: {
     items: { type: Array, default: () => [] },
   },
