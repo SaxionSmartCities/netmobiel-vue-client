@@ -5,7 +5,7 @@
         class="d-flex flex-row justify-space-between alert-red"
         @click="showCards = !showCards"
       >
-        <span>Er zijn ook {{ trips.length }} geannuleerde reizen.</span>
+        <span>Er zijn {{ trips.length }} geannuleerde reizen.</span>
         <v-icon v-if="showCards" class="alert-red">
           keyboard_arrow_down
         </v-icon>
