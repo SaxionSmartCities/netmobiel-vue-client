@@ -35,6 +35,7 @@
       >
         <template v-slot:card="{ trip, index }">
           <travel-card
+            :id="trip.id"
             class="trip-card"
             :index="index"
             :from="trip.from"
