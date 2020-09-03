@@ -127,7 +127,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import RideCard from '@/components/rides/RideCard.vue'
-import UpdateCard from '@/components/home/UpdateCard.vue'
+import UpdateCard from '@/components/cards/UpdateCard.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
 import moment from 'moment'
 import * as uiStore from '@/store/ui'
