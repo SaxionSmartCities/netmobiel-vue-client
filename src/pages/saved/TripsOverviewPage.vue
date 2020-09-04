@@ -33,18 +33,11 @@
         "
         :trips="getCancelledTrips"
       >
-        <template v-slot:card="{ trip, index }">
+        <template v-slot:card="{ trip }">
           <travel-card
-            :id="trip.id"
+            :trip="trip"
             class="trip-card"
-            :index="index"
-            :from="trip.from"
-            :to="trip.to"
-            :arrival-time="parseDate(trip.itinerary.arrivalTime)"
-            :departure-time="parseDate(trip.itinerary.departureTime)"
-            :duration="trip.itinerary.duration"
-            :legs="trip.itinerary.legs"
-            @onTripSelected="onTripSelected"
+            @on-trip-selected="onTripSelected"
           />
         </template>
       </slide-show-cancelled-trips>
@@ -65,19 +58,11 @@
           </v-col>
           <v-col v-else class="py-0">
             <grouped-card-list :items="getPastTrips">
-              <template v-slot:card="{ item: trip, index }">
+              <template v-slot:card="{ item: trip }">
                 <travel-card
-                  :id="trip.id"
+                  :trip="trip"
                   class="trip-card"
-                  :needs-review="needsReview(trip)"
-                  :index="index"
-                  :from="trip.from"
-                  :to="trip.to"
-                  :arrival-time="parseDate(trip.itinerary.arrivalTime)"
-                  :departure-time="parseDate(trip.itinerary.departureTime)"
-                  :duration="trip.itinerary.duration"
-                  :legs="trip.itinerary.legs"
-                  @onTripSelected="onTripSelected"
+                  @on-trip-selected="onTripSelected"
                 />
               </template>
             </grouped-card-list>
@@ -90,19 +75,11 @@
           </v-col>
           <v-col v-else class="py-0">
             <grouped-card-list :items="getPlannedTrips">
-              <template v-slot:card="{ item: trip, index }">
+              <template v-slot:card="{ item: trip }">
                 <travel-card
-                  :id="trip.id"
+                  :trip="trip"
                   class="trip-card"
-                  :index="index"
-                  :from="trip.from"
-                  :to="trip.to"
-                  :arrival-time="parseDate(trip.itinerary.arrivalTime)"
-                  :departure-time="parseDate(trip.itinerary.departureTime)"
-                  :duration="trip.itinerary.duration"
-                  :legs="trip.itinerary.legs"
-                  :disabled="trip.state === 'CANCELLED'"
-                  @onTripSelected="onTripSelected"
+                  @on-trip-selected="onTripSelected"
                 />
               </template>
             </grouped-card-list>
@@ -152,6 +129,7 @@
               <template v-slot:card="{ item: ride, index }">
                 <ride-card
                   class="trip-card"
+                  :index="index"
                   :ride="ride"
                   @rideSelected="onRideSelected"
                 />
@@ -167,8 +145,8 @@
 <script>
 import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
-import TravelCard from '@/components/search-results/TravelCard.vue'
-import RideCard from '@/components/rides/RideCard.vue'
+import TravelCard from '@/components/cards/TravelCard.vue'
+import RideCard from '@/components/cards/RideCard.vue'
 import constants from '../../constants/constants'
 import TabBar from '../../components/common/TabBar'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
@@ -326,8 +304,8 @@ export default {
         until: moment().format(),
       })
     },
-    onTripSelected(id) {
-      isStore.actions.fetchTrip({ id: id })
+    onTripSelected(trip) {
+      isStore.actions.fetchTrip({ id: trip.id })
       this.$router.push('/tripDetailPage')
     },
     onRideSelected(id) {
