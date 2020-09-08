@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined @click="$emit('on-trip-selected', trip)">
+  <v-card outlined @click="$emit('on-trip-selected', { tripId, itinerary })">
     <v-row no-gutters>
       <v-col>
         <v-card-title class="d-flex justify-space-between pt-2">
@@ -49,7 +49,7 @@
 
 <script>
 import moment from 'moment'
-import TravelLeg from '@/components/search-results/TravelLeg.vue'
+import TravelLeg from '@/components/cards/TravelLeg.vue'
 
 export default {
   name: 'TravelCard',
@@ -57,7 +57,8 @@ export default {
     TravelLeg,
   },
   props: {
-    trip: { type: Object, required: true },
+    tripId: { type: Number, required: false, default: null },
+    itinerary: { type: Object, required: true },
   },
   data() {
     return {
@@ -67,16 +68,16 @@ export default {
   },
   computed: {
     arrivalTime() {
-      return this.trip.itinerary.arrivalTime
+      return this.itinerary.arrivalTime
     },
     departureTime() {
-      return this.trip.itinerary.departureTime
+      return this.itinerary.departureTime
     },
     duration() {
-      return this.trip.itinerary.duration
+      return this.itinerary.duration
     },
     legs() {
-      return this.trip.itinerary.legs
+      return this.itinerary.legs
     },
   },
   mounted() {

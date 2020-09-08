@@ -35,7 +35,8 @@
       >
         <template v-slot:card="{ trip }">
           <travel-card
-            :trip="trip"
+            :trip-id="trip.id"
+            :itinerary="trip.itinerary"
             class="trip-card"
             @on-trip-selected="onTripSelected"
           />
@@ -60,7 +61,8 @@
             <grouped-card-list :items="getPastTrips">
               <template v-slot:card="{ item: trip }">
                 <travel-card
-                  :trip="trip"
+                  :trip-id="trip.id"
+                  :itinerary="trip.itinerary"
                   class="trip-card"
                   @on-trip-selected="onTripSelected"
                 />
@@ -77,7 +79,8 @@
             <grouped-card-list :items="getPlannedTrips">
               <template v-slot:card="{ item: trip }">
                 <travel-card
-                  :trip="trip"
+                  :trip-id="trip.id"
+                  :itinerary="trip.itinerary"
                   class="trip-card"
                   @on-trip-selected="onTripSelected"
                 />
@@ -304,8 +307,8 @@ export default {
         until: moment().format(),
       })
     },
-    onTripSelected(trip) {
-      isStore.actions.fetchTrip({ id: trip.id })
+    onTripSelected(selected) {
+      isStore.actions.fetchTrip({ id: selected.tripId })
       this.$router.push('/tripDetailPage')
     },
     onRideSelected(id) {
