@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined :ripple="!needsReview" @click="$emit('onTripSelected', id)">
+  <v-card outlined @click="$emit('on-trip-selected', { tripId, itinerary })">
     <v-row no-gutters>
       <v-col>
         <v-card-title class="d-flex justify-space-between pt-2">
@@ -11,18 +11,6 @@
               <span class="pr-1">Aankomst</span>
             </v-col>
           </v-row>
-          <div v-if="needsReview" class="not-confirmed">
-            Niet bevestigd!
-            <!-- <v-btn
-              outlined
-              small
-              rounded
-              color="primary"
-              :onclick="$emit('onTripReview')"
-            >
-              Beoordeel
-            </v-btn> -->
-          </div>
         </v-card-title>
         <v-card-subtitle>
           <v-row justify="space-between" no-gutters class="pb-0">
@@ -45,9 +33,11 @@
               </travel-leg>
             </v-col>
           </v-row>
-          <div v-if="duration">
-            Reistijd: {{ Math.round(duration / 60) }} minuten
-          </div>
+          <v-row v-if="duration" no-gutters="">
+            <v-col class="pt-1">
+              Reistijd: {{ Math.round(duration / 60) }} minuten
+            </v-col>
+          </v-row>
         </v-card-text>
       </v-col>
       <v-card-actions>
@@ -59,7 +49,7 @@
 
 <script>
 import moment from 'moment'
-import TravelLeg from '@/components/search-results/TravelLeg.vue'
+import TravelLeg from '@/components/cards/TravelLeg.vue'
 
 export default {
   name: 'TravelCard',
@@ -67,22 +57,28 @@ export default {
     TravelLeg,
   },
   props: {
-    index: { type: Number, required: true },
-    id: { type: Number, required: true },
-    from: { type: Object, required: true },
-    to: { type: Object, required: true },
-    arrivalTime: { type: Object, required: true },
-    departureTime: { type: Object, required: true },
-    duration: { type: Number, required: false, default: 0 },
-    legs: { type: Array, required: true },
-    needsReview: { type: Boolean, required: false, default: false },
-    disabled: { type: Boolean, required: false, default: false },
+    tripId: { type: Number, required: false, default: null },
+    itinerary: { type: Object, required: true },
   },
   data() {
     return {
       layoutRatios: [],
       totalTime: 0,
     }
+  },
+  computed: {
+    arrivalTime() {
+      return this.itinerary.arrivalTime
+    },
+    departureTime() {
+      return this.itinerary.departureTime
+    },
+    duration() {
+      return this.itinerary.duration
+    },
+    legs() {
+      return this.itinerary.legs
+    },
   },
   mounted() {
     this.calculateLegDivison()
@@ -148,10 +144,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.not-confirmed {
-  color: $color-secondary !important;
-  font-style: italic;
-  font-size: 0.8em;
-}
-</style>
+<style lang="scss" scoped></style>
