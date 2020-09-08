@@ -20,7 +20,7 @@
       </v-col>
       <v-col>
         <v-text-field
-          v-model="creditAmount"
+          v-model.number="creditAmount"
           class="border-radius-input"
           single-line
           :min="MIN_AMOUNT"
@@ -50,6 +50,10 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import monetaryConstants from '@/constants/monetary.js'
+import * as crsStore from '@/store/credits-service'
+
+import { Deposit } from '@/store/credits-service/types'
+
 const MIN_AMOUNT = 10,
   MAX_AMOUNT = 1000,
   { CREDIT_IN_EUROCENTS } = monetaryConstants
@@ -61,7 +65,7 @@ export default {
   },
   data: function() {
     return {
-      creditAmount: {},
+      creditAmount: MIN_AMOUNT,
     }
   },
   computed: {
@@ -78,9 +82,15 @@ export default {
   },
   methods: {
     startMoneyTransfer() {
-      console.log('transfer money')
-      console.log(CREDIT_IN_EUROCENTS)
-      this.$store.dispatch('crs/buyCredits', { foo: 42 })
+      const deposit = {
+        description: `${this.creditAmount} credits inkopen voor NetMobiel`,
+        amountCredits: this.creditAmount,
+        returnUrl: new URL('returnAfterDeposit', location.href),
+      }
+      crsStore.actions.buyCredits(deposit).then(data => {
+        // follow payment URL in current window
+        location = data.paymentUrl
+      })
     },
   },
 }

@@ -49,7 +49,6 @@
           rounded
           block
           depressed
-          disabled
           color="button"
           @click="$router.push('/addCredits')"
         >
