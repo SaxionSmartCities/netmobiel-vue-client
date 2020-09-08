@@ -1,16 +1,17 @@
 import { ModuleBuilder } from 'vuex-typex'
+import { RootState } from '@/store/Rootstate'
 import {
   Itinerary,
   ItineraryState,
   PlanningRequest,
   PlanningResult,
+  SubmitStatus,
   ShoutOut,
   Trip,
+  SearchCriteria,
 } from '@/store/itinerary-service/types'
-import { RootState } from '@/store/Rootstate'
-import { SubmitStatus } from '@/store/itinerary-service/types'
 
-function setSearchCriteria(state: ItineraryState, payload: any) {
+function setSearchCriteria(state: ItineraryState, payload: SearchCriteria) {
   state.searchCriteria.from = payload.from
   state.searchCriteria.to = payload.to
   state.searchCriteria.travelTime = payload.travelTime

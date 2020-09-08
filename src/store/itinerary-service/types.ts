@@ -47,7 +47,16 @@ export interface TripSelection {
 
 export interface ShoutOut {}
 
-export interface Trip {}
+export interface Trip {
+  id: number
+  tripRef: string
+  state: string
+  from: Location
+  to: Location
+  nrSeats: number
+  itineraryRef: string
+  itinerary: any
+}
 
 export interface SubmitStatus {
   status?: string
@@ -61,6 +70,13 @@ export interface PlanningRequest {
   preferences?: any
   submitStatus?: SubmitStatus
   result?: PlanningResult | null
+}
+
+export interface SearchCriteria {
+  from: any
+  to: any
+  travelTime: any
+  preferences?: any
 }
 
 export interface PlanningResult {
