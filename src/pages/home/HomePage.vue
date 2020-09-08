@@ -187,11 +187,10 @@ export default {
     psStore.actions.fetchComplimentTypes()
   },
   methods: {
-    onRideSelected(index) {
-      const ride = this.rides[index]
+    onRideSelected(id) {
       this.$router.push({
         name: 'rideDetailPage',
-        params: { ride, id: ride.id.toString() },
+        params: { id: String(id) },
       })
     },
   },
