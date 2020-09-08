@@ -3,9 +3,13 @@ import moment from 'moment'
 import config from '@/config/config'
 import constants from '../../constants/constants'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
-import { ItineraryState, TripSelection } from '@/store/itinerary-service/types'
 import { RootState } from '../Rootstate'
 import { mutations } from '@/store/itinerary-service/index'
+import {
+  ItineraryState,
+  TripSelection,
+  SearchCriteria,
+} from '@/store/itinerary-service/types'
 import * as uiStore from '@/store/ui'
 type ActionContext = BareActionContext<ItineraryState, RootState>
 
@@ -20,15 +24,11 @@ function generateHeader(key: any) {
 
 function submitPlanningsRequest(
   context: ActionContext,
-  { from, to, travelTime, preferences }: any
+  searchCiteria: SearchCriteria
 ) {
-  mutations.storePlanningRequest({
-    from,
-    to,
-    travelTime,
-    preferences,
-  })
+  mutations.storePlanningRequest(searchCiteria)
   const URL = BASE_URL + '/planner/search/plan'
+  const { from, to, travelTime, preferences } = searchCiteria
   const params = {
     from: `${from.label}::${from.latitude},${from.longitude}`,
     to: `${to.label}::${to.latitude},${to.longitude}`,
@@ -314,7 +314,7 @@ function fetchTrip(context: ActionContext, payload: any) {
 }
 
 function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
-  const { id, from, travelTime } = payload
+  const { id, from, to = {}, travelTime } = payload
   const URL = `${BASE_URL}/planner/shout-outs/${id}/plan`
   const params: any = {
     from: `${from.label}::${from.latitude},${from.longitude}`,
@@ -323,7 +323,7 @@ function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
     params.travelTime = travelTime.when.format()
     params.useAsArrivalTime = travelTime.arriving
   }
-  mutations.storePlanningRequest({ from, travelTime })
+  mutations.storePlanningRequest({ from, to, travelTime })
   mutations.setPlanningStatus({ status: 'PENDING' })
   axios
     .get(URL, {

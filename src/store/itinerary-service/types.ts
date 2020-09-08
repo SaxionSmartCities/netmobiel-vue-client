@@ -12,7 +12,7 @@ export class ItineraryState {
   plannedTrips: Trip[] = []
   pastTripsCount: number = 0
   pastTrips: Trip[] = []
-  searchCriteria = {
+  searchCriteria: SearchCriteria = {
     from: null,
     to: null,
     travelTime: null,
@@ -63,20 +63,16 @@ export interface SubmitStatus {
   message?: string
 }
 
-export interface PlanningRequest {
-  from: any
-  to?: any
-  travelTime: any
-  preferences?: any
-  submitStatus?: SubmitStatus
-  result?: PlanningResult | null
-}
-
 export interface SearchCriteria {
   from: any
   to: any
   travelTime: any
   preferences?: any
+}
+
+export interface PlanningRequest extends SearchCriteria {
+  submitStatus?: SubmitStatus
+  result?: PlanningResult | null
 }
 
 export interface PlanningResult {
