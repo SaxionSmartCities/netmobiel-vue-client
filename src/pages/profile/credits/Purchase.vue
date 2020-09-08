@@ -20,7 +20,7 @@
       </v-col>
       <v-col>
         <v-text-field
-          v-model="creditAmount"
+          v-model.number="creditAmount"
           class="border-radius-input"
           single-line
           :min="MIN_AMOUNT"
