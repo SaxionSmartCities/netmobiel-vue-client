@@ -2,7 +2,7 @@
   <v-card outlined @click="$emit('on-trip-selected', { tripId, itinerary })">
     <v-row no-gutters>
       <v-col>
-        <v-card-title class="d-flex justify-space-between pt-2">
+        <v-card-title class="d-flex justify-space-between pt-2 pr-0">
           <v-row no-gutters>
             <v-col
               class="d-flex justify-space-between subtitle-1 font-weight-bold"
@@ -12,7 +12,7 @@
             </v-col>
           </v-row>
         </v-card-title>
-        <v-card-subtitle>
+        <v-card-subtitle class="pr-1">
           <v-row justify="space-between" no-gutters class="pb-0">
             <v-col class="capitalize">
               {{ formatDateTime(departureTime) }}
@@ -22,7 +22,7 @@
             </v-col>
           </v-row>
         </v-card-subtitle>
-        <v-card-text class="pb-2">
+        <v-card-text class="pb-2 pr-0">
           <v-row no-gutters>
             <v-col
               v-for="(leg, indx) in legs"
@@ -33,9 +33,18 @@
               </travel-leg>
             </v-col>
           </v-row>
-          <v-row v-if="duration" no-gutters="">
-            <v-col class="pt-1">
+          <v-row justify="space-between" no-gutters>
+            <v-col v-if="duration" class="pt-1">
               Reistijd: {{ Math.round(duration / 60) }} minuten
+            </v-col>
+            <v-col v-else class="pt-1">
+              Reistijd: onbekend
+            </v-col>
+            <v-col
+              v-if="cost"
+              class="pt-1 text-primary font-weight-bold text-right"
+            >
+              {{ cost }} credits
             </v-col>
           </v-row>
         </v-card-text>
@@ -75,6 +84,9 @@ export default {
     },
     duration() {
       return this.itinerary.duration
+    },
+    cost() {
+      return this.itinerary.fareInCredits
     },
     legs() {
       return this.itinerary.legs
@@ -144,4 +156,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.text-primary {
+  color: $color-primary !important;
+}
+</style>
