@@ -96,6 +96,11 @@ h3 {
   color: $color-orange;
 }
 
+//HACK: Upgrading vuetity has a different max-width. 
+// We are reverting this here.
+.container.fill-height > .row {
+  max-width: 100% !important;
+}
 .cancelled-banner {
   font-weight: bold;
   color: $color-alertRed;
