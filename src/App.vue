@@ -9,7 +9,7 @@
       <span class="version">{{ commithash }}</span>
     </v-app-bar>
     <!-- Content -->
-    <v-content>
+    <v-main>
       <router-view></router-view>
       <v-snackbar
         v-if="isNotificationBarVisible"
@@ -31,7 +31,7 @@
           Sluiten
         </v-btn>
       </v-snackbar>
-    </v-content>
+    </v-main>
     <!-- Footer -->
     <v-bottom-navigation v-if="isFooterVisible" v-model="selectedNav" app>
       <v-btn text value="home" to="/home">
@@ -175,10 +175,10 @@ export default {
   color: $color-white;
 }
 
-.v-content {
-  height: 100vh;
-  overflow: hidden;
-}
+// .v-content {
+//   height: 100vh;
+//   overflow: hidden;
+// }
 
 .homepage {
   background-image: url('assets/achterhoek_background.jpg');
