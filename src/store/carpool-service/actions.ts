@@ -107,9 +107,7 @@ function removeCar(context: ActionContext, payload: Car) {
       console.log(error)
       if (!!error.response && error.response.status == 403) {
         uiStore.actions.queueNotification({
-          message: `Niet toegestaan auto (${
-            payload.licensePlate
-          }) te verwijderen.`,
+          message: `Niet toegestaan auto (${payload.licensePlate}) te verwijderen.`,
           timeout: 0,
         })
       } else if (!!error.response && error.response.status == 404) {
