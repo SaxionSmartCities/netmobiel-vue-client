@@ -20,6 +20,7 @@ async function fetchExchangeRate() {
     const resp = await axios.get(`${BASE_URL}/banker/settings`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
+<<<<<<< HEAD
     console.log(resp)
   } catch (problem) {
     uiStore.actions.queueErrorNotification(
@@ -33,7 +34,7 @@ async function fetchBankerUser() {
     const resp = await axios.get(`${BASE_URL}/banker/users/me`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
-    console.log(resp)
+    // console.log(resp)
   } catch (problem) {
     uiStore.actions.queueErrorNotification(
       'Fout bij het ophalen van de wisselkoers.'
@@ -61,7 +62,10 @@ async function buyCredits(context: ActionContext, payload: Deposit) {
 
 async function getDepositStatus(context: ActionContext, payload: OrderId) {
   try {
+<<<<<<< HEAD
     await fetchBankerUser()
+=======
+>>>>>>> e0b6db38e035798bdbde8821cf447a48c58cc6ed
     const resp = await axios.post(
       `${BASE_URL}/banker/deposit-events`,
       payload,
@@ -69,7 +73,11 @@ async function getDepositStatus(context: ActionContext, payload: OrderId) {
         headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
       }
     )
+<<<<<<< HEAD
     console.log(resp)
+=======
+    // console.log(resp)
+>>>>>>> e0b6db38e035798bdbde8821cf447a48c58cc6ed
     return resp.data
   } catch (problem) {
     uiStore.actions.queueErrorNotification(

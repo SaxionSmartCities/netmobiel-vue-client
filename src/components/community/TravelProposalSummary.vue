@@ -62,12 +62,6 @@ export default {
 </script>
 
 <style lang="scss">
-.capitalize {
-  text-transform: lowercase;
-}
-.capitalize::first-letter {
-  text-transform: uppercase;
-}
 .selected-offer {
   border-color: $color-primary !important;
   background-color: $background-light-green !important;

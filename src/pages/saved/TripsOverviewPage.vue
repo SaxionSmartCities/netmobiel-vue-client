@@ -26,6 +26,22 @@
           </span>
         </template>
       </tab-bar>
+      <slide-show-cancelled-trips
+        v-if="
+          ((showTabs && selectedTab === 0) || isPassenger) &&
+            getCancelledTrips.length > 0
+        "
+        :trips="getCancelledTrips"
+      >
+        <template v-slot:card="{ trip }">
+          <travel-card
+            :trip-id="trip.id"
+            :itinerary="trip.itinerary"
+            class="trip-card"
+            @on-trip-selected="onTripSelected"
+          />
+        </template>
+      </slide-show-cancelled-trips>
     </template>
     <v-row v-if="(showTabs && selectedTab === 0) || isPassenger" dense>
       <v-col class="pa-0">
@@ -43,18 +59,12 @@
           </v-col>
           <v-col v-else class="py-0">
             <grouped-card-list :items="getPastTrips">
-              <template v-slot:card="{ trip, index }">
+              <template v-slot:card="{ item: trip }">
                 <travel-card
+                  :trip-id="trip.id"
+                  :itinerary="trip.itinerary"
                   class="trip-card"
-                  :needs-review="needsReview(trip)"
-                  :index="index"
-                  :from="trip.from"
-                  :to="trip.to"
-                  :arrival-time="parseDate(trip.arrivalTime)"
-                  :departure-time="parseDate(trip.departureTime)"
-                  :duration="trip.itinerary.duration"
-                  :legs="trip.itinerary.legs"
-                  @onTripSelected="onTripSelected"
+                  @on-trip-selected="onTripSelected"
                 />
               </template>
             </grouped-card-list>
@@ -67,18 +77,12 @@
           </v-col>
           <v-col v-else class="py-0">
             <grouped-card-list :items="getPlannedTrips">
-              <template v-slot:card="{ trip, index }">
+              <template v-slot:card="{ item: trip }">
                 <travel-card
+                  :trip-id="trip.id"
+                  :itinerary="trip.itinerary"
                   class="trip-card"
-                  :index="index"
-                  :from="trip.from"
-                  :to="trip.to"
-                  :arrival-time="parseDate(trip.itinerary.arrivalTime)"
-                  :departure-time="parseDate(trip.itinerary.departureTime)"
-                  :duration="trip.itinerary.duration"
-                  :legs="trip.itinerary.legs"
-                  :disabled="trip.state === 'CANCELLED'"
-                  @onTripSelected="onTripSelected"
+                  @on-trip-selected="onTripSelected"
                 />
               </template>
             </grouped-card-list>
@@ -104,14 +108,16 @@
             </span>
           </v-col>
           <v-col v-else class="py-0">
-            <ride-card
-              v-for="(ride, index) in getPastRides"
-              :key="index"
-              class="trip-card"
-              :index="index"
-              :ride="ride"
-              @rideSelected="onRideSelected"
-            />
+            <grouped-card-list :items="getPastRides" type="ride">
+              <template v-slot:card="{ item: ride, index }">
+                <ride-card
+                  class="trip-card"
+                  :index="index"
+                  :ride="ride"
+                  @rideSelected="onRideSelected"
+                />
+              </template>
+            </grouped-card-list>
           </v-col>
         </v-row>
         <v-row v-if="ridesSearchTime === 'Future'">
@@ -122,14 +128,16 @@
             </span>
           </v-col>
           <v-col v-else class="py-0">
-            <ride-card
-              v-for="(ride, index) in getPlannedRides"
-              :key="index"
-              class="trip-card"
-              :index="index"
-              :ride="ride"
-              @rideSelected="onRideSelected"
-            />
+            <grouped-card-list :items="getPlannedRides" type="ride">
+              <template v-slot:card="{ item: ride, index }">
+                <ride-card
+                  class="trip-card"
+                  :index="index"
+                  :ride="ride"
+                  @rideSelected="onRideSelected"
+                />
+              </template>
+            </grouped-card-list>
           </v-col>
         </v-row>
       </v-col>
@@ -140,19 +148,27 @@
 <script>
 import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
-import TravelCard from '@/components/search-results/TravelCard.vue'
-import RideCard from '@/components/rides/RideCard.vue'
+import TravelCard from '@/components/cards/TravelCard.vue'
+import RideCard from '@/components/cards/RideCard.vue'
 import constants from '../../constants/constants'
 import TabBar from '../../components/common/TabBar'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
+import SlideShowCancelledTrips from '@/components/other/SlideShowCancelledTrips'
 import GroupedCardList from '@/components/common/GroupedCardList'
 
 export default {
   name: 'TripsOverviewPage',
-  components: { GroupedCardList, TabBar, ContentPane, TravelCard, RideCard },
+  components: {
+    GroupedCardList,
+    SlideShowCancelledTrips,
+    TabBar,
+    ContentPane,
+    TravelCard,
+    RideCard,
+  },
   data() {
     return {
       selectedTab: 0,
@@ -167,9 +183,13 @@ export default {
   computed: {
     ...{
       getPlannedTripsCount: () => isStore.getters.getPlannedTripsCount,
-      getPlannedTrips: () => isStore.getters.getPlannedTrips,
+      getPlannedTrips: () =>
+        isStore.getters.getPlannedTrips.filter(
+          trip => trip.state !== 'CANCELLED'
+        ),
       getPastTripsCount: () => isStore.getters.getPastTripsCount,
       getPastTrips: () => isStore.getters.getPastTrips,
+      getCancelledTrips: () => isStore.getters.getCancelledTrips,
       getPastRides: () => csStore.getters.getPastRides,
     },
     getPlannedRidesCount() {
@@ -223,6 +243,8 @@ export default {
     this.fetchPastTrips()
     this.fetchRides()
     this.fetchPastRides()
+    isStore.actions.fetchCancelledTrips()
+
     document
       .getElementById('content-container')
       .addEventListener('scroll', () => {
@@ -285,21 +307,14 @@ export default {
         until: moment().format(),
       })
     },
-    onTripSelected(index) {
-      let tripId
-      if (this.tripsSearchTime === 'Future') {
-        tripId = this.getPlannedTrips[index].id
-      } else {
-        tripId = this.getPastTrips[index].id
-      }
-      isStore.actions.fetchTrip({ id: tripId })
+    onTripSelected(selected) {
+      isStore.actions.fetchTrip({ id: selected.tripId })
       this.$router.push('/tripDetailPage')
     },
-    onRideSelected(index) {
-      const ride = this.getPlannedRides[index]
+    onRideSelected(id) {
       this.$router.push({
         name: 'rideDetailPage',
-        params: { ride, id: ride.id.toString() },
+        params: { id: String(id) },
       })
     },
   },

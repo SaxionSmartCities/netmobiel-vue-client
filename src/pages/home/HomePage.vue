@@ -126,8 +126,8 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-import RideCard from '@/components/rides/RideCard.vue'
-import UpdateCard from '@/components/home/UpdateCard.vue'
+import RideCard from '@/components/cards/RideCard.vue'
+import UpdateCard from '@/components/cards/UpdateCard.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
 import moment from 'moment'
 import * as uiStore from '@/store/ui'
@@ -187,11 +187,10 @@ export default {
     psStore.actions.fetchComplimentTypes()
   },
   methods: {
-    onRideSelected(index) {
-      const ride = this.rides[index]
+    onRideSelected(id) {
       this.$router.push({
         name: 'rideDetailPage',
-        params: { ride, id: ride.id.toString() },
+        params: { id: String(id) },
       })
     },
   },
