@@ -5,13 +5,26 @@ import { RootState } from '@/store/Rootstate'
 export const buildGetters = (
   gsBuilder: ModuleBuilder<CreditsState, RootState>
 ) => {
-  const getExchangeRate = gsBuilder.read((state: CreditsState) => {
-    return state.exchangeRate
-  }, 'getExchangeRate')
+  const getUser = gsBuilder.read(state => {
+    return state.user
+  }, 'getUser')
+  const getSettings = gsBuilder.read(state => {
+    return state.settings
+  }, 'getSettings')
+  const getStatements = gsBuilder.read(state => {
+    console.log('get statements', state.statements)
+    return state.statements
+  }, 'getStatements')
 
   return {
-    get getExchnageRate() {
-      return getExchangeRate()
+    get getBankerUser() {
+      return getUser()
+    },
+    get getBankerSettings() {
+      return getSettings()
+    },
+    get getAccountStatements() {
+      return getStatements()
     },
   }
 }

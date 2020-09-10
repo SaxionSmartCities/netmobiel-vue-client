@@ -12,7 +12,8 @@
       <v-col class="px-0 body-1 shrink">
         <strong>Saldo</strong>
       </v-col>
-      <v-col class="body-2"> {{ creditAmount }} credits </v-col>
+      <v-col class="body-2">{{ creditAmount }} credits</v-col>
+      <v-col class="body-2">({{ euroAmount }})</v-col>
     </v-row>
     <v-row>
       <v-divider />
@@ -74,7 +75,12 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import CreditHistoryLine from '@/components/profile/CreditHistoryLine.vue'
 import * as uiStore from '@/store/ui'
-import * as psStore from '@/store/profile-service'
+import * as crsStore from '@/store/credits-service'
+
+const euroFormatter = new Intl.NumberFormat('nl-NL', {
+  style: 'currency',
+  currency: 'EUR',
+})
 
 export default {
   name: 'Credits',
@@ -82,23 +88,26 @@ export default {
     ContentPane,
     CreditHistoryLine,
   },
-  data() {
-    return {
-      stuff: false,
-    }
-  },
   computed: {
     creditAmount() {
-      return psStore.getters.getCreditAmount
+      return crsStore.getters.getBankerUser?.credits
     },
     creditHistory() {
-      return psStore.getters.getCreditHistory
+      console.log('account history', crsStore.getters.getAccountStatements)
+      return crsStore.getters.getAccountStatements?.data
+    },
+    exchangeRate() {
+      return crsStore.getters.getBankerSettings?.exchangeRate
+    },
+    euroAmount() {
+      return euroFormatter.format((this.creditAmount * this.exchangeRate) / 100)
     },
   },
   created() {
     uiStore.mutations.showBackButton()
-    psStore.actions.fetchCreditAmount()
-    psStore.actions.fetchCreditHistory()
+    crsStore.actions.fetchBankerUser()
+    crsStore.actions.fetchBankerSettings()
+    crsStore.actions.fetchAccountStatements()
   },
 }
 </script>

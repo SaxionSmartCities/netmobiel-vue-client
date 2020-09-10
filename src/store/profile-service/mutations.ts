@@ -49,14 +49,6 @@ function setTripOptionsValue(state: ProfileState, payload: any) {
   })
 }
 
-function setCreditAmount(state: ProfileState, payload: number) {
-  state.user.credits.creditAmount = payload
-}
-
-function setCreditHistory(state: ProfileState, payload: []) {
-  state.user.credits.creditHistory = payload
-}
-
 function setReviewOptionsValue(state: ProfileState, payload: any) {
   state.user.reviews.filter(function(item) {
     if (item.name === payload.key) {
@@ -114,8 +106,6 @@ export const buildMutations = (
     setProfileImage: psBuilder.commit(setProfileImage),
     setNotificationOptionsValue: psBuilder.commit(setNotificationOptionsValue),
     setTripOptionsValue: psBuilder.commit(setTripOptionsValue),
-    setCreditAmount: psBuilder.commit(setCreditAmount),
-    setCreditHistory: psBuilder.commit(setCreditHistory),
     setReviewOptionsValue: psBuilder.commit(setReviewOptionsValue),
     setRidePlanOptions: psBuilder.commit(setRidePlanOptions),
     addRidePlanOptionsCar: psBuilder.commit(addRidePlanOptionsCar),

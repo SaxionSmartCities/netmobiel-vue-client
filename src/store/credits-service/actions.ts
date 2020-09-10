@@ -1,6 +1,7 @@
 import axios from 'axios'
 import config from '@/config/config'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
+import { mutations } from '@/store/credits-service'
 import { CreditsState, Deposit, OrderId } from './types'
 import { RootState } from '@/store/Rootstate'
 import * as uiStore from '@/store/ui'
@@ -15,28 +16,41 @@ function generateHeaders(key: any) {
   }
 }
 
-async function fetchExchangeRate() {
+async function fetchSettings() {
   try {
     const resp = await axios.get(`${BASE_URL}/banker/settings`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
-    console.log(resp)
+    mutations.setBankerSettings(resp.data)
   } catch (problem) {
     uiStore.actions.queueErrorNotification(
-      'Fout bij het ophalen van de wisselkoers.'
+      'Fout bij het ophalen van de bankier instellingen.'
     )
   }
 }
 
-async function fetchBankerUser() {
+async function fetchUser() {
   try {
     const resp = await axios.get(`${BASE_URL}/banker/users/me`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
-    // console.log(resp)
+    mutations.setBankerUser(resp.data)
   } catch (problem) {
     uiStore.actions.queueErrorNotification(
-      'Fout bij het ophalen van de wisselkoers.'
+      'Fout bij het ophalen van de rekeninghouder.'
+    )
+  }
+}
+
+async function fetchStatements() {
+  try {
+    const resp = await axios.get(`${BASE_URL}/banker/users/me/statements`, {
+      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+    })
+    mutations.setAccountStatements(resp.data)
+  } catch (problem) {
+    uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de boekingen voor de rekeninghouder.'
     )
   }
 }
@@ -61,7 +75,6 @@ async function buyCredits(context: ActionContext, payload: Deposit) {
 
 async function getDepositStatus(context: ActionContext, payload: OrderId) {
   try {
-    await fetchBankerUser()
     const resp = await axios.post(
       `${BASE_URL}/banker/deposit-events`,
       payload,
@@ -83,5 +96,8 @@ export const buildActions = (
   return {
     buyCredits: gsBuilder.dispatch(buyCredits),
     getDepositStatus: gsBuilder.dispatch(getDepositStatus),
+    fetchBankerUser: gsBuilder.dispatch(fetchUser),
+    fetchBankerSettings: gsBuilder.dispatch(fetchSettings),
+    fetchAccountStatements: gsBuilder.dispatch(fetchStatements),
   }
 }

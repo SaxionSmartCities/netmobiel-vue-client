@@ -253,54 +253,6 @@ function updateProfileImage(context: ActionContext, { id, image }: any) {
     })
 }
 
-function fetchCreditAmount(context: ActionContext) {
-  //TODO: Add backend call
-  let amount = 89
-  mutations.setCreditAmount(amount)
-}
-
-function addCredits(context: ActionContext, transaction: any) {
-  //TODO: Add backend call
-}
-
-function addTransactionCreditAmount(context: ActionContext, transaction: any) {
-  //TODO: Add backend call
-}
-
-function fetchCreditHistory(context: ActionContext) {
-  //TODO: Add backend call
-  let creditHistory = [
-    {
-      date: moment().subtract(2, 'weeks'),
-      amount: 5,
-      type: 'donation',
-      otherParty: 'Tennisclub Vragender',
-    },
-    {
-      date: moment()
-        .subtract(6, 'days')
-        .subtract(8, 'hours'),
-      amount: -5,
-      type: 'drive',
-      otherParty: 'Marc de Vries',
-      destinationRide: 'Lievelde',
-    },
-    {
-      date: moment(),
-      amount: -20,
-      type: 'reward',
-      otherParty: 'Bakkerij de Zoete inval',
-    },
-    {
-      date: moment(),
-      amount: 40,
-      type: 'addedCredits',
-    },
-  ]
-  // @ts-ignore
-  mutations.setCreditHistory(creditHistory)
-}
-
 export const buildActions = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -319,7 +271,5 @@ export const buildActions = (
     storeFcmToken: psBuilder.dispatch(storeFcmToken),
     updateProfile: psBuilder.dispatch(updateProfile),
     updateProfileImage: psBuilder.dispatch(updateProfileImage),
-    fetchCreditAmount: psBuilder.dispatch(fetchCreditAmount),
-    fetchCreditHistory: psBuilder.dispatch(fetchCreditHistory),
   }
 }
