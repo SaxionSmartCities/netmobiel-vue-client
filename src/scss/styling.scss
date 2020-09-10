@@ -95,3 +95,9 @@ h3 {
 .secondary-color {
   color: $color-orange;
 }
+
+//HACK: Upgrading vuetity has a different max-width. 
+// We are reverting this here.
+.container.fill-height > .row {
+  max-width: 100% !important;
+}
