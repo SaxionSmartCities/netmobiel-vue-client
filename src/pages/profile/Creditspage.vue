@@ -65,8 +65,8 @@
     <v-row>
       <v-divider />
     </v-row>
-    <v-row v-for="(transaction, index) in creditHistory" :key="index">
-      <credit-history-line :transaction="transaction"></credit-history-line>
+    <v-row v-for="(statement, index) in creditHistory" :key="index">
+      <credit-history-line :statement="statement"></credit-history-line>
     </v-row>
   </content-pane>
 </template>
@@ -93,7 +93,6 @@ export default {
       return crsStore.getters.getBankerUser?.credits
     },
     creditHistory() {
-      console.log('account history', crsStore.getters.getAccountStatements)
       return crsStore.getters.getAccountStatements?.data
     },
     exchangeRate() {

@@ -25,51 +25,30 @@ import moment from 'moment'
 export default {
   name: 'CreditHistoryLine',
   props: {
-    transaction: { type: Object, required: true },
+    statement: { type: Object, required: true },
   },
   computed: {
     amountFormat() {
-      let amount = this.transaction.amount
-      if (amount > 0) {
-        amount = '+' + amount
-      }
-      return amount
+      return (
+        (this.statement.type === 'CREDIT' ? '+' : '-') + this.statement.amount
+      )
     },
     description() {
-      const type = this.transaction.type
-      let message = 'Onbekende transactie'
-      if (type === 'drive') {
-        message =
-          'Rit met ' +
-          this.transaction.otherParty +
-          ' naar ' +
-          this.transaction.destinationRide
-      } else if (type === 'reward') {
-        message = 'Reward uitgezocht van ' + this.transaction.otherParty
-      } else if (type === 'donation') {
-        message = 'Donatie aan ' + this.transaction.otherParty
-      } else if (type === 'addedCredits') {
-        message = 'Credits opgewaardeerd'
-      }
-      return message
+      return this.statement.description
     },
     formatDate() {
-      let dateString = moment(this.transaction.date)
+      let dateString = moment(this.statement.transactionTime)
         .locale('nl')
         .format('dddd D MMMM YYYY')
       return dateString.charAt(0).toUpperCase() + dateString.substring(1)
     },
     formatTime() {
-      return moment(this.transaction.date)
+      return moment(this.statement.transactionTime)
         .locale('nl')
         .format('hh:mm')
     },
     transactionColor() {
-      if (this.transaction.amount > 0) {
-        return 'text-green'
-      } else {
-        return 'text-red'
-      }
+      return this.statement.type === 'CREDIT' ? 'text-green' : 'text-red'
     },
   },
 }

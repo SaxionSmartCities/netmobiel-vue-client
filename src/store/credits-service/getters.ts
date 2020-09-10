@@ -12,7 +12,6 @@ export const buildGetters = (
     return state.settings
   }, 'getSettings')
   const getStatements = gsBuilder.read(state => {
-    console.log('get statements', state.statements)
     return state.statements
   }, 'getStatements')
 

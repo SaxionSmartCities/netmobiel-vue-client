@@ -6,7 +6,7 @@ export class CreditsState {
   //@ts-ignore: user is set with fetch from backend
   user: User = null
   //@ts-ignore: statements are set with fetch from backend
-  statements: Page<Statement>
+  statements: Page<Statement> = null
 }
 
 export interface Deposit {
