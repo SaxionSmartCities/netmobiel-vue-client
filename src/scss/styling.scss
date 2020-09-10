@@ -101,3 +101,19 @@ h3 {
 .container.fill-height > .row {
   max-width: 100% !important;
 }
+.cancelled-banner {
+  font-weight: bold;
+  color: $color-alertRed;
+  background-color: lighten($color-alertRed, 50%) !important;
+}
+
+.color-alert-red {
+  color: $color-alertRed !important;
+}
+
+.capitalize {
+  text-transform: lowercase;
+}
+.capitalize::first-letter {
+  text-transform: uppercase;
+}

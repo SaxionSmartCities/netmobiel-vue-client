@@ -1,51 +1,52 @@
 <template>
-  <v-card
-    outlined
-    :ripple="!needsReview"
-    :disabled="disabled"
-    @click="$emit('onTripSelected', index)"
-  >
+  <v-card outlined @click="$emit('on-trip-selected', { tripId, itinerary })">
     <v-row no-gutters>
       <v-col>
-        <v-card-title class="d-flex justify-space-between">
+        <v-card-title class="d-flex justify-space-between pt-2 pr-0">
           <v-row no-gutters>
-            <v-col class="d-flex justify-space-between subtitle-1">
+            <v-col
+              class="d-flex justify-space-between subtitle-1 font-weight-bold"
+            >
               <span>Vertrek</span>
               <span class="pr-1">Aankomst</span>
             </v-col>
           </v-row>
-          <div v-if="needsReview" class="not-confirmed">
-            Niet bevestigd!
-            <!-- <v-btn
-              outlined
-              small
-              rounded
-              color="primary"
-              :onclick="$emit('onTripReview')"
-            >
-              Beoordeel
-            </v-btn> -->
-          </div>
         </v-card-title>
-        <v-card-subtitle>
-          <v-row no-gutters class="pb-2">
-            <v-col cols="9">{{ formatDateTime(departureTime) }}</v-col>
-            <v-col>{{ formatDateTime(arrivalTime) }}</v-col>
+        <v-card-subtitle class="pr-1">
+          <v-row justify="space-between" no-gutters class="pb-0">
+            <v-col class="capitalize">
+              {{ formatDateTime(departureTime) }}
+            </v-col>
+            <v-col class="text-right">
+              {{ formatDateTime(arrivalTime, 'HH:mm uur') }}
+            </v-col>
           </v-row>
         </v-card-subtitle>
-        <v-card-text>
-          <v-row no-gutters class="pb-2">
+        <v-card-text class="pb-2 pr-0">
+          <v-row no-gutters>
             <v-col
               v-for="(leg, indx) in legs"
               :key="indx"
               :cols="calculateWidth(indx)"
             >
-              <travel-leg :leg="leg"> </travel-leg>
+              <travel-leg :leg="leg" :is-cancelled="leg.state === 'CANCELLED'">
+              </travel-leg>
             </v-col>
           </v-row>
-          <div v-if="duration">
-            Reistijd: {{ Math.round(duration / 60) }} minuten
-          </div>
+          <v-row justify="space-between" no-gutters>
+            <v-col v-if="duration" class="pt-1">
+              Reistijd: {{ Math.round(duration / 60) }} minuten
+            </v-col>
+            <v-col v-else class="pt-1">
+              Reistijd: onbekend
+            </v-col>
+            <v-col
+              v-if="cost"
+              class="pt-1 text-primary font-weight-bold text-right"
+            >
+              {{ cost }} credits
+            </v-col>
+          </v-row>
         </v-card-text>
       </v-col>
       <v-card-actions>
@@ -57,7 +58,7 @@
 
 <script>
 import moment from 'moment'
-import TravelLeg from '@/components/search-results/TravelLeg.vue'
+import TravelLeg from '@/components/cards/TravelLeg.vue'
 
 export default {
   name: 'TravelCard',
@@ -65,15 +66,8 @@ export default {
     TravelLeg,
   },
   props: {
-    index: { type: Number, required: true },
-    from: { type: Object, required: true },
-    to: { type: Object, required: true },
-    arrivalTime: { type: Object, required: true },
-    departureTime: { type: Object, required: true },
-    duration: { type: Number, required: false, default: 0 },
-    legs: { type: Array, required: true },
-    needsReview: { type: Boolean, required: false, default: false },
-    disabled: { type: Boolean, required: false, default: false },
+    tripId: { type: Number, required: false, default: null },
+    itinerary: { type: Object, required: true },
   },
   data() {
     return {
@@ -81,14 +75,36 @@ export default {
       totalTime: 0,
     }
   },
+  computed: {
+    arrivalTime() {
+      return this.itinerary.arrivalTime
+    },
+    departureTime() {
+      return this.itinerary.departureTime
+    },
+    duration() {
+      return this.itinerary.duration
+    },
+    cost() {
+      return this.itinerary.fareInCredits
+    },
+    legs() {
+      return this.itinerary.legs
+    },
+  },
   mounted() {
     this.calculateLegDivison()
   },
   methods: {
-    formatDateTime(dateTime) {
-      return moment(dateTime)
-        .locale('nl')
-        .format('HH:mm uur')
+    formatDateTime(dateTime, format) {
+      if (!format)
+        return moment(dateTime)
+          .locale('nl')
+          .calendar()
+      else
+        return moment(dateTime)
+          .local('nl')
+          .format(format)
     },
     // Function to pre-determine the divions of column per leg
     calculateLegDivison() {
@@ -141,9 +157,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.not-confirmed {
-  color: $color-secondary !important;
-  font-style: italic;
-  font-size: 0.8em;
+.text-primary {
+  color: $color-primary !important;
 }
 </style>

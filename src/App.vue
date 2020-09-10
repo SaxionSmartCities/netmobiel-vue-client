@@ -218,10 +218,6 @@ header {
   text-decoration: underline;
 }
 
-.capitalized {
-  text-transform: capitalize;
-}
-
 .text-bold {
   font-weight: bold;
 }

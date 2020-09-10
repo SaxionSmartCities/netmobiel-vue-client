@@ -6,6 +6,7 @@ import {
   Profile,
   ProfileState,
   RidePlanOptions,
+  CoronaCheck,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 
@@ -51,9 +52,11 @@ function setTripOptionsValue(state: ProfileState, payload: any) {
 function setCreditAmount(state: ProfileState, payload: number) {
   state.user.credits.creditAmount = payload
 }
+
 function setCreditHistory(state: ProfileState, payload: []) {
   state.user.credits.creditHistory = payload
 }
+
 function setReviewOptionsValue(state: ProfileState, payload: any) {
   state.user.reviews.filter(function(item) {
     if (item.name === payload.key) {
@@ -90,6 +93,10 @@ function setPrivacySecurityValue(state: ProfileState, payload: any) {
   })
 }
 
+function setCoronaCheck(state: ProfileState, payload: CoronaCheck) {
+  state.user.coronaCheck = payload
+}
+
 function setComplimentTypes(
   state: ProfileState,
   complimentTypes: ComplimentType[]
@@ -113,6 +120,7 @@ export const buildMutations = (
     setRidePlanOptions: psBuilder.commit(setRidePlanOptions),
     addRidePlanOptionsCar: psBuilder.commit(addRidePlanOptionsCar),
     setPrivacySecurityValue: psBuilder.commit(setPrivacySecurityValue),
+    setCoronaCheck: psBuilder.commit(setCoronaCheck),
     setComplimentTypes: psBuilder.commit(setComplimentTypes),
   }
 }

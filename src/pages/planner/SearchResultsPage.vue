@@ -62,14 +62,8 @@
                 class="px-0 py-1"
               >
                 <travel-card
-                  :index="indx"
-                  :from="planResult.from"
-                  :to="planResult.to"
-                  :arrival-time="toDate(itinerary.arrivalTime)"
-                  :departure-time="toDate(itinerary.departureTime)"
-                  :duration="itinerary.duration"
-                  :legs="itinerary.legs"
-                  @onTripSelected="onTripSelected"
+                  :itinerary="itinerary"
+                  @on-trip-selected="onTripSelected"
                 >
                 </travel-card>
               </v-col>
@@ -113,13 +107,14 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-import TravelCard from '@/components/search-results/TravelCard.vue'
+import TravelCard from '@/components/cards/TravelCard.vue'
 import SearchOptionsSummaryCard from '@/components/search-results/SearchOptionsSummaryCard.vue'
 import SearchCriteria from '@/components/common/SearchCriteria.vue'
 import SearchStatus from '@/components/search/SearchStatus.vue'
 import moment from 'moment'
 import * as uiStore from '@/store/ui'
 import * as isStore from '@/store/itinerary-service'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'SearchResultsPage',
@@ -189,12 +184,8 @@ export default {
       //TODO: Do the valid time check in the search criteria component.
       // If the selected date is in the past show an error.
       if (moment(newCriteria?.travelTime?.when) < moment()) {
-        uiStore.actions.queueNotification(
-          {
-            message: 'De geselecteerde tijd ligt in het verleden.',
-            timeout: 0,
-          },
-          { root: true }
+        uiStore.actions.queueErrorNotification(
+          'De geselecteerde tijd ligt in het verleden.'
         )
       }
       isStore.mutations.setSearchCriteria(newCriteria)
@@ -244,19 +235,32 @@ export default {
       }
       return list
     },
-    onTripSelected(index) {
+    onTripSelected(selected) {
       let selectedTrip = {
         from: this.planResult.from,
         to: this.planResult.to,
         nrSeats: this.planResult.nrSeats,
-        itinerary: this.planResult.itineraries[index],
-        itineraryRef: this.planResult.itineraries[index].itineraryRef,
+        itineraryRef: selected.itinerary.itineraryRef,
+        itinerary: selected.itinerary,
       }
       isStore.mutations.setSelectedTrip(selectedTrip)
       this.$router.push('/itineraryDetailPage')
     },
     createShoutOut() {
       isStore.actions.storeShoutOut(this.searchCriteria)
+      const { firstName, lastName } = psStore.getters.getUser.profile
+      const { from, to, travelTime } = this.searchCriteria
+      const shoutout = {
+        from,
+        to,
+        travelTime: travelTime.when.format(),
+        useAsArrivalTime: travelTime.arriving,
+        traveller: { firstName, lastName },
+      }
+      this.$router.push({
+        name: 'shoutoutSubmittedPage',
+        params: { shoutout: shoutout },
+      })
     },
     toDate(string) {
       return moment(string)

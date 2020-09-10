@@ -32,6 +32,10 @@ export class ProfileState {
       },
       favoriteLocations: [],
     },
+    coronaCheck: {
+      coronaSymptoms: false,
+      houseHoldHadCorona: false,
+    },
     privacySecurity: [
       { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
       { name: 'Deel reisdata met NetMobiel', value: false },
@@ -78,6 +82,7 @@ export interface User {
   reviews: NameValue[]
   credits: Credits
   profile: Profile
+  coronaCheck: CoronaCheck
 }
 
 export interface Profile {
@@ -113,4 +118,9 @@ export interface Credits {
 export interface NameValue {
   name: string
   value: boolean
+}
+
+export interface CoronaCheck {
+  coronaSymptoms: boolean
+  houseHoldHadCorona: boolean
 }

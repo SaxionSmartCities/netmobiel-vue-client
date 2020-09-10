@@ -56,13 +56,18 @@
               </v-row>
               <v-row dense>
                 <v-col>
+                  <corona-check
+                    :value="coronaCheck"
+                    class="mb-2"
+                    @done="onCoronaCheckDone"
+                  ></corona-check>
                   <v-btn
                     large
                     rounded
                     block
                     depressed
                     color="button"
-                    :disabled="disabledRideAddition"
+                    :disabled="disabledRideAddition || !passedCoronaCheck"
                     @click="submitForm()"
                   >
                     Rit aanbieden
@@ -93,6 +98,8 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import SearchCriteria from '@/components/common/SearchCriteria.vue'
 import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
+import CoronaCheck from '@/components/common/CoronaCheck'
+import coronaCheckMixin from '@/mixins/coronaCheckMixin'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
@@ -102,10 +109,12 @@ import * as isStore from '@/store/itinerary-service'
 export default {
   name: 'RidePlanPage',
   components: {
+    CoronaCheck,
     ContentPane,
     SearchCriteria,
     RecurrenceEditor,
   },
+  mixins: [coronaCheckMixin],
   data() {
     return {
       recurrence: undefined,
@@ -186,12 +195,8 @@ export default {
       //TODO: Do the valid time check in the search criteria component.
       // If the selected date is in the past show an error.
       if (moment(newCriteria?.travelTime?.when) < moment()) {
-        uiStore.actions.queueNotification(
-          {
-            message: 'De geselecteerde tijd ligt in het verleden.',
-            timeout: 0,
-          },
-          { root: true }
+        uiStore.actions.queueErrorNotification(
+          'De geselecteerde tijd ligt in het verleden.'
         )
       }
       isStore.mutations.setSearchCriteria(newCriteria)

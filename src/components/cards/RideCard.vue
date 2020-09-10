@@ -1,33 +1,41 @@
 <template>
-  <v-card outlined @click="$emit('rideSelected', index)">
+  <v-card outlined @click="$emit('rideSelected', ride.id)">
     <v-row no-gutters>
       <v-col>
-        <v-card-title class="d-flex justify-space-between">
+        <v-card-title class="d-flex justify-space-between pt-2">
           <v-row no-gutters>
-            <v-col class="d-flex justify-space-between subtitle-1">
+            <v-col
+              class="d-flex justify-space-between subtitle-1 font-weight-bold"
+            >
               <span>Vertrek</span>
               <span class="booking-count">
-                {{ ride.bookings.length }} boekingen
+                {{
+                  ride.bookings.filter(booking => booking.state === 'CONFIRMED')
+                    .length
+                }}
+                boekingen
               </span>
             </v-col>
           </v-row>
         </v-card-title>
         <v-card-subtitle>
-          <span>{{ formatTime() }}</span>
-          <span v-if="ride.recurrence" class="float-right">
-            <v-icon>replay</v-icon>
-            {{ formatRecurrence() }}
-          </span>
+          <v-row no-gutters class="justify-space-between pb-0">
+            <v-col class="capitalize">{{ formatTime() }}</v-col>
+            <v-col v-if="ride.recurrence" class="text-right">
+              <v-icon>replay</v-icon>
+              {{ formatRecurrence() }}
+            </v-col>
+          </v-row>
         </v-card-subtitle>
-        <v-card-text>
+        <v-card-text class="pb-2">
           <v-icon>directions_car</v-icon>
           <v-row no-gutters>
-            <v-col cols="12">
+            <v-col>
               <div class="pt-1 travel-line" />
             </v-col>
           </v-row>
           <v-row no-gutters>
-            <v-col cols="12">
+            <v-col>
               {{ ride.toPlace.label }}
             </v-col>
           </v-row>
@@ -43,7 +51,6 @@
 import moment from 'moment'
 export default {
   props: {
-    index: { type: Number, required: true },
     ride: {
       type: Object,
       required: true,

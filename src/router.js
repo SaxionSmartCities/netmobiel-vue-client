@@ -39,13 +39,18 @@ import TripCancelledPage from './pages/saved/TripCancelledPage'
 import TripDetailPage from './pages/saved/TripDetailPage'
 import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
 import ShoutOutDetailPage from '@/pages/community/shoutout/ShoutOutDetailPage'
+import ShoutoutSubmittedPage from '@/pages/planner/ShoutoutSubmittedPage'
 import Account from '@/pages/profile/Account'
 import DriverReviewPage from './pages/review/DriverReviewPage'
 import TripReviewedPage from './pages/review/TripReviewedPage'
 import TripConfirmedPage from './pages/review/TripConfirmedPage'
 import SupportGoal from './pages/community/goals/SupportGoal'
 import Donated from './pages/community/goals/Donated'
+import RideSafeNetmobiel from '@/pages/profile/RideSafeNetmobiel'
+import About from '@/pages/profile/About'
 import UserProfile from '@/pages/profile/UserProfile'
+import Purchase from '@/pages/profile/credits/Purchase'
+import ConfirmDeposit from '@/pages/profile/credits/ReturnAfterDeposit'
 
 const router = new Router({
   mode: 'history',
@@ -269,10 +274,36 @@ const router = new Router({
       name: 'tripConfirmedPage',
     },
     {
+      path: '/shoutoutSubmittedPage/:shoutout',
+      component: ShoutoutSubmittedPage,
+      name: 'shoutoutSubmittedPage',
+      props: true,
+    },
+    {
+      path: '/about',
+      component: About,
+      name: 'about',
+    },
+    {
+      path: '/rideSafeNetmobiel',
+      component: RideSafeNetmobiel,
+      name: 'rideSafeNetmobiel',
+    },
+    {
       path: '/userProfilePage/:profileId',
       component: UserProfile,
       name: 'userProfile',
       props: true,
+    },
+    {
+      path: '/addCredits',
+      component: Purchase,
+      name: 'purchaseCredits',
+    },
+    {
+      path: '/returnAfterDeposit',
+      component: ConfirmDeposit,
+      name: 'confirmDeposit',
     },
   ],
 })

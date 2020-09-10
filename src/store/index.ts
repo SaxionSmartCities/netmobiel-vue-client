@@ -12,6 +12,7 @@ import './notification-service'
 import './message-service'
 import './geocoder-service'
 import './itinerary-service'
+import './credits-service'
 
 /**
  * Now using both the normal vuex store than can be accessed through this.$store...

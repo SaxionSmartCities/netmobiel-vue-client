@@ -1,10 +1,15 @@
 import axios from 'axios'
+import moment from 'moment'
 import config from '@/config/config'
 import constants from '../../constants/constants'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
-import { ItineraryState } from '@/store/itinerary-service/types'
 import { RootState } from '../Rootstate'
 import { mutations } from '@/store/itinerary-service/index'
+import {
+  ItineraryState,
+  TripSelection,
+  SearchCriteria,
+} from '@/store/itinerary-service/types'
 import * as uiStore from '@/store/ui'
 type ActionContext = BareActionContext<ItineraryState, RootState>
 
@@ -19,15 +24,11 @@ function generateHeader(key: any) {
 
 function submitPlanningsRequest(
   context: ActionContext,
-  { from, to, travelTime, preferences }: any
+  searchCiteria: SearchCriteria
 ) {
-  mutations.storePlanningRequest({
-    from,
-    to,
-    travelTime,
-    preferences,
-  })
+  mutations.storePlanningRequest(searchCiteria)
   const URL = BASE_URL + '/planner/search/plan'
+  const { from, to, travelTime, preferences } = searchCiteria
   const params = {
     from: `${from.label}::${from.latitude},${from.longitude}`,
     to: `${to.label}::${to.latitude},${to.longitude}`,
@@ -51,12 +52,9 @@ function submitPlanningsRequest(
     })
     .catch(error => {
       mutations.setPlanningStatus({ status: 'FAILED' })
-      uiStore.actions.queueNotification({
-        message: error.response
-          ? error.response.data.message
-          : 'Network failure',
-        timeout: 0,
-      })
+      uiStore.actions.queueErrorNotification(
+        error.response ? error.response.data.message : 'Network failure'
+      )
     })
 }
 
@@ -69,48 +67,33 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
     .then(response => {
       if (response.status === 204) {
         //Succesful response, trip is deleted.
-        uiStore.actions.queueNotification({
-          message: 'Reis is succesvol geannuleerd',
-          timeout: 3000,
-        })
+        uiStore.actions.queueInfoNotification('Reis is succesvol geannuleerd')
         fetchTrips(context, {
           maxResults: constants.fetchTripsMaxResults,
           offset: 0,
         })
       } else if (response.status === 404) {
         //requested trip could not be found
-        uiStore.actions.queueNotification({
-          message: 'De opgegeven reis kon niet worden gevonden.',
-          timeout: 0,
-        })
+        uiStore.actions.queueErrorNotification(
+          'De opgegeven reis kon niet worden gevonden.'
+        )
       } else if (response.status === 401) {
         //The requested object does no longer exist
-        uiStore.actions.queueNotification({
-          message: 'Deze reis is al geannuleerd',
-          timeout: 0,
-        })
+        uiStore.actions.queueErrorNotification('Deze reis is al geannuleerd')
       } else {
-        uiStore.actions.queueNotification({
-          message: response.data.message,
-          timeout: 0,
-        })
+        uiStore.actions.queueErrorNotification(response.data.message)
       }
     })
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification({
-        message: 'fout bij het annuleren van de reis',
-        timeout: 0,
-      })
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het annuleren van de reis'
+      )
     })
 }
 
-function storeSelectedTrip(
-  context: ActionContext,
-  { from, to, nrSeats, itineraryRef }: any
-) {
-  let payload = { from, to, nrSeats, itineraryRef }
+function storeSelectedTrip(context: ActionContext, payload: TripSelection) {
   const URL = BASE_URL + '/planner/trips'
   axios
     .post(URL, payload, {
@@ -119,21 +102,17 @@ function storeSelectedTrip(
     .then(response => {
       if (response.status == 201) {
         let message = 'Uw reis is bevestigd!'
-        uiStore.actions.queueNotification({ message: message, timeout: 3000 })
+        uiStore.actions.queueInfoNotification(message)
       } else {
-        uiStore.actions.queueNotification({
-          message: response.data.message,
-          timeout: 0,
-        })
+        uiStore.actions.queueErrorNotification(response.data.message)
       }
     })
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification({
-        message: 'Fout bij het opslaan van de reis.',
-        timeout: 0,
-      })
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het opslaan van de reis.'
+      )
     })
 }
 
@@ -161,21 +140,44 @@ function storeShoutOut(
     .then(response => {
       if (response.status == 201) {
         let message = 'Oproep naar de community is geplaatst'
-        uiStore.actions.queueNotification({ message: message, timeout: 3000 })
+        uiStore.actions.queueInfoNotification(message)
       } else {
-        uiStore.actions.queueNotification({
-          message: response.data.message,
-          timeout: 0,
-        })
+        uiStore.actions.queueErrorNotification(response.data.message)
       }
     })
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification({
-        message: 'Fout bij het opslaan van uw oproep.',
-        timeout: 0,
-      })
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het opslaan van uw oproep.'
+      )
+    })
+}
+
+function storeTravelOffer(
+  context: ActionContext,
+  { shoutoutPlanId, planRef, vehicleRef, driverRef }: any
+) {
+  let payload = { planRef, vehicleRef, driverRef }
+  const URL = `${BASE_URL}/planner/shout-outs/${shoutoutPlanId}`
+  axios
+    .post(URL, payload, {
+      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+    })
+    .then(response => {
+      if (response.status == 202) {
+        let message = 'Je aanbod is verstuurd'
+        uiStore.actions.queueInfoNotification(message)
+      } else {
+        uiStore.actions.queueErrorNotification(response.data.message)
+      }
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het opslaan van uw oproep.'
+      )
     })
 }
 
@@ -184,7 +186,7 @@ function fetchTrips(
   { pastTrips, offset, maxResults, until, since, sortDir }: any
 ) {
   const params: any = {}
-  params['maxResults'] = maxResults || 10
+  params['maxResults'] = maxResults || constants.defaultMaxResults
   params['offset'] = offset || 0
   until && (params['until'] = until)
   since && (params['since'] = since)
@@ -215,10 +217,9 @@ function fetchTrips(
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification({
-        message: 'Fout bij het ophalen van opgeslagen reizen.',
-        timeout: 0,
-      })
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van opgeslagen reizen.'
+      )
     })
 }
 
@@ -250,7 +251,12 @@ function fetchShoutOuts(
 }
 
 function fetchMyShoutOuts(context: ActionContext, { offset: offset }: any) {
-  const params = { offset, state: 'PLANNING', planType: 'SHOUT_OUT' }
+  const params = {
+    offset,
+    inProgressOnly: true,
+    planType: 'SHOUT_OUT',
+    since: moment().format(),
+  }
   axios
     .get(BASE_URL + '/planner/plans', {
       headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
@@ -281,10 +287,9 @@ function fetchShoutOut(context: ActionContext, { id }: any) {
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification({
-        message: 'Fout bij het ophalen van de reis.',
-        timeout: 0,
-      })
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van de reis.'
+      )
     })
 }
 
@@ -302,15 +307,14 @@ function fetchTrip(context: ActionContext, payload: any) {
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification({
-        message: 'Fout bij het ophalen van de reis.',
-        timeout: 0,
-      })
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van de reis.'
+      )
     })
 }
 
 function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
-  const { id, from, travelTime } = payload
+  const { id, from, to = {}, travelTime } = payload
   const URL = `${BASE_URL}/planner/shout-outs/${id}/plan`
   const params: any = {
     from: `${from.label}::${from.latitude},${from.longitude}`,
@@ -319,7 +323,7 @@ function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
     params.travelTime = travelTime.when.format()
     params.useAsArrivalTime = travelTime.arriving
   }
-  mutations.storePlanningRequest({ from, travelTime })
+  mutations.storePlanningRequest({ from, to, travelTime })
   mutations.setPlanningStatus({ status: 'PENDING' })
   axios
     .get(URL, {
@@ -332,12 +336,29 @@ function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
     })
     .catch(error => {
       mutations.setPlanningStatus({ status: 'FAILED' })
-      uiStore.actions.queueNotification({
-        message: error.response
-          ? error.response.data.message
-          : 'Network failure',
-        timeout: 0,
-      })
+      uiStore.actions.queueErrorNotification(
+        error.response ? error.response.data.message : 'Network failure'
+      )
+    })
+}
+
+function fetchCancelledTrips(context: ActionContext) {
+  const params: any = { state: 'CANCELLED' }
+  const URL = `${BASE_URL}/planner/trips`
+  axios
+    .get(URL, {
+      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      params: params,
+    })
+    .then(response => {
+      mutations.setCancelledTrips(response.data.data)
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van geannuleerde reizen.'
+      )
     })
 }
 
@@ -349,7 +370,9 @@ export const buildActions = (
     deleteSelectedTrip: isBuilder.dispatch(deleteSelectedTrip),
     storeSelectedTrip: isBuilder.dispatch(storeSelectedTrip),
     storeShoutOut: isBuilder.dispatch(storeShoutOut),
+    storeTravelOffer: isBuilder.dispatch(storeTravelOffer),
     fetchTrips: isBuilder.dispatch(fetchTrips),
+    fetchCancelledTrips: isBuilder.dispatch(fetchCancelledTrips),
     fetchShoutOuts: isBuilder.dispatch(fetchShoutOuts),
     fetchMyShoutOuts: isBuilder.dispatch(fetchMyShoutOuts),
     fetchShoutOut: isBuilder.dispatch(fetchShoutOut),

@@ -5,6 +5,7 @@ import { mutations } from '@/store/carpool-service/index'
 import * as uiStore from '@/store/ui'
 import axios from 'axios'
 import config from '@/config/config'
+import moment from 'moment'
 
 type ActionContext = BareActionContext<CarpoolState, RootState>
 
@@ -32,17 +33,9 @@ function fetchLicense(context: ActionContext, payload: string): void {
     .catch(function(error) {
       // eslint-disable-next-line
       console.log(error)
-      if (!!error.response && error.response.status == 404) {
-        uiStore.actions.queueNotification({
-          message: `Geen auto gevonden voor kenteken ${plate}.`,
-          timeout: 3000,
-        })
-      } else {
-        uiStore.actions.queueNotification({
-          message: `Geen auto gevonden voor kenteken ${plate}.`,
-          timeout: 3000,
-        })
-      }
+      uiStore.actions.queueInfoNotification(
+        `Geen auto gevonden voor kenteken ${plate}.`
+      )
     })
 }
 
@@ -60,10 +53,9 @@ function fetchCars(context: ActionContext) {
     .catch(function(error) {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification({
-        message: `Onbekende fout bij ophalen van de autos.`,
-        timeout: 3000,
-      })
+      uiStore.actions.queueInfoNotification(
+        `Onbekende fout bij ophalen van de autos.`
+      )
     })
 }
 
@@ -82,10 +74,9 @@ function submitCar(context: ActionContext, payload: Car) {
       // eslint-disable-next-line
       console.log(error)
       if (!!error.response && error.response.status == 409) {
-        uiStore.actions.queueNotification({
-          message: `Kenteken ${payload.licensePlate} is al geregistreerd.`,
-          timeout: 0,
-        })
+        uiStore.actions.queueErrorNotification(
+          `Kenteken ${payload.licensePlate} is al geregistreerd.`
+        )
       }
     })
 }
@@ -106,15 +97,13 @@ function removeCar(context: ActionContext, payload: Car) {
       // eslint-disable-next-line
       console.log(error)
       if (!!error.response && error.response.status == 403) {
-        uiStore.actions.queueNotification({
-          message: `Niet toegestaan auto (${payload.licensePlate}) te verwijderen.`,
-          timeout: 0,
-        })
+        uiStore.actions.queueErrorNotification(
+          `Niet toegestaan auto (${payload.licensePlate}) te verwijderen.`
+        )
       } else if (!!error.response && error.response.status == 404) {
-        uiStore.actions.queueNotification({
-          message: `Onbekende kenteken ${payload.licensePlate}.`,
-          timeout: 0,
-        })
+        uiStore.actions.queueErrorNotification(
+          `Onbekende kenteken ${payload.licensePlate}.`
+        )
       }
     })
 }
@@ -122,10 +111,7 @@ function removeCar(context: ActionContext, payload: Car) {
 function submitRide(context: ActionContext, payload: any) {
   const { from, to, ridePlanOptions, recurrence, travelTime } = payload
   if (ridePlanOptions.selectedCarId < 0) {
-    uiStore.actions.queueNotification({
-      message: 'Voeg eerst een auto toe.',
-      timeout: 0,
-    })
+    uiStore.actions.queueErrorNotification('Voeg eerst een auto toe.')
     return
   }
   const request = {
@@ -163,40 +149,47 @@ function submitRide(context: ActionContext, payload: any) {
     .catch(function(error) {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification({
-        message: 'Fout bij het versturen van uw rit-aanbod.',
-        timeout: 0,
-      })
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het versturen van uw rit-aanbod.'
+      )
     })
 }
 
-function fetchRides(context: ActionContext, payload: any) {
-  const offset = payload.offset
-  const maxResults = payload.maxResults
+function fetchRides(
+  context: ActionContext,
+  { pastRides, offset, maxResults, until, since, sortDir }: any
+) {
   const URL = BASE_URL + `/rideshare/rides`
+  const params: any = {}
+  params['maxResults'] = maxResults || 10
+  params['offset'] = offset || 0
+  until && (params['until'] = until)
+  since && (params['since'] = since)
+  sortDir && (params['sortDir'] = sortDir)
+
   axios
     .get(URL, {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
-      params: {
-        offset: offset,
-        maxResults: maxResults,
-      },
+      params: params,
     })
     .then(function(resp) {
       if (offset == 0) {
-        mutations.saveRides(resp.data.data)
+        pastRides
+          ? mutations.savePastRides(resp.data.data)
+          : mutations.saveRides(resp.data.data)
       } else {
-        mutations.appendRides(resp.data.data)
+        pastRides
+          ? mutations.appendPastRides(resp.data.data)
+          : mutations.appendRides(resp.data.data)
       }
       mutations.setPlannedRidesCount(resp.data.totalCount)
     })
     .catch(function(error) {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification({
-        message: 'Fout bij het ophalen van uw rit-aanbod.',
-        timeout: 0,
-      })
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van uw rit-aanbod.'
+      )
     })
 }
 
@@ -213,10 +206,7 @@ function fetchRide(context: ActionContext, payload: any) {
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification({
-        message: 'Fout bij het ophalen van uw rit.',
-        timeout: 0,
-      })
+      uiStore.actions.queueErrorNotification('Fout bij het ophalen van uw rit.')
     })
 }
 
@@ -233,19 +223,17 @@ function deleteRide(context: ActionContext, payload: any) {
         mutations.deleteRides(payload.id)
         mutations.deleteRides(payload.id)
       } else {
-        uiStore.actions.queueNotification({
-          message: 'Fout bij het verwijderen van uw rit-aanbod.',
-          timeout: 0,
-        })
+        uiStore.actions.queueErrorNotification(
+          'Fout bij het verwijderen van uw rit-aanbod.'
+        )
       }
     })
     .catch(function(error) {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueNotification({
-        message: 'Fout bij het verwijderen van uw rit-aanbod.',
-        timeout: 0,
-      })
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het verwijderen van uw rit-aanbod.'
+      )
     })
 }
 
