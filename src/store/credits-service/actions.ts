@@ -20,7 +20,7 @@ async function fetchExchangeRate() {
     const resp = await axios.get(`${BASE_URL}/banker/settings`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
-    console.log(resp)
+    // console.log(resp)
   } catch (problem) {
     uiStore.actions.queueErrorNotification(
       'Fout bij het ophalen van de wisselkoers.'
@@ -55,7 +55,7 @@ async function getDepositStatus(context: ActionContext, payload: OrderId) {
         headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
       }
     )
-    console.log(resp)
+    // console.log(resp)
     return resp.data
   } catch (problem) {
     uiStore.actions.queueErrorNotification(
