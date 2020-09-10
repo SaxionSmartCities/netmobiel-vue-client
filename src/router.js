@@ -49,6 +49,8 @@ import Donated from './pages/community/goals/Donated'
 import RideSafeNetmobiel from '@/pages/profile/RideSafeNetmobiel'
 import About from '@/pages/profile/About'
 import UserProfile from '@/pages/profile/UserProfile'
+import Purchase from '@/pages/profile/credits/Purchase'
+import ConfirmDeposit from '@/pages/profile/credits/ReturnAfterDeposit'
 
 const router = new Router({
   mode: 'history',
@@ -292,6 +294,16 @@ const router = new Router({
       component: UserProfile,
       name: 'userProfile',
       props: true,
+    },
+    {
+      path: '/addCredits',
+      component: Purchase,
+      name: 'purchaseCredits',
+    },
+    {
+      path: '/returnAfterDeposit',
+      component: ConfirmDeposit,
+      name: 'confirmDeposit',
     },
   ],
 })

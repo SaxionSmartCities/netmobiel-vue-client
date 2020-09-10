@@ -67,7 +67,7 @@
                     block
                     depressed
                     color="button"
-                    :disabled="disabledRideAddition || !spassedCoronaCheck"
+                    :disabled="disabledRideAddition || !passedCoronaCheck"
                     @click="submitForm()"
                   >
                     Rit aanbieden

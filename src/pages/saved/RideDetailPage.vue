@@ -255,7 +255,7 @@ export default {
       this.showEditRideModal = true
     },
     routeToConversation(ctx, passengerProfile) {
-      msStore.actions.fetchConversations().then(conversation => {
+      msStore.actions.fetchConversations().then(conversations => {
         const index = conversations.findIndex(
           conversation => conversation.context === ctx
         )
