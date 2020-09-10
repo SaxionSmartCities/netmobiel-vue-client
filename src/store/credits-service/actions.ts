@@ -28,6 +28,19 @@ async function fetchExchangeRate() {
   }
 }
 
+async function fetchBankerUser() {
+  try {
+    const resp = await axios.get(`${BASE_URL}/banker/users/me`, {
+      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+    })
+    console.log(resp)
+  } catch (problem) {
+    uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de wisselkoers.'
+    )
+  }
+}
+
 // this shouldn't be a Vuex store action, because it doesn't use state from the store
 async function buyCredits(context: ActionContext, payload: Deposit) {
   try {
@@ -48,6 +61,7 @@ async function buyCredits(context: ActionContext, payload: Deposit) {
 
 async function getDepositStatus(context: ActionContext, payload: OrderId) {
   try {
+    await fetchBankerUser()
     const resp = await axios.post(
       `${BASE_URL}/banker/deposit-events`,
       payload,

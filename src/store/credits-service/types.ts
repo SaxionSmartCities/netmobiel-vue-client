@@ -12,3 +12,12 @@ export interface OrderId {
   readonly order_id: string
   readonly project_id: string
 }
+
+export interface User {
+  readonly credits: number
+  readonly email: string
+  readonly familyName: string
+  readonly givenName: string
+  readonly id: number
+  readonly managedIdentity: string
+}
