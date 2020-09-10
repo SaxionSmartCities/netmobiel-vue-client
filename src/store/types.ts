@@ -19,6 +19,7 @@ export interface Page<T> {
    */
   readonly data: T[]
 }
+<<<<<<< HEAD
 
 /**
  * Payload for page selection.
@@ -33,3 +34,5 @@ export interface PageSelection {
    */
   readonly maxResults: number
 }
+=======
+>>>>>>> commit before pull
