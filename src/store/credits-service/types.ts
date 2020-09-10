@@ -12,7 +12,6 @@ export interface OrderId {
   readonly order_id: string
   readonly project_id: string
 }
-<<<<<<< HEAD
 
 export interface User {
   readonly credits: number
@@ -22,5 +21,3 @@ export interface User {
   readonly id: number
   readonly managedIdentity: string
 }
-=======
->>>>>>> e0b6db38e035798bdbde8821cf447a48c58cc6ed
