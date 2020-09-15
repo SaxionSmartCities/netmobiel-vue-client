@@ -126,7 +126,7 @@ export default {
     },
     completeSearch(suggestion) {
       if (this.localEditSearchCriteria) {
-        const vicinity = suggestion?.vicinity.replace('<br/>', ' ')
+        const vicinity = suggestion?.vicinity.replaceAll('<br/>', ' ')
         const fieldValue = {
           label: `${suggestion.title} ${vicinity || ''}`,
           latitude: suggestion.position[0],
@@ -142,7 +142,7 @@ export default {
           field: this.$route.params.field,
           suggestion: {
             ...suggestion,
-            vicinity: suggestion.vicinity.replace('<br/>', ' '),
+            vicinity: suggestion.vicinity.replaceAll('<br/>', ' '),
           },
         })
       }
