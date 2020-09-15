@@ -116,25 +116,23 @@
                     </v-row>
                     <v-row>
                       <v-col class="pt-3 pb-0">
-                        <corona-check
+                        <corona-check-modal
                           :value="coronaCheck"
                           class="mb-2"
                           @done="onCoronaCheckDone"
-                        ></corona-check>
+                        ></corona-check-modal>
                         <v-btn
-                          :disabled="
-                            planningStatus.status != 'SUCCESS' ||
-                              !passedCoronaCheck
-                          "
+                          :disabled="planningStatus.status != 'SUCCESS'"
                           large
                           rounded
                           block
                           mb-4
                           depressed
                           color="button"
-                          @click="bookTrip"
+                          @click="onTripSubmit"
                         >
                           Rit aanbieden
+                          <v-icon dark right>error_outline</v-icon>
                         </v-btn>
                       </v-col>
                     </v-row>
@@ -145,9 +143,7 @@
             <v-row>
               <v-col class="pt-1">
                 <v-btn
-                  :disabled="
-                    planningStatus.status != 'SUCCESS' || !passedCoronaCheck
-                  "
+                  :disabled="true"
                   large
                   rounded
                   block
@@ -185,8 +181,7 @@ import {
   generateShoutOutDetailSteps,
   generateItineraryDetailSteps,
 } from '@/utils/itinerary_steps.js'
-import CoronaCheck from '@/components/common/CoronaCheck'
-import coronaCheckMixin from '@/mixins/coronaCheckMixin'
+import CoronaCheckModal from '@/components/common/CoronaCheckModal'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as gsStore from '@/store/geocoder-service'
@@ -195,7 +190,7 @@ import * as isStore from '@/store/itinerary-service'
 export default {
   name: 'ShoutOutDetailPage',
   components: {
-    CoronaCheck,
+    CoronaCheckModal,
     ContentPane,
     ItineraryLeg,
     ItineraryOptions,
@@ -203,7 +198,6 @@ export default {
     SearchStatus,
     ShoutOutDetailPassenger,
   },
-  mixins: [coronaCheckMixin],
   props: {
     id: { type: String, required: true },
     // isMine is a string because it is a path parameter. When routing back from
@@ -222,6 +216,11 @@ export default {
       pickedTime: null,
       planningResponse: {
         status: 'PENDING',
+      },
+      coronaCheck: {
+        isVisible: false,
+        coronaFreePast: false,
+        coronaFreeHousehold: false,
       },
     }
   },
@@ -381,6 +380,18 @@ export default {
           longitude: address?.location?.coordinates[0],
         },
       })
+    },
+    onTripSubmit() {
+      this.coronaCheck.isVisible = true
+    },
+    onCoronaCheckDone(check) {
+      if (check.coronaFreePast && check.coronaFreeHousehold) {
+        this.bookTrip()
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Een rit plannen met klachten is niet mogelijk.'
+        )
+      }
     },
     bookTrip() {
       const { selectedCarId } = this.profile?.ridePlanOptions

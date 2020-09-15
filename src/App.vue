@@ -14,22 +14,19 @@
       <v-snackbar
         v-if="isNotificationBarVisible"
         v-model="isNotificationBarVisible"
-        :timeout="0"
+        :timeout="-1"
         :color="notificationColor"
         bottom
         absolute
       >
         {{ notificationQueue[0].message }}
-        <v-btn
+        <v-icon
           v-if="notificationQueue[0].timeout === 0"
-          text
-          outlined
-          font-weight-medium
-          class="notification-close-button"
+          right
           @click="finishNotification"
         >
-          Sluiten
-        </v-btn>
+          close
+        </v-icon>
       </v-snackbar>
     </v-main>
     <!-- Footer -->
