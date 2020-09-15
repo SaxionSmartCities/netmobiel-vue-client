@@ -206,7 +206,6 @@ export default {
       isStore.mutations.setSearchCriteria(newCriteria)
     },
     onPlanRide() {
-      console.log(this.coronaCheck.isVisible)
       this.coronaCheck.isVisible = true
     },
     onCoronaCheckDone(check) {
