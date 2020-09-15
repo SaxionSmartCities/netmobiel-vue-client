@@ -56,21 +56,22 @@
               </v-row>
               <v-row dense>
                 <v-col>
-                  <corona-check
+                  <corona-check-modal
                     :value="coronaCheck"
                     class="mb-2"
                     @done="onCoronaCheckDone"
-                  ></corona-check>
+                  ></corona-check-modal>
                   <v-btn
                     large
                     rounded
                     block
                     depressed
                     color="button"
-                    :disabled="disabledRideAddition || !passedCoronaCheck"
-                    @click="submitForm()"
+                    :disabled="disabledRideAddition"
+                    @click="onPlanRide()"
                   >
                     Rit aanbieden
+                    <v-icon dark right>error_outline</v-icon>
                   </v-btn>
                 </v-col>
               </v-row>
@@ -98,8 +99,7 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import SearchCriteria from '@/components/common/SearchCriteria.vue'
 import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
-import CoronaCheck from '@/components/common/CoronaCheck'
-import coronaCheckMixin from '@/mixins/coronaCheckMixin'
+import CoronaCheckModal from '@/components/common/CoronaCheckModal'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
@@ -109,15 +109,19 @@ import * as isStore from '@/store/itinerary-service'
 export default {
   name: 'RidePlanPage',
   components: {
-    CoronaCheck,
+    CoronaCheckModal,
     ContentPane,
     SearchCriteria,
     RecurrenceEditor,
   },
-  mixins: [coronaCheckMixin],
   data() {
     return {
       recurrence: undefined,
+      coronaCheck: {
+        isVisible: false,
+        coronaFreePast: false,
+        coronaFreeHousehold: false,
+      },
     }
   },
   computed: {
@@ -200,6 +204,19 @@ export default {
         )
       }
       isStore.mutations.setSearchCriteria(newCriteria)
+    },
+    onPlanRide() {
+      console.log(this.coronaCheck.isVisible)
+      this.coronaCheck.isVisible = true
+    },
+    onCoronaCheckDone(check) {
+      if (check.coronaFreePast && check.coronaFreeHousehold) {
+        this.submitForm()
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Een rit plannen met klachten is niet mogelijk.'
+        )
+      }
     },
     submitForm() {
       const { ridePlanOptions } = psStore.getters.getProfile
