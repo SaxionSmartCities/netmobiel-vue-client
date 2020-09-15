@@ -11,11 +11,11 @@
     </v-row>
     <v-row>
       <v-col class="py-0">
-        <corona-check
+        <corona-check-modal
           :value="coronaCheck"
           class="mb-2"
           @done="onCoronaCheckDone"
-        ></corona-check>
+        ></corona-check-modal>
         <v-btn
           v-show="showSection"
           large
@@ -24,10 +24,10 @@
           mb-4
           depressed
           color="button"
-          :disabled="!passedCoronaCheck"
-          @click="saveTrip"
+          @click="onPlanTrip"
         >
           Deze reis bevestigen
+          <v-icon dark right>error_outline</v-icon>
         </v-btn>
       </v-col>
       <v-col>
@@ -51,23 +51,26 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import TripDetails from '@/components/itinerary-details/TripDetails.vue'
-import CoronaCheck from '@/components/common/CoronaCheck'
-import coronaCheckMixin from '@/mixins/coronaCheckMixin'
+import CoronaCheckModal from '@/components/common/CoronaCheckModal'
 import * as uiStore from '@/store/ui'
 import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'ItineraryDetailPage',
   components: {
-    CoronaCheck,
+    CoronaCheckModal,
     ContentPane,
     TripDetails,
   },
-  mixins: [coronaCheckMixin],
   data() {
     return {
       showMap: false,
       showConfirmationButton: true,
+      coronaCheck: {
+        isVisible: false,
+        coronaFreePast: false,
+        coronaFreeHousehold: false,
+      },
     }
   },
   computed: {
@@ -85,7 +88,19 @@ export default {
     }
   },
   methods: {
-    saveTrip() {
+    onPlanTrip() {
+      this.coronaCheck.isVisible = true
+    },
+    onCoronaCheckDone(check) {
+      if (check.coronaFreePast && check.coronaFreeHousehold) {
+        this.confirmTrip()
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Een reis boeken met klachten is niet mogelijk.'
+        )
+      }
+    },
+    confirmTrip() {
       isStore.actions
         .storeSelectedTrip(this.selectedTrip)
         .then(() => this.$router.push('/tripPlanSubmitted'))
