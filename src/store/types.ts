@@ -19,3 +19,17 @@ export interface Page<T> {
    */
   readonly data: T[]
 }
+
+/**
+ * Payload for page selection.
+ */
+export interface PageSelection {
+  /**
+   * Offset in result set of selected page.
+   */
+  readonly offset: number
+  /**
+   * Number of elements in selected page.
+   */
+  readonly maxResults: number
+}

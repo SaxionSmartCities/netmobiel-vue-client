@@ -74,9 +74,12 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import CreditHistoryLine from '@/components/profile/CreditHistoryLine.vue'
+import constants from '@/constants/constants'
+import { isBottomVisible } from '@/utils/scroll'
 import * as uiStore from '@/store/ui'
 import * as crsStore from '@/store/credits-service'
 
+const { fetchBankerStatementsMaxResults } = constants
 const euroFormatter = new Intl.NumberFormat('nl-NL', {
   style: 'currency',
   currency: 'EUR',
@@ -87,6 +90,14 @@ export default {
   components: {
     ContentPane,
     CreditHistoryLine,
+  },
+  data() {
+    return {
+      bottom: false,
+      scrollHandler: event => {
+        this.bottom = isBottomVisible()
+      },
+    }
   },
   computed: {
     creditAmount() {
@@ -102,11 +113,30 @@ export default {
       return euroFormatter.format((this.creditAmount * this.exchangeRate) / 100)
     },
   },
+  watch: {
+    bottom(bottom) {
+      if (bottom) {
+        // fetch more statements when window bottom is visible
+        crsStore.actions.fetchMoreAccountStatements(
+          fetchBankerStatementsMaxResults
+        )
+      }
+    },
+  },
   created() {
     uiStore.mutations.showBackButton()
     crsStore.actions.fetchBankerUser()
     crsStore.actions.fetchBankerSettings()
-    crsStore.actions.fetchAccountStatements()
+    // fetch first page with statements
+    crsStore.actions.fetchFirstAccountStatements(
+      fetchBankerStatementsMaxResults
+    )
+  },
+  mounted() {
+    window.addEventListener('scroll', this.scrollHandler)
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.scrollHandler)
   },
 }
 </script>

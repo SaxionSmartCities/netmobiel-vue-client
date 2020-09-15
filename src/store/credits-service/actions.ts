@@ -1,8 +1,9 @@
 import axios from 'axios'
 import config from '@/config/config'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
-import { mutations } from '@/store/credits-service'
-import { CreditsState, Deposit, OrderId } from './types'
+import { getters, mutations } from '@/store/credits-service'
+import { CreditsState, Deposit, OrderId, Statement } from './types'
+import { Page, PageSelection } from '../types'
 import { RootState } from '@/store/Rootstate'
 import * as uiStore from '@/store/ui'
 
@@ -16,7 +17,7 @@ function generateHeaders(key: any) {
   }
 }
 
-async function fetchSettings() {
+async function fetchSettings(context: ActionContext) {
   try {
     const resp = await axios.get(`${BASE_URL}/banker/settings`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
@@ -29,7 +30,7 @@ async function fetchSettings() {
   }
 }
 
-async function fetchUser() {
+async function fetchUser(context: ActionContext) {
   try {
     const resp = await axios.get(`${BASE_URL}/banker/users/me`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
@@ -42,15 +43,41 @@ async function fetchUser() {
   }
 }
 
-async function fetchStatements() {
+async function fetchStatements(context: ActionContext, payload: PageSelection) {
+  const offset = payload?.offset ?? 0,
+    maxResults = payload?.maxResults ?? 10
   try {
-    const resp = await axios.get(`${BASE_URL}/banker/users/me/statements`, {
-      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
-    })
-    mutations.setAccountStatements(resp.data)
+    const resp = await axios.get(
+      `${BASE_URL}/banker/users/me/statements?offset=${offset}&maxResults=${maxResults}`,
+      {
+        headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      }
+    )
+    return resp.data
   } catch (problem) {
     uiStore.actions.queueErrorNotification(
       'Fout bij het ophalen van de boekingen voor de rekeninghouder.'
+    )
+  }
+}
+
+async function fetchFirstStatements(
+  context: ActionContext,
+  maxResults: number
+) {
+  mutations.setAccountStatements(
+    await fetchStatements(context, { offset: 0, maxResults })
+  )
+}
+
+async function fetchMoreStatements(context: ActionContext, maxResults: number) {
+  const statementsPage = getters.getAccountStatements
+  if (statementsPage.count < statementsPage.totalCount) {
+    mutations.mergeAcountStatements(
+      await fetchStatements(context, {
+        offset: statementsPage.count,
+        maxResults,
+      })
     )
   }
 }
@@ -98,6 +125,7 @@ export const buildActions = (
     getDepositStatus: gsBuilder.dispatch(getDepositStatus),
     fetchBankerUser: gsBuilder.dispatch(fetchUser),
     fetchBankerSettings: gsBuilder.dispatch(fetchSettings),
-    fetchAccountStatements: gsBuilder.dispatch(fetchStatements),
+    fetchFirstAccountStatements: gsBuilder.dispatch(fetchFirstStatements),
+    fetchMoreAccountStatements: gsBuilder.dispatch(fetchMoreStatements),
   }
 }

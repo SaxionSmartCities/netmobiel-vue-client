@@ -49,5 +49,5 @@ export interface Statement {
     | 'PAYMENT'
     | 'RESERVATION'
     | 'RELEASE'
-  type: 'DEBIT' | 'CREDIT'
+  readonly type: 'DEBIT' | 'CREDIT'
 }

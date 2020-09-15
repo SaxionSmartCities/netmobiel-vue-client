@@ -4,6 +4,9 @@
       <v-col class="pa-0 pb-2 my-0 body-2 font-weight-medium">
         {{ formatDate }}
       </v-col>
+      <v-col class="pa-0 pb-2 my-0 body-2 align-self-end shrink text-kind">
+        {{ transactionKind }}
+      </v-col>
     </v-row>
     <v-row align="center" class="py-0 my-0">
       <v-col class="pa-0 my-0 body-2 align-self-start text-gray shrink mr-2">
@@ -21,6 +24,14 @@
 </template>
 <script>
 import moment from 'moment'
+
+const kinds = {
+  DEPOSIT: 'storting',
+  WITHDRAWAL: 'opname',
+  PAYMENT: 'betaling',
+  RESERVATION: 'reservering',
+  RELEASE: 'vrijgave',
+}
 
 export default {
   name: 'CreditHistoryLine',
@@ -50,6 +61,9 @@ export default {
     transactionColor() {
       return this.statement.type === 'CREDIT' ? 'text-green' : 'text-red'
     },
+    transactionKind() {
+      return kinds[this.statement.transactionType]
+    },
   },
 }
 </script>
@@ -62,5 +76,8 @@ export default {
 }
 .text-red {
   color: #d0021b;
+}
+.text-kind {
+  font-style: italic;
 }
 </style>
