@@ -185,7 +185,7 @@ function fetchTrips(
   context: ActionContext,
   { pastTrips, offset, maxResults, until, since, sortDir }: any
 ) {
-  const params: any = { state: 'SCHEDULED' }
+  const params: any = {}
   params['maxResults'] = maxResults || constants.defaultMaxResults
   params['offset'] = offset || 0
   until && (params['until'] = until)
