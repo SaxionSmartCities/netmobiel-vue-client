@@ -158,6 +158,7 @@ import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 import SlideShowCancelledTrips from '@/components/other/SlideShowCancelledTrips'
 import GroupedCardList from '@/components/common/GroupedCardList'
+import { isBottomVisible } from '@/utils/scroll'
 
 export default {
   name: 'TripsOverviewPage',
@@ -178,6 +179,9 @@ export default {
       maxResultsPastTrips: constants.fetchPastTripsMaxResults,
       tripsSearchTime: 'Future',
       ridesSearchTime: 'Future',
+      scrollHandler: () => {
+        this.bottom = isBottomVisible()
+      },
     }
   },
   computed: {
@@ -244,14 +248,10 @@ export default {
     this.fetchRides()
     this.fetchPastRides()
     isStore.actions.fetchCancelledTrips()
-
-    document
-      .getElementById('content-container')
-      .addEventListener('scroll', () => {
-        this.bottom = this.bottomVisible(
-          document.getElementById('content-container')
-        )
-      })
+    window.addEventListener('scroll', this.scrollHandler)
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.scrollHandler)
   },
   methods: {
     parseDate(dateString) {
@@ -263,13 +263,6 @@ export default {
         return trip.legs.find(l => l.traverseMode == 'RIDESHARE')
       }
       return false
-    },
-    bottomVisible(element) {
-      const scrollY = element.scrollTop
-      const visible = element.clientHeight
-      const pageHeight = element.scrollHeight
-      const bottomOfPage = visible + scrollY >= pageHeight
-      return bottomOfPage || pageHeight < visible
     },
     fetchTrips(offset = 0) {
       isStore.actions.fetchTrips({
