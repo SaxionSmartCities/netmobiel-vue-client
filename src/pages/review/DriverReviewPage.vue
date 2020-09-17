@@ -209,9 +209,9 @@ export default {
           userRef: this.trip.itinerary.legs[0].driverId,
         })
         .then(response => {
-          //Fetch the profile of the driver via the profile-service (for the image)
+          // Fetch the profile (image) of the driver via the profile-service
           psStore.actions
-            .fetchUser({
+            .fetchUserProfile({
               profileId: response.managedIdentity,
             })
             .then(res => {
@@ -221,7 +221,9 @@ export default {
                 lastName: response.familyName,
                 email: response.email,
               }
-              res.image && (this.driverProfile.image = res.image)
+              if (res) {
+                res.image && (this.driverProfile.image = res.image)
+              }
             })
         })
     },

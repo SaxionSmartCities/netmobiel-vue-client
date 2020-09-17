@@ -141,7 +141,7 @@ export default {
     fetchProfilePageInformation() {
       //Fetch profile of user
       psStore.actions
-        .fetchUser({
+        .fetchUserProfile({
           profileId: this.profileId,
         })
         .then(res => {

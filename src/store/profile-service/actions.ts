@@ -4,14 +4,11 @@ import { Profile, ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { mutations } from '@/store/profile-service'
 import axios from 'axios'
-import moment from 'moment'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
 const BASE_URL = config.BASE_URL
 const GRAVITEE_PROFILE_SERVICE_API_KEY = config.GRAVITEE_PROFILE_SERVICE_API_KEY
-const GRAVITEE_RIDESHARE_SERVICE_API_KEY =
-  config.GRAVITEE_RIDESHARE_SERVICE_API_KEY
 const GRAVITEE_COMPLIMENT_SERVICE_API_KEY =
   config.GRAVITEE_COMPLIMENT_SERVICE_API_KEY
 const GRAVITEE_REVIEW_SERVICE_API_KEY = config.GRAVITEE_REVIEW_SERVICE_API_KEY
@@ -163,19 +160,6 @@ function addUserReview(
     })
 }
 
-function fetchUser(context: ActionContext, { userId }: any) {
-  const URL = BASE_URL + `/rideshare/users/${userId}`
-  return axios
-    .get(URL, { headers: generateHeader(GRAVITEE_RIDESHARE_SERVICE_API_KEY) })
-    .then(response => {
-      return response.data
-    })
-    .catch(error => {
-      // eslint-disable-next-line
-      console.log(error)
-    })
-}
-
 function storeFavoriteLocations(context: ActionContext, payload: any) {
   let profile = {
     ...context.state.user.profile,
@@ -264,7 +248,6 @@ export const buildActions = (
     addUserCompliment: psBuilder.dispatch(addUserCompliment),
     fetchUserReviews: psBuilder.dispatch(fetchUserReviews),
     addUserReview: psBuilder.dispatch(addUserReview),
-    fetchUser: psBuilder.dispatch(fetchUser),
     storeFavoriteLocations: psBuilder.dispatch(storeFavoriteLocations),
     storeSearchPreferences: psBuilder.dispatch(storeSearchPreferences),
     storeRidePreferences: psBuilder.dispatch(storeRidePreferences),

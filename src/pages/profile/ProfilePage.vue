@@ -154,15 +154,14 @@ export default {
       return psStore.getters.getUser
     },
     userAddress() {
-      let formatted = 'Onbekende woonplaats'
+      let formatted =
+        this.user.profile?.address?.locality || 'Onbekende woonplaats'
       const address = this.user.profile.address
-      if (address['locality'] && address['street']) {
+      if (address && address['locality'] && address['street']) {
         formatted = address['houseNumber']
           ? `${address['street']} ${address['houseNumber']},
               ${address['locality']}`
           : `${address['street']}, ${address['locality']}`
-      } else if (address['locality']) {
-        formatted = address['locality']
       }
       return formatted
     },
