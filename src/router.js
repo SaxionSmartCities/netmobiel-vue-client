@@ -320,7 +320,7 @@ router.beforeEach((to, from, next) => {
     to.path !== '/createUser' &&
     psStore.getters.getUser.accessToken === null
   ) {
-    next('/')
+    next(`/?redirect=${to.path}`)
   } else {
     next()
   }
