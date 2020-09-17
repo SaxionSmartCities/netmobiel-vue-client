@@ -27,8 +27,8 @@
     </v-row>
     <v-row justify="center">
       <v-col align="start" class="header ma">
-        <span>Ontvang </span>
-        <strong class="text-color-primary ">5 credits</strong>
+        <span>Afstand </span>
+        <strong class="text-color-primary ">{{ distance }} km</strong>
       </v-col>
       <v-col align="end">
         <v-btn small rounded depressed color="button">
@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import { getDistance } from 'geolib'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import constants from '@/constants/constants'
 import { generateShoutOutDetailSteps } from '@/utils/itinerary_steps.js'
@@ -66,6 +67,9 @@ export default {
         return `${traveller.firstName} ${traveller.lastName}`
       }
       return `${traveller.givenName} ${traveller.familyName}`
+    },
+    distance() {
+      return getDistance(this.shoutout.from, this.shoutout.to, 1000) / 1000
     },
   },
   methods: {

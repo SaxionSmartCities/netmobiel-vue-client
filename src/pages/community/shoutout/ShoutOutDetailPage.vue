@@ -164,6 +164,7 @@
 
 <script>
 import moment from 'moment'
+import { getDistance } from 'geolib'
 import { mapGetters } from 'vuex'
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
@@ -252,12 +253,14 @@ export default {
       } else {
         result.push({ label: 'Reisduur', value: 'Onbekend' })
       }
+      const kilometers = getDistance(this.trip.from, this.trip.to, 1000) / 1000
+      result.push({ label: 'Afstand', value: `${kilometers} km` })
       //TODO: Determine the real cost.
-      if (this.localIsMine) {
-        result.push({ label: 'Kosten', value: '15 credits' })
-      } else {
-        result.push({ label: 'Opbrengst', value: '15 credits' })
-      }
+      // if (this.localIsMine) {
+      //   result.push({ label: 'Kosten', value: '15 credits' })
+      // } else {
+      //   result.push({ label: 'Opbrengst', value: '15 credits' })
+      // }
       return result
     },
     localIsMine() {
