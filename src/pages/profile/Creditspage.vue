@@ -12,7 +12,8 @@
       <v-col class="px-0 body-1 shrink">
         <strong>Saldo</strong>
       </v-col>
-      <v-col class="body-2"> {{ creditAmount }} credits </v-col>
+      <v-col class="body-2">{{ creditAmount }} credits</v-col>
+      <v-col class="body-2">({{ euroAmount }})</v-col>
     </v-row>
     <v-row>
       <v-divider />
@@ -64,8 +65,8 @@
     <v-row>
       <v-divider />
     </v-row>
-    <v-row v-for="(transaction, index) in creditHistory" :key="index">
-      <credit-history-line :transaction="transaction"></credit-history-line>
+    <v-row v-for="(statement, index) in creditHistory" :key="index">
+      <credit-history-line :statement="statement"></credit-history-line>
     </v-row>
   </content-pane>
 </template>
@@ -73,8 +74,16 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import CreditHistoryLine from '@/components/profile/CreditHistoryLine.vue'
+import constants from '@/constants/constants'
+import { isBottomVisible } from '@/utils/scroll'
 import * as uiStore from '@/store/ui'
-import * as psStore from '@/store/profile-service'
+import * as crsStore from '@/store/credits-service'
+
+const { fetchBankerStatementsMaxResults } = constants
+const euroFormatter = new Intl.NumberFormat('nl-NL', {
+  style: 'currency',
+  currency: 'EUR',
+})
 
 export default {
   name: 'Credits',
@@ -84,21 +93,50 @@ export default {
   },
   data() {
     return {
-      stuff: false,
+      bottom: false,
+      scrollHandler: event => {
+        this.bottom = isBottomVisible()
+      },
     }
   },
   computed: {
     creditAmount() {
-      return psStore.getters.getCreditAmount
+      return crsStore.getters.getBankerUser?.credits
     },
     creditHistory() {
-      return psStore.getters.getCreditHistory
+      return crsStore.getters.getAccountStatements?.data
+    },
+    exchangeRate() {
+      return crsStore.getters.getBankerSettings?.exchangeRate
+    },
+    euroAmount() {
+      return euroFormatter.format((this.creditAmount * this.exchangeRate) / 100)
+    },
+  },
+  watch: {
+    bottom(bottom) {
+      if (bottom) {
+        // fetch more statements when window bottom is visible
+        crsStore.actions.fetchMoreAccountStatements(
+          fetchBankerStatementsMaxResults
+        )
+      }
     },
   },
   created() {
     uiStore.mutations.showBackButton()
-    psStore.actions.fetchCreditAmount()
-    psStore.actions.fetchCreditHistory()
+    crsStore.actions.fetchBankerUser()
+    crsStore.actions.fetchBankerSettings()
+    // fetch first page with statements
+    crsStore.actions.fetchFirstAccountStatements(
+      fetchBankerStatementsMaxResults
+    )
+  },
+  mounted() {
+    window.addEventListener('scroll', this.scrollHandler)
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.scrollHandler)
   },
 }
 </script>

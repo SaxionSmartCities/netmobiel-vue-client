@@ -49,14 +49,12 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-import monetaryConstants from '@/constants/monetary.js'
 import * as crsStore from '@/store/credits-service'
 
 import { Deposit } from '@/store/credits-service/types'
 
 const MIN_AMOUNT = 10,
-  MAX_AMOUNT = 1000,
-  { CREDIT_IN_EUROCENTS } = monetaryConstants
+  MAX_AMOUNT = 1000
 
 export default {
   name: 'Purchase',
@@ -78,7 +76,8 @@ export default {
     this.$store.commit('ui/showBackButton')
     this.MIN_AMOUNT = MIN_AMOUNT
     this.MAX_AMOUNT = MAX_AMOUNT
-    this.CREDIT_IN_EUROCENTS = CREDIT_IN_EUROCENTS
+    this.CREDIT_IN_EUROCENTS =
+      crsStore.getters.getBankerSettings?.exchangeRate ?? 0
   },
   methods: {
     startMoneyTransfer() {

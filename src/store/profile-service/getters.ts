@@ -13,14 +13,6 @@ export const buildGetters = (
     return state.user.profile
   }, 'getProfile')
 
-  const getCreditAmount = psBuilder.read((state: ProfileState) => {
-    return state.user.credits.creditAmount
-  }, 'getCreditAmount')
-
-  const getCreditHistory = psBuilder.read((state: ProfileState) => {
-    return state.user.credits.creditHistory
-  }, 'getCreditHistory')
-
   const getComplimentTypes = psBuilder.read((state: ProfileState) => {
     return state.complimentTypes
   }, 'getComplimentTypes')
@@ -42,12 +34,6 @@ export const buildGetters = (
     },
     get getProfile() {
       return getProfile()
-    },
-    get getCreditAmount() {
-      return getCreditAmount()
-    },
-    get getCreditHistory() {
-      return getCreditHistory()
     },
     get getComplimentTypes() {
       return getComplimentTypes()
