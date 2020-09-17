@@ -31,19 +31,28 @@
         <h3 class="mb-2">Wijzigen</h3>
         <v-divider />
         <v-row @click="editRide">
-          <v-col cols="3" class="text-center">
+          <v-col cols="1">
             <v-icon>fa-pencil-alt</v-icon>
           </v-col>
-          <v-col>
+          <v-col class="pl-5">
             Wijzig deze rit
           </v-col>
         </v-row>
         <v-divider />
+        <v-row @click="confirmRide()">
+          <v-col cols="1">
+            <v-icon>fa-check-circle</v-icon>
+          </v-col>
+          <v-col class="pl-5">
+            Reis bevestigen
+          </v-col>
+        </v-row>
+        <v-divider />
         <v-row @click="checkDeleteTrip()">
-          <v-col cols="3" class="text-center">
+          <v-col cols="1">
             <v-icon>lock</v-icon>
           </v-col>
-          <v-col>
+          <v-col class="pl-5">
             Reis annuleren
           </v-col>
         </v-row>
@@ -226,6 +235,9 @@ export default {
     },
     onLegSelected(leg) {
       this.selectedLeg = leg
+    },
+    confirmRide() {
+      csStore.actions.confirmRide({ id: this.localId })
     },
     deleteTrip() {
       this.warningDialog = false
