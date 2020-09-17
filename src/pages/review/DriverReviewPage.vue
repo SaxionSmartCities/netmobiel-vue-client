@@ -151,7 +151,8 @@ export default {
       return this.isTripMade ? TripMade : TripNotMade
     },
     confirmTrip(value) {
-      //TODO: Send confirmation to backend.
+      // Send confirmation to backend.
+      isStore.actions.confirmTrip({ id: this.trip.id })
       if (value) this.setTripMade(true)
       else this.setTripMade(false)
     },
