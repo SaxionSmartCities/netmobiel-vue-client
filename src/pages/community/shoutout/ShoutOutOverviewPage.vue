@@ -8,25 +8,74 @@
       >
         <template v-slot:firstTab>
           <span>
-            Mijn oproepen
-            <sup>{{ myShoutOuts.length }}</sup>
-          </span>
-        </template>
-
-        <template v-slot:secondTab>
-          <span>
             Community
             <sup>{{ allShoutOuts.length }}</sup>
           </span>
         </template>
+        <template v-slot:secondTab>
+          <span>
+            Mijn oproepen
+            <sup>{{ myShoutOuts.length }}</sup>
+          </span>
+        </template>
       </tab-bar>
     </template>
-    <v-row v-if="selectedTab === 0 || userRole === 'passenger'">
+    <v-row
+      v-if="userRole === 'driver' || (userRole === 'both' && selectedTab === 0)"
+    >
       <v-col class="py-0">
-        <v-row v-for="group in Object.keys(groupedMyShoutOuts)" :key="group">
+        <v-row>
+          <v-col>
+            <h3>Community oproepen</h3>
+            <p class="mt-2 mb-0">Gezochte reizen in de buurt van mijn:</p>
+            <v-radio-group v-model="baseLocation" class="location" row>
+              <v-radio label="Woonplaats" value="Home" selected></v-radio>
+              <v-radio label="Huidige locatie" value="Here" disabled></v-radio>
+            </v-radio-group>
+          </v-col>
+        </v-row>
+        <v-row v-if="allShoutOuts.length == 0">
+          <v-col>
+            <em>Er zijn op dit moment opgeslagen oproepen in de buurt.</em>
+          </v-col>
+        </v-row>
+        <v-row
+          v-for="group in Object.keys(groupedShoutOuts)"
+          v-else
+          :key="group"
+        >
           <v-col class="py-0">
             <grouped-shout-outs
               :label="formatDate(group)"
+              :btn-text="'Rit aanbieden'"
+              :shoutouts="groupedShoutOuts[group]"
+              @shoutoutSelected="onShoutOutSelected"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row
+      v-if="
+        userRole === 'passenger' || (userRole === 'both' && selectedTab === 1)
+      "
+    >
+      <v-col class="py-0">
+        <v-row v-if="myShoutOuts.length == 0">
+          <v-col>
+            <em>U heeft op dit moment geen opgeslagen oproepen.</em>
+          </v-col>
+        </v-row>
+        <v-row
+          v-for="group in Object.keys(groupedMyShoutOuts)"
+          v-else
+          :key="group"
+        >
+          <v-col class="py-0">
+            <grouped-shout-outs
+              :label="formatDate(group)"
+              :btn-text="'Bekijk shoutout'"
+              :my-shout-out="true"
               :shoutouts="groupedMyShoutOuts[group]"
               @shoutoutSelected="onShoutOutSelected"
             />
@@ -34,27 +83,6 @@
         </v-row>
       </v-col>
     </v-row>
-    <template v-if="selectedTab === 1 || userRole === 'driver'">
-      <v-row>
-        <v-col class="py-0">
-          <h3>Community oproepen</h3>
-          <p class="mt-2 mb-0">Gezochte reizen in de buurt van mijn:</p>
-          <v-radio-group v-model="baseLocation" class="mt-1" row>
-            <v-radio label="Woonplaats" value="Home" selected></v-radio>
-            <v-radio label="Huidige locatie" value="Here" disabled></v-radio>
-          </v-radio-group>
-        </v-col>
-      </v-row>
-      <v-row v-for="group in Object.keys(groupedShoutOuts)" :key="group">
-        <v-col class="py-0">
-          <grouped-shout-outs
-            :label="formatDate(group)"
-            :shoutouts="groupedShoutOuts[group]"
-            @shoutoutSelected="onShoutOutSelected"
-          />
-        </v-col>
-      </v-row>
-    </template>
   </content-pane>
 </template>
 
@@ -64,6 +92,9 @@ import ContentPane from '@/components/common/ContentPane'
 import GroupedShoutOuts from '@/components/community/GroupedShoutOuts'
 import TabBar from '../../../components/common/TabBar'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
+import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'ShoutOutOverview',
@@ -76,14 +107,14 @@ export default {
   },
   computed: {
     allShoutOuts() {
-      return this.$store.getters['is/getShoutOuts']
+      return isStore.getters.getShoutOuts
     },
     groupedShoutOuts() {
       return this.groupShoutOuts(this.allShoutOuts)
     },
     myShoutOuts() {
-      const profile = this.$store.getters['ps/getProfile']
-      const listMyShoutOuts = this.$store.getters['is/getMyShoutOuts']
+      const profile = psStore.getters.getProfile
+      const listMyShoutOuts = isStore.getters.getMyShoutOuts
       return listMyShoutOuts.map(shoutout => ({
         ...shoutout,
         traveller: profile,
@@ -93,36 +124,39 @@ export default {
       return this.groupShoutOuts(this.myShoutOuts)
     },
     showTabs() {
-      const role = this.$store.getters['ps/getProfile'].userRole
+      const role = psStore.getters.getProfile.userRole
       return !role || role === 'both'
     },
     userRole() {
-      return this.$store.getters['ps/getProfile'].userRole
+      return psStore.getters.getProfile.userRole
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   beforeRouteEnter: beforeRouteEnter({
     selectedTab: number => number || 0,
   }),
   beforeRouteLeave: beforeRouteLeave({
     selectedTab: number => number || 0,
+    editDepart: editing => editing || false,
   }),
   mounted() {
-    this.$store.dispatch('is/fetchShoutOuts', {
-      latitude: 52.2224,
-      longitude: 5.28248,
+    const address = psStore.getters.getProfile.address
+    isStore.actions.fetchShoutOuts({
+      latitude: address.location.coordinates[1],
+      longitude: address.location.coordinates[0],
     })
-    this.$store.dispatch('is/fetchMyShoutOuts', {
+    isStore.actions.fetchMyShoutOuts({
       offset: 0,
     })
+    isStore.mutations.clearPlanningRequest()
   },
   methods: {
     groupShoutOuts(shoutouts) {
       let groupedShoutOuts = {}
       shoutouts.map(s => {
-        const date = moment(s.departureTime).format('YYYYMMDD')
+        const date = moment(s.travelTime).format('YYYYMMDD')
         if (!groupedShoutOuts[date]) {
           groupedShoutOuts[date] = []
         }
@@ -130,8 +164,14 @@ export default {
       })
       return groupedShoutOuts
     },
-    onShoutOutSelected(index) {
-      this.$router.push({ name: 'shoutout', params: { id: index } })
+    onShoutOutSelected({ index, isMine }) {
+      this.$router.push({
+        name: 'shoutout',
+        params: {
+          id: index,
+          isMine: isMine.toString(),
+        },
+      })
     },
     formatDate(date) {
       return date
@@ -144,4 +184,9 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.location {
+  margin-top: 4px;
+  height: 30px;
+}
+</style>

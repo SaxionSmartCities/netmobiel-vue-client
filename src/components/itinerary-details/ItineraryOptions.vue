@@ -10,8 +10,8 @@
           Wijzig deze reis
         </v-col>
       </v-row>
-      <v-divider></v-divider>
-      <v-row @click="replanSameRoute">
+      <v-divider v-if="!isShoutOut"></v-divider>
+      <v-row v-if="!isShoutOut" @click="replanSameRoute">
         <v-col cols="1">
           <v-icon>fa-redo</v-icon>
         </v-col>
@@ -108,20 +108,27 @@ export default {
   },
   computed: {
     isPastTrip() {
-      return moment(this.selectedTrip.arrivalTime).isBefore(moment())
+      if (this.selectedTrip.legs) {
+        const endTime = this.selectedTrip.legs[
+          this.selectedTrip.legs.length - 1
+        ]?.endTime
+        return moment(endTime).isBefore(moment()) || false
+      }
+      return false
     },
     isRideShareTrip() {
       return !!this.selectedTrip.legs.find(l => l.traverseMode == 'RIDESHARE')
     },
+    isShoutOut() {
+      return this.selectedTrip.planType === 'SHOUT_OUT' || false
+    },
   },
   methods: {
     editTrip() {
-      // eslint-disable-next-line
-      console.log('Method not implemented!')
+      this.$emit('tripEdit', this.selectedTrip)
     },
     replanSameRoute() {
-      // eslint-disable-next-line
-      console.log('Method not implemented!')
+      this.$emit('tripReplan', this.selectedTrip)
     },
     openConfirmationDialog() {
       this.dialog = true

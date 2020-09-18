@@ -73,13 +73,13 @@
           <v-flex
             v-for="item in items"
             :key="item.name"
-            @click="$router.push(item.route)"
+            @click="$router.push({ name: item.routeName })"
           >
             <v-divider></v-divider>
             <v-row
               align-content="center"
               class="my-3 ml-0 mr-1"
-              :class="{ 'no-route': !item.route }"
+              :class="{ 'no-route': !item.routeName }"
             >
               <v-icon>{{ item.icon }}</v-icon>
               <span class="pl-4 body-1 font-weight-light align-self-center">
@@ -89,17 +89,20 @@
               <v-icon>chevron_right</v-icon>
             </v-row>
           </v-flex>
+          <v-divider></v-divider>
         </v-layout>
       </v-col>
-      <v-col travel-card mt-2 mr-2 @click="logOut">
-        <v-layout column align-center my-2>
-          <v-flex>
-            <v-icon>exit_to_app</v-icon>
-          </v-flex>
-          <v-flex>
-            Log out
-          </v-flex>
-        </v-layout>
+      <v-col>
+        <v-card outlined class="mt-2" @click="logOut">
+          <v-row>
+            <v-col class="grow pl-6">
+              Uitloggen
+            </v-col>
+            <v-col class="shrink pr-5">
+              <v-icon>exit_to_app</v-icon>
+            </v-col>
+          </v-row>
+        </v-card>
       </v-col>
     </v-row>
   </content-pane>
@@ -109,6 +112,8 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
 import { scaleImageDown } from '../../utils/image_scaling'
+import * as psStore from '@/store/profile-service'
+import * as uiStore from '@/store/ui'
 
 export default {
   components: {
@@ -124,45 +129,44 @@ export default {
         {
           icon: 'settings',
           name: 'Instellingen',
-          route: '/profileNotificationOptions',
+          routeName: 'notificationOptions',
         },
-        { icon: 'help_outline', name: 'Veel gestelde vragen', route: '' },
+        { icon: 'help_outline', name: 'Veel gestelde vragen', routeName: '' },
         {
           icon: 'lock',
           name: 'Privacy & beveiliging',
-          route: '',
+          routeName: '',
           // route: '/privacySecurity',
         },
         {
           icon: 'chrome_reader_mode',
           name: 'Gebruiksvoorwaarden',
-          route: '',
+          routeName: '',
           // route: '/termsOfUse',
         },
-        { icon: 'error_outline', name: 'Over deze app', route: '' },
-        { icon: 'cancel', name: 'Verwijder mijn account', route: '' },
+        { icon: 'error_outline', name: 'Over deze app', routeName: 'about' },
+        { icon: 'cancel', name: 'Verwijder mijn account', routeName: '' },
       ],
     }
   },
   computed: {
     user() {
-      return this.$store.getters['ps/getUser']
+      return psStore.getters.getUser
     },
     userAddress() {
-      let formatted = 'Onbekende woonplaats'
+      let formatted =
+        this.user.profile?.address?.locality || 'Onbekende woonplaats'
       const address = this.user.profile.address
-      if (address['locality'] && address['street']) {
+      if (address && address['locality'] && address['street']) {
         formatted = address['houseNumber']
           ? `${address['street']} ${address['houseNumber']},
               ${address['locality']}`
           : `${address['street']}, ${address['locality']}`
-      } else if (address['locality']) {
-        formatted = address['locality']
       }
       return formatted
     },
     profileImage() {
-      return this.$store.getters['ps/getUser'].profile.image
+      return psStore.getters.getUser.profile.image
     },
   },
   methods: {
@@ -171,7 +175,7 @@ export default {
     },
     logOut: function() {
       this.$keycloak.logoutFn()
-      this.$store.commit('ui/deleteAccessToken')
+      uiStore.mutations.deleteAccessToken()
     },
     readFile(event) {
       if (event.target.files[0]) {
@@ -183,8 +187,8 @@ export default {
           this.isUploadingFile = false
           const imageString = fileReader.result
           scaleImageDown(imageString, 20).then(resizedImage => {
-            const profile = { ...this.$store.getters['ps/getProfile'] }
-            this.$store.dispatch('ps/updateProfileImage', {
+            const profile = { ...psStore.getters.getProfile }
+            psStore.actions.updateProfileImage({
               id: profile.id,
               image: resizedImage,
             })

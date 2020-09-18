@@ -1,14 +1,12 @@
 <template>
   <content-pane>
     <v-row align="center">
-      <v-col cols="3" class="px-1">
-        <router-link to="/onboardingPage">
-          <round-user-image
-            :image-size="92"
-            :avatar-size="100"
-            :profile-image="profileImage"
-          ></round-user-image>
-        </router-link>
+      <v-col cols="3" class="px-0 mr-2">
+        <round-user-image
+          :image-size="92"
+          :avatar-size="100"
+          :profile-image="profileImage"
+        />
       </v-col>
       <v-col>
         <h1>
@@ -18,7 +16,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="px-1">
+      <v-col class="px-1 pt-0">
         <span>
           Welkom bij Netmobiel, dé mobiliteitsapp van de Achterhoek en
           omstreken.
@@ -29,6 +27,20 @@
       <v-col class="px-1">
         <v-btn large rounded block outlined color="primary" to="/howTo">
           Hoe werkt het?
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="px-1 pt-0">
+        <v-btn
+          large
+          rounded
+          block
+          outlined
+          color="button"
+          to="/rideSafeNetmobiel"
+        >
+          Corona adviezen
         </v-btn>
       </v-col>
     </v-row>
@@ -47,14 +59,14 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="px-1">
+      <v-col class="px-1 pb-0">
         <h4 class="netmobiel">Jouw activiteiten</h4>
       </v-col>
     </v-row>
-    <v-row class="pt-0">
-      <v-col v-if="rides.length === 0" class="pt-0 px-1">
-        <v-row>
-          <v-col class="pt-0">
+    <v-row class="py-0">
+      <v-col v-if="rides.length === 0" class="py-0 px-1">
+        <v-row dense>
+          <v-col class="py-0">
             <span class="font-italic">
               Je hebt nog geen activiteiten gepland.
             </span>
@@ -77,7 +89,7 @@
       </v-col>
       <v-col v-else class="pt-0">
         <v-row v-for="(ride, index) in rides" :key="index" xs12>
-          <v-col class="pa-1">
+          <v-col class="px-1 py-0">
             <ride-card
               class="my-2"
               :index="index"
@@ -103,16 +115,25 @@
         </v-row>
       </v-col>
     </v-row>
+    <v-snackbar v-model="snackbar" :timeout="5000" type="warning" class="mb-12">
+      Lees hier onze corona adviezen
+      <v-btn text @click="$router.push({ name: 'rideSafeNetmobiel' })">
+        Lees meer
+      </v-btn>
+    </v-snackbar>
   </content-pane>
 </template>
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-import RideCard from '@/components/rides/RideCard.vue'
-import UpdateCard from '@/components/home/UpdateCard.vue'
+import RideCard from '@/components/cards/RideCard.vue'
+import UpdateCard from '@/components/cards/UpdateCard.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
-
 import moment from 'moment'
+import * as uiStore from '@/store/ui'
+import * as chsStore from '@/store/charity-service'
+import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
 
 export default {
   components: {
@@ -121,14 +142,19 @@ export default {
     UpdateCard,
     RoundUserImage,
   },
+  data() {
+    return {
+      snackbar: false,
+    }
+  },
   computed: {
     user() {
-      return this.$store.getters['ps/getUser']
+      return psStore.getters.getUser
     },
     rides() {
       //HACK: Only display first 3 rides.
       let sortedList = []
-      const rides = this.$store.getters['cs/getRides']
+      const rides = csStore.getters.getRides
       if (rides) {
         sortedList = rides.slice(0, 3)
         sortedList.sort((a, b) => {
@@ -149,22 +175,21 @@ export default {
       }
     },
     updateMessages() {
-      return this.$store.getters['ui/getUpdateMessages']
+      return uiStore.getters.getUpdateMessages
     },
     profileImage() {
-      return this.$store.getters['ps/getUser'].profile.image
+      return psStore.getters.getUser.profile.image
     },
   },
   mounted() {
     //TODO: How many cards do we want?
-    this.$store.dispatch('cs/fetchRides', { offset: 0, maxResults: 2 })
+    csStore.actions.fetchRides({ offset: 0, maxResults: 2 })
   },
   methods: {
-    onRideSelected(index) {
-      const ride = this.rides[index]
+    onRideSelected(id) {
       this.$router.push({
         name: 'rideDetailPage',
-        params: { ride, id: ride.id },
+        params: { id: String(id) },
       })
     },
   },

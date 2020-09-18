@@ -2,7 +2,7 @@
   <v-row no-gutters>
     <v-col>
       <v-row no-gutters align="center" justify="center">
-        <v-col cols="2" class="time px-0">
+        <v-col cols="2" class="time px-0 mx-a">
           {{ time }}
         </v-col>
         <v-col cols="1" align="center">
@@ -13,19 +13,25 @@
             <v-col class="header py-0">
               {{ header }}
             </v-col>
-            <v-col cols="2" class="map-icon-height py-0">
+            <v-col
+              v-if="leg.traverseMode === 'WALK'"
+              cols="2"
+              class="map-icon-height py-0"
+            >
               <v-icon
-                v-if="leg.traverseMode === 'WALK'"
                 :class="{ 'active-map': isMapActive }"
                 @click="$emit('legSelect', { leg, step })"
               >
                 map
               </v-icon>
             </v-col>
+            <v-col v-if="leg.isEditable" cols="2" class="map-icon-height py-0">
+              <v-icon @click="$emit('legEdit', { leg, step })">edit</v-icon>
+            </v-col>
           </v-row>
         </v-col>
       </v-row>
-      <v-row v-if="travelMode !== 'FINISH'" no-gutters>
+      <v-row no-gutters>
         <v-col cols="2" class="pl-2">
           <v-icon v-if="showicon" :class="{ rideshare: isRideShare }">
             {{ icon }}
@@ -34,6 +40,7 @@
         <v-col cols="1" justify="center" align="center" fill-height>
           <div v-if="travelMode === 'WALK'" class="borderstopped borderwidth" />
           <div v-else-if="travelMode === 'ARRIVAL'" class="no-border" />
+          <div v-else-if="travelMode === 'FINISH'" class="no-border" />
           <div v-else-if="showdottedline" class="borderstopped borderwidth" />
           <!-- <div v-else-if="isRideShare" class="borderrs borderwidth" /> -->
           <div v-else class="border borderwidth" />
@@ -72,9 +79,11 @@ export default {
       return travelModes[this.travelMode].icon
     },
     time() {
-      return moment(this.leg.startTime)
-        .locale('nl')
-        .format('LT')
+      return this.leg.startTime
+        ? moment(this.leg.startTime)
+            .locale('nl')
+            .format('LT')
+        : '- - : - -'
     },
     header() {
       return delegation(this, this.travelMode, headers)
@@ -121,25 +130,26 @@ const descriptions = {
     return `${this.leg.from.label} - ${this.leg.to.label}`
   },
   CAR() {
-    return this.leg.from.label
+    //HACK: In trips label is used, in shoutouts name.
+    return this.leg.from.label || this.leg.from.name
   },
   RIDESHARE() {
-    return `Meerijden met ${this.leg.driverName}`
+    return `Meerijden met ${this.leg.driverName} vanaf ${this.leg.from.label}`
   },
   RAIL() {
     // add platform to departure and arrival
-    return `${this.leg.from.label} perron ${this.leg.from.platformCode} - ${
-      this.leg.to.label
-    } perron ${this.leg.to.platformCode}`
+    return `${this.leg.from.label} perron ${this.leg.from.platformCode} - ${this.leg.to.label} perron ${this.leg.to.platformCode}`
   },
   BUS() {
     return `${this.leg.from.label} - ${this.leg.to.label}`
   },
   WAIT: '',
-  FINISH: '',
+  FINISH() {
+    return this.leg.to.label
+  },
   ARRIVAL() {
-    // car arrival when sharing a ride
-    return this.leg.from.label
+    // car arrival when sharing a rideg
+    return this.leg.from.name
   },
   SUBWAY() {
     return `${this.leg.from.name} - ${this.leg.to.name}`
@@ -168,6 +178,9 @@ function humanDistance(meters) {
 }
 .header {
   font-size: 0.9em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .description {
   font-size: 0.7em;

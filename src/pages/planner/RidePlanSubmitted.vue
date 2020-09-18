@@ -31,11 +31,11 @@
 </template>
 
 <script>
+import ContentPane from '@/components/common/ContentPane.vue'
+
 export default {
   name: 'RidePlanSubmitted',
-  data() {
-    return {}
-  },
+  components: { ContentPane },
 }
 </script>
 

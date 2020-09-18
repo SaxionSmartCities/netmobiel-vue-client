@@ -6,19 +6,19 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="7" class="d-flex flex-column justify-center">
+      <v-col cols="8" class="d-flex flex-column justify-center">
         <span class="title font-weight-light">Voer het kenteken in:</span>
         <span class="caption font-weight-light ml-1">
           Vul zelf de middenstreepjes in
         </span>
       </v-col>
-      <v-col>
+      <v-col cols="4">
         <v-text-field
           v-model="searchLicensePlate"
           dense
           :hide-details="true"
           outlined
-          placeholder="bv. XX-XXX-XX"
+          placeholder="XX-XX-XX"
           class="search-license-plate"
           maxlength="8"
         />
@@ -86,6 +86,8 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
+import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
 
 export default {
   name: 'ProfileAddCar',
@@ -99,36 +101,36 @@ export default {
   },
   computed: {
     searchResult() {
-      return this.$store.getters['cs/getSearchResult']
+      return csStore.getters.getSearchResult
     },
   },
   watch: {
     searchLicensePlate(newValue) {
       if (newValue.length == 8) {
-        this.$store.dispatch('cs/fetchLicense', newValue)
+        csStore.actions.fetchLicense(newValue)
       } else {
-        this.$store.commit('cs/clearSearchResult')
+        csStore.mutations.clearSearchResult()
       }
     },
   },
   mounted() {
-    this.$store.commit('cs/clearSearchResult')
+    csStore.mutations.clearSearchResult()
   },
   created: function() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   methods: {
     addCar(car) {
-      const cars = this.$store.getters['cs/getAvailableCars']
+      const cars = csStore.getters.getAvailableCars
+
       let storedCar = cars.find(c => c.licensePlate === car.licensePlate)
       if (storedCar) {
-        this.$store.dispatch('ui/queueNotification', {
-          message: 'Auto is al opgeslagen aan uw profiel.',
-          timeout: 0,
-        })
+        uiStore.actions.queueErrorNotification(
+          'Auto is al opgeslagen aan uw profiel.'
+        )
       } else {
-        this.$store.dispatch('cs/submitCar', car).then(() => {
-          this.$store.dispatch('cs/fetchCars')
+        csStore.actions.submitCar(car).then(() => {
+          csStore.actions.fetchCars()
           this.$router.go(-1)
         })
       }

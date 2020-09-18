@@ -1,64 +1,8 @@
 <template>
-  <content-pane>
-    <v-row dense class="pa-0">
-      <v-col class="mb-3 py-0">
-        <h1>Rit details</h1>
-      </v-col>
-    </v-row>
-    <v-row dense>
+  <content-pane v-if="ride && ride.bookings">
+    <v-row>
       <v-col class="py-0">
-        <v-divider />
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col cols="3">Datum:</v-col>
-      <v-col cols="8" class="departure-date">
-        {{ formatDate() }}
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col cols="3">Reisduur:</v-col>
-      <v-col cols="8">
-        {{ formatDuration() }}
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col cols="3">Boekingen:</v-col>
-      <v-col cols="8">
-        {{ numBookings }}
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col cols="3">Auto:</v-col>
-      <v-col cols="8">{{ carBrandModel }}</v-col>
-    </v-row>
-    <v-row v-if="ride.recurrence" dense>
-      <v-col cols="3">Herhalen:</v-col>
-      <v-col cols="8">
-        {{ formatRecurrence() }}
-        <table v-if="ride.recurrence.unit == 'WEEK'" class="equal-width">
-          <tr>
-            <td>ma</td>
-            <td>di</td>
-            <td>wo</td>
-            <td>do</td>
-            <td>vr</td>
-            <td>za</td>
-            <td>zo</td>
-          </tr>
-          <tr>
-            <td v-for="day in [0, 1, 2, 3, 4, 5, 6]" :key="day">
-              <v-icon>
-                {{ recursOn(day) ? 'done' : '' }}
-              </v-icon>
-            </td>
-          </tr>
-        </table>
-      </v-col>
-    </v-row>
-    <v-row class="pb-3">
-      <v-col>
-        <v-divider />
+        <ride-details :ride="ride" class="mb-4" />
       </v-col>
     </v-row>
     <v-row
@@ -86,11 +30,29 @@
       <v-col>
         <h3 class="mb-2">Wijzigen</h3>
         <v-divider />
+        <v-row @click="editRide">
+          <v-col cols="1">
+            <v-icon>fa-pencil-alt</v-icon>
+          </v-col>
+          <v-col class="pl-5">
+            Wijzig deze rit
+          </v-col>
+        </v-row>
+        <v-divider />
+        <v-row @click="confirmRide()">
+          <v-col cols="1">
+            <v-icon>fa-check-circle</v-icon>
+          </v-col>
+          <v-col class="pl-5">
+            Reis bevestigen
+          </v-col>
+        </v-row>
+        <v-divider />
         <v-row @click="checkDeleteTrip()">
-          <v-col cols="3" class="text-center">
+          <v-col cols="1">
             <v-icon>lock</v-icon>
           </v-col>
-          <v-col>
+          <v-col class="pl-5">
             Reis annuleren
           </v-col>
         </v-row>
@@ -140,21 +102,37 @@
       @close="showContactTravellerModal = false"
       @select="onTravellerSelectForMessage"
     ></contact-traveller-modal>
+    <edit-ride-modal
+      v-if="showEditRideModal"
+      :show="showEditRideModal"
+      @close="showEditRideModal = false"
+    ></edit-ride-modal>
   </content-pane>
 </template>
 
 <script>
-import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ContentPane from '@/components/common/ContentPane.vue'
 import ContactTravellerModal from '@/components/itinerary-details/ContactTravellerModal'
+import EditRideModal from '../../components/itinerary-details/EditRideModal'
+import RideDetails from '@/components/itinerary-details/RideDetails.vue'
+import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
+import * as msStore from '@/store/message-service'
 
 export default {
   name: 'RideDetailPage',
-  components: { ContactTravellerModal, ContentPane, ItineraryLeg },
+  components: {
+    EditRideModal,
+    ContactTravellerModal,
+    ContentPane,
+    ItineraryLeg,
+    RideDetails,
+  },
   props: {
     id: {
-      type: Number,
+      type: String,
       required: true,
     },
   },
@@ -164,17 +142,19 @@ export default {
       warningDialog: false,
       cancelReason: '',
       showContactTravellerModal: false,
+      showEditRideModal: false,
     }
   },
   computed: {
+    localId() {
+      return parseInt(this.id)
+    },
     passengersInBookings() {
       let bookings = !this.ride
         ? []
         : this.ride.bookings.map(booking => {
             return {
-              name: `${booking.passenger.givenName} ${
-                booking.passenger.familyName
-              }`,
+              name: `${booking.passenger.givenName} ${booking.passenger.familyName}`,
               passengerRef: booking.passengerRef,
               ...booking.passenger,
             }
@@ -182,47 +162,20 @@ export default {
       return bookings
     },
     ride() {
-      return this.$store.getters['cs/getSelectedRide']
+      return csStore.getters.getSelectedRide
     },
     numBookings() {
       return !this.ride.bookings ? 0 : this.ride.bookings.length
     },
-    carBrandModel() {
-      return !this.ride.car
-        ? ''
-        : `${this.ride.car.brand} ${this.ride.car.model}`
-    },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   mounted() {
     // Fetch the ride on details page. This is needed for deeplinking.
-    this.$store.dispatch('cs/fetchRide', { id: this.id })
+    csStore.actions.fetchRide({ id: this.localId })
   },
   methods: {
-    formatDate() {
-      return moment(this.ride.departureTime)
-        .locale('nl')
-        .format('dddd DD-MM-YYYY')
-    },
-    formatDuration() {
-      const seconds = this.ride.duration,
-        minutes = Math.round(seconds / 60)
-      return minutes < 60
-        ? `${minutes} minuten`
-        : `${Math.floor(minutes / 60)} uur ${minutes % 60} minuten`
-    },
-    formatRecurrence() {
-      const { unit, interval } = this.ride.recurrence
-      if (unit === 'DAY') {
-        return 'Dagelijks'
-      }
-      return interval === 1 ? 'Wekelijks op' : `Elke ${interval} weken op`
-    },
-    recursOn(weekday) {
-      return this.ride.recurrence.daysOfWeekMask & (1 << weekday)
-    },
     generateSteps() {
       const { ride } = this
       if (!ride.id) return []
@@ -235,7 +188,7 @@ export default {
         result.push(currentLeg)
 
         // We won't show any waiting times < 60 sec -- should be made a config
-        if (nextLeg.startTime - currentLeg.endTime > 60 * 1000) {
+        if (nextLeg.startTime - currentLeg?.endTime > 60 * 1000) {
           // Add "WAIT" element (not from OTP).
           result.push({
             mode: 'WAIT',
@@ -246,20 +199,23 @@ export default {
         }
       }
       let lastLeg = this.ride.legs[this.ride.legs.length - 1]
-      this.setPassenger(lastLeg, bookingDict)
-      result.push(lastLeg)
+      if (lastLeg) {
+        this.setPassenger(lastLeg, bookingDict)
+        result.push(lastLeg)
 
-      // Finally, we push the "FINISH" element (not from OTP)
-      result.push({
-        mode: 'FINISH',
-        startTime: lastLeg.endTime,
-        to: lastLeg.to,
-      })
-      return result
+        // Finally, we push the "FINISH" element (not from OTP)
+        result.push({
+          mode: 'FINISH',
+          startTime: lastLeg.endTime,
+          to: lastLeg.to,
+        })
+        return result
+      }
+      return []
     },
     generateBookingDictionary(bookings) {
       let dict = []
-      for (var i = 0; i < bookings.length; i++) {
+      for (let i = 0; i < bookings.length; i++) {
         let map = bookings[i].legs.map(l => {
           let dictItem = { ...bookings[i].passenger }
           dictItem.legRef = l.legRef
@@ -271,17 +227,22 @@ export default {
     },
     setPassenger(leg, bookingDict) {
       // TODO: Check why modality is not provided
-      leg.mode = 'CAR'
-      let passenger = bookingDict.find(b => b.legRef == leg.legRef)
-      if (passenger) leg.passenger = passenger
+      if (leg) {
+        leg.mode = 'CAR'
+        let passenger = bookingDict.find(b => b.legRef == leg.legRef)
+        if (passenger) leg.passenger = passenger
+      }
     },
     onLegSelected(leg) {
       this.selectedLeg = leg
     },
+    confirmRide() {
+      csStore.actions.confirmRide({ id: this.localId })
+    },
     deleteTrip() {
       this.warningDialog = false
-      this.$store.dispatch('cs/deleteRide', {
-        id: this.id,
+      csStore.actions.deleteRide({
+        id: this.localId,
         cancelReason: this.cancelReason,
       })
       this.$router.push('/tripsOverviewPage')
@@ -300,8 +261,11 @@ export default {
         this.onTravellerSelectForMessage(this.passengersInBookings[0])
       }
     },
+    editRide() {
+      this.showEditRideModal = true
+    },
     routeToConversation(ctx, passengerProfile) {
-      this.$store.dispatch('ms/fetchConversations').then(conversations => {
+      msStore.actions.fetchConversations().then(conversations => {
         const index = conversations.findIndex(
           conversation => conversation.context === ctx
         )
@@ -316,7 +280,7 @@ export default {
             context: ctx,
             participants: [
               {
-                managedIdentity: this.$store.getters['ps/getProfile'].id,
+                managedIdentity: psStore.getters.getProfile.id,
                 urn: '',
               },
               {

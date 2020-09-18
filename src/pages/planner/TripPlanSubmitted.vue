@@ -13,6 +13,7 @@
     <v-row class="ma-auto mt-2">
       <v-col>
         <v-btn
+          large
           block
           rounded
           depressed
@@ -21,8 +22,16 @@
         >
           Plan direct je terugreis
         </v-btn>
-        <v-btn block rounded depressed outlined color="primary" to="/plan">
-          Plan een nieuwe rit
+        <v-btn
+          large
+          block
+          rounded
+          depressed
+          outlined
+          color="primary"
+          to="/plan"
+        >
+          Plan een nieuwe reis
         </v-btn>
       </v-col>
     </v-row>
@@ -30,14 +39,18 @@
 </template>
 
 <script>
+import ContentPane from '@/components/common/ContentPane.vue'
+import * as gsStore from '@/store/geocoder-service'
+
 export default {
   name: 'TripPlanSubmitted',
+  components: { ContentPane },
   data() {
     return {}
   },
   methods: {
     swapLocations() {
-      this.$store.commit('gs/swapLocations')
+      gsStore.mutations.swapLocations
       this.$router.push('/search')
     },
   },

@@ -7,7 +7,6 @@
           forward="inbox"
           icon="fa-comments"
           naam="Berichten"
-          :aantal-berichten="2"
         ></community-button>
       </v-col>
       <v-col>
@@ -34,7 +33,7 @@
           class="mx-auto"
           icon="fa-bullseye"
           naam="doelen"
-          forward="goalOverviewPage"
+          forward="charityOverviewPage"
         ></community-button>
       </v-col>
     </v-row>
@@ -44,17 +43,22 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import CommunityButton from '@/components/community/CommunityButton.vue'
-import { mapGetters } from 'vuex'
+import * as psStore from '@/store/profile-service'
+import * as isStore from '@/store/itinerary-service'
+
 export default {
   components: {
     CommunityButton: CommunityButton,
     ContentPane,
   },
   computed: {
-    ...mapGetters({ shoutOutsTotalCount: 'is/getShoutOutsTotalCount' }),
+    ...{ shoutOutsTotalCount: () => isStore.getters.getShoutOutsTotalCount },
   },
   mounted() {
-    this.$store.dispatch('is/fetchShoutOuts', {
+    const address = psStore.getters.getProfile.address
+    isStore.actions.fetchShoutOuts({
+      latitude: address.location.coordinates[1],
+      longitude: address.location.coordinates[0],
       maxResults: 0,
     })
   },

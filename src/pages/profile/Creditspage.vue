@@ -12,7 +12,8 @@
       <v-col class="px-0 body-1 shrink">
         <strong>Saldo</strong>
       </v-col>
-      <v-col class="body-2"> {{ creditAmount }} credits </v-col>
+      <v-col class="body-2">{{ creditAmount }} credits</v-col>
+      <v-col class="body-2">({{ euroAmount }})</v-col>
     </v-row>
     <v-row>
       <v-divider />
@@ -24,7 +25,7 @@
           outlined
           color="primary"
           disabled
-          @click="router.push('/addCredits')"
+          @click="$router.push('/addCredits')"
         >
           Doel steunen
         </v-btn>
@@ -36,7 +37,7 @@
           outlined
           disabled
           color="primary"
-          @click="router.push('/addCredits')"
+          @click="$router.push('/addCredits')"
         >
           Rewards
         </v-btn>
@@ -49,9 +50,8 @@
           rounded
           block
           depressed
-          disabled
           color="button"
-          @click="router.push('/addCredits')"
+          @click="$router.push('/addCredits')"
         >
           Credits toevoegen
         </v-btn>
@@ -65,8 +65,8 @@
     <v-row>
       <v-divider />
     </v-row>
-    <v-row v-for="(transaction, index) in creditHistory" :key="index">
-      <credit-history-line :transaction="transaction"></credit-history-line>
+    <v-row v-for="(statement, index) in creditHistory" :key="index">
+      <credit-history-line :statement="statement"></credit-history-line>
     </v-row>
   </content-pane>
 </template>
@@ -74,6 +74,17 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import CreditHistoryLine from '@/components/profile/CreditHistoryLine.vue'
+import constants from '@/constants/constants'
+import { isBottomVisible } from '@/utils/scroll'
+import * as uiStore from '@/store/ui'
+import * as crsStore from '@/store/credits-service'
+
+const { fetchBankerStatementsMaxResults } = constants
+const euroFormatter = new Intl.NumberFormat('nl-NL', {
+  style: 'currency',
+  currency: 'EUR',
+})
+
 export default {
   name: 'Credits',
   components: {
@@ -82,21 +93,50 @@ export default {
   },
   data() {
     return {
-      stuff: false,
+      bottom: false,
+      scrollHandler: event => {
+        this.bottom = isBottomVisible()
+      },
     }
   },
   computed: {
     creditAmount() {
-      return this.$store.getters['ps/getCreditAmount']
+      return crsStore.getters.getBankerUser?.credits
     },
     creditHistory() {
-      return this.$store.getters['ps/getCreditHistory']
+      return crsStore.getters.getAccountStatements?.data
+    },
+    exchangeRate() {
+      return crsStore.getters.getBankerSettings?.exchangeRate
+    },
+    euroAmount() {
+      return euroFormatter.format((this.creditAmount * this.exchangeRate) / 100)
+    },
+  },
+  watch: {
+    bottom(bottom) {
+      if (bottom) {
+        // fetch more statements when window bottom is visible
+        crsStore.actions.fetchMoreAccountStatements(
+          fetchBankerStatementsMaxResults
+        )
+      }
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
-    this.$store.dispatch('ps/fetchCreditAmount')
-    this.$store.dispatch('ps/fetchCreditHistory')
+    uiStore.mutations.showBackButton()
+    crsStore.actions.fetchBankerUser()
+    crsStore.actions.fetchBankerSettings()
+    // fetch first page with statements
+    crsStore.actions.fetchFirstAccountStatements(
+      fetchBankerStatementsMaxResults
+    )
+  },
+  mounted() {
+    window.addEventListener('scroll', this.scrollHandler)
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.scrollHandler)
   },
 }
 </script>

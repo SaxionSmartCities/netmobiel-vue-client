@@ -30,16 +30,24 @@
 </template>
 
 <script>
+import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
+
 export default {
   beforeCreate() {
-    this.$store.commit('ui/disableHeader')
-    this.$store.commit('ui/disableFooter')
+    uiStore.mutations.disableHeader()
+    uiStore.mutations.disableFooter()
   },
   mounted() {
     if (this.$keycloak.authenticated) {
-      this.$store.commit('ps/setUserToken', this.$keycloak.token)
-      // Preserve query string when routing to home.
-      this.$router.push({ path: '/home', query: this.$route.query })
+      psStore.actions.fetchProfile()
+      psStore.mutations.setUserToken(this.$keycloak.token)
+      if (this.$route.query.redirect) {
+        this.$router.push({ path: this.$route.query.redirect })
+      } else {
+        // Preserve query string when routing to home.
+        this.$router.push({ path: '/home', query: this.$route.query })
+      }
     }
   },
 }

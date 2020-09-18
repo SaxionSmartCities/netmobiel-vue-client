@@ -55,12 +55,13 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
+import * as uiStore from '@/store/ui'
 export default {
   components: {
     ContentPane,
   },
   mounted() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
 }
 </script>

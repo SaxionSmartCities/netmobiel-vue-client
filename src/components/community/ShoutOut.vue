@@ -2,16 +2,16 @@
   <v-card
     outlined
     class="shoutout-container"
-    @click="$emit('shoutoutSelected', shoutoutId)"
+    @click="$emit('shoutoutSelected', shoutout.planRef)"
   >
     <v-row class="mb-2">
       <v-col class="shrink">
-        <v-img class="shoutout-image" :src="profile.image" />
+        <v-img class="shoutout-image" :src="profileImage" />
       </v-col>
       <v-col>
         <p class="font-weight-regular header mb-0">Reiziger</p>
         <p class="font-weight-light subtitle-1 mb-0">
-          {{ shoutout.traveller.givenName }}
+          {{ travellerName }}
         </p>
       </v-col>
       <v-col class="shrink align-center">
@@ -27,52 +27,54 @@
     </v-row>
     <v-row justify="center">
       <v-col align="start" class="header ma">
-        <span>Ontvang </span>
-        <strong class="text-color-primary ">5 credits</strong>
+        <span>Afstand </span>
+        <strong class="text-color-primary ">{{ distance }} km</strong>
       </v-col>
       <v-col align="end">
-        <v-btn small rounded depressed color="button">Rit aanbieden</v-btn>
+        <v-btn small rounded depressed color="button">
+          {{ btnText }}
+        </v-btn>
       </v-col>
     </v-row>
   </v-card>
 </template>
 
 <script>
-import moment from 'moment'
+import { getDistance } from 'geolib'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import constants from '@/constants/constants'
+import { generateShoutOutDetailSteps } from '@/utils/itinerary_steps.js'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'ShoutOut',
   components: { ItineraryLeg },
   props: {
     shoutout: { type: Object, required: true },
+    btnText: { type: String, required: true },
+    isMine: { type: Boolean, required: true },
   },
   computed: {
-    shoutoutId() {
-      return this.shoutout.id
-    },
     profile() {
-      return this.$store.getters['ps/getUser']
+      return psStore.getters.getUser.profile
+    },
+    profileImage() {
+      return this.isMine ? this.profile.image : constants.defaultProfileImage
+    },
+    travellerName() {
+      const { traveller } = this.shoutout
+      if (this.isMine) {
+        return `${traveller.firstName} ${traveller.lastName}`
+      }
+      return `${traveller.givenName} ${traveller.familyName}`
+    },
+    distance() {
+      return getDistance(this.shoutout.from, this.shoutout.to, 1000) / 1000
     },
   },
   methods: {
     generateSteps() {
-      const ride = this.shoutout
-      const departure = moment(ride.departureTime),
-        arrival = moment(ride.estimatedArrivalTime)
-      return [
-        {
-          mode: 'CAR',
-          startTime: departure.toDate().getTime(),
-          endTime: arrival.toDate().getTime(),
-          from: { name: ride.from.label },
-        },
-        {
-          mode: 'ARRIVAL',
-          startTime: arrival.toDate().getTime(),
-          from: { name: ride.to.label },
-        },
-      ]
+      return generateShoutOutDetailSteps(this.shoutout)
     },
   },
 }

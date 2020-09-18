@@ -10,7 +10,11 @@
           <v-icon color="white">commute</v-icon>
           <span>
             Reizen
-            <sup>{{ getPlannedTripsCount }}</sup>
+            <sup>{{
+              tripsSearchTime === 'Future'
+                ? getPlannedTripsCount
+                : getPastTripsCount
+            }}</sup>
           </span>
         </template>
 
@@ -22,35 +26,48 @@
           </span>
         </template>
       </tab-bar>
+      <slide-show-cancelled-trips
+        v-if="
+          ((showTabs && selectedTab === 0) || isPassenger) &&
+            getCancelledTrips.length > 0
+        "
+        :trips="getCancelledTrips"
+      >
+        <template v-slot:card="{ trip }">
+          <travel-card
+            :trip-id="trip.id"
+            :itinerary="trip.itinerary"
+            class="trip-card"
+            @on-trip-selected="onTripSelected"
+          />
+        </template>
+      </slide-show-cancelled-trips>
     </template>
-    <v-row v-if="(showTabs && selectedTab === 0) || isPassenger">
-      <v-col class="px-0">
+    <v-row v-if="(showTabs && selectedTab === 0) || isPassenger" dense>
+      <v-col class="pa-0">
         <v-row dense>
           <v-col>
             <v-radio-group v-model="tripsSearchTime" class="mt-1" row>
-              <v-radio label="Geplande reizen" value="Future"></v-radio>
               <v-radio label="Afgelopen reizen" value="Past"></v-radio>
+              <v-radio label="Geplande reizen" value="Future"></v-radio>
             </v-radio-group>
           </v-col>
         </v-row>
         <v-row v-if="tripsSearchTime === 'Past'">
-          <v-col v-if="getPastTrips.length === 0">
-            U heeft nog niet meegereden.
+          <v-col v-if="getPastTrips.length === 0" align="center">
+            <em>U heeft nog geen reizen gemaakt.</em>
           </v-col>
-          <v-col v-else class="past-rides-column py-0">
-            <travel-card
-              v-for="(trip, index) in getPastTrips"
-              :key="index"
-              class="trip-card"
-              :needs-review="needsReview(trip)"
-              :index="index"
-              :from="trip.from"
-              :to="trip.to"
-              :arrival-time="parseDate(trip.arrivalTime)"
-              :departure-time="parseDate(trip.departureTime)"
-              :legs="trip.legs"
-              @onTripSelected="onTripSelected"
-            />
+          <v-col v-else class="py-0">
+            <grouped-card-list :items="getPastTrips">
+              <template v-slot:card="{ item: trip }">
+                <travel-card
+                  :trip-id="trip.id"
+                  :itinerary="trip.itinerary"
+                  class="trip-card"
+                  @on-trip-selected="onTripSelected"
+                />
+              </template>
+            </grouped-card-list>
           </v-col>
         </v-row>
         <v-row v-if="tripsSearchTime === 'Future'">
@@ -58,36 +75,69 @@
             U heeft geen bewaarde reizen. Ga naar de planner om uw reis te
             plannen.
           </v-col>
-          <v-col class="past-rides-column py-0">
-            <travel-card
-              v-for="(trip, index) in getPlannedTrips"
-              :key="index"
-              class="trip-card"
-              :index="index"
-              :from="trip.from"
-              :to="trip.to"
-              :arrival-time="parseDate(trip.arrivalTime)"
-              :departure-time="parseDate(trip.departureTime)"
-              :legs="trip.legs"
-              @onTripSelected="onTripSelected"
-            />
+          <v-col v-else class="py-0">
+            <grouped-card-list :items="getPlannedTrips">
+              <template v-slot:card="{ item: trip }">
+                <travel-card
+                  :trip-id="trip.id"
+                  :itinerary="trip.itinerary"
+                  class="trip-card"
+                  @on-trip-selected="onTripSelected"
+                />
+              </template>
+            </grouped-card-list>
           </v-col>
         </v-row>
       </v-col>
     </v-row>
     <v-row v-if="(showTabs && selectedTab === 1) || isDriver" dense>
-      <v-col v-if="getPlannedRides.length === 0">
-        U heeft geen bewaarde ritten. Ga naar ritten om een nieuwe rit te
-        plannen.
-      </v-col>
-      <v-col class="past-rides-column pa-0">
-        <v-row v-for="(ride, index) in getPlannedRides" :key="index">
-          <v-col class="py-1">
-            <ride-card
-              :index="index"
-              :ride="ride"
-              @rideSelected="onRideSelected"
-            />
+      <v-col class="pa-0">
+        <v-row dense>
+          <v-col>
+            <v-radio-group v-model="ridesSearchTime" class="mt-1" row>
+              <v-radio label="Afgelopen ritten" value="Past"></v-radio>
+              <v-radio label="Geplande ritten" value="Future"></v-radio>
+            </v-radio-group>
+          </v-col>
+        </v-row>
+        <v-row v-if="ridesSearchTime === 'Past'">
+          <v-col v-if="getPastRides.length === 0">
+            <span>
+              U heeft nog geen ritten gereden. Ga naar ritten om een nieuwe rit
+              te plannen.
+            </span>
+          </v-col>
+          <v-col v-else class="py-0">
+            <grouped-card-list :items="getPastRides" type="ride">
+              <template v-slot:card="{ item: ride, index }">
+                <ride-card
+                  class="trip-card"
+                  :index="index"
+                  :ride="ride"
+                  @rideSelected="onRideSelected"
+                />
+              </template>
+            </grouped-card-list>
+          </v-col>
+        </v-row>
+        <v-row v-if="ridesSearchTime === 'Future'">
+          <v-col v-if="getPlannedRides.length === 0" class="py-1">
+            <span>
+              U heeft nog geen ritten gepland. Ga naar ritten om een nieuwe rit
+              te plannen.
+            </span>
+          </v-col>
+          <v-col v-else class="py-0">
+            <grouped-card-list :items="getPlannedRides" type="ride">
+              <template v-slot:card="{ item: ride, index }">
+                <ride-card
+                  class="trip-card"
+                  :index="index"
+                  :ride="ride"
+                  @rideSelected="onRideSelected"
+                />
+              </template>
+            </grouped-card-list>
           </v-col>
         </v-row>
       </v-col>
@@ -97,45 +147,71 @@
 
 <script>
 import moment from 'moment'
-import { mapGetters } from 'vuex'
 import ContentPane from '@/components/common/ContentPane.vue'
-import TravelCard from '@/components/search-results/TravelCard.vue'
-import RideCard from '@/components/rides/RideCard.vue'
+import TravelCard from '@/components/cards/TravelCard.vue'
+import RideCard from '@/components/cards/RideCard.vue'
 import constants from '../../constants/constants'
 import TabBar from '../../components/common/TabBar'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
+import * as csStore from '@/store/carpool-service'
+import * as psStore from '@/store/profile-service'
+import * as isStore from '@/store/itinerary-service'
+import SlideShowCancelledTrips from '@/components/other/SlideShowCancelledTrips'
+import GroupedCardList from '@/components/common/GroupedCardList'
+import { isBottomVisible } from '@/utils/scroll'
 
 export default {
   name: 'TripsOverviewPage',
-  components: { TabBar, ContentPane, TravelCard, RideCard },
+  components: {
+    GroupedCardList,
+    SlideShowCancelledTrips,
+    TabBar,
+    ContentPane,
+    TravelCard,
+    RideCard,
+  },
   data() {
     return {
       selectedTab: 0,
       bottom: false,
       maxResults: constants.fetchTripsMaxResults,
-      maxResultsPastTrips: constants.fetchTripsMaxResults,
+      maxResultsPastRides: constants.fetchPastRidesMaxResults,
+      maxResultsPastTrips: constants.fetchPastTripsMaxResults,
       tripsSearchTime: 'Future',
+      ridesSearchTime: 'Future',
+      scrollHandler: () => {
+        this.bottom = isBottomVisible()
+      },
     }
   },
   computed: {
-    ...mapGetters({
-      getPlannedTripsCount: 'is/getPlannedTripsCount',
-      getPlannedTrips: 'is/getPlannedTrips',
-      getPastTripsCount: 'is/getPastTripsCount',
-      getPastTrips: 'is/getPastTrips',
-      getPlannedRidesCount: 'cs/getPlannedRidesCount',
-      getPlannedRides: 'cs/getRides',
-    }),
+    ...{
+      getPlannedTripsCount: () => isStore.getters.getPlannedTripsCount,
+      getPlannedTrips: () =>
+        isStore.getters.getPlannedTrips.filter(
+          trip => trip.state !== 'CANCELLED'
+        ),
+      getPastTripsCount: () => isStore.getters.getPastTripsCount,
+      getPastTrips: () => isStore.getters.getPastTrips,
+      getCancelledTrips: () => isStore.getters.getCancelledTrips,
+      getPastRides: () => csStore.getters.getPastRides,
+    },
+    getPlannedRidesCount() {
+      return csStore.getters.getPlannedRidesCount
+    },
+    getPlannedRides() {
+      return csStore.getters.getRides
+    },
     showTabs() {
-      const role = this.$store.getters['ps/getProfile'].userRole
+      const role = psStore.getters.getProfile.userRole
       return !role || role === 'both'
     },
     isPassenger() {
-      const role = this.$store.getters['ps/getProfile'].userRole
+      const role = psStore.getters.getProfile.userRole
       return role === 'passenger'
     },
     isDriver() {
-      const role = this.$store.getters['ps/getProfile'].userRole
+      const role = psStore.getters.getProfile.userRole
       return role === 'driver'
     },
   },
@@ -143,9 +219,17 @@ export default {
     bottom(bottom) {
       if (bottom) {
         if (this.selectedTab === 0) {
-          this.fetchTrips(this.getPlannedTrips.length)
+          if (this.tripsSearchTime === 'Future') {
+            this.fetchTrips(this.getPlannedTrips.length)
+          } else {
+            this.fetchPastTrips(this.getPastTrips.length)
+          }
         } else if (this.selectedTab === 1) {
-          this.fetchRides(this.getPlannedRides.length)
+          if (this.ridesSearchTime === 'Future') {
+            this.fetchRides(this.getPlannedRides.length)
+          } else {
+            this.fetchPastRides(this.getPastRides.length)
+          }
         }
       }
     },
@@ -162,13 +246,12 @@ export default {
     this.fetchTrips()
     this.fetchPastTrips()
     this.fetchRides()
-    document
-      .getElementById('content-container')
-      .addEventListener('scroll', () => {
-        this.bottom = this.bottomVisible(
-          document.getElementById('content-container')
-        )
-      })
+    this.fetchPastRides()
+    isStore.actions.fetchCancelledTrips()
+    window.addEventListener('scroll', this.scrollHandler)
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.scrollHandler)
   },
   methods: {
     parseDate(dateString) {
@@ -176,53 +259,55 @@ export default {
     },
     needsReview(trip) {
       //TODO: Base this on the status for the trip.
-      return !!trip.legs.find(l => l.traverseMode == 'RIDESHARE')
-    },
-    bottomVisible(element) {
-      const scrollY = element.scrollTop
-      const visible = element.clientHeight
-      const pageHeight = element.scrollHeight
-      const bottomOfPage = visible + scrollY >= pageHeight
-      return bottomOfPage || pageHeight < visible
+      if (trip?.legs) {
+        return trip.legs.find(l => l.traverseMode == 'RIDESHARE')
+      }
+      return false
     },
     fetchTrips(offset = 0) {
-      this.$store.dispatch('is/fetchTrips', {
+      isStore.actions.fetchTrips({
         maxResults: this.maxResults,
         offset: offset,
+        since: moment().format(),
       })
     },
     fetchPastTrips(offset = 0) {
-      this.$store.dispatch('is/fetchTrips', {
-        pastTrips: true,
-        maxResults: this.maxResultsPastTrips,
+      if (offset == 0 || offset < this.getPastTripsCount) {
+        isStore.actions.fetchTrips({
+          pastTrips: true,
+          maxResults: this.maxResultsPastTrips,
+          offset: offset,
+          sortDir: 'DESC',
+          until: moment().format(),
+        })
+      }
+    },
+    fetchRides(offset = 0) {
+      csStore.actions.fetchRides({
         offset: offset,
+        maxResults: this.maxResults,
+      })
+    },
+    fetchPastRides(offset = 0) {
+      csStore.actions.fetchRides({
+        pastRides: true,
+        offset: offset,
+        maxResults: this.maxResultsPastRides,
+        sortDir: 'DESC',
         since: moment()
-          .subtract(1, 'week')
+          .subtract(1, 'months')
           .format(),
         until: moment().format(),
       })
     },
-    fetchRides(offset = 0) {
-      this.$store.dispatch('cs/fetchRides', {
-        offset: offset,
-        maxResults: this.maxResults,
-      })
-    },
-    onTripSelected(index) {
-      let tripId
-      if (this.tripsSearchTime === 'Future') {
-        tripId = this.getPlannedTrips[index].id
-      } else {
-        tripId = this.getPastTrips[index].id
-      }
-      this.$store.dispatch('is/fetchTrip', { id: tripId })
+    onTripSelected(selected) {
+      isStore.actions.fetchTrip({ id: selected.tripId })
       this.$router.push('/tripDetailPage')
     },
-    onRideSelected(index) {
-      const ride = this.getPlannedRides[index]
+    onRideSelected(id) {
       this.$router.push({
         name: 'rideDetailPage',
-        params: { ride, id: ride.id },
+        params: { id: String(id) },
       })
     },
   },
@@ -231,7 +316,8 @@ export default {
 
 <style lang="scss">
 .trip-card {
-  margin: 4px 0;
+  margin: 0;
+  margin-bottom: 8px;
 }
 .saved {
   background-color: $color-green;

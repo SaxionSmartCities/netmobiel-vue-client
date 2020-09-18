@@ -43,6 +43,9 @@
 </template>
 
 <script>
+import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
+
 export default {
   name: 'PrivacySecurity',
   data() {
@@ -52,18 +55,18 @@ export default {
   },
   computed: {
     privacySecurity() {
-      return this.$store.getters['ps/getUser'].privacySecurity
+      return psStore.getters.getUser.privacySecurity
     },
   },
   created: function() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
   methods: {
     toPrivacyStatement() {
       this.$router.push({ name: 'privacyStatement' })
     },
     setPrivacyValue(key, state) {
-      this.$store.commit('ps/setPrivacySecurityValue', {
+      psStore.mutations.setPrivacySecurityValue({
         key: key,
         value: state,
       })
