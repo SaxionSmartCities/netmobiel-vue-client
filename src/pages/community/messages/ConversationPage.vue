@@ -161,6 +161,7 @@ export default {
       }
     },
     sendMessage() {
+      const { firstName, lastName } = psStore.getters.getProfile
       const { familyName, givenName, managedIdentity } = this.recipient
       const envelopes = [
         { recipient: { familyName, givenName, managedIdentity } },
@@ -172,7 +173,7 @@ export default {
           deliveryMode: 'ALL',
           envelopes: envelopes,
           managedIdentity: psStore.getters.getProfile.id,
-          subject: 'Van A naar B',
+          subject: `Nieuw bericht van ${firstName} ${lastName}`,
         })
         .then(() => {
           this.newMessage = null
