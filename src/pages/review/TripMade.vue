@@ -120,6 +120,9 @@ export default {
       return psStore.getters.getComplimentTypes
     },
   },
+  mounted() {
+    psStore.actions.fetchComplimentTypes()
+  },
   methods: {
     addCompliment(compliment) {
       const index = this.compliments.findIndex(c => c === compliment)
