@@ -211,7 +211,7 @@ function fetchRide(context: ActionContext, payload: any) {
 }
 
 function confirmRide(context: ActionContext, payload: any) {
-  const URL = `${BASE_URL}/rideshare/rides/${payload.id}/confirmtrue`
+  const URL = `${BASE_URL}/rideshare/rides/${payload.id}/confirm/true`
   const data = {}
   const config = {
     headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
