@@ -75,6 +75,7 @@
             rounded
             depressed
             color="button"
+            :disabled="compliments.length === 0"
             @click="rateTrip()"
           >
             {{ showChips ? 'Volgende' : 'Beoordeel deze reis' }}
