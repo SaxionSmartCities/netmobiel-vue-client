@@ -29,6 +29,12 @@ export class ItineraryState {
     },
     result: null,
   }
+  bookingRequest: BookingRequest = {
+    submitStatus: {
+      status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
+      message: '',
+    },
+  }
   cancelledTrips: Trip[] = []
 }
 
@@ -77,6 +83,10 @@ export interface PlanningRequest extends SearchCriteria {
 
 export interface PlanningResult {
   data: any
+}
+
+export interface BookingRequest {
+  submitStatus?: SubmitStatus
 }
 
 export interface Itinerary {}
