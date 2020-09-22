@@ -190,7 +190,10 @@ export default {
       })
     },
     onTripCancelled(selectedTrip) {
-      isStore.actions.deleteSelectedTrip(selectedTrip)
+      isStore.actions.deleteSelectedTrip({
+        tripId: selectedTrip.tripId,
+        displayWarning: true,
+      })
       this.$router.push('/tripCancelledPage')
     },
     onTripEdit(trip) {
