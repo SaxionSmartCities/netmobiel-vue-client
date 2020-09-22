@@ -50,6 +50,17 @@ function clearPlanningRequest(state: ItineraryState, payload: any) {
   }
 }
 
+function setBookingStatus(state: ItineraryState, payload: SubmitStatus) {
+  state.bookingRequest.submitStatus = payload
+}
+
+function clearBookingRequest(state: ItineraryState, payload: any) {
+  state.bookingRequest.submitStatus = {
+    status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
+    message: '',
+  }
+}
+
 function sortItineraries(state: ItineraryState, payload: Itinerary[]) {
   // @ts-ignore
   state.planningRequest.result!.data.itineraries.sort(payload)
@@ -113,6 +124,8 @@ export const buildMutations = (
     setPlanningResults: isBuilder.commit(setPlanningResults),
     clearPlanningResults: isBuilder.commit(clearPlanningResults),
     clearPlanningRequest: isBuilder.commit(clearPlanningRequest),
+    clearBookingRequest: isBuilder.commit(clearBookingRequest),
+    setBookingStatus: isBuilder.commit(setBookingStatus),
     sortItineraries: isBuilder.commit(sortItineraries),
     setSelectedTrip: isBuilder.commit(setSelectedTrip),
     setPlannedTripsCount: isBuilder.commit(setPlannedTripsCount),

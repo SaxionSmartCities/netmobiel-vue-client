@@ -67,7 +67,9 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
     .then(response => {
       if (response.status === 204) {
         //Succesful response, trip is deleted.
-        uiStore.actions.queueInfoNotification('Reis is succesvol geannuleerd')
+        if (payload.displayWarning) {
+          uiStore.actions.queueInfoNotification('Reis is succesvol geannuleerd')
+        }
         fetchTrips(context, {
           maxResults: constants.fetchTripsMaxResults,
           offset: 0,
@@ -94,6 +96,7 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
 }
 
 function storeSelectedTrip(context: ActionContext, payload: TripSelection) {
+  mutations.setBookingStatus({ status: 'PENDING' })
   const URL = BASE_URL + '/planner/trips'
   axios
     .post(URL, payload, {
@@ -103,16 +106,25 @@ function storeSelectedTrip(context: ActionContext, payload: TripSelection) {
       if (response.status == 201) {
         let message = 'Uw reis is bevestigd!'
         uiStore.actions.queueInfoNotification(message)
+        mutations.setBookingStatus({ status: 'SUCCESS' })
       } else {
         uiStore.actions.queueErrorNotification(response.data.message)
+        mutations.setBookingStatus({ status: 'FAILED' })
       }
     })
     .catch(error => {
+      mutations.setBookingStatus({ status: 'FAILED' })
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueErrorNotification(
-        'Fout bij het opslaan van de reis.'
-      )
+      if (error.response.status == 402) {
+        uiStore.actions.queueErrorNotification(
+          'U heeft onvoldoende credits voor deze reis'
+        )
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Fout bij het opslaan van de reis.'
+        )
+      }
     })
 }
 
@@ -154,6 +166,27 @@ function storeShoutOut(
     })
 }
 
+function deleteShoutOut(context: ActionContext, { shoutoutPlanId }: any) {
+  const URL = `${BASE_URL}/planner/shout-outs/${shoutoutPlanId}`
+  axios
+    .delete(URL, {
+      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+    })
+    .then(response => {
+      if (response.status == 204) {
+        uiStore.actions.queueInfoNotification('Je oproep is verwijderd')
+      } else {
+        uiStore.actions.queueErrorNotification(response.data.message)
+      }
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het verwijderen van uw oproep.'
+      )
+    })
+}
 function storeTravelOffer(
   context: ActionContext,
   { shoutoutPlanId, planRef, vehicleRef, driverRef }: any
@@ -398,6 +431,7 @@ export const buildActions = (
     deleteSelectedTrip: isBuilder.dispatch(deleteSelectedTrip),
     storeSelectedTrip: isBuilder.dispatch(storeSelectedTrip),
     storeShoutOut: isBuilder.dispatch(storeShoutOut),
+    deleteShoutOut: isBuilder.dispatch(deleteShoutOut),
     storeTravelOffer: isBuilder.dispatch(storeTravelOffer),
     fetchTrips: isBuilder.dispatch(fetchTrips),
     fetchCancelledTrips: isBuilder.dispatch(fetchCancelledTrips),
