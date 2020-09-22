@@ -57,6 +57,10 @@ export const buildGetters = (
     return state.cancelledTrips
   }, 'getCancelledTrips')
 
+  const getBookingStatus = isBuilder.read((state: ItineraryState) => {
+    return state.bookingRequest.submitStatus
+  }, 'getBookingStatus')
+
   return {
     get getPlanningRequest() {
       return getPlanningRequest()
@@ -96,6 +100,9 @@ export const buildGetters = (
     },
     get getCancelledTrips() {
       return getCancelledTrips()
+    },
+    get getBookingStatus() {
+      return getBookingStatus()
     },
   }
 }
