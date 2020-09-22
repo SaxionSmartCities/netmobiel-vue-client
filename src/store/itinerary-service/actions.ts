@@ -94,6 +94,7 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
 }
 
 function storeSelectedTrip(context: ActionContext, payload: TripSelection) {
+  mutations.setBookingStatus({ status: 'PENDING' })
   const URL = BASE_URL + '/planner/trips'
   axios
     .post(URL, payload, {
@@ -103,11 +104,14 @@ function storeSelectedTrip(context: ActionContext, payload: TripSelection) {
       if (response.status == 201) {
         let message = 'Uw reis is bevestigd!'
         uiStore.actions.queueInfoNotification(message)
+        mutations.setBookingStatus({ status: 'SUCCESS' })
       } else {
         uiStore.actions.queueErrorNotification(response.data.message)
+        mutations.setBookingStatus({ status: 'FAILED' })
       }
     })
     .catch(error => {
+      mutations.setBookingStatus({ status: 'FAILED' })
       // eslint-disable-next-line
       console.log(error)
       if (error.response.status == 402) {
