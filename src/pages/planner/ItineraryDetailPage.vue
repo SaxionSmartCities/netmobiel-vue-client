@@ -80,6 +80,17 @@ export default {
     showSection() {
       return this.showConfirmationButton
     },
+    bookingStatus() {
+      return isStore.getters.getBookingStatus
+    },
+  },
+  watch: {
+    bookingStatus(newValue) {
+      if (newValue.status === 'SUCCESS') {
+        isStore.mutations.clearBookingRequest()
+        this.$router.push('/tripPlanSubmitted')
+      }
+    },
   },
   created() {
     uiStore.mutations.showBackButton()
@@ -101,9 +112,7 @@ export default {
       }
     },
     confirmTrip() {
-      isStore.actions
-        .storeSelectedTrip(this.selectedTrip)
-        .then(() => this.$router.push('/tripPlanSubmitted'))
+      isStore.actions.storeSelectedTrip(this.selectedTrip)
     },
     showFullRouteOnMap() {
       this.showMap = true
