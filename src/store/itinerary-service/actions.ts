@@ -164,6 +164,27 @@ function storeShoutOut(
     })
 }
 
+function deleteShoutOut(context: ActionContext, { shoutoutPlanId }: any) {
+  const URL = `${BASE_URL}/planner/shout-outs/${shoutoutPlanId}`
+  axios
+    .delete(URL, {
+      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+    })
+    .then(response => {
+      if (response.status == 204) {
+        uiStore.actions.queueInfoNotification('Je oproep is verwijderd')
+      } else {
+        uiStore.actions.queueErrorNotification(response.data.message)
+      }
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het verwijderen van uw oproep.'
+      )
+    })
+}
 function storeTravelOffer(
   context: ActionContext,
   { shoutoutPlanId, planRef, vehicleRef, driverRef }: any
@@ -408,6 +429,7 @@ export const buildActions = (
     deleteSelectedTrip: isBuilder.dispatch(deleteSelectedTrip),
     storeSelectedTrip: isBuilder.dispatch(storeSelectedTrip),
     storeShoutOut: isBuilder.dispatch(storeShoutOut),
+    deleteShoutOut: isBuilder.dispatch(deleteShoutOut),
     storeTravelOffer: isBuilder.dispatch(storeTravelOffer),
     fetchTrips: isBuilder.dispatch(fetchTrips),
     fetchCancelledTrips: isBuilder.dispatch(fetchCancelledTrips),

@@ -444,7 +444,7 @@ export default {
       })
     },
     onTripCancelled() {
-      uiStore.actions.queueInfoNotification('Not yet implemented!')
+      isStore.actions.deleteShoutOut({ shoutoutPlanId: this.id })
     },
     onTravelOfferConfirmed(itinerary) {
       const { from, to, nrSeats } = this.trip
