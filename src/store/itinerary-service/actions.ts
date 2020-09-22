@@ -185,7 +185,7 @@ function fetchTrips(
   context: ActionContext,
   { pastTrips, offset, maxResults, until, since, sortDir }: any
 ) {
-  const params: any = { state: 'SCHEDULED' }
+  const params: any = {}
   params['maxResults'] = maxResults || constants.defaultMaxResults
   params['offset'] = offset || 0
   until && (params['until'] = until)
@@ -313,6 +313,34 @@ function fetchTrip(context: ActionContext, payload: any) {
     })
 }
 
+function confirmTrip(context: ActionContext, payload: any) {
+  const URL = `${BASE_URL}/planner/trips/${payload.id}/confirm/true`
+  const data = {}
+  const config = {
+    headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+  }
+  axios
+    .put(URL, data, config)
+    .then(function(resp) {
+      if (resp.status == 204) {
+        // Ride is confirmed
+        uiStore.actions.queueInfoNotification('Uw reis is bevestigd.')
+        fetchTrip(context, { id: payload.id })
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Fout bij het bevestigen van uw reis.'
+        )
+      }
+    })
+    .catch(function(error) {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het bevestigen van uw reis.'
+      )
+    })
+}
+
 function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
   const { id, from, to = {}, travelTime } = payload
   const URL = `${BASE_URL}/planner/shout-outs/${id}/plan`
@@ -377,6 +405,7 @@ export const buildActions = (
     fetchMyShoutOuts: isBuilder.dispatch(fetchMyShoutOuts),
     fetchShoutOut: isBuilder.dispatch(fetchShoutOut),
     fetchTrip: isBuilder.dispatch(fetchTrip),
+    confirmTrip: isBuilder.dispatch(confirmTrip),
     submitShoutOutPlanningsRequest: isBuilder.dispatch(
       submitShoutOutPlanningsRequest
     ),

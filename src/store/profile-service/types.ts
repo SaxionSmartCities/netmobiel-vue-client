@@ -1,7 +1,7 @@
 export class ProfileState {
   user: User = {
     // Access token
-    accessToken: '',
+    accessToken: null,
 
     // Credentials provided by identity provider.
     givenName: '',

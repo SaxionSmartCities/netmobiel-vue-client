@@ -40,9 +40,14 @@ export default {
   },
   mounted() {
     if (this.$keycloak.authenticated) {
+      psStore.actions.fetchProfile()
       psStore.mutations.setUserToken(this.$keycloak.token)
-      // Preserve query string when routing to home.
-      this.$router.push({ path: '/home', query: this.$route.query })
+      if (this.$route.query.redirect) {
+        this.$router.push({ path: this.$route.query.redirect })
+      } else {
+        // Preserve query string when routing to home.
+        this.$router.push({ path: '/home', query: this.$route.query })
+      }
     }
   },
 }

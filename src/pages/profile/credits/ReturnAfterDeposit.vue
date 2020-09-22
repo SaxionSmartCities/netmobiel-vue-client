@@ -21,6 +21,8 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import * as crsStore from '@/store/credits-service'
 
+const loc = new URL(location.href)
+
 export default {
   name: 'ConfirmDeposit',
   components: {
@@ -35,7 +37,7 @@ export default {
     const timer = setInterval(() => {
       this.progress = this.progress + '.'
     }, 50)
-    const params = new URL(location.href).searchParams
+    const params = loc.searchParams
     crsStore.actions
       .getDepositStatus({
         project_id: params.get('project_id'),

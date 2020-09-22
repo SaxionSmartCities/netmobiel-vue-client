@@ -253,7 +253,11 @@ export default {
       } else {
         result.push({ label: 'Reisduur', value: 'Onbekend' })
       }
-      const kilometers = getDistance(this.trip.from, this.trip.to, 1000) / 1000
+      const hasCoordinates =
+        this.trip.from !== undefined && this.trip.to !== undefined
+      const kilometers = hasCoordinates
+        ? getDistance(this.trip.from, this.trip.to, 1000) / 1000
+        : 'Onbekend'
       result.push({ label: 'Afstand', value: `${kilometers} km` })
       //TODO: Determine the real cost.
       // if (this.localIsMine) {

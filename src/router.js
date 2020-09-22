@@ -318,9 +318,9 @@ router.beforeEach((to, from, next) => {
   if (
     to.path !== '/' &&
     to.path !== '/createUser' &&
-    psStore.getters.getUser.accessToken === undefined
+    psStore.getters.getUser.accessToken === null
   ) {
-    next('/')
+    next(`/?redirect=${to.path}`)
   } else {
     next()
   }

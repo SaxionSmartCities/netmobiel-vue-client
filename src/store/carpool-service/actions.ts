@@ -210,6 +210,34 @@ function fetchRide(context: ActionContext, payload: any) {
     })
 }
 
+function confirmRide(context: ActionContext, payload: any) {
+  const URL = `${BASE_URL}/rideshare/rides/${payload.id}/confirm/true`
+  const data = {}
+  const config = {
+    headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+  }
+  axios
+    .put(URL, data, config)
+    .then(function(resp) {
+      if (resp.status == 204) {
+        // Ride is confirmed
+        uiStore.actions.queueInfoNotification('Uw rit is bevestigd.')
+        fetchRide(context, { id: payload.id })
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Fout bij het bevestigen van uw rit.'
+        )
+      }
+    })
+    .catch(function(error) {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het bevestigen van uw rit.'
+      )
+    })
+}
+
 function deleteRide(context: ActionContext, payload: any) {
   const URL = BASE_URL + `/rideshare/rides/` + payload.id
   //TODO: Pass reason to message service.
@@ -264,6 +292,7 @@ export const buildActions = (
     submitRide: csBuilder.dispatch(submitRide),
     fetchRides: csBuilder.dispatch(fetchRides),
     fetchRide: csBuilder.dispatch(fetchRide),
+    confirmRide: csBuilder.dispatch(confirmRide),
     deleteRide: csBuilder.dispatch(deleteRide),
     fetchUser: csBuilder.dispatch(fetchUser),
   }
