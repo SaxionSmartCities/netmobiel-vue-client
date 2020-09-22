@@ -244,7 +244,10 @@ export default {
         itinerary: selected.itinerary,
       }
       isStore.mutations.setSelectedTrip(selectedTrip)
-      this.$router.push('/itineraryDetailPage')
+      this.$router.push({
+        name: 'itineraryDetailPage',
+        params: { tripId: String(this.tripId) },
+      })
     },
     createShoutOut() {
       isStore.actions.storeShoutOut(this.searchCriteria)

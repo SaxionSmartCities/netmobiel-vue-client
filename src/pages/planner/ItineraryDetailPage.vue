@@ -62,6 +62,12 @@ export default {
     ContentPane,
     TripDetails,
   },
+  props: {
+    tripId: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       showMap: false,
@@ -113,6 +119,13 @@ export default {
     },
     confirmTrip() {
       isStore.actions.storeSelectedTrip(this.selectedTrip)
+      if (this.tripId !== '-1') {
+        // We are editing a trip so remove the old one.
+        isStore.actions.deleteSelectedTrip({
+          tripId: this.tripId,
+          displayWarning: false,
+        })
+      }
     },
     showFullRouteOnMap() {
       this.showMap = true

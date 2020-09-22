@@ -160,9 +160,10 @@ const router = new Router({
       name: 'privacySecurity',
     },
     {
-      path: '/itineraryDetailPage',
+      path: '/itineraryDetailPage/:tripId',
       component: ItineraryDetailPage,
       name: 'itineraryDetailPage',
+      props: true,
     },
     {
       path: '/profileNotificationOptions',

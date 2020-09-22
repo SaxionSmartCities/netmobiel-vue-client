@@ -67,7 +67,9 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
     .then(response => {
       if (response.status === 204) {
         //Succesful response, trip is deleted.
-        uiStore.actions.queueInfoNotification('Reis is succesvol geannuleerd')
+        if (payload.displayWarning) {
+          uiStore.actions.queueInfoNotification('Reis is succesvol geannuleerd')
+        }
         fetchTrips(context, {
           maxResults: constants.fetchTripsMaxResults,
           offset: 0,
