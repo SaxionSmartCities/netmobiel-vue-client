@@ -64,7 +64,7 @@
       </v-col>
     </v-row>
     <v-row class="py-0">
-      <v-col v-if="rides.length === 0" class="py-0 px-1">
+      <v-col v-if="rides.length === 0 && trips.length === 0" class="py-0 px-1">
         <v-row dense>
           <v-col class="py-0">
             <span class="font-italic">
@@ -80,7 +80,7 @@
               block
               depressed
               color="button"
-              to="/modeSelection"
+              @click="routeToMode()"
             >
               Direct aan de slag!
             </v-btn>
@@ -97,6 +97,16 @@
               @rideSelected="onRideSelected"
             >
             </ride-card>
+          </v-col>
+        </v-row>
+        <v-row v-for="(trip, index) in trips" :key="index" xs12>
+          <v-col class="px-1 py-0">
+            <travel-card
+              :trip-id="trip.id"
+              :itinerary="trip.itinerary"
+              class="trip-card"
+              @on-trip-selected="onTripSelected"
+            />
           </v-col>
         </v-row>
         <v-row>
@@ -126,6 +136,7 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
+import TravelCard from '@/components/cards/TravelCard.vue'
 import RideCard from '@/components/cards/RideCard.vue'
 import UpdateCard from '@/components/cards/UpdateCard.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
@@ -134,10 +145,12 @@ import * as uiStore from '@/store/ui'
 import * as chsStore from '@/store/charity-service'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   components: {
     ContentPane,
+    TravelCard,
     RideCard,
     UpdateCard,
     RoundUserImage,
@@ -163,6 +176,11 @@ export default {
       }
       return sortedList
     },
+    trips() {
+      return isStore.getters.getPlannedTrips.filter(
+        trip => trip.state !== 'CANCELLED'
+      )
+    },
     timeOfDayGreeting() {
       let currentHour = moment().format('HH')
 
@@ -184,13 +202,36 @@ export default {
   mounted() {
     //TODO: How many cards do we want?
     csStore.actions.fetchRides({ offset: 0, maxResults: 2 })
+    isStore.actions.fetchTrips({
+      offset: 0,
+      maxResults: 2,
+      since: moment().format(),
+    })
   },
   methods: {
+    onTripSelected(selected) {
+      isStore.actions.fetchTrip({ id: selected.tripId })
+      this.$router.push('/tripDetailPage')
+    },
     onRideSelected(id) {
       this.$router.push({
         name: 'rideDetailPage',
         params: { id: String(id) },
       })
+    },
+    routeToMode() {
+      let newRoute = ''
+      if (this.user.profile.userRole === 'passenger') {
+        newRoute = '/search'
+      } else if (this.user.profile.userRole === 'driver') {
+        newRoute = '/plan'
+      } else {
+        newRoute = '/modeSelection'
+      }
+      // We cannot route to the same page.
+      if (this.$router.currentRoute.path !== newRoute) {
+        this.$router.push(newRoute)
+      }
     },
   },
 }
