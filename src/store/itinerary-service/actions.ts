@@ -110,9 +110,15 @@ function storeSelectedTrip(context: ActionContext, payload: TripSelection) {
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueErrorNotification(
-        'Fout bij het opslaan van de reis.'
-      )
+      if (error.response.status == 402) {
+        uiStore.actions.queueErrorNotification(
+          'U heeft onvoldoende credits voor deze reis'
+        )
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Fout bij het opslaan van de reis.'
+        )
+      }
     })
 }
 
