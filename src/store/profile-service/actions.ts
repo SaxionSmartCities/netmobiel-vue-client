@@ -152,7 +152,7 @@ function fetchUserReviews(context: ActionContext, { profileId }: any) {
       params: { receiverId: profileId },
     })
     .then(response => {
-      return response.data.reviews
+      mutations.setPublicReviews(response.data.reviews)
     })
 }
 

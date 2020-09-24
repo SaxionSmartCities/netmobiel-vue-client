@@ -11,7 +11,7 @@ export class ProfileState {
       interests: [],
     },
     compliments: [],
-    reviews: null,
+    reviews: [],
   }
   user: User = {
     // Access token
@@ -77,13 +77,19 @@ export class ProfileState {
 export interface ExternalUser {
   profile: PublicProfile
   compliments: Compliment[] | []
-  reviews: any
+  reviews: Review[] | []
 }
 
 export interface Compliment {
   sender: any
   receiver: any
 }
+
+export interface Review {
+  sender: any
+  receiver: any
+}
+
 export interface PublicProfile {
   id: string | null
   image: string | null
