@@ -7,6 +7,7 @@ import {
   ProfileState,
   RidePlanOptions,
   CoronaCheck,
+  PublicProfile,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 
@@ -96,6 +97,10 @@ function setComplimentTypes(
   state.complimentTypes = complimentTypes
 }
 
+function setPublicProfile(state: ProfileState, profile: PublicProfile) {
+  state.externalUser.profile = profile
+}
+
 export const buildMutations = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -112,5 +117,6 @@ export const buildMutations = (
     setPrivacySecurityValue: psBuilder.commit(setPrivacySecurityValue),
     setCoronaCheck: psBuilder.commit(setCoronaCheck),
     setComplimentTypes: psBuilder.commit(setComplimentTypes),
+    setPublicProfile: psBuilder.commit(setPublicProfile),
   }
 }
