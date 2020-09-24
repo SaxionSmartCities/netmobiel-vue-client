@@ -1,32 +1,6 @@
 <template>
   <content-pane>
-    <v-row v-if="user">
-      <v-col class="shrink">
-        <round-user-image
-          :profile-image="userProfileImage()"
-          :image-size="100"
-          :avatar-size="105"
-        ></round-user-image>
-      </v-col>
-      <v-col>
-        <div class="d-flex flex-column shrink">
-          <span class="title">
-            {{ user.firstName + ' ' + user.lastName }}
-          </span>
-          <span class="body-1">{{ user.address.locality }}</span>
-        </div>
-        <div class="d-flex flex-column mt-3">
-          <span class="subtitle-1">35-40 jaar</span>
-          <span class="subtitle-1">
-            Houdt van: {{ user.interests.join(', ') }}
-          </span>
-        </div>
-        <v-btn depressed color="button" rounded class="mt-2" small>
-          <v-icon>add</v-icon>
-          Toevoegen als vriend
-        </v-btn>
-      </v-col>
-    </v-row>
+    <public-profile-info :profile="profile" />
     <v-row class="mt-2">
       <v-col>
         <highlighted-info
@@ -71,7 +45,7 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
-import RoundUserImage from '@/components/common/RoundUserImage'
+import PublicProfileInfo from '@/components/profile/PublicProfileInfo'
 import config from '@/config/config'
 import Compliments from '@/components/profile/Compliments'
 import ReviewItem from '@/components/profile/ReviewItem'
@@ -84,7 +58,7 @@ export default {
     HighlightedInfo,
     ReviewItem,
     Compliments,
-    RoundUserImage,
+    PublicProfileInfo,
     ContentPane,
   },
   props: {
@@ -92,13 +66,16 @@ export default {
   },
   data() {
     return {
-      user: null,
+      user: {},
       compliments: null,
       reviews: null,
       profileImages: [],
     }
   },
   computed: {
+    profile() {
+      return this.user
+    },
     refinedCompliments() {
       const result = {}
       for (const comp of this.compliments) {
