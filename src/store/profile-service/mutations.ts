@@ -2,6 +2,7 @@
 import VueJwtDecode from 'vue-jwt-decode'
 import { ModuleBuilder } from 'vuex-typex'
 import {
+  Compliment,
   ComplimentType,
   Profile,
   ProfileState,
@@ -101,6 +102,10 @@ function setPublicProfile(state: ProfileState, profile: PublicProfile) {
   state.externalUser.profile = profile
 }
 
+function setPublicCompliments(state: ProfileState, compliments: Compliment[]) {
+  state.externalUser.compliments = compliments
+}
+
 export const buildMutations = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -118,5 +123,6 @@ export const buildMutations = (
     setCoronaCheck: psBuilder.commit(setCoronaCheck),
     setComplimentTypes: psBuilder.commit(setComplimentTypes),
     setPublicProfile: psBuilder.commit(setPublicProfile),
+    setPublicCompliments: psBuilder.commit(setPublicCompliments),
   }
 }

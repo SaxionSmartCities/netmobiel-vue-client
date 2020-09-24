@@ -81,7 +81,14 @@ function fetchUserCompliments(context: ActionContext, { profileId }: any) {
       params: { receiverId: profileId },
     })
     .then(response => {
-      return response.data
+      mutations.setPublicCompliments(response.data.compliments)
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueInfoNotification(
+        `Fout bij het ophalen van de complimenten`
+      )
     })
 }
 

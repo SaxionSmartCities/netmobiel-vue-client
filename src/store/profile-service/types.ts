@@ -1,4 +1,5 @@
 export class ProfileState {
+  complimentTypes: ComplimentType[] = []
   externalUser: ExternalUser = {
     profile: {
       id: null,
@@ -9,7 +10,7 @@ export class ProfileState {
       address: {},
       interests: [],
     },
-    compliments: null,
+    compliments: [],
     reviews: null,
   }
   user: User = {
@@ -71,15 +72,18 @@ export class ProfileState {
       creditHistory: [],
     },
   }
-  complimentTypes: ComplimentType[] = []
 }
 
 export interface ExternalUser {
   profile: PublicProfile
-  compliments: any
+  compliments: Compliment[] | []
   reviews: any
 }
 
+export interface Compliment {
+  sender: any
+  receiver: any
+}
 export interface PublicProfile {
   id: string | null
   image: string | null
