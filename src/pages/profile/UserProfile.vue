@@ -1,14 +1,12 @@
 <template>
-  <content-pane>
+  <content-pane class="pa-0">
     <public-profile-info :profile="profile" />
-    <v-row class="mt-2">
-      <v-col>
-        <highlighted-info
-          v-if="totalCompliments"
-          :compliments-received="totalCompliments"
-        ></highlighted-info>
-      </v-col>
-    </v-row>
+    <highlighted-info
+      :rides-driven="ridesDriven"
+      :compliments-received="totalCompliments"
+      :credits-donated="creditsDonated"
+      class="mt-3"
+    />
     <v-row class="mt-2">
       <v-col>
         <span class="text-color-primary caption text-uppercase">
@@ -75,6 +73,14 @@ export default {
   computed: {
     profile() {
       return this.user
+    },
+    ridesDriven() {
+      // TODO: fetch from backend
+      return 0
+    },
+    creditsDonated() {
+      // TODO: fetch from backend
+      return 0
     },
     refinedCompliments() {
       const result = {}
