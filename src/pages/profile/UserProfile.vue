@@ -7,37 +7,23 @@
       :credits-donated="creditsDonated"
       class="mt-3"
     />
-    <v-row class="mt-2">
+    <v-row class="mt-3">
       <v-col>
-        <span class="text-color-primary caption text-uppercase">
-          Complimenten
-        </span>
-        <compliments
-          v-if="compliments"
-          class="mt-2"
-          :compliments="refinedCompliments"
-        ></compliments>
+        <h4 class="netmobiel">Complimenten</h4>
       </v-col>
     </v-row>
-    <v-row class="mt-2">
+    <compliments :compliments="refinedCompliments" />
+    <v-row class="mt-3">
       <v-col>
-        <span class="text-color-primary caption text-uppercase">
-          Reviews
-        </span>
-        <div class="reviews-container mt-1">
-          <review-item
-            v-for="(review, index) in reviews"
-            :key="index"
-            :review="review"
-            :profile-image="profileImages ? profileImages[index] : null"
-          >
-          </review-item>
-        </div>
-        <v-btn class="float-right" color="primary" rounded outlined small>
-          Bekijk alle reviews
-        </v-btn>
+        <h4 class="netmobiel">Reviews</h4>
       </v-col>
     </v-row>
+    <review-item
+      v-for="(review, index) in reviews"
+      :key="index"
+      :review="review"
+      :profile-image="profileImages ? profileImages[index] : null"
+    />
   </content-pane>
 </template>
 
@@ -64,15 +50,18 @@ export default {
   },
   data() {
     return {
-      user: {},
-      compliments: null,
-      reviews: null,
       profileImages: [],
     }
   },
   computed: {
     profile() {
-      return this.user
+      return psStore.getters.getExternalUser.profile
+    },
+    compliments() {
+      return psStore.getters.getExternalUser.compliments
+    },
+    reviews() {
+      return psStore.getters.getExternalUser.reviews
     },
     ridesDriven() {
       // TODO: fetch from backend
@@ -84,11 +73,13 @@ export default {
     },
     refinedCompliments() {
       const result = {}
-      for (const comp of this.compliments) {
-        if (!result[comp.complimentType]) {
-          result[comp.complimentType] = 1
-        } else {
-          result[comp.complimentType]++
+      if (this.compliments) {
+        for (const comp of this.compliments) {
+          if (!result[comp.complimentType]) {
+            result[comp.complimentType] = 1
+          } else {
+            result[comp.complimentType]++
+          }
         }
       }
       return result
@@ -103,13 +94,17 @@ export default {
     },
   },
   mounted() {
-    this.fetchProfilePageInformation()
+    psStore.actions.fetchUserProfile({
+      profileId: this.profileId,
+    })
+    psStore.actions.fetchUserCompliments({
+      profileId: this.profileId,
+    })
+    psStore.actions.fetchUserReviews({
+      profileId: this.profileId,
+    })
   },
   methods: {
-    userProfileImage() {
-      if (this.user.image) return config.BASE_URL + this.user.image
-      else return null
-    },
     fetchProfileImages() {
       this.reviews.forEach(review => {
         psStore.actions
@@ -120,31 +115,6 @@ export default {
             this.profileImages.push(config.BASE_URL + res.image)
           })
       })
-    },
-    fetchProfilePageInformation() {
-      //Fetch profile of user
-      psStore.actions
-        .fetchUserProfile({
-          profileId: this.profileId,
-        })
-        .then(res => {
-          this.user = res
-        })
-      //Fetch compliments of user
-      psStore.actions
-        .fetchUserCompliments({
-          profileId: this.profileId,
-        })
-        .then(res => {
-          this.compliments = res.compliments
-        })
-      //Fetch reviews of user
-      psStore.actions
-        .fetchUserReviews({ profileId: this.profileId })
-        .then(res => {
-          this.reviews = res
-          this.fetchProfileImages()
-        })
     },
   },
 }
