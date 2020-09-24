@@ -31,6 +31,7 @@
 <script>
 import RoundUserImage from '@/components/common/RoundUserImage'
 import config from '@/config/config'
+import moment from 'moment'
 
 export default {
   name: 'PublicProfileInfo',
@@ -53,8 +54,9 @@ export default {
       return this.profile?.address?.locality || 'Onbekend adres'
     },
     age() {
-      return this.profile?.age
-        ? this.profile.age + ' jaar'
+      return this.profile?.dateOfBirth
+        ? moment().diff(moment(this.profile.dateOfBirth), 'years', false) +
+            ' jaar'
         : 'Leeftijd onbekend'
     },
     interests() {
