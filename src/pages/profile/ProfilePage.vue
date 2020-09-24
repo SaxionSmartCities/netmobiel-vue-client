@@ -68,30 +68,37 @@
           </v-col>
         </v-row>
       </v-col>
+    </v-row>
+    <v-row dense>
       <v-col class="pa-0">
-        <v-layout column>
-          <v-flex
-            v-for="item in items"
-            :key="item.name"
-            @click="$router.push({ name: item.routeName })"
-          >
-            <v-divider></v-divider>
-            <v-row
-              align-content="center"
-              class="my-3 ml-0 mr-1"
-              :class="{ 'no-route': !item.routeName }"
-            >
-              <v-icon>{{ item.icon }}</v-icon>
-              <span class="pl-4 body-1 font-weight-light align-self-center">
-                {{ item.name }}
-              </span>
-              <v-spacer></v-spacer>
-              <v-icon>chevron_right</v-icon>
-            </v-row>
-          </v-flex>
-          <v-divider></v-divider>
-        </v-layout>
+        <v-divider></v-divider>
       </v-col>
+    </v-row>
+    <v-row
+      v-for="item in items"
+      :key="item.name"
+      class="pa-0 ml-0 mr-1"
+      align-content="center"
+      :class="{ 'no-route': !item.routeName }"
+      @click="!item.routeName || $router.push({ name: item.routeName })"
+    >
+      <v-col class="pa-0">
+        <v-row dense class="py-3">
+          <v-icon class="pl-1">{{ item.icon }}</v-icon>
+          <span class="pl-4 body-1 font-weight-light align-self-center">
+            {{ item.name }}
+          </span>
+          <v-spacer></v-spacer>
+          <v-icon>chevron_right</v-icon>
+        </v-row>
+        <v-row dense>
+          <v-col class="py-0">
+            <v-divider></v-divider>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col>
         <v-card outlined class="mt-2" @click="logOut">
           <v-row>
