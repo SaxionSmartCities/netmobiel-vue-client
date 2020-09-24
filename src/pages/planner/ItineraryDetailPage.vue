@@ -62,6 +62,12 @@ export default {
     ContentPane,
     TripDetails,
   },
+  props: {
+    tripId: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       showMap: false,
@@ -79,6 +85,17 @@ export default {
     },
     showSection() {
       return this.showConfirmationButton
+    },
+    bookingStatus() {
+      return isStore.getters.getBookingStatus
+    },
+  },
+  watch: {
+    bookingStatus(newValue) {
+      if (newValue.status === 'SUCCESS') {
+        isStore.mutations.clearBookingRequest()
+        this.$router.push('/tripPlanSubmitted')
+      }
     },
   },
   created() {
@@ -101,9 +118,14 @@ export default {
       }
     },
     confirmTrip() {
-      isStore.actions
-        .storeSelectedTrip(this.selectedTrip)
-        .then(() => this.$router.push('/tripPlanSubmitted'))
+      isStore.actions.storeSelectedTrip(this.selectedTrip)
+      if (this.tripId !== '-1') {
+        // We are editing a trip so remove the old one.
+        isStore.actions.deleteSelectedTrip({
+          tripId: this.tripId,
+          displayWarning: false,
+        })
+      }
     },
     showFullRouteOnMap() {
       this.showMap = true
