@@ -5,7 +5,6 @@ import { mutations } from '@/store/carpool-service/index'
 import * as uiStore from '@/store/ui'
 import axios from 'axios'
 import config from '@/config/config'
-import moment from 'moment'
 
 type ActionContext = BareActionContext<CarpoolState, RootState>
 
