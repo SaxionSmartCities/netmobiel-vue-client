@@ -13,6 +13,10 @@ export const buildGetters = (
     return state.user.profile
   }, 'getProfile')
 
+  const getExternalUser = psBuilder.read((state: ProfileState) => {
+    return state.externalUser
+  }, 'getExternalUser')
+
   const getComplimentTypes = psBuilder.read((state: ProfileState) => {
     return state.complimentTypes
   }, 'getComplimentTypes')
@@ -34,6 +38,9 @@ export const buildGetters = (
     },
     get getProfile() {
       return getProfile()
+    },
+    get getExternalUser() {
+      return getExternalUser()
     },
     get getComplimentTypes() {
       return getComplimentTypes()
