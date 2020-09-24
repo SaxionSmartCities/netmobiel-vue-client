@@ -1,11 +1,11 @@
 <template>
   <content-pane>
-    <v-layout column>
-      <v-flex>
+    <v-container>
+      <v-row>
         <h1>Welkom bij Netmobiel!</h1>
-      </v-flex>
-      <v-flex mt-3>
-        <h2 class="text-primary">Lorem ipsum dolor</h2>
+      </v-row>
+      <v-row>
+        <h2 class="mt-3 text-primary">Lorem ipsum dolor</h2>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
@@ -48,8 +48,8 @@
           feugiat. Auctor neque vitae tempus quam pellentesque nec nam aliquam
           sem.
         </p>
-      </v-flex>
-    </v-layout>
+      </v-row>
+    </v-container>
   </content-pane>
 </template>
 
