@@ -44,6 +44,7 @@ import Compliments from '@/components/profile/Compliments'
 import ReviewItem from '@/components/profile/ReviewItem'
 import HighlightedInfo from '@/components/profile/HighlightedInfo'
 import * as psStore from '@/store/profile-service'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'UserProfile',
@@ -112,6 +113,9 @@ export default {
     psStore.actions.fetchUserReviews({
       profileId: this.profileId,
     })
+  },
+  created() {
+    uiStore.mutations.showBackButton()
   },
   methods: {
     fetchProfileImages() {
