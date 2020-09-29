@@ -18,12 +18,21 @@
         <h4 class="netmobiel">Reviews</h4>
       </v-col>
     </v-row>
-    <review-item
-      v-for="(review, index) in reviews"
-      :key="index"
-      :review="review"
-      :profile-image="profileImages ? profileImages[index] : null"
-    />
+    <v-row v-if="reviews && reviews.length === 0">
+      <v-col>
+        Nog geen review ontvangen.
+      </v-col>
+    </v-row>
+    <v-row v-else>
+      <v-col>
+        <review-item
+          v-for="(review, index) in reviews"
+          :key="index"
+          :review="review"
+          :profile-image="profileImages ? profileImages[index] : null"
+        />
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 
