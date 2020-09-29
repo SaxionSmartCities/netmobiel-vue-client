@@ -15,17 +15,13 @@ import ModeSelectionPage from './pages/planner/ModeSelectionPage.vue'
 import NotificationOptionsPage from './pages/profile/NotificationOptionsPage.vue'
 import OnboardingComplete from './pages/OnboardingComplete.vue'
 import OnboardingPage from './pages/OnboardingPage.vue'
-import PrivacySecurityPage from './pages/profile/PrivacySecurityPage.vue'
-import PrivacyStatementPage from './pages/profile/PrivacyStatementPage.vue'
 import CarsPage from './pages/planner/CarsPage.vue'
 import CarAddPage from './pages/planner/CarAddPage.vue'
-import CarEditPage from './pages/planner/CarEditPage.vue'
 import ProfilePage from './pages/profile/ProfilePage.vue'
 import SearchLocationPage from './pages/planner/SearchLocationPage'
 import SearchOptionsPage from './pages/planner/SearchOptionsPage'
 import SearchPage from './pages/planner/SearchPage.vue'
 import SearchResultsPage from './pages/planner/SearchResultsPage.vue'
-import TermsOfUsePage from './pages/profile/TermsOfUsePage.vue'
 import RegistrationPage from './pages/RegistrationPage.vue'
 import RideDetailPage from './pages/saved/RideDetailPage.vue'
 import RidePlanPage from './pages/planner/RidePlanPage.vue'
@@ -145,21 +141,6 @@ const router = new Router({
       props: true,
     },
     {
-      path: '/termsOfUse',
-      component: TermsOfUsePage,
-      name: 'termsOfUse',
-    },
-    {
-      path: '/privacyStatement',
-      component: PrivacyStatementPage,
-      name: 'privacyStatement',
-    },
-    {
-      path: '/privacySecurity',
-      component: PrivacySecurityPage,
-      name: 'privacySecurity',
-    },
-    {
       path: '/itineraryDetailPage/:tripId',
       component: ItineraryDetailPage,
       name: 'itineraryDetailPage',
@@ -210,11 +191,6 @@ const router = new Router({
       path: '/AddCar',
       component: CarAddPage,
       name: 'CarAddPage',
-    },
-    {
-      path: '/EditCar',
-      component: CarEditPage,
-      name: 'CarEditPage',
     },
     {
       path: '/onboardingPage',

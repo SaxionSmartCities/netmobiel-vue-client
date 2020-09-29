@@ -143,13 +143,11 @@ export default {
           icon: 'lock',
           name: 'Privacy & beveiliging',
           routeName: '',
-          // route: '/privacySecurity',
         },
         {
           icon: 'chrome_reader_mode',
           name: 'Gebruiksvoorwaarden',
           routeName: '',
-          // route: '/termsOfUse',
         },
         { icon: 'error_outline', name: 'Over deze app', routeName: 'about' },
         { icon: 'cancel', name: 'Verwijder mijn account', routeName: '' },
