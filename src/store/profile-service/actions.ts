@@ -30,8 +30,10 @@ function fetchProfile(context: ActionContext) {
           ...context.state.user.profile,
           ...response.data.profiles[0],
         }
-        const imgSrc = `${BASE_URL}${response.data.profiles[0].image}`
-        profile.image = imgSrc
+        if (profile.image) {
+          // turn relative image URL into absolute URL
+          profile.image = `${BASE_URL}${response.data.profile.image}`
+        }
         if (!!localStorage.fcm && localStorage.fcm !== profile.fcmToken) {
           profile.fcmToken = localStorage.fcm
           updateProfile(context, profile)
