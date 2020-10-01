@@ -56,7 +56,7 @@ export default {
     formatTime() {
       return moment(this.statement.transactionTime)
         .locale('nl')
-        .format('hh:mm')
+        .format('HH:mm')
     },
     transactionColor() {
       return this.statement.type === 'CREDIT' ? 'text-green' : 'text-red'
