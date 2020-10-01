@@ -56,7 +56,6 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
       if (response.data.profiles.length > 0) {
         let profile = { ...response.data.profiles[0] }
         profile.dateOfBirth = Date.parse(response.data.profiles[0].dateOfBirth)
-        console.log(profile)
         mutations.setPublicProfile(profile)
       }
     })
