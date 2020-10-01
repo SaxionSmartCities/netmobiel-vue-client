@@ -59,7 +59,14 @@
                     Beheer credits
                   </v-btn>
                   <div class="py-1"></div>
-                  <v-btn rounded depressed outlined color="primary" small>
+                  <v-btn
+                    rounded
+                    depressed
+                    outlined
+                    small
+                    color="primary"
+                    @click="navReview"
+                  >
                     Bekijk reviews
                   </v-btn>
                 </div>
@@ -203,6 +210,14 @@ export default {
         })
         fileReader.readAsDataURL(event.target.files[0])
       }
+    },
+    navReview() {
+      this.$router.push({
+        name: 'userProfile',
+        params: {
+          profileId: psStore.getters.getUser.profile.id,
+        },
+      })
     },
   },
 }

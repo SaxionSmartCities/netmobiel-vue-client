@@ -1,23 +1,32 @@
 <template>
-  <div class="compliments-container">
-    <div
-      v-for="compliment in Object.keys(compliments)"
-      :key="compliment"
-      class="compliment"
-    >
-      <span class="body-2">{{ compliment }}</span>
-      <div class="tip caption">{{ compliments[compliment] }}</div>
-    </div>
-  </div>
+  <v-row>
+    <v-col v-if="noCompliments">
+      Nog geen complimenten ontvangen.
+    </v-col>
+    <v-col v-else>
+      <div class="compliments-container">
+        <div
+          v-for="compliment in Object.keys(compliments)"
+          :key="compliment"
+          class="compliment"
+        >
+          <span class="body-2">{{ compliment }}</span>
+          <div class="tip caption">{{ compliments[compliment] }}</div>
+        </div>
+      </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
 export default {
   name: 'Compliments',
   props: {
-    compliments: {
-      type: Object,
-      required: true,
+    compliments: { type: Object, required: true },
+  },
+  computed: {
+    noCompliments() {
+      return !this.compliments || Object.keys(this.compliments).length === 0
     },
   },
 }

@@ -1,9 +1,10 @@
+import axios from 'axios'
 import config from '@/config/config'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { Profile, ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { mutations } from '@/store/profile-service'
-import axios from 'axios'
+import * as uiStore from '@/store/ui'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -45,14 +46,26 @@ function fetchProfile(context: ActionContext) {
     })
 }
 
-function fetchUserProfile(context: ActionContext, { profileId }: any) {
+function fetchPublicProfile(context: ActionContext, { profileId }: any) {
   const URL = BASE_URL + '/profiles/' + profileId
   return axios
     .get(URL, {
       headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
     .then(response => {
-      return response.data.profiles[0]
+      if (response.data.profiles.length > 0) {
+        let profile = { ...response.data.profiles[0] }
+        profile.dateOfBirth = Date.parse(response.data.profiles[0].dateOfBirth)
+        console.log(profile)
+        mutations.setPublicProfile(profile)
+      }
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueInfoNotification(
+        `Fout bij het ophalen van het profiel`
+      )
     })
 }
 
@@ -68,7 +81,14 @@ function fetchUserCompliments(context: ActionContext, { profileId }: any) {
       params: { receiverId: profileId },
     })
     .then(response => {
-      return response.data
+      mutations.setPublicCompliments(response.data.compliments)
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueInfoNotification(
+        `Fout bij het ophalen van de complimenten`
+      )
     })
 }
 
@@ -132,7 +152,7 @@ function fetchUserReviews(context: ActionContext, { profileId }: any) {
       params: { receiverId: profileId },
     })
     .then(response => {
-      return response.data.reviews
+      mutations.setPublicReviews(response.data.reviews)
     })
 }
 
@@ -242,7 +262,7 @@ export const buildActions = (
 ) => {
   return {
     fetchProfile: psBuilder.dispatch(fetchProfile),
-    fetchUserProfile: psBuilder.dispatch(fetchUserProfile),
+    fetchUserProfile: psBuilder.dispatch(fetchPublicProfile),
     fetchUserCompliments: psBuilder.dispatch(fetchUserCompliments),
     fetchComplimentTypes: psBuilder.dispatch(fetchComplimentTypes),
     addUserCompliment: psBuilder.dispatch(addUserCompliment),

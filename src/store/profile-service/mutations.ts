@@ -2,11 +2,14 @@
 import VueJwtDecode from 'vue-jwt-decode'
 import { ModuleBuilder } from 'vuex-typex'
 import {
+  Compliment,
   ComplimentType,
+  CoronaCheck,
   Profile,
   ProfileState,
   RidePlanOptions,
-  CoronaCheck,
+  PublicProfile,
+  Review,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 
@@ -96,6 +99,18 @@ function setComplimentTypes(
   state.complimentTypes = complimentTypes
 }
 
+function setPublicProfile(state: ProfileState, profile: PublicProfile) {
+  state.externalUser.profile = profile
+}
+
+function setPublicCompliments(state: ProfileState, compliments: Compliment[]) {
+  state.externalUser.compliments = compliments
+}
+
+function setPublicReviews(state: ProfileState, reviews: Review[]) {
+  state.externalUser.reviews = reviews
+}
+
 export const buildMutations = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -112,5 +127,8 @@ export const buildMutations = (
     setPrivacySecurityValue: psBuilder.commit(setPrivacySecurityValue),
     setCoronaCheck: psBuilder.commit(setCoronaCheck),
     setComplimentTypes: psBuilder.commit(setComplimentTypes),
+    setPublicProfile: psBuilder.commit(setPublicProfile),
+    setPublicCompliments: psBuilder.commit(setPublicCompliments),
+    setPublicReviews: psBuilder.commit(setPublicReviews),
   }
 }
