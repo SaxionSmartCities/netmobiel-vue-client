@@ -189,7 +189,7 @@ export default {
     },
     logOut: function() {
       this.$keycloak.logoutFn()
-      uiStore.mutations.deleteAccessToken()
+      psStore.mutations.deleteAccessToken()
     },
     readFile(event) {
       if (event.target.files[0]) {
