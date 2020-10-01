@@ -8,9 +8,9 @@
     class="background-primary"
   >
     <v-row class="justify-center">
-      <v-col cols="11" class="box-widget background-white shrink flex sm9 xs11">
+      <v-col class="box-widget background-white shrink flex sm9 xs11 px-4">
         <v-row>
-          <v-col><h1>Wat wil je doen?</h1></v-col>
+          <v-col align="center"><h1>Wat wil je doen?</h1></v-col>
         </v-row>
         <v-row class="mt-2 px-2">
           <v-btn large rounded depressed color="button" block to="/search">
@@ -18,9 +18,9 @@
           </v-btn>
         </v-row>
         <v-row class="pa-2">
-          <span class="mid-grey">
+          <v-col class="mid-grey pa-0" align="center">
             Met iemand meerijden of via het OV.
-          </span>
+          </v-col>
         </v-row>
         <v-row class="mt-5 px-2">
           <v-btn large rounded depressed color="button" block to="/plan">
@@ -28,9 +28,9 @@
           </v-btn>
         </v-row>
         <v-row class="pa-2">
-          <span class="mid-grey">
+          <v-col class="mid-grey pa-0" align="center">
             Zelf rijden en iemand meenemen.
-          </span>
+          </v-col>
         </v-row>
       </v-col>
     </v-row>
@@ -42,7 +42,7 @@ import * as uiStore from '@/store/ui'
 
 export default {
   name: 'ModeSelectionPage',
-  mounted: function() {
+  mounted() {
     uiStore.mutations.setSelectedNav('planner')
   },
 }
