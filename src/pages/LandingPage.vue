@@ -1,31 +1,22 @@
 <template>
-  <v-container fluid class="background-primary fill-height">
-    <v-layout column>
-      <v-flex xs6>
-        <v-img id="logo" :src="require('@/assets/logo_splash.png')"></v-img>
-      </v-flex>
-
-      <v-flex>
-        <v-layout wrap>
-          <v-flex xs12>
-            <v-btn
-              color="button"
-              rounded
-              large
-              block
-              @click="$keycloak.loginFn()"
-            >
-              Login
-            </v-btn>
-          </v-flex>
-          <v-flex xs12 mt-3>
-            <v-btn color="button" rounded large block to="/createUser">
-              Registreren
-            </v-btn>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
+  <v-container fluid class="background-primary fill-height container">
+    <v-row>
+      <v-col cols="12" class="pa-0">
+        <v-img id="logo" :src="require('@/assets/logo_splash.png')" />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" class="pa-0">
+        <v-btn color="button" rounded large block @click="$keycloak.loginFn()">
+          Login
+        </v-btn>
+      </v-col>
+      <v-col cols="12" class="pa-0 mt-3">
+        <v-btn color="button" rounded large block to="/createUser">
+          Registreren
+        </v-btn>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -55,7 +46,10 @@ export default {
 
 <style scoped lang="scss">
 #logo {
-  max-width: 500px;
+  max-width: min(500px, 100%);
   margin: 0 auto;
+}
+.container {
+  align-content: flex-start;
 }
 </style>
