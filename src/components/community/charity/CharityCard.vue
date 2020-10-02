@@ -5,13 +5,13 @@
         <v-img
           class="charity-card-image"
           alt="Geen afbeelding beschikbaar"
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/24436_Leeuwarden_St._Bonifatiuskerk_07.JPG/1200px-24436_Leeuwarden_St._Bonifatiuskerk_07.JPG"
+          src="@/assets/default_charity_image.jpg"
         />
       </v-col>
       <v-col class="py-0 pl-1">
         <div class="d-flex flex-column">
-          <span class="body-2">{{ charity.name }}</span>
-          <span class="overline">{{ charity.place }}</span>
+          <span>{{ charity.name }}</span>
+          <span class="overline">{{ charity.location.label }}</span>
         </div>
       </v-col>
     </v-row>
@@ -19,24 +19,16 @@
       <v-col class="pt-0">
         <span
           class="progressbar-text text-color-primary caption"
-          :style="{
-            left: Math.ceil((charity.credits / charity.goal) * 100) - 3 + '%',
-          }"
+          :style="{ left: progress - 3 + '%' }"
         >
-          {{ Math.ceil((charity.credits / charity.goal) * 100) || 0 }}%
+          {{ progress || 0 }}%
         </span>
-        <v-progress-linear
-          :value="Math.ceil((charity.credits / charity.goal) * 100)"
-          rounded
-        >
-        </v-progress-linear>
+        <v-progress-linear :value="progress" rounded />
       </v-col>
     </v-row>
     <v-row justify="space-between" class="mx-auto">
       <v-col class="px-0 pb-0">
-        <span class="caption">
-          nog {{ charity.goal - charity.credits || 0 }} credits
-        </span>
+        <span class="caption">nog {{ creditsRemaining }} credits</span>
       </v-col>
       <v-col class="px-0 pb-0">
         <v-btn
@@ -46,7 +38,7 @@
           rounded
           depressed
           outlined
-          @click="$emit('lookupCharity', charity._id)"
+          @click="$emit('lookupCharity', String(charity.id))"
         >
           Bekijk dit doel
         </v-btn>
@@ -64,7 +56,14 @@ export default {
   },
   computed: {
     creditsRemaining() {
-      return 20
+      const goal = this.charity?.goalAmount || 0
+      const donated = this.charity?.donatedAmount || 0
+      return goal - donated
+    },
+    progress() {
+      return Math.ceil(
+        (this.charity.donatedAmount / this.charity.goalAmount) * 100
+      )
     },
   },
   methods: {},
