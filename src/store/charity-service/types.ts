@@ -13,21 +13,20 @@ export enum STORE_STATE_OPTIONS {
 }
 
 export interface Charity {
-  _id: string
-  owner: { id: string; firstName: string; lastName: string }
+  id: string
   name: string
-  place: string
+  reference: string
   description: string
-  goal: number
-  credits: number
-  geoLocation: {
-    lon: ''
-    lat: ''
+  goalAmount: number
+  donatedAmount: number
+  location: {
+    label: string
+    latitude: string
+    longitude: string
   }
-  image: string
-  published: Date
-  donors: string[]
-  totalDonors: number
+  imageUrl: string
+  campaignStartTime: Date
+  campaignEndTime: Date
 }
 
 export interface Donation {
