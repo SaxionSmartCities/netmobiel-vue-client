@@ -65,7 +65,7 @@ async function donate(
       anonymous: isAnonymous,
     }
     const resp = await axios.post(
-      `${BASE_URL}/banker/charities/${id}`,
+      `${BASE_URL}/banker/charities/${id}/donations`,
       donation,
       {
         headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
