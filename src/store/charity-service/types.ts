@@ -45,6 +45,7 @@ export interface Donation {
 export interface Donor {
   totalDonated: number
   user: {
+    managedIdentity: string
     firstName: string
     lastName: string
   }

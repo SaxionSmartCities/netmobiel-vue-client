@@ -85,8 +85,27 @@ function fetchDonationsFromCharity(context: ActionContext, id: string): void {
   console.log('TODO')
 }
 
-function fetchTopDonors(context: ActionContext, id: string): void {
-  console.log('TODO')
+async function fetchTopDonors(context: ActionContext, id: string) {
+  try {
+    const resp = await axios.get(`${BASE_URL}/banker/users/generosity`, {
+      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+    })
+    if (resp.status === 200) {
+      let donors = resp.data.data.map((d: any) => ({
+        totalDonated: d.donatedCredits,
+        user: {
+          managedIdentity: d.managedIdentity,
+          firstName: d.givenName,
+          lastName: d.familyName,
+        },
+      }))
+      mutations.setTopDonors(donors)
+    }
+  } catch (problem) {
+    uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van top donateurs.'
+    )
+  }
 }
 
 export const buildActions = (
