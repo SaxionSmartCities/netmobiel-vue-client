@@ -77,12 +77,39 @@ async function donate(
   }
 }
 
-function fetchPreviouslyDonatedCharities(context: ActionContext): void {
-  console.log('TODO')
+async function fetchPreviouslyDonatedCharities(context: ActionContext) {
+  try {
+    const resp = await axios.get(
+      `${BASE_URL}/banker/users/me/recent-donations`,
+      {
+        headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      }
+    )
+    const donations = resp.data
+    const charities = donations.data.map((d: any) => d.charity)
+    mutations.setPreviouslyDonatedCharities(charities)
+  } catch (problem) {
+    uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van recent gedoneerd.'
+    )
+  }
 }
 
-function fetchDonationsFromCharity(context: ActionContext, id: string): void {
-  console.log('TODO')
+async function fetchDonationsFromCharity(context: ActionContext, id: string) {
+  try {
+    const resp = await axios.get(
+      `${BASE_URL}/banker/charities/${id}/donations`,
+      {
+        headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      }
+    )
+    const charities = resp.data
+    mutations.setCharity(charities)
+  } catch (problem) {
+    uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van het goede doel.'
+    )
+  }
 }
 
 async function fetchTopDonors(context: ActionContext, id: string) {
