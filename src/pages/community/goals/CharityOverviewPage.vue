@@ -38,14 +38,26 @@
         <h4 class="title text-color-primary mb-2">
           Eerder gedoneerd
         </h4>
-        <template v-for="charity in previouslyDonatedCharities">
-          <charity-card
+        <v-carousel
+          height="100%"
+          hide-delimiter-background
+          :continuous="false"
+          light
+        >
+          <v-carousel-item
+            v-for="charity in previouslyDonatedCharities"
             :key="charity.id"
-            class="charity-card mr-3"
-            :charity="charity"
-            @lookupCharity="onCharityCardClick"
-          />
-        </template>
+          >
+            <div class="cards-container">
+              <charity-card
+                :key="charity.id"
+                class="charity-card mr-3"
+                :charity="charity"
+                @lookupCharity="onCharityCardClick"
+              />
+            </div>
+          </v-carousel-item>
+        </v-carousel>
       </v-col>
     </v-row>
     <v-row>
