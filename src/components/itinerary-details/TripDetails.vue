@@ -70,7 +70,7 @@ export default {
     items() {
       let result = []
       if (this.trip.itinerary) {
-        const { departureTime, duration } = this.trip.itinerary
+        const { departureTime, duration, legs } = this.trip.itinerary
         result.push({
           label: 'Datum',
           value: formatDateTimeLong(departureTime),
@@ -79,8 +79,12 @@ export default {
           const reisduur = `${Math.round(duration / 60)} minuten`
           result.push({ label: 'Reisduur', value: reisduur })
         }
-        //TODO: Determine the real cost.
-        result.push({ label: 'Kosten', value: '5 credits' })
+        if (legs?.[0].fareInCredits) {
+          result.push({
+            label: 'Kosten',
+            value: `${legs[0].fareInCredits} credits`,
+          })
+        }
       }
       return result
     },
