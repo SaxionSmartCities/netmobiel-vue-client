@@ -104,7 +104,18 @@ async function fetchDonationsForCharity(context: ActionContext, id: string) {
       }
     )
     const charities = resp.data
-    mutations.setCharity(charities)
+    const donations = charities.data.map((d: any) => ({
+      sender: {
+        id: 1,
+        firstName: 'TODO',
+        lastName: '- TODO',
+      },
+      credits: d.amount,
+      message: d.description,
+      isAnonymous: d.anonymous,
+      published: d.donationDate,
+    }))
+    mutations.setCharityDonations(donations)
   } catch (problem) {
     uiStore.actions.queueErrorNotification(
       'Fout bij het ophalen van het goede doel.'
