@@ -24,16 +24,13 @@
         <h4 class="title text-color-primary mb-2">
           Populair in de buurt
         </h4>
-        <div class="charity-list">
-          <template v-for="charity in charities">
-            <charity-card
-              :key="charity.id"
-              class="charity-card mr-3"
-              :charity="charity"
-              @lookupCharity="onCharityCardClick"
-            ></charity-card>
-          </template>
-        </div>
+        <template v-for="charity in charities">
+          <charity-card
+            :key="charity.id"
+            :charity="charity"
+            @lookupCharity="onCharityCardClick"
+          />
+        </template>
       </v-col>
     </v-row>
     <v-row>
@@ -41,16 +38,14 @@
         <h4 class="title text-color-primary mb-2">
           Eerder gedoneerd
         </h4>
-        <div class="charity-list">
-          <template v-for="charity in previouslyDonatedCharities">
-            <charity-card
-              :key="charity.id"
-              class="charity-card mr-3"
-              :charity="charity"
-              @lookupCharity="onCharityCardClick"
-            ></charity-card>
-          </template>
-        </div>
+        <template v-for="charity in previouslyDonatedCharities">
+          <charity-card
+            :key="charity.id"
+            class="charity-card mr-3"
+            :charity="charity"
+            @lookupCharity="onCharityCardClick"
+          />
+        </template>
       </v-col>
     </v-row>
     <v-row>
