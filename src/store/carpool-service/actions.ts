@@ -195,7 +195,7 @@ function fetchRides(
 function fetchRide(context: ActionContext, payload: any) {
   const rideId = payload.id
   const URL = `${BASE_URL}/rideshare/rides/${rideId}`
-  axios
+  return axios
     .get(URL, {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
     })
