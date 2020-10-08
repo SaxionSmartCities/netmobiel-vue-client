@@ -102,7 +102,6 @@ export default {
       return '@/assets/achterhoek_background.jpg'
     },
     charityName() {
-      console.log(this.charity)
       return this.charity?.name || ''
     },
     charityLocation() {
