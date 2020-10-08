@@ -3,16 +3,7 @@
     <v-col>
       <div v-for="(donation, index) in donations" :key="index">
         <div class="d-flex flex-row mt-1 mb-2">
-          <round-user-image
-            :profile-image="
-              donation.isAnonymous
-                ? ''
-                : ' https://api.netmobiel.eu/gwapi/acc/images/5f/1591722701725.png'
-            "
-            :image-size="40"
-            :avatar-size="46"
-          >
-          </round-user-image>
+          <round-user-image :image-size="40" :avatar-size="46" />
           <div class="d-flex flex-column ml-4">
             <span class="body-1 font-weight-medium ">
               {{
