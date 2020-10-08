@@ -120,7 +120,7 @@ export default {
   created() {
     uiStore.mutations.showBackButton()
     chsStore.actions.fetchCharity(this.id)
-    chsStore.actions.fetchDonationsFromCharity(this.id)
+    chsStore.actions.fetchDonationsForCharity(this.id)
   },
   methods: {
     supportCharity() {

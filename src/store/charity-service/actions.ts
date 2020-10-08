@@ -95,7 +95,7 @@ async function fetchPreviouslyDonatedCharities(context: ActionContext) {
   }
 }
 
-async function fetchDonationsFromCharity(context: ActionContext, id: string) {
+async function fetchDonationsForCharity(context: ActionContext, id: string) {
   try {
     const resp = await axios.get(
       `${BASE_URL}/banker/charities/${id}/donations`,
@@ -143,7 +143,7 @@ export const buildActions = (
     fetchCharity: chsBuilder.dispatch(fetchCharity),
     saveCharity: chsBuilder.dispatch(saveCharity),
     donate: chsBuilder.dispatch(donate),
-    fetchDonationsFromCharity: chsBuilder.dispatch(fetchDonationsFromCharity),
+    fetchDonationsForCharity: chsBuilder.dispatch(fetchDonationsForCharity),
     fetchTopDonors: chsBuilder.dispatch(fetchTopDonors),
     fetchPreviouslyDonatedCharities: chsBuilder.dispatch(
       fetchPreviouslyDonatedCharities
