@@ -30,14 +30,25 @@ export default {
       return image ? `https://api.netmobiel.eu/gwapi/acc/${image}` : null
     },
   },
+  watch: {
+    leg() {
+      // if the leg changes, the driver probably changes as well
+      this.fetchUserProfileOfDriver()
+    },
+  },
   mounted() {
-    // first fetch the ride from the trip id
-    csStore.actions.fetchRide({ id: this.leg.tripId }).then(() => {
-      // obtain managed identity of driver once we have a selected ride
-      const { managedIdentity } = csStore.getters.getSelectedRide.driver
-      // fetch profile of external user
-      psStore.actions.fetchUserProfile({ profileId: managedIdentity })
-    })
+    this.fetchUserProfileOfDriver()
+  },
+  methods: {
+    fetchUserProfileOfDriver() {
+      // first fetch the ride from the trip id
+      csStore.actions.fetchRide({ id: this.leg.tripId }).then(() => {
+        // obtain managed identity of driver once we have a selected ride
+        const { managedIdentity } = csStore.getters.getSelectedRide.driver
+        // fetch profile of external user
+        psStore.actions.fetchUserProfile({ profileId: managedIdentity })
+      })
+    },
   },
 }
 </script>
