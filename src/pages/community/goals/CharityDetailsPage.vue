@@ -28,7 +28,7 @@
     </v-row>
     <v-row>
       <v-col class="pt-0">
-        <span class="body-1 charity-description">{{
+        <span class="charity-description">{{
           charity ? charity.description : ''
         }}</span>
       </v-col>
