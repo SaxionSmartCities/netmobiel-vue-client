@@ -34,7 +34,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="carousel-container">
+      <v-col class="charity-carousel-container">
         <h4 class="title text-color-primary mb-2">
           Eerder gedoneerd
         </h4>
@@ -115,7 +115,7 @@ export default {
   }
 }
 
-.carousel-container {
+.charity-carousel-container {
   .v-carousel {
     padding-bottom: 20px;
     .v-window__container {
@@ -127,9 +127,8 @@ export default {
   }
   .cards-container {
     padding: 8px 0 0 0;
-    .trip-card {
-      border-color: $color-alertRed !important;
-      width: 85%;
+    .charity-card {
+      width: 92%;
       margin: auto;
       .v-card__actions {
         display: none;
