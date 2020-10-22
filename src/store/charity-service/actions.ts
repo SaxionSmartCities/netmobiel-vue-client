@@ -106,9 +106,9 @@ async function fetchDonationsForCharity(context: ActionContext, id: string) {
     const charities = resp.data
     const donations = charities.data.map((d: any) => ({
       sender: {
-        id: 1,
-        firstName: 'TODO',
-        lastName: '- TODO',
+        id: d.donor.id,
+        firstName: d.donor.givenName,
+        lastName: d.donor.familyName,
       },
       credits: d.amount,
       message: d.description,
