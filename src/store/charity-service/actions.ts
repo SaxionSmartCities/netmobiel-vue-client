@@ -3,86 +3,144 @@ import { Charity, CharityState, STORE_STATE_OPTIONS } from './types'
 import { RootState } from '@/store/Rootstate'
 import { mutations } from '@/store/charity-service/index'
 import axios from 'axios'
+import util from '@/utils/Utils'
 import config from '@/config/config'
+import * as uiStore from '@/store/ui'
 
 type ActionContext = BareActionContext<CharityState, RootState>
 
-const BASE_URL = config.BASE_URL
+const { BASE_URL, GRAVITEE_BANKER_SERVICE_API_KEY } = config
+const { generateHeaders } = util
 
-/**
- * @param context
- * @param payload
- * @param payload.q = being sent to the backend to query on id(s).
- * q can be a single id, an array of id's. (id = managed identity) or nothing.
- * @params payload.store = the place to store the result of the response
- */
-function fetchCharities(context: ActionContext, payload: any = {}): void {
-  const params: any = {}
-  if (payload.q) params['q'] = payload.q
-  axios.get(BASE_URL + '/api/charity', { params: params }).then(resp => {
-    const charities = resp.data.charities
-    switch (payload.store) {
-      case STORE_STATE_OPTIONS.INIT:
-        mutations.setCharities(charities)
-        break
-      case STORE_STATE_OPTIONS.PREVIOUS:
-        mutations.setPreviouslyDonatedCharities(charities)
-        break
-      case STORE_STATE_OPTIONS.SEARCH:
-        //Is not used anywhere...
-        mutations.setCharitySearchResults(charities)
-        break
-      default:
-        mutations.setCharities(charities)
-    }
-  })
-}
-
-function fetchPreviouslyDonatedCharities(context: ActionContext): void {
-  axios.get(BASE_URL + '/api/donation/previous').then(resp => {
-    fetchCharities(context, {
-      q: resp.data.charities,
-      store: STORE_STATE_OPTIONS.PREVIOUS,
+async function fetchCharities(context: ActionContext, payload: any = {}) {
+  try {
+    const resp = await axios.get(`${BASE_URL}/banker/charities`, {
+      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
-  })
-}
-
-function lookupCharity(context: ActionContext, id: string): void {
-  axios
-    .get(BASE_URL + '/api/charity', {
-      params: {
-        q: id,
-      },
-    })
-    .then(resp => {
-      mutations.setCharity(resp.data.charities[0])
-    })
-}
-
-function donate(
-  context: ActionContext,
-  { id, amount, message, isAnonymous, sender }: any
-): void {
-  const data = {
-    sender,
-    message,
-    charityId: id,
-    credits: amount,
-    isAnonymous,
+    const charities = resp.data.data
+    mutations.setCharities(charities)
+  } catch (problem) {
+    uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de goede doelen.'
+    )
   }
-  axios.post(BASE_URL + '/api/donation', data).then(resp => {})
 }
 
-function fetchDonationsFromCharity(context: ActionContext, id: string): void {
-  axios.get(BASE_URL + '/api/donation', { params: { id } }).then(resp => {
-    mutations.setCharityDonations(resp.data.donations)
-  })
+async function fetchCharity(context: ActionContext, id: string) {
+  try {
+    const resp = await axios.get(`${BASE_URL}/banker/charities/${id}`, {
+      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+    })
+    const charities = resp.data
+    mutations.setCharity(charities)
+  } catch (problem) {
+    uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van het goede doel.'
+    )
+  }
 }
 
-function fetchTopDonors(context: ActionContext, id: string): void {
-  axios.get(BASE_URL + '/api/donation/top', { params: { id } }).then(resp => {
-    mutations.setTopDonors(resp.data.donors)
-  })
+async function saveCharity(context: ActionContext, payload: any) {
+  try {
+    const resp = await axios.post(`${BASE_URL}/banker/charities`, payload, {
+      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+    })
+  } catch (problem) {
+    uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van het goede doel.'
+    )
+  }
+}
+
+async function donate(
+  context: ActionContext,
+  { id, amount, message, isAnonymous }: any
+) {
+  try {
+    const donation = {
+      amount,
+      description: message,
+      anonymous: isAnonymous,
+    }
+    const resp = await axios.post(
+      `${BASE_URL}/banker/charities/${id}/donations`,
+      donation,
+      {
+        headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      }
+    )
+  } catch (problem) {
+    uiStore.actions.queueErrorNotification('Fout bij het opslaan van donatie.')
+  }
+}
+
+async function fetchPreviouslyDonatedCharities(context: ActionContext) {
+  try {
+    const resp = await axios.get(
+      `${BASE_URL}/banker/users/me/recent-donations`,
+      {
+        headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      }
+    )
+    const donations = resp.data
+    const charities = donations.data.map((d: any) => d.charity)
+    mutations.setPreviouslyDonatedCharities(charities)
+  } catch (problem) {
+    uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van recent gedoneerd.'
+    )
+  }
+}
+
+async function fetchDonationsForCharity(context: ActionContext, id: string) {
+  try {
+    const resp = await axios.get(
+      `${BASE_URL}/banker/charities/${id}/donations`,
+      {
+        headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      }
+    )
+    const charities = resp.data
+    const donations = charities.data.map((d: any) => ({
+      sender: {
+        id: d.donor.id,
+        firstName: d.donor.givenName,
+        lastName: d.donor.familyName,
+      },
+      credits: d.amount,
+      message: d.description,
+      isAnonymous: d.anonymous,
+      published: d.donationDate,
+    }))
+    mutations.setCharityDonations(donations)
+  } catch (problem) {
+    uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van het goede doel.'
+    )
+  }
+}
+
+async function fetchTopDonors(context: ActionContext, id: string) {
+  try {
+    const resp = await axios.get(`${BASE_URL}/banker/users/generosity`, {
+      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+    })
+    if (resp.status === 200) {
+      let donors = resp.data.data.map((d: any) => ({
+        totalDonated: d.donatedCredits,
+        user: {
+          managedIdentity: d.managedIdentity,
+          firstName: d.givenName,
+          lastName: d.familyName,
+        },
+      }))
+      mutations.setTopDonors(donors)
+    }
+  } catch (problem) {
+    uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van top donateurs.'
+    )
+  }
 }
 
 export const buildActions = (
@@ -90,9 +148,10 @@ export const buildActions = (
 ) => {
   return {
     fetchCharities: chsBuilder.dispatch(fetchCharities),
-    lookupCharity: chsBuilder.dispatch(lookupCharity),
+    fetchCharity: chsBuilder.dispatch(fetchCharity),
+    saveCharity: chsBuilder.dispatch(saveCharity),
     donate: chsBuilder.dispatch(donate),
-    fetchDonationsFromCharity: chsBuilder.dispatch(fetchDonationsFromCharity),
+    fetchDonationsForCharity: chsBuilder.dispatch(fetchDonationsForCharity),
     fetchTopDonors: chsBuilder.dispatch(fetchTopDonors),
     fetchPreviouslyDonatedCharities: chsBuilder.dispatch(
       fetchPreviouslyDonatedCharities

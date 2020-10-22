@@ -10,7 +10,7 @@
     />
     <v-img
       v-else
-      src="@/assets/profile_img.png"
+      src="@/assets/default_profile_image.png"
       :max-height="imageSize"
       :max-width="imageSize"
     />

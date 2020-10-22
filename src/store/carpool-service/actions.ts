@@ -4,19 +4,13 @@ import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { mutations } from '@/store/carpool-service/index'
 import * as uiStore from '@/store/ui'
 import axios from 'axios'
+import util from '@/utils/Utils'
 import config from '@/config/config'
 
 type ActionContext = BareActionContext<CarpoolState, RootState>
 
-const BASE_URL = config.BASE_URL
-const GRAVITEE_RIDESHARE_SERVICE_API_KEY =
-  config.GRAVITEE_RIDESHARE_SERVICE_API_KEY
-
-function generateHeaders(key: any) {
-  return {
-    'X-Gravitee-Api-Key': key,
-  }
-}
+const { BASE_URL, GRAVITEE_RIDESHARE_SERVICE_API_KEY } = config
+const { generateHeaders } = util
 
 function fetchLicense(context: ActionContext, payload: string): void {
   mutations.setSearchLicensePlate(payload)

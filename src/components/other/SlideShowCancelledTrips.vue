@@ -67,10 +67,14 @@ export default {
     padding: 8px 0;
     .trip-card {
       border-color: $color-alertRed !important;
-      width: 85%;
+      width: 90%;
       margin: auto;
       .v-card__actions {
-        display: none;
+        padding: 0;
+        width: 16px;
+        i {
+          color: white;
+        }
       }
     }
   }
