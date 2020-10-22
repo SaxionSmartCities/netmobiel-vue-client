@@ -106,11 +106,6 @@ export default {
         amount: this.donationAmount,
         message: this.donationMessage,
         isAnonymous: this.isAnonymous,
-        sender: {
-          id,
-          firstName,
-          lastName,
-        },
       })
       this.$router.push({
         name: 'donated',

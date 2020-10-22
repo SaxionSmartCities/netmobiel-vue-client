@@ -5,6 +5,7 @@ export default {
   fetchPastRidesMaxResults: 8,
   defaultMaxResults: 10,
   defaultProfileImage: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
+  defaultCharityImage: '@/assets/default_charity_image.jpg',
   defaultShoutOutRadius: 1000000,
   defaultNotificationTimeout: 3000,
   searchSuggestionCategoryIcons: {
