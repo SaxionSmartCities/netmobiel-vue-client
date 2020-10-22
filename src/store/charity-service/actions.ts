@@ -32,8 +32,7 @@ async function fetchCharity(context: ActionContext, id: string) {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
     const charities = resp.data
-    console.log(charities)
-    mutations.setCharity(resp.data)
+    mutations.setCharity(charities)
   } catch (problem) {
     uiStore.actions.queueErrorNotification(
       'Fout bij het ophalen van het goede doel.'
@@ -46,7 +45,6 @@ async function saveCharity(context: ActionContext, payload: any) {
     const resp = await axios.post(`${BASE_URL}/banker/charities`, payload, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
-    console.log(resp.status)
   } catch (problem) {
     uiStore.actions.queueErrorNotification(
       'Fout bij het ophalen van het goede doel.'
@@ -71,7 +69,6 @@ async function donate(
         headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
       }
     )
-    console.log(resp.status)
   } catch (problem) {
     uiStore.actions.queueErrorNotification('Fout bij het opslaan van donatie.')
   }
