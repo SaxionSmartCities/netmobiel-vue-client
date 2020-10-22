@@ -42,11 +42,16 @@
 </template>
 
 <script>
+import { getDistance } from 'geolib'
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import RouteMap from '@/components/itinerary-details/RouteMap.vue'
 import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
 import { formatDateTimeLong } from '@/utils/datetime.js'
+
+function computePrice(legs) {
+  return legs?.reduce((accu, leg) => accu + (leg.fareInCredits ?? 0), 0)
+}
 
 export default {
   name: 'TripDetails',
@@ -79,8 +84,15 @@ export default {
           const reisduur = `${Math.round(duration / 60)} minuten`
           result.push({ label: 'Reisduur', value: reisduur })
         }
-        //TODO: Determine the real cost.
-        result.push({ label: 'Kosten', value: '5 credits' })
+        const { from, to } = this.trip
+        if (from && to) {
+          const kilometers = getDistance(from, to, 1000) / 1000
+          result.push({ label: 'Afstand', value: `${kilometers} km` })
+        }
+        const price = computePrice(this.trip.legs ?? [])
+        if (price) {
+          result.push({ label: 'Kosten', value: `${price} credits` })
+        }
       }
       return result
     },
