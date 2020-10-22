@@ -34,7 +34,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col class="carousel-container">
         <h4 class="title text-color-primary mb-2">
           Eerder gedoneerd
         </h4>
@@ -51,7 +51,7 @@
             <div class="cards-container">
               <charity-card
                 :key="charity.id"
-                class="charity-card mr-3"
+                class="charity-card"
                 :charity="charity"
                 @lookupCharity="onCharityCardClick"
               />
@@ -114,6 +114,44 @@ export default {
     display: inline-block;
   }
 }
+
+.carousel-container {
+  .v-carousel {
+    padding-bottom: 20px;
+    .v-window__container {
+      .v-window__prev,
+      .v-window__next {
+        margin: 0 !important;
+      }
+    }
+  }
+  .cards-container {
+    padding: 8px 0 0 0;
+    .trip-card {
+      border-color: $color-alertRed !important;
+      width: 85%;
+      margin: auto;
+      .v-card__actions {
+        display: none;
+      }
+    }
+  }
+  .v-carousel__controls {
+    z-index: 4;
+    position: absolute;
+    padding-top: 0 !important;
+    padding-bottom: 20px !important;
+    .v-btn--icon.v-size--small {
+      height: 24px;
+      width: 24px;
+      svg {
+        width: 50%;
+        height: 50%;
+      }
+    }
+  }
+}
+
 /**
 makes sure that cards are aligned on small devices, but still show arrows(prev&next) on desktop
  */
