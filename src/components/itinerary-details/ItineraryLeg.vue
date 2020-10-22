@@ -48,6 +48,7 @@
         <v-col class="description pl-2 pb-3">
           {{ description }}
           <itinerary-leg-passenger v-if="passenger" :passenger="passenger" />
+          <itinerary-leg-driver v-if="hasDriver" :leg="leg" />
         </v-col>
       </v-row>
     </v-col>
@@ -59,10 +60,11 @@ import moment from 'moment'
 import travelModes from '@/constants/travel-modes.js'
 import delegation from '@/utils/delegation'
 import ItineraryLegPassenger from '@/components/itinerary-details/ItineraryLegPassenger.vue'
+import ItineraryLegDriver from '@/components/itinerary-details/ItineraryLegDriver.vue'
 
 export default {
   name: 'ItineraryLeg',
-  components: { ItineraryLegPassenger },
+  components: { ItineraryLegPassenger, ItineraryLegDriver },
   props: {
     leg: { type: Object, required: true },
     isMapActive: { type: Boolean, default: false },
@@ -100,6 +102,9 @@ export default {
         (this.passenger && this.travelMode === travelModes.CAR.mode)
       )
     },
+    hasDriver() {
+      return this.travelMode === travelModes.RIDESHARE.mode
+    },
   },
 }
 
@@ -134,7 +139,7 @@ const descriptions = {
     return this.leg.from.label || this.leg.from.name
   },
   RIDESHARE() {
-    return `Meerijden met ${this.leg.driverName} vanaf ${this.leg.from.label}`
+    return `Instappen in ${this.leg.vehicleName} (${this.leg.vehicleLicensePlate}) vanaf ${this.leg.from.label}`
   },
   RAIL() {
     // add platform to departure and arrival
