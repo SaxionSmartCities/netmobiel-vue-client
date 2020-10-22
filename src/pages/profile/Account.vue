@@ -120,14 +120,32 @@ export default {
   methods: {
     get: get,
     set: set,
+    findSelectedItem() {
+      // find item in account config whose key equals the selected property
+      for (const section in account_config) {
+        const item = account_config[section].find(
+          item => item.key === this.selectedProperty
+        )
+        if (item) {
+          return item
+        }
+      }
+      // should not happen (famous last words...)
+      return undefined
+    },
     onChangedInfoProperty(input) {
       // Fires when the user onfocusses the input
       //HACK: JSON parse/stringify to prevent "[vuex] do not mutate vuex store
       // state outside mutation handlers." error.
       let newProfile = JSON.parse(JSON.stringify(this.user))
+      // check for parse function in account config
+      const { parse } = this.findSelectedItem()
+      if (parse) {
+        // convert text input back to format that backend expects
+        input = parse(input)
+      }
       set(newProfile, this.selectedProperty, input)
       psStore.actions.updateProfile(newProfile)
-
       // Fetch geocode for address if different.
       if (!isEqual(this.user.address, newProfile.address)) {
         const query = this.addressQuery(newProfile.address)
