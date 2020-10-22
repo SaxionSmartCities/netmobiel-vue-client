@@ -19,16 +19,6 @@
               {{ totalDonated + ' credits gedoneerd' }}
             </span>
           </div>
-          <v-spacer></v-spacer>
-          <v-btn
-            class="align-self-center"
-            color="primary"
-            small
-            outlined
-            @click="addDonor(user)"
-          >
-            Voeg toe
-          </v-btn>
         </div>
         <v-divider class="mb-2"></v-divider>
       </div>
@@ -44,11 +34,6 @@ export default {
   components: { RoundUserImage },
   props: {
     donors: { type: Array, required: true },
-  },
-  methods: {
-    addDonor(donor) {
-      // console.log('Adding donor still needs to be implemented', donor)
-    },
   },
 }
 </script>
