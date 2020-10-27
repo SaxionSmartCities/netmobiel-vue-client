@@ -9,7 +9,7 @@ import * as uiStore from '@/store/ui'
 
 type ActionContext = BareActionContext<GeoCoderState, RootState>
 
-const { BASE_URL, GRAVITEE_GEO_SERVICE_API_KEY } = config
+const { BASE_URL, GRAVITEE_PLANNER_SERVICE_API_KEY } = config
 const { generateHeaders } = util
 
 async function fetchGeocoderSuggestions(
@@ -27,7 +27,7 @@ async function fetchGeocoderSuggestions(
         hls: hlStart,
         hle: hlEnd,
       },
-      headers: generateHeaders(GRAVITEE_GEO_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
     mutations.setGeocoderSuggestions(resp.data.data)
   } catch (problem) {
