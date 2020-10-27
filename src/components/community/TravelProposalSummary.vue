@@ -8,9 +8,10 @@
     >
       <v-row>
         <v-col class="shrink ml-2 mr-0 pr-0">
-          <round-user-image
+          <driver-image
             :avatar-size="60"
             :image-size="56"
+            :leg="leg"
             :class="{ 'selected-offer': selected }"
           />
         </v-col>
@@ -37,11 +38,11 @@
 <script>
 import moment from 'moment'
 import { TIME_FORMAT } from '@/utils/datetime.js'
-import RoundUserImage from '@/components/common/RoundUserImage'
+import DriverImage from '@/components/itinerary-details/DriverImage'
 
 export default {
   name: 'TravelProposalSummary',
-  components: { RoundUserImage },
+  components: { DriverImage },
   props: {
     index: { type: Number, required: true },
     itinerary: { type: Object, required: true },
@@ -49,8 +50,11 @@ export default {
   },
   computed: {
     driver() {
-      const leg = this.itinerary.legs.find(l => l.agencyId === 'NB:RS')
+      const { leg } = this
       return leg ? leg.driverName : 'Chauffeur'
+    },
+    leg() {
+      return this.itinerary.legs.find(l => l.agencyId === 'NB:RS')
     },
   },
   methods: {
