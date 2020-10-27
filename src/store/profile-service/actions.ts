@@ -32,7 +32,7 @@ function fetchProfile(context: ActionContext) {
         }
         if (profile.image) {
           // turn relative image URL into absolute URL
-          profile.image = `${BASE_URL}${response.data.profile.image}`
+          profile.image = `${BASE_URL}${profile.image}`
         }
         if (!!localStorage.fcm && localStorage.fcm !== profile.fcmToken) {
           profile.fcmToken = localStorage.fcm
