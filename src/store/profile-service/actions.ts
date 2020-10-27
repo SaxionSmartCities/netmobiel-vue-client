@@ -128,7 +128,7 @@ function addUserCompliment(
   { sender, receiver, complimentType }: any
 ) {
   const URL = BASE_URL + '/compliments'
-  return axios
+  axios
     .post(
       URL,
       { sender, receiver, complimentType },
@@ -137,7 +137,14 @@ function addUserCompliment(
       }
     )
     .then(response => {
-      return response
+      // SKIP: Do nothing.
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij versturen van complimenten`
+      )
     })
 }
 
