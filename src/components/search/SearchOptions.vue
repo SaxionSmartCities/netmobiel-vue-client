@@ -8,7 +8,7 @@
               <v-expansion-panel-header>
                 <v-row no-gutters>
                   <v-col>
-                    <span>Personen</span>
+                    <span>Aantal passagiers</span>
                   </v-col>
                 </v-row>
                 <v-row no-gutters>
@@ -212,7 +212,7 @@ export default {
     travel: {
       get() {
         return {
-          title: 'Toestaan',
+          title: 'Vervoersmiddelen',
           options: Object.keys(travelModes)
             .map(x => travelModes[x])
             .filter(x => !!x && x.visible), // Filter only visible travel modes.
