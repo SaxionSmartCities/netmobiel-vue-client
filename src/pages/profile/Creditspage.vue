@@ -39,7 +39,7 @@
           color="primary"
           @click="$router.push('/addCredits')"
         >
-          Rewards
+          Beloningen
         </v-btn>
       </v-col>
     </v-row>

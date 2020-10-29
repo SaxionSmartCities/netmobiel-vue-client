@@ -24,7 +24,7 @@
         <community-button
           class="mx-auto"
           icon="fa-gift"
-          naam="Rewards"
+          naam="Beloningen"
           :disabled="true"
         ></community-button>
       </v-col>
