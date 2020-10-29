@@ -154,7 +154,7 @@ function addUserCompliment(
  */
 function fetchUserReviews(context: ActionContext, { profileId }: any) {
   const URL = BASE_URL + '/reviews'
-  return axios
+  axios
     .get(URL, {
       headers: generateHeader(GRAVITEE_REVIEW_SERVICE_API_KEY),
       params: { receiverId: profileId },
@@ -175,7 +175,7 @@ function addUserReview(
   { sender, receiver, review }: any
 ) {
   const URL = BASE_URL + '/reviews'
-  return axios
+  axios
     .post(
       URL,
       { sender, receiver, review },
@@ -184,7 +184,9 @@ function addUserReview(
       }
     )
     .then(response => {
-      return response
+      if (response.status === 201) {
+        uiStore.actions.queueInfoNotification(`Je beoordeling is opgeslagen!`)
+      }
     })
 }
 
