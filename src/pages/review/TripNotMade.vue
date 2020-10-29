@@ -28,7 +28,7 @@
             depressed
             @click="tripNotMade()"
           >
-            Bevestig deze reis
+            Bevestig deze rit
           </v-btn>
           <v-btn
             block

@@ -1,26 +1,26 @@
 const driver = {
   melding: [
-    { title: 'Bevestiging nieuwe reis', value: false },
-    { title: 'Wijziging bewaarde reis', value: false },
-    { title: 'Herinnering voor aanvang reis', value: false },
+    { title: 'Bevestiging nieuwe rit', value: false },
+    { title: 'Wijziging bewaarde rit', value: false },
+    { title: 'Herinnering voor aanvang rit', value: false },
     { title: 'Nieuw persoonlijk bericht', value: false },
     { title: 'Oproepen uit de community', value: false },
   ],
   reviews: [
-    { title: 'Beoordeel je reis', value: false },
+    { title: 'Beoordeel je rit', value: false },
     { title: 'Deel mijn reviews met anderen', value: false },
   ],
 }
 const passenger = {
   melding: [
-    { title: 'Bevestiging nieuwe reis', value: false },
-    { title: 'Wijziging bewaarde reis', value: false },
-    { title: 'Herinnering voor aanvang reis', value: false },
+    { title: 'Bevestiging nieuwe rit', value: false },
+    { title: 'Wijziging bewaarde rit', value: false },
+    { title: 'Herinnering voor aanvang rit', value: false },
     { title: 'Nieuw persoonlijk bericht', value: false },
     { title: 'Oproepen uit de community', value: false },
   ],
   reviews: [
-    { title: 'Beoordeel je reis', value: false },
+    { title: 'Beoordeel je rit', value: false },
     { title: 'Deel mijn reviews met anderen', value: false },
   ],
 }

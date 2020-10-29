@@ -48,14 +48,14 @@
         <v-row dense>
           <v-col>
             <v-radio-group v-model="tripsSearchTime" class="mt-1" row>
-              <v-radio label="Afgelopen reizen" value="Past"></v-radio>
-              <v-radio label="Geplande reizen" value="Future"></v-radio>
+              <v-radio label="Afgelopen ritten" value="Past"></v-radio>
+              <v-radio label="Geplande ritten" value="Future"></v-radio>
             </v-radio-group>
           </v-col>
         </v-row>
         <v-row v-if="tripsSearchTime === 'Past'">
           <v-col v-if="getPastTrips.length === 0" align="center">
-            <em>U heeft nog geen reizen gemaakt.</em>
+            <em>U heeft nog geen ritten gemaakt.</em>
           </v-col>
           <v-col v-else class="py-0">
             <grouped-card-list :items="getPastTrips">
@@ -72,7 +72,7 @@
         </v-row>
         <v-row v-if="tripsSearchTime === 'Future'">
           <v-col v-if="getPlannedTrips.length === 0">
-            U heeft geen bewaarde reizen. Ga naar de planner om uw reis te
+            U heeft geen bewaarde ritten. Ga naar de planner om uw rit te
             plannen.
           </v-col>
           <v-col v-else class="py-0">

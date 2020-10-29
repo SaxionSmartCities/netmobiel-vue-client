@@ -2,19 +2,19 @@
   <content-pane>
     <v-row>
       <v-col>
-        <h1>Reis beoordeeld! 🎉</h1>
+        <h1>Rit beoordeeld! 🎉</h1>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        Bedankt voor jouw beoordeling! Je reis is bevestigd en de chauffer is
+        Bedankt voor jouw beoordeling! Je rit is bevestigd en de chauffer is
         automatisch op de hoogte gebracht.
       </v-col>
     </v-row>
     <v-row>
       <v-col>
         <v-btn block rounded outlined color="primary" to="/tripsOverviewPage">
-          Terug naar reizen
+          Terug naar ritten
         </v-btn>
       </v-col>
     </v-row>

@@ -64,7 +64,7 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
       if (response.status === 204) {
         //Succesful response, trip is deleted.
         if (payload.displayWarning) {
-          uiStore.actions.queueInfoNotification('Reis is succesvol geannuleerd')
+          uiStore.actions.queueInfoNotification('Rit is succesvol geannuleerd')
         }
         fetchTrips(context, {
           maxResults: constants.fetchTripsMaxResults,
@@ -73,11 +73,11 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
       } else if (response.status === 404) {
         //requested trip could not be found
         uiStore.actions.queueErrorNotification(
-          'De opgegeven reis kon niet worden gevonden.'
+          'De opgegeven rit kon niet worden gevonden.'
         )
       } else if (response.status === 401) {
         //The requested object does no longer exist
-        uiStore.actions.queueErrorNotification('Deze reis is al geannuleerd')
+        uiStore.actions.queueErrorNotification('Deze rit is al geannuleerd')
       } else {
         uiStore.actions.queueErrorNotification(response.data.message)
       }
@@ -86,7 +86,7 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het annuleren van de reis'
+        'Fout bij het annuleren van de rit'
       )
     })
 }
@@ -100,7 +100,7 @@ function storeSelectedTrip(context: ActionContext, payload: TripSelection) {
     })
     .then(response => {
       if (response.status == 201) {
-        let message = 'Uw reis is bevestigd!'
+        let message = 'Uw rit is bevestigd!'
         uiStore.actions.queueInfoNotification(message)
         mutations.setBookingStatus({ status: 'SUCCESS' })
       } else {
@@ -114,11 +114,11 @@ function storeSelectedTrip(context: ActionContext, payload: TripSelection) {
       console.log(error)
       if (error.response.status == 402) {
         uiStore.actions.queueErrorNotification(
-          'U heeft onvoldoende credits voor deze reis'
+          'U heeft onvoldoende credits voor deze rit'
         )
       } else {
         uiStore.actions.queueErrorNotification(
-          'Fout bij het opslaan van de reis.'
+          'Fout bij het opslaan van de rit.'
         )
       }
     })
@@ -247,7 +247,7 @@ function fetchTrips(
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van opgeslagen reizen.'
+        'Fout bij het ophalen van opgeslagen ritten.'
       )
     })
 }
@@ -316,9 +316,7 @@ function fetchShoutOut(context: ActionContext, { id }: any) {
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van de reis.'
-      )
+      uiStore.actions.queueErrorNotification('Fout bij het ophalen van de rit.')
     })
 }
 
@@ -336,9 +334,7 @@ function fetchTrip(context: ActionContext, payload: any) {
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van de reis.'
-      )
+      uiStore.actions.queueErrorNotification('Fout bij het ophalen van de rit.')
     })
 }
 
@@ -353,11 +349,11 @@ function confirmTrip(context: ActionContext, payload: any) {
     .then(function(resp) {
       if (resp.status == 204) {
         // Ride is confirmed
-        uiStore.actions.queueInfoNotification('Uw reis is bevestigd.')
+        uiStore.actions.queueInfoNotification('Uw rit is bevestigd.')
         fetchTrip(context, { id: payload.id })
       } else {
         uiStore.actions.queueErrorNotification(
-          'Fout bij het bevestigen van uw reis.'
+          'Fout bij het bevestigen van uw rit.'
         )
       }
     })
@@ -365,7 +361,7 @@ function confirmTrip(context: ActionContext, payload: any) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het bevestigen van uw reis.'
+        'Fout bij het bevestigen van uw rit.'
       )
     })
 }
@@ -414,7 +410,7 @@ function fetchCancelledTrips(context: ActionContext) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van geannuleerde reizen.'
+        'Fout bij het ophalen van geannuleerde ritten.'
       )
     })
 }

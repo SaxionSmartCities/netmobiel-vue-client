@@ -44,7 +44,7 @@
             <v-icon>fa-check-circle</v-icon>
           </v-col>
           <v-col class="pl-5">
-            Reis bevestigen
+            Rit bevestigen
           </v-col>
         </v-row>
         <v-divider />
@@ -53,7 +53,7 @@
             <v-icon>lock</v-icon>
           </v-col>
           <v-col class="pl-5">
-            Reis annuleren
+            Rit annuleren
           </v-col>
         </v-row>
         <v-dialog v-model="warningDialog">
@@ -64,9 +64,9 @@
 
             <v-card-text v-if="numBookings > 0">
               <p>
-                Op dit moment heeft uw reis
+                Op dit moment heeft uw rit
                 {{ numBookings }} boekingen, wilt u uw passagier(s) een reden
-                geven waarom u de reis annuleert.
+                geven waarom u de rit annuleert.
               </p>
               <v-textarea
                 outlined

@@ -13,7 +13,7 @@
           <v-expansion-panels>
             <v-expansion-panel>
               <v-expansion-panel-header class="search-header pl-0">
-                Reisvoorkeuren tonen
+                Ritvoorkeuren tonen
               </v-expansion-panel-header>
               <v-expansion-panel-content class="search-header">
                 <search-options-summary-card :preferences="searchPreferences" />

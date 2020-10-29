@@ -4,7 +4,7 @@
       <v-col>
         <v-row dense>
           <v-col>
-            <h1>Reisvoorkeuren</h1>
+            <h1>Ritvoorkeuren</h1>
           </v-col>
         </v-row>
         <v-row no-gutters>
