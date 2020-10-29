@@ -1,27 +1,27 @@
 const driver = {
   melding: [
-    { title: 'Bevestiging nieuwe rit', value: false },
-    { title: 'Wijziging bewaarde rit', value: false },
-    { title: 'Herinnering voor aanvang rit', value: false },
-    { title: 'Nieuw persoonlijk bericht', value: false },
-    { title: 'Oproepen uit de community', value: false },
+    { title: 'Bevestiging nieuwe rit', value: true },
+    { title: 'Wijziging bewaarde rit', value: true },
+    { title: 'Herinnering voor aanvang rit', value: true },
+    { title: 'Nieuw persoonlijk bericht', value: true },
+    { title: 'Oproepen uit de community', value: true },
   ],
-  reviews: [
-    { title: 'Beoordeel je rit', value: false },
-    { title: 'Deel mijn reviews met anderen', value: false },
+  beoordelingen: [
+    { title: 'Beoordeel je rit', value: true },
+    { title: 'Deel mijn beoordelingen met anderen', value: true },
   ],
 }
 const passenger = {
   melding: [
-    { title: 'Bevestiging nieuwe rit', value: false },
-    { title: 'Wijziging bewaarde rit', value: false },
-    { title: 'Herinnering voor aanvang rit', value: false },
-    { title: 'Nieuw persoonlijk bericht', value: false },
-    { title: 'Oproepen uit de community', value: false },
+    { title: 'Bevestiging nieuwe rit', value: true },
+    { title: 'Wijziging bewaarde rit', value: true },
+    { title: 'Herinnering voor aanvang rit', value: true },
+    { title: 'Nieuw persoonlijk bericht', value: true },
+    { title: 'Oproepen uit de community', value: true },
   ],
-  reviews: [
-    { title: 'Beoordeel je rit', value: false },
-    { title: 'Deel mijn reviews met anderen', value: false },
+  beoordelingen: [
+    { title: 'Beoordeel je rit', value: true },
+    { title: 'Deel mijn beoordelingen met anderen', value: true },
   ],
 }
 const both = { ...driver }
