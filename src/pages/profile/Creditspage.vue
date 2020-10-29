@@ -24,8 +24,7 @@
           rounded
           outlined
           color="primary"
-          disabled
-          @click="$router.push('/addCredits')"
+          @click="$router.push('/charityOverviewPage')"
         >
           Doel steunen
         </v-btn>
