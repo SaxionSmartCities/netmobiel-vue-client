@@ -188,6 +188,13 @@ function addUserReview(
         uiStore.actions.queueInfoNotification(`Je beoordeling is opgeslagen!`)
       }
     })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij opslaan van beoordeling`
+      )
+    })
 }
 
 function storeFavoriteLocations(context: ActionContext, payload: any) {
