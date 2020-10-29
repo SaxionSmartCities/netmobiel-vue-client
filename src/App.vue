@@ -40,7 +40,7 @@
         <v-icon>commute</v-icon>
       </v-btn>
       <v-btn text value="saved" to="/tripsOverviewPage">
-        <span>Bewaard</span>
+        <span>Ritten</span>
         <v-icon>favorite</v-icon>
       </v-btn>
       <v-btn text value="community" to="/community">

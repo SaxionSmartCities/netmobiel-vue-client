@@ -9,7 +9,7 @@
         <template v-slot:firstTab>
           <v-icon color="white">commute</v-icon>
           <span>
-            Reizen
+            Passagier
             <sup>{{
               tripsSearchTime === 'Future'
                 ? getPlannedTripsCount
@@ -21,7 +21,7 @@
         <template v-slot:secondTab>
           <v-icon color="white">directions_car</v-icon>
           <span>
-            Ritten
+            Chauffeur
             <sup>{{ getPlannedRidesCount }}</sup>
           </span>
         </template>
