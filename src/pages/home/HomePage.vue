@@ -60,7 +60,7 @@
     </v-row>
     <v-row>
       <v-col class="px-1 pb-0">
-        <h4 class="netmobiel">Jouw activiteiten</h4>
+        <h4 class="netmobiel">Jouw ritten</h4>
       </v-col>
     </v-row>
     <v-row class="py-0">
@@ -68,7 +68,7 @@
         <v-row dense>
           <v-col class="py-0">
             <span class="font-italic">
-              Je hebt nog geen activiteiten gepland.
+              Je hebt nog geen ritten gepland.
             </span>
           </v-col>
         </v-row>
