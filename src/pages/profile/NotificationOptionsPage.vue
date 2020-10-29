@@ -7,11 +7,9 @@
     </v-row>
     <v-row>
       <v-col class="pa-0">
-        <h2
-          class="mt-4 text-uppercase caption font-weight-bold text-color-primary"
-        >
+        <h4 class="mt-4 font-weight-bold text-color-primary">
           Gebruik netmobiel als
-        </h2>
+        </h4>
         <single-select
           v-if="selectedMode"
           class="mt-1"
@@ -28,11 +26,9 @@
           v-for="section in Object.keys(notificationSettings[selectedMode])"
           :key="section"
         >
-          <span
-            class="text-uppercase caption font-weight-bold text-color-primary"
-          >
+          <h4 class="mt-4 capitalize font-weight-bold text-color-primary">
             {{ section }}
-          </span>
+          </h4>
           <v-divider></v-divider>
           <template
             v-for="(option, index) in notificationSettings[selectedMode][
@@ -41,14 +37,14 @@
           >
             <v-row :key="option.title" justify="space-between">
               <v-col class="d-flex align-center">
-                <span class="body-2">{{ option.title }}</span>
+                <span>{{ option.title }}</span>
               </v-col>
               <v-col class="shrink d-flex align-center">
                 <v-switch
                   class="switch-overwrite"
                   hide-details
                   inset
-                  :value="false"
+                  :value="option.value"
                 ></v-switch>
               </v-col>
             </v-row>
