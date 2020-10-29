@@ -128,7 +128,7 @@ function addUserCompliment(
   { sender, receiver, complimentType }: any
 ) {
   const URL = BASE_URL + '/compliments'
-  return axios
+  axios
     .post(
       URL,
       { sender, receiver, complimentType },
@@ -137,7 +137,14 @@ function addUserCompliment(
       }
     )
     .then(response => {
-      return response
+      // SKIP: Do nothing.
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij versturen van complimenten`
+      )
     })
 }
 
@@ -147,7 +154,7 @@ function addUserCompliment(
  */
 function fetchUserReviews(context: ActionContext, { profileId }: any) {
   const URL = BASE_URL + '/reviews'
-  return axios
+  axios
     .get(URL, {
       headers: generateHeader(GRAVITEE_REVIEW_SERVICE_API_KEY),
       params: { receiverId: profileId },
@@ -168,7 +175,7 @@ function addUserReview(
   { sender, receiver, review }: any
 ) {
   const URL = BASE_URL + '/reviews'
-  return axios
+  axios
     .post(
       URL,
       { sender, receiver, review },
@@ -177,7 +184,14 @@ function addUserReview(
       }
     )
     .then(response => {
-      return response
+      if (response.status === 201) {
+        uiStore.actions.queueInfoNotification(`Je beoordeling is opgeslagen!`)
+      }
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(`Fout bij opslaan van beoordeling`)
     })
 }
 

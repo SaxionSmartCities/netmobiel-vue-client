@@ -157,36 +157,22 @@ export default {
       else this.setTripMade(false)
     },
     onTripMade(rate) {
-      const {
-        id: myId,
-        firstName: myFirstName,
-        lastName: myLastName,
-      } = psStore.getters.getProfile
-      const [
-        receiverFirstName,
-        receiverLastName,
-      ] = this.trip.itinerary.legs[0].driverName.split(' ')
-
-      //For each compliment given do a call to the backend
-      //Can be changed in the future to a call that possibly accepts array if >1 compliments can be given
-      const sender = {
-        id: myId,
-        firstName: myFirstName,
-        lastName: myLastName,
-      }
+      // For each compliment given do a call to the backend
+      // Can be changed in the future to a call that possibly accepts array if >1 compliments can be given
+      const { id, firstName, lastName } = psStore.getters.getProfile
+      const sender = { id, firstName, lastName }
       const receiver = {
         id: this.driverProfile.managedIdentity,
-        firstName: receiverFirstName,
-        lastName: receiverLastName,
+        firstName: this.driverProfile.firstName,
+        lastName: this.driverProfile.lastName,
       }
-      for (let i = 0; i < constants.maxComplimentsAllowed; i++) {
-        const compliment = rate.compliments[i]
+      rate.compliments.map(compliment =>
         psStore.actions.addUserCompliment({
           sender,
           receiver,
           complimentType: compliment,
         })
-      }
+      )
 
       if (rate.feedbackMessage) {
         psStore.actions.addUserReview({
