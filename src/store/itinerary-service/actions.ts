@@ -204,9 +204,15 @@ function storeTravelOffer(
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueErrorNotification(
-        'Fout bij het opslaan van uw oproep.'
-      )
+      if (error.response.status == 422) {
+        uiStore.actions.queueErrorNotification(
+          'Rit overlapt met een eerder opslagen rit.'
+        )
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Fout bij het opslaan van uw oproep.'
+        )
+      }
     })
 }
 
