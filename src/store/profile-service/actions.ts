@@ -191,9 +191,7 @@ function addUserReview(
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueErrorNotification(
-        `Fout bij opslaan van beoordeling`
-      )
+      uiStore.actions.queueErrorNotification(`Fout bij opslaan van beoordeling`)
     })
 }
 
