@@ -112,7 +112,6 @@ function submitRide(context: ActionContext, payload: any) {
     recurrence,
     fromPlace: from,
     toPlace: to,
-    remarks: 'What does this do?',
     nrSeatsAvailable: ridePlanOptions.numPassengers,
     maxDetourSeconds: ridePlanOptions.maxMinutesDetour * 60,
   }
@@ -142,9 +141,15 @@ function submitRide(context: ActionContext, payload: any) {
     .catch(function(error) {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueErrorNotification(
-        'Fout bij het versturen van uw rit-aanbod.'
-      )
+      if (error.response.status == 422) {
+        uiStore.actions.queueErrorNotification(
+          'Rit overlapt met een eerder opslagen rit.'
+        )
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Fout bij het versturen van uw rit-aanbod.'
+        )
+      }
     })
 }
 
