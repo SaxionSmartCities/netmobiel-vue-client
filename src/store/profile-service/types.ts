@@ -65,7 +65,7 @@ export class ProfileState {
     ],
     reviews: [
       { name: 'Beoordeel je rit', value: true },
-      { name: 'Deel mijn reviews met anderen', value: false },
+      { name: 'Deel mijn beoordelingen met anderen', value: false },
     ],
     credits: {
       creditAmount: 0,

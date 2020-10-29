@@ -15,12 +15,12 @@
     <compliments :compliments="refinedCompliments" />
     <v-row class="mt-3">
       <v-col>
-        <h4 class="netmobiel">Reviews</h4>
+        <h4 class="netmobiel">Beoordelingen</h4>
       </v-col>
     </v-row>
     <v-row v-if="reviews && reviews.length === 0">
       <v-col>
-        Nog geen review ontvangen.
+        Nog geen beoordelingen ontvangen.
       </v-col>
     </v-row>
     <v-row v-else>
