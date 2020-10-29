@@ -6,7 +6,8 @@
   >
     <v-row class="mb-2">
       <v-col class="shrink">
-        <v-img class="shoutout-image" :src="profileImage" />
+        <v-img v-if="isMine" class="shoutout-image" :src="profileImage" />
+        <external-user-image v-else :managed-identity="otherIdentity" />
       </v-col>
       <v-col>
         <p class="font-weight-regular header mb-0">Reiziger</p>
@@ -42,13 +43,14 @@
 <script>
 import { getDistance } from 'geolib'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import ExternalUserImage from '@/components/profile/ExternalUserImage.vue'
 import constants from '@/constants/constants'
 import { generateShoutOutDetailSteps } from '@/utils/itinerary_steps.js'
 import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'ShoutOut',
-  components: { ItineraryLeg },
+  components: { ItineraryLeg, ExternalUserImage },
   props: {
     shoutout: { type: Object, required: true },
     btnText: { type: String, required: true },
@@ -59,7 +61,7 @@ export default {
       return psStore.getters.getUser.profile
     },
     profileImage() {
-      return this.isMine ? this.profile.image : constants.defaultProfileImage
+      return this.profile.image
     },
     travellerName() {
       const { traveller } = this.shoutout
@@ -70,6 +72,9 @@ export default {
     },
     distance() {
       return getDistance(this.shoutout.from, this.shoutout.to, 1000) / 1000
+    },
+    otherIdentity() {
+      return this.shoutout.traveller.managedIdentity
     },
   },
   methods: {

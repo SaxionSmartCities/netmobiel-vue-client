@@ -3,52 +3,22 @@
     <v-col>
       <b>{{ leg.driverName }}</b> is de chauffeur.
       <br />
-      <round-user-image
-        :image-size="60"
-        :avatar-size="66"
-        :profile-image="driverImage"
-      />
+      <driver-image :image-size="60" :avatar-size="66" :leg="leg" />
     </v-col>
   </v-row>
 </template>
 
 <script>
+import DriverImage from '@/components/itinerary-details/DriverImage'
 import RoundUserImage from '@/components/common/RoundUserImage'
 import * as psStore from '@/store/profile-service'
 import * as csStore from '@/store/carpool-service'
 
 export default {
   name: 'ItineraryLegDriver',
-  components: { RoundUserImage },
+  components: { DriverImage },
   props: {
     leg: { type: Object, required: true },
-  },
-  computed: {
-    driverImage() {
-      // driver image changes when the profile of external user has been fetched
-      const image = psStore.getters.getExternalUser?.profile?.image
-      return image ? `https://api.netmobiel.eu/gwapi/acc/${image}` : null
-    },
-  },
-  watch: {
-    leg() {
-      // if the leg changes, the driver probably changes as well
-      this.fetchUserProfileOfDriver()
-    },
-  },
-  mounted() {
-    this.fetchUserProfileOfDriver()
-  },
-  methods: {
-    fetchUserProfileOfDriver() {
-      // first fetch the ride from the trip id
-      csStore.actions.fetchRide({ id: this.leg.tripId }).then(() => {
-        // obtain managed identity of driver once we have a selected ride
-        const { managedIdentity } = csStore.getters.getSelectedRide.driver
-        // fetch profile of external user
-        psStore.actions.fetchUserProfile({ profileId: managedIdentity })
-      })
-    },
   },
 }
 </script>
