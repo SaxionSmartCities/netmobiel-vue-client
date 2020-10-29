@@ -42,10 +42,4 @@ export default {
 .bold {
   font-weight: 400;
 }
-.capitalize {
-  text-transform: lowercase;
-}
-.capitalize::first-letter {
-  text-transform: uppercase;
-}
 </style>
