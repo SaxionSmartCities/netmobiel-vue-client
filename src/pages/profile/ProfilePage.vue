@@ -52,8 +52,9 @@
                   <v-btn
                     rounded
                     depressed
-                    color="button"
                     small
+                    class="long"
+                    color="button"
                     @click="navTo('credits')"
                   >
                     Beheer credits
@@ -64,10 +65,11 @@
                     depressed
                     outlined
                     small
+                    class="long"
                     color="primary"
                     @click="navReview"
                   >
-                    Bekijk reviews
+                    Bekijk beoordelingen
                   </v-btn>
                 </div>
               </v-col>
@@ -248,5 +250,8 @@ export default {
 }
 .bewerk {
   text-decoration: underline;
+}
+.long {
+  width: 200px;
 }
 </style>
