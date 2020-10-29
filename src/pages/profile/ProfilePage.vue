@@ -147,7 +147,7 @@ export default {
           name: 'Instellingen',
           routeName: 'notificationOptions',
         },
-        { icon: 'help_outline', name: 'Veel gestelde vragen', routeName: '' },
+        { icon: 'help_outline', name: 'Veelgestelde vragen', routeName: '' },
         {
           icon: 'lock',
           name: 'Privacy & beveiliging',
