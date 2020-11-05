@@ -11,6 +11,11 @@ import {
   SearchCriteria,
 } from '@/store/itinerary-service/types'
 
+function safeConcatTrips(current: Trip[], additions: Trip[]) {
+  return current.concat(
+    additions.filter(trip => !current.some(existing => existing.id === trip.id))
+  )
+}
 function setSearchCriteria(state: ItineraryState, payload: SearchCriteria) {
   state.searchCriteria.from = payload.from
   state.searchCriteria.to = payload.to
@@ -79,7 +84,7 @@ function setPlannedTrips(state: ItineraryState, payload: Trip[]) {
 }
 
 function appendPlannedTrips(state: ItineraryState, payload: Trip[]) {
-  state.plannedTrips = state.plannedTrips.concat(payload)
+  state.plannedTrips = safeConcatTrips(state.plannedTrips, payload)
 }
 
 function setShoutOuts(state: ItineraryState, payload: ShoutOut[]) {
@@ -103,7 +108,7 @@ function setPastTrips(state: ItineraryState, payload: Trip[]) {
 }
 
 function appendPastTrips(state: ItineraryState, payload: Trip[]) {
-  state.pastTrips = state.pastTrips.concat(payload)
+  state.pastTrips = safeConcatTrips(state.pastTrips, payload)
 }
 
 function setPastTripsCount(state: ItineraryState, payload: number) {

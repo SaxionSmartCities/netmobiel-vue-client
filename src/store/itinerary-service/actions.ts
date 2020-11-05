@@ -228,7 +228,7 @@ function fetchTrips(
       params: params,
     })
     .then(response => {
-      if (response.status === 200 && response.data.data.length > 0) {
+      if (response.status === 200) {
         if (offset === 0) {
           pastTrips
             ? mutations.setPastTrips(response.data.data)
