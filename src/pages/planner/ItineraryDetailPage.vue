@@ -26,7 +26,7 @@
           color="button"
           @click="onPlanTrip"
         >
-          Deze reis bevestigen
+          Deze rit bevestigen
           <v-icon dark right>error_outline</v-icon>
         </v-btn>
       </v-col>
@@ -113,7 +113,7 @@ export default {
         this.confirmTrip()
       } else {
         uiStore.actions.queueErrorNotification(
-          'Een reis boeken met klachten is niet mogelijk.'
+          'Een rit boeken met klachten is niet mogelijk.'
         )
       }
     },

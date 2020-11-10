@@ -31,7 +31,7 @@
                       :disabled="disabledSubmit"
                       @click="submitForm()"
                     >
-                      Plan je reis!
+                      Plan je rit!
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -42,7 +42,7 @@
                     @click="toSearchPreferences"
                   >
                     <v-icon>settings</v-icon>
-                    <span class="ml-1">Reisvoorkeuren</span>
+                    <span class="ml-1">Ritvoorkeuren</span>
                   </v-col>
                 </v-row>
               </v-form>

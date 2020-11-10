@@ -14,7 +14,7 @@
     <v-row>
       <v-col>
         <v-btn block rounded depressed class="my-3 button" to="/modeSelection">
-          Plan een reis
+          Plan een rit
         </v-btn>
         <v-btn block rounded depressed outlined to="/profile">
           Bekijk profiel

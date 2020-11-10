@@ -27,7 +27,7 @@
         <v-row>
           <v-col>
             <h3>Community oproepen</h3>
-            <p class="mt-2 mb-0">Gezochte reizen in de buurt van mijn:</p>
+            <p class="mt-2 mb-0">Gezochte ritten in de buurt van mijn:</p>
             <v-radio-group v-model="baseLocation" class="location" row>
               <v-radio label="Woonplaats" value="Home" selected></v-radio>
               <v-radio label="Huidige locatie" value="Here" disabled></v-radio>

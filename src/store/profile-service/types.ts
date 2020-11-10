@@ -57,15 +57,15 @@ export class ProfileState {
     ],
     tripOptions: [{ name: 'Ik bied ritten aan', value: false }],
     notificationOptions: [
-      { name: 'Bevestiging nieuwe reis', value: true },
-      { name: 'Wijziging bewaarde reis', value: true },
-      { name: 'Herinnering voor aanvang reis', value: false },
+      { name: 'Bevestiging nieuwe rit', value: true },
+      { name: 'Wijziging bewaarde rit', value: true },
+      { name: 'Herinnering voor aanvang rit', value: false },
       { name: 'Nieuw persoonlijke bericht', value: true },
       { name: 'Oproepen uit de community', value: false },
     ],
     reviews: [
-      { name: 'Beoordeel je reis', value: true },
-      { name: 'Deel mijn reviews met anderen', value: false },
+      { name: 'Beoordeel je rit', value: true },
+      { name: 'Deel mijn beoordelingen met anderen', value: false },
     ],
     credits: {
       creditAmount: 0,

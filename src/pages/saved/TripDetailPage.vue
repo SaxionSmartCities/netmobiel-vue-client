@@ -8,7 +8,7 @@
         no-gutters
       >
         <v-col>
-          Deze reis is niet meer beschikbaar.
+          Deze rit is niet meer beschikbaar.
         </v-col>
       </v-row>
     </template>

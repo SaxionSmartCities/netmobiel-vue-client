@@ -14,7 +14,7 @@
         </v-row>
         <v-row class="mt-2 px-2">
           <v-btn large rounded depressed color="button" block to="/search">
-            Een reis plannen
+            Een rit plannen
           </v-btn>
         </v-row>
         <v-row class="pa-2">

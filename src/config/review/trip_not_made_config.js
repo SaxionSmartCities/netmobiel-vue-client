@@ -1,6 +1,6 @@
 export default [
   {
-    title: 'De reis was niet meer nodig',
+    title: 'De rit was niet meer nodig',
     value: 'unnecessary',
   },
   {

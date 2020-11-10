@@ -24,7 +24,7 @@
         <community-button
           class="mx-auto"
           icon="fa-gift"
-          naam="Rewards"
+          naam="Beloningen"
           :disabled="true"
         ></community-button>
       </v-col>
@@ -32,7 +32,7 @@
         <community-button
           class="mx-auto"
           icon="fa-bullseye"
-          naam="doelen"
+          naam="Doelen"
           forward="charityOverviewPage"
         ></community-button>
       </v-col>

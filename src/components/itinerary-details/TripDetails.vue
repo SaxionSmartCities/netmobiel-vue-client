@@ -14,7 +14,7 @@
         </v-col>
       </v-row>
       <v-row dense class="d-flex flex-column">
-        <v-col><h1>Reis details</h1></v-col>
+        <v-col><h1>Ritdetails</h1></v-col>
         <v-col><v-divider /></v-col>
         <v-col class="py-0">
           <itinerary-summary-list :items="items" />

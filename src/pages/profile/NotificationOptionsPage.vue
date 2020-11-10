@@ -2,19 +2,16 @@
   <content-pane>
     <v-row>
       <v-col class="pa-0 ">
-        <h1 class="headline">Instellingen</h1>
+        <h1>Instellingen</h1>
       </v-col>
     </v-row>
     <v-row>
       <v-col class="pa-0">
-        <h2
-          class="mt-4 text-uppercase caption font-weight-bold text-color-primary"
-        >
+        <h4 class="mt-4 mb-2 font-weight-bold text-color-primary">
           Gebruik netmobiel als
-        </h2>
+        </h4>
         <single-select
           v-if="selectedMode"
-          class="mt-1"
           :active-option="selectedMode"
           :options="profileOptions"
           :init-value="selectedMode"
@@ -23,16 +20,15 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="pa-0 mt-4">
+      <profile-info-dialog :value="dialog" />
+      <v-col class="pa-0">
         <div
           v-for="section in Object.keys(notificationSettings[selectedMode])"
           :key="section"
         >
-          <span
-            class="text-uppercase caption font-weight-bold text-color-primary"
-          >
+          <h4 class="mt-4 mb-2 capitalize font-weight-bold text-color-primary">
             {{ section }}
-          </span>
+          </h4>
           <v-divider></v-divider>
           <template
             v-for="(option, index) in notificationSettings[selectedMode][
@@ -40,24 +36,22 @@
             ]"
           >
             <v-row :key="option.title" justify="space-between">
+              <v-col class="shrink d-flex align-center pr-0">
+                <v-icon @click="onInfoClick(option)">info_outline</v-icon>
+              </v-col>
               <v-col class="d-flex align-center">
-                <span class="body-2">{{ option.title }}</span>
+                <span>{{ option.title }}</span>
               </v-col>
               <v-col class="shrink d-flex align-center">
                 <v-switch
                   class="switch-overwrite"
                   hide-details
                   inset
-                  :value="false"
+                  :value="option.value"
                 ></v-switch>
               </v-col>
             </v-row>
-            <v-divider
-              v-if="
-                index !== notificationSettings[selectedMode][section].length - 1
-              "
-              :key="index"
-            ></v-divider>
+            <v-divider :key="index"></v-divider>
           </template>
         </div>
       </v-col>
@@ -66,16 +60,17 @@
 </template>
 
 <script>
-import ContentPane from '../../components/common/ContentPane'
-import notification_settings from '../../config/notification_settings'
-import SingleSelect from '../../components/profile/SingleSelect'
+import ContentPane from '@/components/common/ContentPane'
+import notification_settings from '@/config/notification_settings'
+import ProfileInfoDialog from '@/components/dialogs/ProfileInfoDialog'
+import SingleSelect from '@/components/profile/SingleSelect'
 import { throttle } from 'lodash'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'NotificationOptions',
-  components: { SingleSelect, ContentPane },
+  components: { SingleSelect, ProfileInfoDialog, ContentPane },
   data() {
     return {
       title: 'Instellingen',
@@ -86,6 +81,10 @@ export default {
         { title: 'Reiziger + Chauffeur', value: 'both' },
         { title: 'Chauffeur', value: 'driver' },
       ],
+      dialog: {
+        isVisible: false,
+        content: '',
+      },
     }
   },
   computed: {
@@ -114,6 +113,11 @@ export default {
       profile.userRole = option.value
       psStore.actions.updateProfile(profile)
     }),
+    onInfoClick(option) {
+      this.dialog.title = option.title
+      this.dialog.content = option.info
+      this.dialog.isVisible = true
+    },
   },
 }
 </script>

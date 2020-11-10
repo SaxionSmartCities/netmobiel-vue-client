@@ -8,14 +8,14 @@
     <template v-if="step === 1">
       <v-row>
         <v-col class="flex-column py-0">
-          <h3>Bevestig jouw reis</h3>
+          <h3>Bevestig jouw rit</h3>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
           <span class="body-2">
             Heb je op <em>{{ tripDepartureDate }}</em> om
-            {{ tripDepartureTime }} een reis van
+            {{ tripDepartureTime }} een rit van
             <b>{{ trip.from.label }}</b> naar
             <b>{{ trip.to.label }}</b> gemaakt?
           </span>

@@ -7,7 +7,7 @@
           <v-icon>fa-pencil-alt</v-icon>
         </v-col>
         <v-col class="pl-5">
-          Wijzig deze reis
+          Wijzig deze rit
         </v-col>
       </v-row>
       <v-divider v-if="!isShoutOut"></v-divider>
@@ -16,7 +16,7 @@
           <v-icon>fa-redo</v-icon>
         </v-col>
         <v-col class="pl-5">
-          Plan deze reis opnieuw
+          Plan deze rit opnieuw
         </v-col>
       </v-row>
       <v-divider></v-divider>
@@ -29,7 +29,7 @@
             <v-col cols="1">
               <v-icon>fa-check-circle</v-icon>
             </v-col>
-            <v-col class="pl-5">Bevestig deze reis</v-col>
+            <v-col class="pl-5">Bevestig deze rit</v-col>
           </v-row>
           <v-divider></v-divider>
         </v-col>
@@ -40,7 +40,7 @@
             <v-col cols="1">
               <v-icon>fa-times-circle</v-icon>
             </v-col>
-            <v-col class="pl-5">Annuleer deze reis</v-col>
+            <v-col class="pl-5">Annuleer deze rit</v-col>
           </v-row>
           <v-divider></v-divider>
         </v-col>
@@ -48,11 +48,11 @@
       <v-dialog v-model="dialog" persistent>
         <template v-slot:activator="{ on }"> </template>
         <v-card>
-          <v-card-title class="headline">Annuleer deze reis</v-card-title>
+          <v-card-title class="headline">Annuleer deze rit</v-card-title>
           <v-card-text>
             <v-row>
               <v-col>
-                Weet je zeker dat je deze reis wilt annuleren? Dit kan niet
+                Weet je zeker dat je deze rit wilt annuleren? Dit kan niet
                 ongedaan gemaakt worden.
               </v-col>
             </v-row>
@@ -67,7 +67,7 @@
                   color="button"
                   @click="confirmTripCancellation"
                 >
-                  Reis annuleren
+                  Rit annuleren
                 </v-btn>
               </v-col>
             </v-row>
@@ -83,7 +83,7 @@
                   color="primary"
                   @click="closeConfirmationDialog"
                 >
-                  Reis toch bewaren
+                  Rit toch bewaren
                 </v-btn>
               </v-col>
             </v-row>

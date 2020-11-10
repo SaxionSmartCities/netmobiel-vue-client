@@ -49,7 +49,7 @@
           <v-checkbox v-model="value.consent.olderThanSixteen"></v-checkbox>
         </v-col>
         <v-col cols="11">
-          Ik ben 16 of ouder.
+          Ik ben 16 jaar of ouder.
         </v-col>
       </v-row>
       <v-row no-gutters>

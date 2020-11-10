@@ -33,7 +33,7 @@
           color="primary"
           to="/modeSelection"
         >
-          Plan een nieuwe reis
+          Plan een nieuwe rit
         </v-btn>
       </v-col>
     </v-row>

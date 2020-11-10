@@ -5,7 +5,7 @@
         <v-row dense>
           <v-col>
             <h1>
-              Riteigenschappen
+              Ritvoorkeuren
             </h1>
           </v-col>
         </v-row>
