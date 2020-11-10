@@ -7,12 +7,11 @@
     </v-row>
     <v-row>
       <v-col class="pa-0">
-        <h4 class="mt-4 font-weight-bold text-color-primary">
+        <h4 class="mt-4 mb-2 font-weight-bold text-color-primary">
           Gebruik netmobiel als
         </h4>
         <single-select
           v-if="selectedMode"
-          class="mt-1"
           :active-option="selectedMode"
           :options="profileOptions"
           :init-value="selectedMode"
@@ -22,12 +21,12 @@
     </v-row>
     <v-row>
       <profile-info-dialog :value="dialog" />
-      <v-col class="pa-0 mt-4">
+      <v-col class="pa-0">
         <div
           v-for="section in Object.keys(notificationSettings[selectedMode])"
           :key="section"
         >
-          <h4 class="mt-4 capitalize font-weight-bold text-color-primary">
+          <h4 class="mt-4 mb-2 capitalize font-weight-bold text-color-primary">
             {{ section }}
           </h4>
           <v-divider></v-divider>
@@ -52,12 +51,7 @@
                 ></v-switch>
               </v-col>
             </v-row>
-            <v-divider
-              v-if="
-                index !== notificationSettings[selectedMode][section].length - 1
-              "
-              :key="index"
-            ></v-divider>
+            <v-divider :key="index"></v-divider>
           </template>
         </div>
       </v-col>
