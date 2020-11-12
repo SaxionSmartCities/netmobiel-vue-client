@@ -165,7 +165,10 @@ export default {
       return csStore.getters.getSelectedRide
     },
     numBookings() {
-      return !this.ride.bookings ? 0 : this.ride.bookings.length
+      return !this.ride.bookings
+        ? 0
+        : this.ride.bookings.filter(booking => booking.state === 'CONFIRMED')
+            .length
     },
   },
   created() {
