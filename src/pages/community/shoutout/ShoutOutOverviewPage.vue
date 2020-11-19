@@ -162,13 +162,20 @@ export default {
       return groupedShoutOuts
     },
     onShoutOutSelected(selected) {
-      this.$router.push({
-        name: 'shoutout',
-        params: {
-          id: selected.id,
-          isMine: selected.isUserTraveller.toString(),
-        },
-      })
+      if (selected.isUserTraveller) {
+        this.$router.push({
+          name: 'shoutoutpassenger',
+          params: { id: selected.id },
+        })
+      } else {
+        this.$router.push({
+          name: 'shoutout',
+          params: {
+            id: selected.id,
+            isMine: selected.isUserTraveller.toString(),
+          },
+        })
+      }
     },
     formatDate(date) {
       return date
