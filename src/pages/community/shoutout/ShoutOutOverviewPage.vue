@@ -47,7 +47,6 @@
           <v-col class="py-0">
             <grouped-shout-outs
               :label="formatDate(group)"
-              :btn-text="'Rit aanbieden'"
               :shoutouts="groupedShoutOuts[group]"
               @shoutoutSelected="onShoutOutSelected"
             />
@@ -74,8 +73,6 @@
           <v-col class="py-0">
             <grouped-shout-outs
               :label="formatDate(group)"
-              :btn-text="'Bekijk shoutout'"
-              :my-shout-out="true"
               :shoutouts="groupedMyShoutOuts[group]"
               @shoutoutSelected="onShoutOutSelected"
             />
@@ -164,12 +161,12 @@ export default {
       })
       return groupedShoutOuts
     },
-    onShoutOutSelected({ index, isMine }) {
+    onShoutOutSelected(selected) {
       this.$router.push({
         name: 'shoutout',
         params: {
-          id: index,
-          isMine: isMine.toString(),
+          id: selected.id,
+          isMine: selected.isUserTraveller.toString(),
         },
       })
     },

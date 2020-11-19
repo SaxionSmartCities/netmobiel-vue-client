@@ -2,12 +2,18 @@
   <v-card
     outlined
     class="shoutout-container"
-    @click="$emit('shoutoutSelected', shoutout.planRef)"
+    @click="
+      $emit('shoutoutSelected', { id: shoutout.planRef, isUserTraveller })
+    "
   >
     <v-row class="mb-2">
       <v-col class="shrink">
-        <v-img v-if="isMine" class="shoutout-image" :src="profileImage" />
-        <external-user-image v-else :managed-identity="otherIdentity" />
+        <v-img
+          v-if="isUserTraveller"
+          class="shoutout-image"
+          :src="profileImage"
+        />
+        <external-user-image v-else :managed-identity="travellerIdentity" />
       </v-col>
       <v-col>
         <p class="font-weight-regular header mb-0">Reiziger</p>
@@ -33,7 +39,7 @@
       </v-col>
       <v-col align="end">
         <v-btn small rounded depressed color="button">
-          {{ btnText }}
+          {{ nextAction }}
         </v-btn>
       </v-col>
     </v-row>
@@ -53,8 +59,6 @@ export default {
   components: { ItineraryLeg, ExternalUserImage },
   props: {
     shoutout: { type: Object, required: true },
-    btnText: { type: String, required: true },
-    isMine: { type: Boolean, required: true },
   },
   computed: {
     profile() {
@@ -63,9 +67,12 @@ export default {
     profileImage() {
       return this.profile.image
     },
+    isUserTraveller() {
+      return this.profile.id === this.travellerIdentity
+    },
     travellerName() {
       const { traveller } = this.shoutout
-      if (this.isMine) {
+      if (this.isUserTraveller) {
         return `${traveller.firstName} ${traveller.lastName}`
       }
       return `${traveller.givenName} ${traveller.familyName}`
@@ -73,8 +80,14 @@ export default {
     distance() {
       return getDistance(this.shoutout.from, this.shoutout.to, 1000) / 1000
     },
-    otherIdentity() {
-      return this.shoutout.traveller.managedIdentity
+    travellerIdentity() {
+      const { traveller } = this.shoutout
+      return traveller.managedIdentity
+        ? traveller.managedIdentity
+        : traveller.id
+    },
+    nextAction() {
+      return this.isUserTraveller ? 'Bekijk shoutout' : 'Rit aanbieden'
     },
   },
   methods: {
