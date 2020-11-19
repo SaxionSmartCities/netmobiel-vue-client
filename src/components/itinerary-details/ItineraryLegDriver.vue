@@ -1,9 +1,11 @@
 <template>
   <v-row no-gutters>
     <v-col>
+      <driver-image :image-size="60" :avatar-size="66" :leg="leg" />
+      <br />
       <b>{{ leg.driverName }}</b> is de chauffeur.
       <br />
-      <driver-image :image-size="60" :avatar-size="66" :leg="leg" />
+      <span>{{ leg.vehicleName }} ({{ leg.vehicleLicensePlate }})</span>
     </v-col>
   </v-row>
 </template>
