@@ -88,7 +88,8 @@ function appendPlannedTrips(state: ItineraryState, payload: Trip[]) {
 }
 
 function setShoutOuts(state: ItineraryState, payload: ShoutOut[]) {
-  state.shoutOuts = payload
+  const length = state.shoutOuts.length
+  state.shoutOuts.splice(0, length, ...payload)
 }
 
 function setMyShoutOuts(state: ItineraryState, payload: ShoutOut[]) {
@@ -118,6 +119,7 @@ function setPastTripsCount(state: ItineraryState, payload: number) {
 function setCancelledTrips(state: ItineraryState, payload: Trip[]) {
   state.cancelledTrips = payload
 }
+
 export const buildMutations = (
   isBuilder: ModuleBuilder<ItineraryState, RootState>
 ) => {
