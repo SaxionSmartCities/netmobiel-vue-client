@@ -62,7 +62,6 @@
                   large
                   rounded
                   block
-                  mb-4
                   depressed
                   color="button"
                   @click="confirmTripCancellation"
@@ -78,7 +77,6 @@
                   rounded
                   outlined
                   block
-                  mb-4
                   depressed
                   color="primary"
                   @click="closeConfirmationDialog"
