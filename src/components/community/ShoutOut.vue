@@ -2,6 +2,7 @@
   <v-card
     outlined
     class="shoutout-container"
+    :class="{ 'travel-offer': hasOffer }"
     @click="
       $emit('shoutoutSelected', { id: shoutout.planRef, isUserTraveller })
     "
@@ -25,12 +26,21 @@
         <v-icon>chevron_right</v-icon>
       </v-col>
     </v-row>
+    <v-row v-if="shoutout.ride">
+      <v-col class="pt-0 pb-4">
+        <h4>Jouw aanboden rit:</h4>
+      </v-col>
+    </v-row>
     <v-row
       v-for="(leg, index) in generateSteps()"
       :key="index"
       class="mx-1 py-0"
     >
-      <itinerary-leg :leg="leg" :showicon="false" :showdottedline="true" />
+      <itinerary-leg
+        :leg="leg"
+        :showicon="!!shoutout.ride"
+        :showdottedline="!shoutout.ride"
+      />
     </v-row>
     <v-row justify="center">
       <v-col align="start" class="header ma">
@@ -87,7 +97,14 @@ export default {
         : traveller.id
     },
     nextAction() {
-      return this.isUserTraveller ? 'Bekijk shoutout' : 'Rit aanbieden'
+      return this.isUserTraveller
+        ? 'Bekijk shoutout'
+        : this.hasOffer
+        ? 'Aanbod bekijken'
+        : 'Rit aanbieden'
+    },
+    hasOffer() {
+      return !!this.shoutout.ride
     },
   },
   methods: {
@@ -101,6 +118,9 @@ export default {
 <style lang="scss" scoped>
 .ma {
   margin: auto;
+}
+.travel-offer {
+  border: 1px solid $color-primary;
 }
 
 .shoutout-container {
