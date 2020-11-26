@@ -3,7 +3,12 @@
     <v-col>
       <driver-image :image-size="60" :avatar-size="66" :leg="leg" />
       <br />
-      <b>{{ leg.driverName }}</b> is de chauffeur.
+      <span v-if="leg.driverName === 'Jij'">
+        <b>{{ leg.driverName }}</b> bent de chauffeur.
+      </span>
+      <span v-else>
+        <b>{{ leg.driverName }}</b> is de chauffeur.
+      </span>
       <br />
       <span>{{ leg.vehicleName }} ({{ leg.vehicleLicensePlate }})</span>
     </v-col>
