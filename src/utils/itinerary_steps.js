@@ -37,6 +37,14 @@ export function generateItineraryDetailSteps(itinerary) {
 }
 
 export function generateShoutOutDetailSteps(shoutout) {
+  if (shoutout.ride) {
+    return generateShoutOutOfferDetailSteps(shoutout)
+  } else {
+    return generateCommunityShoutOutDetailSteps(shoutout)
+  }
+}
+
+function generateCommunityShoutOutDetailSteps(shoutout) {
   const departure = shoutout.useAsArrivalTime
     ? null
     : moment(shoutout.travelTime)
@@ -62,4 +70,47 @@ export function generateShoutOutDetailSteps(shoutout) {
       from: { name: to },
     },
   ]
+}
+
+function generateShoutOutOfferDetailSteps(shoutout) {
+  const { fromPlace, car, bookings } = shoutout.ride
+  let steps = []
+  const booking = bookings.find(b => b.state === 'PROPOSED')
+  if (booking) {
+    let departureTime = moment(shoutout.ride.departureTime)
+      .toDate()
+      .getTime()
+    let arrivalTime = moment(shoutout.ride.arrivalTime)
+      .toDate()
+      .getTime()
+    let pickupTime = moment(booking.departureTime)
+      .toDate()
+      .getTime()
+    let dropOffTime = moment(booking.arrivalTime)
+      .toDate()
+      .getTime()
+    steps.push({
+      mode: 'CAR',
+      startTime: departureTime,
+      endTime: pickupTime,
+      from: { name: fromPlace.label },
+    })
+    steps.push({
+      mode: 'RIDESHARE',
+      startTime: pickupTime,
+      endTime: dropOffTime,
+      from: { label: booking.pickup.label },
+      driverName: 'Jij',
+      vehicleName: car.brand,
+      vehicleLicensePlate: car.model,
+      tripId: shoutout.ride.id,
+    })
+    steps.push({
+      mode: 'ARRIVAL',
+      startTime: dropOffTime,
+      endTime: arrivalTime,
+      from: { name: booking.dropOff.label },
+    })
+  }
+  return steps
 }
