@@ -51,7 +51,55 @@ export interface TripSelection {
   itineraryRef: string
 }
 
-export interface ShoutOut {}
+export interface ShoutOut {
+  from: Location
+  to: Location
+  nrSeats: number
+  planRef: string
+  itineraries: Itinerary[]
+  travelTime: string
+  useAsArrivalTime: boolean
+  traveller: Traveller
+  ride: Ride | null
+}
+
+export interface Ride {
+  id: number
+  rideRef: string
+  state: string
+  fromPlace: Location
+  toPlace: Location
+  distance: number
+  arrivalTime: string
+  departureTime: string
+  car: Car
+  carRef: string
+  bookings: Booking[]
+}
+
+export interface Booking {
+  bookingRef: string
+  state: string
+  arrivalTime: string
+  departureTime: string
+  pickup: Location
+  dropOff: Location
+  passenger: Traveller
+  nrSeats: number
+}
+
+export interface Car {
+  brand: string
+  model: string
+}
+
+export interface Traveller {
+  id: number
+  email: string
+  familyName: string
+  givenName: string
+  managedIdentity: string
+}
 
 export interface Trip {
   id: number
