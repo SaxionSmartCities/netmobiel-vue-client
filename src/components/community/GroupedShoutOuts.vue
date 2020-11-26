@@ -26,7 +26,7 @@ export default {
   components: { ShoutOut },
   props: {
     label: { type: String, required: true },
-    shoutouts: { type: Array, required: true },
+    shoutouts: { type: Array, required: true, default: () => [] },
   },
   methods: {
     onShoutoutSelected(selected) {

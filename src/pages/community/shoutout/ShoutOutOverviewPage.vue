@@ -9,7 +9,7 @@
         <template v-slot:firstTab>
           <span>
             Community
-            <sup>{{ comunityShoutOuts.length }}</sup>
+            <sup>{{ communityShoutOuts.length }}</sup>
           </span>
         </template>
         <template v-slot:secondTab>
@@ -34,24 +34,11 @@
             </v-radio-group>
           </v-col>
         </v-row>
-        <v-row v-if="comunityShoutOuts.length == 0">
-          <v-col>
-            <em>Er zijn op dit moment opgeslagen oproepen in de buurt.</em>
-          </v-col>
-        </v-row>
-        <v-row
-          v-for="group in Object.keys(groupedCommunityShoutOuts)"
-          v-else
-          :key="group"
-        >
-          <v-col class="py-0">
-            <grouped-shout-outs
-              :label="formatDate(group)"
-              :shoutouts="groupedCommunityShoutOuts[group]"
-              @shoutoutSelected="onShoutOutSelected"
-            />
-          </v-col>
-        </v-row>
+        <shout-out-list
+          :shoutouts="communityShoutOuts"
+          no-items-label="Er zijn op dit moment opgeslagen oproepen in de buurt."
+          @shoutoutSelected="onShoutOutSelected"
+        />
       </v-col>
     </v-row>
     <v-row
@@ -60,24 +47,11 @@
       "
     >
       <v-col class="py-0">
-        <v-row v-if="myShoutOuts.length == 0">
-          <v-col>
-            <em>U heeft op dit moment geen opgeslagen oproepen.</em>
-          </v-col>
-        </v-row>
-        <v-row
-          v-for="group in Object.keys(groupedMyShoutOuts)"
-          v-else
-          :key="group"
-        >
-          <v-col class="py-0">
-            <grouped-shout-outs
-              :label="formatDate(group)"
-              :shoutouts="groupedMyShoutOuts[group]"
-              @shoutoutSelected="onShoutOutSelected"
-            />
-          </v-col>
-        </v-row>
+        <shout-out-list
+          :shoutouts="myShoutOuts"
+          no-items-label="U heeft op dit moment geen opgeslagen oproepen."
+          @shoutoutSelected="onShoutOutSelected"
+        />
       </v-col>
     </v-row>
   </content-pane>
@@ -86,7 +60,7 @@
 <script>
 import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane'
-import GroupedShoutOuts from '@/components/community/GroupedShoutOuts'
+import ShoutOutList from '@/components/community/ShoutOutList'
 import TabBar from '../../../components/common/TabBar'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import * as uiStore from '@/store/ui'
@@ -96,20 +70,15 @@ import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'ShoutOutOverview',
-  components: { TabBar, GroupedShoutOuts, ContentPane },
+  components: { TabBar, ShoutOutList, ContentPane },
   data() {
     return {
       selectedTab: 0,
       baseLocation: 'Home',
+      communityShoutOuts: [],
     }
   },
   computed: {
-    comunityShoutOuts() {
-      return isStore.getters.getShoutOuts
-    },
-    groupedCommunityShoutOuts() {
-      return this.groupShoutOuts(this.comunityShoutOuts)
-    },
     myShoutOuts() {
       const profile = psStore.getters.getProfile
       const listMyShoutOuts = isStore.getters.getMyShoutOuts
@@ -117,9 +86,6 @@ export default {
         ...shoutout,
         traveller: profile,
       }))
-    },
-    groupedMyShoutOuts() {
-      return this.groupShoutOuts(this.myShoutOuts)
     },
     proposedRides() {
       return csStore.getters.getProposedRides
@@ -130,6 +96,18 @@ export default {
     },
     userRole() {
       return psStore.getters.getProfile.userRole
+    },
+  },
+  watch: {
+    proposedRides(proposed) {
+      let updatedShoutOuts = []
+      for (const s of isStore.getters.getShoutOuts) {
+        s.ride = proposed.find(p => {
+          return !!p.bookings.find(b => b.passengerTripRef === s.planRef)
+        })
+        updatedShoutOuts.push(s)
+      }
+      this.communityShoutOuts = updatedShoutOuts
     },
   },
   created() {
@@ -144,13 +122,6 @@ export default {
   }),
   mounted() {
     const { id, address } = psStore.getters.getProfile
-    // If our role is 'chauffeur' or 'both' fetch any travel proposal we may have.
-    if (this.userRole == 'driver' || this.userRole == 'both') {
-      csStore.actions.fetchTravelProposals({
-        since: moment().format(),
-        driverManagedId: id,
-      })
-    }
     isStore.actions.fetchShoutOuts({
       latitude: address.location.coordinates[1],
       longitude: address.location.coordinates[0],
@@ -158,21 +129,16 @@ export default {
     isStore.actions.fetchMyShoutOuts({
       offset: 0,
     })
+    // If our role is 'chauffeur' or 'both' fetch any travel proposal we may have.
+    if (this.userRole == 'driver' || this.userRole == 'both') {
+      csStore.actions.fetchTravelProposals({
+        since: moment().format(),
+        driverManagedId: id,
+      })
+    }
     isStore.mutations.clearPlanningRequest()
   },
   methods: {
-    groupShoutOuts(shoutouts) {
-      let groupedShoutOuts = {}
-      // TODO: Don't use a map here.
-      shoutouts.map(s => {
-        const date = moment(s.travelTime).format('YYYYMMDD')
-        if (!groupedShoutOuts[date]) {
-          groupedShoutOuts[date] = []
-        }
-        groupedShoutOuts[date].push(s)
-      })
-      return groupedShoutOuts
-    },
     onShoutOutSelected(selected) {
       if (selected.isUserTraveller) {
         this.$router.push({
