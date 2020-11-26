@@ -1,7 +1,7 @@
-import { CarpoolState, Car } from './types'
+import { CarpoolState, Car, UserRef } from './types'
 import { RootState } from '@/store/Rootstate'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
-import { mutations } from '@/store/carpool-service/index'
+import { actions, mutations } from '@/store/carpool-service/index'
 import * as uiStore from '@/store/ui'
 import axios from 'axios'
 import util from '@/utils/Utils'
@@ -258,7 +258,7 @@ function deleteRide(context: ActionContext, payload: any) {
     })
 }
 
-function fetchUser(context: ActionContext, { userRef }: any) {
+function fetchUser(context: ActionContext, { userRef }: UserRef) {
   const URL = BASE_URL + `/rideshare/users/${userRef}`
   return axios
     .get(URL, {
@@ -272,6 +272,55 @@ function fetchUser(context: ActionContext, { userRef }: any) {
       // eslint-disable-next-line
       console.log(error)
     })
+}
+
+function fetchTravelProposals(
+  context: ActionContext,
+  { driverManagedId, offset, maxResults, until, since, sortDir }: any
+) {
+  if (driverManagedId) {
+    const URL = `${BASE_URL}/rideshare/users`
+    axios
+      .get(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        const driver = resp.data.find(
+          (u: any) => u.managedIdentity === driverManagedId
+        )
+        if (driver) {
+          const URL = `${BASE_URL}/rideshare/rides`
+          const params: any = {}
+          params['maxResults'] = maxResults || 10
+          params['offset'] = offset || 0
+          params['bookingState'] = 'PROPOSED'
+          driver.id && (params['driverId'] = driver.id)
+          until && (params['until'] = until)
+          since && (params['since'] = since)
+          sortDir && (params['sortDir'] = sortDir)
+          axios
+            .get(URL, {
+              headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+              params: params,
+            })
+            .then(function(resp) {
+              mutations.setProposedRides(resp.data.data)
+            })
+            .catch(function(error) {
+              // eslint-disable-next-line
+              console.log(error)
+              uiStore.actions.queueErrorNotification(
+                'Fout bij het ophalen van uw rit-aanbod.'
+              )
+            })
+        }
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  }
 }
 
 export const buildActions = (
@@ -288,5 +337,6 @@ export const buildActions = (
     confirmRide: csBuilder.dispatch(confirmRide),
     deleteRide: csBuilder.dispatch(deleteRide),
     fetchUser: csBuilder.dispatch(fetchUser),
+    fetchTravelProposals: csBuilder.dispatch(fetchTravelProposals),
   }
 }

@@ -8,6 +8,7 @@ export class CarpoolState {
     result: {},
   }
   pastRides: Ride[] = []
+  proposedRides: Ride[] = []
 }
 
 export interface Car {
@@ -20,4 +21,8 @@ export interface SearchResult {}
 export interface Search {
   licensePlate: string | null
   result: SearchResult | null
+}
+
+export interface UserRef {
+  userRef: string
 }
