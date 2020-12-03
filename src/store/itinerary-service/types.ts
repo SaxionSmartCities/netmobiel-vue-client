@@ -6,8 +6,9 @@ export class ItineraryState {
     itinerary: {},
   }
   shoutOuts: ShoutOut[] = []
-  myShoutOuts: ShoutOut[] = []
   shoutOutsTotalCount: number = 0
+  myShoutOuts: ShoutOut[] = []
+  myShoutOutsCount: number = 0
   plannedTripsCount: number = 0
   plannedTrips: Trip[] = []
   pastTripsCount: number = 0

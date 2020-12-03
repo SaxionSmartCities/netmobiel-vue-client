@@ -104,6 +104,10 @@ function setShoutOutsTotalCount(state: ItineraryState, payload: number) {
   state.shoutOutsTotalCount = payload
 }
 
+function setMyShoutOutsTotalCount(state: ItineraryState, payload: number) {
+  state.myShoutOutsCount = payload
+}
+
 function setPastTrips(state: ItineraryState, payload: Trip[]) {
   state.pastTrips = payload
 }
@@ -142,6 +146,7 @@ export const buildMutations = (
     setMyShoutOuts: isBuilder.commit(setMyShoutOuts),
     appendMyShoutOuts: isBuilder.commit(appendMyShoutOuts),
     setShoutOutsTotalCount: isBuilder.commit(setShoutOutsTotalCount),
+    setMyShoutOutsTotalCount: isBuilder.commit(setMyShoutOutsTotalCount),
     setPastTrips: isBuilder.commit(setPastTrips),
     appendPastTrips: isBuilder.commit(appendPastTrips),
     setPastTripsCount: isBuilder.commit(setPastTripsCount),

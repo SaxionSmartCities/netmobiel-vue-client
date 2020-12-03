@@ -49,6 +49,10 @@ export const buildGetters = (
     return state.myShoutOuts
   }, 'getMyShoutOuts')
 
+  const getMyShoutOutsCount = isBuilder.read((state: ItineraryState) => {
+    return state.myShoutOutsCount
+  }, 'getMyShoutOutsCount')
+
   const getSearchCriteria = isBuilder.read((state: ItineraryState) => {
     return state.searchCriteria
   }, 'getSearchCriteria')
@@ -94,6 +98,9 @@ export const buildGetters = (
     },
     get getMyShoutOuts() {
       return getMyShoutOuts()
+    },
+    get getMyShoutOutsCount() {
+      return getMyShoutOutsCount()
     },
     get getSearchCriteria() {
       return getSearchCriteria()

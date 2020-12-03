@@ -297,6 +297,7 @@ function fetchMyShoutOuts(context: ActionContext, { offset: offset }: any) {
     })
     .then(response => {
       if (response.status === 200) {
+        mutations.setMyShoutOutsTotalCount(response.data.totalCount)
         // When you using a offset you want to append the shoutouts and not clear the already fetched shoutouts.
         if (offset > 0) mutations.appendMyShoutOuts(response.data.data)
         else mutations.setMyShoutOuts(response.data.data)
