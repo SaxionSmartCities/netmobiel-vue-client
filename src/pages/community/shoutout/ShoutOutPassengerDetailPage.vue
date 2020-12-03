@@ -24,7 +24,11 @@
             <itinerary-options :options="options" />
           </v-col>
           <v-col>
-            <shout-out-cancel-dialog />
+            <shout-out-cancel-dialog
+              :value="cancelDialog"
+              @onConfirm="onConfirmCancel"
+              @onClose="onCloseCancel"
+            />
           </v-col>
         </v-row>
       </v-col>
@@ -74,6 +78,9 @@ export default {
           callback: this.onTripCancelled,
         },
       ],
+      cancelDialog: {
+        isVisible: false,
+      },
     }
   },
   computed: {
@@ -145,7 +152,7 @@ export default {
       })
     },
     onTripCancelled() {
-      isStore.actions.deleteShoutOut({ shoutoutPlanId: this.id })
+      this.cancelDialog.isVisible = true
     },
     onTravelOfferConfirmed(itinerary) {
       const { from, to, nrSeats } = this.trip
@@ -153,6 +160,14 @@ export default {
       const trip = { from, to, nrSeats, itineraryRef }
       isStore.actions.storeSelectedTrip(trip)
       this.$router.push({ name: 'shoutouts' })
+    },
+    onConfirmCancel() {
+      this.cancelDialog.isVisible = false
+      isStore.actions.deleteShoutOut({ shoutoutPlanId: this.id })
+      this.$router.go(-1)
+    },
+    onCloseCancel() {
+      this.cancelDialog.isVisible = false
     },
   },
 }
