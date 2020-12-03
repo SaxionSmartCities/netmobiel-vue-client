@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import constants from '@/constants/update-messages.js'
+import constants from '@/constants/constants'
 import hash from 'raw-loader!@/assets/current.hash'
 import ybug from './config/ybug'
 import * as uiStore from '@/store/ui'
@@ -146,9 +146,9 @@ export default {
     },
     routeToMode: function() {
       let newRoute = ''
-      if (this.getProfile.userRole === 'passenger') {
+      if (this.getProfile.userRole === constants.PROFILE_ROLE_PASSENGER) {
         newRoute = '/search'
-      } else if (this.getProfile.userRole === 'driver') {
+      } else if (this.getProfile.userRole === constants.PROFILE_ROLE_DRIVER) {
         newRoute = '/plan'
       } else {
         newRoute = '/modeSelection'

@@ -65,6 +65,7 @@ import notification_settings from '@/config/notification_settings'
 import ProfileInfoDialog from '@/components/dialogs/ProfileInfoDialog'
 import SingleSelect from '@/components/profile/SingleSelect'
 import { throttle } from 'lodash'
+import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 
@@ -77,9 +78,9 @@ export default {
       notificationSettings: notification_settings,
       selectedMode: null,
       profileOptions: [
-        { title: 'Reiziger', value: 'passenger' },
-        { title: 'Reiziger + Chauffeur', value: 'both' },
-        { title: 'Chauffeur', value: 'driver' },
+        { title: 'Reiziger', value: constants.PROFILE_ROLE_PASSENGER },
+        { title: 'Reiziger + Chauffeur', value: constants.PROFILE_ROLE_BOTH },
+        { title: 'Chauffeur', value: constants.PROFILE_ROLE_DRIVER },
       ],
       dialog: {
         isVisible: false,

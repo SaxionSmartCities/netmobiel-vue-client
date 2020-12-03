@@ -63,6 +63,7 @@ import ContentPane from '@/components/common/ContentPane'
 import ShoutOutList from '@/components/community/ShoutOutList'
 import TabBar from '../../../components/common/TabBar'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
+import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
@@ -92,7 +93,7 @@ export default {
     },
     showTabs() {
       const role = psStore.getters.getProfile.userRole
-      return !role || role === 'both'
+      return !role || role === constants.PROFILE_ROLE_BOTH
     },
     userRole() {
       return psStore.getters.getProfile.userRole
@@ -130,7 +131,10 @@ export default {
       offset: 0,
     })
     // If our role is 'chauffeur' or 'both' fetch any travel proposal we may have.
-    if (this.userRole == 'driver' || this.userRole == 'both') {
+    if (
+      this.userRole == constants.PROFILE_ROLE_DRIVER ||
+      this.userRole == constants.PROFILE_ROLE_BOTH
+    ) {
       csStore.actions.fetchTravelProposals({
         since: moment().format(),
         driverManagedId: id,

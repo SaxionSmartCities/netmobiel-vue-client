@@ -141,6 +141,7 @@ import RideCard from '@/components/cards/RideCard.vue'
 import UpdateCard from '@/components/cards/UpdateCard.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
 import moment from 'moment'
+import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
 import * as chsStore from '@/store/charity-service'
 import * as csStore from '@/store/carpool-service'
@@ -221,9 +222,9 @@ export default {
     },
     routeToMode() {
       let newRoute = ''
-      if (this.user.profile.userRole === 'passenger') {
+      if (this.user.profile.userRole === constants.PROFILE_ROLE_PASSENGER) {
         newRoute = '/search'
-      } else if (this.user.profile.userRole === 'driver') {
+      } else if (this.user.profile.userRole === constants.PROFILE_ROLE_DRIVER) {
         newRoute = '/plan'
       } else {
         newRoute = '/modeSelection'
