@@ -11,6 +11,9 @@
     <!-- Content -->
     <v-main>
       <router-view></router-view>
+    </v-main>
+    <!-- Footer -->
+    <v-bottom-navigation v-if="isFooterVisible" v-model="selectedNav" app>
       <v-snackbar
         v-if="isNotificationBarVisible"
         v-model="isNotificationBarVisible"
@@ -19,18 +22,21 @@
         bottom
         absolute
       >
-        {{ notificationQueue[0].message }}
-        <v-icon
-          v-if="notificationQueue[0].timeout === 0"
-          right
-          @click="finishNotification"
-        >
-          close
-        </v-icon>
+        <v-row dense>
+          <v-col class="grow">
+            {{ notificationQueue[0].message }}
+          </v-col>
+          <v-col class="shrink">
+            <v-icon
+              v-if="notificationQueue[0].timeout === 0"
+              right
+              @click="finishNotification"
+            >
+              close
+            </v-icon>
+          </v-col>
+        </v-row>
       </v-snackbar>
-    </v-main>
-    <!-- Footer -->
-    <v-bottom-navigation v-if="isFooterVisible" v-model="selectedNav" app>
       <v-btn text value="home" to="/home">
         <span>Home</span>
         <v-icon>home</v-icon>
@@ -215,6 +221,11 @@ header {
 
 .text-bold {
   font-weight: bold;
+}
+
+.v-snack {
+  position: absolute;
+  top: -52px;
 }
 
 //HACK: Styling of the notification close button. Some should fix this.
