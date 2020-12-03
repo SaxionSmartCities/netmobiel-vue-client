@@ -3,7 +3,9 @@
     <v-row>
       <v-col class="py-0">
         <v-row dense class="d-flex flex-column">
-          <v-col><h1>Oproep details</h1></v-col>
+          <v-col>
+            <h1>Oproep details</h1>
+          </v-col>
           <v-col><v-divider /></v-col>
           <v-col class="py-0">
             <itinerary-summary-list :items="items" />
@@ -14,21 +16,15 @@
               :trip="trip"
               @travel-proposal-confirm="onTravelOfferConfirmed"
             />
-            <v-row>
-              <v-col class="pt-3 pb-0">
-                <h3>Wijzigen</h3>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <itinerary-options
-                  :selected-trip="trip"
-                  @tripEdit="onTripEdit"
-                  @tripCancelled="onTripCancelled"
-                >
-                </itinerary-options>
-              </v-col>
-            </v-row>
+          </v-col>
+          <v-col class="pt-3 pb-0">
+            <h3>Wijzigen</h3>
+          </v-col>
+          <v-col>
+            <itinerary-options :options="options" />
+          </v-col>
+          <v-col>
+            <shout-out-cancel-dialog />
           </v-col>
         </v-row>
       </v-col>
@@ -41,14 +37,16 @@ import moment from 'moment'
 import { getDistance } from 'geolib'
 import { mapGetters } from 'vuex'
 import ContentPane from '@/components/common/ContentPane.vue'
-import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
+import ItineraryOptions from '@/components/itinerary-details/IOptions.vue'
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
 import ShoutOutDetailPassenger from '@/components/community/ShoutOutDetailPassenger.vue'
+import ShoutOutCancelDialog from '@/components/dialogs/ShoutoutCancelDialog.vue'
 import { formatDateTimeLong } from '@/utils/datetime.js'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as gsStore from '@/store/geocoder-service'
 import * as isStore from '@/store/itinerary-service'
+import ShoutOut from '@/components/community/ShoutOut.vue'
 
 export default {
   name: 'ShoutOutDetailPage',
@@ -56,6 +54,7 @@ export default {
     ContentPane,
     ItineraryOptions,
     ItinerarySummaryList,
+    ShoutOutCancelDialog,
     ShoutOutDetailPassenger,
   },
   props: {
@@ -63,22 +62,24 @@ export default {
   },
   data() {
     return {
-      ride: null,
-      showMap: false,
-      editDepart: false,
-      showTimePicker: false,
-      pickedTime: null,
-      planningResponse: {
-        status: 'PENDING',
-      },
-      coronaCheck: {
-        isVisible: false,
-        coronaFreePast: false,
-        coronaFreeHousehold: false,
-      },
+      options: [
+        {
+          icon: 'fa-pencil-alt',
+          label: 'Wijzig deze oproep',
+          callback: this.onTripEdit,
+        },
+        {
+          icon: 'fa-times-circle',
+          label: 'Annuleer deze oproep',
+          callback: this.onTripCancelled,
+        },
+      ],
     }
   },
   computed: {
+    profile() {
+      return psStore.getters.getProfile
+    },
     trip() {
       return isStore.getters.getSelectedTrip
     },
