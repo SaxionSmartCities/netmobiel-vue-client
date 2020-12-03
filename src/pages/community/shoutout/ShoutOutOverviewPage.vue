@@ -122,6 +122,7 @@ export default {
     editDepart: editing => editing || false,
   }),
   mounted() {
+    this.communityShoutOuts = [...isStore.getters.getShoutOuts]
     const { id, address } = psStore.getters.getProfile
     isStore.actions.fetchShoutOuts({
       latitude: address.location.coordinates[1],
