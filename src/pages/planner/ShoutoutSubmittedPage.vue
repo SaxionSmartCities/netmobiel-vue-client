@@ -14,17 +14,12 @@
       <v-col>
         <shout-out
           :shoutout="shoutout"
-          :btn-text="'Bekijk shoutout'"
-          :is-mine="true"
           @shoutoutSelected="onShoutoutSelected"
         ></shout-out>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <!-- <v-btn block rounded depressed class="my-3 button" to="/shoutouts">
-          Bekijk je oproepen
-        </v-btn> -->
         <v-btn
           block
           rounded
