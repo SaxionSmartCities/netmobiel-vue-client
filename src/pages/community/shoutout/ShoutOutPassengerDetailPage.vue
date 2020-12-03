@@ -8,7 +8,7 @@
           </v-col>
           <v-col><v-divider /></v-col>
           <v-col class="py-0">
-            <itinerary-summary-list :items="items" />
+            <itinerary-summary-list :items="itinerarySummaryItems" />
           </v-col>
           <v-col><v-divider /></v-col>
           <v-col>
@@ -37,7 +37,7 @@ import moment from 'moment'
 import { getDistance } from 'geolib'
 import { mapGetters } from 'vuex'
 import ContentPane from '@/components/common/ContentPane.vue'
-import ItineraryOptions from '@/components/itinerary-details/IOptions.vue'
+import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
 import ShoutOutDetailPassenger from '@/components/community/ShoutOutDetailPassenger.vue'
 import ShoutOutCancelDialog from '@/components/dialogs/ShoutoutCancelDialog.vue'
@@ -49,7 +49,7 @@ import * as isStore from '@/store/itinerary-service'
 import ShoutOut from '@/components/community/ShoutOut.vue'
 
 export default {
-  name: 'ShoutOutDetailPage',
+  name: 'ShoutOutPassengerDetailPage',
   components: {
     ContentPane,
     ItineraryOptions,
@@ -92,7 +92,7 @@ export default {
     itineraries() {
       return this.planResult?.itineraries || []
     },
-    items() {
+    itinerarySummaryItems() {
       let result = []
       const { travelTime } = this.trip
       if (travelTime) {
@@ -112,15 +112,6 @@ export default {
         : 'Onbekend'
       result.push({ label: 'Afstand', value: `${kilometers} km` })
       return result
-    },
-    itineraryDepartureLabel() {
-      return this.itineraryDeparture?.from?.label || 'Onbekende locatie'
-    },
-    itineraryDepartureTime() {
-      return moment(this.itinerary.departureTime).format('HH:mm')
-    },
-    itineraryDeparture() {
-      return this.generateSteps(this.itinerary)[0]
     },
   },
   mounted() {

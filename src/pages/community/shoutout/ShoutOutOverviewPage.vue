@@ -147,7 +147,7 @@ export default {
         })
       } else {
         this.$router.push({
-          name: 'shoutout',
+          name: 'shoutoutdriver',
           params: {
             id: selected.id,
             isMine: selected.isUserTraveller.toString(),
