@@ -157,21 +157,4 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
-.departure-date {
-  text-transform: lowercase;
-}
-.departure-date::first-letter {
-  text-transform: uppercase;
-}
-.equal-width {
-  width: 100%;
-}
-.equal-width td {
-  width: 14.14%;
-  text-align: center;
-}
-.bg-light-green {
-  background-color: $background-light-green;
-}
-</style>
+<style lang="scss" scoped></style>
