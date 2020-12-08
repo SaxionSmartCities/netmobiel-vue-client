@@ -58,11 +58,9 @@ export default {
   },
   methods: {
     confirmCancellation() {
-      console.log('Confirm')
       this.$emit('onConfirm')
     },
     closeCancelDialog() {
-      console.log('Close')
       this.$emit('onClose')
     },
   },
