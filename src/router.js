@@ -225,7 +225,7 @@ const router = new Router({
       name: 'shoutouts',
     },
     {
-      path: '/shoutoutdriver/:id;:isMine',
+      path: '/shoutoutdriver/:id',
       component: ShoutOutDriverDetailPage,
       name: 'shoutoutdriver',
       props: true,
