@@ -64,7 +64,6 @@ export default {
   },
   mounted() {
     const { address, userRole } = psStore.getters.getProfile
-    console.log(userRole)
     if (userRole == constants.PROFILE_ROLE_PASSENGER) {
       // Display the count of the users' own shoutouts.
       isStore.actions.fetchMyShoutOuts({ offset: 0 })
