@@ -1,13 +1,13 @@
 <template>
   <v-row no-gutters>
     <v-col>
-      <b>{{ passenger.givenName }} {{ passenger.familyName }}</b> rijdt mee.
-      <br />
       <external-user-image
         :managed-identity="passenger.managedIdentity"
         :image-size="60"
         :avatar-size="66"
       />
+      <br />
+      <b>{{ passenger.givenName }} {{ passenger.familyName }}</b> rijdt mee.
     </v-col>
   </v-row>
 </template>
