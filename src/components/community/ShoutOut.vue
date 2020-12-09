@@ -83,7 +83,7 @@ export default {
     travellerName() {
       const { traveller } = this.shoutout
       if (this.isUserTraveller) {
-        return `${traveller.firstName} ${traveller.lastName}`
+        return `${this.profile.firstName} ${this.profile.lastName}`
       }
       return `${traveller.givenName} ${traveller.familyName}`
     },
