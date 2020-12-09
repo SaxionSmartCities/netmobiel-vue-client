@@ -75,7 +75,7 @@ function generateCommunityShoutOutDetailSteps(shoutout) {
 function generateShoutOutOfferDetailSteps(shoutout) {
   const { fromPlace, car, bookings } = shoutout.ride
   let steps = []
-  const booking = bookings.find(b => b.state === 'PROPOSED')
+  const booking = bookings?.find(b => b.state === 'PROPOSED')
   if (booking) {
     let departureTime = moment(shoutout.ride.departureTime)
       .toDate()

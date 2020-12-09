@@ -10,6 +10,7 @@ import {
   Trip,
   SearchCriteria,
 } from '@/store/itinerary-service/types'
+import { Moment } from 'moment'
 
 function safeConcatTrips(current: Trip[], additions: Trip[]) {
   return current.concat(
@@ -124,6 +125,10 @@ function setCancelledTrips(state: ItineraryState, payload: Trip[]) {
   state.cancelledTrips = payload
 }
 
+function setShoutoutPlanTime(state: ItineraryState, payload: Moment) {
+  state.shoutoutPlanTime = payload
+}
+
 export const buildMutations = (
   isBuilder: ModuleBuilder<ItineraryState, RootState>
 ) => {
@@ -151,5 +156,6 @@ export const buildMutations = (
     appendPastTrips: isBuilder.commit(appendPastTrips),
     setPastTripsCount: isBuilder.commit(setPastTripsCount),
     setCancelledTrips: isBuilder.commit(setCancelledTrips),
+    setShoutoutPlanTime: isBuilder.commit(setShoutoutPlanTime),
   }
 }

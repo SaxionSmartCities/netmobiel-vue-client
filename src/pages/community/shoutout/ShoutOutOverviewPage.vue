@@ -155,7 +155,6 @@ export default {
           name: 'shoutoutdriver',
           params: {
             id: selected.id,
-            isMine: selected.isUserTraveller.toString(),
           },
         })
       }

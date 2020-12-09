@@ -65,6 +65,10 @@ export const buildGetters = (
     return state.bookingRequest.submitStatus
   }, 'getBookingStatus')
 
+  const getShoutoutPlanTime = isBuilder.read((state: ItineraryState) => {
+    return state.shoutoutPlanTime
+  }, 'getShoutoutPlanTime')
+
   return {
     get getPlanningRequest() {
       return getPlanningRequest()
@@ -110,6 +114,9 @@ export const buildGetters = (
     },
     get getBookingStatus() {
       return getBookingStatus()
+    },
+    get getShoutoutPlanTime() {
+      return getShoutoutPlanTime()
     },
   }
 }

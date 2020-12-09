@@ -19,6 +19,7 @@ export class ItineraryState {
     travelTime: null,
     preferences: null,
   }
+  shoutoutPlanTime: any = null
   planningRequest: PlanningRequest = {
     from: null,
     to: null,
