@@ -23,7 +23,11 @@
           @click="showConversation(conversation)"
         >
           <v-list-item-avatar size="60">
-            <!--                  <v-img :src="profile.image" />-->
+            <external-user-image
+              :managed-identity="getIdentityViaConversation(conversation)"
+              :image-size="55"
+              :avatar-size="60"
+            />
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>
@@ -52,8 +56,10 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
+import ExternalUserImage from '@/components/profile/ExternalUserImage'
 import TabBar from '../../../components/common/TabBar'
 import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as msStore from '@/store/message-service'
 
@@ -61,11 +67,11 @@ export default {
   components: {
     TabBar,
     ContentPane,
+    ExternalUserImage,
   },
   data() {
     return {
       selectedTab: 0,
-      // conversations: {},
     }
   },
   computed: {
@@ -92,6 +98,15 @@ export default {
         return res.givenName + ' ' + res.familyName
       }
       return 'not found'
+    },
+    getIdentityViaConversation(conversation) {
+      const res = conversation.participants.filter(
+        user => user.managedIdentity !== this.myId
+      )[0]
+      if (res) {
+        return res.managedIdentity
+      }
+      return conversation.sender.managedIdentity
     },
     showConversation(conversation) {
       this.$router.push({
