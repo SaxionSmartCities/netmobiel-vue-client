@@ -204,15 +204,15 @@ export default {
     },
     showTabs() {
       const role = psStore.getters.getProfile.userRole
-      return !role || role === 'both'
+      return !role || role === constants.PROFILE_ROLE_BOTH
     },
     isPassenger() {
       const role = psStore.getters.getProfile.userRole
-      return role === 'passenger'
+      return role === constants.PROFILE_ROLE_PASSENGER
     },
     isDriver() {
       const role = psStore.getters.getProfile.userRole
-      return role === 'driver'
+      return role === constants.PROFILE_ROLE_DRIVER
     },
   },
   watch: {

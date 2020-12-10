@@ -12,6 +12,7 @@ import {
   SearchCriteria,
 } from '@/store/itinerary-service/types'
 import * as uiStore from '@/store/ui'
+import { addInterceptors } from '../api-middelware'
 
 type ActionContext = BareActionContext<ItineraryState, RootState>
 
@@ -141,7 +142,9 @@ function storeShoutOut(
     planType: 'SHOUT_OUT',
   }
   const URL = BASE_URL + '/planner/plans'
-  axios
+  let instance = axios.create()
+  addInterceptors(instance)
+  instance
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
@@ -150,7 +153,8 @@ function storeShoutOut(
         let message = 'Oproep naar de community is geplaatst'
         uiStore.actions.queueInfoNotification(message)
       } else {
-        uiStore.actions.queueErrorNotification(response.data.message)
+        let message = response.data.message
+        uiStore.actions.queueErrorNotification(message)
       }
     })
     .catch(error => {
@@ -293,6 +297,7 @@ function fetchMyShoutOuts(context: ActionContext, { offset: offset }: any) {
     })
     .then(response => {
       if (response.status === 200) {
+        mutations.setMyShoutOutsTotalCount(response.data.totalCount)
         // When you using a offset you want to append the shoutouts and not clear the already fetched shoutouts.
         if (offset > 0) mutations.appendMyShoutOuts(response.data.data)
         else mutations.setMyShoutOuts(response.data.data)

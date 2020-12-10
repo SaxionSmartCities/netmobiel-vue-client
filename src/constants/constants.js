@@ -21,4 +21,16 @@ export default {
   },
   searchSuggestionDefaultIcon: 'fa-map-marker-alt',
   maxComplimentsAllowed: 3,
+  COMPLETE_PROFILE_UPDATE: {
+    title: 'Verdien een gratis rit!',
+    content:
+      'Maak jouw profiel compleet en verdien een gratis rit met Netmobiel!',
+    link: {
+      label: 'Profiel compleet maken',
+      to: '/onboardingPage',
+    },
+  },
+  PROFILE_ROLE_DRIVER: 'driver',
+  PROFILE_ROLE_PASSENGER: 'passenger',
+  PROFILE_ROLE_BOTH: 'both',
 }

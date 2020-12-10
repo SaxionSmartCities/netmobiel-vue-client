@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import constants from '@/constants/update-messages.js'
+import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
 
 export default {

@@ -34,7 +34,8 @@ import CharityDetailPage from './pages/community/goals/CharityDetailsPage'
 import TripCancelledPage from './pages/saved/TripCancelledPage'
 import TripDetailPage from './pages/saved/TripDetailPage'
 import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
-import ShoutOutDetailPage from '@/pages/community/shoutout/ShoutOutDetailPage'
+import ShoutOutDriverDetailPage from '@/pages/community/shoutout/ShoutOutDriverDetailPage'
+import ShoutOutPassengerDetailPage from '@/pages/community/shoutout/ShoutOutPassengerDetailPage'
 import ShoutoutSubmittedPage from '@/pages/planner/ShoutoutSubmittedPage'
 import Account from '@/pages/profile/Account'
 import DriverReviewPage from './pages/review/DriverReviewPage'
@@ -224,9 +225,15 @@ const router = new Router({
       name: 'shoutouts',
     },
     {
-      path: '/shoutout/:id;:isMine',
-      component: ShoutOutDetailPage,
-      name: 'shoutout',
+      path: '/shoutoutdriver/:id',
+      component: ShoutOutDriverDetailPage,
+      name: 'shoutoutdriver',
+      props: true,
+    },
+    {
+      path: '/shoutoutpassenger/:id',
+      component: ShoutOutPassengerDetailPage,
+      name: 'shoutoutpassenger',
       props: true,
     },
     {
