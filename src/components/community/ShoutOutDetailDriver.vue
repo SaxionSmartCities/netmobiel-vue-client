@@ -82,7 +82,6 @@ export default {
     },
     deleteRide() {
       this.warningDialog = false
-      console.log(this.ride)
       //TODO: This gives an error in the backend.
       // csStore.actions.deleteRide({
       //   id: this.ride.id,

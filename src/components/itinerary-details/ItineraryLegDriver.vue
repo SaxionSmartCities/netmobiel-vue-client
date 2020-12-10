@@ -17,7 +17,6 @@
 
 <script>
 import DriverImage from '@/components/itinerary-details/DriverImage'
-import RoundUserImage from '@/components/common/RoundUserImage'
 import * as psStore from '@/store/profile-service'
 import * as csStore from '@/store/carpool-service'
 

@@ -215,7 +215,7 @@ export default {
       this.$router.push('/search')
     },
     onTripReview(trip) {
-      console.log(this.selectedTrip)
+      // console.log(this.selectedTrip)
       // this.$router.push({
       //   name: 'reviewDriver',
       //   params: {
@@ -235,7 +235,6 @@ export default {
     onTripEdit() {
       const { from, to, itinerary, arrivalTimeIsPinned } = this.selectedTrip
       const { searchPreferences } = psStore.getters.getProfile
-      console.log(itinerary)
       let searchCriteria = {
         from,
         to,

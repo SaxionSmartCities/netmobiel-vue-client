@@ -150,7 +150,6 @@ export default {
     rideOptions() {
       let options = []
       const { state } = this.ride
-      console.log(state)
       switch (state) {
         case 'SCHEDULED':
           options.push({
