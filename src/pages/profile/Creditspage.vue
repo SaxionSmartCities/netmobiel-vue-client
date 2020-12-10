@@ -100,7 +100,7 @@ export default {
   },
   computed: {
     creditAmount() {
-      return crsStore.getters.getBankerUser?.credits
+      return crsStore.getters.getBankerUser?.personalAccount?.credits
     },
     creditHistory() {
       return crsStore.getters.getAccountStatements?.data
