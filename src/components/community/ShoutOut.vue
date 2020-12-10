@@ -42,6 +42,11 @@
         :showdottedline="!shoutout.ride"
       />
     </v-row>
+    <v-row v-if="shoutout.itineraries.length > 0">
+      <v-col class="">
+        <h5>Er zijn {{ shoutout.itineraries.length }} ritten aangeboden.</h5>
+      </v-col>
+    </v-row>
     <v-row justify="center">
       <v-col align="start" class="header ma">
         <span>Afstand </span>
@@ -104,7 +109,7 @@ export default {
         : 'Rit aanbieden'
     },
     hasOffer() {
-      return !!this.shoutout.ride
+      return !!this.shoutout.ride || this.shoutout.itineraries.length > 0
     },
   },
   methods: {
