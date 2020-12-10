@@ -109,7 +109,14 @@ export default {
     },
     hasTravelOffer() {
       const itineraries = this.trip.itineraries || []
-      return itineraries.length > 0
+      const fullName = psStore.getters.getUser.fullName
+      for (let itinerary of itineraries) {
+        const found = itinerary?.legs.find(l => l.driverName === fullName)
+        if (found) {
+          return true
+        }
+      }
+      return false
     },
     itinerary() {
       //TODO: ?
