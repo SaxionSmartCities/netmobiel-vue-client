@@ -1,6 +1,12 @@
 <template>
   <v-row>
     <v-col class="py-0">
+      <v-row v-if="options.length === 0">
+        <v-col class="py-0">
+          <v-divider></v-divider>
+          <em>Geen wijzigingen mogelijk op dit moment.</em>
+        </v-col>
+      </v-row>
       <v-row v-for="(option, index) in options" :key="index" dense>
         <v-col class="py-0">
           <v-divider></v-divider>
