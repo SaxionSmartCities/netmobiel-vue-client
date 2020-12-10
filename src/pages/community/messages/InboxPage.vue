@@ -45,7 +45,10 @@
               </v-row>
             </v-list-item-title>
             <v-list-item-subtitle>
-              {{ conversation.context }}
+              Van
+              {{ getFromLabelFromContext(conversation.context) }}
+              naar
+              {{ getToLabelFromContext(conversation.context) }}
             </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -85,6 +88,12 @@ export default {
       return psStore.getters.getProfile.id
     },
   },
+  watch: {
+    conversations(newValue) {
+      const conversations = msStore.getters.getConversations
+      csStore.actions.fetchRidesFromConversations(conversations)
+    },
+  },
   created: function() {
     uiStore.mutations.showBackButton()
     msStore.actions.fetchConversations()
@@ -107,6 +116,18 @@ export default {
         return res.managedIdentity
       }
       return conversation.sender.managedIdentity
+    },
+    getRideFromContext(context) {
+      const rideId = context.substring('urn:nb:rs:ride:'.length)
+      const rides = csStore.getters.getInboxRides
+      const ride = rides.find(r => r.id.toString() === rideId)
+      return ride
+    },
+    getFromLabelFromContext(context) {
+      return this.getRideFromContext(context)?.fromPlace?.label || 'Onbekend'
+    },
+    getToLabelFromContext(context) {
+      return this.getRideFromContext(context)?.toPlace?.label || 'Onbekend'
     },
     showConversation(conversation) {
       this.$router.push({
