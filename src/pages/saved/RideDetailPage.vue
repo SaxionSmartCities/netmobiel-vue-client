@@ -26,75 +26,50 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row class="mb-2">
-      <v-col>
-        <h3 class="mb-2">Wijzigen</h3>
-        <v-divider />
-        <v-row @click="editRide">
-          <v-col cols="1">
-            <v-icon>fa-pencil-alt</v-icon>
-          </v-col>
-          <v-col class="pl-5">
-            Wijzig deze rit
-          </v-col>
-        </v-row>
-        <v-divider />
-        <v-row @click="confirmRide()">
-          <v-col cols="1">
-            <v-icon>fa-check-circle</v-icon>
-          </v-col>
-          <v-col class="pl-5">
-            Rit bevestigen
-          </v-col>
-        </v-row>
-        <v-divider />
-        <v-row @click="checkDeleteTrip()">
-          <v-col cols="1">
-            <v-icon>lock</v-icon>
-          </v-col>
-          <v-col class="pl-5">
-            Rit annuleren
-          </v-col>
-        </v-row>
-        <v-dialog v-model="warningDialog">
-          <v-card>
-            <v-card-title class="headline">
-              Weet u dit zeker?
-            </v-card-title>
-
-            <v-card-text v-if="numBookings > 0">
-              <p>
-                Op dit moment heeft uw rit
-                {{ numBookings }} boekingen, wilt u uw passagier(s) een reden
-                geven waarom u de rit annuleert.
-              </p>
-              <v-textarea
-                outlined
-                name="input-7-4"
-                label="Reden voor annulering"
-                :value="cancelReason"
-              ></v-textarea>
-            </v-card-text>
-            <v-card-text v-else>
-              <p>
-                Weet u zeker dat u deze rit wil annuleren?
-              </p>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-btn text color="primary" @click="deleteTrip()">
-                Ja
-              </v-btn>
-
-              <v-btn text color="primary" @click="warningDialog = false">
-                Nee
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-divider />
+    <v-row class="mb-0">
+      <v-col class="pb-0">
+        <h3>Wijzigen</h3>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col>
+        <itinerary-options :options="rideOptions" />
+      </v-col>
+    </v-row>
+    <v-dialog v-model="warningDialog">
+      <v-card>
+        <v-card-title class="headline">
+          Weet u dit zeker?
+        </v-card-title>
+        <v-card-text v-if="numBookings > 0">
+          <p>
+            Op dit moment heeft uw rit
+            {{ numBookings }} boekingen, wilt u uw passagier(s) een reden geven
+            waarom u de rit annuleert.
+          </p>
+          <v-textarea
+            outlined
+            name="input-7-4"
+            label="Reden voor annulering"
+            :value="cancelReason"
+          ></v-textarea>
+        </v-card-text>
+        <v-card-text v-else>
+          <p>
+            Weet u zeker dat u deze rit wil annuleren?
+          </p>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn text color="primary" @click="deleteTrip()">
+            Ja
+          </v-btn>
+
+          <v-btn text color="primary" @click="warningDialog = false">
+            Nee
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <contact-traveller-modal
       v-if="showContactTravellerModal"
       :show="showContactTravellerModal"
@@ -112,6 +87,7 @@
 
 <script>
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import ContentPane from '@/components/common/ContentPane.vue'
 import ContactTravellerModal from '@/components/itinerary-details/ContactTravellerModal'
 import EditRideModal from '../../components/itinerary-details/EditRideModal'
@@ -128,6 +104,7 @@ export default {
     ContactTravellerModal,
     ContentPane,
     ItineraryLeg,
+    ItineraryOptions,
     RideDetails,
   },
   props: {
@@ -169,6 +146,33 @@ export default {
         ? 0
         : this.ride.bookings.filter(booking => booking.state === 'CONFIRMED')
             .length
+    },
+    rideOptions() {
+      let options = []
+      const { state } = this.ride
+      console.log(state)
+      switch (state) {
+        case 'SCHEDULED':
+          options.push({
+            icon: 'fa-pencil-alt',
+            label: 'Wijzig deze rit',
+            callback: this.onRideEdit,
+          })
+          options.push({
+            icon: 'fa-times-circle',
+            label: 'Annuleer deze rit',
+            callback: this.onRideCancelled,
+          })
+          break
+        case 'VALIDATING':
+          options.push({
+            icon: 'fa-check-circle',
+            label: 'Bevestig deze rit',
+            callback: this.onRideReview,
+          })
+          break
+      }
+      return options
     },
   },
   created() {
@@ -239,8 +243,11 @@ export default {
     onLegSelected(leg) {
       this.selectedLeg = leg
     },
-    confirmRide() {
+    onRideReview() {
       csStore.actions.confirmRide({ id: this.localId })
+    },
+    onRideCancelled() {
+      this.warningDialog = true
     },
     deleteTrip() {
       this.warningDialog = false
@@ -249,9 +256,6 @@ export default {
         cancelReason: this.cancelReason,
       })
       this.$router.push('/tripsOverviewPage')
-    },
-    checkDeleteTrip() {
-      this.warningDialog = true
     },
     async onTravellerSelectForMessage(event) {
       const tripContext = 'urn:nb:rs:ride:' + this.ride.id
@@ -264,7 +268,7 @@ export default {
         this.onTravellerSelectForMessage(this.passengersInBookings[0])
       }
     },
-    editRide() {
+    onRideEdit() {
       this.showEditRideModal = true
     },
     routeToConversation(ctx, passengerProfile) {
