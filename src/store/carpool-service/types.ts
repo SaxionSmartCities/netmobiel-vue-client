@@ -9,6 +9,7 @@ export class CarpoolState {
   }
   pastRides: Ride[] = []
   proposedRides: Ride[] = []
+  inboxRides: Ride[] = []
 }
 
 export interface Car {

@@ -65,6 +65,10 @@ function setProposedRides(state: CarpoolState, payload: Ride[]) {
   state.proposedRides = payload
 }
 
+function setInboxRides(state: CarpoolState, payload: Ride[]) {
+  state.inboxRides = payload
+}
+
 export const buildMutations = (
   csBuilder: ModuleBuilder<CarpoolState, RootState>
 ) => {
@@ -82,5 +86,6 @@ export const buildMutations = (
     deleteRides: csBuilder.commit(deleteRides),
     setSelectedRide: csBuilder.commit(setSelectedRide),
     setProposedRides: csBuilder.commit(setProposedRides),
+    setInboxRides: csBuilder.commit(setInboxRides),
   }
 }

@@ -323,6 +323,25 @@ function fetchTravelProposals(
   }
 }
 
+function fetchRidesFromConversations(context: ActionContext, payload: any) {
+  let rideFetches = []
+  for (let conversation of payload) {
+    const URL = `${BASE_URL}/rideshare/rides/${conversation.context}`
+    rideFetches.push(
+      axios.get(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+    )
+  }
+  Promise.all(rideFetches).then(values => {
+    let rides = []
+    for (let resp of values) {
+      rides.push(resp.data)
+    }
+    mutations.setInboxRides(rides)
+  })
+}
+
 export const buildActions = (
   csBuilder: ModuleBuilder<CarpoolState, RootState>
 ) => {
@@ -338,5 +357,8 @@ export const buildActions = (
     deleteRide: csBuilder.dispatch(deleteRide),
     fetchUser: csBuilder.dispatch(fetchUser),
     fetchTravelProposals: csBuilder.dispatch(fetchTravelProposals),
+    fetchRidesFromConversations: csBuilder.dispatch(
+      fetchRidesFromConversations
+    ),
   }
 }
