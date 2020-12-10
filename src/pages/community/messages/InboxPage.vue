@@ -40,7 +40,9 @@
                   }}
                 </v-col>
                 <v-col class="px-2" cols="2">
-                  <div class="message-counter">4</div>
+                  <div class="message-counter">
+                    {{ getNewMessageCount(conversation) }}
+                  </div>
                 </v-col>
               </v-row>
             </v-list-item-title>
@@ -137,6 +139,10 @@ export default {
           participants: conversation.participants,
         },
       })
+    },
+    getNewMessageCount(conversation) {
+      //TODO: Get the count from somewhere.
+      return 0
     },
   },
 }
