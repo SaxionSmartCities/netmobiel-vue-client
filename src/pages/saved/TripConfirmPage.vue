@@ -88,6 +88,7 @@ export default {
   methods: {
     confirm() {
       isStore.actions.confirmTrip({ id: this.id })
+      this.$router.push({ name: 'tripConfirmedPage' })
     },
     reject() {
       this.$router.push({
