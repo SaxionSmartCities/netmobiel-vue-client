@@ -349,7 +349,9 @@ function tripConfirmation({ id, acknowledge }: any) {
   const config = {
     headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
   }
-  return axios.put(URL, data, config)
+  let instance = axios.create()
+  addInterceptors(instance)
+  return instance.put(URL, data, config)
 }
 
 function rejectTrip(context: ActionContext, payload: any) {
@@ -392,9 +394,13 @@ function confirmTrip(context: ActionContext, payload: any) {
     .catch(function(error) {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueErrorNotification(
-        'Fout bij het bevestigen van uw rit.'
-      )
+      if (error.response.status === 400) {
+        uiStore.actions.queueErrorNotification('Deze rit is al bevestigd.')
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Fout bij het bevestigen van uw rit.'
+        )
+      }
     })
 }
 

@@ -32,6 +32,7 @@
           block
           depressed
           color="primary"
+          :disabled="networkRequest.status === 'PENDING'"
           @click="reject"
         >
           Rit heeft niet plaatsgevonden
@@ -40,7 +41,15 @@
     </v-row>
     <v-row>
       <v-col class="pt-0">
-        <v-btn large block rounded depressed color="button" @click="confirm">
+        <v-btn
+          large
+          block
+          rounded
+          depressed
+          color="button"
+          :disabled="networkRequest.status === 'PENDING'"
+          @click="confirm"
+        >
           Bevestigen
         </v-btn>
       </v-col>
@@ -81,6 +90,16 @@ export default {
     generateSteps() {
       return generateItineraryDetailSteps(this.trip.itinerary)
     },
+    networkRequest() {
+      return uiStore.getters.getNetworkRequest?.submitStatus?.status || ''
+    },
+  },
+  watch: {
+    networkRequest(newValue) {
+      if (newValue?.status === 'SUCCESS') {
+        this.$router.push({ name: 'tripConfirmedPage' })
+      }
+    },
   },
   created() {
     uiStore.mutations.showBackButton()
@@ -88,7 +107,6 @@ export default {
   methods: {
     confirm() {
       isStore.actions.confirmTrip({ id: this.id })
-      this.$router.push({ name: 'tripConfirmedPage' })
     },
     reject() {
       this.$router.push({
