@@ -137,6 +137,9 @@ export default {
     tripOptions() {
       let options = []
       const { state } = this.selectedTrip
+      const found = this.selectedTrip.itinerary.legs.find(
+        l => l.confirmed !== undefined
+      )
       switch (state) {
         case 'SCHEDULED':
           options.push({
@@ -151,10 +154,17 @@ export default {
           })
           break
         case 'VALIDATING':
+          if (found === undefined) {
+            options.push({
+              icon: 'fa-check-circle',
+              label: 'Bevestig deze rit',
+              callback: this.onTripReview,
+            })
+          }
           options.push({
-            icon: 'fa-check-circle',
-            label: 'Bevestig deze rit',
-            callback: this.onTripReview,
+            icon: 'fa-redo',
+            label: 'Plan deze rit opnieuw',
+            callback: this.onTripReplan,
           })
           break
         case 'COMPLETED':
