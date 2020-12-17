@@ -72,6 +72,7 @@
         <v-btn
           :disabled="!searchResult"
           rounded
+          large
           block
           depressed
           class="button"

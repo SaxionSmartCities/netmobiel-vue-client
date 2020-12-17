@@ -225,15 +225,10 @@ export default {
       this.$router.push('/search')
     },
     onTripReview(trip) {
-      // console.log(this.selectedTrip)
-      // this.$router.push({
-      //   name: 'reviewDriver',
-      //   params: {
-      //     tripContext: trip.tripRef,
-      //     //TODO get drive name via profile service for the review text TripMade?
-      //     // driverName: trip.
-      //   },
-      // })
+      this.$router.push({
+        name: 'tripConfirmPage',
+        params: { id: this.selectedTrip.id.toString() },
+      })
     },
     onTripCancelled() {
       isStore.actions.deleteSelectedTrip({

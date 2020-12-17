@@ -33,4 +33,18 @@ export default {
   PROFILE_ROLE_DRIVER: 'driver',
   PROFILE_ROLE_PASSENGER: 'passenger',
   PROFILE_ROLE_BOTH: 'both',
+  TRIP_NOT_MADE_REASONS: [
+    {
+      title: 'De rit was niet meer nodig',
+      value: 'unnecessary',
+    },
+    {
+      title: 'Ander vervoer gevonden',
+      value: 'otherTransport',
+    },
+    {
+      title: 'De chauffeur kwam niet opdagen.',
+      value: '',
+    },
+  ],
 }
