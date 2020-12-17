@@ -77,11 +77,9 @@
       @close="showContactTravellerModal = false"
       @select="onTravellerSelectForMessage"
     ></contact-traveller-modal>
-    <edit-ride-modal
-      v-if="showEditRideModal"
-      :show="showEditRideModal"
-      @close="showEditRideModal = false"
-    ></edit-ride-modal>
+    <v-dialog v-model="showEditRideModal">
+      <edit-ride-dialog :ride="ride" />
+    </v-dialog>
   </content-pane>
 </template>
 
@@ -90,7 +88,7 @@ import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import ContentPane from '@/components/common/ContentPane.vue'
 import ContactTravellerModal from '@/components/itinerary-details/ContactTravellerModal'
-import EditRideModal from '../../components/itinerary-details/EditRideModal'
+import EditRideDialog from '@/components/dialogs/EditRideDialog'
 import RideDetails from '@/components/itinerary-details/RideDetails.vue'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
@@ -100,7 +98,7 @@ import * as msStore from '@/store/message-service'
 export default {
   name: 'RideDetailPage',
   components: {
-    EditRideModal,
+    EditRideDialog,
     ContactTravellerModal,
     ContentPane,
     ItineraryLeg,
