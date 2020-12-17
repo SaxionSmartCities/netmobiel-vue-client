@@ -1,5 +1,22 @@
 <template>
-  <v-card outlined @click="$emit('on-trip-selected', { tripId, itinerary })">
+  <v-card
+    outlined
+    :class="{ 'is-cancelled': cancelled, 'is-completed': completed }"
+    @click="$emit('on-trip-selected', { tripId, itinerary })"
+  >
+    <v-overlay
+      :color="overlayColor"
+      :value="displayOverlay"
+      absolute="true"
+      opacity="0.08"
+      z-index="99"
+    />
+    <v-icon v-if="cancelled" class="overlay-icon is-cancelled-icon" size="50">
+      fa-times-circle
+    </v-icon>
+    <v-icon v-else-if="completed" class="overlay-icon" size="50">
+      fa-check-circle
+    </v-icon>
     <v-row no-gutters>
       <v-col>
         <v-card-title class="d-flex justify-space-between pt-2 pr-0">
@@ -67,6 +84,7 @@ export default {
   },
   props: {
     tripId: { type: Number, required: false, default: null },
+    tripState: { type: String, required: false, default: null },
     itinerary: { type: Object, required: true },
   },
   data() {
@@ -91,9 +109,31 @@ export default {
     legs() {
       return this.itinerary.legs
     },
+    displayOverlay() {
+      return this.tripState === 'COMPLETED'
+    },
+    // HACK: Should be done using CSS.
+    overlayColor() {
+      if (this.cancelled) {
+        console.log('Return RED')
+        return '#d0021b'
+      } else if (this.completed) {
+        return '#2e8997'
+      }
+      return ''
+    },
+    cancelled() {
+      const found = this.legs.find(l => l.state === 'CANCELLED')
+      console.log(found)
+      return found !== undefined
+    },
+    completed() {
+      return this.tripState === 'COMPLETED' && !this.cancelled
+    },
   },
   mounted() {
     this.calculateLegDivison()
+    console.log(this.itinerary)
   },
   methods: {
     formatDateTime(dateTime, format) {
@@ -159,5 +199,23 @@ export default {
 <style lang="scss" scoped>
 .text-primary {
   color: $color-primary !important;
+}
+.is-cancelled {
+  border-color: $color-alertRed !important;
+}
+.is-completed {
+  border-color: $color-primary !important;
+}
+
+.is-cancelled-icon {
+  color: $color-alertRed !important;
+}
+.overlay-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  left: calc(50% - 25px);
+  top: calc(50% - 25px);
+  opacity: 0.5;
 }
 </style>

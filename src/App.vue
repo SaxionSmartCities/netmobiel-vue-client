@@ -13,7 +13,12 @@
       <router-view></router-view>
     </v-main>
     <!-- Footer -->
-    <v-bottom-navigation v-if="isFooterVisible" v-model="selectedNav" app>
+    <v-bottom-navigation
+      v-if="isFooterVisible"
+      v-model="selectedNav"
+      class="bottom-nav"
+      app
+    >
       <v-snackbar
         v-if="isNotificationBarVisible"
         v-model="isNotificationBarVisible"
@@ -226,6 +231,10 @@ header {
 .v-snack {
   position: absolute;
   top: -52px;
+}
+
+.bottom-nav {
+  z-index: 100 !important;
 }
 
 //HACK: Styling of the notification close button. Some should fix this.

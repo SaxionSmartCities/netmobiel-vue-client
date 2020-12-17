@@ -62,6 +62,7 @@
               <template v-slot:card="{ item: trip }">
                 <travel-card
                   :trip-id="trip.id"
+                  :trip-state="trip.state"
                   :itinerary="trip.itinerary"
                   class="trip-card"
                   @on-trip-selected="onTripSelected"
@@ -80,6 +81,7 @@
               <template v-slot:card="{ item: trip }">
                 <travel-card
                   :trip-id="trip.id"
+                  :trip-state="trip.state"
                   :itinerary="trip.itinerary"
                   class="trip-card"
                   @on-trip-selected="onTripSelected"
