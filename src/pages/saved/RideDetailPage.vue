@@ -78,7 +78,7 @@
       @select="onTravellerSelectForMessage"
     ></contact-traveller-modal>
     <v-dialog v-model="showEditRideModal">
-      <edit-ride-dialog :ride="ride" />
+      <edit-ride-dialog :ride="ride" @cancel="onCancel" />
     </v-dialog>
   </content-pane>
 </template>
@@ -267,6 +267,9 @@ export default {
     },
     onRideEdit() {
       this.showEditRideModal = true
+    },
+    onCancel() {
+      this.showEditRideModal = false
     },
     routeToConversation(ctx, passengerProfile) {
       msStore.actions.fetchConversations().then(conversations => {
