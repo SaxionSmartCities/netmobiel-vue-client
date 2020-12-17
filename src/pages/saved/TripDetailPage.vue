@@ -217,7 +217,7 @@ export default {
     onTripReview(trip) {
       this.$router.push({
         name: 'tripConfirmPage',
-        params: { id: this.selectedTrip.tripRef },
+        params: { id: this.selectedTrip.id },
       })
     },
     onTripCancelled() {

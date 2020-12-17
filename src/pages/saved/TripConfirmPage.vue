@@ -2,7 +2,7 @@
   <content-pane>
     <v-row>
       <v-col>
-        <h1>Bevestig je rit</h1>
+        <h1>Rit geslaagd?</h1>
       </v-col>
     </v-row>
     <v-row>
@@ -25,14 +25,22 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-btn block rounded depressed outlined color="primary" @click="reject">
+        <v-btn
+          large
+          rounded
+          outlined
+          block
+          depressed
+          color="primary"
+          @click="reject"
+        >
           Rit heeft niet plaatsgevonden
         </v-btn>
       </v-col>
     </v-row>
     <v-row>
       <v-col class="pt-0">
-        <v-btn block rounded depressed color="button" @click="confirm">
+        <v-btn large block rounded depressed color="button" @click="confirm">
           Bevestigen
         </v-btn>
       </v-col>
@@ -45,9 +53,8 @@ import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
-import { formatDateTimeLong } from '@/utils/datetime.js'
 import * as uiStore from '@/store/ui'
-import * as itStore from '@/store/itinerary-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'TripConfirmPage',
@@ -56,11 +63,11 @@ export default {
     ItineraryLeg,
   },
   props: {
-    id: { type: String, required: true },
+    id: { type: Number, required: true },
   },
   computed: {
     trip() {
-      return itStore.getters.getSelectedTrip
+      return isStore.getters.getSelectedTrip
     },
     travelDate() {
       const { departureTime } = this.trip?.itinerary
@@ -80,10 +87,13 @@ export default {
   },
   methods: {
     confirm() {
-      console.log('TODO')
+      isStore.actions.confirmTrip({ id: this.id })
     },
     reject() {
-      console.log('TODO')
+      this.$router.push({
+        name: 'tripNotMade',
+        params: { id: this.id },
+      })
     },
   },
 }

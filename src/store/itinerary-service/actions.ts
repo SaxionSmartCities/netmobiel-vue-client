@@ -343,14 +343,41 @@ function fetchTrip(context: ActionContext, payload: any) {
     })
 }
 
-function confirmTrip(context: ActionContext, payload: any) {
-  const URL = `${BASE_URL}/planner/trips/${payload.id}/confirm/true`
+function tripConfirmation({ id, acknowledge }: any) {
+  const URL = `${BASE_URL}/planner/trips/${id}/confirm/${acknowledge}`
   const data = {}
   const config = {
     headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
   }
-  axios
-    .put(URL, data, config)
+  return axios.put(URL, data, config)
+}
+
+function rejectTrip(context: ActionContext, payload: any) {
+  const promise = tripConfirmation({ id: payload.id, acknowledge: false })
+  promise
+    .then(resp => {
+      if (resp.status == 204) {
+        // Ride is confirmed
+        uiStore.actions.queueInfoNotification('Uw rit is bevestigd.')
+        fetchTrip(context, { id: payload.id })
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Fout bij het bevestigen van uw rit.'
+        )
+      }
+    })
+    .catch(function(error) {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het bevestigen van uw rit.'
+      )
+    })
+}
+
+function confirmTrip(context: ActionContext, payload: any) {
+  const promise = tripConfirmation({ id: payload.id, acknowledge: true })
+  promise
     .then(function(resp) {
       if (resp.status == 204) {
         // Ride is confirmed
@@ -436,6 +463,7 @@ export const buildActions = (
     fetchMyShoutOuts: isBuilder.dispatch(fetchMyShoutOuts),
     fetchShoutOut: isBuilder.dispatch(fetchShoutOut),
     fetchTrip: isBuilder.dispatch(fetchTrip),
+    rejectTrip: isBuilder.dispatch(rejectTrip),
     confirmTrip: isBuilder.dispatch(confirmTrip),
     submitShoutOutPlanningsRequest: isBuilder.dispatch(
       submitShoutOutPlanningsRequest

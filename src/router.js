@@ -34,6 +34,7 @@ import CharityDetailPage from './pages/community/goals/CharityDetailsPage'
 import TripCancelledPage from './pages/saved/TripCancelledPage'
 import TripDetailPage from './pages/saved/TripDetailPage'
 import TripConfirmPage from './pages/saved/TripConfirmPage'
+import TripNotMade from './pages/saved/TripNotMade'
 import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
 import ShoutOutDriverDetailPage from '@/pages/community/shoutout/ShoutOutDriverDetailPage'
 import ShoutOutPassengerDetailPage from '@/pages/community/shoutout/ShoutOutPassengerDetailPage'
@@ -172,6 +173,12 @@ const router = new Router({
       path: '/tripConfimPage/:id',
       component: TripConfirmPage,
       name: 'tripConfirmPage',
+      props: true,
+    },
+    {
+      path: '/tripNotMade/:id',
+      component: TripNotMade,
+      name: 'tripNotMade',
       props: true,
     },
     {
