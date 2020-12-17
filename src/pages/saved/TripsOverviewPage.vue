@@ -247,7 +247,7 @@ export default {
     this.fetchPastTrips()
     this.fetchRides()
     this.fetchPastRides()
-    isStore.actions.fetchCancelledTrips()
+    // isStore.actions.fetchCancelledTrips()
     window.addEventListener('scroll', this.scrollHandler)
   },
   beforeDestroy() {
