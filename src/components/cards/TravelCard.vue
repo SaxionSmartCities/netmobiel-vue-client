@@ -7,16 +7,18 @@
     <v-overlay
       :color="overlayColor"
       :value="displayOverlay"
-      absolute="true"
+      :absolute="true"
       opacity="0.08"
       z-index="99"
     />
-    <v-icon v-if="cancelled" class="overlay-icon is-cancelled-icon" size="50">
-      fa-times-circle
-    </v-icon>
-    <v-icon v-else-if="completed" class="overlay-icon" size="50">
-      fa-check-circle
-    </v-icon>
+    <!-- <v-icon
+      v-if="displayOverlay"
+      aria-hidden="false"
+      class="overlay-icon"
+      size="50"
+    >
+      {{ overlayIcon }}
+    </v-icon> -->
     <v-row no-gutters>
       <v-col>
         <v-card-title class="d-flex justify-space-between pt-2 pr-0">
@@ -110,30 +112,43 @@ export default {
       return this.itinerary.legs
     },
     displayOverlay() {
-      return this.tripState === 'COMPLETED'
+      return this.completed || this.cancelled
     },
     // HACK: Should be done using CSS.
     overlayColor() {
       if (this.cancelled) {
-        console.log('Return RED')
         return '#d0021b'
       } else if (this.completed) {
         return '#2e8997'
       }
       return ''
     },
+    overlayIcon() {
+      // console.log(`
+      //   ${this.tripId}: ${this.tripState} - ${this.cancelled}, ${this.completed}, ${this.needsReview}
+      // `)
+      if (this.cancelled) {
+        return 'fa-times-circle'
+      } else if (this.completed) {
+        return 'fa-check-circle'
+      } else if (this.needsReview) {
+        return 'fa-exclamation-triangle'
+      }
+      return ''
+    },
     cancelled() {
       const found = this.legs.find(l => l.state === 'CANCELLED')
-      console.log(found)
       return found !== undefined
     },
     completed() {
       return this.tripState === 'COMPLETED' && !this.cancelled
     },
+    needsReview() {
+      return this.tripState === 'VALIDATING'
+    },
   },
   mounted() {
     this.calculateLegDivison()
-    console.log(this.itinerary)
   },
   methods: {
     formatDateTime(dateTime, format) {
@@ -209,6 +224,9 @@ export default {
 
 .is-cancelled-icon {
   color: $color-alertRed !important;
+}
+.review-icon {
+  color: $color-orange !important;
 }
 .overlay-icon {
   position: absolute;
