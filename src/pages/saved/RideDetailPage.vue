@@ -78,7 +78,7 @@
       @select="onTravellerSelectForMessage"
     ></contact-traveller-modal>
     <v-dialog v-model="showEditRideModal">
-      <edit-ride-dialog :ride="ride" @cancel="onCancel" />
+      <edit-ride-dialog :ride="ride" @save="onSave" @cancel="onCancel" />
     </v-dialog>
   </content-pane>
 </template>
@@ -267,6 +267,9 @@ export default {
     },
     onRideEdit() {
       this.showEditRideModal = true
+    },
+    onSave(newRide) {
+      console.log(newRide)
     },
     onCancel() {
       this.showEditRideModal = false

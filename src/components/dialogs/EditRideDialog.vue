@@ -83,7 +83,14 @@
             </v-row>
           </v-col> -->
           <v-col>
-            <v-btn large rounded block depressed color="button">
+            <v-btn
+              large
+              rounded
+              block
+              depressed
+              color="button"
+              @click="onSubmit"
+            >
               Wijzigen
             </v-btn>
           </v-col>
@@ -152,7 +159,14 @@ export default {
       return moment(v) >= moment().startOf('day')
     },
     onDateTimeChanged(newDateTime) {
-      console.log(newDateTime)
+      this.localTravelTime.when = newDateTime.when
+      this.localTravelTime.arriving = newDateTime.arriving
+    },
+    onSubmit() {
+      this.$emit('save', {
+        choice: this.rideChoiceRadio,
+        travelTime: this.localTravelTime,
+      })
     },
     onCancel() {
       this.init()
