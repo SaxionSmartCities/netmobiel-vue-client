@@ -55,7 +55,7 @@
               @dateTimeChanged="onDateTimeChanged"
             />
           </v-col>
-          <v-col>
+          <v-col v-if="rideChoiceRadio === 'sequence'">
             <recurrence-editor
               v-model="recurrence"
               :origin="localTravelTime ? localTravelTime.when : null"
@@ -135,16 +135,19 @@ export default {
     },
   },
   created() {
-    this.localTravelTime.arriving = this.ride.arrivalTimePinned
-    if (this.localTravelTime.arriving) {
-      this.localTravelTime.when = moment(this.ride.arrivalTime)
-    } else {
-      this.localTravelTime.when = moment(this.ride.departureTime)
-    }
-    this.recurrence = this.ride.recurrence
-    this.showWarning = this.recurrence !== undefined
+    this.init()
   },
   methods: {
+    init() {
+      this.localTravelTime.arriving = this.ride.arrivalTimePinned
+      if (this.localTravelTime.arriving) {
+        this.localTravelTime.when = moment(this.ride.arrivalTime)
+      } else {
+        this.localTravelTime.when = moment(this.ride.departureTime)
+      }
+      this.recurrence = this.ride.recurrence
+      this.showWarning = this.recurrence !== undefined
+    },
     allowedDates(v) {
       return moment(v) >= moment().startOf('day')
     },
@@ -152,6 +155,8 @@ export default {
       console.log(newDateTime)
     },
     onCancel() {
+      this.init()
+      this.rideChoiceRadio = null
       this.$emit('cancel')
     },
   },
