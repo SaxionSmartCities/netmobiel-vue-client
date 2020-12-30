@@ -166,6 +166,7 @@ export default {
       this.$emit('save', {
         choice: this.rideChoiceRadio,
         travelTime: this.localTravelTime,
+        recurrence: this.recurrence,
       })
     },
     onCancel() {
