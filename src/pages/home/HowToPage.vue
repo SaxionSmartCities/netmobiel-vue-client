@@ -1,64 +1,68 @@
 <template>
   <content-pane>
-    <v-container>
-      <v-row>
-        <h1>Welkom bij Netmobiel!</h1>
-      </v-row>
-      <v-row>
-        <h2 class="mt-3 text-primary">Lorem ipsum dolor</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-        <h2 class="text-primary">Molestie ac feugiat sed lectus.</h2>
-        <p>
-          Molestie ac feugiat sed lectus. At tempor commodo ullamcorper a lacus.
-          Sit amet commodo nulla facilisi nullam vehicula. Bibendum neque
-          egestas congue quisque egestas. Leo vel fringilla est ullamcorper eget
-          nulla. Vulputate dignissim suspendisse in est ante in. Sapien
-          pellentesque habitant morbi tristique senectus. Porttitor massa id
-          neque aliquam vestibulum morbi blandit cursus risus. Ultrices sagittis
-          orci a scelerisque purus semper eget. Consectetur adipiscing elit ut
-          aliquam purus sit amet luctus. Fermentum iaculis eu non diam. Sit amet
-          cursus sit amet. Leo duis ut diam quam nulla. Nunc faucibus a
-          pellentesque sit amet porttitor eget. Massa tincidunt nunc pulvinar
-          sapien et ligula ullamcorper malesuada proin. Felis imperdiet proin
-          fermentum leo vel orci. Nullam non nisi est sit.
-        </p>
-        <h2 class="text-primary">Vulputate mi sit amet mauris.</h2>
-        <p>
-          Vulputate mi sit amet mauris. Diam sit amet nisl suscipit adipiscing.
-          Risus quis varius quam quisque id. Ultricies mi eget mauris pharetra.
-          Sed viverra tellus in hac habitasse. Sed sed risus pretium quam
-          vulputate dignissim suspendisse in est. Vestibulum mattis ullamcorper
-          velit sed. Elementum tempus egestas sed sed risus pretium quam
-          vulputate dignissim. Dignissim enim sit amet venenatis urna cursus
-          eget nunc. Viverra nam libero justo laoreet sit amet. Odio tempor orci
-          dapibus ultrices in iaculis nunc sed augue. Non enim praesent
-          elementum facilisis leo vel fringilla. Integer feugiat scelerisque
-          varius morbi enim nunc faucibus a pellentesque. Purus in mollis nunc
-          sed id semper risus. Amet risus nullam eget felis. Quam lacus
-          suspendisse faucibus interdum posuere lorem ipsum dolor sit. Vulputate
-          ut pharetra sit amet. Donec massa sapien faucibus et molestie ac
-          feugiat. Auctor neque vitae tempus quam pellentesque nec nam aliquam
-          sem.
-        </p>
-      </v-row>
-    </v-container>
+    <template v-slot:header>
+      <tab-bar
+        v-if="showTabs"
+        :selected-tab-model="selectedTab"
+        @tabChange="selectedTab = $event"
+      >
+        <template v-slot:firstTab>
+          <v-icon color="white">commute</v-icon>
+          <span>
+            Passagier
+          </span>
+        </template>
+        <template v-slot:secondTab>
+          <v-icon color="white">directions_car</v-icon>
+          <span>
+            Chauffeur
+          </span>
+        </template>
+      </tab-bar>
+    </template>
+    <v-row v-if="(showTabs && selectedTab === 0) || isPassenger" dense>
+      <v-col>
+        Passagier
+      </v-col>
+    </v-row>
+    <v-row v-if="(showTabs && selectedTab === 1) || isDriver" dense>
+      <v-col>
+        Chauffeur
+      </v-col>
+    </v-row>
   </content-pane>
 </template>
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
+import TabBar from '../../components/common/TabBar'
+import constants from '../../constants/constants'
+import * as psStore from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
+
 export default {
   components: {
     ContentPane,
+    TabBar,
+  },
+  data() {
+    return {
+      selectedTab: 0,
+    }
+  },
+  computed: {
+    showTabs() {
+      const role = psStore.getters.getProfile.userRole
+      return !role || role === constants.PROFILE_ROLE_BOTH
+    },
+    isPassenger() {
+      const role = psStore.getters.getProfile.userRole
+      return role === constants.PROFILE_ROLE_PASSENGER
+    },
+    isDriver() {
+      const role = psStore.getters.getProfile.userRole
+      return role === constants.PROFILE_ROLE_DRIVER
+    },
   },
   mounted() {
     uiStore.mutations.showBackButton()
