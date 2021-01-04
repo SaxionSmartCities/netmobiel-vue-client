@@ -72,7 +72,7 @@ export default {
           },
         },
         {
-          icon: 'ht-booking.png',
+          icon: 'ht-travel.png',
           title: 'Boek je rit',
           description:
             'Bekijk het aanbod en boek een rit. Je kan hierbij gebruikmaken van verschillende vervoersopties zoals met iemand meerijden of het openbaar vervoer.',
