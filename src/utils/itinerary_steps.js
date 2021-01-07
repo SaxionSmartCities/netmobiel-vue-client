@@ -1,4 +1,5 @@
 import moment from 'moment'
+import travelModes from '@/constants/travel-modes.js'
 
 const MIN_WAITING_TIME = 60 // Time in seconds
 
@@ -86,9 +87,12 @@ function generateBookingDictionary(bookings) {
 function setPassenger(leg, bookingDict) {
   // TODO: Check why modality is not provided
   if (leg) {
-    leg.mode = 'CAR'
+    leg.mode = travelModes.CAR.mode
     let passenger = bookingDict.find(b => b.legRef == leg.legRef)
-    if (passenger) leg.passenger = passenger
+    if (passenger) {
+      leg.passenger = passenger
+      leg.mode = travelModes.RIDESHARE.mode
+    }
   }
 }
 
