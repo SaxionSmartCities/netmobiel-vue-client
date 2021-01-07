@@ -26,7 +26,7 @@
           v-for="section in Object.keys(notificationSettings[selectedMode])"
           :key="section"
         >
-          <h4 class="mt-4 mb-2 capitalize font-weight-bold text-color-primary">
+          <h4 class="mt-5 mb-2 capitalize font-weight-bold text-color-primary">
             {{ section }}
           </h4>
           <v-divider></v-divider>
@@ -40,7 +40,7 @@
                 <v-icon @click="onInfoClick(option)">info_outline</v-icon>
               </v-col>
               <v-col class="d-flex align-center">
-                <span>{{ option.title }}</span>
+                <span class="body-1 font-weight-light">{{ option.title }}</span>
               </v-col>
               <v-col class="shrink d-flex align-center">
                 <v-switch
