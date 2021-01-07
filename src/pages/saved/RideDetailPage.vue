@@ -26,12 +26,12 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row class="mb-0">
+    <v-row v-if="rideOptions.length > 0" class="mb-0">
       <v-col class="pb-0">
         <h3>Wijzigen</h3>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="rideOptions.length > 0">
       <v-col>
         <itinerary-options :options="rideOptions" />
       </v-col>
