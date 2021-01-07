@@ -20,11 +20,12 @@
               :class="{ 'mb-3': index === accountConfig[section].length - 1 }"
             >
               <v-col cols="5" class="d-flex flex-row">
-                <span class="align-self-center body-2"> {{ item.title }}</span>
+                <span class="align-self-center body-1 font-weight-light">
+                  {{ item.title }}
+                </span>
               </v-col>
               <v-col
                 cols="6"
-                class="body-2 font-weight-thin"
                 :class="{
                   'selected-property-column': selectedProperty === item.key,
                 }"

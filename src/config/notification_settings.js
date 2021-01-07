@@ -4,31 +4,31 @@ const driver = {
       title: 'Ritbevestigingen',
       info:
         'Je ontvangt een melding wanneer een chauffeur jouw ritverzoek heeft geaccepteerd of wanneer een passagier met jou wil meerijden.',
-      value: true,
+      key: 'tripConfirmations',
     },
     {
       title: 'Ritwijzigingen',
       info:
         'Je ontvangt een melding wanneer er wijzigingen worden aangebracht op jouw bewaarde reis. Denk aan een annulering.',
-      value: true,
+      key: 'tripUpdates',
     },
     {
       title: 'Ritherinneringen',
       info:
         '5 Minuten voor je reis wordt je via een melding herinnerd dat je reis spoedig plaatsvindt.',
-      value: true,
+      key: 'tripReminders',
     },
     {
       title: 'Berichten',
       info:
         'Je ontvangt een melding wanneer een passagier of chauffeur jou een chatbericht stuurt.',
-      value: true,
+      key: 'messages',
     },
     {
       title: 'Ritoproepen',
       info:
         'Je ontvangt een melding wanneer een passagier een oproep heeft ingediend in de buurt van jouw huis.',
-      value: true,
+      key: 'shoutouts',
     },
   ],
   beoordelingen: [
@@ -47,31 +47,31 @@ const passenger = {
       title: 'Ritbevestigingen',
       info:
         'Je ontvangt een melding wanneer een chauffeur jouw ritverzoek heeft geaccepteerd of wanneer een passagier met jou wil meerijden.',
-      value: true,
+      key: 'tripConfirmations',
     },
     {
       title: 'Ritwijzigingen',
       info:
         'Je ontvangt een melding wanneer er wijzigingen worden aangebracht op jouw bewaarde reis. Denk aan een annulering.',
-      value: true,
+      key: 'tripUpdates',
     },
     {
       title: 'Ritherinneringen',
       info:
         '5 minuten voor je reis wordt je via een melding herinnerd dat je reis spoedig plaatsvindt.',
-      value: true,
+      key: 'tripReminders',
     },
     {
       title: 'Berichten',
       info:
         'Je ontvangt een melding wanneer een passagier of chauffeur jou een chatbericht stuurt.',
-      value: true,
+      key: 'messages',
     },
     {
       title: 'Ritoproepen',
       info:
         'Je ontvangt een melding wanneer een passagier een oproep heeft ingediend in de buurt van jouw huis.',
-      value: true,
+      key: 'shoutouts',
     },
   ],
   beoordelingen: [
