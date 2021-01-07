@@ -82,12 +82,11 @@ export default {
     },
     deleteRide() {
       this.warningDialog = false
-      //TODO: This gives an error in the backend.
-      // csStore.actions.deleteRide({
-      //   id: this.ride.id,
-      //   cancelReason: this.cancelReason,
-      // })
-      // this.$router.go(-1)
+      csStore.actions.deleteRide({
+        id: this.ride.id,
+        cancelReason: this.cancelReason,
+      })
+      this.$router.go(-1)
     },
   },
 }
