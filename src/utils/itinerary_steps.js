@@ -36,6 +36,62 @@ export function generateItineraryDetailSteps(itinerary) {
   return steps
 }
 
+export function generateRideItineraryDetailSteps(ride) {
+  // Guard: If we have nog ride (id) then don't do the processing.
+  if (!ride.id) return []
+
+  let result = []
+  let bookingDict = generateBookingDictionary(ride.bookings)
+  for (let i = 0; i < ride.legs.length - 1; i++) {
+    let currentLeg = ride.legs[i]
+    setPassenger(currentLeg, bookingDict)
+    let nextLeg = ride.legs[i + 1]
+    result.push(currentLeg)
+
+    // For 'long' waiting times we will add a custom 'WAIT' step.
+    if (nextLeg.startTime - currentLeg?.endTime > MIN_WAITING_TIME * 1000) {
+      result.push({
+        mode: 'WAIT',
+        startTime: currentLeg.endTime,
+        endTime: nextLeg.startTime,
+        duration: (nextLeg.startTime - currentLeg.endTime) / 1000,
+      })
+    }
+  }
+  // Push the last leg and add a custom 'FINISH' step.
+  let lastLeg = ride.legs[ride.legs.length - 1]
+  setPassenger(lastLeg, bookingDict)
+  result.push(lastLeg)
+  result.push({
+    mode: 'FINISH',
+    startTime: lastLeg.endTime,
+    to: lastLeg.to,
+  })
+  return result
+}
+
+function generateBookingDictionary(bookings) {
+  let dict = []
+  for (let i = 0; i < bookings.length; i++) {
+    let map = bookings[i].legs.map(l => {
+      let dictItem = { ...bookings[i].passenger }
+      dictItem.legRef = l.legRef
+      return dictItem
+    })
+    dict = dict.concat(map)
+  }
+  return dict
+}
+
+function setPassenger(leg, bookingDict) {
+  // TODO: Check why modality is not provided
+  if (leg) {
+    leg.mode = 'CAR'
+    let passenger = bookingDict.find(b => b.legRef == leg.legRef)
+    if (passenger) leg.passenger = passenger
+  }
+}
+
 export function generateShoutOutDetailSteps(shoutout) {
   if (shoutout.ride) {
     return generateShoutOutOfferDetailSteps(shoutout)

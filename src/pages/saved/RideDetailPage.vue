@@ -90,6 +90,7 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import ContactTravellerModal from '@/components/itinerary-details/ContactTravellerModal'
 import EditRideDialog from '@/components/dialogs/EditRideDialog'
 import RideDetails from '@/components/itinerary-details/RideDetails.vue'
+import { generateRideItineraryDetailSteps } from '@/utils/itinerary_steps'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
@@ -182,60 +183,7 @@ export default {
   methods: {
     generateSteps() {
       const { ride } = this
-      if (!ride.id) return []
-      let result = []
-      let bookingDict = this.generateBookingDictionary(ride.bookings)
-      for (let i = 0; i < this.ride.legs.length - 1; i++) {
-        let currentLeg = this.ride.legs[i]
-        this.setPassenger(currentLeg, bookingDict)
-        let nextLeg = this.ride.legs[i + 1]
-        result.push(currentLeg)
-
-        // We won't show any waiting times < 60 sec -- should be made a config
-        if (nextLeg.startTime - currentLeg?.endTime > 60 * 1000) {
-          // Add "WAIT" element (not from OTP).
-          result.push({
-            mode: 'WAIT',
-            startTime: currentLeg.endTime,
-            endTime: nextLeg.startTime,
-            duration: (nextLeg.startTime - currentLeg.endTime) / 1000,
-          })
-        }
-      }
-      let lastLeg = this.ride.legs[this.ride.legs.length - 1]
-      if (lastLeg) {
-        this.setPassenger(lastLeg, bookingDict)
-        result.push(lastLeg)
-
-        // Finally, we push the "FINISH" element (not from OTP)
-        result.push({
-          mode: 'FINISH',
-          startTime: lastLeg.endTime,
-          to: lastLeg.to,
-        })
-        return result
-      }
-      return []
-    },
-    generateBookingDictionary(bookings) {
-      let dict = []
-      for (let i = 0; i < bookings.length; i++) {
-        let map = bookings[i].legs.map(l => {
-          let dictItem = { ...bookings[i].passenger }
-          dictItem.legRef = l.legRef
-          return dictItem
-        })
-        dict = dict.concat(map)
-      }
-      return dict
-    },
-    setPassenger(leg, bookingDict) {
-      // TODO: Check why modality is not provided
-      if (leg) {
-        leg.mode = 'CAR'
-        let passenger = bookingDict.find(b => b.legRef == leg.legRef)
-        if (passenger) leg.passenger = passenger
-      }
+      return generateRideItineraryDetailSteps(ride)
     },
     onLegSelected(leg) {
       this.selectedLeg = leg
