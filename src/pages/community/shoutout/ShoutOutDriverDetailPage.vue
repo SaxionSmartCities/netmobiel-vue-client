@@ -113,7 +113,7 @@ export default {
       for (let itinerary of itineraries) {
         const found = itinerary?.legs.find(l => l.driverName === fullName)
         if (found) {
-          return true
+          return found.state !== 'CANCELLED'
         }
       }
       return false
