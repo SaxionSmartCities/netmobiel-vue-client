@@ -150,12 +150,15 @@ function submitRide(context: ActionContext, payload: any) {
 }
 
 function updateRide(context: ActionContext, payload: any) {
-  const { id } = payload
-  console.log(`UpdateRide: ${id}`)
-  const URL = `${BASE_URL}/rideshare/rides/${id}`
+  const { ride } = payload
+  const URL = `${BASE_URL}/rideshare/rides/${ride.id}`
+  const params: any = {}
+  payload.scope && (params['scope'] = payload.scope)
+
   axios
-    .put(URL, payload, {
+    .put(URL, ride, {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      params: params,
     })
     .then(function(resp) {
       console.log(resp)

@@ -218,49 +218,28 @@ export default {
     },
     onSave(update) {
       let newRide = { ...this.ride }
-      const isRecurring = newRide.recurrence !== undefined
+      delete newRide.state
+      delete newRide.legs
+      const wasRecurring = newRide.recurrence !== undefined
       const travelTime = update.travelTime.when.toISOString()
       newRide.arrivalTimePinned = update.travelTime.arriving
-      newRide.arrivalTimePinned
-        ? (newRide.arrivalTime = travelTime)
-        : (newRide.departureTime = travelTime)
-
+      if (newRide.arrivalTimePinned) {
+        newRide.arrivalTime = travelTime
+        delete newRide.departureTime
+      } else {
+        newRide.departureTime = travelTime
+        delete newRide.arrivalTime
+      }
       if (update.choice === 'sequence') {
         newRide.recurrence = update.recurrence
       }
-      if (!isRecurring) {
-        // Simply update the (single) ride.
-        csStore.actions.updateRide(newRide)
-      } else {
-        const { ridePlanOptions } = psStore.getters.getProfile
-        if (update.choice === 'single') {
-          // Update one ride in a sequence.
-          // The trick is to delete this instance and create a new single instance.
-          csStore.actions.deleteRide({
-            id: this.ride.id,
-            cancelReason: 'DELETE for update',
-          })
-          csStore.actions.submitRide({
-            from: newRide.fromPlace,
-            to: newRide.toPlace,
-            ridePlanOptions: ridePlanOptions,
-            travelTime: update.travelTime,
-          })
-        } else {
-          // Update the current sequence to stop at the current moment.
-          let preSequence = { ...this.ride }
-          preSequence.recurrence.horizon = moment().format('YYYY-DD-MM')
-          csStore.actions.updateRide(preSequence)
-          // Create a new updated sequence.
-          csStore.actions.submitRide({
-            from: newRide.fromPlace,
-            to: newRide.toPlace,
-            ridePlanOptions: ridePlanOptions,
-            recurrence: newRide.recurrence,
-            travelTime: update.travelTime,
-          })
-        }
+      let scope = null
+      if (wasRecurring) {
+        update.choice === 'sequence'
+          ? (scope = 'this-and-following')
+          : (scope = 'this')
       }
+      csStore.actions.updateRide({ ride: newRide, scope: scope })
       this.showEditRideModal = false
       this.$router.go(-1)
     },
