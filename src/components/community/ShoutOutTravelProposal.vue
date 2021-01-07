@@ -59,6 +59,7 @@
             mb-4
             depressed
             color="button"
+            :disabled="generateSteps().length == 0"
             @click="onProposeTravelOffer"
           >
             Aanbod bevestigen
