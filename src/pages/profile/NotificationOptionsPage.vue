@@ -102,7 +102,7 @@ export default {
   created() {
     uiStore.mutations.showBackButton()
     if (!this.userRole) {
-      this.selectedMode = 'both'
+      this.selectedMode = constants.PROFILE_ROLE_BOTH
     } else {
       this.selectedMode = this.userRole
     }
@@ -112,6 +112,21 @@ export default {
       this.selectedMode = option.value
       let profile = { ...psStore.getters.getProfile }
       profile.userRole = option.value
+      // Check if default have been set, if not do so.
+      if (
+        (profile.userRole === constants.PROFILE_ROLE_PASSENGER ||
+          profile.userRole === constants.PROFILE_ROLE_BOTH) &&
+        !profile.searchPreferences
+      ) {
+        profile.searchPreferences = constants.DEFAULT_PROFILE_SEARCH_PREFERENCES
+      }
+      if (
+        (profile.userRole === constants.PROFILE_ROLE_DRIVER ||
+          profile.userRole === constants.PROFILE_ROLE_BOTH) &&
+        !profile.ridePlanOptions
+      ) {
+        profile.searchPreferences = constants.DEFAULT_PROFILE_RIDE_PREFERENCES
+      }
       psStore.actions.updateProfile(profile)
     }),
     onInfoClick(option) {
