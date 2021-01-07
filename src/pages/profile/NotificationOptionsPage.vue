@@ -23,18 +23,14 @@
       <profile-info-dialog :value="dialog" />
       <v-col class="pa-0">
         <div
-          v-for="section in Object.keys(notificationSettings[selectedMode])"
+          v-for="section in Object.keys(notificationSettings)"
           :key="section"
         >
           <h4 class="mt-5 mb-2 capitalize font-weight-bold text-color-primary">
             {{ section }}
           </h4>
           <v-divider></v-divider>
-          <template
-            v-for="(option, index) in notificationSettings[selectedMode][
-              section
-            ]"
-          >
+          <template v-for="(option, index) in notificationSettings[section]">
             <v-row :key="option.title" justify="space-between">
               <v-col class="shrink d-flex align-center pr-0">
                 <v-icon @click="onInfoClick(option)">info_outline</v-icon>
@@ -44,10 +40,11 @@
               </v-col>
               <v-col class="shrink d-flex align-center">
                 <v-switch
+                  v-model="option.value"
                   class="switch-overwrite"
                   hide-details
                   inset
-                  :value="option.value"
+                  @change="onOptionChange"
                 ></v-switch>
               </v-col>
             </v-row>
@@ -75,7 +72,7 @@ export default {
   data() {
     return {
       title: 'Instellingen',
-      notificationSettings: notification_settings,
+      notificationSettings: [],
       selectedMode: null,
       profileOptions: [
         { title: 'Reiziger', value: constants.PROFILE_ROLE_PASSENGER },
@@ -90,10 +87,7 @@ export default {
   },
   computed: {
     notificationOptions() {
-      return psStore.getters.getUser.notificationOptions
-    },
-    tripOptions() {
-      return psStore.getters.getUser.tripOptions
+      return psStore.getters.getProfile.notificationOptions
     },
     userRole() {
       return psStore.getters.getProfile.userRole
@@ -105,6 +99,10 @@ export default {
       this.selectedMode = constants.PROFILE_ROLE_BOTH
     } else {
       this.selectedMode = this.userRole
+    }
+    this.notificationSettings = { ...notification_settings[this.selectedMode] }
+    for (let option of this.notificationSettings.melding) {
+      option.value = this.notificationOptions[option.key] || false
     }
   },
   methods: {
@@ -133,6 +131,16 @@ export default {
       this.dialog.title = option.title
       this.dialog.content = option.info
       this.dialog.isVisible = true
+    },
+    onOptionChange() {
+      const { melding } = this.notificationSettings
+      const notificationOptions = {}
+      for (const m of melding) {
+        notificationOptions[m.key] = m.value
+      }
+      let profile = { ...psStore.getters.getProfile }
+      profile.notificationOptions = notificationOptions
+      psStore.actions.updateProfile(profile)
     },
   },
 }
