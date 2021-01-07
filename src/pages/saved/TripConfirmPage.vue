@@ -96,7 +96,7 @@ export default {
   },
   watch: {
     networkRequest(newValue) {
-      if (newValue?.status === 'SUCCESS') {
+      if (newValue === 'SUCCESS') {
         this.$router.push({ name: 'tripConfirmedPage' })
       }
     },
