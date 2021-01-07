@@ -20,12 +20,12 @@
         <v-col class="mt-2">
           <h3>Aangeboden ritten</h3>
         </v-col>
-        <v-col v-if="!trip.itineraries || trip.itineraries.length == 0">
+        <v-col v-if="!itineraries || itineraries.length == 0">
           <em>Er zijn nog geen ritten aangeboden.</em>
         </v-col>
         <v-col v-else class="py-3">
           <v-row
-            v-for="(offer, index) in trip.itineraries"
+            v-for="(offer, index) in itineraries"
             :key="index"
             class="dense px-2 pt-0 pb-1"
           >
@@ -65,10 +65,16 @@ export default {
     }
   },
   computed: {
+    itineraries() {
+      // A filtered list of itineraries (removing cancelled offers)
+      return this.trip.itineraries.filter(i => i.legs[0].state !== 'CANCELLED')
+    },
     selectedOffer() {
-      const { itineraries } = this.trip
-      if (itineraries && itineraries.length > this.selectedOfferIndex) {
-        return itineraries[this.selectedOfferIndex]
+      if (
+        this.itineraries &&
+        this.itineraries.length > this.selectedOfferIndex
+      ) {
+        return this.itineraries[this.selectedOfferIndex]
       }
       return null
     },
