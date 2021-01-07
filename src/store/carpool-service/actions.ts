@@ -242,7 +242,6 @@ function deleteRide(context: ActionContext, payload: any) {
       if (resp.status == 204) {
         //Delete trip from store!
         mutations.deleteRides(payload.id)
-        mutations.deleteRides(payload.id)
       } else {
         uiStore.actions.queueErrorNotification(
           'Fout bij het verwijderen van uw rit-aanbod.'
