@@ -137,9 +137,8 @@ export default {
     tripOptions() {
       let options = []
       const { state } = this.selectedTrip
-      const found = this.selectedTrip.itinerary.legs.find(
-        l => l.confirmed !== undefined
-      )
+      const legs = this.selectedTrip?.itinerary?.legs
+      const found = legs ? legs.find(l => l.confirmed !== undefined) : undefined
       switch (state) {
         case 'SCHEDULED':
           options.push({
