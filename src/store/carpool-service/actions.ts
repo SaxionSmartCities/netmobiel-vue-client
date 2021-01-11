@@ -135,8 +135,9 @@ function submitRide(context: ActionContext, payload: any) {
 
   axios(axiosConfig)
     .then(function(res) {
-      // eslint-disable-next-line
-      console.log(res)
+      if (res.status == 201) {
+        uiStore.actions.queueInfoNotification('Uw rit is opgeslagen.')
+      }
       fetchRides(context, { offset: 0, maxResults: 10 })
     })
     .catch(function(error) {
@@ -145,6 +146,22 @@ function submitRide(context: ActionContext, payload: any) {
       uiStore.actions.queueErrorNotification(
         'Fout bij het versturen van uw rit-aanbod.'
       )
+    })
+}
+
+function updateRide(context: ActionContext, payload: any) {
+  const { ride } = payload
+  const URL = `${BASE_URL}/rideshare/rides/${ride.id}`
+  const params: any = {}
+  payload.scope && (params['scope'] = payload.scope)
+
+  axios
+    .put(URL, ride, {
+      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      params: params,
+    })
+    .then(function(resp) {
+      console.log(resp)
     })
 }
 
@@ -350,6 +367,7 @@ export const buildActions = (
     submitCar: csBuilder.dispatch(submitCar),
     removeCar: csBuilder.dispatch(removeCar),
     submitRide: csBuilder.dispatch(submitRide),
+    updateRide: csBuilder.dispatch(updateRide),
     fetchRides: csBuilder.dispatch(fetchRides),
     fetchRide: csBuilder.dispatch(fetchRide),
     confirmRide: csBuilder.dispatch(confirmRide),

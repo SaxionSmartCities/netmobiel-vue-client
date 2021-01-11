@@ -26,12 +26,12 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row class="mb-0">
+    <v-row v-if="rideOptions.length > 0" class="mb-0">
       <v-col class="pb-0">
         <h3>Wijzigen</h3>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="rideOptions.length > 0">
       <v-col>
         <itinerary-options :options="rideOptions" />
       </v-col>
@@ -77,11 +77,9 @@
       @close="showContactTravellerModal = false"
       @select="onTravellerSelectForMessage"
     ></contact-traveller-modal>
-    <edit-ride-modal
-      v-if="showEditRideModal"
-      :show="showEditRideModal"
-      @close="showEditRideModal = false"
-    ></edit-ride-modal>
+    <v-dialog v-model="showEditRideModal">
+      <edit-ride-dialog :ride="ride" @save="onSave" @cancel="onCancel" />
+    </v-dialog>
   </content-pane>
 </template>
 
@@ -90,8 +88,9 @@ import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import ContentPane from '@/components/common/ContentPane.vue'
 import ContactTravellerModal from '@/components/itinerary-details/ContactTravellerModal'
-import EditRideModal from '../../components/itinerary-details/EditRideModal'
+import EditRideDialog from '@/components/dialogs/EditRideDialog'
 import RideDetails from '@/components/itinerary-details/RideDetails.vue'
+import { generateRideItineraryDetailSteps } from '@/utils/itinerary_steps'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
@@ -100,7 +99,7 @@ import * as msStore from '@/store/message-service'
 export default {
   name: 'RideDetailPage',
   components: {
-    EditRideModal,
+    EditRideDialog,
     ContactTravellerModal,
     ContentPane,
     ItineraryLeg,
@@ -184,60 +183,7 @@ export default {
   methods: {
     generateSteps() {
       const { ride } = this
-      if (!ride.id) return []
-      let result = []
-      let bookingDict = this.generateBookingDictionary(ride.bookings)
-      for (let i = 0; i < this.ride.legs.length - 1; i++) {
-        let currentLeg = this.ride.legs[i]
-        this.setPassenger(currentLeg, bookingDict)
-        let nextLeg = this.ride.legs[i + 1]
-        result.push(currentLeg)
-
-        // We won't show any waiting times < 60 sec -- should be made a config
-        if (nextLeg.startTime - currentLeg?.endTime > 60 * 1000) {
-          // Add "WAIT" element (not from OTP).
-          result.push({
-            mode: 'WAIT',
-            startTime: currentLeg.endTime,
-            endTime: nextLeg.startTime,
-            duration: (nextLeg.startTime - currentLeg.endTime) / 1000,
-          })
-        }
-      }
-      let lastLeg = this.ride.legs[this.ride.legs.length - 1]
-      if (lastLeg) {
-        this.setPassenger(lastLeg, bookingDict)
-        result.push(lastLeg)
-
-        // Finally, we push the "FINISH" element (not from OTP)
-        result.push({
-          mode: 'FINISH',
-          startTime: lastLeg.endTime,
-          to: lastLeg.to,
-        })
-        return result
-      }
-      return []
-    },
-    generateBookingDictionary(bookings) {
-      let dict = []
-      for (let i = 0; i < bookings.length; i++) {
-        let map = bookings[i].legs.map(l => {
-          let dictItem = { ...bookings[i].passenger }
-          dictItem.legRef = l.legRef
-          return dictItem
-        })
-        dict = dict.concat(map)
-      }
-      return dict
-    },
-    setPassenger(leg, bookingDict) {
-      // TODO: Check why modality is not provided
-      if (leg) {
-        leg.mode = 'CAR'
-        let passenger = bookingDict.find(b => b.legRef == leg.legRef)
-        if (passenger) leg.passenger = passenger
-      }
+      return generateRideItineraryDetailSteps(ride)
     },
     onLegSelected(leg) {
       this.selectedLeg = leg
@@ -269,6 +215,36 @@ export default {
     },
     onRideEdit() {
       this.showEditRideModal = true
+    },
+    onSave(update) {
+      let newRide = { ...this.ride }
+      delete newRide.state
+      delete newRide.legs
+      const wasRecurring = newRide.recurrence !== undefined
+      const travelTime = update.travelTime.when.toISOString()
+      newRide.arrivalTimePinned = update.travelTime.arriving
+      if (newRide.arrivalTimePinned) {
+        newRide.arrivalTime = travelTime
+        delete newRide.departureTime
+      } else {
+        newRide.departureTime = travelTime
+        delete newRide.arrivalTime
+      }
+      if (update.choice === 'sequence') {
+        newRide.recurrence = update.recurrence
+      }
+      let scope = null
+      if (wasRecurring) {
+        update.choice === 'sequence'
+          ? (scope = 'this-and-following')
+          : (scope = 'this')
+      }
+      csStore.actions.updateRide({ ride: newRide, scope: scope })
+      this.showEditRideModal = false
+      this.$router.go(-1)
+    },
+    onCancel() {
+      this.showEditRideModal = false
     },
     routeToConversation(ctx, passengerProfile) {
       msStore.actions.fetchConversations().then(conversations => {

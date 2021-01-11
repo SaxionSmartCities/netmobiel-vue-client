@@ -85,7 +85,9 @@ export default {
             value: `${legs[0].fareInCredits} credits`,
           })
         }
-        const found = legs.find(l => l.confirmed !== undefined)
+        const found = legs
+          ? legs.find(l => l.confirmed !== undefined)
+          : undefined
         if (found) {
           found.confirmed
             ? result.push({ label: 'Bevestigd', value: 'Ik heb meegereden' })
