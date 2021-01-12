@@ -161,6 +161,7 @@ function updateRide(context: ActionContext, payload: any) {
       params: params,
     })
     .then(function(resp) {
+      // eslint-disable-next-line
       console.log(resp)
     })
 }
