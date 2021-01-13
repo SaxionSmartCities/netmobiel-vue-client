@@ -172,6 +172,11 @@ export default {
             label: 'Plan deze rit opnieuw',
             callback: this.onTripReplan,
           })
+          options.push({
+            icon: 'fa-times-circle',
+            label: 'Verwijder deze rit',
+            callback: this.onTripCancelled,
+          })
           break
         case 'CANCELLED':
           options.push({
