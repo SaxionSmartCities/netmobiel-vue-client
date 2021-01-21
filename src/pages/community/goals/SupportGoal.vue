@@ -109,7 +109,10 @@ export default {
       })
       this.$router.push({
         name: 'donated',
-        params: { name: this.charity.name },
+        params: {
+          id: this.id,
+          name: this.charity.name,
+        },
       })
     },
   },
