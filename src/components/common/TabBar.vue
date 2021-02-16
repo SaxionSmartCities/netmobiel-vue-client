@@ -5,6 +5,7 @@
     grow
     centered
     slider-color="#bddade"
+    slider-size="3"
     :active-class="'lighter-tab'"
   >
     <v-tab class="white--text no-caps saved">
@@ -12,6 +13,9 @@
     </v-tab>
     <v-tab class="white--text no-caps saved">
       <slot name="secondTab"></slot>
+    </v-tab>
+    <v-tab v-if="numTabs == 3" class="white--text no-caps saved">
+      <slot name="thirdTab"></slot>
     </v-tab>
   </v-tabs>
 </template>
@@ -21,6 +25,7 @@ export default {
   name: 'TabBar',
   props: {
     selectedTabModel: { type: Number, default: 0, required: true },
+    numTabs: { type: Number, default: 2 },
   },
   computed: {
     selectedTab: {
