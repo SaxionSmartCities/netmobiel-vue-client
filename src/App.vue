@@ -181,11 +181,6 @@ export default {
   color: $color-white;
 }
 
-// .v-content {
-//   height: 100vh;
-//   overflow: hidden;
-// }
-
 .homepage {
   background-image: url('assets/achterhoek_background.jpg');
   background-size: contain;
@@ -196,6 +191,7 @@ export default {
 .homepage #content {
   margin-top: 30vmin;
   border-radius: $border-radius $border-radius 0 0;
+  transition: all 250ms linear;
   -webkit-transition: all 250ms linear;
   -moz-transition: all 250ms linear;
   -o-transition: all 250ms linear;
