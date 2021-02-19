@@ -7,9 +7,8 @@ import * as uiStore from '@/store/ui'
 
 type ActionContext = BareActionContext<NotificationState, RootState>
 
-const BASE_URL = config.BASE_URL
-const GRAVITEE_NOTIFICATION_SERVICE_API_KEY =
-  config.GRAVITEE_NOTIFICATION_SERVICE_API_KEY
+const { COMMUNICATOR_BASE_URL, GRAVITEE_NOTIFICATION_SERVICE_API_KEY } = config
+//FIXME This notification service is obsoleted?
 
 function generateHeader(key: any) {
   return {
@@ -18,7 +17,7 @@ function generateHeader(key: any) {
 }
 
 function sendNotification(context: ActionContext, payload: any) {
-  const URL = BASE_URL + '/notifications'
+  const URL = COMMUNICATOR_BASE_URL + '/notifications'
   axios
     .post(URL, payload, {
       headers: generateHeader(GRAVITEE_NOTIFICATION_SERVICE_API_KEY),

@@ -1,6 +1,10 @@
 export default {
-  BASE_URL:
-    process.env.VUE_APP_API_BASE_URL || 'https://api.netmobiel.eu/gwapi/acc',
+  BANKER_BASE_URL: `${process.env.VUE_APP_SERVICE_URL}/banker`,
+  COMMUNICATOR_BASE_URL: `${process.env.VUE_APP_SERVICE_URL}/communicator`,
+  PLANNER_BASE_URL: `${process.env.VUE_APP_SERVICE_URL}/planner`,
+  PROFILE_BASE_URL: `${process.env.VUE_APP_SERVICE_URL}/profilesvc`,
+  RIDESHARE_BASE_URL: `${process.env.VUE_APP_SERVICE_URL}/rideshare`,
+  IMAGES_BASE_URL: `${process.env.VUE_APP_SERVICE_URL}/images`,
   GRAVITEE_PLANNER_SERVICE_API_KEY: process.env.VUE_APP_PLANNER_SERVICE_API_KEY,
   GRAVITEE_PROFILE_SERVICE_API_KEY: process.env.VUE_APP_PROFILE_SERVICE_API_KEY,
   GRAVITEE_NOTIFICATION_SERVICE_API_KEY:

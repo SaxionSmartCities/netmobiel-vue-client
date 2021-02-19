@@ -8,11 +8,11 @@ import * as uiStore from '@/store/ui'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
-const BASE_URL = config.BASE_URL
-const GRAVITEE_PROFILE_SERVICE_API_KEY = config.GRAVITEE_PROFILE_SERVICE_API_KEY
-const GRAVITEE_COMPLIMENT_SERVICE_API_KEY =
-  config.GRAVITEE_COMPLIMENT_SERVICE_API_KEY
-const GRAVITEE_REVIEW_SERVICE_API_KEY = config.GRAVITEE_REVIEW_SERVICE_API_KEY
+const {
+  PROFILE_BASE_URL,
+  IMAGES_BASE_URL,
+  GRAVITEE_PROFILE_SERVICE_API_KEY,
+} = config
 
 function generateHeader(key: any) {
   return {
@@ -21,7 +21,7 @@ function generateHeader(key: any) {
 }
 
 function fetchProfile(context: ActionContext) {
-  const URL = BASE_URL + '/profiles'
+  const URL = `${PROFILE_BASE_URL}/profiles/me`
   axios
     .get(URL, { headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY) })
     .then(response => {
@@ -32,7 +32,7 @@ function fetchProfile(context: ActionContext) {
         }
         if (profile.image) {
           // turn relative image URL into absolute URL
-          profile.image = `${BASE_URL}${profile.image}`
+          profile.image = `${IMAGES_BASE_URL}/${profile.image}`
         }
         if (!!localStorage.fcm && localStorage.fcm !== profile.fcmToken) {
           profile.fcmToken = localStorage.fcm
@@ -49,7 +49,7 @@ function fetchProfile(context: ActionContext) {
 }
 
 function fetchPublicProfile(context: ActionContext, { profileId }: any) {
-  const URL = BASE_URL + '/profiles/' + profileId
+  const URL = `${PROFILE_BASE_URL}/profiles/${profileId}`
   return axios
     .get(URL, {
       headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
@@ -75,10 +75,10 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
  * @returns {Array<Object>} returns Array of compliments in the response.data
  */
 function fetchUserCompliments(context: ActionContext, { profileId }: any) {
-  const URL = BASE_URL + '/compliments'
+  const URL = `${PROFILE_BASE_URL}/compliments`
   return axios
     .get(URL, {
-      headers: generateHeader(GRAVITEE_COMPLIMENT_SERVICE_API_KEY),
+      headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
       params: { receiverId: profileId },
     })
     .then(response => {
@@ -98,10 +98,10 @@ function fetchUserCompliments(context: ActionContext, { profileId }: any) {
  * that are available in the store
  */
 function fetchComplimentTypes(context: ActionContext) {
-  const URL = BASE_URL + '/compliments/types'
+  const URL = `${PROFILE_BASE_URL}/compliments/types`
   axios
     .get(URL, {
-      headers: generateHeader(GRAVITEE_COMPLIMENT_SERVICE_API_KEY),
+      headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
     .then(response => {
       mutations.setComplimentTypes(response.data.complimentTypes)
@@ -127,13 +127,13 @@ function addUserCompliment(
   context: ActionContext,
   { sender, receiver, complimentType }: any
 ) {
-  const URL = BASE_URL + '/compliments'
+  const URL = `${PROFILE_BASE_URL}/compliments`
   axios
     .post(
       URL,
       { sender, receiver, complimentType },
       {
-        headers: generateHeader(GRAVITEE_COMPLIMENT_SERVICE_API_KEY),
+        headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
       }
     )
     .then(response => {
@@ -153,10 +153,10 @@ function addUserCompliment(
  * @returns {Array<Object>} Returns an Array of reviews in the response.data.reviews
  */
 function fetchUserReviews(context: ActionContext, { profileId }: any) {
-  const URL = BASE_URL + '/reviews'
+  const URL = `${PROFILE_BASE_URL}/reviews`
   axios
     .get(URL, {
-      headers: generateHeader(GRAVITEE_REVIEW_SERVICE_API_KEY),
+      headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
       params: { receiverId: profileId },
     })
     .then(response => {
@@ -174,13 +174,13 @@ function addUserReview(
   context: ActionContext,
   { sender, receiver, review }: any
 ) {
-  const URL = BASE_URL + '/reviews'
+  const URL = `${PROFILE_BASE_URL}/reviews`
   axios
     .post(
       URL,
       { sender, receiver, review },
       {
-        headers: generateHeader(GRAVITEE_REVIEW_SERVICE_API_KEY),
+        headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
       }
     )
     .then(response => {
@@ -228,7 +228,7 @@ function storeFcmToken(context: ActionContext, payload: { fcmToken: string }) {
 }
 
 function updateProfile(context: ActionContext, profile: Profile) {
-  const URL = BASE_URL + '/profiles/' + profile.id
+  const URL = `${PROFILE_BASE_URL}/profiles/${profile.id}`
   axios
     .put(URL, profile, {
       headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
@@ -239,7 +239,7 @@ function updateProfile(context: ActionContext, profile: Profile) {
           ...context.state.user.profile,
           ...response.data.profiles[0],
         }
-        const imgSrc = `${BASE_URL}${response.data.profiles[0].image}`
+        const imgSrc = `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
         profile.image = imgSrc
         mutations.setProfile(profile)
       }
@@ -251,7 +251,7 @@ function updateProfile(context: ActionContext, profile: Profile) {
 }
 
 function updateProfileImage(context: ActionContext, { id, image }: any) {
-  const URL = `${BASE_URL}/profiles/${id}/image`
+  const URL = `${PROFILE_BASE_URL}/profiles/${id}/image`
   axios
     .put(
       URL,
@@ -262,7 +262,7 @@ function updateProfileImage(context: ActionContext, { id, image }: any) {
     )
     .then(response => {
       if (response.status === 200) {
-        const imgSrc = `${BASE_URL}${response.data.profiles[0].image}`
+        const imgSrc = `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
         mutations.setProfileImage(imgSrc)
       }
     })

@@ -15,7 +15,7 @@ import * as uiStore from '@/store/ui'
 
 type ActionContext = BareActionContext<ItineraryState, RootState>
 
-const { BASE_URL, GRAVITEE_PLANNER_SERVICE_API_KEY } = config
+const { PLANNER_BASE_URL, GRAVITEE_PLANNER_SERVICE_API_KEY } = config
 const { generateHeaders } = util
 
 function submitPlanningsRequest(
@@ -23,7 +23,7 @@ function submitPlanningsRequest(
   searchCiteria: SearchCriteria
 ) {
   mutations.storePlanningRequest(searchCiteria)
-  const URL = BASE_URL + '/planner/search/plan'
+  const URL = `${PLANNER_BASE_URL}/search/plan`
   const { from, to, travelTime, preferences } = searchCiteria
   const params = {
     from: `${from.label}::${from.latitude},${from.longitude}`,
@@ -55,7 +55,7 @@ function submitPlanningsRequest(
 }
 
 function deleteSelectedTrip(context: ActionContext, payload: any) {
-  const URL = BASE_URL + `/planner/trips/${payload.tripId}`
+  const URL = `${PLANNER_BASE_URL}/trips/${payload.tripId}`
   axios
     .delete(URL, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
@@ -93,7 +93,7 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
 
 function storeSelectedTrip(context: ActionContext, payload: TripSelection) {
   mutations.setBookingStatus({ status: 'PENDING' })
-  const URL = BASE_URL + '/planner/trips'
+  const URL = `${PLANNER_BASE_URL}/trips`
   axios
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
@@ -140,7 +140,7 @@ function storeShoutOut(
     useAsArrivalTime: travelTime.arriving,
     planType: 'SHOUT_OUT',
   }
-  const URL = BASE_URL + '/planner/plans'
+  const URL = `${PLANNER_BASE_URL}/plans`
   axios
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
@@ -163,7 +163,7 @@ function storeShoutOut(
 }
 
 function deleteShoutOut(context: ActionContext, { shoutoutPlanId }: any) {
-  const URL = `${BASE_URL}/planner/shout-outs/${shoutoutPlanId}`
+  const URL = `${PLANNER_BASE_URL}/shout-outs/${shoutoutPlanId}`
   axios
     .delete(URL, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
@@ -188,7 +188,7 @@ function storeTravelOffer(
   { shoutoutPlanId, planRef, vehicleRef, driverRef }: any
 ) {
   let payload = { planRef, vehicleRef, driverRef }
-  const URL = `${BASE_URL}/planner/shout-outs/${shoutoutPlanId}`
+  const URL = `${PLANNER_BASE_URL}/shout-outs/${shoutoutPlanId}`
   axios
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
@@ -221,7 +221,7 @@ function fetchTrips(
   since && (params['since'] = since)
   sortDir && (params['sortDir'] = sortDir)
 
-  const URL = `${BASE_URL}/planner/trips`
+  const URL = `${PLANNER_BASE_URL}/trips`
   axios
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
@@ -262,7 +262,7 @@ function fetchShoutOuts(
     depArrRadius: constants.defaultShoutOutRadius,
   }
   axios
-    .get(BASE_URL + '/planner/shout-outs', {
+    .get(`${PLANNER_BASE_URL}/shout-outs`, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
       params: params,
     })
@@ -287,7 +287,7 @@ function fetchMyShoutOuts(context: ActionContext, { offset: offset }: any) {
     since: moment().format(),
   }
   axios
-    .get(BASE_URL + '/planner/plans', {
+    .get(`${PLANNER_BASE_URL}/plans`, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
       params: params,
     })
@@ -305,7 +305,7 @@ function fetchMyShoutOuts(context: ActionContext, { offset: offset }: any) {
 }
 
 function fetchShoutOut(context: ActionContext, { id }: any) {
-  const URL = `${BASE_URL}/planner/plans/${id}`
+  const URL = `${PLANNER_BASE_URL}/plans/${id}`
   axios
     .get(URL, { headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY) })
     .then(response => {
@@ -322,7 +322,7 @@ function fetchShoutOut(context: ActionContext, { id }: any) {
 
 function fetchTrip(context: ActionContext, payload: any) {
   const tripId = payload.id
-  const URL = `${BASE_URL}/planner/trips/${tripId}`
+  const URL = `${PLANNER_BASE_URL}/trips/${tripId}`
   return axios
     .get(URL, { headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY) })
     .then(response => {
@@ -339,7 +339,7 @@ function fetchTrip(context: ActionContext, payload: any) {
 }
 
 function confirmTrip(context: ActionContext, payload: any) {
-  const URL = `${BASE_URL}/planner/trips/${payload.id}/confirm/true`
+  const URL = `${PLANNER_BASE_URL}/trips/${payload.id}/confirm/true`
   const data = {}
   const config = {
     headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
@@ -368,7 +368,7 @@ function confirmTrip(context: ActionContext, payload: any) {
 
 function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
   const { id, from, to = {}, travelTime } = payload
-  const URL = `${BASE_URL}/planner/shout-outs/${id}/plan`
+  const URL = `${PLANNER_BASE_URL}/shout-outs/${id}/plan`
   const params: any = {
     from: `${from.label}::${from.latitude},${from.longitude}`,
   }
@@ -397,7 +397,7 @@ function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
 
 function fetchCancelledTrips(context: ActionContext) {
   const params: any = { state: 'CANCELLED' }
-  const URL = `${BASE_URL}/planner/trips`
+  const URL = `${PLANNER_BASE_URL}/trips`
   axios
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
