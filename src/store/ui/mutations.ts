@@ -1,6 +1,13 @@
 import { ModuleBuilder } from 'vuex-typex'
 import { RootState } from '@/store/Rootstate'
-import { UiState, UiNotification, UiUpdateMessage } from '@/store/ui/types'
+import {
+  UiState,
+  UiNotification,
+  UiUpdateMessage,
+  NetworkRequest,
+  NetworkRequestStatus,
+  SubmitStatus,
+} from '@/store/ui/types'
 
 function enableHeader(state: UiState) {
   state.header!.visible = true
@@ -45,6 +52,19 @@ function removeUpdate(state: UiState, payload: UiUpdateMessage) {
   let indexOf = state.updateMessages!.indexOf(payload)
   state.updateMessages!.splice(indexOf, 1)
 }
+function resetNetworkRequest(state: UiState) {
+  state.networkRequest.location = undefined
+  state.networkRequest.submitStatus = {
+    message: undefined,
+    status: NetworkRequestStatus.UNSUBMITTED,
+  }
+}
+function updateNetworkRequest(state: UiState, payload: NetworkRequest) {
+  state.networkRequest = payload
+}
+function updateNetworkRequestStatus(state: UiState, payload: SubmitStatus) {
+  state.networkRequest.submitStatus = payload
+}
 
 export const buildMutations = (builder: ModuleBuilder<UiState, RootState>) => {
   return {
@@ -64,5 +84,8 @@ export const buildMutations = (builder: ModuleBuilder<UiState, RootState>) => {
     shiftUpdateMessage: builder.commit(shiftUpdateMessage),
     pushUpdate: builder.commit(pushUpdate),
     removeUpdate: builder.commit(removeUpdate),
+    resetNetworkRequest: builder.commit(resetNetworkRequest),
+    updateNetworkRequest: builder.commit(updateNetworkRequest),
+    updateNetworkRequestStatus: builder.commit(updateNetworkRequestStatus),
   }
 }

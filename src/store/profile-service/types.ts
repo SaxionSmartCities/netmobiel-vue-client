@@ -44,6 +44,13 @@ export class ProfileState {
         selectedCarId: -1,
         cars: [],
       },
+      notificationOptions: {
+        tripConfirmations: true,
+        tripUpdates: true,
+        tripReminders: true,
+        messages: true,
+        shoutouts: true,
+      },
       favoriteLocations: [],
     },
     coronaCheck: {
@@ -130,6 +137,7 @@ export interface Profile {
   image: string | null
   searchPreferences: SearchPreferences
   ridePlanOptions: RidePlanOptions
+  notificationOptions: NotificationOptions
   favoriteLocations: any[]
 }
 
@@ -144,9 +152,17 @@ export interface SearchPreferences {
 export interface RidePlanOptions {
   numPassengers: number
   maxMinutesDetour: number
-  luggageOptions: string[] //['HANDLUGGAGE', 'GROCERIES'],
+  luggageOptions: string[]
   selectedCarId: number
   cars: any[]
+}
+
+export interface NotificationOptions {
+  tripConfirmations: boolean
+  tripUpdates: boolean
+  tripReminders: boolean
+  messages: boolean
+  shoutouts: boolean
 }
 
 export interface Credits {

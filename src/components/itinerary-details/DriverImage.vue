@@ -35,12 +35,12 @@ export default {
   },
   methods: {
     fetchDriverIdentity() {
-      // first fetch the ride from the trip id
-      csStore.actions.fetchRide({ id: this.leg.tripId }).then(() => {
-        // obtain managed identity of driver once we have a selected ride
-        const { driver } = csStore.getters.getSelectedRide
-        this.managedIdentity = driver.managedIdentity
-      })
+      const driverId = this.leg.driverId
+      if (driverId) {
+        csStore.actions.fetchUser({ userRef: driverId }).then(resp => {
+          this.managedIdentity = resp.managedIdentity
+        })
+      }
     },
   },
 }

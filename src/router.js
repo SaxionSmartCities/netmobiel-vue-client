@@ -33,13 +33,16 @@ import CharityOverviewPage from './pages/community/goals/CharityOverviewPage'
 import CharityDetailPage from './pages/community/goals/CharityDetailsPage'
 import TripCancelledPage from './pages/saved/TripCancelledPage'
 import TripDetailPage from './pages/saved/TripDetailPage'
+import TripConfirmPage from './pages/saved/TripConfirmPage'
+import TripConfirmedPage from './pages/saved/TripConfirmedPage'
+import TripNotMade from './pages/saved/TripNotMade'
 import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
-import ShoutOutDetailPage from '@/pages/community/shoutout/ShoutOutDetailPage'
+import ShoutOutDriverDetailPage from '@/pages/community/shoutout/ShoutOutDriverDetailPage'
+import ShoutOutPassengerDetailPage from '@/pages/community/shoutout/ShoutOutPassengerDetailPage'
 import ShoutoutSubmittedPage from '@/pages/planner/ShoutoutSubmittedPage'
 import Account from '@/pages/profile/Account'
 import DriverReviewPage from './pages/review/DriverReviewPage'
 import TripReviewedPage from './pages/review/TripReviewedPage'
-import TripConfirmedPage from './pages/review/TripConfirmedPage'
 import SupportGoal from './pages/community/goals/SupportGoal'
 import Donated from './pages/community/goals/Donated'
 import RideSafeNetmobiel from '@/pages/profile/RideSafeNetmobiel'
@@ -167,6 +170,18 @@ const router = new Router({
       name: 'tripDetailPage',
     },
     {
+      path: '/tripConfimPage/:id',
+      component: TripConfirmPage,
+      name: 'tripConfirmPage',
+      props: true,
+    },
+    {
+      path: '/tripNotMade/:id',
+      component: TripNotMade,
+      name: 'tripNotMade',
+      props: true,
+    },
+    {
       path: '/rideDetailPage/:id',
       component: RideDetailPage,
       name: 'rideDetailPage',
@@ -224,9 +239,15 @@ const router = new Router({
       name: 'shoutouts',
     },
     {
-      path: '/shoutout/:id;:isMine',
-      component: ShoutOutDetailPage,
-      name: 'shoutout',
+      path: '/shoutoutdriver/:id',
+      component: ShoutOutDriverDetailPage,
+      name: 'shoutoutdriver',
+      props: true,
+    },
+    {
+      path: '/shoutoutpassenger/:id',
+      component: ShoutOutPassengerDetailPage,
+      name: 'shoutoutpassenger',
       props: true,
     },
     {

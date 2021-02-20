@@ -1,4 +1,5 @@
 import moment from 'moment'
+import travelModes from '@/constants/travel-modes.js'
 
 const MIN_WAITING_TIME = 60 // Time in seconds
 
@@ -36,7 +37,74 @@ export function generateItineraryDetailSteps(itinerary) {
   return steps
 }
 
+export function generateRideItineraryDetailSteps(ride) {
+  // Guard: If we have nog ride (id) then don't do the processing.
+  if (!ride.id) return []
+
+  let result = []
+  let bookingDict = generateBookingDictionary(ride.bookings)
+  for (let i = 0; i < ride.legs.length - 1; i++) {
+    let currentLeg = ride.legs[i]
+    setPassenger(currentLeg, bookingDict)
+    let nextLeg = ride.legs[i + 1]
+    result.push(currentLeg)
+
+    // For 'long' waiting times we will add a custom 'WAIT' step.
+    if (nextLeg.startTime - currentLeg?.endTime > MIN_WAITING_TIME * 1000) {
+      result.push({
+        mode: 'WAIT',
+        startTime: currentLeg.endTime,
+        endTime: nextLeg.startTime,
+        duration: (nextLeg.startTime - currentLeg.endTime) / 1000,
+      })
+    }
+  }
+  // Push the last leg and add a custom 'FINISH' step.
+  let lastLeg = ride.legs[ride.legs.length - 1]
+  setPassenger(lastLeg, bookingDict)
+  result.push(lastLeg)
+  result.push({
+    mode: 'FINISH',
+    startTime: lastLeg.endTime,
+    to: lastLeg.to,
+  })
+  return result
+}
+
+function generateBookingDictionary(bookings) {
+  let dict = []
+  for (let i = 0; i < bookings.length; i++) {
+    let map = bookings[i].legs.map(l => {
+      let dictItem = { ...bookings[i].passenger }
+      dictItem.legRef = l.legRef
+      return dictItem
+    })
+    dict = dict.concat(map)
+  }
+  return dict
+}
+
+function setPassenger(leg, bookingDict) {
+  // TODO: Check why modality is not provided
+  if (leg) {
+    leg.mode = travelModes.CAR.mode
+    let passenger = bookingDict.find(b => b.legRef == leg.legRef)
+    if (passenger) {
+      leg.passenger = passenger
+      leg.mode = travelModes.RIDESHARE.mode
+    }
+  }
+}
+
 export function generateShoutOutDetailSteps(shoutout) {
+  if (shoutout.ride) {
+    return generateShoutOutOfferDetailSteps(shoutout)
+  } else {
+    return generateCommunityShoutOutDetailSteps(shoutout)
+  }
+}
+
+function generateCommunityShoutOutDetailSteps(shoutout) {
   const departure = shoutout.useAsArrivalTime
     ? null
     : moment(shoutout.travelTime)
@@ -62,4 +130,47 @@ export function generateShoutOutDetailSteps(shoutout) {
       from: { name: to },
     },
   ]
+}
+
+function generateShoutOutOfferDetailSteps(shoutout) {
+  const { fromPlace, car, bookings } = shoutout.ride
+  let steps = []
+  const booking = bookings?.find(b => b.state === 'PROPOSED')
+  if (booking) {
+    let departureTime = moment(shoutout.ride.departureTime)
+      .toDate()
+      .getTime()
+    let arrivalTime = moment(shoutout.ride.arrivalTime)
+      .toDate()
+      .getTime()
+    let pickupTime = moment(booking.departureTime)
+      .toDate()
+      .getTime()
+    let dropOffTime = moment(booking.arrivalTime)
+      .toDate()
+      .getTime()
+    steps.push({
+      mode: 'CAR',
+      startTime: departureTime,
+      endTime: pickupTime,
+      from: { name: fromPlace.label },
+    })
+    steps.push({
+      mode: 'RIDESHARE',
+      startTime: pickupTime,
+      endTime: dropOffTime,
+      from: { label: booking.pickup.label },
+      driverName: 'Jij',
+      vehicleName: car.brand,
+      vehicleLicensePlate: car.model,
+      tripId: shoutout.ride.id,
+    })
+    steps.push({
+      mode: 'ARRIVAL',
+      startTime: dropOffTime,
+      endTime: arrivalTime,
+      from: { name: booking.dropOff.label },
+    })
+  }
+  return steps
 }

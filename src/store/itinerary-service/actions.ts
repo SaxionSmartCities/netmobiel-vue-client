@@ -12,6 +12,7 @@ import {
   SearchCriteria,
 } from '@/store/itinerary-service/types'
 import * as uiStore from '@/store/ui'
+import { addInterceptors } from '../api-middelware'
 
 type ActionContext = BareActionContext<ItineraryState, RootState>
 
@@ -141,7 +142,9 @@ function storeShoutOut(
     planType: 'SHOUT_OUT',
   }
   const URL = `${PLANNER_BASE_URL}/plans`
-  axios
+  let instance = axios.create()
+  addInterceptors(instance)
+  instance
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
@@ -150,7 +153,8 @@ function storeShoutOut(
         let message = 'Oproep naar de community is geplaatst'
         uiStore.actions.queueInfoNotification(message)
       } else {
-        uiStore.actions.queueErrorNotification(response.data.message)
+        let message = response.data.message
+        uiStore.actions.queueErrorNotification(message)
       }
     })
     .catch(error => {
@@ -293,6 +297,7 @@ function fetchMyShoutOuts(context: ActionContext, { offset: offset }: any) {
     })
     .then(response => {
       if (response.status === 200) {
+        mutations.setMyShoutOutsTotalCount(response.data.totalCount)
         // When you using a offset you want to append the shoutouts and not clear the already fetched shoutouts.
         if (offset > 0) mutations.appendMyShoutOuts(response.data.data)
         else mutations.setMyShoutOuts(response.data.data)
@@ -338,15 +343,21 @@ function fetchTrip(context: ActionContext, payload: any) {
     })
 }
 
-function confirmTrip(context: ActionContext, payload: any) {
-  const URL = `${PLANNER_BASE_URL}/trips/${payload.id}/confirm/true`
+function tripConfirmation({ id, acknowledge }: any) {
+  const URL = `${PLANNER_BASE_URL}/planner/trips/${id}/confirm/${acknowledge}`
   const data = {}
   const config = {
     headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
   }
-  axios
-    .put(URL, data, config)
-    .then(function(resp) {
+  let instance = axios.create()
+  addInterceptors(instance)
+  return instance.put(URL, data, config)
+}
+
+function rejectTrip(context: ActionContext, payload: any) {
+  const promise = tripConfirmation({ id: payload.id, acknowledge: false })
+  promise
+    .then(resp => {
       if (resp.status == 204) {
         // Ride is confirmed
         uiStore.actions.queueInfoNotification('Uw rit is bevestigd.')
@@ -363,6 +374,33 @@ function confirmTrip(context: ActionContext, payload: any) {
       uiStore.actions.queueErrorNotification(
         'Fout bij het bevestigen van uw rit.'
       )
+    })
+}
+
+function confirmTrip(context: ActionContext, payload: any) {
+  const promise = tripConfirmation({ id: payload.id, acknowledge: true })
+  promise
+    .then(function(resp) {
+      if (resp.status == 204) {
+        // Ride is confirmed
+        uiStore.actions.queueInfoNotification('Uw rit is bevestigd.')
+        fetchTrip(context, { id: payload.id })
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Fout bij het bevestigen van uw rit.'
+        )
+      }
+    })
+    .catch(function(error) {
+      // eslint-disable-next-line
+      console.log(error)
+      if (error.response.status === 400) {
+        uiStore.actions.queueErrorNotification('Deze rit is al bevestigd.')
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Fout bij het bevestigen van uw rit.'
+        )
+      }
     })
 }
 
@@ -431,6 +469,7 @@ export const buildActions = (
     fetchMyShoutOuts: isBuilder.dispatch(fetchMyShoutOuts),
     fetchShoutOut: isBuilder.dispatch(fetchShoutOut),
     fetchTrip: isBuilder.dispatch(fetchTrip),
+    rejectTrip: isBuilder.dispatch(rejectTrip),
     confirmTrip: isBuilder.dispatch(confirmTrip),
     submitShoutOutPlanningsRequest: isBuilder.dispatch(
       submitShoutOutPlanningsRequest

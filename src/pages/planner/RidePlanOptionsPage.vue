@@ -9,7 +9,7 @@
             </h1>
           </v-col>
         </v-row>
-        <v-row dense>
+        <v-row no-gutters>
           <v-col>
             <v-expansion-panels accordion>
               <v-expansion-panel>
@@ -20,9 +20,11 @@
                 >
                   <v-row no-gutters>
                     <v-col>
-                      <span class="form-label">Max. aantal passagiers</span>
+                      <span>Max. aantal passagiers</span>
                     </v-col>
-                    <v-col cols="1" class="text-right">
+                  </v-row>
+                  <v-row no-gutters>
+                    <v-col class="text-end pr-2">
                       {{ ridePlanOptions.numPassengers }}
                     </v-col>
                   </v-row>
@@ -60,7 +62,9 @@
                     <v-col>
                       <span class="form-label py-2">Maximale omrijtijd</span>
                     </v-col>
-                    <v-col cols="3" class="text-right">
+                  </v-row>
+                  <v-row no-gutters>
+                    <v-col class="text-end pr-2">
                       {{ ridePlanOptions.maxMinutesDetour }} min
                     </v-col>
                   </v-row>
@@ -165,4 +169,9 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.v-expansion-panel-header {
+  padding: 10px 0;
+  box-shadow: none;
+}
+</style>

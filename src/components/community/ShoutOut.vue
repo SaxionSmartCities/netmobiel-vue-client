@@ -2,12 +2,19 @@
   <v-card
     outlined
     class="shoutout-container"
-    @click="$emit('shoutoutSelected', shoutout.planRef)"
+    :class="{ 'travel-offer': hasOffer }"
+    @click="
+      $emit('shoutoutSelected', { id: shoutout.planRef, isUserTraveller })
+    "
   >
     <v-row class="mb-2">
       <v-col class="shrink">
-        <v-img v-if="isMine" class="shoutout-image" :src="profileImage" />
-        <external-user-image v-else :managed-identity="otherIdentity" />
+        <v-img
+          v-if="isUserTraveller"
+          class="shoutout-image"
+          :src="profileImage"
+        />
+        <external-user-image v-else :managed-identity="travellerIdentity" />
       </v-col>
       <v-col>
         <p class="font-weight-regular header mb-0">Reiziger</p>
@@ -19,12 +26,26 @@
         <v-icon>chevron_right</v-icon>
       </v-col>
     </v-row>
+    <v-row v-if="shoutout.ride">
+      <v-col class="pt-0 pb-4">
+        <h4>Jouw aanboden rit:</h4>
+      </v-col>
+    </v-row>
     <v-row
       v-for="(leg, index) in generateSteps()"
       :key="index"
       class="mx-1 py-0"
     >
-      <itinerary-leg :leg="leg" :showicon="false" :showdottedline="true" />
+      <itinerary-leg
+        :leg="leg"
+        :showicon="!!shoutout.ride"
+        :showdottedline="!shoutout.ride"
+      />
+    </v-row>
+    <v-row v-if="shoutout.itineraries.length > 0">
+      <v-col class="">
+        <h5>Er zijn {{ shoutout.itineraries.length }} ritten aangeboden.</h5>
+      </v-col>
     </v-row>
     <v-row justify="center">
       <v-col align="start" class="header ma">
@@ -33,7 +54,7 @@
       </v-col>
       <v-col align="end">
         <v-btn small rounded depressed color="button">
-          {{ btnText }}
+          {{ nextAction }}
         </v-btn>
       </v-col>
     </v-row>
@@ -53,8 +74,6 @@ export default {
   components: { ItineraryLeg, ExternalUserImage },
   props: {
     shoutout: { type: Object, required: true },
-    btnText: { type: String, required: true },
-    isMine: { type: Boolean, required: true },
   },
   computed: {
     profile() {
@@ -63,18 +82,34 @@ export default {
     profileImage() {
       return this.profile.image
     },
+    isUserTraveller() {
+      return this.profile.id === this.travellerIdentity
+    },
     travellerName() {
       const { traveller } = this.shoutout
-      if (this.isMine) {
-        return `${traveller.firstName} ${traveller.lastName}`
+      if (this.isUserTraveller) {
+        return `${this.profile.firstName} ${this.profile.lastName}`
       }
       return `${traveller.givenName} ${traveller.familyName}`
     },
     distance() {
       return getDistance(this.shoutout.from, this.shoutout.to, 1000) / 1000
     },
-    otherIdentity() {
-      return this.shoutout.traveller.managedIdentity
+    travellerIdentity() {
+      const { traveller } = this.shoutout
+      return traveller.managedIdentity
+        ? traveller.managedIdentity
+        : traveller.id
+    },
+    nextAction() {
+      return this.isUserTraveller
+        ? 'Bekijk shoutout'
+        : this.hasOffer
+        ? 'Aanbod bekijken'
+        : 'Rit aanbieden'
+    },
+    hasOffer() {
+      return !!this.shoutout.ride || this.shoutout.itineraries.length > 0
     },
   },
   methods: {
@@ -88,6 +123,9 @@ export default {
 <style lang="scss" scoped>
 .ma {
   margin: auto;
+}
+.travel-offer {
+  border: 1px solid $color-primary;
 }
 
 .shoutout-container {

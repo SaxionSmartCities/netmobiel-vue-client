@@ -60,14 +60,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <itinerary-options
-          :selected-trip="selectedTrip"
-          @tripEdit="onTripEdit"
-          @tripReplan="onTripReplan"
-          @tripCancelled="onTripCancelled"
-          @tripReview="onTripReview"
-        >
-        </itinerary-options>
+        <itinerary-options :options="tripOptions" />
       </v-col>
     </v-row>
     <contact-driver-modal
@@ -141,6 +134,64 @@ export default {
       trip.legs = generateItineraryDetailSteps(trip.itinerary)
       return trip
     },
+    tripOptions() {
+      let options = []
+      const { state } = this.selectedTrip
+      const legs = this.selectedTrip?.itinerary?.legs
+      const found = legs ? legs.find(l => l.confirmed !== undefined) : undefined
+      switch (state) {
+        case 'SCHEDULED':
+          options.push({
+            icon: 'fa-pencil-alt',
+            label: 'Wijzig deze rit',
+            callback: this.onTripEdit,
+          })
+          options.push({
+            icon: 'fa-times-circle',
+            label: 'Annuleer deze rit',
+            callback: this.onTripCancelled,
+          })
+          break
+        case 'VALIDATING':
+          if (found === undefined) {
+            options.push({
+              icon: 'fa-check-circle',
+              label: 'Bevestig deze rit',
+              callback: this.onTripReview,
+            })
+          }
+          options.push({
+            icon: 'fa-redo',
+            label: 'Plan deze rit opnieuw',
+            callback: this.onTripReplan,
+          })
+          break
+        case 'COMPLETED':
+          options.push({
+            icon: 'fa-redo',
+            label: 'Plan deze rit opnieuw',
+            callback: this.onTripReplan,
+          })
+          options.push({
+            icon: 'fa-times-circle',
+            label: 'Verwijder deze rit',
+            callback: this.onTripCancelled,
+          })
+          break
+        case 'CANCELLED':
+          options.push({
+            icon: 'fa-redo',
+            label: 'Plan deze rit opnieuw',
+            callback: this.onTripReplan,
+          })
+          options.push({
+            icon: 'fa-times-circle',
+            label: 'Verwijder deze rit',
+            callback: this.onTripCancelled,
+          })
+      }
+      return options
+    },
   },
   created() {
     uiStore.mutations.showBackButton()
@@ -172,32 +223,26 @@ export default {
         })
       }
     },
-    onTripReplan(trip) {
-      isStore.mutations.setSearchCriteria({
-        from: trip.from,
-        to: trip.to,
-      })
+    onTripReplan() {
+      const { from, to } = this.selectedTrip
+      isStore.mutations.setSearchCriteria({ from, to })
       this.$router.push('/search')
     },
     onTripReview(trip) {
       this.$router.push({
-        name: 'reviewDriver',
-        params: {
-          tripContext: trip.tripRef,
-          //TODO get drive name via profile service for the review text TripMade?
-          // driverName: trip.
-        },
+        name: 'tripConfirmPage',
+        params: { id: this.selectedTrip.id.toString() },
       })
     },
-    onTripCancelled(selectedTrip) {
+    onTripCancelled() {
       isStore.actions.deleteSelectedTrip({
-        tripId: selectedTrip.tripId,
+        tripId: this.selectedTrip.id,
         displayWarning: true,
       })
       this.$router.push('/tripCancelledPage')
     },
-    onTripEdit(trip) {
-      const { from, to, itinerary, arrivalTimeIsPinned } = trip
+    onTripEdit() {
+      const { from, to, itinerary, arrivalTimeIsPinned } = this.selectedTrip
       const { searchPreferences } = psStore.getters.getProfile
       let searchCriteria = {
         from,

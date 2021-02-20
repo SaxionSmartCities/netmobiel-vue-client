@@ -7,6 +7,7 @@ export class UiState {
   notificationBarVisible: boolean = false
   notificationQueue: UiNotification[] = []
   updateMessages: UiUpdateMessage[] = []
+  networkRequest: NetworkRequest = {}
 }
 
 export interface UiHeader {
@@ -32,4 +33,21 @@ export interface UiUpdateMessage {
 export interface UiUpdateMessageLink {
   label: string
   to: string
+}
+
+export interface NetworkRequest {
+  location?: string
+  submitStatus?: SubmitStatus
+}
+
+export interface SubmitStatus {
+  status: NetworkRequestStatus
+  message?: string
+}
+
+export enum NetworkRequestStatus {
+  UNSUBMITTED = 'UNSUBMITTED',
+  PENDING = 'PENDING',
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED',
 }

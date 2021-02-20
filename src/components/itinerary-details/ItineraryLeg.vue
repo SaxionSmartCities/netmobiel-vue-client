@@ -139,7 +139,7 @@ const descriptions = {
     return this.leg.from.label || this.leg.from.name
   },
   RIDESHARE() {
-    return `Instappen in ${this.leg.vehicleName} (${this.leg.vehicleLicensePlate}) vanaf ${this.leg.from.label}`
+    return `Instappen vanaf ${this.leg.from.label}`
   },
   RAIL() {
     // add platform to departure and arrival

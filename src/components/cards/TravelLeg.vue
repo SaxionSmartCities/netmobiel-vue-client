@@ -9,7 +9,6 @@
     <div
       class="travel-line"
       :class="{
-        'cancelled-leg': isCancelled,
         dotted: leg.traverseMode === 'WALK',
       }"
     />

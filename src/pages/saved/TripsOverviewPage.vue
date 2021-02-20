@@ -62,6 +62,7 @@
               <template v-slot:card="{ item: trip }">
                 <travel-card
                   :trip-id="trip.id"
+                  :trip-state="trip.state"
                   :itinerary="trip.itinerary"
                   class="trip-card"
                   @on-trip-selected="onTripSelected"
@@ -80,6 +81,7 @@
               <template v-slot:card="{ item: trip }">
                 <travel-card
                   :trip-id="trip.id"
+                  :trip-state="trip.state"
                   :itinerary="trip.itinerary"
                   class="trip-card"
                   @on-trip-selected="onTripSelected"
@@ -204,15 +206,15 @@ export default {
     },
     showTabs() {
       const role = psStore.getters.getProfile.userRole
-      return !role || role === 'both'
+      return !role || role === constants.PROFILE_ROLE_BOTH
     },
     isPassenger() {
       const role = psStore.getters.getProfile.userRole
-      return role === 'passenger'
+      return role === constants.PROFILE_ROLE_PASSENGER
     },
     isDriver() {
       const role = psStore.getters.getProfile.userRole
-      return role === 'driver'
+      return role === constants.PROFILE_ROLE_DRIVER
     },
   },
   watch: {
@@ -247,7 +249,7 @@ export default {
     this.fetchPastTrips()
     this.fetchRides()
     this.fetchPastRides()
-    isStore.actions.fetchCancelledTrips()
+    // isStore.actions.fetchCancelledTrips()
     window.addEventListener('scroll', this.scrollHandler)
   },
   beforeDestroy() {

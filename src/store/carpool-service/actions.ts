@@ -1,7 +1,7 @@
-import { CarpoolState, Car } from './types'
+import { CarpoolState, Car, UserRef } from './types'
 import { RootState } from '@/store/Rootstate'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
-import { mutations } from '@/store/carpool-service/index'
+import { actions, mutations } from '@/store/carpool-service/index'
 import * as uiStore from '@/store/ui'
 import axios from 'axios'
 import util from '@/utils/Utils'
@@ -135,8 +135,9 @@ function submitRide(context: ActionContext, payload: any) {
 
   axios(axiosConfig)
     .then(function(res) {
-      // eslint-disable-next-line
-      console.log(res)
+      if (res.status == 201) {
+        uiStore.actions.queueInfoNotification('Uw rit is opgeslagen.')
+      }
       fetchRides(context, { offset: 0, maxResults: 10 })
     })
     .catch(function(error) {
@@ -145,6 +146,23 @@ function submitRide(context: ActionContext, payload: any) {
       uiStore.actions.queueErrorNotification(
         'Fout bij het versturen van uw rit-aanbod.'
       )
+    })
+}
+
+function updateRide(context: ActionContext, payload: any) {
+  const { ride } = payload
+  const URL = `${RIDESHARE_BASE_URL}/rides/${ride.id}`
+  const params: any = {}
+  payload.scope && (params['scope'] = payload.scope)
+
+  axios
+    .put(URL, ride, {
+      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      params: params,
+    })
+    .then(function(resp) {
+      // eslint-disable-next-line
+      console.log(resp)
     })
 }
 
@@ -242,7 +260,6 @@ function deleteRide(context: ActionContext, payload: any) {
       if (resp.status == 204) {
         //Delete trip from store!
         mutations.deleteRides(payload.id)
-        mutations.deleteRides(payload.id)
       } else {
         uiStore.actions.queueErrorNotification(
           'Fout bij het verwijderen van uw rit-aanbod.'
@@ -258,7 +275,7 @@ function deleteRide(context: ActionContext, payload: any) {
     })
 }
 
-function fetchUser(context: ActionContext, { userRef }: any) {
+function fetchUser(context: ActionContext, { userRef }: UserRef) {
   const URL = `${RIDESHARE_BASE_URL}/users/${userRef}`
   return axios
     .get(URL, {
@@ -274,6 +291,74 @@ function fetchUser(context: ActionContext, { userRef }: any) {
     })
 }
 
+function fetchTravelProposals(
+  context: ActionContext,
+  { driverManagedId, offset, maxResults, until, since, sortDir }: any
+) {
+  if (driverManagedId) {
+    const URL = `${RIDESHARE_BASE_URL}/users`
+    axios
+      .get(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+      .then(function(resp) {
+        const driver = resp.data.find(
+          (u: any) => u.managedIdentity === driverManagedId
+        )
+        if (driver) {
+          const URL = `${RIDESHARE_BASE_URL}/rides`
+          const params: any = {}
+          params['maxResults'] = maxResults || 10
+          params['offset'] = offset || 0
+          params['bookingState'] = 'PROPOSED'
+          driver.id && (params['driverId'] = driver.id)
+          until && (params['until'] = until)
+          since && (params['since'] = since)
+          sortDir && (params['sortDir'] = sortDir)
+          axios
+            .get(URL, {
+              headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+              params: params,
+            })
+            .then(function(resp) {
+              mutations.setProposedRides(resp.data.data)
+            })
+            .catch(function(error) {
+              // eslint-disable-next-line
+              console.log(error)
+              uiStore.actions.queueErrorNotification(
+                'Fout bij het ophalen van uw rit-aanbod.'
+              )
+            })
+        }
+      })
+      .catch(function(error) {
+        // TODO: Proper error handling.
+        // eslint-disable-next-line
+        console.log(error)
+      })
+  }
+}
+
+function fetchRidesFromConversations(context: ActionContext, payload: any) {
+  let rideFetches = []
+  for (let conversation of payload) {
+    const URL = `${RIDESHARE_BASE_URL}/rides/${conversation.context}`
+    rideFetches.push(
+      axios.get(URL, {
+        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      })
+    )
+  }
+  Promise.all(rideFetches).then(values => {
+    let rides = []
+    for (let resp of values) {
+      rides.push(resp.data)
+    }
+    mutations.setInboxRides(rides)
+  })
+}
+
 export const buildActions = (
   csBuilder: ModuleBuilder<CarpoolState, RootState>
 ) => {
@@ -283,10 +368,15 @@ export const buildActions = (
     submitCar: csBuilder.dispatch(submitCar),
     removeCar: csBuilder.dispatch(removeCar),
     submitRide: csBuilder.dispatch(submitRide),
+    updateRide: csBuilder.dispatch(updateRide),
     fetchRides: csBuilder.dispatch(fetchRides),
     fetchRide: csBuilder.dispatch(fetchRide),
     confirmRide: csBuilder.dispatch(confirmRide),
     deleteRide: csBuilder.dispatch(deleteRide),
     fetchUser: csBuilder.dispatch(fetchUser),
+    fetchTravelProposals: csBuilder.dispatch(fetchTravelProposals),
+    fetchRidesFromConversations: csBuilder.dispatch(
+      fetchRidesFromConversations
+    ),
   }
 }
