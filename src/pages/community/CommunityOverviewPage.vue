@@ -64,10 +64,10 @@ export default {
   },
   mounted() {
     const { address, userRole } = psStore.getters.getProfile
-    if (userRole == constants.PROFILE_ROLE_PASSENGER) {
+    if (userRole === constants.PROFILE_ROLE_PASSENGER) {
       // Display the count of the users' own shoutouts.
       isStore.actions.fetchMyShoutOuts({ offset: 0 })
-    } else {
+    } else if (address && address.location) {
       // Display the community shoutouts.
       isStore.actions.fetchShoutOuts({
         latitude: address.location.coordinates[1],

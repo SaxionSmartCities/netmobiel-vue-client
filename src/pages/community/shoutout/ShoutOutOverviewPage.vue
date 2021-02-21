@@ -124,17 +124,19 @@ export default {
   mounted() {
     this.communityShoutOuts = [...isStore.getters.getShoutOuts]
     const { id, address } = psStore.getters.getProfile
-    isStore.actions.fetchShoutOuts({
-      latitude: address.location.coordinates[1],
-      longitude: address.location.coordinates[0],
-    })
+    if (address && address.location) {
+      isStore.actions.fetchShoutOuts({
+        latitude: address.location.coordinates[1],
+        longitude: address.location.coordinates[0],
+      })
+    }
     isStore.actions.fetchMyShoutOuts({
       offset: 0,
     })
     // If our role is 'chauffeur' or 'both' fetch any travel proposal we may have.
     if (
-      this.userRole == constants.PROFILE_ROLE_DRIVER ||
-      this.userRole == constants.PROFILE_ROLE_BOTH
+      this.userRole === constants.PROFILE_ROLE_DRIVER ||
+      this.userRole === constants.PROFILE_ROLE_BOTH
     ) {
       csStore.actions.fetchTravelProposals({
         since: moment().format(),
