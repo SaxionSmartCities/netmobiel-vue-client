@@ -344,7 +344,7 @@ function fetchTrip(context: ActionContext, payload: any) {
 }
 
 function tripConfirmation({ id, acknowledge }: any) {
-  const URL = `${PLANNER_BASE_URL}/planner/trips/${id}/confirm/${acknowledge}`
+  const URL = `${PLANNER_BASE_URL}/trips/${id}/confirm/${acknowledge}`
   const data = {}
   const config = {
     headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
