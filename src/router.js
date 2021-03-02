@@ -11,6 +11,7 @@ import ItineraryDetailPage from './pages/planner/ItineraryDetailPage.vue'
 import LandingPage from './pages/LandingPage.vue'
 import HomePage from './pages/home/HomePage.vue'
 import HowToPage from './pages/home/HowToPage.vue'
+import ManagementOverviewPage from './pages/manage/ManagementOverviewPage.vue'
 import ModeSelectionPage from './pages/planner/ModeSelectionPage.vue'
 import NotificationOptionsPage from './pages/profile/NotificationOptionsPage.vue'
 import OnboardingComplete from './pages/OnboardingComplete.vue'
@@ -63,6 +64,11 @@ const router = new Router({
       path: '/home',
       name: 'home',
       component: HomePage,
+    },
+    {
+      path: '/manage',
+      name: 'manage',
+      component: ManagementOverviewPage,
     },
     {
       path: '/createUser',
