@@ -4,6 +4,7 @@ import {
   CharityState,
   Donation,
   Donor,
+  Withdrawal,
 } from '@/store/charity-service/types'
 import { RootState } from '@/store/Rootstate'
 
@@ -32,10 +33,16 @@ function setPreviouslyDonatedCharities(
 ) {
   state.previouslyDonatedCharities = charities
 }
+
+function setWithdrawals(state: CharityState, withdrawals: Withdrawal[]) {
+  state.withdrawals = withdrawals
+}
+
 export const buildMutations = (
   chsBuilder: ModuleBuilder<CharityState, RootState>
 ) => {
   return {
+    setWithdrawals: chsBuilder.commit(setWithdrawals),
     setCharities: chsBuilder.commit(setCharities),
     setCharity: chsBuilder.commit(setCharity),
     setCharitySearchResults: chsBuilder.commit(setCharitySearchResults),

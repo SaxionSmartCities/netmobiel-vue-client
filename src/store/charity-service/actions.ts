@@ -3,6 +3,8 @@ import { RootState } from '@/store/Rootstate'
 import { CharityState } from './types'
 import { mutations } from '@/store/charity-service/index'
 import axios from 'axios'
+import moment from 'moment'
+import util from '@/utils/Utils'
 import config from '@/config/config'
 import * as uiStore from '@/store/ui'
 import { generateHeaders } from '@/utils/Utils'
@@ -142,6 +144,41 @@ async function fetchTopDonors(context: ActionContext, id: string) {
   }
 }
 
+async function fetchWithdrawals(context: ActionContext, payload: any = {}) {
+  try {
+    const resp = await axios.get(`${BASE_URL}/banker/withdrawal-requests`, {
+      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+    })
+    const withdrawals = resp.data.data
+    console.log(withdrawals)
+    mutations.setWithdrawals(withdrawals)
+  } catch (problem) {
+    uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de uitbetalingen.'
+    )
+  }
+}
+
+async function fetchPaymentBatches(context: ActionContext, payload: any = {}) {
+  try {
+    const since = moment()
+      .subtract(1, 'months')
+      .format()
+    const until = moment().format()
+    const params = { since, until }
+    const resp = await axios.get(`${BASE_URL}/banker/payment-batches`, {
+      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+    })
+    const batches = resp.data.data
+    console.log(batches)
+    // mutations.setCharities(charities)
+  } catch (problem) {
+    uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de uitbetalingen.'
+    )
+  }
+}
+
 export const buildActions = (
   chsBuilder: ModuleBuilder<CharityState, RootState>
 ) => {
@@ -149,6 +186,8 @@ export const buildActions = (
     fetchCharities: chsBuilder.dispatch(fetchCharities),
     fetchCharity: chsBuilder.dispatch(fetchCharity),
     saveCharity: chsBuilder.dispatch(saveCharity),
+    fetchWithdrawals: chsBuilder.dispatch(fetchWithdrawals),
+    fetchPaymentBatches: chsBuilder.dispatch(fetchPaymentBatches),
     donate: chsBuilder.dispatch(donate),
     fetchDonationsForCharity: chsBuilder.dispatch(fetchDonationsForCharity),
     fetchTopDonors: chsBuilder.dispatch(fetchTopDonors),
