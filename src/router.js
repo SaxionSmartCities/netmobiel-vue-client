@@ -8,6 +8,7 @@ import ItineraryDetailPage from './pages/planner/ItineraryDetailPage.vue'
 import LandingPage from './pages/LandingPage.vue'
 import HomePage from './pages/home/HomePage.vue'
 import HowToPage from './pages/home/HowToPage.vue'
+import ManagementOverviewPage from './pages/manage/ManagementOverviewPage.vue'
 import ModeSelectionPage from './pages/planner/ModeSelectionPage.vue'
 import NotificationOptionsPage from './pages/profile/NotificationOptionsPage.vue'
 import OnboardingCompletedPage from './pages/OnboardingCompletedPage.vue'
@@ -79,12 +80,12 @@ const router = new Router({
       component: HomePage,
     },
     {
-      path: '/logout',
-      name: 'logout',
-      component: LogoutPage,
+      path: '/manage',
+      name: 'manage',
+      component: ManagementOverviewPage,
     },
     {
-      path: '/register-user',
+      path: '/createUser',
       component: RegistrationPage,
       name: 'registerUser',
     },
