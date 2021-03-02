@@ -1,4 +1,5 @@
 export class CharityState {
+  withdrawals: Withdrawal[] = []
   charities: Charity[] = []
   charitySearchResults: Charity[] = []
   charity: Charity | null = null
@@ -6,6 +7,7 @@ export class CharityState {
   previouslyDonatedCharities: Charity[] = []
   topDonors: Donor[] = []
 }
+
 export enum STORE_STATE_OPTIONS {
   PREVIOUS,
   INIT,
@@ -44,9 +46,39 @@ export interface Donation {
 
 export interface Donor {
   totalDonated: number
-  user: {
-    managedIdentity: string
-    firstName: string
-    lastName: string
-  }
+  user: User
+}
+
+export interface User {
+  managedIdentity: string
+  firstName: string
+  lastName: string
+}
+
+export interface Withdrawal {
+  account: Account
+  accountRef: string
+  amountCredits: number
+  amountEurocents: number
+  createdBy: User
+  creationTime: string
+  description: string
+  iban: string
+  ibanHolder: string
+  id: number
+  modificationTime: string
+  modifiedBy: User
+  orderReference: string
+  paymentBatchRef: string
+  reason: string
+  status: string
+}
+
+export interface Account {
+  credits: number
+  iban: string
+  ibanHolder: string
+  id: number
+  name: string
+  ncan: string
 }

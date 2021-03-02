@@ -32,6 +32,10 @@ export const buildGetters = (
     return state.topDonors
   }, 'getTopDonors')
 
+  const getWithdrawals = chsBuilder.read((state: CharityState) => {
+    return state.withdrawals
+  }, 'getWithdrawals')
+
   return {
     get getCharities() {
       return getCharities()
@@ -50,6 +54,9 @@ export const buildGetters = (
     },
     get getTopDonors() {
       return getTopDonors()
+    },
+    get getWithdrawals() {
+      return getWithdrawals()
     },
   }
 }
