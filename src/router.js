@@ -8,6 +8,7 @@ import ItineraryDetailPage from './pages/planner/ItineraryDetailPage.vue'
 import LandingPage from './pages/LandingPage.vue'
 import HomePage from './pages/home/HomePage.vue'
 import HowToPage from './pages/home/HowToPage.vue'
+import CharityNewPage from './pages/manage/CharityNewPage.vue'
 import ManagementOverviewPage from './pages/manage/ManagementOverviewPage.vue'
 import ModeSelectionPage from './pages/planner/ModeSelectionPage.vue'
 import NotificationOptionsPage from './pages/profile/NotificationOptionsPage.vue'
@@ -83,6 +84,11 @@ const router = new Router({
       path: '/manage',
       name: 'manage',
       component: ManagementOverviewPage,
+    },
+    {
+      path: '/manage/charity',
+      name: 'manage/charity',
+      component: CharityNewPage,
     },
     {
       path: '/createUser',
