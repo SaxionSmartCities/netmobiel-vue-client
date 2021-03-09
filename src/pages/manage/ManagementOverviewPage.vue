@@ -39,7 +39,7 @@
           depressed
           outlined
           block
-          @click="registreerDoel()"
+          @click="$router.push({ name: 'manage/charity' })"
         >
           Registreer goed doel
         </v-btn>
@@ -93,7 +93,7 @@ export default {
   data() {
     return {
       numTabs: 3,
-      selectedTab: 1,
+      selectedTab: 0,
       headers: [
         {
           text: 'Naam',
