@@ -1,41 +1,46 @@
 <template>
-  <v-row dense>
-    <v-col>
+  <v-form>
+    <v-container class="pa-1">
       <v-row>
         <v-col>
           <v-text-field
-            class="bg-white"
-            hide-details
-            outlined
-            readonly
-            dense
+            v-model="value.name"
+            :rules="[rules.required]"
             label="Naam"
-          >
-          </v-text-field>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-text-field
             class="bg-white"
-            hide-details
             outlined
             dense
-            label="Locatie"
           >
           </v-text-field>
         </v-col>
       </v-row>
       <v-row>
+        <v-col class="py-0">
+          <v-combobox
+            :value="value.location.label"
+            :rules="[rules.required]"
+            :items="suggestions"
+            label="Locatie"
+            class="bg-white"
+            outlined
+            dense
+            @update:search-input="onLocationUpdate"
+          >
+          </v-combobox>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col>
-          <v-text-field
+          <v-textarea
+            v-model="value.description"
             class="bg-white"
             hide-details
             outlined
             dense
             label="Omschrijving"
+            rows="3"
           >
-          </v-text-field>
+          </v-textarea>
         </v-col>
       </v-row>
       <v-row>
@@ -47,12 +52,14 @@
       <v-row>
         <v-col>
           <v-text-field
+            v-model="value.goalAmount"
+            :rules="[rules.required]"
+            label="Doel bedrag"
             class="bg-white"
+            type="number"
             hide-details
             outlined
-            readonly
             dense
-            label="Doel bedrag"
             prefix="€"
           >
           </v-text-field>
@@ -64,8 +71,8 @@
             <template v-slot:activator="{ on }">
               <v-text-field
                 v-model="pickedStartDate"
+                :rules="[rules.required]"
                 label="Start datum"
-                readonly
                 prepend-icon="event"
                 hide-details
                 class="my-0 py-0"
@@ -132,15 +139,18 @@
           </v-dialog>
         </v-col>
       </v-row>
-    </v-col>
-  </v-row>
+    </v-container>
+  </v-form>
 </template>
 
 <script>
+import { throttle } from 'lodash'
+import * as gsStore from '@/store/geocoder-service'
+
 export default {
   name: 'CharityDetails',
   props: {
-    charity: { type: Object, default: () => {} },
+    value: { type: Object, default: () => {} },
   },
   data() {
     return {
@@ -148,9 +158,30 @@ export default {
       pickedStartDate: null,
       showEndDatePicker: false,
       pickedEndDate: null,
+      rules: {
+        required: value => !!value || 'Verplicht veld',
+      },
     }
   },
+  computed: {
+    suggestions() {
+      return gsStore.getters.getGeocoderSuggestions.map(s => {
+        const vicinity = s.vicinity.replace('<br/>', ', ')
+        return {
+          text: `${s.title} ${vicinity} (${s.categoryTitle})`,
+          value: s,
+        }
+      })
+    },
+  },
   methods: {
+    onLocationUpdate: throttle(val => {
+      if (val && val.length > 2) {
+        gsStore.actions.fetchGeocoderSuggestions({ query: val })
+      } else {
+        gsStore.mutations.setGeocoderSuggestions([])
+      }
+    }, 500),
     cancelStartDate() {
       this.showStartDatePicker = false
     },
@@ -159,9 +190,11 @@ export default {
     },
     confirmStartDate() {
       this.showStartDatePicker = false
+      this.value.campaignStartTime = this.pickedStartDate
     },
     confirmEndDate() {
       this.showEndDatePicker = false
+      this.value.campaignEndTime = this.pickedEndDate
     },
   },
 }
