@@ -8,7 +8,7 @@
     <v-row>
       <v-col>
         <h4>Publieke gegevens</h4>
-        <charity-details />
+        <charity-details v-model="charityDetails" />
       </v-col>
       <v-col>
         <h3>Financiele gegevens</h3>
@@ -16,24 +16,22 @@
           <v-col>
             <v-text-field
               class="bg-white"
-              hide-details
-              outlined
-              readonly
-              dense
               label="Naam rekeninghouder"
+              :rules="[rules.required]"
+              outlined
+              dense
             >
             </v-text-field>
           </v-col>
         </v-row>
         <v-row>
-          <v-col>
+          <v-col class="py-0">
             <v-text-field
               class="bg-white"
-              hide-details
-              outlined
-              readonly
-              dense
               label="IBAN rekening"
+              :rules="[rules.required]"
+              outlined
+              dense
             >
             </v-text-field>
           </v-col>
@@ -65,6 +63,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import CharityDetails from '@/components/manage/CharityDetails.vue'
+import * as chsStore from '@/store/charity-service'
 import * as uiStore from '@/store/ui'
 
 export default {
@@ -73,15 +72,40 @@ export default {
     ContentPane,
     CharityDetails,
   },
+  data() {
+    return {
+      charityDetails: {
+        name: null,
+        location: {
+          label: null,
+          latitude: 0,
+          longitude: 0,
+        },
+        description: null,
+        imageUrl: null,
+        goalAmount: 0,
+        campaignStartTime: null,
+        campaignEndTime: null,
+      },
+      rules: {
+        required: value => !!value || 'Verplicht veld',
+      },
+    }
+  },
   created() {
     uiStore.mutations.showBackButton()
   },
   methods: {
     save() {
-      console.log('Not yet implemented')
+      const charity = { ...this.charityDetails }
+      console.log(charity)
+      // chsStore.actions.saveCharity(charity)
     },
     cancel() {
       this.$router.go(-1)
+    },
+    validate() {
+      this.$refs.form.validate()
     },
   },
 }
