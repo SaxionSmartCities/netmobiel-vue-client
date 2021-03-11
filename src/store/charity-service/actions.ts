@@ -10,12 +10,12 @@ import * as uiStore from '@/store/ui'
 
 type ActionContext = BareActionContext<CharityState, RootState>
 
-const { BASE_URL, GRAVITEE_BANKER_SERVICE_API_KEY } = config
+const { BANKER_BASE_URL, GRAVITEE_BANKER_SERVICE_API_KEY } = config
 const { generateHeaders } = util
 
 async function fetchCharities(context: ActionContext, payload: any = {}) {
   try {
-    const resp = await axios.get(`${BASE_URL}/banker/charities`, {
+    const resp = await axios.get(`${BANKER_BASE_URL}/charities`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
     const charities = resp.data.data
@@ -29,7 +29,7 @@ async function fetchCharities(context: ActionContext, payload: any = {}) {
 
 async function fetchCharity(context: ActionContext, id: string) {
   try {
-    const resp = await axios.get(`${BASE_URL}/banker/charities/${id}`, {
+    const resp = await axios.get(`${BANKER_BASE_URL}/charities/${id}`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
     const charities = resp.data
@@ -43,7 +43,7 @@ async function fetchCharity(context: ActionContext, id: string) {
 
 async function saveCharity(context: ActionContext, payload: any) {
   try {
-    const resp = await axios.post(`${BASE_URL}/banker/charities`, payload, {
+    const resp = await axios.post(`${BANKER_BASE_URL}/charities`, payload, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
   } catch (problem) {
@@ -64,7 +64,7 @@ async function donate(
       anonymous: isAnonymous,
     }
     const resp = await axios.post(
-      `${BASE_URL}/banker/charities/${id}/donations`,
+      `${BANKER_BASE_URL}/charities/${id}/donations`,
       donation,
       {
         headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
@@ -78,7 +78,7 @@ async function donate(
 async function fetchPreviouslyDonatedCharities(context: ActionContext) {
   try {
     const resp = await axios.get(
-      `${BASE_URL}/banker/users/me/recent-donations`,
+      `${BANKER_BASE_URL}/users/me/recent-donations`,
       {
         headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
       }
@@ -96,7 +96,7 @@ async function fetchPreviouslyDonatedCharities(context: ActionContext) {
 async function fetchDonationsForCharity(context: ActionContext, id: string) {
   try {
     const resp = await axios.get(
-      `${BASE_URL}/banker/charities/${id}/donations`,
+      `${BANKER_BASE_URL}/charities/${id}/donations`,
       {
         headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
       }
@@ -123,7 +123,7 @@ async function fetchDonationsForCharity(context: ActionContext, id: string) {
 
 async function fetchTopDonors(context: ActionContext, id: string) {
   try {
-    const resp = await axios.get(`${BASE_URL}/banker/users/generosity`, {
+    const resp = await axios.get(`${BANKER_BASE_URL}/users/generosity`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
     if (resp.status === 200) {
