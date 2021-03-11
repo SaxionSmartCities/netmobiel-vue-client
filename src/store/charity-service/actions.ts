@@ -1,6 +1,6 @@
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { RootState } from '@/store/Rootstate'
-import { CharityState } from './types'
+import { Charity, CharityState } from './types'
 import { mutations } from '@/store/charity-service/index'
 import axios from 'axios'
 import moment from 'moment'
@@ -41,14 +41,14 @@ async function fetchCharity(context: ActionContext, id: string) {
   }
 }
 
-async function saveCharity(context: ActionContext, payload: any) {
+async function saveCharity(context: ActionContext, payload: Charity) {
   try {
     const resp = await axios.post(`${BANKER_BASE_URL}/charities`, payload, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
   } catch (problem) {
     uiStore.actions.queueErrorNotification(
-      'Fout bij het ophalen van het goede doel.'
+      'Fout bij het opslaan van het goede doel.'
     )
   }
 }
