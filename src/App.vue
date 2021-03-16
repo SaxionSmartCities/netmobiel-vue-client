@@ -129,7 +129,7 @@ export default {
     },
   },
   mounted() {
-    const user = { name: 'netmobiel' }
+    const user = { name: 'netmobiel', version: this.commithash.trim() }
     ybug(user)
     // Set the fcm token (for push notifications) in the local storage
     // for so we can retrieve it later to update the profile.
