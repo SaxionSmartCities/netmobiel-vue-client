@@ -6,11 +6,13 @@
         <v-icon color="white">arrow_back</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <round-user-image
-        :profile-image="profileImage"
-        :image-size="30"
-        :avatar-size="34"
-      />
+      <v-btn icon @click="onProfileImageClick">
+        <round-user-image
+          :profile-image="profileImage"
+          :image-size="30"
+          :avatar-size="34"
+        />
+      </v-btn>
     </v-app-bar>
     <!-- Content -->
     <v-main>
@@ -152,6 +154,10 @@ export default {
     }
   },
   methods: {
+    onProfileImageClick() {
+      // TODO: Only navigate to delegate if role is delegate (route to profile otherwise)
+      this.$router.push('/profile/delegate')
+    },
     finishNotification: function() {
       uiStore.actions.finishNotification()
     },
