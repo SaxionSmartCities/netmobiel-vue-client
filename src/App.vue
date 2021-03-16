@@ -92,36 +92,36 @@ export default {
       return this.getProfile?.image
     },
     selectedNav: {
-      get: function() {
+      get() {
         return uiStore.getters.getSelectedNav
       },
-      set: function(value) {
+      set(value) {
         uiStore.mutations.setSelectedNav(value)
       },
     },
-    isHeaderVisible: function() {
+    isHeaderVisible() {
       return uiStore.getters.isHeaderVisible
     },
-    isFooterVisible: function() {
+    isFooterVisible() {
       return uiStore.getters.isFooterVisible
     },
-    notificationQueue: function() {
+    notificationQueue() {
       return uiStore.getters.getNotificationQueue
     },
-    notificationColor: function() {
+    notificationColor() {
       const queue = this.notificationQueue
       return queue.length && !queue[0].timeout ? 'error' : 'inform'
     },
-    isNotificationBarVisible: function() {
+    isNotificationBarVisible() {
       return uiStore.getters.isNotificationBarVisible
     },
-    currentNotification: function() {
+    currentNotification() {
       return uiStore.getters.getNotificationQueue[0]
     },
     getProfile() {
       return psStore.getters.getProfile
     },
-    isBackButtonVisible: function() {
+    isBackButtonVisible() {
       return uiStore.getters.isBackButtonVisible
     },
   },
@@ -158,13 +158,13 @@ export default {
       // TODO: Only navigate to delegate if role is delegate (route to profile otherwise)
       this.$router.push('/profile/delegate')
     },
-    finishNotification: function() {
+    finishNotification() {
       uiStore.actions.finishNotification()
     },
-    goBack: function() {
+    goBack() {
       this.$router.go(-1)
     },
-    routeToMode: function() {
+    routeToMode() {
       let newRoute = ''
       if (this.getProfile.userRole === constants.PROFILE_ROLE_PASSENGER) {
         newRoute = '/search'
