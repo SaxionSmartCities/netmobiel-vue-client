@@ -24,6 +24,7 @@
             class="bg-white"
             outlined
             dense
+            @input="onLocationSelect"
             @update:search-input="onLocationUpdate"
           >
           </v-combobox>
@@ -182,6 +183,13 @@ export default {
         gsStore.mutations.setGeocoderSuggestions([])
       }
     }, 500),
+    onLocationSelect(evt) {
+      this.value.location = {
+        label: evt.value.title,
+        latitude: evt.value.position[0],
+        longitude: evt.value.position[1],
+      }
+    },
     cancelStartDate() {
       this.showStartDatePicker = false
     },
