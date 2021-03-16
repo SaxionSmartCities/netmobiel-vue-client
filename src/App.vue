@@ -6,7 +6,11 @@
         <v-icon color="white">arrow_back</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <span class="version">{{ commithash }}</span>
+      <round-user-image
+        :profile-image="profileImage"
+        :image-size="30"
+        :avatar-size="34"
+      />
     </v-app-bar>
     <!-- Content -->
     <v-main>
@@ -67,6 +71,7 @@
 </template>
 
 <script>
+import RoundUserImage from '@/components/common/RoundUserImage'
 import constants from '@/constants/constants'
 import hash from 'raw-loader!@/assets/current.hash'
 import ybug from './config/ybug'
@@ -75,11 +80,15 @@ import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'App',
+  components: { RoundUserImage },
   data: () => ({
     offsetTop: 0,
     commithash: hash,
   }),
   computed: {
+    profileImage() {
+      return this.getProfile?.image
+    },
     selectedNav: {
       get: function() {
         return uiStore.getters.getSelectedNav
