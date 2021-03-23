@@ -304,8 +304,8 @@ function storeDelegation(
     })
 }
 
-function fetchDelegations(context: ActionContext) {
-  const URL = `${PROFILE_BASE_URL}/delegations`
+function fetchDelegations(context: ActionContext, { delegateId }: any) {
+  const URL = `${PROFILE_BASE_URL}/delegations?delegate=${delegateId}`
   return axios
     .get(URL, {
       headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),

@@ -13,7 +13,14 @@
         <h4 class="text-primary">Account</h4>
       </v-col>
       <v-col>
-        <v-btn small rounded block outlined color="primary">
+        <v-btn
+          small
+          rounded
+          block
+          outlined
+          color="primary"
+          @click="addDelegation"
+        >
           Toevoegen
         </v-btn>
       </v-col>
@@ -38,7 +45,14 @@ export default {
   },
   mounted() {
     uiStore.mutations.showBackButton()
-    psStore.actions.fetchDelegations()
+    const delegateId = psStore.getters.getProfile.id
+    psStore.actions.fetchDelegations({ delegateId })
+  },
+  methods: {
+    addDelegation() {
+      // eslint-disable-next-line
+      console.log('TODO: Implement add delegation')
+    },
   },
 }
 </script>
