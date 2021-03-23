@@ -25,6 +25,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane'
 import UserList from '@/components/lists/UserList'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'DelegationOverview',
@@ -35,7 +36,7 @@ export default {
     },
   },
   mounted() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
 }
 </script>
