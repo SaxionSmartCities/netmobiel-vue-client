@@ -156,7 +156,12 @@ export default {
   methods: {
     onProfileImageClick() {
       // TODO: Only navigate to delegate if role is delegate (route to profile otherwise)
-      this.$router.push('/profile/delegate')
+      const route = '/profile/delegate'
+      // Do not route when we are already on the page.
+      // (vue router will throw a NavigationDuplicated error)
+      if (this.$route.path !== route) {
+        this.$router.push(route)
+      }
     },
     finishNotification() {
       uiStore.actions.finishNotification()
