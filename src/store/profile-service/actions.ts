@@ -311,6 +311,15 @@ function fetchDelegations(context: ActionContext, { delegateId }: any) {
       headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
     .then(response => {
+      // Turn relative image URLs into absolute URLs.
+      response.data.data.map((d: any) => {
+        if (d.delegate?.image) {
+          d.delegate.image = `${IMAGES_BASE_URL}/${d.delegate.image}`
+        }
+        if (d.delegator?.image) {
+          d.delegator.image = `${IMAGES_BASE_URL}/${d.delegator.image}`
+        }
+      })
       mutations.setDelegations(response.data.data)
     })
     .catch(error => {
