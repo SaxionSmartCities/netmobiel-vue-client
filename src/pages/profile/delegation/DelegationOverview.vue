@@ -26,17 +26,19 @@
 import ContentPane from '@/components/common/ContentPane'
 import UserList from '@/components/lists/UserList'
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'DelegationOverview',
   components: { ContentPane, UserList },
   computed: {
     accounts() {
-      return []
+      return psStore.getters.getDelegations
     },
   },
   mounted() {
     uiStore.mutations.showBackButton()
+    psStore.actions.fetchDelegations()
   },
 }
 </script>
