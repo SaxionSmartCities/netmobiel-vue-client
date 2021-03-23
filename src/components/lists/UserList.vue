@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       emptyListLabel:
-        'Je hebt geen gebruikers voor wie je hun account beheerd.',
+        'Je beheert op dit moment geen accounts van andere gebruikers.',
     }
   },
 }
