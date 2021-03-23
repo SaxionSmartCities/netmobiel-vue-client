@@ -277,6 +277,33 @@ function fetchDelegation(context: ActionContext, { delegationId }: any) {
   // TODO: Implement logic.
 }
 
+function storeDelegation(
+  context: ActionContext,
+  { delegateId, delegatorId }: any
+) {
+  const URL = `${PROFILE_BASE_URL}/delegations`
+  axios
+    .post(
+      URL,
+      { delegateRef: delegateId, delegatorRef: delegatorId },
+      {
+        headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      }
+    )
+    .then(response => {
+      if (response.status === 201) {
+        uiStore.actions.queueInfoNotification(`Je machtiging is opgeslagen!`)
+      }
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij opslaan van de machtiging`
+      )
+    })
+}
+
 function fetchDelegations(context: ActionContext) {
   const URL = `${PROFILE_BASE_URL}/delegations`
   return axios
@@ -313,5 +340,6 @@ export const buildActions = (
     updateProfile: psBuilder.dispatch(updateProfile),
     updateProfileImage: psBuilder.dispatch(updateProfileImage),
     fetchDelegations: psBuilder.dispatch(fetchDelegations),
+    storeDelegation: psBuilder.dispatch(storeDelegation),
   }
 }
