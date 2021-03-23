@@ -10,10 +10,16 @@
           />
         </v-col>
         <v-col>
-          <span class="body-1 font-weight-medium">Title {{ user }}</span>
+          <span class="body-1 font-weight-medium">
+            {{
+              user.delegator
+                ? `${user.delegator.firstName} ${user.delegator.lastName}`
+                : 'Onbekend'
+            }}
+          </span>
           <br />
           <span class="body-2 grey--text">
-            Sub
+            {{ user.address ? user.address.locality : 'Woonplaats onbekend' }}
           </span>
         </v-col>
       </v-row>
