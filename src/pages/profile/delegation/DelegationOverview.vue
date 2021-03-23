@@ -2,21 +2,46 @@
   <content-pane>
     <v-row>
       <v-col>
-        Overview of delegators
+        <h4>Account beheer</h4>
+        <p>
+          Namens wie wil je de app gebruiken?
+        </p>
       </v-col>
     </v-row>
+    <v-row class="pb-0">
+      <v-col>
+        <h4 class="text-primary">Account</h4>
+      </v-col>
+      <v-col>
+        <v-btn small rounded block outlined color="primary">
+          Toevoegen
+        </v-btn>
+      </v-col>
+    </v-row>
+    <user-list :users="accounts" />
   </content-pane>
 </template>
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
+import UserList from '@/components/lists/UserList'
+
 export default {
   name: 'DelegationOverview',
-  components: { ContentPane },
+  components: { ContentPane, UserList },
+  computed: {
+    accounts() {
+      return []
+    },
+  },
   mounted() {
     this.$store.commit('ui/showBackButton')
   },
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.text-primary {
+  color: $color-primary !important;
+}
+</style>
