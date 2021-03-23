@@ -32,6 +32,10 @@ export const buildGetters = (
     )
   }, 'passedCoronaCheck')
 
+  const getDelegations = psBuilder.read((state: ProfileState) => {
+    return state.user.delegations
+  }, 'getDelegations')
+
   return {
     get getUser() {
       return getUser()
@@ -50,6 +54,9 @@ export const buildGetters = (
     },
     get passedCoronaCheck() {
       return passedCoronaCheck()
+    },
+    get getDelegations() {
+      return getDelegations()
     },
   }
 }

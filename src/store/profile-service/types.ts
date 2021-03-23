@@ -53,6 +53,7 @@ export class ProfileState {
       },
       favoriteLocations: [],
     },
+    delegations: [],
     coronaCheck: {
       coronaSymptoms: false,
       houseHoldHadCorona: false,
@@ -129,6 +130,7 @@ export interface User {
   credits: Credits
   profile: Profile
   coronaCheck: CoronaCheck
+  delegations: Delegation[]
 }
 
 export interface Profile {
@@ -178,4 +180,14 @@ export interface NameValue {
 export interface CoronaCheck {
   coronaSymptoms: boolean
   houseHoldHadCorona: boolean
+}
+
+export interface Delegation {
+  id: number
+  activationTime: string
+  delegateRef: string
+  delegatorRef: string
+  revocationTime: string
+  submissionTime: string
+  transferCode: string
 }

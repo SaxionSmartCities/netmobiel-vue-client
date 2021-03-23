@@ -272,6 +272,29 @@ function updateProfileImage(context: ActionContext, { id, image }: any) {
     })
 }
 
+function fetchDelegation(context: ActionContext, { delegationId }: any) {
+  const URL = `${PROFILE_BASE_URL}/delegations/${delegationId}`
+  // TODO: Implement logic.
+}
+
+function fetchDelegations(context: ActionContext) {
+  const URL = `${PROFILE_BASE_URL}/delegations`
+  return axios
+    .get(URL, {
+      headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+    })
+    .then(response => {
+      mutations.setDelegations(response.data.data)
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueInfoNotification(
+        `Fout bij het ophalen van de machtigingen`
+      )
+    })
+}
+
 export const buildActions = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -289,5 +312,6 @@ export const buildActions = (
     storeFcmToken: psBuilder.dispatch(storeFcmToken),
     updateProfile: psBuilder.dispatch(updateProfile),
     updateProfileImage: psBuilder.dispatch(updateProfileImage),
+    fetchDelegations: psBuilder.dispatch(fetchDelegations),
   }
 }
