@@ -65,7 +65,7 @@ export class ProfileState {
       interests: [],
       favoriteLocations: [],
     },
-    // delegateProfile: Profile = null,
+    delegateProfile: null,
     delegations: [],
     coronaCheck: {
       coronaSymptoms: false,
@@ -132,7 +132,7 @@ export interface User {
   reviews: NameValue[]
   credits: Credits
   profile: Profile
-  // delegateProfile: Profile
+  delegateProfile: Profile | null
   coronaCheck: CoronaCheck
   delegations: Delegation[]
 }
