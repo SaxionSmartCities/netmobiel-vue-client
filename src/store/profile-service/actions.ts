@@ -328,6 +328,14 @@ function fetchDelegations(context: ActionContext, { delegateId }: any) {
     })
 }
 
+function switchProfile(context: ActionContext, { delegatorId }: any) {
+  console.log(delegatorId)
+  const profile = { ...context.state.user.profile }
+  mutations.setDelegateProfile(profile)
+  mutations.setDelegatorId(delegatorId)
+  // fetchProfile(context)
+}
+
 export const buildActions = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -347,5 +355,6 @@ export const buildActions = (
     updateProfileImage: psBuilder.dispatch(updateProfileImage),
     fetchDelegations: psBuilder.dispatch(fetchDelegations),
     storeDelegation: psBuilder.dispatch(storeDelegation),
+    switchProfile: psBuilder.dispatch(switchProfile),
   }
 }

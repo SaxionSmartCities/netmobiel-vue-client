@@ -25,7 +25,7 @@
         </v-btn>
       </v-col>
     </v-row>
-    <user-list :users="accounts" />
+    <user-list :users="accounts" @AccountSelected="onAccountSelected" />
   </content-pane>
 </template>
 
@@ -52,6 +52,9 @@ export default {
     addDelegation() {
       // eslint-disable-next-line
       console.log('TODO: Implement add delegation')
+    },
+    onAccountSelected(delegatorId) {
+      psStore.actions.switchProfile({ delegatorId })
     },
   },
 }

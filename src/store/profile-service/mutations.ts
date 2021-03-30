@@ -116,6 +116,14 @@ function setDelegations(state: ProfileState, delegations: Delegation[]) {
   state.user.delegations = delegations
 }
 
+function setDelegateProfile(state: ProfileState, profile: Profile) {
+  state.user.delegateProfile = profile
+}
+
+function setDelegatorId(state: ProfileState, profileId: string) {
+  state.user.delegatorId = profileId
+}
+
 export const buildMutations = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -136,5 +144,7 @@ export const buildMutations = (
     setPublicCompliments: psBuilder.commit(setPublicCompliments),
     setPublicReviews: psBuilder.commit(setPublicReviews),
     setDelegations: psBuilder.commit(setDelegations),
+    setDelegateProfile: psBuilder.commit(setDelegateProfile),
+    setDelegatorId: psBuilder.commit(setDelegatorId),
   }
 }

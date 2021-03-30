@@ -1,10 +1,10 @@
 <template>
   <generic-list :items="users" :empty-list-label="emptyListLabel">
     <template v-slot:list-item="{ item: user }">
-      <v-row dense>
+      <v-row dense align="center">
         <v-col class="shrink pr-3">
           <round-user-image
-            :profile-image="user.image"
+            :profile-image="user.delegator.image"
             :image-size="50"
             :avatar-size="56"
           />
@@ -19,8 +19,14 @@
           </span>
           <br />
           <span class="body-2 grey--text">
-            {{ user.address ? user.address.locality : 'Woonplaats onbekend' }}
+            Woonplaats
+            {{ user.delegator ? user.delegator.address.locality : 'Onbekend' }}
           </span>
+        </v-col>
+        <v-col class="shrink">
+          <v-icon large @click="switchAccount(user.delegator.id)">
+            chevron_right
+          </v-icon>
         </v-col>
       </v-row>
     </template>
@@ -42,6 +48,11 @@ export default {
       emptyListLabel:
         'Je beheert op dit moment geen accounts van andere gebruikers.',
     }
+  },
+  methods: {
+    switchAccount(userId) {
+      this.$emit('AccountSelected', userId)
+    },
   },
 }
 </script>
