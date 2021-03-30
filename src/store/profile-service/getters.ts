@@ -36,6 +36,10 @@ export const buildGetters = (
     return state.user.delegations
   }, 'getDelegations')
 
+  const getDelegatorId = psBuilder.read((state: ProfileState) => {
+    return state.user.delegatorId
+  }, 'getDelegatorId')
+
   return {
     get getUser() {
       return getUser()
@@ -57,6 +61,9 @@ export const buildGetters = (
     },
     get getDelegations() {
       return getDelegations()
+    },
+    get getDelegatorId() {
+      return getDelegatorId()
     },
   }
 }

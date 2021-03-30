@@ -6,6 +6,7 @@ import { Profile, ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { mutations } from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
+import store from '..'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -18,9 +19,12 @@ const {
 const { generateHeaders } = util
 
 function fetchProfile(context: ActionContext) {
+  const delegatorId = context.state.user.delegatorId
   const URL = `${PROFILE_BASE_URL}/profiles/me`
   axios
-    .get(URL, { headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY) })
+    .get(URL, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
+    })
     .then(response => {
       if (response.status == 200 && response.data.profiles.length > 0) {
         let profile = {
@@ -301,6 +305,24 @@ function storeDelegation(
     })
 }
 
+function deleteDelegation(context: ActionContext, { delegationId }: any) {
+  const URL = `${PROFILE_BASE_URL}/delegations/${delegationId}`
+  return axios
+    .delete(URL, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+    })
+    .then(response => {
+      console.log(response)
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueInfoNotification(
+        `Fout bij het verwijderen van de machtiging`
+      )
+    })
+}
+
 function fetchDelegations(context: ActionContext, { delegateId }: any) {
   const URL = `${PROFILE_BASE_URL}/delegations?delegate=${delegateId}`
   return axios
@@ -317,6 +339,14 @@ function fetchDelegations(context: ActionContext, { delegateId }: any) {
           d.delegator.image = `${IMAGES_BASE_URL}/${d.delegator.image}`
         }
       })
+      // HACK: Add a delegation for your own account so that you are shown
+      // in the user list in the delegation overview page.
+      const own_delegation = {
+        id: -1,
+        delegate: context.state.user.profile,
+        delegator: context.state.user.profile,
+      }
+      const delegations = response.data.data.splice(0, 0, own_delegation)
       mutations.setDelegations(response.data.data)
     })
     .catch(error => {
@@ -329,11 +359,10 @@ function fetchDelegations(context: ActionContext, { delegateId }: any) {
 }
 
 function switchProfile(context: ActionContext, { delegatorId }: any) {
-  console.log(delegatorId)
   const profile = { ...context.state.user.profile }
   mutations.setDelegateProfile(profile)
   mutations.setDelegatorId(delegatorId)
-  // fetchProfile(context)
+  fetchProfile(context)
 }
 
 export const buildActions = (
@@ -355,6 +384,7 @@ export const buildActions = (
     updateProfileImage: psBuilder.dispatch(updateProfileImage),
     fetchDelegations: psBuilder.dispatch(fetchDelegations),
     storeDelegation: psBuilder.dispatch(storeDelegation),
+    deleteDelegation: psBuilder.dispatch(deleteDelegation),
     switchProfile: psBuilder.dispatch(switchProfile),
   }
 }

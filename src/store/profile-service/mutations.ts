@@ -124,6 +124,14 @@ function setDelegatorId(state: ProfileState, profileId: string) {
   state.user.delegatorId = profileId
 }
 
+function resetDelegate(state: ProfileState) {
+  if (state.user.delegateProfile) {
+    state.user.profile = state.user.delegateProfile
+  }
+  state.user.delegateProfile = null
+  state.user.delegatorId = null
+}
+
 export const buildMutations = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -146,5 +154,6 @@ export const buildMutations = (
     setDelegations: psBuilder.commit(setDelegations),
     setDelegateProfile: psBuilder.commit(setDelegateProfile),
     setDelegatorId: psBuilder.commit(setDelegatorId),
+    resetDelegate: psBuilder.commit(resetDelegate),
   }
 }
