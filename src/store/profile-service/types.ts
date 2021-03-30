@@ -28,8 +28,19 @@ export class ProfileState {
     // Profile as stored in profile service.
     profile: {
       id: null,
+      consent: {
+        acceptedTerms: false,
+        olderThanSixteen: false,
+      },
+      dateOfBirth: null,
       fcmToken: null,
+      firstName: null,
+      lastName: null,
       image: null,
+      email: null,
+      phoneNumber: null,
+      userRole: [],
+      address: null,
       searchPreferences: {
         numPassengers: 0,
         allowTransfer: true,
@@ -51,8 +62,10 @@ export class ProfileState {
         messages: true,
         shoutouts: true,
       },
+      interests: [],
       favoriteLocations: [],
     },
+    // delegateProfile: Profile = null,
     delegations: [],
     coronaCheck: {
       coronaSymptoms: false,
@@ -93,23 +106,13 @@ export interface Compliment {
   receiver: any
 }
 
+export interface ComplimentType {
+  compliment: string
+}
+
 export interface Review {
   sender: any
   receiver: any
-}
-
-export interface PublicProfile {
-  id: string | null
-  image: string | null
-  firstName: string | null
-  lastName: string | null
-  dateOfBirth: Date | null
-  address: any
-  interests: string[] | []
-}
-
-export interface ComplimentType {
-  compliment: string
 }
 
 export interface User {
@@ -129,18 +132,37 @@ export interface User {
   reviews: NameValue[]
   credits: Credits
   profile: Profile
+  // delegateProfile: Profile
   coronaCheck: CoronaCheck
   delegations: Delegation[]
 }
 
-export interface Profile {
+export interface PublicProfile {
   id: string | null
+  image: string | null
+  firstName: string | null
+  lastName: string | null
+  dateOfBirth: Date | null
+  address: any
+  interests: string[] | []
+}
+
+export interface Profile extends PublicProfile {
+  consent: UserConsent | null
+  email: string | null
   fcmToken: string | null
   image: string | null
+  phoneNumber: string | null
   searchPreferences: SearchPreferences
   ridePlanOptions: RidePlanOptions
   notificationOptions: NotificationOptions
   favoriteLocations: any[]
+  userRole: string[] | []
+}
+
+export interface UserConsent {
+  acceptedTerms: boolean
+  olderThanSixteen: boolean
 }
 
 export interface SearchPreferences {
