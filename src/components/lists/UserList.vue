@@ -10,7 +10,13 @@
           />
         </v-col>
         <v-col>
-          <span class="body-1 font-weight-medium">
+          <span
+            v-if="user.delegate === user.delegator"
+            class="body-1 font-weight-medium"
+          >
+            Mijzelf
+          </span>
+          <span v-else class="body-1 font-weight-medium">
             {{
               user.delegator
                 ? `${user.delegator.firstName} ${user.delegator.lastName}`
@@ -23,7 +29,18 @@
             {{ user.delegator ? user.delegator.address.locality : 'Onbekend' }}
           </span>
         </v-col>
-        <v-col class="shrink">
+        <v-col
+          v-if="
+            selectedId === user.delegator.id ||
+              (!selectedId && user.delegate === user.delegator)
+          "
+          class="shrink"
+        >
+          <v-icon large class="secondary-color">
+            check
+          </v-icon>
+        </v-col>
+        <v-col v-else class="shrink">
           <v-icon large @click="switchAccount(user.delegator.id)">
             chevron_right
           </v-icon>
@@ -42,6 +59,7 @@ export default {
   components: { RoundUserImage, GenericList },
   props: {
     users: { type: Array, required: true },
+    selectedId: { type: String, default: null },
   },
   data() {
     return {
@@ -57,4 +75,8 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.secondary-color {
+  color: $color-orange !important;
+}
+</style>

@@ -3,9 +3,15 @@
     <v-row>
       <v-col>
         <h4>Account beheer</h4>
-        <p>
-          Namens wie wil je de app gebruiken?
-        </p>
+        <span>Namens wie wil je de app gebruiken?</span>
+      </v-col>
+    </v-row>
+    <v-row v-if="delegatorId != null" class="primary-border mb-3">
+      <v-col>
+        <span>
+          Je gebruikt de app nu namens
+          <em>{{ delegator.firstName }} {{ delegator.lastName }}</em>
+        </span>
       </v-col>
     </v-row>
     <v-row class="pb-0">
@@ -25,7 +31,11 @@
         </v-btn>
       </v-col>
     </v-row>
-    <user-list :users="accounts" @AccountSelected="onAccountSelected" />
+    <user-list
+      :users="accounts"
+      :selected-id="delegatorId"
+      @AccountSelected="onAccountSelected"
+    />
   </content-pane>
 </template>
 
@@ -42,6 +52,13 @@ export default {
     accounts() {
       return psStore.getters.getDelegations
     },
+    delegatorId() {
+      return psStore.getters.getDelegatorId
+    },
+    delegator() {
+      const d = this.accounts.find(a => a.delegator.id === this.delegatorId)
+      return d.delegator
+    },
   },
   mounted() {
     uiStore.mutations.showBackButton()
@@ -54,7 +71,11 @@ export default {
       console.log('TODO: Implement add delegation')
     },
     onAccountSelected(delegatorId) {
-      psStore.actions.switchProfile({ delegatorId })
+      if (delegatorId === psStore.getters.getProfile.id) {
+        psStore.mutations.resetDelegate()
+      } else {
+        psStore.actions.switchProfile({ delegatorId })
+      }
     },
   },
 }
@@ -63,5 +84,11 @@ export default {
 <style lang="scss" scoped>
 .text-primary {
   color: $color-primary !important;
+}
+
+.primary-border {
+  background-color: #2e899720;
+  border: 1px solid $color-primary;
+  border-radius: 10px;
 }
 </style>
