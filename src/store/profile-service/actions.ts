@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from '@/config/config'
+import util from '@/utils/Utils'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { Profile, ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
@@ -14,16 +15,12 @@ const {
   GRAVITEE_PROFILE_SERVICE_API_KEY,
 } = config
 
-function generateHeader(key: any) {
-  return {
-    'X-Gravitee-Api-Key': key,
-  }
-}
+const { generateHeaders } = util
 
 function fetchProfile(context: ActionContext) {
   const URL = `${PROFILE_BASE_URL}/profiles/me`
   axios
-    .get(URL, { headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY) })
+    .get(URL, { headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY) })
     .then(response => {
       if (response.status == 200 && response.data.profiles.length > 0) {
         let profile = {
@@ -52,7 +49,7 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
   const URL = `${PROFILE_BASE_URL}/profiles/${profileId}`
   return axios
     .get(URL, {
-      headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
     .then(response => {
       if (response.data.profiles.length > 0) {
@@ -78,7 +75,7 @@ function fetchUserCompliments(context: ActionContext, { profileId }: any) {
   const URL = `${PROFILE_BASE_URL}/compliments`
   return axios
     .get(URL, {
-      headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
       params: { receiverId: profileId },
     })
     .then(response => {
@@ -101,7 +98,7 @@ function fetchComplimentTypes(context: ActionContext) {
   const URL = `${PROFILE_BASE_URL}/compliments/types`
   axios
     .get(URL, {
-      headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
     .then(response => {
       mutations.setComplimentTypes(response.data.complimentTypes)
@@ -133,7 +130,7 @@ function addUserCompliment(
       URL,
       { sender, receiver, complimentType },
       {
-        headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+        headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
       }
     )
     .then(response => {
@@ -156,7 +153,7 @@ function fetchUserReviews(context: ActionContext, { profileId }: any) {
   const URL = `${PROFILE_BASE_URL}/reviews`
   axios
     .get(URL, {
-      headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
       params: { receiverId: profileId },
     })
     .then(response => {
@@ -180,7 +177,7 @@ function addUserReview(
       URL,
       { sender, receiver, review },
       {
-        headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+        headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
       }
     )
     .then(response => {
@@ -231,7 +228,7 @@ function updateProfile(context: ActionContext, profile: Profile) {
   const URL = `${PROFILE_BASE_URL}/profiles/${profile.id}`
   axios
     .put(URL, profile, {
-      headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
     .then(response => {
       if (response.status == 200 && response.data.profiles.length > 0) {
@@ -257,7 +254,7 @@ function updateProfileImage(context: ActionContext, { id, image }: any) {
       URL,
       { image },
       {
-        headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+        headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
       }
     )
     .then(response => {
@@ -287,7 +284,7 @@ function storeDelegation(
       URL,
       { delegateRef: delegateId, delegatorRef: delegatorId },
       {
-        headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+        headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
       }
     )
     .then(response => {
@@ -308,7 +305,7 @@ function fetchDelegations(context: ActionContext, { delegateId }: any) {
   const URL = `${PROFILE_BASE_URL}/delegations?delegate=${delegateId}`
   return axios
     .get(URL, {
-      headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
     .then(response => {
       // Turn relative image URLs into absolute URLs.
