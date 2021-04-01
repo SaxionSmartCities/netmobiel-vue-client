@@ -35,6 +35,7 @@
       :users="accounts"
       :selected-id="delegatorId"
       @AccountSelected="onAccountSelected"
+      @DelegationDelete="onDelegationDelete"
     />
   </content-pane>
 </template>
@@ -76,6 +77,9 @@ export default {
       } else {
         psStore.actions.switchProfile({ delegatorId })
       }
+    },
+    onDelegationDelete(delegationId) {
+      psStore.actions.deleteDelegation({ delegationId })
     },
   },
 }
