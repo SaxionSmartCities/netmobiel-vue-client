@@ -312,6 +312,7 @@ function deleteDelegation(context: ActionContext, { delegationId }: any) {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
     .then(response => {
+      // eslint-disable-next-line
       console.log(response)
     })
     .catch(error => {
