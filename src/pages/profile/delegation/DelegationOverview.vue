@@ -78,8 +78,7 @@ export default {
   },
   methods: {
     addDelegation() {
-      // eslint-disable-next-line
-      console.log('TODO: Implement add delegation')
+      this.$router.push('/profile/delegate/new')
     },
     onAccountSelected(delegatorId) {
       const delegateId = psStore.getters.getDelegateProfile?.id
