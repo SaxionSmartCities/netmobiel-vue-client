@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from '@/config/config'
+import util from '@/utils/Utils'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { RegistrationRequest, RegistrationState } from './types'
 import { mutations } from '@/store/registration-service'
@@ -7,12 +8,7 @@ import { RootState } from '@/store/Rootstate'
 type ActionContext = BareActionContext<RegistrationState, RootState>
 
 const { PROFILE_BASE_URL, GRAVITEE_PROFILE_SERVICE_API_KEY } = config
-
-function generateHeader(key: any) {
-  return {
-    'X-Gravitee-Api-Key': key,
-  }
-}
+const { generateHeaders } = util
 
 function submitRegistrationRequest(
   context: ActionContext,
@@ -24,7 +20,7 @@ function submitRegistrationRequest(
     method: 'POST',
     url: `${PROFILE_BASE_URL}/profiles`,
     data: context.state.registrationRequest,
-    headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
+    headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
   }
 
   axios(axiosConfig)

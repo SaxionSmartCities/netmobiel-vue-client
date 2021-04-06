@@ -17,11 +17,13 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
+import * as uiStore from '@/store/ui'
+
 export default {
   name: 'About',
   components: { ContentPane },
   mounted() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
 }
 </script>

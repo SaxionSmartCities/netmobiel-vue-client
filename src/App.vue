@@ -6,7 +6,13 @@
         <v-icon color="white">arrow_back</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <span class="version">{{ commithash }}</span>
+      <v-btn icon @click="onProfileImageClick">
+        <round-user-image
+          :profile-image="profileImage"
+          :image-size="30"
+          :avatar-size="34"
+        />
+      </v-btn>
     </v-app-bar>
     <!-- Content -->
     <v-main>
@@ -67,6 +73,7 @@
 </template>
 
 <script>
+import RoundUserImage from '@/components/common/RoundUserImage'
 import constants from '@/constants/constants'
 import hash from 'raw-loader!@/assets/current.hash'
 import ybug from './config/ybug'
@@ -75,42 +82,46 @@ import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'App',
+  components: { RoundUserImage },
   data: () => ({
     offsetTop: 0,
     commithash: hash,
   }),
   computed: {
+    profileImage() {
+      return this.getProfile?.image
+    },
     selectedNav: {
-      get: function() {
+      get() {
         return uiStore.getters.getSelectedNav
       },
-      set: function(value) {
+      set(value) {
         uiStore.mutations.setSelectedNav(value)
       },
     },
-    isHeaderVisible: function() {
+    isHeaderVisible() {
       return uiStore.getters.isHeaderVisible
     },
-    isFooterVisible: function() {
+    isFooterVisible() {
       return uiStore.getters.isFooterVisible
     },
-    notificationQueue: function() {
+    notificationQueue() {
       return uiStore.getters.getNotificationQueue
     },
-    notificationColor: function() {
+    notificationColor() {
       const queue = this.notificationQueue
       return queue.length && !queue[0].timeout ? 'error' : 'inform'
     },
-    isNotificationBarVisible: function() {
+    isNotificationBarVisible() {
       return uiStore.getters.isNotificationBarVisible
     },
-    currentNotification: function() {
+    currentNotification() {
       return uiStore.getters.getNotificationQueue[0]
     },
     getProfile() {
       return psStore.getters.getProfile
     },
-    isBackButtonVisible: function() {
+    isBackButtonVisible() {
       return uiStore.getters.isBackButtonVisible
     },
   },
@@ -129,7 +140,7 @@ export default {
     },
   },
   mounted() {
-    const user = { name: 'netmobiel' }
+    const user = { name: 'netmobiel', version: this.commithash.trim() }
     ybug(user)
     // Set the fcm token (for push notifications) in the local storage
     // for so we can retrieve it later to update the profile.
@@ -143,13 +154,22 @@ export default {
     }
   },
   methods: {
-    finishNotification: function() {
+    onProfileImageClick() {
+      // TODO: Only navigate to delegate if role is delegate (route to profile otherwise)
+      const route = '/profile/delegate'
+      // Do not route when we are already on the page.
+      // (vue router will throw a NavigationDuplicated error)
+      if (this.$route.path !== route) {
+        this.$router.push(route)
+      }
+    },
+    finishNotification() {
       uiStore.actions.finishNotification()
     },
-    goBack: function() {
+    goBack() {
       this.$router.go(-1)
     },
-    routeToMode: function() {
+    routeToMode() {
       let newRoute = ''
       if (this.getProfile.userRole === constants.PROFILE_ROLE_PASSENGER) {
         newRoute = '/search'

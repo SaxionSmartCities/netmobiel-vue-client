@@ -50,6 +50,7 @@ import About from '@/pages/profile/About'
 import UserProfile from '@/pages/profile/UserProfile'
 import Purchase from '@/pages/profile/credits/Purchase'
 import ConfirmDeposit from '@/pages/profile/credits/ReturnAfterDeposit'
+import DelegationOverview from '@/pages/profile/delegation/DelegationOverview'
 
 const router = new Router({
   mode: 'history',
@@ -77,6 +78,10 @@ const router = new Router({
     {
       path: '/profile',
       component: ProfilePage,
+    },
+    {
+      path: '/profile/delegate',
+      component: DelegationOverview,
     },
     {
       path: '/search',

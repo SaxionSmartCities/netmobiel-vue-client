@@ -50,8 +50,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import * as crsStore from '@/store/credits-service'
-
-import { Deposit } from '@/store/credits-service/types'
+import * as uiStore from '@/store/ui'
 
 const MIN_AMOUNT = 10,
   MAX_AMOUNT = 1000
@@ -73,7 +72,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
     this.MIN_AMOUNT = MIN_AMOUNT
     this.MAX_AMOUNT = MAX_AMOUNT
     this.CREDIT_IN_EUROCENTS =

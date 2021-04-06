@@ -83,9 +83,6 @@ export default {
     conversations() {
       return msStore.getters.getConversations
     },
-    profile() {
-      return psStore.getters.getUser
-    },
     myId() {
       return psStore.getters.getProfile.id
     },

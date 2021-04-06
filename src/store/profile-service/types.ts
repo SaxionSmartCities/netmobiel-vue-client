@@ -28,8 +28,19 @@ export class ProfileState {
     // Profile as stored in profile service.
     profile: {
       id: null,
+      consent: {
+        acceptedTerms: false,
+        olderThanSixteen: false,
+      },
+      dateOfBirth: null,
       fcmToken: null,
+      firstName: null,
+      lastName: null,
       image: null,
+      email: null,
+      phoneNumber: null,
+      userRole: [],
+      address: null,
       searchPreferences: {
         numPassengers: 0,
         allowTransfer: true,
@@ -51,8 +62,12 @@ export class ProfileState {
         messages: true,
         shoutouts: true,
       },
+      interests: [],
       favoriteLocations: [],
     },
+    delegatorId: null,
+    delegateProfile: null,
+    delegations: [],
     coronaCheck: {
       coronaSymptoms: false,
       houseHoldHadCorona: false,
@@ -92,23 +107,13 @@ export interface Compliment {
   receiver: any
 }
 
+export interface ComplimentType {
+  compliment: string
+}
+
 export interface Review {
   sender: any
   receiver: any
-}
-
-export interface PublicProfile {
-  id: string | null
-  image: string | null
-  firstName: string | null
-  lastName: string | null
-  dateOfBirth: Date | null
-  address: any
-  interests: string[] | []
-}
-
-export interface ComplimentType {
-  compliment: string
 }
 
 export interface User {
@@ -128,17 +133,38 @@ export interface User {
   reviews: NameValue[]
   credits: Credits
   profile: Profile
+  delegatorId: string | null
+  delegateProfile: Profile | null
   coronaCheck: CoronaCheck
+  delegations: Delegation[]
 }
 
-export interface Profile {
+export interface PublicProfile {
   id: string | null
+  image: string | null
+  firstName: string | null
+  lastName: string | null
+  dateOfBirth: Date | null
+  address: any
+  interests: string[] | []
+}
+
+export interface Profile extends PublicProfile {
+  consent: UserConsent | null
+  email: string | null
   fcmToken: string | null
   image: string | null
+  phoneNumber: string | null
   searchPreferences: SearchPreferences
   ridePlanOptions: RidePlanOptions
   notificationOptions: NotificationOptions
   favoriteLocations: any[]
+  userRole: string[] | []
+}
+
+export interface UserConsent {
+  acceptedTerms: boolean
+  olderThanSixteen: boolean
 }
 
 export interface SearchPreferences {
@@ -178,4 +204,14 @@ export interface NameValue {
 export interface CoronaCheck {
   coronaSymptoms: boolean
   houseHoldHadCorona: boolean
+}
+
+export interface Delegation {
+  id: number
+  activationTime: string
+  delegateRef: string
+  delegatorRef: string
+  revocationTime: string
+  submissionTime: string
+  transferCode: string
 }

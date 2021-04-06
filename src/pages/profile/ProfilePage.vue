@@ -37,7 +37,7 @@
                 class="d-flex grow align-self-center flex-column user-text"
                 @click="navTo('account')"
               >
-                <span class="shrink">{{ user.fullName }}</span>
+                <span class="shrink">{{ fullName }}</span>
                 <span class="caption text--gray">
                   {{ userAddress }}
                 </span>
@@ -164,13 +164,19 @@ export default {
     }
   },
   computed: {
-    user() {
-      return psStore.getters.getUser
+    profile() {
+      return psStore.getters.getProfile
+    },
+    profileImage() {
+      return this.profile.image
+    },
+    fullName() {
+      const { firstName, lastName } = this.profile
+      return `${firstName} ${lastName}`
     },
     userAddress() {
-      let formatted =
-        this.user.profile?.address?.locality || 'Onbekende woonplaats'
-      const address = this.user.profile.address
+      let formatted = this.profile?.address?.locality || 'Onbekende woonplaats'
+      const address = this.profile?.address
       if (address && address['locality'] && address['street']) {
         formatted = address['houseNumber']
           ? `${address['street']} ${address['houseNumber']},
@@ -178,9 +184,6 @@ export default {
           : `${address['street']}, ${address['locality']}`
       }
       return formatted
-    },
-    profileImage() {
-      return psStore.getters.getUser.profile.image
     },
   },
   methods: {
@@ -215,7 +218,7 @@ export default {
       this.$router.push({
         name: 'userProfile',
         params: {
-          profileId: psStore.getters.getUser.profile.id,
+          profileId: psStore.getters.getProfile.id,
         },
       })
     },

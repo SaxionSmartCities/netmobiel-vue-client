@@ -10,6 +10,7 @@ import {
   RidePlanOptions,
   PublicProfile,
   Review,
+  Delegation,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 
@@ -111,6 +112,26 @@ function setPublicReviews(state: ProfileState, reviews: Review[]) {
   state.externalUser.reviews = reviews
 }
 
+function setDelegations(state: ProfileState, delegations: Delegation[]) {
+  state.user.delegations = delegations
+}
+
+function setDelegateProfile(state: ProfileState, profile: Profile) {
+  state.user.delegateProfile = profile
+}
+
+function setDelegatorId(state: ProfileState, profileId: string) {
+  state.user.delegatorId = profileId
+}
+
+function resetDelegate(state: ProfileState) {
+  if (state.user.delegateProfile) {
+    state.user.profile = state.user.delegateProfile
+  }
+  state.user.delegateProfile = null
+  state.user.delegatorId = null
+}
+
 export const buildMutations = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -130,5 +151,9 @@ export const buildMutations = (
     setPublicProfile: psBuilder.commit(setPublicProfile),
     setPublicCompliments: psBuilder.commit(setPublicCompliments),
     setPublicReviews: psBuilder.commit(setPublicReviews),
+    setDelegations: psBuilder.commit(setDelegations),
+    setDelegateProfile: psBuilder.commit(setDelegateProfile),
+    setDelegatorId: psBuilder.commit(setDelegatorId),
+    resetDelegate: psBuilder.commit(resetDelegate),
   }
 }

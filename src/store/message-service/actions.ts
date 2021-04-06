@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from '@/config/config'
+import util from '@/utils/Utils'
 import { MessageState } from './types'
 import { RootState } from '@/store/Rootstate'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
@@ -8,12 +9,7 @@ import { mutations } from './index'
 type ActionContext = BareActionContext<MessageState, RootState>
 
 const { COMMUNICATOR_BASE_URL, GRAVITEE_COMMUNICATOR_SERVICE_API_KEY } = config
-
-function generateHeaders(key: any) {
-  return {
-    'X-Gravitee-Api-Key': key,
-  }
-}
+const { generateHeaders } = util
 
 function fetchMessages(context: ActionContext) {
   const URL = `${COMMUNICATOR_BASE_URL}/messages`
