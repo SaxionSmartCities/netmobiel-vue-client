@@ -341,12 +341,12 @@ function fetchDelegations(context: ActionContext, { delegateId }: any) {
       })
       // HACK: Add a delegation for your own account so that you are shown
       // in the user list in the delegation overview page.
-      const own_delegation = {
-        id: -1,
-        delegate: context.state.user.profile,
-        delegator: context.state.user.profile,
+      let profile = context.state.user.delegateProfile
+      if (!profile) {
+        profile = context.state.user.profile
       }
-      const delegations = response.data.data.splice(0, 0, own_delegation)
+      const own_delegation = { id: -1, delegate: profile, delegator: profile }
+      response.data.data.splice(0, 0, own_delegation)
       mutations.setDelegations(response.data.data)
     })
     .catch(error => {

@@ -13,6 +13,10 @@ export const buildGetters = (
     return state.user.profile
   }, 'getProfile')
 
+  const getDelegateProfile = psBuilder.read((state: ProfileState) => {
+    return state.user.delegateProfile
+  }, 'getDelegateProfile')
+
   const getExternalUser = psBuilder.read((state: ProfileState) => {
     return state.externalUser
   }, 'getExternalUser')
@@ -46,6 +50,9 @@ export const buildGetters = (
     },
     get getProfile() {
       return getProfile()
+    },
+    get getDelegateProfile() {
+      return getDelegateProfile()
     },
     get getExternalUser() {
       return getExternalUser()

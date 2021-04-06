@@ -63,7 +63,12 @@ export default {
   },
   mounted() {
     uiStore.mutations.showBackButton()
-    const delegateId = psStore.getters.getProfile.id
+    let delegateId = psStore.getters.getProfile.id
+    const delegateProfile = psStore.getters.getDelegateProfile
+    if (delegateProfile) {
+      delegateId = delegateProfile.id
+    }
+    // Check if we have a delegateProfile
     psStore.actions.fetchDelegations({ delegateId })
   },
   methods: {
@@ -72,7 +77,8 @@ export default {
       console.log('TODO: Implement add delegation')
     },
     onAccountSelected(delegatorId) {
-      if (delegatorId === psStore.getters.getProfile.id) {
+      const delegateId = psStore.getters.getDelegateProfile?.id
+      if (delegatorId === delegateId) {
         psStore.mutations.resetDelegate()
       } else {
         psStore.actions.switchProfile({ delegatorId })
