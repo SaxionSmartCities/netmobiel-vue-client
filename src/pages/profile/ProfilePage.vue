@@ -180,7 +180,7 @@ export default {
       return formatted
     },
     profileImage() {
-      return psStore.getters.getUser.profile.image
+      return psStore.getters.getProfile.image
     },
   },
   methods: {
@@ -215,7 +215,7 @@ export default {
       this.$router.push({
         name: 'userProfile',
         params: {
-          profileId: psStore.getters.getUser.profile.id,
+          profileId: psStore.getters.getProfile.id,
         },
       })
     },

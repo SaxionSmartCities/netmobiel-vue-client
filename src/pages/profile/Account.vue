@@ -87,7 +87,7 @@ export default {
   },
   computed: {
     user() {
-      return psStore.getters.getUser.profile
+      return psStore.getters.getProfile
     },
     suggestions() {
       return gsStore.getters.getGeocoderSuggestions

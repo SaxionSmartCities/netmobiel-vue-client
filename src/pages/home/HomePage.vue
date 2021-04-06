@@ -11,7 +11,7 @@
       <v-col>
         <h1>
           {{ timeOfDayGreeting }},
-          {{ user.fullName }}
+          {{ fullName }}
         </h1>
       </v-col>
     </v-row>
@@ -162,8 +162,12 @@ export default {
     }
   },
   computed: {
-    user() {
-      return psStore.getters.getUser
+    profile() {
+      return psStore.getters.getProfile
+    },
+    fullName() {
+      const { firstName, lastName } = this.profile
+      return `${firstName} ${lastName}`
     },
     rides() {
       //HACK: Only display first 3 rides.
@@ -197,7 +201,7 @@ export default {
       return uiStore.getters.getUpdateMessages
     },
     profileImage() {
-      return psStore.getters.getUser.profile.image
+      return this.profile.image
     },
   },
   mounted() {
@@ -222,9 +226,9 @@ export default {
     },
     routeToMode() {
       let newRoute = ''
-      if (this.user.profile.userRole === constants.PROFILE_ROLE_PASSENGER) {
+      if (this.profile.userRole === constants.PROFILE_ROLE_PASSENGER) {
         newRoute = '/search'
-      } else if (this.user.profile.userRole === constants.PROFILE_ROLE_DRIVER) {
+      } else if (this.profile.userRole === constants.PROFILE_ROLE_DRIVER) {
         newRoute = '/plan'
       } else {
         newRoute = '/modeSelection'

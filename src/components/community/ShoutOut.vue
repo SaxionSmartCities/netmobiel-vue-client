@@ -77,7 +77,7 @@ export default {
   },
   computed: {
     profile() {
-      return psStore.getters.getUser.profile
+      return psStore.getters.getProfile
     },
     profileImage() {
       return this.profile.image

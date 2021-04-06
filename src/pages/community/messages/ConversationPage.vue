@@ -107,13 +107,13 @@ export default {
       })
     },
     recipient() {
-      const myId = psStore.getters.getProfile.id
+      const myId = this.profile.id
       return this.participants.find(
         recipient => recipient.managedIdentity !== myId
       )
     },
     profile() {
-      return psStore.getters.getUser
+      return psStore.getters.getProfile
     },
     sender() {
       return msStore.getters.getConversationByContext(this.context).sender
@@ -146,7 +146,7 @@ export default {
       uiStore.mutations.enableFooter()
     },
     isMessageSendByMe(id) {
-      return id === psStore.getters.getProfile.id
+      return id === this.profile.id
     },
     scrollToBottomMessageContainer(animation = false) {
       var items = document.getElementById('message-container')
@@ -161,7 +161,7 @@ export default {
       }
     },
     sendMessage() {
-      const { firstName, lastName } = psStore.getters.getProfile
+      const { firstName, lastName } = this.profile
       const { familyName, givenName, managedIdentity } = this.recipient
       const envelopes = [
         { recipient: { familyName, givenName, managedIdentity } },
@@ -172,7 +172,7 @@ export default {
           context: this.context,
           deliveryMode: 'ALL',
           envelopes: envelopes,
-          managedIdentity: psStore.getters.getProfile.id,
+          managedIdentity: this.profile.id,
           subject: `Nieuw bericht van ${firstName} ${lastName}`,
         })
         .then(() => {

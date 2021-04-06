@@ -265,7 +265,7 @@ export default {
     },
     createShoutOut() {
       isStore.actions.storeShoutOut(this.searchCriteria)
-      const { firstName, lastName, id } = psStore.getters.getUser.profile
+      const { firstName, lastName, id } = psStore.getters.getProfile
       const { from, to, travelTime } = this.searchCriteria
       this.shoutout = {
         from,

@@ -77,15 +77,15 @@ export default {
       return csStore.getters.getAvailableCars
     },
     luggageOptions() {
-      return psStore.getters.getUser.profile.ridePlanOptions.luggageOptions
+      return psStore.getters.getProfile.ridePlanOptions.luggageOptions
         .map(luggageLabel)
         .join(', ')
     },
     passengerCount() {
-      return psStore.getters.getUser.profile.ridePlanOptions.numPassengers
+      return psStore.getters.getProfile.ridePlanOptions.numPassengers
     },
     selectedCarId() {
-      return psStore.getters.getUser.profile.ridePlanOptions.selectedCarId
+      return psStore.getters.getProfile.ridePlanOptions.selectedCarId
     },
   },
   created() {
@@ -94,7 +94,7 @@ export default {
   },
   methods: {
     selectAlternativeCar(car) {
-      const profile = psStore.getters.getUser.profile
+      const profile = psStore.getters.getProfile
       psStore.actions.updateProfile({
         ...profile,
         ridePlanOptions: {
