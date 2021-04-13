@@ -63,13 +63,18 @@ export default {
   },
   mounted() {
     uiStore.mutations.showBackButton()
-    let delegateId = psStore.getters.getProfile.id
-    const delegateProfile = psStore.getters.getDelegateProfile
-    if (delegateProfile) {
-      delegateId = delegateProfile.id
+    if (this.$keycloak.hasRealmRole('delegate')) {
+      let delegateId = psStore.getters.getProfile.id
+      const delegateProfile = psStore.getters.getDelegateProfile
+      if (delegateProfile) {
+        delegateId = delegateProfile.id
+      }
+      // Check if we have a delegateProfile
+      psStore.actions.fetchDelegations({ delegateId })
+    } else {
+      // Redirect to profile page
+      this.$router.push('/profile')
     }
-    // Check if we have a delegateProfile
-    psStore.actions.fetchDelegations({ delegateId })
   },
   methods: {
     addDelegation() {
