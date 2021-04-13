@@ -50,6 +50,7 @@
               <v-col class="pa-0 shrink">
                 <div>
                   <v-btn
+                    v-if="creditsEnabled"
                     rounded
                     depressed
                     small
@@ -129,7 +130,9 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
 import { scaleImageDown } from '../../utils/image_scaling'
 import * as psStore from '@/store/profile-service'
-import * as uiStore from '@/store/ui'
+import config from '@/config/config'
+
+const CREDITS_ENABLED = config.CREDITS_ENABLED
 
 export default {
   components: {
@@ -141,6 +144,7 @@ export default {
       rating: 4,
       showUploadFile: false,
       isUploadingFile: false,
+      creditsEnabled: CREDITS_ENABLED || false,
       items: [
         {
           icon: 'settings',
