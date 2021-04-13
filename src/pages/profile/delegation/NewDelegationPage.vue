@@ -1,18 +1,19 @@
 <template>
   <content-pane>
-    <v-row>
-      <v-col>
-        New Account
-      </v-col>
-    </v-row>
+    <onboarding-navigation title="Account toevoegen" />
   </content-pane>
 </template>
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
+import OnboardingNavigation from '@/components/onboarding/OnboardingNavigation.vue'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'DelegationOverview',
-  components: { ContentPane },
+  components: { ContentPane, OnboardingNavigation },
+  mounted() {
+    uiStore.mutations.showBackButton()
+  },
 }
 </script>
