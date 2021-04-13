@@ -2,7 +2,7 @@
   <content-pane>
     <v-row>
       <v-col>
-        <h4>Account beheer</h4>
+        <h3>Account beheer</h3>
         <span>Namens wie wil je de app gebruiken?</span>
       </v-col>
     </v-row>

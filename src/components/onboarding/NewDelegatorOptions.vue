@@ -1,0 +1,139 @@
+<template>
+  <v-row no-gutters>
+    <v-col dense>
+      <v-row>
+        <v-col class="pb-0">
+          Heeft <em>{{ value.firstName }}</em> bagage mee op reis?
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="options ma-2">
+          <v-expansion-panels accordion>
+            <search-options-icon-expansion-panel
+              v-model="luggage"
+              class="pa-0"
+              @onChanged="
+                newLugagge => {
+                  luggage = newLugagge
+                }
+              "
+            />
+          </v-expansion-panels>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          Wat moet de chauffeur weten?
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="options ma-2">
+          <v-row v-for="(option, index) in options" :key="index">
+            <v-col class="d-flex align-center py-0">
+              <span>{{ option.title }}</span>
+            </v-col>
+            <v-col class="shrink d-flex align-center px-0 py-2">
+              <v-switch
+                v-model="option.value"
+                class="switch-overwrite"
+                hide-details
+                inset
+                @change="onOptionChange"
+              ></v-switch>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          Kan <em>{{ value.firstName }}</em> bij aankomst vervoerder direct
+          instappen?
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="options ma-2">
+          <v-radio-group v-model="value.extraTransferTime">
+            <v-radio label="Ja" value="false" />
+            <v-radio
+              label="Nee (de chauffeur houdt rekening met extra instaptijd."
+              value="true"
+            />
+          </v-radio-group>
+        </v-col>
+      </v-row>
+    </v-col>
+  </v-row>
+</template>
+
+<script>
+import SearchOptionsIconExpansionPanel from '@/components/search/SearchOptionsIconExpansionPanel'
+import luggageTypes from '@/constants/luggage-types.js'
+
+export default {
+  name: 'DelegationOptions',
+  components: { SearchOptionsIconExpansionPanel },
+  props: {
+    value: {
+      type: Object,
+      default: () => undefined,
+    },
+  },
+  data() {
+    return {
+      luggageOptions: [],
+      options: [
+        { title: 'Slechthorend', value: false },
+        { title: 'Verminderd gezichtsvermogen', value: false },
+        { title: 'Moeite met instappen', value: false },
+      ],
+    }
+  },
+  computed: {
+    luggage: {
+      get() {
+        return {
+          title: 'Bagage',
+          options: luggageTypes,
+          selected: this.luggageOptions.map(o => luggageTypes[o]),
+        }
+      },
+      set(selection) {
+        this.luggageOptions = selection.selected.map(option => option.type)
+      },
+    },
+    luggageSelected: {
+      get() {
+        return this.luggageOptions.map(option => luggageTypes[option])
+      },
+      set(selection) {
+        this.luggageOptions = selection.map(x => x.type)
+      },
+    },
+  },
+  methods: {
+    saveSearchOptions() {
+      console.log('TODO')
+    },
+    onOptionChange() {
+      console.log('TODO')
+    },
+  },
+}
+</script>
+
+<style scoped lang="scss">
+.options {
+  border: 1px solid gray;
+  border-radius: 10px;
+  padding-bottom: 0;
+  padding-top: 0;
+
+  span {
+    // TODO: Find out what class defines the for the expansion panel.
+    font-size: 15px;
+  }
+}
+.switch-overwrite {
+  margin-top: 0;
+}
+</style>
