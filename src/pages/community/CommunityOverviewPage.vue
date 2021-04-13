@@ -33,6 +33,7 @@
           class="mx-auto"
           icon="fa-bullseye"
           naam="Doelen"
+          :disabled="!creditsEnabled"
           forward="charityOverviewPage"
         ></community-button>
       </v-col>
@@ -44,13 +45,21 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import CommunityButton from '@/components/community/CommunityButton.vue'
 import constants from '@/constants/constants'
+import config from '@/config/config'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
+
+const CREDITS_ENABLED = config.CREDITS_ENABLED
 
 export default {
   components: {
     CommunityButton: CommunityButton,
     ContentPane,
+  },
+  data() {
+    return {
+      creditsEnabled: CREDITS_ENABLED || false,
+    }
   },
   computed: {
     shoutoutCount() {
