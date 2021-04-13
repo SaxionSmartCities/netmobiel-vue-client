@@ -66,20 +66,6 @@ function setRidePlanOptions(state: ProfileState, payload: RidePlanOptions) {
   state.user.profile.ridePlanOptions = payload
 }
 
-function addRidePlanOptionsCar(state: ProfileState, payload: any) {
-  let isPresent = false
-  const currentCars = state.user.profile.ridePlanOptions.cars
-  for (let i = 0; i < currentCars.length; i++) {
-    if (payload.licensePlate === currentCars[i].licensePlate) {
-      isPresent = true
-      break
-    }
-  }
-  if (!isPresent) {
-    state.user.profile.ridePlanOptions.cars.push(payload)
-  }
-}
-
 function setPrivacySecurityValue(state: ProfileState, payload: any) {
   state.user.privacySecurity.filter(function(item) {
     if (item.name === payload.key) {
@@ -144,7 +130,6 @@ export const buildMutations = (
     setTripOptionsValue: psBuilder.commit(setTripOptionsValue),
     setReviewOptionsValue: psBuilder.commit(setReviewOptionsValue),
     setRidePlanOptions: psBuilder.commit(setRidePlanOptions),
-    addRidePlanOptionsCar: psBuilder.commit(addRidePlanOptionsCar),
     setPrivacySecurityValue: psBuilder.commit(setPrivacySecurityValue),
     setCoronaCheck: psBuilder.commit(setCoronaCheck),
     setComplimentTypes: psBuilder.commit(setComplimentTypes),

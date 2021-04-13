@@ -109,12 +109,16 @@ export default {
     },
     removeCar(car) {
       this.dialog = false
+      // Update profile if the car that has been removed the default car is.
+      // Set the slected car id to -1 if the user has no other cars configured.
+      // HACK: selectedCarId is a string (in the backend) but we expect a number.
+      if (this.selectedCarId == car.id) {
+        const alternative =
+          this.availableCars.length > 1 ? this.availableCars[0] : { id: -1 }
+        this.selectAlternativeCar(alternative)
+      }
       // Remove car in the backend.
       csStore.actions.removeCar(car)
-      // Update profile if the car that has been removed the default car is.
-      if (this.selectedCarId === car.id) {
-        this.selectAlternativeCar(this.availableCars[0])
-      }
     },
   },
 }
