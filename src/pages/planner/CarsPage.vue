@@ -113,7 +113,9 @@ export default {
       csStore.actions.removeCar(car)
       // Update profile if the car that has been removed the default car is.
       if (this.selectedCarId === car.id) {
-        this.selectAlternativeCar(this.availableCars[0])
+        alternative =
+          this.availableCars.length > 0 ? this.availableCars[0] : { id: -1 }
+        this.selectAlternativeCar(alternative)
       }
     },
   },
