@@ -123,7 +123,7 @@ export default {
           profile.userRole === constants.PROFILE_ROLE_BOTH) &&
         !profile.ridePlanOptions
       ) {
-        profile.searchPreferences = constants.DEFAULT_PROFILE_RIDE_PREFERENCES
+        profile.ridePlanOptions = constants.DEFAULT_PROFILE_RIDE_PREFERENCES
       }
       psStore.actions.updateProfile(profile)
     }),

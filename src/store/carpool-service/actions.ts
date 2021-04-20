@@ -126,14 +126,11 @@ function submitRide(context: ActionContext, payload: any) {
     request.departureTime = formattedDate
   }
 
-  const axiosConfig = {
-    method: 'POST',
-    url: `${RIDESHARE_BASE_URL}/rides`,
-    data: request,
-    headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
-  }
-
-  axios(axiosConfig)
+  const URL = `${RIDESHARE_BASE_URL}/rides`
+  axios
+    .post(URL, request, {
+      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+    })
     .then(function(res) {
       if (res.status == 201) {
         uiStore.actions.queueInfoNotification('Uw rit is opgeslagen.')

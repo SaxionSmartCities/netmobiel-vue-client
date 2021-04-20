@@ -14,16 +14,12 @@ function submitRegistrationRequest(
   context: ActionContext,
   payload: RegistrationRequest
 ): void {
+  const URL = `${PROFILE_BASE_URL}/profiles`
   mutations.storeRegistrationRequest(payload)
-
-  const axiosConfig = {
-    method: 'POST',
-    url: `${PROFILE_BASE_URL}/profiles`,
-    data: context.state.registrationRequest,
-    headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
-  }
-
-  axios(axiosConfig)
+  axios
+    .post(URL, payload, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+    })
     .then(function() {
       mutations.setRegistrationStatus({ success: true, message: '' })
     })

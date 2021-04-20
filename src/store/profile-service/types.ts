@@ -41,20 +41,8 @@ export class ProfileState {
       phoneNumber: null,
       userRole: [],
       address: null,
-      searchPreferences: {
-        numPassengers: 0,
-        allowTransfer: true,
-        maximumTransferTime: 0,
-        luggageOptions: [],
-        allowedTravelModes: [],
-      },
-      ridePlanOptions: {
-        numPassengers: 0,
-        maxMinutesDetour: 10,
-        luggageOptions: ['HANDLUGGAGE', 'GROCERIES'],
-        selectedCarId: -1,
-        cars: [],
-      },
+      searchPreferences: null,
+      ridePlanOptions: null,
       notificationOptions: {
         tripConfirmations: true,
         tripUpdates: true,
@@ -155,8 +143,8 @@ export interface Profile extends PublicProfile {
   fcmToken: string | null
   image: string | null
   phoneNumber: string | null
-  searchPreferences: SearchPreferences
-  ridePlanOptions: RidePlanOptions
+  searchPreferences: SearchPreferences | null
+  ridePlanOptions: RidePlanOptions | null
   notificationOptions: NotificationOptions
   favoriteLocations: any[]
   userRole: string[] | []

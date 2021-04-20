@@ -40,6 +40,7 @@ Vue.use(VueKeyCloak, {
   },
   init: {
     onLoad: 'check-sso',
+    enableLogging: true,
   },
   onReady: function() {
     tokenInterceptor()
