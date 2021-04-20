@@ -9,25 +9,23 @@ import * as uiStore from '@/store/ui'
 
 type ActionContext = BareActionContext<GeoCoderState, RootState>
 
-const { PLANNER_BASE_URL, GRAVITEE_PLANNER_SERVICE_API_KEY } = config
+const { GEOCODE_BASE_URL, GRAVITEE_GEOCODE_SERVICE_API_KEY } = config
 const { generateHeaders } = util
 
 async function fetchGeocoderSuggestions(
   context: ActionContext,
-  { query, area, hlStart, hlEnd }: any
+  { query, area }: any
 ) {
   try {
-    const resp = await axios.get(`${PLANNER_BASE_URL}/geocode-suggestions`, {
+    const resp = await axios.get(`${GEOCODE_BASE_URL}/suggestions`, {
       params: {
         query,
+        details: true,
         radius: 150000,
         // Default geographic center of the Netherlands (near Lunteren)
         center: area || '52.063045,5.349972',
-        result_types: 'place,address',
-        hls: hlStart,
-        hle: hlEnd,
       },
-      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_GEOCODE_SERVICE_API_KEY),
     })
     mutations.setGeocoderSuggestions(resp.data.data)
   } catch (problem) {
