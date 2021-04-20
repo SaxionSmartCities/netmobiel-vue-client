@@ -29,7 +29,19 @@
       class="d-flex flex-column align-self-start"
       dense
     >
-      <v-col><h4 class="netmobiel">Mijn favorieten</h4></v-col>
+      <v-col v-if="homeAddress.length > 0">
+        <h4 class="netmobiel">Thuis</h4>
+      </v-col>
+      <locations-list
+        :locations="homeAddress"
+        :show-highlighted-text="false"
+        :show-favorite-icon="false"
+        @onItemClicked="completeSearch($event)"
+        @onUnFavoriteClicked="removeFavorite"
+      />
+      <v-col class="mt-2">
+        <h4 class="netmobiel">Mijn favorieten</h4>
+      </v-col>
       <locations-list
         :locations="favorites"
         :show-highlighted-text="false"
@@ -81,16 +93,36 @@ export default {
     }
   },
   computed: {
+    homeAddress() {
+      const address = psStore.getters.getProfile.address
+      if (address) {
+        return [
+          {
+            ...address,
+            label: 'Thuis',
+            address: {
+              label: `${address.street}, ${address.postalCode} ${address.locality}`,
+            },
+          },
+        ]
+      }
+      return []
+    },
     favorites() {
-      return psStore.getters.getProfile.favoriteLocations
+      return psStore.getters.getProfile.favoriteLocations.map(p => {
+        let mapped = { ...p }
+        mapped.address = { label: `${p.street}, ${p.postalCode} ${p.locality}` }
+        mapped.favorite = true
+        return mapped
+      })
     },
     suggestions() {
       let suggestions = gsStore.getters.getGeocoderSuggestions
-      const favorited = suggestions.map(suggestion => ({
+      // Mark suggestion that have already been favorited.
+      return suggestions.map(suggestion => ({
         ...suggestion,
         favorite: !!this.favorites.find(fav => fav.id === suggestion.id),
       }))
-      return favorited
     },
     localEditSearchCriteria() {
       return this.editSearchCriteria === 'true'
@@ -108,6 +140,9 @@ export default {
   },
   created() {
     uiStore.mutations.showBackButton()
+  },
+  mounted() {
+    psStore.actions.fetchFavoriteLocations()
   },
   methods: {
     parseHighlightedLabel(suggestion) {
@@ -157,29 +192,36 @@ export default {
       this.selectedLocation = suggestion
     },
     addFavorite(favorite) {
-      console.log(`Add favo: ${favorite}`)
-      // let profile = psStore.getters.getProfile
+      let place = { ...favorite.address }
+      place.location = {
+        coordinates: [favorite.position.longitude, favorite.position.latitude],
+        type: 'Point',
+      }
+      place.ref = favorite.id
+      // Overwrite the address label with the label provide by the user.
+      place.label = favorite.label
+
+      const profile = psStore.getters.getProfile
       // let duplicate = profile.favoriteLocations.find(
       //   x => x.label === favorite.label
       // )
+      // TODO: Check for duplicates
       // if (duplicate) {
       //   //TODO: Check why this does not fire.
       //   uiStore.actions.queueInfoNotification(
       //     'Favoriet is al opgeslagen aan uw profiel.'
       //   )
       // } else {
-      //   let favoriteLocations = profile.favoriteLocations.slice(0)
-      //   favoriteLocations.push(favorite)
-      //   psStore.actions.storeFavoriteLocations(favoriteLocations)
-      // }
-      // this.selectedLocation = undefined
+      const profileId = profile.id
+      psStore.actions.storeFavoriteLocation({ profileId, place })
     },
     removeFavorite(favorite) {
       let profile = psStore.getters.getProfile
       let favoriteLocations = profile.favoriteLocations.filter(
         x => x.id !== favorite.id
       )
-      psStore.actions.storeFavoriteLocations(favoriteLocations)
+      // TODO: Use a differen action here.
+      // psStore.actions.storeFavoriteLocation(favoriteLocations)
     },
   },
 }

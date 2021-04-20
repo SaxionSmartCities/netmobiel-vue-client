@@ -30,24 +30,24 @@
               }}</span>
             </v-col>
             <v-col v-else>
-              {{ location.title }}
+              {{ location.title || location.label }}
             </v-col>
           </v-row>
           <v-row no-gutters>
-            <v-col class="subtitle-2 font-weight-light">
+            <v-col v-if="location.address" class="subtitle-2 font-weight-light">
               {{ location.address.label }}
             </v-col>
           </v-row>
         </v-col>
         <v-col
-          v-if="!location.favorite"
+          v-if="!location.favorite && showFavoriteIcon"
           class="shrink pa-2"
           @click="onFavoriteClicked(location, $event)"
         >
           <v-icon>favorite_border</v-icon>
         </v-col>
         <v-col
-          v-else
+          v-if="location.favorite && showFavoriteIcon"
           class="shrink pa-2"
           @click="onFavoriteClicked(location, $event)"
         >
@@ -68,6 +68,7 @@ export default {
   props: {
     locations: { type: Array, required: true },
     showHighlightedText: { type: Boolean, default: true },
+    showFavoriteIcon: { type: Boolean, default: true },
   },
   data() {
     return {
