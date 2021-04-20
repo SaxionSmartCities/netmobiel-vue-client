@@ -47,7 +47,7 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-import LocationsList from '@/components/search/LocationsList.vue'
+import LocationsList from '@/components/lists/LocationsList.vue'
 import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
 // map category to Material icon name (needs more work...)
 // show at most 8 suitable suggestions
@@ -86,19 +86,11 @@ export default {
     },
     suggestions() {
       let suggestions = gsStore.getters.getGeocoderSuggestions
-      console.log(suggestions)
-      return suggestions
-      // const highlighted = suggestions.filter(
-      //   suggestion =>
-      //     suggestion.highlightedTitle.indexOf(highlightMarker) > 0 &&
-      //     !skipCategories.has(suggestion.category)
-      // )
-      // highlighted.length = Math.min(highlighted.length, maxSuggestions)
-      // const favorited = highlighted.map(suggestion => ({
-      //   ...suggestion,
-      //   favorite: !!this.favorites.find(fav => fav.id === suggestion.id),
-      // }))
-      // return favorited
+      const favorited = suggestions.map(suggestion => ({
+        ...suggestion,
+        favorite: !!this.favorites.find(fav => fav.id === suggestion.id),
+      }))
+      return favorited
     },
     localEditSearchCriteria() {
       return this.editSearchCriteria === 'true'
