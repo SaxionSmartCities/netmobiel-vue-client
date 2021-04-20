@@ -49,7 +49,7 @@
         <v-col
           v-if="location.favorite && showFavoriteIcon"
           class="shrink pa-2"
-          @click="onFavoriteClicked(location, $event)"
+          @click="onUnFavoriteClicked(location, $event)"
         >
           <v-icon>favorite</v-icon>
         </v-col>
@@ -69,11 +69,11 @@ export default {
     locations: { type: Array, required: true },
     showHighlightedText: { type: Boolean, default: true },
     showFavoriteIcon: { type: Boolean, default: true },
+    emptyListLabel: { type: String, required: true },
   },
   data() {
     return {
       selectedListItem: null,
-      emptyListLabel: 'Geen gevonden locatiesop dit moment',
     }
   },
   methods: {

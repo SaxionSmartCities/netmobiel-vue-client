@@ -200,6 +200,9 @@ function fetchFavoriteLocations(context: ActionContext) {
   const delegatorId = context.state.user.delegatorId
   const profileId = context.state.user.profile.id
   const URL = `${PROFILE_BASE_URL}/profiles/${profileId}/places`
+  if (profileId === null) {
+    return
+  }
   axios
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
@@ -237,6 +240,28 @@ function storeFavoriteLocation(
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(`Fout bij opslaan van favorieten`)
+    })
+}
+
+function deleteFavoriteLocation(
+  context: ActionContext,
+  { profileId, placeId }: any
+) {
+  const URL = `${PROFILE_BASE_URL}/profiles/${profileId}/places/${placeId}`
+  return axios
+    .delete(URL, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+    })
+    .then(response => {
+      fetchFavoriteLocations(context)
+      uiStore.actions.queueInfoNotification(`Favoriet verwijderd`)
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij het verwijderen van favoriet`
+      )
     })
 }
 
@@ -415,6 +440,7 @@ export const buildActions = (
     addUserReview: psBuilder.dispatch(addUserReview),
     fetchFavoriteLocations: psBuilder.dispatch(fetchFavoriteLocations),
     storeFavoriteLocation: psBuilder.dispatch(storeFavoriteLocation),
+    deleteFavoriteLocation: psBuilder.dispatch(deleteFavoriteLocation),
     storeSearchPreferences: psBuilder.dispatch(storeSearchPreferences),
     storeRidePreferences: psBuilder.dispatch(storeRidePreferences),
     storeFcmToken: psBuilder.dispatch(storeFcmToken),

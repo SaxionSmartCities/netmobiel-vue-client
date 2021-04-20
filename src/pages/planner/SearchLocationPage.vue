@@ -18,6 +18,7 @@
     <v-row v-if="showSuggestionsList" class="align-self-start">
       <locations-list
         :locations="suggestions"
+        empty-list-label="Geen resultaten gevonden"
         show-highlighted-text
         @onItemClicked="completeSearch"
         @onFavoriteClicked="promptFavorite"
@@ -25,7 +26,7 @@
       />
     </v-row>
     <v-row
-      v-if="favorites.length > 0 && !showSuggestionsList"
+      v-if="!showSuggestionsList"
       class="d-flex flex-column align-self-start"
       dense
     >
@@ -36,6 +37,7 @@
         :locations="homeAddress"
         :show-highlighted-text="false"
         :show-favorite-icon="false"
+        empty-list-label="Geen thuis adres"
         @onItemClicked="completeSearch($event)"
         @onUnFavoriteClicked="removeFavorite"
       />
@@ -45,6 +47,7 @@
       <locations-list
         :locations="favorites"
         :show-highlighted-text="false"
+        empty-list-label="Geen favorieten opgeslagen"
         @onItemClicked="completeSearch($event)"
         @onUnFavoriteClicked="removeFavorite"
       />
@@ -216,12 +219,9 @@ export default {
       psStore.actions.storeFavoriteLocation({ profileId, place })
     },
     removeFavorite(favorite) {
-      let profile = psStore.getters.getProfile
-      let favoriteLocations = profile.favoriteLocations.filter(
-        x => x.id !== favorite.id
-      )
-      // TODO: Use a differen action here.
-      // psStore.actions.storeFavoriteLocation(favoriteLocations)
+      let profileId = psStore.getters.getProfile.id
+      const placeId = favorite.id
+      psStore.actions.deleteFavoriteLocation({ profileId, placeId })
     },
   },
 }
