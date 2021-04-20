@@ -202,7 +202,7 @@ export default {
       }
       place.ref = favorite.id
       // Overwrite the address label with the label provide by the user.
-      place.label = favorite.label
+      place.label = favorite.title
 
       const profile = psStore.getters.getProfile
       // let duplicate = profile.favoriteLocations.find(

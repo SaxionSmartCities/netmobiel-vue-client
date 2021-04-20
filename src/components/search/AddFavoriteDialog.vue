@@ -4,20 +4,25 @@
       <v-card-title>Favoriet toevoegen</v-card-title>
       <v-card-text>
         <v-row>
-          <v-col class="col-2">
-            <v-icon>{{ iconicCategory(location.category) }}</v-icon>
+          <v-col class="col-2 favo-icon">
+            <v-icon>
+              {{ iconicCategory(location.category) }}
+            </v-icon>
           </v-col>
           <v-col>
             <v-row>
-              <em>{{ location.title }}</em>
+              <v-text-field
+                v-model="location.title"
+                label="Naam favoriet"
+                :rules="rules"
+              />
             </v-row>
-            <v-row>{{ location.vicinity }}</v-row>
           </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <v-text-field v-model="favoriteLabel" label="Naam favoriet">
-            </v-text-field>
+            <h4>Locatie</h4>
+            <em>{{ location.address.label }}</em>
           </v-col>
         </v-row>
         <v-card-actions>
@@ -39,7 +44,7 @@
                 block
                 depressed
                 color="button"
-                :disabled="!favoriteLabel"
+                :disabled="location.title.length < 3"
                 @click="
                   makeFavorite()
                   favoriteModal = false
@@ -65,6 +70,7 @@ export default {
   },
   data() {
     return {
+      rules: [v => v.length >= 3 || 'Minimaal 3 karakters'],
       favoriteLabel: undefined,
       favoriteModal: true,
     }
@@ -90,4 +96,8 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.favo-icon {
+  padding-top: 20px;
+}
+</style>
