@@ -17,7 +17,7 @@
           <delegation-options v-model="registrationRequest" />
         </v-col>
         <v-col v-if="currStep === 3">
-          TODO
+          <delegation-comms-settings v-model="registrationRequest" />
         </v-col>
       </v-row>
       <v-row>
@@ -39,12 +39,14 @@
 <script>
 import NewDelegation from '@/components/onboarding/NewDelegation'
 import DelegationOptions from '@/components/onboarding/NewDelegatorOptions'
+import DelegationCommsSettings from '@/components/onboarding/DelegationCommsSettings'
 
 export default {
   name: 'OnboardingNavigation',
   components: {
     NewDelegation,
     DelegationOptions,
+    DelegationCommsSettings,
   },
   props: {
     title: { type: String, required: true, default: '' },
