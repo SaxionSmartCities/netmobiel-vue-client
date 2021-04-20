@@ -56,7 +56,6 @@ import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 import * as gsStore from '@/store/geocoder-service'
-const highlightMarker = 'class="search-hit"'
 const skipCategories = new Set(['intersection'])
 const maxSuggestions = 8
 
@@ -87,17 +86,19 @@ export default {
     },
     suggestions() {
       let suggestions = gsStore.getters.getGeocoderSuggestions
-      const highlighted = suggestions.filter(
-        suggestion =>
-          suggestion.highlightedTitle.indexOf(highlightMarker) > 0 &&
-          !skipCategories.has(suggestion.category)
-      )
-      highlighted.length = Math.min(highlighted.length, maxSuggestions)
-      const favorited = highlighted.map(suggestion => ({
-        ...suggestion,
-        favorite: !!this.favorites.find(fav => fav.id === suggestion.id),
-      }))
-      return favorited
+      console.log(suggestions)
+      return suggestions
+      // const highlighted = suggestions.filter(
+      //   suggestion =>
+      //     suggestion.highlightedTitle.indexOf(highlightMarker) > 0 &&
+      //     !skipCategories.has(suggestion.category)
+      // )
+      // highlighted.length = Math.min(highlighted.length, maxSuggestions)
+      // const favorited = highlighted.map(suggestion => ({
+      //   ...suggestion,
+      //   favorite: !!this.favorites.find(fav => fav.id === suggestion.id),
+      // }))
+      // return favorited
     },
     localEditSearchCriteria() {
       return this.editSearchCriteria === 'true'
@@ -108,11 +109,7 @@ export default {
       if (val != null) {
         const show = (this.showSuggestionsList = val.length > 3)
         if (show) {
-          gsStore.actions.fetchGeocoderSuggestions({
-            query: val,
-            hlStart: `<span ${highlightMarker}>`,
-            hlEnd: '</span>',
-          })
+          gsStore.actions.fetchGeocoderSuggestions({ query: val })
         }
       }
     }, 500),
@@ -125,27 +122,28 @@ export default {
       return `${suggestion.highlightedTitle} ${suggestion.highlightedVicinity}`
     },
     completeSearch(suggestion) {
-      if (this.localEditSearchCriteria) {
-        const vicinity = suggestion?.vicinity.replaceAll('<br/>', ' ')
-        const fieldValue = {
-          label: `${suggestion.title} ${vicinity || ''}`,
-          latitude: suggestion.position[0],
-          longitude: suggestion.position[1],
-        }
-        isStore.mutations.setSearchCriteriaField({
-          field: this.$route.params.field,
-          value: fieldValue,
-        })
-        this.sendPlanningRequest()
-      } else {
-        gsStore.mutations.setGeoLocationPicked({
-          field: this.$route.params.field,
-          suggestion: {
-            ...suggestion,
-            vicinity: suggestion.vicinity.replaceAll('<br/>', ' '),
-          },
-        })
-      }
+      console.log(`TODO: ${suggestion}`)
+      // if (this.localEditSearchCriteria) {
+      //   const vicinity = suggestion?.vicinity.replaceAll('<br/>', ' ')
+      //   const fieldValue = {
+      //     label: `${suggestion.title} ${vicinity || ''}`,
+      //     latitude: suggestion.position[0],
+      //     longitude: suggestion.position[1],
+      //   }
+      //   isStore.mutations.setSearchCriteriaField({
+      //     field: this.$route.params.field,
+      //     value: fieldValue,
+      //   })
+      //   this.sendPlanningRequest()
+      // } else {
+      //   gsStore.mutations.setGeoLocationPicked({
+      //     field: this.$route.params.field,
+      //     suggestion: {
+      //       ...suggestion,
+      //       vicinity: suggestion.vicinity.replaceAll('<br/>', ' '),
+      //     },
+      //   })
+      // }
       this.$router.go(-1)
     },
     sendPlanningRequest() {
@@ -167,21 +165,22 @@ export default {
       this.selectedLocation = suggestion
     },
     addFavorite(favorite) {
-      let profile = psStore.getters.getProfile
-      let duplicate = profile.favoriteLocations.find(
-        x => x.label === favorite.label
-      )
-      if (duplicate) {
-        //TODO: Check why this does not fire.
-        uiStore.actions.queueInfoNotification(
-          'Favoriet is al opgeslagen aan uw profiel.'
-        )
-      } else {
-        let favoriteLocations = profile.favoriteLocations.slice(0)
-        favoriteLocations.push(favorite)
-        psStore.actions.storeFavoriteLocations(favoriteLocations)
-      }
-      this.selectedLocation = undefined
+      console.log(`Add favo: ${favorite}`)
+      // let profile = psStore.getters.getProfile
+      // let duplicate = profile.favoriteLocations.find(
+      //   x => x.label === favorite.label
+      // )
+      // if (duplicate) {
+      //   //TODO: Check why this does not fire.
+      //   uiStore.actions.queueInfoNotification(
+      //     'Favoriet is al opgeslagen aan uw profiel.'
+      //   )
+      // } else {
+      //   let favoriteLocations = profile.favoriteLocations.slice(0)
+      //   favoriteLocations.push(favorite)
+      //   psStore.actions.storeFavoriteLocations(favoriteLocations)
+      // }
+      // this.selectedLocation = undefined
     },
     removeFavorite(favorite) {
       let profile = psStore.getters.getProfile
@@ -194,9 +193,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.search-hit {
-  font-weight: bold;
-  font-size: 110%;
-}
-</style>
+<style lang="scss"></style>
