@@ -196,12 +196,48 @@ function addUserReview(
     })
 }
 
-function storeFavoriteLocations(context: ActionContext, payload: any) {
-  let profile = {
-    ...context.state.user.profile,
-    favoriteLocations: payload,
-  }
-  updateProfile(context, profile)
+function fetchFavoriteLocations(context: ActionContext) {
+  const delegatorId = context.state.user.delegatorId
+  const profileId = context.state.user.profile.id
+  const URL = `${PROFILE_BASE_URL}/profiles/${profileId}/places`
+  axios
+    .get(URL, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
+    })
+    .then(response => {
+      if (response.status == 200) {
+        console.log(response.data)
+        mutations.setFavoriteLocations(response.data.data)
+      }
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij ophalen van de favorieten`
+      )
+    })
+}
+
+function storeFavoriteLocation(
+  context: ActionContext,
+  { profileId, place }: any
+) {
+  const URL = `${PROFILE_BASE_URL}/profiles/${profileId}/places`
+  axios
+    .post(URL, place, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+    })
+    .then(response => {
+      if (response.status === 201) {
+        uiStore.actions.queueInfoNotification(`Je favoriet is opgeslagen!`)
+      }
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(`Fout bij opslaan van favorieten`)
+    })
 }
 
 function storeSearchPreferences(context: ActionContext, payload: any) {
@@ -377,7 +413,8 @@ export const buildActions = (
     addUserCompliment: psBuilder.dispatch(addUserCompliment),
     fetchUserReviews: psBuilder.dispatch(fetchUserReviews),
     addUserReview: psBuilder.dispatch(addUserReview),
-    storeFavoriteLocations: psBuilder.dispatch(storeFavoriteLocations),
+    fetchFavoriteLocations: psBuilder.dispatch(fetchFavoriteLocations),
+    storeFavoriteLocation: psBuilder.dispatch(storeFavoriteLocation),
     storeSearchPreferences: psBuilder.dispatch(storeSearchPreferences),
     storeRidePreferences: psBuilder.dispatch(storeRidePreferences),
     storeFcmToken: psBuilder.dispatch(storeFcmToken),
