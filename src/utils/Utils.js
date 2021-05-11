@@ -23,8 +23,8 @@ module.exports = {
       type: 'Point',
     }
     place.ref = suggestion.id
-    // Overwrite the address label with the label provide by the user.
-    place.label = suggestion.title
+    place.title = suggestion.title
+    place.titleHighlights = suggestion.titleHighlights
     return place
   },
 }

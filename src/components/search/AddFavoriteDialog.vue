@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="favoriteModal" persistent>
+  <v-dialog v-model="show" persistent>
     <v-card>
       <v-card-title>Favoriet toevoegen</v-card-title>
       <v-card-text>
@@ -20,9 +20,9 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col>
+          <v-col class="pt-0">
             <h4>Locatie</h4>
-            <em>{{ location.address.label }}</em>
+            <em>{{ locationLabel }}</em>
           </v-col>
         </v-row>
         <v-card-actions>
@@ -33,7 +33,7 @@
                 block
                 outlined
                 color="primary"
-                @click="favoriteModal = false"
+                @click="onCancelFavorite()"
               >
                 Annuleer
               </v-btn>
@@ -45,10 +45,7 @@
                 depressed
                 color="button"
                 :disabled="location.title.length < 3"
-                @click="
-                  makeFavorite()
-                  favoriteModal = false
-                "
+                @click="onSaveFavorite()"
               >
                 Opslaan
               </v-btn>
@@ -67,22 +64,35 @@ export default {
   name: 'AddFavoriteDialog',
   props: {
     location: { type: Object, required: true },
+    show: { type: Boolean, default: true },
   },
   data() {
     return {
       rules: [v => v.length >= 3 || 'Minimaal 3 karakters'],
-      favoriteLabel: undefined,
-      favoriteModal: true,
     }
   },
-  mounted() {
-    this.favoriteModal = location !== undefined
+  computed: {
+    locationLabel() {
+      const { street, postalCode, locality } = this.location
+      console.log(`Street: ${street}`)
+      if (postalCode != undefined) {
+        if (street != undefined) {
+          return `${street}, ${postalCode} ${locality}`
+        } else {
+          return `${postalCode} ${locality}`
+        }
+      }
+      return `${locality}`
+    },
   },
   methods: {
-    makeFavorite() {
+    onCancelFavorite() {
+      this.$emit('onCancelFavorite')
+    },
+    onSaveFavorite() {
       this.$emit('onAddFavorite', {
         ...this.location,
-        label: this.favoriteLabel,
+        label: this.location.title,
         favorite: true,
       })
     },

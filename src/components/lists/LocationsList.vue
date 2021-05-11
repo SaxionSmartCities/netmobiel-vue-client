@@ -4,11 +4,11 @@
       <v-row no-gutters>
         <v-col
           class="shrink category align-center pa-2 ml-1"
-          @click="$emit('onItemClicked', location)"
+          @click="onItemClicked(location)"
         >
           <v-icon>{{ iconicCategory(location.category) }}</v-icon>
         </v-col>
-        <v-col class="grow px-2" @click="$emit('onItemClicked', location)">
+        <v-col class="grow px-2" @click="onItemClicked(location)">
           <v-row no-gutters>
             <v-col
               v-if="showHighlightedText && location.titleHighlights.length > 0"
@@ -34,8 +34,8 @@
             </v-col>
           </v-row>
           <v-row no-gutters>
-            <v-col v-if="location.address" class="subtitle-2 font-weight-light">
-              {{ location.address.label }}
+            <v-col class="subtitle-2 font-weight-light">
+              {{ location.label }}
             </v-col>
           </v-row>
         </v-col>
@@ -82,6 +82,9 @@ export default {
         constants.searchSuggestionCategoryIcons[category] ||
         constants.searchSuggestionDefaultIcon
       )
+    },
+    onItemClicked(location) {
+      this.$emit('onItemClicked', location)
     },
     onFavoriteClicked(location, event) {
       event.stopPropagation()

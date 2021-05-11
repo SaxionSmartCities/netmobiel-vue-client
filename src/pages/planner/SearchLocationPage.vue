@@ -54,7 +54,9 @@
     </v-row>
     <add-favorite-dialog
       v-if="selectedLocation"
+      :show="selectedLocation != null"
       :location="selectedLocation"
+      @onCancelFavorite="cancelFavorite"
       @onAddFavorite="addFavorite"
     />
   </content-pane>
@@ -93,7 +95,7 @@ export default {
     return {
       searchInput: '',
       showSuggestionsList: false,
-      selectedLocation: undefined,
+      selectedLocation: null,
     }
   },
   computed: {
@@ -103,10 +105,8 @@ export default {
         return [
           {
             ...address,
-            label: 'Thuis',
-            address: {
-              label: `${address.street}, ${address.postalCode} ${address.locality}`,
-            },
+            title: 'Thuis',
+            label: `${address.street}, ${address.postalCode} ${address.locality}`,
           },
         ]
       }
@@ -115,7 +115,8 @@ export default {
     favorites() {
       return psStore.getters.getProfile.favoriteLocations.map(p => {
         let mapped = { ...p }
-        mapped.address = { label: `${p.street}, ${p.postalCode} ${p.locality}` }
+        mapped.title = p.label
+        mapped.label = `${p.street}, ${p.postalCode} ${p.locality}`
         mapped.favorite = true
         return mapped
       })
@@ -124,8 +125,8 @@ export default {
       let suggestions = gsStore.getters.getGeocoderSuggestions
       // Mark suggestion that have already been favorited.
       return suggestions.map(suggestion => ({
-        ...suggestion,
-        favorite: !!this.favorites.find(fav => fav.id === suggestion.id),
+        ...geoSuggestionToPlace(suggestion),
+        favorite: !!this.favorites.find(fav => fav.ref === suggestion.id),
       }))
     },
     localEditSearchCriteria() {
@@ -152,29 +153,25 @@ export default {
     parseHighlightedLabel(suggestion) {
       return `${suggestion.highlightedTitle} ${suggestion.highlightedVicinity}`
     },
-    completeSearch(suggestion) {
-      console.log(suggestion)
-      // if (this.localEditSearchCriteria) {
-      //   const vicinity = suggestion?.vicinity.replaceAll('<br/>', ' ')
-      //   const fieldValue = {
-      //     label: `${suggestion.title} ${vicinity || ''}`,
-      //     latitude: suggestion.position[0],
-      //     longitude: suggestion.position[1],
-      //   }
-      //   isStore.mutations.setSearchCriteriaField({
-      //     field: this.$route.params.field,
-      //     value: fieldValue,
-      //   })
-      //   this.sendPlanningRequest()
-      // } else {
-      //   gsStore.mutations.setGeoLocationPicked({
-      //     field: this.$route.params.field,
-      //     suggestion: {
-      //       ...suggestion,
-      //       vicinity: suggestion.vicinity.replaceAll('<br/>', ' '),
-      //     },
-      //   })
-      // }
+    completeSearch(place) {
+      gsStore.mutations.setGeoLocationPicked({
+        field: this.$route.params.field,
+        place: place,
+      })
+      // If we are editing our current search results then
+      // set the criteria accoordingly and do the search.
+      if (this.localEditSearchCriteria) {
+        const fieldValue = {
+          label: place.title,
+          latitude: place.location.coordinates[0],
+          longitude: place.location.coordinates[1],
+        }
+        isStore.mutations.setSearchCriteriaField({
+          field: this.$route.params.field,
+          value: fieldValue,
+        })
+        this.sendPlanningRequest()
+      }
       this.$router.go(-1)
     },
     sendPlanningRequest() {
@@ -195,10 +192,14 @@ export default {
     promptFavorite(suggestion) {
       this.selectedLocation = suggestion
     },
-    addFavorite(favorite) {
-      const place = geoSuggestionToPlace(favorite)
+    cancelFavorite() {
+      this.selectedLocation = null
+    },
+    addFavorite(place) {
+      // Hide dialog
+      this.selectedLocation = null
       // Check for duplicates
-      let duplicate = this.favorites.find(f => f.ref === favorite.id)
+      let duplicate = this.favorites.find(f => f.ref === place.ref)
       if (duplicate) {
         uiStore.actions.queueErrorNotification(
           'Favoriet bestaat al in uw profiel.'
@@ -209,7 +210,7 @@ export default {
       }
     },
     removeFavorite(favorite) {
-      let profileId = psStore.getters.getProfile.id
+      const profileId = psStore.getters.getProfile.id
       const placeId = favorite.id
       psStore.actions.deleteFavoriteLocation({ profileId, placeId })
     },
