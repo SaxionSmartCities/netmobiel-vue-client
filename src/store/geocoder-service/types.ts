@@ -1,11 +1,13 @@
+import { Place } from '../profile-service/types'
+
 export class GeoCoderState {
   geocoder: GeoCoder = {
-    pickedLocations: {
-      from: { address: undefined, displayPosition: undefined },
-      to: { address: undefined, displayPosition: undefined },
-    },
-    preFilledTime: null,
     query: '',
+    pickedLocations: {
+      home: null,
+      from: null,
+      to: null,
+    },
     suggestions: [],
   }
 }
@@ -13,10 +15,10 @@ export class GeoCoderState {
 export interface GeoCoder {
   query: string
   pickedLocations: {
-    to: { address?: string; displayPosition?: string }
-    from: { address?: string; displayPosition?: string }
+    home: Place | null
+    from: Place | null
+    to: Place | null
   }
-  preFilledTime?: any
   suggestions: GeoCoderSuggestion[]
 }
 
