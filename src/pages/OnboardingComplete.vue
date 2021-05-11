@@ -14,7 +14,7 @@
     <v-row>
       <v-col>
         <v-btn block rounded depressed class="my-3 button" to="/modeSelection">
-          Plan een reis
+          Plan een rit
         </v-btn>
         <v-btn block rounded depressed outlined to="/profile">
           Bekijk profiel
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import constants from '@/constants/update-messages.js'
+import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
 
 export default {

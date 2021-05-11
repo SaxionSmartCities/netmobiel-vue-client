@@ -23,9 +23,9 @@
       <v-row class="mt-4">
         <v-col>
           <div>
-            <h3>Beoordeel jouw reis</h3>
+            <h3>Beoordeel jouw rit</h3>
             <span class="body-2">
-              Hoe heb jij deze reis ervaren? Geef jouw mening en laat
+              Hoe heb jij deze rit ervaren? Geef jouw mening en laat
               {{ itinerary.legs[0].driverName }} weten wat jij er van vond.
             </span>
             <div class="mt-4">
@@ -78,7 +78,7 @@
             :disabled="compliments.length === 0"
             @click="rateTrip()"
           >
-            {{ showChips ? 'Volgende' : 'Beoordeel deze reis' }}
+            {{ showChips ? 'Volgende' : 'Beoordeel deze rit' }}
           </v-btn>
           <v-btn block outlined rounded color="primary" @click="back()">
             Terug

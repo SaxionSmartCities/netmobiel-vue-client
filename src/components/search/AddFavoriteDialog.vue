@@ -1,23 +1,28 @@
 <template>
-  <v-dialog v-model="favoriteModal" persistent>
+  <v-dialog v-model="show" persistent>
     <v-card>
       <v-card-title>Favoriet toevoegen</v-card-title>
       <v-card-text>
         <v-row>
-          <v-col class="col-2">
-            <v-icon>{{ iconicCategory(location.category) }}</v-icon>
+          <v-col class="col-2 favo-icon">
+            <v-icon>
+              {{ iconicCategory(location.category) }}
+            </v-icon>
           </v-col>
           <v-col>
             <v-row>
-              <em>{{ location.title }}</em>
+              <v-text-field
+                v-model="location.title"
+                label="Naam favoriet"
+                :rules="rules"
+              />
             </v-row>
-            <v-row>{{ location.vicinity }}</v-row>
           </v-col>
         </v-row>
         <v-row>
-          <v-col>
-            <v-text-field v-model="favoriteLabel" label="Naam favoriet">
-            </v-text-field>
+          <v-col class="pt-0">
+            <h4>Locatie</h4>
+            <em>{{ locationLabel }}</em>
           </v-col>
         </v-row>
         <v-card-actions>
@@ -28,7 +33,7 @@
                 block
                 outlined
                 color="primary"
-                @click="favoriteModal = false"
+                @click="onCancelFavorite()"
               >
                 Annuleer
               </v-btn>
@@ -39,11 +44,8 @@
                 block
                 depressed
                 color="button"
-                :disabled="!favoriteLabel"
-                @click="
-                  makeFavorite()
-                  favoriteModal = false
-                "
+                :disabled="location.title.length < 3"
+                @click="onSaveFavorite()"
               >
                 Opslaan
               </v-btn>
@@ -62,21 +64,34 @@ export default {
   name: 'AddFavoriteDialog',
   props: {
     location: { type: Object, required: true },
+    show: { type: Boolean, default: true },
   },
   data() {
     return {
-      favoriteLabel: undefined,
-      favoriteModal: true,
+      rules: [v => v.length >= 3 || 'Minimaal 3 karakters'],
     }
   },
-  mounted() {
-    this.favoriteModal = location !== undefined
+  computed: {
+    locationLabel() {
+      const { street, postalCode, locality } = this.location
+      if (postalCode != undefined) {
+        if (street != undefined) {
+          return `${street}, ${postalCode} ${locality}`
+        } else {
+          return `${postalCode} ${locality}`
+        }
+      }
+      return `${locality}`
+    },
   },
   methods: {
-    makeFavorite() {
+    onCancelFavorite() {
+      this.$emit('onCancelFavorite')
+    },
+    onSaveFavorite() {
       this.$emit('onAddFavorite', {
         ...this.location,
-        label: this.favoriteLabel,
+        label: this.location.title,
         favorite: true,
       })
     },
@@ -90,4 +105,8 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.favo-icon {
+  padding-top: 20px;
+}
+</style>

@@ -14,7 +14,7 @@
         </v-col>
       </v-row>
       <v-row dense class="d-flex flex-column">
-        <v-col><h1>Reis details</h1></v-col>
+        <v-col><h1>Ritdetails</h1></v-col>
         <v-col><v-divider /></v-col>
         <v-col class="py-0">
           <itinerary-summary-list :items="items" />
@@ -70,7 +70,7 @@ export default {
     items() {
       let result = []
       if (this.trip.itinerary) {
-        const { departureTime, duration } = this.trip.itinerary
+        const { departureTime, duration, legs } = this.trip.itinerary
         result.push({
           label: 'Datum',
           value: formatDateTimeLong(departureTime),
@@ -79,8 +79,23 @@ export default {
           const reisduur = `${Math.round(duration / 60)} minuten`
           result.push({ label: 'Reisduur', value: reisduur })
         }
-        //TODO: Determine the real cost.
-        result.push({ label: 'Kosten', value: '5 credits' })
+        if (legs?.[0].fareInCredits) {
+          result.push({
+            label: 'Kosten',
+            value: `${legs[0].fareInCredits} credits`,
+          })
+        }
+        const found = legs
+          ? legs.find(l => l.confirmed !== undefined)
+          : undefined
+        if (found) {
+          found.confirmed
+            ? result.push({ label: 'Bevestigd', value: 'Ik heb meegereden' })
+            : result.push({
+                label: 'Bevestigd',
+                value: 'Ik heb niet meegereden',
+              })
+        }
       }
       return result
     },

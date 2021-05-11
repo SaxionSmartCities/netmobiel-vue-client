@@ -37,7 +37,7 @@
                 class="d-flex grow align-self-center flex-column user-text"
                 @click="navTo('account')"
               >
-                <span class="shrink">{{ user.fullName }}</span>
+                <span class="shrink">{{ fullName }}</span>
                 <span class="caption text--gray">
                   {{ userAddress }}
                 </span>
@@ -50,17 +50,27 @@
               <v-col class="pa-0 shrink">
                 <div>
                   <v-btn
+                    v-if="creditsEnabled"
                     rounded
                     depressed
-                    color="button"
                     small
+                    class="long"
+                    color="button"
                     @click="navTo('credits')"
                   >
                     Beheer credits
                   </v-btn>
                   <div class="py-1"></div>
-                  <v-btn rounded depressed outlined color="primary" small>
-                    Bekijk reviews
+                  <v-btn
+                    rounded
+                    depressed
+                    outlined
+                    small
+                    class="long"
+                    color="primary"
+                    @click="navReview"
+                  >
+                    Bekijk beoordelingen
                   </v-btn>
                 </div>
               </v-col>
@@ -68,30 +78,37 @@
           </v-col>
         </v-row>
       </v-col>
+    </v-row>
+    <v-row dense>
       <v-col class="pa-0">
-        <v-layout column>
-          <v-flex
-            v-for="item in items"
-            :key="item.name"
-            @click="$router.push({ name: item.routeName })"
-          >
-            <v-divider></v-divider>
-            <v-row
-              align-content="center"
-              class="my-3 ml-0 mr-1"
-              :class="{ 'no-route': !item.routeName }"
-            >
-              <v-icon>{{ item.icon }}</v-icon>
-              <span class="pl-4 body-1 font-weight-light align-self-center">
-                {{ item.name }}
-              </span>
-              <v-spacer></v-spacer>
-              <v-icon>chevron_right</v-icon>
-            </v-row>
-          </v-flex>
-          <v-divider></v-divider>
-        </v-layout>
+        <v-divider></v-divider>
       </v-col>
+    </v-row>
+    <v-row
+      v-for="item in items"
+      :key="item.name"
+      class="pa-0 ml-0 mr-1"
+      align-content="center"
+      :class="{ 'no-route': !item.routeName }"
+      @click="!item.routeName || $router.push({ name: item.routeName })"
+    >
+      <v-col class="pa-0">
+        <v-row dense class="py-3">
+          <v-icon class="pl-1">{{ item.icon }}</v-icon>
+          <span class="pl-4 body-1 font-weight-light align-self-center">
+            {{ item.name }}
+          </span>
+          <v-spacer></v-spacer>
+          <v-icon>chevron_right</v-icon>
+        </v-row>
+        <v-row dense>
+          <v-col class="py-0">
+            <v-divider></v-divider>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col>
         <v-card outlined class="mt-2" @click="logOut">
           <v-row>
@@ -113,7 +130,9 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
 import { scaleImageDown } from '../../utils/image_scaling'
 import * as psStore from '@/store/profile-service'
-import * as uiStore from '@/store/ui'
+import config from '@/config/config'
+
+const CREDITS_ENABLED = config.CREDITS_ENABLED
 
 export default {
   components: {
@@ -125,24 +144,23 @@ export default {
       rating: 4,
       showUploadFile: false,
       isUploadingFile: false,
+      creditsEnabled: CREDITS_ENABLED || false,
       items: [
         {
           icon: 'settings',
           name: 'Instellingen',
           routeName: 'notificationOptions',
         },
-        { icon: 'help_outline', name: 'Veel gestelde vragen', routeName: '' },
+        { icon: 'help_outline', name: 'Veelgestelde vragen', routeName: '' },
         {
           icon: 'lock',
           name: 'Privacy & beveiliging',
           routeName: '',
-          // route: '/privacySecurity',
         },
         {
           icon: 'chrome_reader_mode',
           name: 'Gebruiksvoorwaarden',
           routeName: '',
-          // route: '/termsOfUse',
         },
         { icon: 'error_outline', name: 'Over deze app', routeName: 'about' },
         { icon: 'cancel', name: 'Verwijder mijn account', routeName: '' },
@@ -150,13 +168,19 @@ export default {
     }
   },
   computed: {
-    user() {
-      return psStore.getters.getUser
+    profile() {
+      return psStore.getters.getProfile
+    },
+    profileImage() {
+      return this.profile.image
+    },
+    fullName() {
+      const { firstName, lastName } = this.profile
+      return `${firstName} ${lastName}`
     },
     userAddress() {
-      let formatted =
-        this.user.profile?.address?.locality || 'Onbekende woonplaats'
-      const address = this.user.profile.address
+      let formatted = this.profile?.address?.locality || 'Onbekende woonplaats'
+      const address = this.profile?.address
       if (address && address['locality'] && address['street']) {
         formatted = address['houseNumber']
           ? `${address['street']} ${address['houseNumber']},
@@ -165,9 +189,6 @@ export default {
       }
       return formatted
     },
-    profileImage() {
-      return psStore.getters.getUser.profile.image
-    },
   },
   methods: {
     navTo(name) {
@@ -175,7 +196,7 @@ export default {
     },
     logOut: function() {
       this.$keycloak.logoutFn()
-      uiStore.mutations.deleteAccessToken()
+      psStore.mutations.deleteAccessToken()
     },
     readFile(event) {
       if (event.target.files[0]) {
@@ -196,6 +217,14 @@ export default {
         })
         fileReader.readAsDataURL(event.target.files[0])
       }
+    },
+    navReview() {
+      this.$router.push({
+        name: 'userProfile',
+        params: {
+          profileId: psStore.getters.getProfile.id,
+        },
+      })
     },
   },
 }
@@ -228,5 +257,8 @@ export default {
 }
 .bewerk {
   text-decoration: underline;
+}
+.long {
+  width: 200px;
 }
 </style>

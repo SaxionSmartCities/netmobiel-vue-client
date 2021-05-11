@@ -2,11 +2,16 @@
 import VueJwtDecode from 'vue-jwt-decode'
 import { ModuleBuilder } from 'vuex-typex'
 import {
+  Compliment,
   ComplimentType,
+  CoronaCheck,
+  Place,
   Profile,
   ProfileState,
+  PublicProfile,
   RidePlanOptions,
-  CoronaCheck,
+  Review,
+  Delegation,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 
@@ -62,20 +67,6 @@ function setRidePlanOptions(state: ProfileState, payload: RidePlanOptions) {
   state.user.profile.ridePlanOptions = payload
 }
 
-function addRidePlanOptionsCar(state: ProfileState, payload: any) {
-  let isPresent = false
-  const currentCars = state.user.profile.ridePlanOptions.cars
-  for (let i = 0; i < currentCars.length; i++) {
-    if (payload.licensePlate === currentCars[i].licensePlate) {
-      isPresent = true
-      break
-    }
-  }
-  if (!isPresent) {
-    state.user.profile.ridePlanOptions.cars.push(payload)
-  }
-}
-
 function setPrivacySecurityValue(state: ProfileState, payload: any) {
   state.user.privacySecurity.filter(function(item) {
     if (item.name === payload.key) {
@@ -96,6 +87,42 @@ function setComplimentTypes(
   state.complimentTypes = complimentTypes
 }
 
+function setPublicProfile(state: ProfileState, profile: PublicProfile) {
+  state.externalUser.profile = profile
+}
+
+function setPublicCompliments(state: ProfileState, compliments: Compliment[]) {
+  state.externalUser.compliments = compliments
+}
+
+function setPublicReviews(state: ProfileState, reviews: Review[]) {
+  state.externalUser.reviews = reviews
+}
+
+function setFavoriteLocations(state: ProfileState, places: Place[]) {
+  state.user.profile.favoriteLocations = places
+}
+
+function setDelegations(state: ProfileState, delegations: Delegation[]) {
+  state.user.delegations = delegations
+}
+
+function setDelegateProfile(state: ProfileState, profile: Profile) {
+  state.user.delegateProfile = profile
+}
+
+function setDelegatorId(state: ProfileState, profileId: string) {
+  state.user.delegatorId = profileId
+}
+
+function resetDelegate(state: ProfileState) {
+  if (state.user.delegateProfile) {
+    state.user.profile = state.user.delegateProfile
+  }
+  state.user.delegateProfile = null
+  state.user.delegatorId = null
+}
+
 export const buildMutations = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -108,9 +135,16 @@ export const buildMutations = (
     setTripOptionsValue: psBuilder.commit(setTripOptionsValue),
     setReviewOptionsValue: psBuilder.commit(setReviewOptionsValue),
     setRidePlanOptions: psBuilder.commit(setRidePlanOptions),
-    addRidePlanOptionsCar: psBuilder.commit(addRidePlanOptionsCar),
     setPrivacySecurityValue: psBuilder.commit(setPrivacySecurityValue),
     setCoronaCheck: psBuilder.commit(setCoronaCheck),
     setComplimentTypes: psBuilder.commit(setComplimentTypes),
+    setPublicProfile: psBuilder.commit(setPublicProfile),
+    setPublicCompliments: psBuilder.commit(setPublicCompliments),
+    setPublicReviews: psBuilder.commit(setPublicReviews),
+    setFavoriteLocations: psBuilder.commit(setFavoriteLocations),
+    setDelegations: psBuilder.commit(setDelegations),
+    setDelegateProfile: psBuilder.commit(setDelegateProfile),
+    setDelegatorId: psBuilder.commit(setDelegatorId),
+    resetDelegate: psBuilder.commit(resetDelegate),
   }
 }

@@ -4,11 +4,7 @@
       <div v-for="({ totalDonated, user }, index) in donors" :key="index">
         <div class="d-flex flex-row  mb-3">
           <round-user-image
-            :profile-image="
-              user.image
-                ? ''
-                : ' https://api.netmobiel.eu/gwapi/acc/images/5f/1591722701725.png'
-            "
+            :profile-image="user.image"
             :image-size="40"
             :avatar-size="46"
           >
@@ -23,16 +19,6 @@
               {{ totalDonated + ' credits gedoneerd' }}
             </span>
           </div>
-          <v-spacer></v-spacer>
-          <v-btn
-            class="align-self-center"
-            color="primary"
-            small
-            outlined
-            @click="addDonor(user)"
-          >
-            Voeg toe
-          </v-btn>
         </div>
         <v-divider class="mb-2"></v-divider>
       </div>
@@ -48,11 +34,6 @@ export default {
   components: { RoundUserImage },
   props: {
     donors: { type: Array, required: true },
-  },
-  methods: {
-    addDonor(donor) {
-      // console.log('Adding donor still needs to be implemented', donor)
-    },
   },
 }
 </script>

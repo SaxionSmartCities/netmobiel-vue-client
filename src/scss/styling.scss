@@ -100,6 +100,8 @@ h3 {
 // We are reverting this here.
 .container.fill-height > .row {
   max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 .cancelled-banner {
   font-weight: bold;

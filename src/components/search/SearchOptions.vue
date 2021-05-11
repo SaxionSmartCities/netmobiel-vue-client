@@ -8,7 +8,7 @@
               <v-expansion-panel-header>
                 <v-row no-gutters>
                   <v-col>
-                    <span>Personen</span>
+                    <span>Aantal passagiers</span>
                   </v-col>
                 </v-row>
                 <v-row no-gutters>
@@ -71,18 +71,18 @@
                       color="orange"
                     >
                       Let op: Als overstappen aan het begin en/of aan het einde
-                      van uw reis wordt uitgeschakeld is het alleen mogelijk om
-                      u te matchen met een gehele reis met het openbaar vervoer
-                      of een directe rit. In veel gevallen zal dit niet mogelijk
+                      van uw rit wordt uitgeschakeld is het alleen mogelijk om u
+                      te matchen met een gehele rit met het openbaar vervoer of
+                      een directe rit. In veel gevallen zal dit niet mogelijk
                       zijn. Het uitzetten van deze optie zal resulteren in
                       snellere zoekresultaten maar ook in een sterk verminderd
-                      aantal reisopties.
+                      aantal ritopties.
                     </v-alert>
                   </v-col>
                 </v-row>
                 <v-row no-gutters>
                   <v-col class="shrink" cols="10">
-                    Meerijden bij begin van de reis:
+                    Meerijden bij begin van de rit:
                   </v-col>
                   <v-col class="shrink">
                     <v-switch
@@ -95,7 +95,7 @@
                 </v-row>
                 <v-row no-gutters>
                   <v-col class="my-0" cols="10">
-                    Meerijden bij einde van de reis:
+                    Meerijden bij einde van de rit:
                   </v-col>
                   <v-col class="my-0">
                     <v-switch
@@ -212,7 +212,7 @@ export default {
     travel: {
       get() {
         return {
-          title: 'Toestaan',
+          title: 'Vervoersmiddelen',
           options: Object.keys(travelModes)
             .map(x => travelModes[x])
             .filter(x => !!x && x.visible), // Filter only visible travel modes.

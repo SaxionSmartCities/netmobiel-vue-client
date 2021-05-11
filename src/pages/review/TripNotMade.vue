@@ -3,7 +3,7 @@
     <v-col>
       <v-row>
         <v-col>
-          <h3>Waarom niet ?</h3>
+          <h3>Waarom niet?</h3>
         </v-col>
       </v-row>
       <v-row>
@@ -28,7 +28,7 @@
             depressed
             @click="tripNotMade()"
           >
-            Bevestig deze reis
+            Bevestig deze rit
           </v-btn>
           <v-btn
             block
@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import trip_not_made_config from '../../config/review/trip_not_made_config'
+import constants from '@/constants/constants'
 
 export default {
   name: 'TripNotMade',
@@ -55,7 +55,7 @@ export default {
   },
   data() {
     return {
-      tripNotMadeReasons: trip_not_made_config,
+      tripNotMadeReasons: constants.TRIP_NOT_MADE_REASONS,
       tripNotMadeReason: null,
     }
   },

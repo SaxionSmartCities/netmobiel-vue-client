@@ -1,27 +1,18 @@
 <template>
-  <v-layout column>
-    <v-flex>
-      <v-layout>
-        <v-flex shrink>
-          <v-icon
-            class="text-primary"
-            :class="{ 'v-icon-ride': leg.traverseMode === 'RIDESHARE' }"
-          >
-            {{ getIcon }}
-          </v-icon>
-        </v-flex>
-      </v-layout>
-    </v-flex>
-    <v-flex pt-1>
-      <div
-        class="travel-line"
-        :class="{
-          'cancelled-leg': isCancelled,
-          dotted: leg.traverseMode === 'WALK',
-        }"
-      ></div>
-    </v-flex>
-  </v-layout>
+  <div>
+    <v-icon
+      class="text-primary"
+      :class="{ 'v-icon-ride': leg.traverseMode === 'RIDESHARE' }"
+    >
+      {{ getIcon }}
+    </v-icon>
+    <div
+      class="travel-line"
+      :class="{
+        dotted: leg.traverseMode === 'WALK',
+      }"
+    />
+  </div>
 </template>
 
 <script>
@@ -51,7 +42,7 @@ export default {
 
 <style lang="scss">
 .travel-line {
-  margin: 0px 5px 0px 0px;
+  margin: 4px 5px 0px 0px;
   height: 5px;
   background: #c2c2c2;
   border-radius: 1000px;

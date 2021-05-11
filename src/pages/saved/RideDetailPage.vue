@@ -26,75 +26,50 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row class="mb-2">
-      <v-col>
-        <h3 class="mb-2">Wijzigen</h3>
-        <v-divider />
-        <v-row @click="editRide">
-          <v-col cols="1">
-            <v-icon>fa-pencil-alt</v-icon>
-          </v-col>
-          <v-col class="pl-5">
-            Wijzig deze rit
-          </v-col>
-        </v-row>
-        <v-divider />
-        <v-row @click="confirmRide()">
-          <v-col cols="1">
-            <v-icon>fa-check-circle</v-icon>
-          </v-col>
-          <v-col class="pl-5">
-            Reis bevestigen
-          </v-col>
-        </v-row>
-        <v-divider />
-        <v-row @click="checkDeleteTrip()">
-          <v-col cols="1">
-            <v-icon>lock</v-icon>
-          </v-col>
-          <v-col class="pl-5">
-            Reis annuleren
-          </v-col>
-        </v-row>
-        <v-dialog v-model="warningDialog">
-          <v-card>
-            <v-card-title class="headline">
-              Weet u dit zeker?
-            </v-card-title>
-
-            <v-card-text v-if="numBookings > 0">
-              <p>
-                Op dit moment heeft uw reis
-                {{ numBookings }} boekingen, wilt u uw passagier(s) een reden
-                geven waarom u de reis annuleert.
-              </p>
-              <v-textarea
-                outlined
-                name="input-7-4"
-                label="Reden voor annulering"
-                :value="cancelReason"
-              ></v-textarea>
-            </v-card-text>
-            <v-card-text v-else>
-              <p>
-                Weet u zeker dat u deze rit wil annuleren?
-              </p>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-btn text color="primary" @click="deleteTrip()">
-                Ja
-              </v-btn>
-
-              <v-btn text color="primary" @click="warningDialog = false">
-                Nee
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-divider />
+    <v-row v-if="rideOptions.length > 0" class="mb-0">
+      <v-col class="pb-0">
+        <h3>Wijzigen</h3>
       </v-col>
     </v-row>
+    <v-row v-if="rideOptions.length > 0">
+      <v-col>
+        <itinerary-options :options="rideOptions" />
+      </v-col>
+    </v-row>
+    <v-dialog v-model="warningDialog">
+      <v-card>
+        <v-card-title class="headline">
+          Weet u dit zeker?
+        </v-card-title>
+        <v-card-text v-if="numBookings > 0">
+          <p>
+            Op dit moment heeft uw rit
+            {{ numBookings }} boekingen, wilt u uw passagier(s) een reden geven
+            waarom u de rit annuleert.
+          </p>
+          <v-textarea
+            outlined
+            name="input-7-4"
+            label="Reden voor annulering"
+            :value="cancelReason"
+          ></v-textarea>
+        </v-card-text>
+        <v-card-text v-else>
+          <p>
+            Weet u zeker dat u deze rit wil annuleren?
+          </p>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn text color="primary" @click="deleteTrip()">
+            Ja
+          </v-btn>
+
+          <v-btn text color="primary" @click="warningDialog = false">
+            Nee
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <contact-traveller-modal
       v-if="showContactTravellerModal"
       :show="showContactTravellerModal"
@@ -102,20 +77,20 @@
       @close="showContactTravellerModal = false"
       @select="onTravellerSelectForMessage"
     ></contact-traveller-modal>
-    <edit-ride-modal
-      v-if="showEditRideModal"
-      :show="showEditRideModal"
-      @close="showEditRideModal = false"
-    ></edit-ride-modal>
+    <v-dialog v-model="showEditRideModal">
+      <edit-ride-dialog :ride="ride" @save="onSave" @cancel="onCancel" />
+    </v-dialog>
   </content-pane>
 </template>
 
 <script>
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
+import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import ContentPane from '@/components/common/ContentPane.vue'
 import ContactTravellerModal from '@/components/itinerary-details/ContactTravellerModal'
-import EditRideModal from '../../components/itinerary-details/EditRideModal'
+import EditRideDialog from '@/components/dialogs/EditRideDialog'
 import RideDetails from '@/components/itinerary-details/RideDetails.vue'
+import { generateRideItineraryDetailSteps } from '@/utils/itinerary_steps'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
@@ -124,10 +99,11 @@ import * as msStore from '@/store/message-service'
 export default {
   name: 'RideDetailPage',
   components: {
-    EditRideModal,
+    EditRideDialog,
     ContactTravellerModal,
     ContentPane,
     ItineraryLeg,
+    ItineraryOptions,
     RideDetails,
   },
   props: {
@@ -165,7 +141,36 @@ export default {
       return csStore.getters.getSelectedRide
     },
     numBookings() {
-      return !this.ride.bookings ? 0 : this.ride.bookings.length
+      return !this.ride.bookings
+        ? 0
+        : this.ride.bookings.filter(booking => booking.state === 'CONFIRMED')
+            .length
+    },
+    rideOptions() {
+      let options = []
+      const { state } = this.ride
+      switch (state) {
+        case 'SCHEDULED':
+          options.push({
+            icon: 'fa-pencil-alt',
+            label: 'Wijzig deze rit',
+            callback: this.onRideEdit,
+          })
+          options.push({
+            icon: 'fa-times-circle',
+            label: 'Annuleer deze rit',
+            callback: this.onRideCancelled,
+          })
+          break
+        case 'VALIDATING':
+          options.push({
+            icon: 'fa-check-circle',
+            label: 'Bevestig deze rit',
+            callback: this.onRideReview,
+          })
+          break
+      }
+      return options
     },
   },
   created() {
@@ -178,66 +183,16 @@ export default {
   methods: {
     generateSteps() {
       const { ride } = this
-      if (!ride.id) return []
-      let result = []
-      let bookingDict = this.generateBookingDictionary(ride.bookings)
-      for (let i = 0; i < this.ride.legs.length - 1; i++) {
-        let currentLeg = this.ride.legs[i]
-        this.setPassenger(currentLeg, bookingDict)
-        let nextLeg = this.ride.legs[i + 1]
-        result.push(currentLeg)
-
-        // We won't show any waiting times < 60 sec -- should be made a config
-        if (nextLeg.startTime - currentLeg?.endTime > 60 * 1000) {
-          // Add "WAIT" element (not from OTP).
-          result.push({
-            mode: 'WAIT',
-            startTime: currentLeg.endTime,
-            endTime: nextLeg.startTime,
-            duration: (nextLeg.startTime - currentLeg.endTime) / 1000,
-          })
-        }
-      }
-      let lastLeg = this.ride.legs[this.ride.legs.length - 1]
-      if (lastLeg) {
-        this.setPassenger(lastLeg, bookingDict)
-        result.push(lastLeg)
-
-        // Finally, we push the "FINISH" element (not from OTP)
-        result.push({
-          mode: 'FINISH',
-          startTime: lastLeg.endTime,
-          to: lastLeg.to,
-        })
-        return result
-      }
-      return []
-    },
-    generateBookingDictionary(bookings) {
-      let dict = []
-      for (let i = 0; i < bookings.length; i++) {
-        let map = bookings[i].legs.map(l => {
-          let dictItem = { ...bookings[i].passenger }
-          dictItem.legRef = l.legRef
-          return dictItem
-        })
-        dict = dict.concat(map)
-      }
-      return dict
-    },
-    setPassenger(leg, bookingDict) {
-      // TODO: Check why modality is not provided
-      if (leg) {
-        leg.mode = 'CAR'
-        let passenger = bookingDict.find(b => b.legRef == leg.legRef)
-        if (passenger) leg.passenger = passenger
-      }
+      return generateRideItineraryDetailSteps(ride)
     },
     onLegSelected(leg) {
       this.selectedLeg = leg
     },
-    confirmRide() {
+    onRideReview() {
       csStore.actions.confirmRide({ id: this.localId })
+    },
+    onRideCancelled() {
+      this.warningDialog = true
     },
     deleteTrip() {
       this.warningDialog = false
@@ -246,9 +201,6 @@ export default {
         cancelReason: this.cancelReason,
       })
       this.$router.push('/tripsOverviewPage')
-    },
-    checkDeleteTrip() {
-      this.warningDialog = true
     },
     async onTravellerSelectForMessage(event) {
       const tripContext = 'urn:nb:rs:ride:' + this.ride.id
@@ -261,8 +213,38 @@ export default {
         this.onTravellerSelectForMessage(this.passengersInBookings[0])
       }
     },
-    editRide() {
+    onRideEdit() {
       this.showEditRideModal = true
+    },
+    onSave(update) {
+      let newRide = { ...this.ride }
+      delete newRide.state
+      delete newRide.legs
+      const wasRecurring = newRide.recurrence !== undefined
+      const travelTime = update.travelTime.when.toISOString()
+      newRide.arrivalTimePinned = update.travelTime.arriving
+      if (newRide.arrivalTimePinned) {
+        newRide.arrivalTime = travelTime
+        delete newRide.departureTime
+      } else {
+        newRide.departureTime = travelTime
+        delete newRide.arrivalTime
+      }
+      if (update.choice === 'sequence') {
+        newRide.recurrence = update.recurrence
+      }
+      let scope = null
+      if (wasRecurring) {
+        update.choice === 'sequence'
+          ? (scope = 'this-and-following')
+          : (scope = 'this')
+      }
+      csStore.actions.updateRide({ ride: newRide, scope: scope })
+      this.showEditRideModal = false
+      this.$router.go(-1)
+    },
+    onCancel() {
+      this.showEditRideModal = false
     },
     routeToConversation(ctx, passengerProfile) {
       msStore.actions.fetchConversations().then(conversations => {

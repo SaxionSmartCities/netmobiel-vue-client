@@ -1,5 +1,6 @@
 import axios from 'axios'
 import moment from 'moment'
+import util from '@/utils/Utils'
 import config from '@/config/config'
 import constants from '../../constants/constants'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
@@ -11,23 +12,19 @@ import {
   SearchCriteria,
 } from '@/store/itinerary-service/types'
 import * as uiStore from '@/store/ui'
+import { addInterceptors } from '../api-middelware'
+
 type ActionContext = BareActionContext<ItineraryState, RootState>
 
-const BASE_URL = config.BASE_URL
-const GRAVITEE_PLANNER_SERVICE_API_KEY = config.GRAVITEE_PLANNER_SERVICE_API_KEY
-
-function generateHeader(key: any) {
-  return {
-    'X-Gravitee-Api-Key': key,
-  }
-}
+const { PLANNER_BASE_URL, GRAVITEE_PLANNER_SERVICE_API_KEY } = config
+const { generateHeaders } = util
 
 function submitPlanningsRequest(
   context: ActionContext,
   searchCiteria: SearchCriteria
 ) {
   mutations.storePlanningRequest(searchCiteria)
-  const URL = BASE_URL + '/planner/search/plan'
+  const URL = `${PLANNER_BASE_URL}/search/plan`
   const { from, to, travelTime, preferences } = searchCiteria
   const params = {
     from: `${from.label}::${from.latitude},${from.longitude}`,
@@ -43,7 +40,7 @@ function submitPlanningsRequest(
   mutations.setPlanningStatus({ status: 'PENDING', message: '' })
   axios
     .get(URL, {
-      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
       params: params,
     })
     .then(response => {
@@ -59,16 +56,16 @@ function submitPlanningsRequest(
 }
 
 function deleteSelectedTrip(context: ActionContext, payload: any) {
-  const URL = BASE_URL + `/planner/trips/${payload.tripId}`
+  const URL = `${PLANNER_BASE_URL}/trips/${payload.tripId}`
   axios
     .delete(URL, {
-      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
     .then(response => {
       if (response.status === 204) {
         //Succesful response, trip is deleted.
         if (payload.displayWarning) {
-          uiStore.actions.queueInfoNotification('Reis is succesvol geannuleerd')
+          uiStore.actions.queueInfoNotification('Rit is succesvol geannuleerd')
         }
         fetchTrips(context, {
           maxResults: constants.fetchTripsMaxResults,
@@ -77,11 +74,11 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
       } else if (response.status === 404) {
         //requested trip could not be found
         uiStore.actions.queueErrorNotification(
-          'De opgegeven reis kon niet worden gevonden.'
+          'De opgegeven rit kon niet worden gevonden.'
         )
       } else if (response.status === 401) {
         //The requested object does no longer exist
-        uiStore.actions.queueErrorNotification('Deze reis is al geannuleerd')
+        uiStore.actions.queueErrorNotification('Deze rit is al geannuleerd')
       } else {
         uiStore.actions.queueErrorNotification(response.data.message)
       }
@@ -90,21 +87,21 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het annuleren van de reis'
+        'Fout bij het annuleren van de rit'
       )
     })
 }
 
 function storeSelectedTrip(context: ActionContext, payload: TripSelection) {
   mutations.setBookingStatus({ status: 'PENDING' })
-  const URL = BASE_URL + '/planner/trips'
+  const URL = `${PLANNER_BASE_URL}/trips`
   axios
     .post(URL, payload, {
-      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
     .then(response => {
       if (response.status == 201) {
-        let message = 'Uw reis is bevestigd!'
+        let message = 'Uw rit is bevestigd!'
         uiStore.actions.queueInfoNotification(message)
         mutations.setBookingStatus({ status: 'SUCCESS' })
       } else {
@@ -118,11 +115,11 @@ function storeSelectedTrip(context: ActionContext, payload: TripSelection) {
       console.log(error)
       if (error.response.status == 402) {
         uiStore.actions.queueErrorNotification(
-          'U heeft onvoldoende credits voor deze reis'
+          'U heeft onvoldoende credits voor deze rit'
         )
       } else {
         uiStore.actions.queueErrorNotification(
-          'Fout bij het opslaan van de reis.'
+          'Fout bij het opslaan van de rit.'
         )
       }
     })
@@ -144,17 +141,20 @@ function storeShoutOut(
     useAsArrivalTime: travelTime.arriving,
     planType: 'SHOUT_OUT',
   }
-  const URL = BASE_URL + '/planner/plans'
-  axios
+  const URL = `${PLANNER_BASE_URL}/plans`
+  let instance = axios.create()
+  addInterceptors(instance)
+  instance
     .post(URL, payload, {
-      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
     .then(response => {
       if (response.status == 201) {
         let message = 'Oproep naar de community is geplaatst'
         uiStore.actions.queueInfoNotification(message)
       } else {
-        uiStore.actions.queueErrorNotification(response.data.message)
+        let message = response.data.message
+        uiStore.actions.queueErrorNotification(message)
       }
     })
     .catch(error => {
@@ -167,10 +167,10 @@ function storeShoutOut(
 }
 
 function deleteShoutOut(context: ActionContext, { shoutoutPlanId }: any) {
-  const URL = `${BASE_URL}/planner/shout-outs/${shoutoutPlanId}`
+  const URL = `${PLANNER_BASE_URL}/shout-outs/${shoutoutPlanId}`
   axios
     .delete(URL, {
-      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
     .then(response => {
       if (response.status == 204) {
@@ -192,10 +192,10 @@ function storeTravelOffer(
   { shoutoutPlanId, planRef, vehicleRef, driverRef }: any
 ) {
   let payload = { planRef, vehicleRef, driverRef }
-  const URL = `${BASE_URL}/planner/shout-outs/${shoutoutPlanId}`
+  const URL = `${PLANNER_BASE_URL}/shout-outs/${shoutoutPlanId}`
   axios
     .post(URL, payload, {
-      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
     .then(response => {
       if (response.status == 202) {
@@ -225,14 +225,14 @@ function fetchTrips(
   since && (params['since'] = since)
   sortDir && (params['sortDir'] = sortDir)
 
-  const URL = `${BASE_URL}/planner/trips`
+  const URL = `${PLANNER_BASE_URL}/trips`
   axios
     .get(URL, {
-      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
       params: params,
     })
     .then(response => {
-      if (response.status === 200 && response.data.data.length > 0) {
+      if (response.status === 200) {
         if (offset === 0) {
           pastTrips
             ? mutations.setPastTrips(response.data.data)
@@ -251,7 +251,7 @@ function fetchTrips(
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van opgeslagen reizen.'
+        'Fout bij het ophalen van opgeslagen ritten.'
       )
     })
 }
@@ -266,8 +266,8 @@ function fetchShoutOuts(
     depArrRadius: constants.defaultShoutOutRadius,
   }
   axios
-    .get(BASE_URL + '/planner/shout-outs', {
-      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+    .get(`${PLANNER_BASE_URL}/shout-outs`, {
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
       params: params,
     })
     .then(response => {
@@ -291,12 +291,13 @@ function fetchMyShoutOuts(context: ActionContext, { offset: offset }: any) {
     since: moment().format(),
   }
   axios
-    .get(BASE_URL + '/planner/plans', {
-      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+    .get(`${PLANNER_BASE_URL}/plans`, {
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
       params: params,
     })
     .then(response => {
       if (response.status === 200) {
+        mutations.setMyShoutOutsTotalCount(response.data.totalCount)
         // When you using a offset you want to append the shoutouts and not clear the already fetched shoutouts.
         if (offset > 0) mutations.appendMyShoutOuts(response.data.data)
         else mutations.setMyShoutOuts(response.data.data)
@@ -309,9 +310,9 @@ function fetchMyShoutOuts(context: ActionContext, { offset: offset }: any) {
 }
 
 function fetchShoutOut(context: ActionContext, { id }: any) {
-  const URL = `${BASE_URL}/planner/plans/${id}`
+  const URL = `${PLANNER_BASE_URL}/plans/${id}`
   axios
-    .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
+    .get(URL, { headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY) })
     .then(response => {
       if (response.status == 200) {
         mutations.setSelectedTrip(response.data)
@@ -320,17 +321,15 @@ function fetchShoutOut(context: ActionContext, { id }: any) {
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van de reis.'
-      )
+      uiStore.actions.queueErrorNotification('Fout bij het ophalen van de rit.')
     })
 }
 
 function fetchTrip(context: ActionContext, payload: any) {
   const tripId = payload.id
-  const URL = `${BASE_URL}/planner/trips/${tripId}`
+  const URL = `${PLANNER_BASE_URL}/trips/${tripId}`
   return axios
-    .get(URL, { headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY) })
+    .get(URL, { headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY) })
     .then(response => {
       if (response.status == 200) {
         mutations.setSelectedTrip(response.data)
@@ -340,28 +339,32 @@ function fetchTrip(context: ActionContext, payload: any) {
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van de reis.'
-      )
+      uiStore.actions.queueErrorNotification('Fout bij het ophalen van de rit.')
     })
 }
 
-function confirmTrip(context: ActionContext, payload: any) {
-  const URL = `${BASE_URL}/planner/trips/${payload.id}/confirm/true`
+function tripConfirmation({ id, acknowledge }: any) {
+  const URL = `${PLANNER_BASE_URL}/trips/${id}/confirm/${acknowledge}`
   const data = {}
   const config = {
-    headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+    headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
   }
-  axios
-    .put(URL, data, config)
-    .then(function(resp) {
+  let instance = axios.create()
+  addInterceptors(instance)
+  return instance.put(URL, data, config)
+}
+
+function rejectTrip(context: ActionContext, payload: any) {
+  const promise = tripConfirmation({ id: payload.id, acknowledge: false })
+  promise
+    .then(resp => {
       if (resp.status == 204) {
         // Ride is confirmed
-        uiStore.actions.queueInfoNotification('Uw reis is bevestigd.')
+        uiStore.actions.queueInfoNotification('Uw rit is bevestigd.')
         fetchTrip(context, { id: payload.id })
       } else {
         uiStore.actions.queueErrorNotification(
-          'Fout bij het bevestigen van uw reis.'
+          'Fout bij het bevestigen van uw rit.'
         )
       }
     })
@@ -369,14 +372,41 @@ function confirmTrip(context: ActionContext, payload: any) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het bevestigen van uw reis.'
+        'Fout bij het bevestigen van uw rit.'
       )
+    })
+}
+
+function confirmTrip(context: ActionContext, payload: any) {
+  const promise = tripConfirmation({ id: payload.id, acknowledge: true })
+  promise
+    .then(function(resp) {
+      if (resp.status == 204) {
+        // Ride is confirmed
+        uiStore.actions.queueInfoNotification('Uw rit is bevestigd.')
+        fetchTrip(context, { id: payload.id })
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Fout bij het bevestigen van uw rit.'
+        )
+      }
+    })
+    .catch(function(error) {
+      // eslint-disable-next-line
+      console.log(error)
+      if (error.response.status === 400) {
+        uiStore.actions.queueErrorNotification('Deze rit is al bevestigd.')
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Fout bij het bevestigen van uw rit.'
+        )
+      }
     })
 }
 
 function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
   const { id, from, to = {}, travelTime } = payload
-  const URL = `${BASE_URL}/planner/shout-outs/${id}/plan`
+  const URL = `${PLANNER_BASE_URL}/shout-outs/${id}/plan`
   const params: any = {
     from: `${from.label}::${from.latitude},${from.longitude}`,
   }
@@ -388,7 +418,7 @@ function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
   mutations.setPlanningStatus({ status: 'PENDING' })
   axios
     .get(URL, {
-      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
       params: params,
     })
     .then(response => {
@@ -405,10 +435,10 @@ function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
 
 function fetchCancelledTrips(context: ActionContext) {
   const params: any = { state: 'CANCELLED' }
-  const URL = `${BASE_URL}/planner/trips`
+  const URL = `${PLANNER_BASE_URL}/trips`
   axios
     .get(URL, {
-      headers: generateHeader(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
       params: params,
     })
     .then(response => {
@@ -418,7 +448,7 @@ function fetchCancelledTrips(context: ActionContext) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van geannuleerde reizen.'
+        'Fout bij het ophalen van geannuleerde ritten.'
       )
     })
 }
@@ -439,6 +469,7 @@ export const buildActions = (
     fetchMyShoutOuts: isBuilder.dispatch(fetchMyShoutOuts),
     fetchShoutOut: isBuilder.dispatch(fetchShoutOut),
     fetchTrip: isBuilder.dispatch(fetchTrip),
+    rejectTrip: isBuilder.dispatch(rejectTrip),
     confirmTrip: isBuilder.dispatch(confirmTrip),
     submitShoutOutPlanningsRequest: isBuilder.dispatch(
       submitShoutOutPlanningsRequest

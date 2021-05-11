@@ -33,6 +33,14 @@ export const buildGetters = (
     return state.pastRides
   }, 'getPastRides')
 
+  const getProposedRides = csBuilder.read((state: CarpoolState) => {
+    return state.proposedRides
+  }, 'getProposedRides')
+
+  const getInboxRides = csBuilder.read((state: CarpoolState) => {
+    return state.inboxRides
+  }, 'getInboxRides')
+
   return {
     get getAvailableCars() {
       return getAvailableCars()
@@ -54,6 +62,12 @@ export const buildGetters = (
     },
     get getPastRides() {
       return getPastRides()
+    },
+    get getProposedRides() {
+      return getProposedRides()
+    },
+    get getInboxRides() {
+      return getInboxRides()
     },
   }
 }

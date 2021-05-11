@@ -5,7 +5,7 @@
         class="d-flex flex-row justify-space-between alert-red"
         @click="showCards = !showCards"
       >
-        <span>Er zijn {{ trips.length }} geannuleerde reizen.</span>
+        <span>Er zijn {{ trips.length }} geannuleerde ritten.</span>
         <v-icon v-if="showCards" class="alert-red">
           keyboard_arrow_down
         </v-icon>
@@ -67,10 +67,14 @@ export default {
     padding: 8px 0;
     .trip-card {
       border-color: $color-alertRed !important;
-      width: 85%;
+      width: 90%;
       margin: auto;
       .v-card__actions {
-        display: none;
+        padding: 0;
+        width: 16px;
+        i {
+          color: white;
+        }
       }
     }
   }

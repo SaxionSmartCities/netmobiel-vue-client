@@ -23,7 +23,11 @@
           @click="showConversation(conversation)"
         >
           <v-list-item-avatar size="60">
-            <!--                  <v-img :src="profile.image" />-->
+            <external-user-image
+              :managed-identity="getIdentityViaConversation(conversation)"
+              :image-size="55"
+              :avatar-size="60"
+            />
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>
@@ -36,12 +40,17 @@
                   }}
                 </v-col>
                 <v-col class="px-2" cols="2">
-                  <div class="message-counter">4</div>
+                  <div class="message-counter">
+                    {{ getNewMessageCount(conversation) }}
+                  </div>
                 </v-col>
               </v-row>
             </v-list-item-title>
             <v-list-item-subtitle>
-              {{ conversation.context }}
+              Van
+              {{ getFromLabelFromContext(conversation.context) }}
+              naar
+              {{ getToLabelFromContext(conversation.context) }}
             </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -52,8 +61,10 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
+import ExternalUserImage from '@/components/profile/ExternalUserImage'
 import TabBar from '../../../components/common/TabBar'
 import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as msStore from '@/store/message-service'
 
@@ -61,22 +72,25 @@ export default {
   components: {
     TabBar,
     ContentPane,
+    ExternalUserImage,
   },
   data() {
     return {
       selectedTab: 0,
-      // conversations: {},
     }
   },
   computed: {
     conversations() {
       return msStore.getters.getConversations
     },
-    profile() {
-      return psStore.getters.getUser
-    },
     myId() {
       return psStore.getters.getProfile.id
+    },
+  },
+  watch: {
+    conversations(newValue) {
+      const conversations = msStore.getters.getConversations
+      csStore.actions.fetchRidesFromConversations(conversations)
     },
   },
   created: function() {
@@ -93,6 +107,27 @@ export default {
       }
       return 'not found'
     },
+    getIdentityViaConversation(conversation) {
+      const res = conversation.participants.filter(
+        user => user.managedIdentity !== this.myId
+      )[0]
+      if (res) {
+        return res.managedIdentity
+      }
+      return conversation.sender.managedIdentity
+    },
+    getRideFromContext(context) {
+      const rideId = context.substring('urn:nb:rs:ride:'.length)
+      const rides = csStore.getters.getInboxRides
+      const ride = rides.find(r => r.id.toString() === rideId)
+      return ride
+    },
+    getFromLabelFromContext(context) {
+      return this.getRideFromContext(context)?.fromPlace?.label || 'Onbekend'
+    },
+    getToLabelFromContext(context) {
+      return this.getRideFromContext(context)?.toPlace?.label || 'Onbekend'
+    },
     showConversation(conversation) {
       this.$router.push({
         name: `conversation`,
@@ -101,6 +136,10 @@ export default {
           participants: conversation.participants,
         },
       })
+    },
+    getNewMessageCount(conversation) {
+      //TODO: Get the count from somewhere.
+      return 0
     },
   },
 }

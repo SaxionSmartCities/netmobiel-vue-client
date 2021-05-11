@@ -9,7 +9,7 @@
         <template v-slot:firstTab>
           <v-icon color="white">commute</v-icon>
           <span>
-            Reizen
+            Passagier
             <sup>{{
               tripsSearchTime === 'Future'
                 ? getPlannedTripsCount
@@ -21,7 +21,7 @@
         <template v-slot:secondTab>
           <v-icon color="white">directions_car</v-icon>
           <span>
-            Ritten
+            Chauffeur
             <sup>{{ getPlannedRidesCount }}</sup>
           </span>
         </template>
@@ -48,20 +48,21 @@
         <v-row dense>
           <v-col>
             <v-radio-group v-model="tripsSearchTime" class="mt-1" row>
-              <v-radio label="Afgelopen reizen" value="Past"></v-radio>
-              <v-radio label="Geplande reizen" value="Future"></v-radio>
+              <v-radio label="Afgelopen ritten" value="Past"></v-radio>
+              <v-radio label="Geplande ritten" value="Future"></v-radio>
             </v-radio-group>
           </v-col>
         </v-row>
         <v-row v-if="tripsSearchTime === 'Past'">
           <v-col v-if="getPastTrips.length === 0" align="center">
-            <em>U heeft nog geen reizen gemaakt.</em>
+            <em>U heeft nog geen ritten gemaakt.</em>
           </v-col>
           <v-col v-else class="py-0">
             <grouped-card-list :items="getPastTrips">
               <template v-slot:card="{ item: trip }">
                 <travel-card
                   :trip-id="trip.id"
+                  :trip-state="trip.state"
                   :itinerary="trip.itinerary"
                   class="trip-card"
                   @on-trip-selected="onTripSelected"
@@ -72,7 +73,7 @@
         </v-row>
         <v-row v-if="tripsSearchTime === 'Future'">
           <v-col v-if="getPlannedTrips.length === 0">
-            U heeft geen bewaarde reizen. Ga naar de planner om uw reis te
+            U heeft geen bewaarde ritten. Ga naar de planner om uw rit te
             plannen.
           </v-col>
           <v-col v-else class="py-0">
@@ -80,6 +81,7 @@
               <template v-slot:card="{ item: trip }">
                 <travel-card
                   :trip-id="trip.id"
+                  :trip-state="trip.state"
                   :itinerary="trip.itinerary"
                   class="trip-card"
                   @on-trip-selected="onTripSelected"
@@ -103,8 +105,8 @@
         <v-row v-if="ridesSearchTime === 'Past'">
           <v-col v-if="getPastRides.length === 0">
             <span>
-              U heeft nog geen ritten gereden. Ga naar ritten om een nieuwe rit
-              te plannen.
+              U heeft nog geen ritten gereden. Ga naar de planner om een nieuwe
+              rit te plannen.
             </span>
           </v-col>
           <v-col v-else class="py-0">
@@ -123,8 +125,8 @@
         <v-row v-if="ridesSearchTime === 'Future'">
           <v-col v-if="getPlannedRides.length === 0" class="py-1">
             <span>
-              U heeft nog geen ritten gepland. Ga naar ritten om een nieuwe rit
-              te plannen.
+              U heeft nog geen ritten gepland. Ga naar de planner om een nieuwe
+              rit te plannen.
             </span>
           </v-col>
           <v-col v-else class="py-0">
@@ -204,15 +206,15 @@ export default {
     },
     showTabs() {
       const role = psStore.getters.getProfile.userRole
-      return !role || role === 'both'
+      return !role || role === constants.PROFILE_ROLE_BOTH
     },
     isPassenger() {
       const role = psStore.getters.getProfile.userRole
-      return role === 'passenger'
+      return role === constants.PROFILE_ROLE_PASSENGER
     },
     isDriver() {
       const role = psStore.getters.getProfile.userRole
-      return role === 'driver'
+      return role === constants.PROFILE_ROLE_DRIVER
     },
   },
   watch: {
@@ -247,7 +249,7 @@ export default {
     this.fetchPastTrips()
     this.fetchRides()
     this.fetchPastRides()
-    isStore.actions.fetchCancelledTrips()
+    // isStore.actions.fetchCancelledTrips()
     window.addEventListener('scroll', this.scrollHandler)
   },
   beforeDestroy() {

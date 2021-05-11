@@ -16,7 +16,7 @@
         </section>
         <section>
           <h2>
-            Vijf tips voor tijdens de reis
+            Vijf tips voor tijdens de rit
           </h2>
           <ol>
             <li>
@@ -40,9 +40,9 @@
           <p></p>
         </section>
         <section>
-          <h2>Na de reis of rit</h2>
+          <h2>Na de rit of rit</h2>
           <p>
-            Krijg je na de reis of rit corona-achtige klachten? Stuur dan je
+            Krijg je na de rit of rit corona-achtige klachten? Stuur dan je
             passagier of chauffeur dan meteen een bericht via de app, zodat
             hij/zij zich kan laten testen. Doe dit zelfs als je slechts milde
             klachten hebt!
@@ -55,11 +55,13 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
+import * as uiStore from '@/store/ui'
+
 export default {
   name: 'RideSafeNetmobiel',
   components: { ContentPane },
   mounted() {
-    this.$store.commit('ui/showBackButton')
+    uiStore.mutations.showBackButton()
   },
 }
 </script>

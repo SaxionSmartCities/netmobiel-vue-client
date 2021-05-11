@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from '@/config/config'
+import util from '@/utils/Utils'
 import { MessageState } from './types'
 import { RootState } from '@/store/Rootstate'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
@@ -7,18 +8,11 @@ import { mutations } from './index'
 
 type ActionContext = BareActionContext<MessageState, RootState>
 
-const BASE_URL = config.BASE_URL
-const GRAVITEE_COMMUNICATOR_SERVICE_API_KEY =
-  config.GRAVITEE_COMMUNICATOR_SERVICE_API_KEY
-
-function generateHeaders(key: any) {
-  return {
-    'X-Gravitee-Api-Key': key,
-  }
-}
+const { COMMUNICATOR_BASE_URL, GRAVITEE_COMMUNICATOR_SERVICE_API_KEY } = config
+const { generateHeaders } = util
 
 function fetchMessages(context: ActionContext) {
-  const URL = BASE_URL + `/communicator/messages`
+  const URL = `${COMMUNICATOR_BASE_URL}/messages`
   axios
     .get(URL, {
       headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
@@ -34,7 +28,7 @@ function fetchMessages(context: ActionContext) {
 }
 
 async function fetchConversations(context: ActionContext) {
-  const URL = BASE_URL + `/communicator/messages`
+  const URL = `${COMMUNICATOR_BASE_URL}/messages`
   return await axios
     .get(URL, {
       params: {
@@ -66,7 +60,7 @@ function fetchMessagesByParams(
   actionContext: ActionContext,
   { context, participant }: any
 ) {
-  const URL = BASE_URL + `/communicator/messages`
+  const URL = `${COMMUNICATOR_BASE_URL}/messages`
   return axios
     .get(URL, {
       params: {
@@ -89,7 +83,7 @@ function fetchMessagesByParams(
 }
 
 async function sendMessage(context: ActionContext, payload: any) {
-  const URL = BASE_URL + `/communicator/messages`
+  const URL = `${COMMUNICATOR_BASE_URL}/messages`
   return await axios
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),

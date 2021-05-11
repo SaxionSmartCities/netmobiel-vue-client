@@ -5,6 +5,7 @@ export default {
   fetchPastRidesMaxResults: 8,
   defaultMaxResults: 10,
   defaultProfileImage: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
+  defaultCharityImage: '@/assets/default_charity_image.jpg',
   defaultShoutOutRadius: 1000000,
   defaultNotificationTimeout: 3000,
   searchSuggestionCategoryIcons: {
@@ -20,4 +21,53 @@ export default {
   },
   searchSuggestionDefaultIcon: 'fa-map-marker-alt',
   maxComplimentsAllowed: 3,
+  COMPLETE_PROFILE_UPDATE: {
+    title: 'Verdien een gratis rit!',
+    content:
+      'Maak jouw profiel compleet en verdien een gratis rit met Netmobiel!',
+    link: {
+      label: 'Profiel compleet maken',
+      to: '/onboardingPage',
+    },
+  },
+  DEFAULT_PROFILE_SEARCH_PREFERENCES: {
+    numPassengers: 1,
+    allowTransfer: true,
+    maximumTransferTime: 10,
+    luggageOptions: [
+      'HANDLUGGAGE',
+      'PET',
+      'WALKER',
+      'STROLLER',
+      'WHEELCHAIR',
+      'GROCERIES',
+    ],
+    allowedTravelModes: ['BICYCLE', 'BUS', 'CAR', 'RIDESHARE', 'RAIL', 'WALK'],
+    allowFirstLegTransfer: false,
+    allowLastLegTransfer: false,
+  },
+  DEFAULT_PROFILE_RIDE_PREFERENCES: {
+    numPassengers: 1,
+    maxMinutesDetour: 10,
+    luggageOptions: ['HANDLUGGAGE', 'GROCERIES'],
+    selectedCarId: -1,
+    cars: [],
+  },
+  PROFILE_ROLE_DRIVER: 'driver',
+  PROFILE_ROLE_PASSENGER: 'passenger',
+  PROFILE_ROLE_BOTH: 'both',
+  TRIP_NOT_MADE_REASONS: [
+    {
+      title: 'De rit was niet meer nodig',
+      value: 'unnecessary',
+    },
+    {
+      title: 'Ander vervoer gevonden',
+      value: 'otherTransport',
+    },
+    {
+      title: 'De chauffeur kwam niet opdagen.',
+      value: '',
+    },
+  ],
 }

@@ -1,69 +1,36 @@
 <template>
-  <content-pane>
-    <v-row v-if="user">
-      <v-col class="shrink">
-        <round-user-image
-          :profile-image="userProfileImage()"
-          :image-size="100"
-          :avatar-size="105"
-        ></round-user-image>
-      </v-col>
+  <content-pane class="pa-0">
+    <public-profile-info :profile="profile" />
+    <highlighted-info
+      :rides-driven="ridesDriven"
+      :compliments-received="totalCompliments"
+      :credits-donated="creditsDonated"
+      class="mt-3"
+    />
+    <v-row class="mt-3">
       <v-col>
-        <div class="d-flex flex-column shrink">
-          <span class="title">
-            {{ user.firstName + ' ' + user.lastName }}
-          </span>
-          <span class="body-1">{{ user.address.locality }}</span>
-        </div>
-        <div class="d-flex flex-column mt-3">
-          <span class="subtitle-1">35-40 jaar</span>
-          <span class="subtitle-1">
-            Houdt van: {{ user.interests.join(', ') }}
-          </span>
-        </div>
-        <v-btn depressed color="button" rounded class="mt-2" small>
-          <v-icon>add</v-icon>
-          Toevoegen als vriend
-        </v-btn>
+        <h4 class="netmobiel">Complimenten</h4>
       </v-col>
     </v-row>
-    <v-row class="mt-2">
+    <compliments :compliments="refinedCompliments" />
+    <v-row class="mt-3">
       <v-col>
-        <highlighted-info
-          v-if="totalCompliments"
-          :compliments-received="totalCompliments"
-        ></highlighted-info>
+        <h4 class="netmobiel">Beoordelingen</h4>
       </v-col>
     </v-row>
-    <v-row class="mt-2">
+    <v-row v-if="reviews && reviews.length === 0">
       <v-col>
-        <span class="text-color-primary caption text-uppercase">
-          Complimenten
-        </span>
-        <compliments
-          v-if="compliments"
-          class="mt-2"
-          :compliments="refinedCompliments"
-        ></compliments>
+        Nog geen beoordelingen ontvangen.
       </v-col>
     </v-row>
-    <v-row class="mt-2">
+    <v-row v-else>
       <v-col>
-        <span class="text-color-primary caption text-uppercase">
-          Reviews
-        </span>
-        <div class="reviews-container mt-1">
-          <review-item
-            v-for="(review, index) in reviews"
-            :key="index"
-            :review="review"
-            :profile-image="profileImages ? profileImages[index] : null"
-          >
-          </review-item>
-        </div>
-        <v-btn class="float-right" color="primary" rounded outlined small>
-          Bekijk alle reviews
-        </v-btn>
+        <review-item
+          v-for="(review, index) in reviews"
+          :key="index"
+          :review="review"
+          :profile-image="profileImages ? profileImages[index] : null"
+        />
       </v-col>
     </v-row>
   </content-pane>
@@ -71,12 +38,13 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
-import RoundUserImage from '@/components/common/RoundUserImage'
+import PublicProfileInfo from '@/components/profile/PublicProfileInfo'
 import config from '@/config/config'
 import Compliments from '@/components/profile/Compliments'
 import ReviewItem from '@/components/profile/ReviewItem'
 import HighlightedInfo from '@/components/profile/HighlightedInfo'
 import * as psStore from '@/store/profile-service'
+import * as uiStore from '@/store/ui'
 
 export default {
   name: 'UserProfile',
@@ -84,7 +52,7 @@ export default {
     HighlightedInfo,
     ReviewItem,
     Compliments,
-    RoundUserImage,
+    PublicProfileInfo,
     ContentPane,
   },
   props: {
@@ -92,20 +60,36 @@ export default {
   },
   data() {
     return {
-      user: null,
-      compliments: null,
-      reviews: null,
       profileImages: [],
     }
   },
   computed: {
+    profile() {
+      return psStore.getters.getExternalUser.profile
+    },
+    compliments() {
+      return psStore.getters.getExternalUser.compliments
+    },
+    reviews() {
+      return psStore.getters.getExternalUser.reviews
+    },
+    ridesDriven() {
+      // TODO: fetch from backend
+      return 0
+    },
+    creditsDonated() {
+      // TODO: fetch from backend
+      return 0
+    },
     refinedCompliments() {
       const result = {}
-      for (const comp of this.compliments) {
-        if (!result[comp.complimentType]) {
-          result[comp.complimentType] = 1
-        } else {
-          result[comp.complimentType]++
+      if (this.compliments) {
+        for (const comp of this.compliments) {
+          if (!result[comp.complimentType]) {
+            result[comp.complimentType] = 1
+          } else {
+            result[comp.complimentType]++
+          }
         }
       }
       return result
@@ -120,13 +104,20 @@ export default {
     },
   },
   mounted() {
-    this.fetchProfilePageInformation()
+    psStore.actions.fetchUserProfile({
+      profileId: this.profileId,
+    })
+    psStore.actions.fetchUserCompliments({
+      profileId: this.profileId,
+    })
+    psStore.actions.fetchUserReviews({
+      profileId: this.profileId,
+    })
+  },
+  created() {
+    uiStore.mutations.showBackButton()
   },
   methods: {
-    userProfileImage() {
-      if (this.user.image) return config.BASE_URL + this.user.image
-      else return null
-    },
     fetchProfileImages() {
       this.reviews.forEach(review => {
         psStore.actions
@@ -137,31 +128,6 @@ export default {
             this.profileImages.push(config.BASE_URL + res.image)
           })
       })
-    },
-    fetchProfilePageInformation() {
-      //Fetch profile of user
-      psStore.actions
-        .fetchUserProfile({
-          profileId: this.profileId,
-        })
-        .then(res => {
-          this.user = res
-        })
-      //Fetch compliments of user
-      psStore.actions
-        .fetchUserCompliments({
-          profileId: this.profileId,
-        })
-        .then(res => {
-          this.compliments = res.compliments
-        })
-      //Fetch reviews of user
-      psStore.actions
-        .fetchUserReviews({ profileId: this.profileId })
-        .then(res => {
-          this.reviews = res
-          this.fetchProfileImages()
-        })
     },
   },
 }

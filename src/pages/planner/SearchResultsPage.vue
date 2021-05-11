@@ -13,7 +13,7 @@
           <v-expansion-panels>
             <v-expansion-panel>
               <v-expansion-panel-header class="search-header pl-0">
-                Reisvoorkeuren tonen
+                Ritvoorkeuren tonen
               </v-expansion-panel-header>
               <v-expansion-panel-content class="search-header">
                 <search-options-summary-card :preferences="searchPreferences" />
@@ -138,6 +138,7 @@ export default {
         { title: 'Snelste', value: 'fastest' },
         { title: 'Chronologisch', value: 'chronologically' },
       ],
+      shoutout: {},
     }
   },
   computed: {
@@ -162,11 +163,24 @@ export default {
     localTripId() {
       return Number.parseInt(this.tripId)
     },
+    networkRequest() {
+      return uiStore.getters.getNetworkRequest
+    },
   },
   watch: {
     planningStatus(newValue) {
       if (newValue.status === 'SUCCESS') {
         isStore.mutations.clearPlanningRequest()
+      }
+    },
+    networkRequest(newValue) {
+      if (newValue.submitStatus.status === 'SUCCESS') {
+        uiStore.mutations.resetNetworkRequest()
+        const shoutout = this.shoutout
+        this.$router.push({
+          name: 'shoutoutSubmittedPage',
+          params: { shoutout },
+        })
       }
     },
   },
@@ -251,19 +265,15 @@ export default {
     },
     createShoutOut() {
       isStore.actions.storeShoutOut(this.searchCriteria)
-      const { firstName, lastName } = psStore.getters.getUser.profile
+      const { firstName, lastName, id } = psStore.getters.getProfile
       const { from, to, travelTime } = this.searchCriteria
-      const shoutout = {
+      this.shoutout = {
         from,
         to,
         travelTime: travelTime.when.format(),
         useAsArrivalTime: travelTime.arriving,
-        traveller: { firstName, lastName },
+        traveller: { firstName, lastName, managedIdentity: id },
       }
-      this.$router.push({
-        name: 'shoutoutSubmittedPage',
-        params: { shoutout: shoutout },
-      })
     },
     toDate(string) {
       return moment(string)

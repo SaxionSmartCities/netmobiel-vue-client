@@ -2,12 +2,12 @@
   <content-pane>
     <v-row class="ma-auto mt-2">
       <v-col>
-        <h1>Reis gepland! 🎉</h1>
+        <h1>Rit gepland! 🎉</h1>
       </v-col>
     </v-row>
     <v-row class="ma-auto mt-2">
       <v-col>
-        Jouw reis is bevestigd. We sturen je een herinnering voor jouw vertrek.
+        Jouw rit is bevestigd. We sturen je een herinnering voor jouw vertrek.
       </v-col>
     </v-row>
     <v-row class="ma-auto mt-2">
@@ -20,7 +20,7 @@
           class="my-3 button"
           @click="swapLocations()"
         >
-          Plan direct je terugreis
+          Plan direct je terugrit
         </v-btn>
         <v-btn
           large
@@ -31,7 +31,7 @@
           color="primary"
           to="/plan"
         >
-          Plan een nieuwe reis
+          Plan een nieuwe rit
         </v-btn>
       </v-col>
     </v-row>

@@ -1,4 +1,18 @@
 export class ProfileState {
+  complimentTypes: ComplimentType[] = []
+  externalUser: ExternalUser = {
+    profile: {
+      id: null,
+      image: null,
+      firstName: null,
+      lastName: null,
+      dateOfBirth: null,
+      address: {},
+      interests: [],
+    },
+    compliments: [],
+    reviews: [],
+  }
   user: User = {
     // Access token
     accessToken: null,
@@ -14,24 +28,34 @@ export class ProfileState {
     // Profile as stored in profile service.
     profile: {
       id: null,
+      consent: {
+        acceptedTerms: false,
+        olderThanSixteen: false,
+      },
+      dateOfBirth: null,
       fcmToken: null,
+      firstName: null,
+      lastName: null,
       image: null,
-      searchPreferences: {
-        numPassengers: 0,
-        allowTransfer: true,
-        maximumTransferTime: 0,
-        luggageOptions: [],
-        allowedTravelModes: [],
+      email: null,
+      phoneNumber: null,
+      userRole: [],
+      address: null,
+      searchPreferences: null,
+      ridePlanOptions: null,
+      notificationOptions: {
+        tripConfirmations: true,
+        tripUpdates: true,
+        tripReminders: true,
+        messages: true,
+        shoutouts: true,
       },
-      ridePlanOptions: {
-        numPassengers: 0,
-        maxMinutesDetour: 10,
-        luggageOptions: ['HANDLUGGAGE', 'GROCERIES'],
-        selectedCarId: -1,
-        cars: [],
-      },
+      interests: [],
       favoriteLocations: [],
     },
+    delegatorId: null,
+    delegateProfile: null,
+    delegations: [],
     coronaCheck: {
       coronaSymptoms: false,
       houseHoldHadCorona: false,
@@ -43,26 +67,41 @@ export class ProfileState {
     ],
     tripOptions: [{ name: 'Ik bied ritten aan', value: false }],
     notificationOptions: [
-      { name: 'Bevestiging nieuwe reis', value: true },
-      { name: 'Wijziging bewaarde reis', value: true },
-      { name: 'Herinnering voor aanvang reis', value: false },
+      { name: 'Bevestiging nieuwe rit', value: true },
+      { name: 'Wijziging bewaarde rit', value: true },
+      { name: 'Herinnering voor aanvang rit', value: false },
       { name: 'Nieuw persoonlijke bericht', value: true },
       { name: 'Oproepen uit de community', value: false },
     ],
     reviews: [
-      { name: 'Beoordeel je reis', value: true },
-      { name: 'Deel mijn reviews met anderen', value: false },
+      { name: 'Beoordeel je rit', value: true },
+      { name: 'Deel mijn beoordelingen met anderen', value: false },
     ],
     credits: {
       creditAmount: 0,
       creditHistory: [],
     },
   }
-  complimentTypes: ComplimentType[] = []
+}
+
+export interface ExternalUser {
+  profile: PublicProfile
+  compliments: Compliment[] | []
+  reviews: Review[] | []
+}
+
+export interface Compliment {
+  sender: any
+  receiver: any
 }
 
 export interface ComplimentType {
   compliment: string
+}
+
+export interface Review {
+  sender: any
+  receiver: any
 }
 
 export interface User {
@@ -82,16 +121,38 @@ export interface User {
   reviews: NameValue[]
   credits: Credits
   profile: Profile
+  delegatorId: string | null
+  delegateProfile: Profile | null
   coronaCheck: CoronaCheck
+  delegations: Delegation[]
 }
 
-export interface Profile {
+export interface PublicProfile {
   id: string | null
+  image: string | null
+  firstName: string | null
+  lastName: string | null
+  dateOfBirth: Date | null
+  address: any
+  interests: string[] | []
+}
+
+export interface Profile extends PublicProfile {
+  consent: UserConsent | null
+  email: string | null
   fcmToken: string | null
   image: string | null
-  searchPreferences: SearchPreferences
-  ridePlanOptions: RidePlanOptions
-  favoriteLocations: any[]
+  phoneNumber: string | null
+  searchPreferences: SearchPreferences | null
+  ridePlanOptions: RidePlanOptions | null
+  notificationOptions: NotificationOptions
+  favoriteLocations: Place[]
+  userRole: string[] | []
+}
+
+export interface UserConsent {
+  acceptedTerms: boolean
+  olderThanSixteen: boolean
 }
 
 export interface SearchPreferences {
@@ -105,9 +166,32 @@ export interface SearchPreferences {
 export interface RidePlanOptions {
   numPassengers: number
   maxMinutesDetour: number
-  luggageOptions: string[] //['HANDLUGGAGE', 'GROCERIES'],
+  luggageOptions: string[]
   selectedCarId: number
   cars: any[]
+}
+
+export interface Place {
+  id: number
+  countryCode?: string
+  houseNumber?: string
+  label: string
+  locality?: string
+  location: {
+    coordinates: number[]
+    type: string
+  }
+  postalCode?: string
+  // stateCode?: string
+  street?: string
+}
+
+export interface NotificationOptions {
+  tripConfirmations: boolean
+  tripUpdates: boolean
+  tripReminders: boolean
+  messages: boolean
+  shoutouts: boolean
 }
 
 export interface Credits {
@@ -123,4 +207,14 @@ export interface NameValue {
 export interface CoronaCheck {
   coronaSymptoms: boolean
   houseHoldHadCorona: boolean
+}
+
+export interface Delegation {
+  id: number
+  activationTime: string
+  delegateRef: string
+  delegatorRef: string
+  revocationTime: string
+  submissionTime: string
+  transferCode: string
 }

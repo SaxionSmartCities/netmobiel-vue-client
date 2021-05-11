@@ -1,34 +1,25 @@
 import axios from 'axios'
 import config from '@/config/config'
+import util from '@/utils/Utils'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { RegistrationRequest, RegistrationState } from './types'
 import { mutations } from '@/store/registration-service'
 import { RootState } from '@/store/Rootstate'
 type ActionContext = BareActionContext<RegistrationState, RootState>
 
-const BASE_URL = config.BASE_URL
-const GRAVITEE_PROFILE_SERVICE_API_KEY = config.GRAVITEE_PROFILE_SERVICE_API_KEY
-
-function generateHeader(key: any) {
-  return {
-    'X-Gravitee-Api-Key': key,
-  }
-}
+const { PROFILE_BASE_URL, GRAVITEE_PROFILE_SERVICE_API_KEY } = config
+const { generateHeaders } = util
 
 function submitRegistrationRequest(
   context: ActionContext,
   payload: RegistrationRequest
 ): void {
+  const URL = `${PROFILE_BASE_URL}/profiles`
   mutations.storeRegistrationRequest(payload)
-
-  const axiosConfig = {
-    method: 'POST',
-    url: BASE_URL + '/profiles',
-    data: context.state.registrationRequest,
-    headers: generateHeader(GRAVITEE_PROFILE_SERVICE_API_KEY),
-  }
-
-  axios(axiosConfig)
+  axios
+    .post(URL, payload, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+    })
     .then(function() {
       mutations.setRegistrationStatus({ success: true, message: '' })
     })
@@ -39,7 +30,7 @@ function submitRegistrationRequest(
         errorMsg = 'Ontbrekende data (email, voornaam of achternaam).'
       } else if (status === 451) {
         errorMsg =
-          'Ga akkoord gaan met de voorwaarden alsmede 16 jaar of ouder zijn.'
+          'Ga akkoord  met de voorwaarden en bevestig 16 jaar of ouder te zijn.'
       } else if (status === 500) {
         errorMsg = error.response.data.message // No clue what is going on, but the server should report something about it
       } else if (status === 409) {

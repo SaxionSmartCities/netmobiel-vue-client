@@ -6,11 +6,25 @@
         <v-icon color="white">arrow_back</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <span class="version">{{ commithash }}</span>
+      <v-btn icon @click="onProfileImageClick">
+        <round-user-image
+          :profile-image="profileImage"
+          :image-size="30"
+          :avatar-size="34"
+        />
+      </v-btn>
     </v-app-bar>
     <!-- Content -->
     <v-main>
       <router-view></router-view>
+    </v-main>
+    <!-- Footer -->
+    <v-bottom-navigation
+      v-if="isFooterVisible"
+      v-model="selectedNav"
+      class="bottom-nav"
+      app
+    >
       <v-snackbar
         v-if="isNotificationBarVisible"
         v-model="isNotificationBarVisible"
@@ -19,18 +33,21 @@
         bottom
         absolute
       >
-        {{ notificationQueue[0].message }}
-        <v-icon
-          v-if="notificationQueue[0].timeout === 0"
-          right
-          @click="finishNotification"
-        >
-          close
-        </v-icon>
+        <v-row dense>
+          <v-col class="grow">
+            {{ notificationQueue[0].message }}
+          </v-col>
+          <v-col class="shrink">
+            <v-icon
+              v-if="notificationQueue[0].timeout === 0"
+              right
+              @click="finishNotification"
+            >
+              close
+            </v-icon>
+          </v-col>
+        </v-row>
       </v-snackbar>
-    </v-main>
-    <!-- Footer -->
-    <v-bottom-navigation v-if="isFooterVisible" v-model="selectedNav" app>
       <v-btn text value="home" to="/home">
         <span>Home</span>
         <v-icon>home</v-icon>
@@ -40,7 +57,7 @@
         <v-icon>commute</v-icon>
       </v-btn>
       <v-btn text value="saved" to="/tripsOverviewPage">
-        <span>Bewaard</span>
+        <span>Ritten</span>
         <v-icon>favorite</v-icon>
       </v-btn>
       <v-btn text value="community" to="/community">
@@ -56,7 +73,8 @@
 </template>
 
 <script>
-import constants from '@/constants/update-messages.js'
+import RoundUserImage from '@/components/common/RoundUserImage'
+import constants from '@/constants/constants'
 import hash from 'raw-loader!@/assets/current.hash'
 import ybug from './config/ybug'
 import * as uiStore from '@/store/ui'
@@ -64,42 +82,46 @@ import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'App',
+  components: { RoundUserImage },
   data: () => ({
     offsetTop: 0,
     commithash: hash,
   }),
   computed: {
+    profileImage() {
+      return this.getProfile?.image
+    },
     selectedNav: {
-      get: function() {
+      get() {
         return uiStore.getters.getSelectedNav
       },
-      set: function(value) {
+      set(value) {
         uiStore.mutations.setSelectedNav(value)
       },
     },
-    isHeaderVisible: function() {
+    isHeaderVisible() {
       return uiStore.getters.isHeaderVisible
     },
-    isFooterVisible: function() {
+    isFooterVisible() {
       return uiStore.getters.isFooterVisible
     },
-    notificationQueue: function() {
+    notificationQueue() {
       return uiStore.getters.getNotificationQueue
     },
-    notificationColor: function() {
+    notificationColor() {
       const queue = this.notificationQueue
       return queue.length && !queue[0].timeout ? 'error' : 'inform'
     },
-    isNotificationBarVisible: function() {
+    isNotificationBarVisible() {
       return uiStore.getters.isNotificationBarVisible
     },
-    currentNotification: function() {
+    currentNotification() {
       return uiStore.getters.getNotificationQueue[0]
     },
     getProfile() {
       return psStore.getters.getProfile
     },
-    isBackButtonVisible: function() {
+    isBackButtonVisible() {
       return uiStore.getters.isBackButtonVisible
     },
   },
@@ -118,7 +140,7 @@ export default {
     },
   },
   mounted() {
-    const user = { name: 'netmobiel' }
+    const user = { name: 'netmobiel', version: this.commithash.trim() }
     ybug(user)
     // Set the fcm token (for push notifications) in the local storage
     // for so we can retrieve it later to update the profile.
@@ -132,17 +154,26 @@ export default {
     }
   },
   methods: {
-    finishNotification: function() {
+    onProfileImageClick() {
+      // TODO: Only navigate to delegate if role is delegate (route to profile otherwise)
+      const route = '/profile/delegate'
+      // Do not route when we are already on the page.
+      // (vue router will throw a NavigationDuplicated error)
+      if (this.$route.path !== route) {
+        this.$router.push(route)
+      }
+    },
+    finishNotification() {
       uiStore.actions.finishNotification()
     },
-    goBack: function() {
+    goBack() {
       this.$router.go(-1)
     },
-    routeToMode: function() {
+    routeToMode() {
       let newRoute = ''
-      if (this.getProfile.userRole === 'passenger') {
+      if (this.getProfile.userRole === constants.PROFILE_ROLE_PASSENGER) {
         newRoute = '/search'
-      } else if (this.getProfile.userRole === 'driver') {
+      } else if (this.getProfile.userRole === constants.PROFILE_ROLE_DRIVER) {
         newRoute = '/plan'
       } else {
         newRoute = '/modeSelection'
@@ -215,6 +246,15 @@ header {
 
 .text-bold {
   font-weight: bold;
+}
+
+.v-snack {
+  position: absolute;
+  top: -52px;
+}
+
+.bottom-nav {
+  z-index: 100 !important;
 }
 
 //HACK: Styling of the notification close button. Some should fix this.

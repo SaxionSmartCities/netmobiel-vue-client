@@ -10,7 +10,13 @@ import {
   Trip,
   SearchCriteria,
 } from '@/store/itinerary-service/types'
+import { Moment } from 'moment'
 
+function safeConcatTrips(current: Trip[], additions: Trip[]) {
+  return current.concat(
+    additions.filter(trip => !current.some(existing => existing.id === trip.id))
+  )
+}
 function setSearchCriteria(state: ItineraryState, payload: SearchCriteria) {
   state.searchCriteria.from = payload.from
   state.searchCriteria.to = payload.to
@@ -79,11 +85,12 @@ function setPlannedTrips(state: ItineraryState, payload: Trip[]) {
 }
 
 function appendPlannedTrips(state: ItineraryState, payload: Trip[]) {
-  state.plannedTrips = state.plannedTrips.concat(payload)
+  state.plannedTrips = safeConcatTrips(state.plannedTrips, payload)
 }
 
 function setShoutOuts(state: ItineraryState, payload: ShoutOut[]) {
-  state.shoutOuts = payload
+  const length = state.shoutOuts.length
+  state.shoutOuts.splice(0, length, ...payload)
 }
 
 function setMyShoutOuts(state: ItineraryState, payload: ShoutOut[]) {
@@ -98,12 +105,16 @@ function setShoutOutsTotalCount(state: ItineraryState, payload: number) {
   state.shoutOutsTotalCount = payload
 }
 
+function setMyShoutOutsTotalCount(state: ItineraryState, payload: number) {
+  state.myShoutOutsCount = payload
+}
+
 function setPastTrips(state: ItineraryState, payload: Trip[]) {
   state.pastTrips = payload
 }
 
 function appendPastTrips(state: ItineraryState, payload: Trip[]) {
-  state.pastTrips = state.pastTrips.concat(payload)
+  state.pastTrips = safeConcatTrips(state.pastTrips, payload)
 }
 
 function setPastTripsCount(state: ItineraryState, payload: number) {
@@ -113,6 +124,11 @@ function setPastTripsCount(state: ItineraryState, payload: number) {
 function setCancelledTrips(state: ItineraryState, payload: Trip[]) {
   state.cancelledTrips = payload
 }
+
+function setShoutoutPlanTime(state: ItineraryState, payload: Moment) {
+  state.shoutoutPlanTime = payload
+}
+
 export const buildMutations = (
   isBuilder: ModuleBuilder<ItineraryState, RootState>
 ) => {
@@ -135,9 +151,11 @@ export const buildMutations = (
     setMyShoutOuts: isBuilder.commit(setMyShoutOuts),
     appendMyShoutOuts: isBuilder.commit(appendMyShoutOuts),
     setShoutOutsTotalCount: isBuilder.commit(setShoutOutsTotalCount),
+    setMyShoutOutsTotalCount: isBuilder.commit(setMyShoutOutsTotalCount),
     setPastTrips: isBuilder.commit(setPastTrips),
     appendPastTrips: isBuilder.commit(appendPastTrips),
     setPastTripsCount: isBuilder.commit(setPastTripsCount),
     setCancelledTrips: isBuilder.commit(setCancelledTrips),
+    setShoutoutPlanTime: isBuilder.commit(setShoutoutPlanTime),
   }
 }

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import config from '@/config/config'
+import util from '@/utils/Utils'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { getters, mutations } from '@/store/credits-service'
 import { CreditsState, Deposit, OrderId, Statement } from './types'
@@ -9,17 +10,12 @@ import * as uiStore from '@/store/ui'
 
 type ActionContext = BareActionContext<CreditsState, RootState>
 
-const { BASE_URL, GRAVITEE_BANKER_SERVICE_API_KEY } = config
-
-function generateHeaders(key: any) {
-  return {
-    'X-Gravitee-Api-Key': key,
-  }
-}
+const { BANKER_BASE_URL, GRAVITEE_BANKER_SERVICE_API_KEY } = config
+const { generateHeaders } = util
 
 async function fetchSettings(context: ActionContext) {
   try {
-    const resp = await axios.get(`${BASE_URL}/banker/settings`, {
+    const resp = await axios.get(`${BANKER_BASE_URL}/settings`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
     mutations.setBankerSettings(resp.data)
@@ -32,7 +28,7 @@ async function fetchSettings(context: ActionContext) {
 
 async function fetchUser(context: ActionContext) {
   try {
-    const resp = await axios.get(`${BASE_URL}/banker/users/me`, {
+    const resp = await axios.get(`${BANKER_BASE_URL}/users/me`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
     mutations.setBankerUser(resp.data)
@@ -48,7 +44,7 @@ async function fetchStatements(context: ActionContext, payload: PageSelection) {
     maxResults = payload?.maxResults ?? 10
   try {
     const resp = await axios.get(
-      `${BASE_URL}/banker/users/me/statements?offset=${offset}&maxResults=${maxResults}`,
+      `${BANKER_BASE_URL}/users/me/statements?offset=${offset}&maxResults=${maxResults}`,
       {
         headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
       }
@@ -86,7 +82,7 @@ async function fetchMoreStatements(context: ActionContext, maxResults: number) {
 async function buyCredits(context: ActionContext, payload: Deposit) {
   try {
     const resp = await axios.post(
-      `${BASE_URL}/banker/users/me/deposits`,
+      `${BANKER_BASE_URL}/users/me/deposits`,
       payload,
       {
         headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
@@ -103,7 +99,7 @@ async function buyCredits(context: ActionContext, payload: Deposit) {
 async function getDepositStatus(context: ActionContext, payload: OrderId) {
   try {
     const resp = await axios.post(
-      `${BASE_URL}/banker/deposit-events`,
+      `${BANKER_BASE_URL}/deposit-events`,
       payload,
       {
         headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),

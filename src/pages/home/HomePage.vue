@@ -11,7 +11,7 @@
       <v-col>
         <h1>
           {{ timeOfDayGreeting }},
-          {{ user.fullName }}
+          {{ fullName }}
         </h1>
       </v-col>
     </v-row>
@@ -60,7 +60,7 @@
     </v-row>
     <v-row>
       <v-col class="px-1 pb-0">
-        <h4 class="netmobiel">Jouw activiteiten</h4>
+        <h4 class="netmobiel">Jouw ritten</h4>
       </v-col>
     </v-row>
     <v-row class="py-0">
@@ -68,7 +68,7 @@
         <v-row dense>
           <v-col class="py-0">
             <span class="font-italic">
-              Je hebt nog geen activiteiten gepland.
+              Je hebt nog geen ritten gepland.
             </span>
           </v-col>
         </v-row>
@@ -141,6 +141,7 @@ import RideCard from '@/components/cards/RideCard.vue'
 import UpdateCard from '@/components/cards/UpdateCard.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
 import moment from 'moment'
+import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
 import * as chsStore from '@/store/charity-service'
 import * as csStore from '@/store/carpool-service'
@@ -161,8 +162,12 @@ export default {
     }
   },
   computed: {
-    user() {
-      return psStore.getters.getUser
+    profile() {
+      return psStore.getters.getProfile
+    },
+    fullName() {
+      const { firstName, lastName } = this.profile
+      return `${firstName} ${lastName}`
     },
     rides() {
       //HACK: Only display first 3 rides.
@@ -196,7 +201,7 @@ export default {
       return uiStore.getters.getUpdateMessages
     },
     profileImage() {
-      return psStore.getters.getUser.profile.image
+      return this.profile.image
     },
   },
   mounted() {
@@ -221,9 +226,9 @@ export default {
     },
     routeToMode() {
       let newRoute = ''
-      if (this.user.profile.userRole === 'passenger') {
+      if (this.profile.userRole === constants.PROFILE_ROLE_PASSENGER) {
         newRoute = '/search'
-      } else if (this.user.profile.userRole === 'driver') {
+      } else if (this.profile.userRole === constants.PROFILE_ROLE_DRIVER) {
         newRoute = '/plan'
       } else {
         newRoute = '/modeSelection'

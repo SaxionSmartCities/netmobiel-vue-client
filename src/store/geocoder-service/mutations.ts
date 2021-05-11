@@ -11,15 +11,11 @@ function setGeocoderSuggestions(
 
 function setGeoLocationPicked(state: GeoCoderState, payload: any) {
   // @ts-ignore
-  state.geocoder.pickedLocations[payload.field] = payload.suggestion
+  state.geocoder.pickedLocations[payload.field] = payload.place
 }
 
 function setGeoLocationsPicked(state: GeoCoderState, payload: any) {
   state.geocoder.pickedLocations = payload
-}
-
-function setPreFilledTime(state: GeoCoderState, payload: any) {
-  state.geocoder.preFilledTime = payload
 }
 
 function swapLocations(state: GeoCoderState, payload: any) {
@@ -35,7 +31,6 @@ export const buildMutations = (
     setGeocoderSuggestions: gsBuilder.commit(setGeocoderSuggestions),
     setGeoLocationPicked: gsBuilder.commit(setGeoLocationPicked),
     setGeoLocationsPicked: gsBuilder.commit(setGeoLocationsPicked),
-    setPreFilledTime: gsBuilder.commit(setPreFilledTime),
     swapLocations: gsBuilder.commit(swapLocations),
   }
 }

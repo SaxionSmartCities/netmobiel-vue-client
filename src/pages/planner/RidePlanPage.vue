@@ -98,6 +98,7 @@ import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import SearchCriteria from '@/components/common/SearchCriteria.vue'
 import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
+import { geoPlaceToCriteria } from '@/utils/Utils'
 import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import CoronaCheckModal from '@/components/common/CoronaCheckModal'
 import * as uiStore from '@/store/ui'
@@ -132,7 +133,10 @@ export default {
       const selectedCarId =
           psStore.getters.getProfile.ridePlanOptions.selectedCarId,
         cars = csStore.getters.getAvailableCars
-      return cars.find(car => car.id === selectedCarId)
+      // HACK: selectedCarId is a string (in the backend) but we expect a number. Using the == comparison
+      // we will get the correct selected car. We want to use === however. But the backend should be
+      // updated first.
+      return cars.find(car => car.id == selectedCarId)
     },
     disabledRideAddition() {
       const { from, to, travelTime } = this.searchCriteria
@@ -162,20 +166,11 @@ export default {
       let newCriteria = {
         ...this.searchCriteria,
       }
-      //TODO: move mapping from geo location to geocode sevice.
-      if (from.position) {
-        newCriteria.from = {
-          label: `${from.title} ${from.vicinity || ''}`,
-          latitude: from.position[0],
-          longitude: from.position[1],
-        }
+      if (from?.location) {
+        newCriteria.from = geoPlaceToCriteria(from)
       }
-      if (to.position) {
-        newCriteria.to = {
-          label: `${to.title} ${to.vicinity || ''}`,
-          latitude: to.position[0],
-          longitude: to.position[1],
-        }
+      if (to?.location) {
+        newCriteria.to = geoPlaceToCriteria(to)
       }
       if (!travelTime) {
         // Set the default date and time to today and the next whole hour.

@@ -24,8 +24,7 @@
           rounded
           outlined
           color="primary"
-          disabled
-          @click="$router.push('/addCredits')"
+          @click="$router.push('/charityOverviewPage')"
         >
           Doel steunen
         </v-btn>
@@ -39,7 +38,7 @@
           color="primary"
           @click="$router.push('/addCredits')"
         >
-          Rewards
+          Beloningen
         </v-btn>
       </v-col>
     </v-row>
@@ -101,7 +100,7 @@ export default {
   },
   computed: {
     creditAmount() {
-      return crsStore.getters.getBankerUser?.credits
+      return crsStore.getters.getBankerUser?.personalAccount?.credits
     },
     creditHistory() {
       return crsStore.getters.getAccountStatements?.data

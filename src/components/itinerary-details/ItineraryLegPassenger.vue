@@ -1,19 +1,23 @@
 <template>
   <v-row no-gutters>
     <v-col>
-      <b>{{ passenger.givenName }} {{ passenger.familyName }}</b> rijdt mee.
+      <external-user-image
+        :managed-identity="passenger.managedIdentity"
+        :image-size="60"
+        :avatar-size="66"
+      />
       <br />
-      <round-user-image :image-size="60" :avatar-size="66"></round-user-image>
+      <b>{{ passenger.givenName }} {{ passenger.familyName }}</b> rijdt mee.
     </v-col>
   </v-row>
 </template>
 
 <script>
-import RoundUserImage from '@/components/common/RoundUserImage'
+import ExternalUserImage from '@/components/profile/ExternalUserImage'
 
 export default {
   name: 'ItineraryLegPassenger',
-  components: { RoundUserImage },
+  components: { ExternalUserImage },
   props: {
     passenger: { type: Object, required: true },
   },

@@ -51,6 +51,7 @@ export default {
   name: 'Donated',
   components: { ContentPane },
   props: {
+    id: { type: String, required: true },
     name: { type: String, required: true },
   },
   methods: {
@@ -58,8 +59,7 @@ export default {
       this.$router.push({ name: 'charityOverviewPage' })
     },
     showAllDonations() {
-      const charity = chsStore.getters.getSelectedCharity
-      this.$router.push({ name: 'charityDetails', params: { id: charity._id } })
+      this.$router.push({ name: 'charityDetails', params: { id: this.id } })
     },
   },
 }

@@ -22,7 +22,6 @@
             value="EditTripCurrentAndPlanned"
             disabled
           ></v-radio>
-          <v-radio label="Alle ritten" value="EditTripAll" disabled></v-radio>
         </v-radio-group>
         <v-row>
           <v-col>
