@@ -27,4 +27,11 @@ module.exports = {
     place.titleHighlights = suggestion.titleHighlights
     return place
   },
+  geoPlaceToCriteria: function(place) {
+    return {
+      label: place.title,
+      latitude: place.location.coordinates[1],
+      longitude: place.location.coordinates[0],
+    }
+  },
 }
