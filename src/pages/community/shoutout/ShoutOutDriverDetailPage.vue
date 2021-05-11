@@ -151,7 +151,7 @@ export default {
         this.fetchShoutOutPlan(time, location)
         gsStore.mutations.setGeoLocationPicked({
           field: 'ridefrom',
-          suggestion: null,
+          place: null,
         })
       }
     },
