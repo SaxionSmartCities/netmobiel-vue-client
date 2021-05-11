@@ -13,19 +13,12 @@ export const buildGetters = (
     return state.geocoder.pickedLocations
   }, 'getPickedLocation')
 
-  const getPreFilledTime = gsBuilder.read((state: GeoCoderState) => {
-    return state.geocoder.preFilledTime
-  }, 'getPreFilledTime')
-
   return {
     get getGeocoderSuggestions() {
       return getGeocoderSuggestions()
     },
     get getPickedLocation() {
       return getPickedLocation()
-    },
-    get getPreFilledTime() {
-      return getPreFilledTime()
     },
   }
 }

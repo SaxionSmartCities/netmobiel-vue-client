@@ -5,10 +5,11 @@ import {
   Compliment,
   ComplimentType,
   CoronaCheck,
+  Place,
   Profile,
   ProfileState,
-  RidePlanOptions,
   PublicProfile,
+  RidePlanOptions,
   Review,
   Delegation,
 } from '@/store/profile-service/types'
@@ -98,6 +99,10 @@ function setPublicReviews(state: ProfileState, reviews: Review[]) {
   state.externalUser.reviews = reviews
 }
 
+function setFavoriteLocations(state: ProfileState, places: Place[]) {
+  state.user.profile.favoriteLocations = places
+}
+
 function setDelegations(state: ProfileState, delegations: Delegation[]) {
   state.user.delegations = delegations
 }
@@ -136,6 +141,7 @@ export const buildMutations = (
     setPublicProfile: psBuilder.commit(setPublicProfile),
     setPublicCompliments: psBuilder.commit(setPublicCompliments),
     setPublicReviews: psBuilder.commit(setPublicReviews),
+    setFavoriteLocations: psBuilder.commit(setFavoriteLocations),
     setDelegations: psBuilder.commit(setDelegations),
     setDelegateProfile: psBuilder.commit(setDelegateProfile),
     setDelegatorId: psBuilder.commit(setDelegatorId),

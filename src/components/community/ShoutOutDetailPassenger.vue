@@ -67,7 +67,12 @@ export default {
   computed: {
     itineraries() {
       // A filtered list of itineraries (removing cancelled offers)
-      return this.trip.itineraries.filter(i => i.legs[0].state !== 'CANCELLED')
+      if (this.trip?.itineraries) {
+        return this.trip.itineraries.filter(
+          i => i.legs[0].state !== 'CANCELLED'
+        )
+      }
+      return []
     },
     selectedOffer() {
       if (

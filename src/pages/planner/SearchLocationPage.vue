@@ -18,6 +18,7 @@
     <v-row v-if="showSuggestionsList" class="align-self-start">
       <locations-list
         :locations="suggestions"
+        empty-list-label="Geen resultaten gevonden"
         show-highlighted-text
         @onItemClicked="completeSearch"
         @onFavoriteClicked="promptFavorite"
@@ -25,21 +26,37 @@
       />
     </v-row>
     <v-row
-      v-if="favorites.length > 0 && !showSuggestionsList"
+      v-if="!showSuggestionsList"
       class="d-flex flex-column align-self-start"
       dense
     >
-      <v-col><h4 class="netmobiel">Mijn favorieten</h4></v-col>
+      <v-col v-if="homeAddress.length > 0">
+        <h4 class="netmobiel">Thuis</h4>
+      </v-col>
+      <locations-list
+        :locations="homeAddress"
+        :show-highlighted-text="false"
+        :show-favorite-icon="false"
+        empty-list-label="Geen thuis adres"
+        @onItemClicked="completeSearch($event)"
+        @onUnFavoriteClicked="removeFavorite"
+      />
+      <v-col class="mt-2">
+        <h4 class="netmobiel">Mijn favorieten</h4>
+      </v-col>
       <locations-list
         :locations="favorites"
         :show-highlighted-text="false"
+        empty-list-label="Geen favorieten opgeslagen"
         @onItemClicked="completeSearch($event)"
         @onUnFavoriteClicked="removeFavorite"
       />
     </v-row>
     <add-favorite-dialog
       v-if="selectedLocation"
+      :show="selectedLocation != null"
       :location="selectedLocation"
+      @onCancelFavorite="cancelFavorite"
       @onAddFavorite="addFavorite"
     />
   </content-pane>
@@ -47,16 +64,16 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-import LocationsList from '@/components/search/LocationsList.vue'
+import LocationsList from '@/components/lists/LocationsList.vue'
 import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
 // map category to Material icon name (needs more work...)
 // show at most 8 suitable suggestions
 import { throttle } from 'lodash'
+import { geoSuggestionToPlace } from '@/utils/Utils'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 import * as gsStore from '@/store/geocoder-service'
-const highlightMarker = 'class="search-hit"'
 const skipCategories = new Set(['intersection'])
 const maxSuggestions = 8
 
@@ -78,26 +95,39 @@ export default {
     return {
       searchInput: '',
       showSuggestionsList: false,
-      selectedLocation: undefined,
+      selectedLocation: null,
     }
   },
   computed: {
+    homeAddress() {
+      const address = psStore.getters.getProfile.address
+      if (address) {
+        return [
+          {
+            ...address,
+            title: 'Thuis',
+            label: `${address.street}, ${address.postalCode} ${address.locality}`,
+          },
+        ]
+      }
+      return []
+    },
     favorites() {
-      return psStore.getters.getProfile.favoriteLocations
+      return psStore.getters.getProfile.favoriteLocations.map(p => {
+        let mapped = { ...p }
+        mapped.title = p.label
+        mapped.label = `${p.street}, ${p.postalCode} ${p.locality}`
+        mapped.favorite = true
+        return mapped
+      })
     },
     suggestions() {
       let suggestions = gsStore.getters.getGeocoderSuggestions
-      const highlighted = suggestions.filter(
-        suggestion =>
-          suggestion.highlightedTitle.indexOf(highlightMarker) > 0 &&
-          !skipCategories.has(suggestion.category)
-      )
-      highlighted.length = Math.min(highlighted.length, maxSuggestions)
-      const favorited = highlighted.map(suggestion => ({
-        ...suggestion,
-        favorite: !!this.favorites.find(fav => fav.id === suggestion.id),
+      // Mark suggestion that have already been favorited.
+      return suggestions.map(suggestion => ({
+        ...geoSuggestionToPlace(suggestion),
+        favorite: !!this.favorites.find(fav => fav.ref === suggestion.id),
       }))
-      return favorited
     },
     localEditSearchCriteria() {
       return this.editSearchCriteria === 'true'
@@ -108,11 +138,7 @@ export default {
       if (val != null) {
         const show = (this.showSuggestionsList = val.length > 3)
         if (show) {
-          gsStore.actions.fetchGeocoderSuggestions({
-            query: val,
-            hlStart: `<span ${highlightMarker}>`,
-            hlEnd: '</span>',
-          })
+          gsStore.actions.fetchGeocoderSuggestions({ query: val })
         }
       }
     }, 500),
@@ -120,31 +146,31 @@ export default {
   created() {
     uiStore.mutations.showBackButton()
   },
+  mounted() {
+    psStore.actions.fetchFavoriteLocations()
+  },
   methods: {
     parseHighlightedLabel(suggestion) {
       return `${suggestion.highlightedTitle} ${suggestion.highlightedVicinity}`
     },
-    completeSearch(suggestion) {
+    completeSearch(place) {
+      gsStore.mutations.setGeoLocationPicked({
+        field: this.$route.params.field,
+        place: place,
+      })
+      // If we are editing our current search results then
+      // set the criteria accoordingly and do the search.
       if (this.localEditSearchCriteria) {
-        const vicinity = suggestion?.vicinity.replaceAll('<br/>', ' ')
         const fieldValue = {
-          label: `${suggestion.title} ${vicinity || ''}`,
-          latitude: suggestion.position[0],
-          longitude: suggestion.position[1],
+          label: place.title,
+          latitude: place.location.coordinates[0],
+          longitude: place.location.coordinates[1],
         }
         isStore.mutations.setSearchCriteriaField({
           field: this.$route.params.field,
           value: fieldValue,
         })
         this.sendPlanningRequest()
-      } else {
-        gsStore.mutations.setGeoLocationPicked({
-          field: this.$route.params.field,
-          suggestion: {
-            ...suggestion,
-            vicinity: suggestion.vicinity.replaceAll('<br/>', ' '),
-          },
-        })
       }
       this.$router.go(-1)
     },
@@ -166,37 +192,30 @@ export default {
     promptFavorite(suggestion) {
       this.selectedLocation = suggestion
     },
-    addFavorite(favorite) {
-      let profile = psStore.getters.getProfile
-      let duplicate = profile.favoriteLocations.find(
-        x => x.label === favorite.label
-      )
+    cancelFavorite() {
+      this.selectedLocation = null
+    },
+    addFavorite(place) {
+      // Hide dialog
+      this.selectedLocation = null
+      // Check for duplicates
+      let duplicate = this.favorites.find(f => f.ref === place.ref)
       if (duplicate) {
-        //TODO: Check why this does not fire.
-        uiStore.actions.queueInfoNotification(
-          'Favoriet is al opgeslagen aan uw profiel.'
+        uiStore.actions.queueErrorNotification(
+          'Favoriet bestaat al in uw profiel.'
         )
       } else {
-        let favoriteLocations = profile.favoriteLocations.slice(0)
-        favoriteLocations.push(favorite)
-        psStore.actions.storeFavoriteLocations(favoriteLocations)
+        const profileId = psStore.getters.getProfile.id
+        psStore.actions.storeFavoriteLocation({ profileId, place })
       }
-      this.selectedLocation = undefined
     },
     removeFavorite(favorite) {
-      let profile = psStore.getters.getProfile
-      let favoriteLocations = profile.favoriteLocations.filter(
-        x => x.id !== favorite.id
-      )
-      psStore.actions.storeFavoriteLocations(favoriteLocations)
+      const profileId = psStore.getters.getProfile.id
+      const placeId = favorite.id
+      psStore.actions.deleteFavoriteLocation({ profileId, placeId })
     },
   },
 }
 </script>
 
-<style lang="scss">
-.search-hit {
-  font-weight: bold;
-  font-size: 110%;
-}
-</style>
+<style lang="scss"></style>

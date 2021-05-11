@@ -58,6 +58,7 @@
 import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import SearchCriteria from '@/components/common/SearchCriteria.vue'
+import { geoPlaceToCriteria } from '@/utils/Utils'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as gsStore from '@/store/geocoder-service'
@@ -95,20 +96,11 @@ export default {
         ...this.searchCriteria,
         preferences: searchPreferences,
       }
-      //TODO: move mapping from geo location to geocode sevice.
-      if (from.position) {
-        newCriteria.from = {
-          label: `${from.title} ${from.vicinity || ''}`,
-          latitude: from.position[0],
-          longitude: from.position[1],
-        }
+      if (from?.location) {
+        newCriteria.from = geoPlaceToCriteria(from)
       }
-      if (to.position) {
-        newCriteria.to = {
-          label: `${to.title} ${to.vicinity || ''}`,
-          latitude: to.position[0],
-          longitude: to.position[1],
-        }
+      if (to?.location) {
+        newCriteria.to = geoPlaceToCriteria(to)
       }
       if (!travelTime) {
         // Set the default date and time to today and the next whole hour.

@@ -71,6 +71,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane'
 import account_config from '@/config/account_config'
+import { geoSuggestionToPlace } from '@/utils/Utils'
 import { get, set, isEqual } from 'lodash'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
@@ -99,17 +100,12 @@ export default {
   watch: {
     suggestions(value) {
       if (value.length > 0) {
-        const address = value.find(s => s.resultType == 'address')
-        if (address && !isEqual(address.position, this.user.address.location)) {
+        const address = value.find(
+          s => s.resultType == 'houseNumber' || s.resultType == 'street'
+        )
+        if (address) {
           let newProfile = JSON.parse(JSON.stringify(this.user))
-          // Use GeoJSON format (notice the lon,lat order)
-          newProfile.address.location = {
-            type: 'Point',
-            coordinates: [
-              address.position[1], // Longitude
-              address.position[0], // Latitude
-            ],
-          }
+          newProfile.address = geoSuggestionToPlace(address)
           psStore.actions.updateProfile(newProfile)
         }
       }
@@ -136,7 +132,7 @@ export default {
     },
     onChangedInfoProperty(input) {
       // Fires when the user onfocusses the input
-      //HACK: JSON parse/stringify to prevent "[vuex] do not mutate vuex store
+      // HACK: JSON parse/stringify to prevent "[vuex] do not mutate vuex store
       // state outside mutation handlers." error.
       let newProfile = JSON.parse(JSON.stringify(this.user))
       // check for parse function in account config

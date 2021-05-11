@@ -146,7 +146,7 @@ export interface Profile extends PublicProfile {
   searchPreferences: SearchPreferences | null
   ridePlanOptions: RidePlanOptions | null
   notificationOptions: NotificationOptions
-  favoriteLocations: any[]
+  favoriteLocations: Place[]
   userRole: string[] | []
 }
 
@@ -169,6 +169,21 @@ export interface RidePlanOptions {
   luggageOptions: string[]
   selectedCarId: number
   cars: any[]
+}
+
+export interface Place {
+  id: number
+  countryCode?: string
+  houseNumber?: string
+  label: string
+  locality?: string
+  location: {
+    coordinates: number[]
+    type: string
+  }
+  postalCode?: string
+  // stateCode?: string
+  street?: string
 }
 
 export interface NotificationOptions {
