@@ -95,19 +95,18 @@ export default {
         ...this.searchCriteria,
         preferences: searchPreferences,
       }
-      //TODO: move mapping from geo location to geocode sevice.
-      if (from.position) {
+      if (from?.location) {
         newCriteria.from = {
-          label: `${from.title} ${from.vicinity || ''}`,
-          latitude: from.position[0],
-          longitude: from.position[1],
+          label: from.title,
+          latitude: from.location.coordinates[0],
+          longitude: from.location.coordinates[1],
         }
       }
-      if (to.position) {
+      if (to?.location) {
         newCriteria.to = {
-          label: `${to.title} ${to.vicinity || ''}`,
-          latitude: to.position[0],
-          longitude: to.position[1],
+          label: to.title,
+          latitude: to.location.coordinates[0],
+          longitude: to.location.coordinates[1],
         }
       }
       if (!travelTime) {
