@@ -74,7 +74,6 @@ export default {
   computed: {
     locationLabel() {
       const { street, postalCode, locality } = this.location
-      console.log(`Street: ${street}`)
       if (postalCode != undefined) {
         if (street != undefined) {
           return `${street}, ${postalCode} ${locality}`

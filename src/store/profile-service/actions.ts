@@ -209,7 +209,6 @@ function fetchFavoriteLocations(context: ActionContext) {
     })
     .then(response => {
       if (response.status == 200) {
-        console.log(response.data)
         mutations.setFavoriteLocations(response.data.data)
       }
     })
