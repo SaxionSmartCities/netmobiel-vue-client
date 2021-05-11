@@ -13,4 +13,18 @@ module.exports = {
       'X-Gravitee-Api-Key': key,
     }
   },
+  geoSuggestionToPlace: function(suggestion) {
+    let place = { ...suggestion.address }
+    place.location = {
+      coordinates: [
+        suggestion.position.longitude,
+        suggestion.position.latitude,
+      ],
+      type: 'Point',
+    }
+    place.ref = suggestion.id
+    // Overwrite the address label with the label provide by the user.
+    place.label = suggestion.title
+    return place
+  },
 }

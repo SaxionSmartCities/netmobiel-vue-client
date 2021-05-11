@@ -67,6 +67,7 @@ import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
 // map category to Material icon name (needs more work...)
 // show at most 8 suitable suggestions
 import { throttle } from 'lodash'
+import { geoSuggestionToPlace } from '@/utils/Utils'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
@@ -152,7 +153,7 @@ export default {
       return `${suggestion.highlightedTitle} ${suggestion.highlightedVicinity}`
     },
     completeSearch(suggestion) {
-      console.log(`TODO: ${suggestion}`)
+      console.log(suggestion)
       // if (this.localEditSearchCriteria) {
       //   const vicinity = suggestion?.vicinity.replaceAll('<br/>', ' ')
       //   const fieldValue = {
@@ -195,28 +196,17 @@ export default {
       this.selectedLocation = suggestion
     },
     addFavorite(favorite) {
-      let place = { ...favorite.address }
-      place.location = {
-        coordinates: [favorite.position.longitude, favorite.position.latitude],
-        type: 'Point',
+      const place = geoSuggestionToPlace(favorite)
+      // Check for duplicates
+      let duplicate = this.favorites.find(f => f.ref === favorite.id)
+      if (duplicate) {
+        uiStore.actions.queueErrorNotification(
+          'Favoriet bestaat al in uw profiel.'
+        )
+      } else {
+        const profileId = psStore.getters.getProfile.id
+        psStore.actions.storeFavoriteLocation({ profileId, place })
       }
-      place.ref = favorite.id
-      // Overwrite the address label with the label provide by the user.
-      place.label = favorite.title
-
-      const profile = psStore.getters.getProfile
-      // let duplicate = profile.favoriteLocations.find(
-      //   x => x.label === favorite.label
-      // )
-      // TODO: Check for duplicates
-      // if (duplicate) {
-      //   //TODO: Check why this does not fire.
-      //   uiStore.actions.queueInfoNotification(
-      //     'Favoriet is al opgeslagen aan uw profiel.'
-      //   )
-      // } else {
-      const profileId = profile.id
-      psStore.actions.storeFavoriteLocation({ profileId, place })
     },
     removeFavorite(favorite) {
       let profileId = psStore.getters.getProfile.id
