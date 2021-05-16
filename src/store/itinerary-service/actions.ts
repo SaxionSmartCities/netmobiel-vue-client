@@ -38,9 +38,10 @@ function submitPlanningsRequest(
     useAsArrivalTime: travelTime.arriving,
   }
   mutations.setPlanningStatus({ status: 'PENDING', message: '' })
+  const delegatorId = context.rootState.ps.user.delegatorId
   axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
       params: params,
     })
     .then(response => {
