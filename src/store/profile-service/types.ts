@@ -173,6 +173,7 @@ export interface RidePlanOptions {
 
 export interface Place {
   id: number
+  ref: string
   countryCode?: string
   houseNumber?: string
   label: string
@@ -182,7 +183,7 @@ export interface Place {
     type: string
   }
   postalCode?: string
-  // stateCode?: string
+  stateCode?: string
   street?: string
 }
 

@@ -38,9 +38,10 @@ function submitPlanningsRequest(
     useAsArrivalTime: travelTime.arriving,
   }
   mutations.setPlanningStatus({ status: 'PENDING', message: '' })
+  const delegatorId = context.rootState.ps.user.delegatorId
   axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
       params: params,
     })
     .then(response => {
@@ -56,10 +57,11 @@ function submitPlanningsRequest(
 }
 
 function deleteSelectedTrip(context: ActionContext, payload: any) {
+  const delegatorId = context.rootState.ps.user.delegatorId
   const URL = `${PLANNER_BASE_URL}/trips/${payload.tripId}`
   axios
     .delete(URL, {
-      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
     })
     .then(response => {
       if (response.status === 204) {
@@ -93,11 +95,12 @@ function deleteSelectedTrip(context: ActionContext, payload: any) {
 }
 
 function storeSelectedTrip(context: ActionContext, payload: TripSelection) {
+  const delegatorId = context.rootState.ps.user.delegatorId
   mutations.setBookingStatus({ status: 'PENDING' })
   const URL = `${PLANNER_BASE_URL}/trips`
   axios
     .post(URL, payload, {
-      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
     })
     .then(response => {
       if (response.status == 201) {
@@ -225,10 +228,11 @@ function fetchTrips(
   since && (params['since'] = since)
   sortDir && (params['sortDir'] = sortDir)
 
+  const delegatorId = context.rootState.ps.user.delegatorId
   const URL = `${PLANNER_BASE_URL}/trips`
   axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
       params: params,
     })
     .then(response => {
@@ -284,6 +288,7 @@ function fetchShoutOuts(
 }
 
 function fetchMyShoutOuts(context: ActionContext, { offset: offset }: any) {
+  const delegatorId = context.rootState.ps.user.delegatorId
   const params = {
     offset,
     inProgressOnly: true,
@@ -292,7 +297,7 @@ function fetchMyShoutOuts(context: ActionContext, { offset: offset }: any) {
   }
   axios
     .get(`${PLANNER_BASE_URL}/plans`, {
-      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
       params: params,
     })
     .then(response => {
@@ -310,9 +315,12 @@ function fetchMyShoutOuts(context: ActionContext, { offset: offset }: any) {
 }
 
 function fetchShoutOut(context: ActionContext, { id }: any) {
+  const delegatorId = context.rootState.ps.user.delegatorId
   const URL = `${PLANNER_BASE_URL}/plans/${id}`
   axios
-    .get(URL, { headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY) })
+    .get(URL, {
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
+    })
     .then(response => {
       if (response.status == 200) {
         mutations.setSelectedTrip(response.data)
@@ -326,10 +334,13 @@ function fetchShoutOut(context: ActionContext, { id }: any) {
 }
 
 function fetchTrip(context: ActionContext, payload: any) {
+  const delegatorId = context.rootState.ps.user.delegatorId
   const tripId = payload.id
   const URL = `${PLANNER_BASE_URL}/trips/${tripId}`
   return axios
-    .get(URL, { headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY) })
+    .get(URL, {
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
+    })
     .then(response => {
       if (response.status == 200) {
         mutations.setSelectedTrip(response.data)
@@ -343,11 +354,11 @@ function fetchTrip(context: ActionContext, payload: any) {
     })
 }
 
-function tripConfirmation({ id, acknowledge }: any) {
+function tripConfirmation({ id, delegatorId, acknowledge }: any) {
   const URL = `${PLANNER_BASE_URL}/trips/${id}/confirm/${acknowledge}`
   const data = {}
   const config = {
-    headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
+    headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
   }
   let instance = axios.create()
   addInterceptors(instance)
@@ -355,7 +366,12 @@ function tripConfirmation({ id, acknowledge }: any) {
 }
 
 function rejectTrip(context: ActionContext, payload: any) {
-  const promise = tripConfirmation({ id: payload.id, acknowledge: false })
+  const delegatorId = context.rootState.ps.user.delegatorId
+  const promise = tripConfirmation({
+    id: payload.id,
+    delegatorId: delegatorId,
+    acknowledge: false,
+  })
   promise
     .then(resp => {
       if (resp.status == 204) {
@@ -378,7 +394,12 @@ function rejectTrip(context: ActionContext, payload: any) {
 }
 
 function confirmTrip(context: ActionContext, payload: any) {
-  const promise = tripConfirmation({ id: payload.id, acknowledge: true })
+  const delegatorId = context.rootState.ps.user.delegatorId
+  const promise = tripConfirmation({
+    id: payload.id,
+    delegatorId: delegatorId,
+    acknowledge: true,
+  })
   promise
     .then(function(resp) {
       if (resp.status == 204) {
@@ -434,11 +455,12 @@ function submitShoutOutPlanningsRequest(context: ActionContext, payload: any) {
 }
 
 function fetchCancelledTrips(context: ActionContext) {
+  const delegatorId = context.rootState.ps.user.delegatorId
   const params: any = { state: 'CANCELLED' }
   const URL = `${PLANNER_BASE_URL}/trips`
   axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
       params: params,
     })
     .then(response => {
