@@ -52,12 +52,20 @@ export default {
   data() {
     return {
       items: [
+        'Aalten',
+        'Beltrum',
+        'Borculo',
+        'Eibergen',
         'Groenlo',
         'Harreveld',
         'Lievelde',
         'Lichtenvoorde',
         'Mariënvelde',
+        'Meddo',
+        'Neede',
+        'Ruurlo',
         'Vragender',
+        'Winterswijk',
         'Zieuwent',
         'Zwolle',
       ],
