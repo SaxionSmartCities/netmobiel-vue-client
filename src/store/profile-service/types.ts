@@ -84,6 +84,7 @@ export class ProfileState {
   }
   search: ProfileSearch = {
     keyword: '',
+    status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
     results: [],
   }
 }
@@ -156,6 +157,7 @@ export interface Profile extends PublicProfile {
 
 export interface ProfileSearch {
   keyword: string
+  status: string
   results: PublicProfile[] | []
 }
 

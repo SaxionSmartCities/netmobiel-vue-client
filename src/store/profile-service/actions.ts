@@ -374,6 +374,7 @@ function storeDelegation(
   { delegateId, delegatorId }: any
 ) {
   const URL = `${PROFILE_BASE_URL}/delegations`
+  mutations.setSearchStatus('PENDING')
   axios
     .post(
       URL,
@@ -385,6 +386,9 @@ function storeDelegation(
     .then(response => {
       if (response.status === 201) {
         uiStore.actions.queueInfoNotification(`Je machtiging is opgeslagen!`)
+        mutations.setSearchStatus('SUCCESS')
+      } else {
+        mutations.setSearchStatus('FAILED')
       }
     })
     .catch(error => {
@@ -393,6 +397,7 @@ function storeDelegation(
       uiStore.actions.queueErrorNotification(
         `Fout bij opslaan van de machtiging`
       )
+      mutations.setSearchStatus('FAILED')
     })
 }
 

@@ -79,6 +79,9 @@ export default {
         }
       })
     },
+    searchStatus() {
+      return psStore.getters.getSearchStatus
+    },
   },
   watch: {
     search: throttle(function(val) {
@@ -90,6 +93,11 @@ export default {
         psStore.mutations.setSearchResults([])
       }
     }, 500),
+    searchStatus(newValue) {
+      if (newValue === 'SUCCESS') {
+        this.$router.go(-1)
+      }
+    },
   },
   mounted() {
     uiStore.mutations.showBackButton()

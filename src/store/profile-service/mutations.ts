@@ -127,6 +127,10 @@ function setSearchKeyword(state: ProfileState, keyword: string) {
   state.search.keyword = keyword
 }
 
+function setSearchStatus(state: ProfileState, status: string) {
+  state.search.status = status
+}
+
 function setSearchResults(state: ProfileState, results: PublicProfile[]) {
   state.search.results = results
 }
@@ -156,5 +160,6 @@ export const buildMutations = (
     resetDelegate: psBuilder.commit(resetDelegate),
     setSearchKeyword: psBuilder.commit(setSearchKeyword),
     setSearchResults: psBuilder.commit(setSearchResults),
+    setSearchStatus: psBuilder.commit(setSearchStatus),
   }
 }
