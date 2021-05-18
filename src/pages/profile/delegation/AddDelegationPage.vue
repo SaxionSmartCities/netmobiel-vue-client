@@ -32,6 +32,7 @@
         <account-list
           :accounts="searchResults"
           empty-list-label="Geen accounts gevonden"
+          @AccountSelected="onSelectAccount"
         />
       </v-col>
     </v-row>
@@ -70,7 +71,13 @@ export default {
   },
   computed: {
     searchResults() {
-      return psStore.getters.getSearchResults
+      const delegations = psStore.getters.getDelegations
+      return psStore.getters.getSearchResults.map(r => {
+        return {
+          ...r,
+          managed: !!delegations.find(d => d.delegator.id === r.id),
+        }
+      })
     },
   },
   watch: {
@@ -90,6 +97,14 @@ export default {
   methods: {
     clearSearchInput() {
       this.search = ''
+    },
+    onSelectAccount(account) {
+      const profileId = psStore.getters.getProfile.id
+      const payload = {
+        delegateId: profileId,
+        delegatorId: account.id,
+      }
+      psStore.actions.storeDelegation(payload)
     },
   },
 }
