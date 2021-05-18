@@ -21,12 +21,12 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col xs6 class="mx-2">
+        <v-col xs6>
           <v-btn block rounded outlined color="primary" @click="prevStep()">
             Terug
           </v-btn>
         </v-col>
-        <v-col xs6 class="mx-2">
+        <v-col xs6>
           <v-btn block rounded depressed color="button" @click="nextStep()">
             Verder
           </v-btn>

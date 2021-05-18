@@ -1,6 +1,6 @@
 <template>
   <content-pane>
-    <onboarding-navigation title="Account toevoegen" />
+    <onboarding-navigation title="Nieuw account" />
   </content-pane>
 </template>
 
