@@ -50,6 +50,9 @@ function fetchProfile(context: ActionContext) {
 }
 
 function fetchPublicProfile(context: ActionContext, { profileId }: any) {
+  if (!profileId) {
+    return
+  }
   const URL = `${PROFILE_BASE_URL}/profiles/${profileId}`
   return axios
     .get(URL, {
@@ -57,8 +60,13 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
     })
     .then(response => {
       if (response.data.profiles.length > 0) {
-        let profile = { ...response.data.profiles[0] }
-        profile.dateOfBirth = Date.parse(response.data.profiles[0].dateOfBirth)
+        let profile = {
+          ...response.data.profiles[0],
+          dateOfBirth: Date.parse(response.data.profiles[0].dateOfBirth),
+          image: response.data.profiles[0].image
+            ? `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
+            : '',
+        }
         mutations.setPublicProfile(profile)
       }
     })
