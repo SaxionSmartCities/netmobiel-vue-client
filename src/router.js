@@ -51,6 +51,7 @@ import UserProfile from '@/pages/profile/UserProfile'
 import Purchase from '@/pages/profile/credits/Purchase'
 import ConfirmDeposit from '@/pages/profile/credits/ReturnAfterDeposit'
 import DelegationOverview from '@/pages/profile/delegation/DelegationOverview'
+import AddDelegationPage from '@/pages/profile/delegation/AddDelegationPage'
 import DelegationNew from '@/pages/profile/delegation/NewDelegationPage'
 
 const router = new Router({
@@ -83,6 +84,10 @@ const router = new Router({
     {
       path: '/profile/delegate',
       component: DelegationOverview,
+    },
+    {
+      path: '/profile/delegate/add',
+      component: AddDelegationPage,
     },
     {
       path: '/profile/delegate/new',

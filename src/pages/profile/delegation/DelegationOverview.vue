@@ -78,7 +78,7 @@ export default {
   },
   methods: {
     addDelegation() {
-      this.$router.push('/profile/delegate/new')
+      this.$router.push('/profile/delegate/add')
     },
     onAccountSelected(delegatorId) {
       const delegateId = psStore.getters.getDelegateProfile?.id
