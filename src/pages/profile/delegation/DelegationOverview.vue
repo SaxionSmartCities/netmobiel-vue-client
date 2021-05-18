@@ -64,12 +64,7 @@ export default {
   mounted() {
     uiStore.mutations.showBackButton()
     if (this.$keycloak.hasRealmRole('delegate')) {
-      let delegateId = psStore.getters.getProfile.id
-      const delegateProfile = psStore.getters.getDelegateProfile
-      if (delegateProfile) {
-        delegateId = delegateProfile.id
-      }
-      // Check if we have a delegateProfile
+      const delegateId = this.delegateId()
       psStore.actions.fetchDelegations({ delegateId })
     } else {
       // Redirect to profile page
@@ -77,6 +72,16 @@ export default {
     }
   },
   methods: {
+    delegateId() {
+      const delegateId = psStore.getters.getProfile.id
+      const delegateProfile = psStore.getters.getDelegateProfile
+      // Check if we have a delegateProfile, if so then return this id.
+      // This is the case when the delegate is 'impersonating' a delegator.
+      if (delegateProfile) {
+        return delegateProfile.id
+      }
+      return delegateId
+    },
     addDelegation() {
       this.$router.push('/profile/delegate/add')
     },
@@ -89,7 +94,8 @@ export default {
       }
     },
     onDelegationDelete(delegationId) {
-      psStore.actions.deleteDelegation({ delegationId })
+      const delegateId = this.delegateId()
+      psStore.actions.deleteDelegation({ delegateId, delegationId })
     },
   },
 }

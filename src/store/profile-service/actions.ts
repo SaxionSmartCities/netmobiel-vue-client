@@ -396,15 +396,20 @@ function storeDelegation(
     })
 }
 
-function deleteDelegation(context: ActionContext, { delegationId }: any) {
+function deleteDelegation(
+  context: ActionContext,
+  { delegateId, delegationId }: any
+) {
   const URL = `${PROFILE_BASE_URL}/delegations/${delegationId}`
   return axios
     .delete(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
     .then(response => {
-      // eslint-disable-next-line
-      console.log(response)
+      if (response.status === 204) {
+        uiStore.actions.queueInfoNotification(`Je machtiging is verwijderd!`)
+        fetchDelegations(context, { delegateId })
+      }
     })
     .catch(error => {
       // eslint-disable-next-line
