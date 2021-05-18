@@ -25,6 +25,7 @@
           block
           outlined
           color="primary"
+          :disabled="delegatorId"
           @click="addDelegation"
         >
           Toevoegen
