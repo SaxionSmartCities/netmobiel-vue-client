@@ -20,7 +20,10 @@
           </span>
         </v-col>
         <v-col class="shrink">
-          <v-icon large>
+          <v-icon v-if="account.managed" large class="secondary-color">
+            check
+          </v-icon>
+          <v-icon v-else large @click="selectAccount(account)">
             add_circle_outline
           </v-icon>
         </v-col>
@@ -39,6 +42,11 @@ export default {
   props: {
     accounts: { type: Array, required: true },
     emptyListLabel: { type: String, required: true },
+  },
+  methods: {
+    selectAccount(account) {
+      this.$emit('AccountSelected', account)
+    },
   },
 }
 </script>
