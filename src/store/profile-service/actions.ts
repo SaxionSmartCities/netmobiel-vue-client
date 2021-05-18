@@ -71,6 +71,29 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
     })
 }
 
+function fetchProfiles(context: ActionContext, { keyword }: any) {
+  const URL = `${PROFILE_BASE_URL}/profiles?text=${keyword}`
+  axios
+    .get(URL, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+    })
+    .then(response => {
+      if (response.status == 200) {
+        const results = response.data.data.map((r: any) => {
+          return {
+            ...r,
+            image: r.image ? `${IMAGES_BASE_URL}/${r.image}` : '',
+          }
+        })
+        mutations.setSearchResults(results)
+      }
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+    })
+}
+
 /**
  * @param profileId: the user his managed Identity (keycloak)
  * @returns {Array<Object>} returns Array of compliments in the response.data
@@ -432,6 +455,7 @@ export const buildActions = (
   return {
     fetchProfile: psBuilder.dispatch(fetchProfile),
     fetchUserProfile: psBuilder.dispatch(fetchPublicProfile),
+    fetchProfiles: psBuilder.dispatch(fetchProfiles),
     fetchUserCompliments: psBuilder.dispatch(fetchUserCompliments),
     fetchComplimentTypes: psBuilder.dispatch(fetchComplimentTypes),
     addUserCompliment: psBuilder.dispatch(addUserCompliment),

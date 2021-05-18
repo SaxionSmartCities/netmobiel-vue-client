@@ -44,6 +44,10 @@ export const buildGetters = (
     return state.user.delegatorId
   }, 'getDelegatorId')
 
+  const getSearchResults = psBuilder.read((state: ProfileState) => {
+    return state.search.results
+  }, 'getSearchResults')
+
   return {
     get getUser() {
       return getUser()
@@ -71,6 +75,9 @@ export const buildGetters = (
     },
     get getDelegatorId() {
       return getDelegatorId()
+    },
+    get getSearchResults() {
+      return getSearchResults()
     },
   }
 }

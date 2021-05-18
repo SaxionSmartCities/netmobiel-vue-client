@@ -82,6 +82,10 @@ export class ProfileState {
       creditHistory: [],
     },
   }
+  search: ProfileSearch = {
+    keyword: '',
+    results: [],
+  }
 }
 
 export interface ExternalUser {
@@ -148,6 +152,11 @@ export interface Profile extends PublicProfile {
   notificationOptions: NotificationOptions
   favoriteLocations: Place[]
   userRole: string[] | []
+}
+
+export interface ProfileSearch {
+  keyword: string
+  results: PublicProfile[] | []
 }
 
 export interface UserConsent {
