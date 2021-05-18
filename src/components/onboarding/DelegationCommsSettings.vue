@@ -101,16 +101,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-.options {
-  border: 1px solid gray;
-  border-radius: 10px;
-  padding-bottom: 0;
-  padding-top: 0;
-}
-
-.switch-overwrite {
-  margin-top: 0;
-}
-</style>
