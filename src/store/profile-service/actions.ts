@@ -31,7 +31,7 @@ function fetchProfile(context: ActionContext) {
           ...context.state.user.profile,
           ...response.data.profiles[0],
         }
-        if (profile.image) {
+        if (profile.image && !profile.image.startsWith('http')) {
           // turn relative image URL into absolute URL
           profile.image = `${IMAGES_BASE_URL}/${profile.image}`
         }
@@ -456,8 +456,12 @@ function fetchDelegations(context: ActionContext, { delegateId }: any) {
 }
 
 function switchProfile(context: ActionContext, { delegatorId }: any) {
-  const profile = { ...context.state.user.profile }
-  mutations.setDelegateProfile(profile)
+  // Is we don't have a delegate profile stored yet we will assume the
+  // current user profile is the delegate.
+  if (context.state.user.delegateProfile == null) {
+    const profile = { ...context.state.user.profile }
+    mutations.setDelegateProfile(profile)
+  }
   mutations.setDelegatorId(delegatorId)
   fetchProfile(context)
 }
