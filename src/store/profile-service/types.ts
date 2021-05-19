@@ -82,6 +82,11 @@ export class ProfileState {
       creditHistory: [],
     },
   }
+  search: ProfileSearch = {
+    keyword: '',
+    status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
+    results: [],
+  }
 }
 
 export interface ExternalUser {
@@ -148,6 +153,12 @@ export interface Profile extends PublicProfile {
   notificationOptions: NotificationOptions
   favoriteLocations: Place[]
   userRole: string[] | []
+}
+
+export interface ProfileSearch {
+  keyword: string
+  status: string
+  results: PublicProfile[] | []
 }
 
 export interface UserConsent {

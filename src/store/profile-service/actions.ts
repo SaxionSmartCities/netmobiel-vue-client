@@ -31,7 +31,7 @@ function fetchProfile(context: ActionContext) {
           ...context.state.user.profile,
           ...response.data.profiles[0],
         }
-        if (profile.image) {
+        if (profile.image && !profile.image.startsWith('http')) {
           // turn relative image URL into absolute URL
           profile.image = `${IMAGES_BASE_URL}/${profile.image}`
         }
@@ -50,6 +50,9 @@ function fetchProfile(context: ActionContext) {
 }
 
 function fetchPublicProfile(context: ActionContext, { profileId }: any) {
+  if (!profileId) {
+    return
+  }
   const URL = `${PROFILE_BASE_URL}/profiles/${profileId}`
   return axios
     .get(URL, {
@@ -57,8 +60,13 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
     })
     .then(response => {
       if (response.data.profiles.length > 0) {
-        let profile = { ...response.data.profiles[0] }
-        profile.dateOfBirth = Date.parse(response.data.profiles[0].dateOfBirth)
+        let profile = {
+          ...response.data.profiles[0],
+          dateOfBirth: Date.parse(response.data.profiles[0].dateOfBirth),
+          image: response.data.profiles[0].image
+            ? `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
+            : '',
+        }
         mutations.setPublicProfile(profile)
       }
     })
@@ -68,6 +76,29 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
       uiStore.actions.queueInfoNotification(
         `Fout bij het ophalen van het profiel`
       )
+    })
+}
+
+function fetchProfiles(context: ActionContext, { keyword }: any) {
+  const URL = `${PROFILE_BASE_URL}/profiles?text=${keyword}`
+  axios
+    .get(URL, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+    })
+    .then(response => {
+      if (response.status == 200) {
+        const results = response.data.data.map((r: any) => {
+          return {
+            ...r,
+            image: r.image ? `${IMAGES_BASE_URL}/${r.image}` : '',
+          }
+        })
+        mutations.setSearchResults(results)
+      }
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
     })
 }
 
@@ -343,6 +374,7 @@ function storeDelegation(
   { delegateId, delegatorId }: any
 ) {
   const URL = `${PROFILE_BASE_URL}/delegations`
+  mutations.setSearchStatus('PENDING')
   axios
     .post(
       URL,
@@ -354,6 +386,9 @@ function storeDelegation(
     .then(response => {
       if (response.status === 201) {
         uiStore.actions.queueInfoNotification(`Je machtiging is opgeslagen!`)
+        mutations.setSearchStatus('SUCCESS')
+      } else {
+        mutations.setSearchStatus('FAILED')
       }
     })
     .catch(error => {
@@ -362,18 +397,24 @@ function storeDelegation(
       uiStore.actions.queueErrorNotification(
         `Fout bij opslaan van de machtiging`
       )
+      mutations.setSearchStatus('FAILED')
     })
 }
 
-function deleteDelegation(context: ActionContext, { delegationId }: any) {
+function deleteDelegation(
+  context: ActionContext,
+  { delegateId, delegationId }: any
+) {
   const URL = `${PROFILE_BASE_URL}/delegations/${delegationId}`
   return axios
     .delete(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
     .then(response => {
-      // eslint-disable-next-line
-      console.log(response)
+      if (response.status === 204) {
+        uiStore.actions.queueInfoNotification(`Je machtiging is verwijderd!`)
+        fetchDelegations(context, { delegateId })
+      }
     })
     .catch(error => {
       // eslint-disable-next-line
@@ -420,8 +461,12 @@ function fetchDelegations(context: ActionContext, { delegateId }: any) {
 }
 
 function switchProfile(context: ActionContext, { delegatorId }: any) {
-  const profile = { ...context.state.user.profile }
-  mutations.setDelegateProfile(profile)
+  // Is we don't have a delegate profile stored yet we will assume the
+  // current user profile is the delegate.
+  if (context.state.user.delegateProfile == null) {
+    const profile = { ...context.state.user.profile }
+    mutations.setDelegateProfile(profile)
+  }
   mutations.setDelegatorId(delegatorId)
   fetchProfile(context)
 }
@@ -432,6 +477,7 @@ export const buildActions = (
   return {
     fetchProfile: psBuilder.dispatch(fetchProfile),
     fetchUserProfile: psBuilder.dispatch(fetchPublicProfile),
+    fetchProfiles: psBuilder.dispatch(fetchProfiles),
     fetchUserCompliments: psBuilder.dispatch(fetchUserCompliments),
     fetchComplimentTypes: psBuilder.dispatch(fetchComplimentTypes),
     addUserCompliment: psBuilder.dispatch(addUserCompliment),
