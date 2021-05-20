@@ -112,9 +112,11 @@ export default {
   },
   methods: {
     saveSearchOptions() {
+      // eslint-disable-next-line
       console.log('TODO')
     },
     onOptionChange() {
+      // eslint-disable-next-line
       console.log('TODO')
     },
   },

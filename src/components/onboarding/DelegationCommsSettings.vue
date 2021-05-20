@@ -96,6 +96,7 @@ export default {
   },
   methods: {
     onOptionChange() {
+      // eslint-disable-next-line
       console.log('TODO')
     },
   },
