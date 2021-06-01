@@ -11,13 +11,16 @@
         <v-row>
           <p>{{ updateMessage.content }}</p>
         </v-row>
-        <v-row justify="end">
-          <v-btn
-            v-if="updateMessage.link !== undefined"
-            rounded
-            outlined
-            :to="updateMessage.link.to"
+        <v-row v-if="updateMessage.link !== undefined" justify="end">
+          <a
+            v-if="updateMessage.link.to.startsWith('https')"
+            :href="updateMessage.link.to"
+            class="v-btn v-btn--depressed v-btn--flat v-btn--outlined v-btn--rounded v-btn--router theme--light v-size--default"
+            target="_blank"
           >
+            {{ updateMessage.link.label }}
+          </a>
+          <v-btn v-else rounded outlined :to="updateMessage.link.to">
             {{ updateMessage.link.label }}
           </v-btn>
         </v-row>
