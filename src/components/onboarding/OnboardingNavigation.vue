@@ -11,7 +11,10 @@
       </v-row>
       <v-row>
         <v-col v-if="currStep === 1" class="pt-0">
-          <new-delegation v-model="registrationRequest" />
+          <new-delegation
+            v-model="registrationRequest"
+            @onFormValid="currentFormValid"
+          />
         </v-col>
         <v-col v-if="currStep === 2">
           <delegation-options v-model="registrationRequest" />
@@ -34,7 +37,14 @@
           </v-btn>
         </v-col>
         <v-col v-if="currStep !== maxSteps" xs6>
-          <v-btn block rounded depressed color="button" @click="nextStep()">
+          <v-btn
+            block
+            rounded
+            depressed
+            color="button"
+            :disabled="!nextStepEnabled"
+            @click="nextStep()"
+          >
             Verder
           </v-btn>
         </v-col>
@@ -67,6 +77,7 @@ export default {
     return {
       maxSteps: 4,
       currStep: 1,
+      nextStepEnabled: false,
       registrationRequest: {
         extraTransferTime: false,
         consent: {},
@@ -82,6 +93,9 @@ export default {
     },
     complete() {
       this.$emit('OnComplete', this.registrationRequest)
+    },
+    currentFormValid(isValid) {
+      this.nextStepEnabled = isValid
     },
   },
 }
