@@ -22,13 +22,25 @@
       </v-row>
       <v-row>
         <v-col xs6>
-          <v-btn block rounded outlined color="primary" @click="prevStep()">
+          <v-btn
+            block
+            rounded
+            outlined
+            color="primary"
+            :disabled="currStep === 1"
+            @click="prevStep()"
+          >
             Terug
           </v-btn>
         </v-col>
-        <v-col xs6>
+        <v-col v-if="currStep !== maxSteps" xs6>
           <v-btn block rounded depressed color="button" @click="nextStep()">
             Verder
+          </v-btn>
+        </v-col>
+        <v-col v-else xs6>
+          <v-btn block rounded depressed color="button" @click="complete()">
+            Aanmaken
           </v-btn>
         </v-col>
       </v-row>
@@ -65,8 +77,11 @@ export default {
     nextStep() {
       this.currStep++
     },
-    prevStep: function() {
+    prevStep() {
       this.currStep--
+    },
+    complete() {
+      this.$emit('OnComplete', this.registrationRequest)
     },
   },
 }
