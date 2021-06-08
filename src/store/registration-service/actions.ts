@@ -10,13 +10,10 @@ type ActionContext = BareActionContext<RegistrationState, RootState>
 const { PROFILE_BASE_URL, GRAVITEE_PROFILE_SERVICE_API_KEY } = config
 const { generateHeaders } = util
 
-function submitRegistrationRequest(
-  context: ActionContext,
-  payload: RegistrationRequest
-): void {
+function submitRegistrationRequest(payload: RegistrationRequest) {
   const URL = `${PROFILE_BASE_URL}/profiles`
   mutations.storeRegistrationRequest(payload)
-  axios
+  return axios
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
@@ -32,7 +29,8 @@ function submitRegistrationRequest(
         errorMsg =
           'Ga akkoord  met de voorwaarden en bevestig 16 jaar of ouder te zijn.'
       } else if (status === 500) {
-        errorMsg = error.response.data.message // No clue what is going on, but the server should report something about it
+        // No clue what is going on, but the server should report something about it
+        errorMsg = error.response.data.message
       } else if (status === 409) {
         errorMsg = 'Het emailadres is al in gebruik.'
       }
@@ -44,10 +42,25 @@ function submitRegistrationRequest(
     })
 }
 
+function newAccountRegistration(
+  context: ActionContext,
+  payload: RegistrationRequest
+): void {
+  submitRegistrationRequest(payload)
+}
+
+function newDelegateRegistration(
+  context: ActionContext,
+  payload: RegistrationRequest
+) {
+  mutations.clearRegistrationRequest()
+}
+
 export const buildActions = (
   rsBuilder: ModuleBuilder<RegistrationState, RootState>
 ) => {
   return {
-    submitRegistrationRequest: rsBuilder.dispatch(submitRegistrationRequest),
+    submitRegistrationRequest: rsBuilder.dispatch(newAccountRegistration),
+    newDelegateRegistration: rsBuilder.dispatch(newDelegateRegistration),
   }
 }
