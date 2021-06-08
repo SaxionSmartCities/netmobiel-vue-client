@@ -18,7 +18,7 @@ function setRegistrationStatus(
   state: RegistrationState,
   payload: SubmitStatus
 ) {
-  state.registrationRequest.submitStatus = payload
+  state.submitStatus = payload
 }
 
 function clearRegistrationRequest(state: RegistrationState) {
@@ -34,12 +34,13 @@ function clearRegistrationRequest(state: RegistrationState) {
       olderThanSixteen: false,
       acceptedTerms: false,
     },
-    submitStatus: {
-      success: false,
-      message: '',
-    },
+  }
+  state.submitStatus = {
+    success: false,
+    message: '',
   }
 }
+
 export const buildMutations = (
   rsBuilder: ModuleBuilder<RegistrationState, RootState>
 ) => {

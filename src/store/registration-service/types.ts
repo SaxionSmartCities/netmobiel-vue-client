@@ -5,8 +5,11 @@ export class RegistrationState {
     email: '',
     firstName: '',
     lastName: '',
-    submitStatus: { message: '', success: false },
     userRole: '',
+  }
+  submitStatus: SubmitStatus = {
+    message: '',
+    success: false,
   }
 }
 
@@ -27,5 +30,4 @@ export interface RegistrationRequest {
     olderThanSixteen: false
     acceptedTerms: false
   }
-  submitStatus: SubmitStatus
 }

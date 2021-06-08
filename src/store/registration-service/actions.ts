@@ -54,6 +54,15 @@ function newDelegateRegistration(
   payload: RegistrationRequest
 ) {
   mutations.clearRegistrationRequest()
+  submitRegistrationRequest(payload)
+    .then(() => {
+      //TODO: Set delegation.
+      console.log('Success!')
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+    })
 }
 
 export const buildActions = (

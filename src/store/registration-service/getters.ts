@@ -6,7 +6,7 @@ export const buildGetters = (
   rsBuilder: ModuleBuilder<RegistrationState, RootState>
 ) => {
   const getRegistrationStatus = rsBuilder.read((state: RegistrationState) => {
-    return state.registrationRequest.submitStatus
+    return state.submitStatus
   }, 'getRegistrationStatus')
 
   return {
