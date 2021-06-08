@@ -91,7 +91,7 @@ export default {
     HomeTownCard,
     UserTypeCard,
   },
-  data: function() {
+  data() {
     return {
       step: 0,
       registrationRequest: {
@@ -115,7 +115,7 @@ export default {
     },
   },
   watch: {
-    step: function() {
+    step() {
       if (this.step < 0) {
         this.$router.push('/')
       }
@@ -133,12 +133,7 @@ export default {
     },
   },
   methods: {
-    submitForm: function() {
-      rsStore.mutations.setRegistrationStatus({
-        success: undefined,
-        message: '',
-      })
-
+    submitForm() {
       rsStore.actions.submitRegistrationRequest(this.registrationRequest)
     },
   },
