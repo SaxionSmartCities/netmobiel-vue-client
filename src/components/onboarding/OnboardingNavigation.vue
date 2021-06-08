@@ -22,6 +22,9 @@
         <v-col v-if="currStep === 3">
           <delegation-comms-settings v-model="registrationRequest" />
         </v-col>
+        <v-col v-if="currStep === 4">
+          <new-delegation-image v-model="registrationRequest" />
+        </v-col>
       </v-row>
       <v-row>
         <v-col xs6>
@@ -62,6 +65,7 @@
 import NewDelegation from '@/components/onboarding/NewDelegation'
 import DelegationOptions from '@/components/onboarding/NewDelegatorOptions'
 import DelegationCommsSettings from '@/components/onboarding/DelegationCommsSettings'
+import NewDelegationImage from '@/components/onboarding/NewDelegatorImage'
 
 export default {
   name: 'OnboardingNavigation',
@@ -69,6 +73,7 @@ export default {
     NewDelegation,
     DelegationOptions,
     DelegationCommsSettings,
+    NewDelegationImage,
   },
   props: {
     title: { type: String, required: true, default: '' },
@@ -80,7 +85,9 @@ export default {
       nextStepEnabled: false,
       registrationRequest: {
         extraTransferTime: false,
-        consent: {},
+        consent: {
+          olderThanSixteen: true,
+        },
       },
     }
   },
