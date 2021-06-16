@@ -32,6 +32,7 @@
 import RoundUserImage from '@/components/common/RoundUserImage'
 import config from '@/config/config'
 import moment from 'moment'
+import { LocalDate, Period } from '@js-joda/core'
 
 export default {
   name: 'PublicProfileInfo',
@@ -55,7 +56,7 @@ export default {
     },
     age() {
       return this.profile?.dateOfBirth
-        ? moment().diff(moment(this.profile.dateOfBirth), 'years', false) +
+        ? Period.between(this.profile.dateOfBirth, LocalDate.now()).years() +
             ' jaar'
         : 'Leeftijd onbekend'
     },

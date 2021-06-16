@@ -1,3 +1,5 @@
+import { LocalDate } from '@js-joda/core'
+
 export class ProfileState {
   complimentTypes: ComplimentType[] = []
   externalUser: ExternalUser = {
@@ -137,7 +139,7 @@ export interface PublicProfile {
   image: string | null
   firstName: string | null
   lastName: string | null
-  dateOfBirth: Date | null
+  dateOfBirth: LocalDate | null
   address: any
   interests: string[] | []
 }

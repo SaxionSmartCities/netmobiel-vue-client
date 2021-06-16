@@ -59,18 +59,24 @@
 
 <script>
 import moment from 'moment'
+import '@js-joda/timezone'
+import { Locale } from '@js-joda/locale_en'
 import * as psStore from '@/store/profile-service'
+import { DateTimeFormatter, LocalDate } from '@js-joda/core'
 
 export default {
   data: function() {
     return {
-      date: new Date().toISOString().substr(0, 10),
+      date: LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
       menu: false,
     }
   },
   computed: {
     displayDate: function() {
-      return moment(this.date).format('DD-MM-YYYY')
+      const formatter = DateTimeFormatter.ofPattern('dd-MM-yyyy').withLocale(
+        Locale.ENGLISH
+      )
+      return LocalDate.parse(this.date).format(formatter)
     },
   },
   watch: {
@@ -81,7 +87,7 @@ export default {
   methods: {
     nextStep: function() {
       let profile = { ...psStore.getters.getProfile }
-      profile.dateOfBirth = moment(this.date)
+      profile.dateOfBirth = LocalDate.parse(this.date)
       psStore.actions.updateProfile(profile)
       this.$emit('next-step')
     },
