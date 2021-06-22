@@ -63,8 +63,9 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
       if (response.data.profiles.length > 0) {
         let profile = {
           ...response.data.profiles[0],
-          // Is the deserializing into the correct type not done automagically?
-          dateOfBirth: LocalDate.parse(response.data.profiles[0].dateOfBirth),
+          dateOfBirth: response.data.profiles[0].dateOfBirth
+            ? LocalDate.parse(response.data.profiles[0].dateOfBirth)
+            : null,
           image: response.data.profiles[0].image
             ? `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
             : '',
