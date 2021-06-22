@@ -7,6 +7,7 @@ import { RootState } from '@/store/Rootstate'
 import { mutations } from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
 import store from '..'
+import { LocalDate } from '@js-joda/core'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -62,7 +63,9 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
       if (response.data.profiles.length > 0) {
         let profile = {
           ...response.data.profiles[0],
-          dateOfBirth: Date.parse(response.data.profiles[0].dateOfBirth),
+          dateOfBirth: response.data.profiles[0].dateOfBirth
+            ? LocalDate.parse(response.data.profiles[0].dateOfBirth)
+            : null,
           image: response.data.profiles[0].image
             ? `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
             : '',

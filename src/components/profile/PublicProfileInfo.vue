@@ -18,12 +18,6 @@
           <span>Houdt van: {{ interests }}</span>
         </div>
       </v-row>
-      <v-row class="mt-3">
-        <v-btn depressed color="button" rounded small>
-          <v-icon>add</v-icon>
-          Toevoegen als vriend
-        </v-btn>
-      </v-row>
     </v-col>
   </v-row>
 </template>
@@ -32,6 +26,7 @@
 import RoundUserImage from '@/components/common/RoundUserImage'
 import config from '@/config/config'
 import moment from 'moment'
+import { LocalDate, Period } from '@js-joda/core'
 
 export default {
   name: 'PublicProfileInfo',
@@ -43,8 +38,7 @@ export default {
   },
   computed: {
     profileImage() {
-      if (this.profile?.image) return config.BASE_URL + this.profile.image
-      else return null
+      return this.profile?.image
     },
     username() {
       if (!this.profile?.firstName) return 'Onbekende gebruiker'
@@ -55,8 +49,10 @@ export default {
     },
     age() {
       return this.profile?.dateOfBirth
-        ? moment().diff(moment(this.profile.dateOfBirth), 'years', false) +
-            ' jaar'
+        ? `Leeftijd: ${Period.between(
+            this.profile.dateOfBirth,
+            LocalDate.now()
+          ).years()} jaar`
         : 'Leeftijd onbekend'
     },
     interests() {
