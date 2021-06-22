@@ -38,6 +38,15 @@ module.exports = {
         },
         // logLevel: 'debug',
       },
+      '/geo': {
+        target: process.env.VUE_APP_DEV_BACKEND_URL,
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/geo': '/geosvc/api',
+        },
+        // logLevel: 'debug',
+      },
       '/planner': {
         target: process.env.VUE_APP_DEV_BACKEND_URL,
         ws: true,
