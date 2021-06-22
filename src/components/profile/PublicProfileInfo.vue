@@ -18,12 +18,6 @@
           <span>Houdt van: {{ interests }}</span>
         </div>
       </v-row>
-      <v-row class="mt-3">
-        <v-btn depressed color="button" rounded small>
-          <v-icon>add</v-icon>
-          Toevoegen als vriend
-        </v-btn>
-      </v-row>
     </v-col>
   </v-row>
 </template>
@@ -44,8 +38,7 @@ export default {
   },
   computed: {
     profileImage() {
-      if (this.profile?.image) return config.BASE_URL + this.profile.image
-      else return null
+      return this.profile?.image
     },
     username() {
       if (!this.profile?.firstName) return 'Onbekende gebruiker'
