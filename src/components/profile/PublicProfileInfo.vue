@@ -49,8 +49,10 @@ export default {
     },
     age() {
       return this.profile?.dateOfBirth
-        ? Period.between(this.profile.dateOfBirth, LocalDate.now()).years() +
-            ' jaar'
+        ? `Leeftijd: ${Period.between(
+            this.profile.dateOfBirth,
+            LocalDate.now()
+          ).years()} jaar`
         : 'Leeftijd onbekend'
     },
     interests() {
