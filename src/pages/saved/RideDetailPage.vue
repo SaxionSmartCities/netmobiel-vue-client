@@ -102,6 +102,8 @@ export default {
     EditRideDialog,
     ContactTravellerModal,
     ContentPane,
+    // JR Note: A Ride is NOT the same as a Trip itinerary
+    // This is a hacky solution
     ItineraryLeg,
     ItineraryOptions,
     RideDetails,
@@ -143,8 +145,9 @@ export default {
     numBookings() {
       return !this.ride.bookings
         ? 0
-        : this.ride.bookings.filter(booking => booking.state === 'CONFIRMED')
-            .length
+        : this.ride.bookings.filter(
+            booking => booking.state.toUpperCase() === 'CONFIRMED'
+          ).length
     },
     rideOptions() {
       let options = []
