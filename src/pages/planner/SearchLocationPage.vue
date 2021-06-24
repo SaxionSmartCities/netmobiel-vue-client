@@ -178,7 +178,7 @@ export default {
       const searchCriteria = isStore.getters.getSearchCriteria
       const preferences = isStore.getters.getPlanningRequest?.preferences
       const { from, to, travelTime } = searchCriteria
-      isStore.actions.submitPlanningsRequest({
+      isStore.actions.searchTripPlan({
         from,
         to,
         travelTime,

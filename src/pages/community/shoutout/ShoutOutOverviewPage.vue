@@ -130,7 +130,7 @@ export default {
         longitude: address.location.coordinates[0],
       })
     }
-    isStore.actions.fetchMyShoutOuts({
+    isStore.actions.fetchMyShoutOutTripPlans({
       offset: 0,
     })
     // If our role is 'chauffeur' or 'both' fetch any travel proposal we may have.

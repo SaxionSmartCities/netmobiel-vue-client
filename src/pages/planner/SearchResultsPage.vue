@@ -205,7 +205,7 @@ export default {
       isStore.mutations.setSearchCriteria(newCriteria)
       //HACK: preferences here are different from the profile.
       const { from, to, travelTime } = this.searchCriteria
-      isStore.actions.submitPlanningsRequest({
+      isStore.actions.searchTripPlan({
         from,
         to,
         travelTime,
@@ -264,7 +264,7 @@ export default {
       })
     },
     createShoutOut() {
-      isStore.actions.storeShoutOut(this.searchCriteria)
+      isStore.actions.createShoutOutTripPlan(this.searchCriteria)
       const { firstName, lastName, id } = psStore.getters.getProfile
       const { from, to, travelTime } = this.searchCriteria
       this.shoutout = {
