@@ -4,7 +4,6 @@ import { ModuleBuilder } from 'vuex-typex'
 import {
   Compliment,
   ComplimentType,
-  CoronaCheck,
   Place,
   Profile,
   ProfileState,
@@ -76,10 +75,6 @@ function setPrivacySecurityValue(state: ProfileState, payload: any) {
   })
 }
 
-function setCoronaCheck(state: ProfileState, payload: CoronaCheck) {
-  state.user.coronaCheck = payload
-}
-
 function setComplimentTypes(
   state: ProfileState,
   complimentTypes: ComplimentType[]
@@ -148,7 +143,6 @@ export const buildMutations = (
     setReviewOptionsValue: psBuilder.commit(setReviewOptionsValue),
     setRidePlanOptions: psBuilder.commit(setRidePlanOptions),
     setPrivacySecurityValue: psBuilder.commit(setPrivacySecurityValue),
-    setCoronaCheck: psBuilder.commit(setCoronaCheck),
     setComplimentTypes: psBuilder.commit(setComplimentTypes),
     setPublicProfile: psBuilder.commit(setPublicProfile),
     setPublicCompliments: psBuilder.commit(setPublicCompliments),

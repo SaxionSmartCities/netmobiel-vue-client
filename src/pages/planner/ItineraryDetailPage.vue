@@ -11,11 +11,6 @@
     </v-row>
     <v-row>
       <v-col class="py-0">
-        <corona-check-modal
-          :value="coronaCheck"
-          class="mb-2"
-          @done="onCoronaCheckDone"
-        ></corona-check-modal>
         <v-btn
           v-show="showSection"
           large
@@ -51,14 +46,12 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import TripDetails from '@/components/itinerary-details/TripDetails.vue'
-import CoronaCheckModal from '@/components/common/CoronaCheckModal'
 import * as uiStore from '@/store/ui'
 import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'ItineraryDetailPage',
   components: {
-    CoronaCheckModal,
     ContentPane,
     TripDetails,
   },
@@ -72,11 +65,6 @@ export default {
     return {
       showMap: false,
       showConfirmationButton: true,
-      coronaCheck: {
-        isVisible: false,
-        coronaFreePast: false,
-        coronaFreeHousehold: false,
-      },
     }
   },
   computed: {
@@ -106,18 +94,6 @@ export default {
   },
   methods: {
     onPlanTrip() {
-      this.coronaCheck.isVisible = true
-    },
-    onCoronaCheckDone(check) {
-      if (check.coronaFreePast && check.coronaFreeHousehold) {
-        this.confirmTrip()
-      } else {
-        uiStore.actions.queueErrorNotification(
-          'Een rit boeken met klachten is niet mogelijk.'
-        )
-      }
-    },
-    confirmTrip() {
       isStore.actions.createTrip(this.selectedTrip)
       if (this.tripId !== '-1') {
         // We are editing a trip so remove the old one.

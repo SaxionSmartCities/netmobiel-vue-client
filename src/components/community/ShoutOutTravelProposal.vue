@@ -12,7 +12,7 @@
           />
         </v-col>
       </v-row>
-      <v-row v-if="generateSteps().length == 0">
+      <v-row v-if="generateSteps().length === 0">
         <v-col>
           <em>Helaas, er is geen route gevonden!</em>
         </v-col>
@@ -46,11 +46,6 @@
         </v-col>
       </v-row>
       <v-row v-else>
-        <corona-check-modal
-          :value="coronaCheck"
-          class="mb-2"
-          @done="onCoronaCheckDone"
-        ></corona-check-modal>
         <v-col class="pt-3 pb-0">
           <v-btn
             large
@@ -59,7 +54,7 @@
             mb-4
             depressed
             color="button"
-            :disabled="generateSteps().length == 0"
+            :disabled="generateSteps().length === 0"
             @click="onProposeTravelOffer"
           >
             Aanbod bevestigen
@@ -86,20 +81,17 @@
 
 <script>
 import moment from 'moment'
-import CoronaCheckModal from '@/components/common/CoronaCheckModal'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ShoutOutTravelProposalEditor from '@/components/community/ShoutOutTravelProposalEditor'
 import {
   generateShoutOutDetailSteps,
   generateItineraryDetailSteps,
 } from '@/utils/itinerary_steps.js'
-import * as uiStore from '@/store/ui'
 import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'ShoutOutTravelProposal',
   components: {
-    CoronaCheckModal,
     ItineraryLeg,
     ShoutOutTravelProposalEditor,
   },
@@ -112,11 +104,6 @@ export default {
     return {
       editDeparture: false,
       isProposing: false,
-      coronaCheck: {
-        isVisible: false,
-        coronaFreePast: false,
-        coronaFreeHousehold: false,
-      },
     }
   },
   computed: {
@@ -144,7 +131,7 @@ export default {
       return this.steps
     },
     onLegEdit({ step }) {
-      if (step == 0) {
+      if (step === 0) {
         this.editDeparture = !this.editDeparture
         isStore.mutations.setShoutoutPlanTime(
           moment(this.steps[step].startTime)
@@ -171,16 +158,7 @@ export default {
       this.$emit('updateProposal', request)
     },
     onProposeTravelOffer() {
-      this.coronaCheck.isVisible = true
-    },
-    onCoronaCheckDone(check) {
-      if (check.coronaFreePast && check.coronaFreeHousehold) {
-        this.$emit('confirmTravelOffer')
-      } else {
-        uiStore.actions.queueErrorNotification(
-          'Een rit plannen met klachten is niet mogelijk.'
-        )
-      }
+      this.$emit('confirmTravelOffer')
     },
   },
 }
