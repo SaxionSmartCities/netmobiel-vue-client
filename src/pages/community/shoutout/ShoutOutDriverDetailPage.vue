@@ -176,7 +176,7 @@ export default {
         from: location,
         travelTime: { when: time, arriving: false },
       }
-      isStore.actions.submitShoutOutPlanningsRequest(request)
+      isStore.actions.planShoutOutSolution(request)
     },
     onProposeTravelOffer() {
       isStore.mutations.clearPlanningResults()
@@ -200,7 +200,7 @@ export default {
           arriving: false,
         }
       }
-      isStore.actions.submitShoutOutPlanningsRequest(request)
+      isStore.actions.planShoutOutSolution(request)
     },
     onConfirmTravelOffer() {
       const { selectedCarId } = this.profile?.ridePlanOptions
@@ -210,7 +210,7 @@ export default {
           planRef: this.planResult.planRef,
           vehicleRef: `urn:nb:rs:car:${selectedCarId}`,
         }
-        isStore.actions.storeTravelOffer(travelOffer)
+        isStore.actions.addShoutOutTravelOffer(travelOffer)
         //TODO: Router to proper page after submitting a ride.
         // this.$router.go(-1)
       } else {
@@ -238,10 +238,6 @@ export default {
     },
     onProposalCancel() {
       isStore.mutations.clearPlanningResults()
-    },
-    //TODO: Check if this mehod is needed.
-    onTripCancelled() {
-      isStore.actions.deleteShoutOut({ shoutoutPlanId: this.id })
     },
   },
 }

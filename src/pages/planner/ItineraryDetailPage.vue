@@ -94,10 +94,10 @@ export default {
   },
   methods: {
     onPlanTrip() {
-      isStore.actions.storeSelectedTrip(this.selectedTrip)
+      isStore.actions.createTrip(this.selectedTrip)
       if (this.tripId !== '-1') {
         // We are editing a trip so remove the old one.
-        isStore.actions.deleteSelectedTrip({
+        isStore.actions.deleteTrip({
           tripId: this.tripId,
           displayWarning: false,
         })
