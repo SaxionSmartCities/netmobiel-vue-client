@@ -1,15 +1,23 @@
 <template>
   <content-pane>
     <v-row>
-      <v-col>
-        <v-btn
-          color="button"
-          depressed
-          block
-          outlined
-          @click="$router.push({ name: 'rideSafeNetmobiel' })"
-          >Corona-adviezen
-        </v-btn>
+      <v-col class="px-1 pt-0">
+        In Netmobiel werken kennisinstellingen, technologiebedrijven, bewoners
+        en overheden samen aan een mobiliteitsoplossing voor de Achterhoek in de
+        de vorm van een app. Het is een innovatieproject dat gesubsidieerd wordt
+        wordt door de Stichting Innovatie Alliantie, de Provincie Gelderland en
+        Achterhoek ambassadeurs. Kijk op
+        <a href="https://www.netmobiel.eu">onze website</a> voor meer
+        informatie.
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="px-1 pt-0">
+        De software voor de Netmobiel app is ontwikkeld door het
+        <a href="https://www.saxion.nl/onderzoek/smart-industry/smart-cities">
+          Lectoraat Smart Cities</a
+        >
+        van de Saxion Hogeschool Enschede.
       </v-col>
     </v-row>
   </content-pane>
