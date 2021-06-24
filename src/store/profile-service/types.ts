@@ -58,10 +58,6 @@ export class ProfileState {
     delegatorId: null,
     delegateProfile: null,
     delegations: [],
-    coronaCheck: {
-      coronaSymptoms: false,
-      houseHoldHadCorona: false,
-    },
     privacySecurity: [
       { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
       { name: 'Deel reisdata met NetMobiel', value: false },
@@ -130,7 +126,6 @@ export interface User {
   profile: Profile
   delegatorId: string | null
   delegateProfile: Profile | null
-  coronaCheck: CoronaCheck
   delegations: Delegation[]
 }
 
@@ -216,11 +211,6 @@ export interface Credits {
 export interface NameValue {
   name: string
   value: boolean
-}
-
-export interface CoronaCheck {
-  coronaSymptoms: boolean
-  houseHoldHadCorona: boolean
 }
 
 export interface Delegation {
