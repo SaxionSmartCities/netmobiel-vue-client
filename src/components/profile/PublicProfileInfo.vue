@@ -48,11 +48,8 @@ export default {
       return this.profile?.address?.locality || 'Onbekend adres'
     },
     age() {
-      return this.profile?.dateOfBirth
-        ? `Leeftijd: ${Period.between(
-            this.profile.dateOfBirth,
-            LocalDate.now()
-          ).years()} jaar`
+      return this.profile?.age
+        ? `Leeftijd: ${this.profile.age} jaar`
         : 'Leeftijd onbekend'
     },
     interests() {

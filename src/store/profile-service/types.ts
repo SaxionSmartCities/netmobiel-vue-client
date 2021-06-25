@@ -5,10 +5,10 @@ export class ProfileState {
   externalUser: ExternalUser = {
     profile: {
       id: null,
+      age: null,
       image: null,
       firstName: null,
       lastName: null,
-      dateOfBirth: null,
       address: {},
       interests: [],
     },
@@ -30,6 +30,7 @@ export class ProfileState {
     // Profile as stored in profile service.
     profile: {
       id: null,
+      age: null,
       consent: {
         acceptedTerms: false,
         olderThanSixteen: false,
@@ -131,16 +132,17 @@ export interface User {
 
 export interface PublicProfile {
   id: string | null
+  age: number | null
   image: string | null
   firstName: string | null
   lastName: string | null
-  dateOfBirth: LocalDate | null
-  address: any
+  address: Address | null
   interests: string[] | []
 }
 
 export interface Profile extends PublicProfile {
   consent: UserConsent | null
+  dateOfBirth: LocalDate | null
   email: string | null
   fcmToken: string | null
   image: string | null
@@ -179,20 +181,22 @@ export interface RidePlanOptions {
   cars: any[]
 }
 
-export interface Place {
-  id: number
-  ref: string
+export interface Address {
   countryCode?: string
   houseNumber?: string
-  label: string
+  label?: string
   locality?: string
-  location: {
+  location?: {
     coordinates: number[]
     type: string
   }
   postalCode?: string
   stateCode?: string
   street?: string
+}
+export interface Place extends Address {
+  id: number
+  ref: string
 }
 
 export interface NotificationOptions {
