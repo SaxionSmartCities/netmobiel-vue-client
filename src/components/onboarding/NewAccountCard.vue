@@ -47,14 +47,8 @@
             ></v-checkbox>
           </v-col>
           <v-col cols="11">
-            Ik ga akkoord met de <a to="/">voorwaarden</a>, deelname aan het
-            <a href="https://www.netmobiel.eu/" target="_blank">onderzoek</a> en
-            het
-            <a
-              href="https://www.netmobiel.eu/privacyverklaring-app/"
-              target="_blank"
-              >privacyverklaring</a
-            >
+            Bij het gebruik van de Netmobiel-app houd ik mij aan de geldende
+            RIVM-richtlijnen.
           </v-col>
         </v-row>
         <v-row no-gutters align="center">

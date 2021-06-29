@@ -40,7 +40,7 @@
             </p>
           </v-col>
         </v-row>
-        <v-row no-gutters align="center">
+        <v-row no-gutters>
           <v-col cols="1">
             <v-checkbox
               v-model="value.consent.acceptedTerms"
