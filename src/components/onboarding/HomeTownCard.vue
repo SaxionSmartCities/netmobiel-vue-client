@@ -26,6 +26,7 @@
           <v-btn
             block
             rounded
+            depressed
             color="button"
             :disabled="!value.address.locality"
             @click="submitForm()"
@@ -71,10 +72,10 @@ export default {
     }
   },
   methods: {
-    submitForm: function() {
+    submitForm() {
       this.$emit('next-step')
     },
-    back: function() {
+    back() {
       this.$emit('prev-step')
     },
   },

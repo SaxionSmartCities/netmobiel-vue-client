@@ -32,7 +32,7 @@
             />
           </v-col>
         </v-row>
-        <v-card v-if="step == 3" class="rounded-border">
+        <v-card v-if="step == 4" class="rounded-border">
           <v-card-title class="justify-center">Aanmaken account</v-card-title>
           <v-card-text>
             <v-row no-gutters>
