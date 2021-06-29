@@ -1,23 +1,30 @@
 <template>
   <v-container fluid fill-height class="background-primary">
-    <v-row align="center" justify="center" class="pa-4">
+    <v-row align="center" justify="center">
       <v-col>
         <v-row>
           <v-col v-if="step === 0">
-            <new-account-card
+            <new-account-terms
               v-model="registrationRequest"
               @prev-step="step--"
               @next-step="step++"
             />
           </v-col>
           <v-col v-if="step === 1">
-            <home-town-card
+            <new-account-card
               v-model="registrationRequest"
               @prev-step="step--"
               @next-step="step++"
             />
           </v-col>
           <v-col v-if="step === 2">
+            <home-town-card
+              v-model="registrationRequest"
+              @prev-step="step--"
+              @next-step="step++"
+            />
+          </v-col>
+          <v-col v-if="step === 3">
             <user-type-card
               v-model="registrationRequest"
               @prev-step="step--"
@@ -25,7 +32,7 @@
             />
           </v-col>
         </v-row>
-        <v-card v-if="step == 3" class="rounded-border">
+        <v-card v-if="step == 4" class="rounded-border">
           <v-card-title class="justify-center">Aanmaken account</v-card-title>
           <v-card-text>
             <v-row no-gutters>
@@ -79,14 +86,17 @@
 </template>
 
 <script>
+import NewAccountTerms from '@/components/onboarding/NewAccountTerms.vue'
 import NewAccountCard from '@/components/onboarding/NewAccountCard.vue'
 import HomeTownCard from '@/components/onboarding/HomeTownCard.vue'
 import UserTypeCard from '@/components/onboarding/UserTypeCard.vue'
 import { setTimeout } from 'timers'
 import * as rsStore from '@/store/registration-service'
+import * as uiStore from '@/store/ui'
 
 export default {
   components: {
+    NewAccountTerms,
     NewAccountCard,
     HomeTownCard,
     UserTypeCard,
@@ -119,7 +129,7 @@ export default {
       if (this.step < 0) {
         this.$router.push('/')
       }
-      if (this.step == 3) {
+      if (this.step == 4) {
         this.submitForm()
       }
     },
@@ -131,6 +141,9 @@ export default {
         }, 7000)
       }
     },
+  },
+  beforeCreate() {
+    uiStore.mutations.disableFooter()
   },
   methods: {
     submitForm: function() {

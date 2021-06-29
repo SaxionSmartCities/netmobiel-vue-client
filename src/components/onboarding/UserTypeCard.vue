@@ -21,6 +21,7 @@
           <v-btn
             block
             rounded
+            depressed
             color="button"
             :disabled="!value.userRole"
             @click="submitForm()"
@@ -34,8 +35,6 @@
 </template>
 
 <script>
-import * as uiStore from '@/store/ui'
-
 export default {
   name: 'HomeTownCard',
   props: {
@@ -49,14 +48,11 @@ export default {
       showSubmitButton: true,
     }
   },
-  beforeCreate() {
-    uiStore.mutations.disableFooter()
-  },
   methods: {
-    submitForm: function() {
+    submitForm() {
       this.$emit('next-step')
     },
-    back: function() {
+    back() {
       this.$emit('prev-step')
     },
   },
