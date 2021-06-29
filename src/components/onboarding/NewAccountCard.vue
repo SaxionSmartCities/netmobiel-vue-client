@@ -41,7 +41,7 @@
         </v-col>
         <v-col cols="11">
           Ik ga akkoord met de <a to="/">voorwaarden</a>, deelname aan het
-          <a to="/">onderzoek</a> en het <a to="/">privacystatement</a>
+          <a to="https://www.netmobiel.eu/">onderzoek</a> en het <a to="https://www.netmobiel.eu/privacyverklaring-app/">privacystatement</a>
         </v-col>
       </v-row>
       <v-row no-gutters align="center">
