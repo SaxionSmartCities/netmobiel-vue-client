@@ -43,7 +43,8 @@ export function scaleImageDown(image, target) {
   const originalFileSize = getFileSize(image)
   return new Promise(resolve => {
     getImageDimensions(image).then(({ height, width }) => {
-      const resizeFactor = Math.ceil(originalFileSize / target)
+      // const resizeFactor = Math.ceil(originalFileSize / target)
+      const resizeFactor = 1
       resolve(resizeImage(image, width / resizeFactor, height / resizeFactor))
     })
   })
