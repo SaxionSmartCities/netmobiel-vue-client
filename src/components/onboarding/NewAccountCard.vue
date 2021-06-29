@@ -42,7 +42,7 @@
         <v-row no-gutters align="center">
           <v-col cols="1">
             <v-checkbox
-              v-model="value.consent.acceptedTerms"
+              v-model="value.consent.safetyGuidelines"
               :rules="[rules.required]"
             ></v-checkbox>
           </v-col>
@@ -102,8 +102,6 @@
 </template>
 
 <script>
-import * as uiStore from '@/store/ui'
-
 export default {
   name: 'NewAccountCard',
   props: {
@@ -125,9 +123,6 @@ export default {
           ) || 'Ongeldig email adres',
       },
     }
-  },
-  beforeCreate() {
-    uiStore.mutations.disableFooter()
   },
   methods: {
     submitForm() {
