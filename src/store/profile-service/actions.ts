@@ -31,10 +31,12 @@ function fetchProfile(context: ActionContext) {
         let profile = {
           ...context.state.user.profile,
           ...response.data.profiles[0],
-        }
-        if (profile.image && !profile.image.startsWith('http')) {
-          // turn relative image URL into absolute URL
-          profile.image = `${IMAGES_BASE_URL}/${profile.image}`
+          dateOfBirth: response.data.profiles[0].dateOfBirth
+            ? LocalDate.parse(response.data.profiles[0].dateOfBirth)
+            : null,
+          image: response.data.profiles[0].image
+            ? `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
+            : '',
         }
         if (!!localStorage.fcm && localStorage.fcm !== profile.fcmToken) {
           profile.fcmToken = localStorage.fcm
@@ -63,9 +65,6 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
       if (response.data.profiles.length > 0) {
         let profile = {
           ...response.data.profiles[0],
-          dateOfBirth: response.data.profiles[0].dateOfBirth
-            ? LocalDate.parse(response.data.profiles[0].dateOfBirth)
-            : null,
           image: response.data.profiles[0].image
             ? `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
             : '',
