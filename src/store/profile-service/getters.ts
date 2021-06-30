@@ -25,17 +25,6 @@ export const buildGetters = (
     return state.complimentTypes
   }, 'getComplimentTypes')
 
-  const getCoronaCheck = psBuilder.read((state: ProfileState) => {
-    return state.user.coronaCheck
-  }, 'getCoronaCheck')
-
-  const passedCoronaCheck = psBuilder.read((state: ProfileState) => {
-    return (
-      state.user.coronaCheck.coronaSymptoms &&
-      state.user.coronaCheck.houseHoldHadCorona
-    )
-  }, 'passedCoronaCheck')
-
   const getDelegations = psBuilder.read((state: ProfileState) => {
     return state.user.delegations
   }, 'getDelegations')
@@ -43,6 +32,14 @@ export const buildGetters = (
   const getDelegatorId = psBuilder.read((state: ProfileState) => {
     return state.user.delegatorId
   }, 'getDelegatorId')
+
+  const getSearchStatus = psBuilder.read((state: ProfileState) => {
+    return state.search.status
+  }, 'getSearchStatus')
+
+  const getSearchResults = psBuilder.read((state: ProfileState) => {
+    return state.search.results
+  }, 'getSearchResults')
 
   return {
     get getUser() {
@@ -60,17 +57,17 @@ export const buildGetters = (
     get getComplimentTypes() {
       return getComplimentTypes()
     },
-    get getCoronaCheck() {
-      return getCoronaCheck()
-    },
-    get passedCoronaCheck() {
-      return passedCoronaCheck()
-    },
     get getDelegations() {
       return getDelegations()
     },
     get getDelegatorId() {
       return getDelegatorId()
+    },
+    get getSearchResults() {
+      return getSearchResults()
+    },
+    get getSearchStatus() {
+      return getSearchStatus()
     },
   }
 }

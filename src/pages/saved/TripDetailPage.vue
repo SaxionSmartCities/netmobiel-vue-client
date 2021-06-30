@@ -203,7 +203,7 @@ export default {
     saveTrip() {
       const selectedTrip = isStore.getters.getSelectedTrip
       isStore.actions
-        .storeSelectedTrip(selectedTrip)
+        .createTrip(selectedTrip)
         .then(() => this.$router.push('/tripPlanSubmitted'))
     },
     showFullRouteOnMap() {
@@ -235,7 +235,7 @@ export default {
       })
     },
     onTripCancelled() {
-      isStore.actions.deleteSelectedTrip({
+      isStore.actions.deleteTrip({
         tripId: this.selectedTrip.id,
         displayWarning: true,
       })
@@ -256,7 +256,7 @@ export default {
         },
       }
       isStore.mutations.setSearchCriteria(searchCriteria)
-      isStore.actions.submitPlanningsRequest(searchCriteria)
+      isStore.actions.searchTripPlan(searchCriteria)
       this.$router.push({
         name: 'searchResults',
         params: { tripId: String(this.selectedTrip.id) },

@@ -30,7 +30,7 @@
           </span>
         </v-col>
         <v-col v-if="user.delegate !== user.delegator" class="shrink">
-          <v-icon @click="deleteDeletation(user)">
+          <v-icon :disabled="!!selectedId" @click="deleteDeletation(user)">
             delete
           </v-icon>
         </v-col>

@@ -30,20 +30,6 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col class="px-1 pt-0">
-        <v-btn
-          large
-          rounded
-          block
-          outlined
-          color="button"
-          to="/rideSafeNetmobiel"
-        >
-          Corona adviezen
-        </v-btn>
-      </v-col>
-    </v-row>
     <v-row v-if="updateMessages.length > 0">
       <v-col class="px-1">
         <v-row>
@@ -125,12 +111,6 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-snackbar v-model="snackbar" :timeout="5000" type="warning" class="mb-12">
-      Lees hier onze corona adviezen
-      <v-btn text @click="$router.push({ name: 'rideSafeNetmobiel' })">
-        Lees meer
-      </v-btn>
-    </v-snackbar>
   </content-pane>
 </template>
 
@@ -157,9 +137,7 @@ export default {
     RoundUserImage,
   },
   data() {
-    return {
-      snackbar: false,
-    }
+    return {}
   },
   computed: {
     profile() {

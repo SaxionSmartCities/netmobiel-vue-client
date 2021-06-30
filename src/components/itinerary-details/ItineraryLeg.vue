@@ -103,7 +103,11 @@ export default {
       )
     },
     hasDriver() {
-      return this.travelMode === travelModes.RIDESHARE.mode
+      // Hack: check also whether the leg has a driverName. If so, it is a (rideshare) leg of a trip.
+      // If not, it is a leg of a ride.
+      return (
+        this.travelMode === travelModes.RIDESHARE.mode && this.leg.driverName
+      )
     },
   },
 }

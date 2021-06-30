@@ -22,9 +22,15 @@ export interface GeoCoder {
   suggestions: GeoCoderSuggestion[]
 }
 
+export interface GeoLocation {
+  latitude: number
+  longitude: number
+}
+
 export interface GeoCoderSuggestion {
-  access: string[]
+  access: Geolocation[]
   address: {
+    // ISO 3166-1 Alpha-3 country code
     countryCode?: string
     houseNumber?: string
     label: string
@@ -36,10 +42,7 @@ export interface GeoCoderSuggestion {
   category?: string
   distance: number
   id: string
-  position: {
-    latitude: number
-    longitude: number
-  }
+  position: GeoLocation
   resultType: string
   title: string
   titleHighlights: Range[]

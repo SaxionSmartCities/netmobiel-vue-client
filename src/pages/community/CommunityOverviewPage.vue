@@ -75,7 +75,7 @@ export default {
     const { address, userRole } = psStore.getters.getProfile
     if (userRole === constants.PROFILE_ROLE_PASSENGER) {
       // Display the count of the users' own shoutouts.
-      isStore.actions.fetchMyShoutOuts({ offset: 0 })
+      isStore.actions.fetchMyShoutOutTripPlans({ offset: 0 })
     } else if (address && address.location) {
       // Display the community shoutouts.
       isStore.actions.fetchShoutOuts({

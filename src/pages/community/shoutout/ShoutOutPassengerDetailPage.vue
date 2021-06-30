@@ -123,7 +123,7 @@ export default {
   },
   mounted() {
     isStore.mutations.clearPlanningResults()
-    isStore.actions.fetchShoutOut({ id: this.id })
+    isStore.actions.fetchTripPlan({ id: this.id })
   },
   created() {
     uiStore.mutations.showBackButton()
@@ -143,7 +143,7 @@ export default {
         },
       }
       isStore.mutations.setSearchCriteria(searchCriteria)
-      isStore.actions.submitPlanningsRequest(searchCriteria)
+      isStore.actions.searchTripPlan(searchCriteria)
       this.$router.push({
         name: 'searchResults',
         params: {
@@ -158,12 +158,12 @@ export default {
       const { from, to, nrSeats } = this.trip
       const { itineraryRef } = itinerary
       const trip = { from, to, nrSeats, itineraryRef }
-      isStore.actions.storeSelectedTrip(trip)
+      isStore.actions.createTrip(trip)
       this.$router.push({ name: 'shoutouts' })
     },
     onConfirmCancel() {
       this.cancelDialog.isVisible = false
-      isStore.actions.deleteShoutOut({ shoutoutPlanId: this.id })
+      isStore.actions.cancelTripPlan({ shoutoutPlanId: this.id })
       this.$router.go(-1)
     },
     onCloseCancel() {

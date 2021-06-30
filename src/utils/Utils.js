@@ -15,11 +15,14 @@ module.exports = {
   },
   geoSuggestionToPlace: function(suggestion) {
     let place = { ...suggestion.address }
+    let location = suggestion.position
+    if (suggestion.access && suggestion.access.length > 0) {
+      // Take the first one, a bit arbitrary choice
+      // Non-representative observation: Only very large areas have multiple entrances
+      location = suggestion.access[0]
+    }
     place.location = {
-      coordinates: [
-        suggestion.position.longitude,
-        suggestion.position.latitude,
-      ],
+      coordinates: [location.longitude, location.latitude],
       type: 'Point',
     }
     place.ref = suggestion.id

@@ -131,7 +131,7 @@ export default {
       this.$router.push({ name: 'searchOptions' })
     },
     submitForm() {
-      isStore.actions.submitPlanningsRequest(this.searchCriteria)
+      isStore.actions.searchTripPlan(this.searchCriteria)
       this.$router.push({
         name: 'searchResults',
         params: {

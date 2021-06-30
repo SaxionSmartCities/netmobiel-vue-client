@@ -4,7 +4,6 @@ import { ModuleBuilder } from 'vuex-typex'
 import {
   Compliment,
   ComplimentType,
-  CoronaCheck,
   Place,
   Profile,
   ProfileState,
@@ -76,10 +75,6 @@ function setPrivacySecurityValue(state: ProfileState, payload: any) {
   })
 }
 
-function setCoronaCheck(state: ProfileState, payload: CoronaCheck) {
-  state.user.coronaCheck = payload
-}
-
 function setComplimentTypes(
   state: ProfileState,
   complimentTypes: ComplimentType[]
@@ -123,6 +118,18 @@ function resetDelegate(state: ProfileState) {
   state.user.delegatorId = null
 }
 
+function setSearchKeyword(state: ProfileState, keyword: string) {
+  state.search.keyword = keyword
+}
+
+function setSearchStatus(state: ProfileState, status: string) {
+  state.search.status = status
+}
+
+function setSearchResults(state: ProfileState, results: PublicProfile[]) {
+  state.search.results = results
+}
+
 export const buildMutations = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -136,7 +143,6 @@ export const buildMutations = (
     setReviewOptionsValue: psBuilder.commit(setReviewOptionsValue),
     setRidePlanOptions: psBuilder.commit(setRidePlanOptions),
     setPrivacySecurityValue: psBuilder.commit(setPrivacySecurityValue),
-    setCoronaCheck: psBuilder.commit(setCoronaCheck),
     setComplimentTypes: psBuilder.commit(setComplimentTypes),
     setPublicProfile: psBuilder.commit(setPublicProfile),
     setPublicCompliments: psBuilder.commit(setPublicCompliments),
@@ -146,5 +152,8 @@ export const buildMutations = (
     setDelegateProfile: psBuilder.commit(setDelegateProfile),
     setDelegatorId: psBuilder.commit(setDelegatorId),
     resetDelegate: psBuilder.commit(resetDelegate),
+    setSearchKeyword: psBuilder.commit(setSearchKeyword),
+    setSearchResults: psBuilder.commit(setSearchResults),
+    setSearchStatus: psBuilder.commit(setSearchStatus),
   }
 }

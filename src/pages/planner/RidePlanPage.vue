@@ -56,11 +56,6 @@
               </v-row>
               <v-row dense>
                 <v-col>
-                  <corona-check-modal
-                    :value="coronaCheck"
-                    class="mb-2"
-                    @done="onCoronaCheckDone"
-                  ></corona-check-modal>
                   <v-btn
                     large
                     rounded
@@ -99,8 +94,7 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import SearchCriteria from '@/components/common/SearchCriteria.vue'
 import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
 import { geoPlaceToCriteria } from '@/utils/Utils'
-import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
-import CoronaCheckModal from '@/components/common/CoronaCheckModal'
+import { beforeRouteEnter, beforeRouteLeave } from '@/utils/navigation.js'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
@@ -110,7 +104,6 @@ import * as isStore from '@/store/itinerary-service'
 export default {
   name: 'RidePlanPage',
   components: {
-    CoronaCheckModal,
     ContentPane,
     SearchCriteria,
     RecurrenceEditor,
@@ -118,11 +111,6 @@ export default {
   data() {
     return {
       recurrence: undefined,
-      coronaCheck: {
-        isVisible: false,
-        coronaFreePast: false,
-        coronaFreeHousehold: false,
-      },
     }
   },
   computed: {
@@ -136,6 +124,7 @@ export default {
       // HACK: selectedCarId is a string (in the backend) but we expect a number. Using the == comparison
       // we will get the correct selected car. We want to use === however. But the backend should be
       // updated first.
+      // JR: No, selectedCarId should be a urn, not a number.
       return cars.find(car => car.id == selectedCarId)
     },
     disabledRideAddition() {
@@ -201,18 +190,6 @@ export default {
       isStore.mutations.setSearchCriteria(newCriteria)
     },
     onPlanRide() {
-      this.coronaCheck.isVisible = true
-    },
-    onCoronaCheckDone(check) {
-      if (check.coronaFreePast && check.coronaFreeHousehold) {
-        this.submitForm()
-      } else {
-        uiStore.actions.queueErrorNotification(
-          'Een rit plannen met klachten is niet mogelijk.'
-        )
-      }
-    },
-    submitForm() {
       const { ridePlanOptions } = psStore.getters.getProfile
       csStore.actions.submitRide({
         ...this.searchCriteria,

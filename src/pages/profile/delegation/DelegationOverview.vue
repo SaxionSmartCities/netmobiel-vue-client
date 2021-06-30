@@ -2,7 +2,7 @@
   <content-pane>
     <v-row>
       <v-col>
-        <h4>Account beheer</h4>
+        <h3>Account beheer</h3>
         <span>Namens wie wil je de app gebruiken?</span>
       </v-col>
     </v-row>
@@ -25,6 +25,7 @@
           block
           outlined
           color="primary"
+          :disabled="!!delegatorId"
           @click="addDelegation"
         >
           Toevoegen
@@ -64,12 +65,7 @@ export default {
   mounted() {
     uiStore.mutations.showBackButton()
     if (this.$keycloak.hasRealmRole('delegate')) {
-      let delegateId = psStore.getters.getProfile.id
-      const delegateProfile = psStore.getters.getDelegateProfile
-      if (delegateProfile) {
-        delegateId = delegateProfile.id
-      }
-      // Check if we have a delegateProfile
+      const delegateId = this.delegateId()
       psStore.actions.fetchDelegations({ delegateId })
     } else {
       // Redirect to profile page
@@ -77,9 +73,18 @@ export default {
     }
   },
   methods: {
+    delegateId() {
+      const delegateId = psStore.getters.getProfile.id
+      const delegateProfile = psStore.getters.getDelegateProfile
+      // Check if we have a delegateProfile, if so then return this id.
+      // This is the case when the delegate is 'impersonating' a delegator.
+      if (delegateProfile) {
+        return delegateProfile.id
+      }
+      return delegateId
+    },
     addDelegation() {
-      // eslint-disable-next-line
-      console.log('TODO: Implement add delegation')
+      this.$router.push('/profile/delegate/add')
     },
     onAccountSelected(delegatorId) {
       const delegateId = psStore.getters.getDelegateProfile?.id
@@ -90,7 +95,8 @@ export default {
       }
     },
     onDelegationDelete(delegationId) {
-      psStore.actions.deleteDelegation({ delegationId })
+      const delegateId = this.delegateId()
+      psStore.actions.deleteDelegation({ delegateId, delegationId })
     },
   },
 }

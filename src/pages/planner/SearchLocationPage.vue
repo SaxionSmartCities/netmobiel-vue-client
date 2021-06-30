@@ -163,8 +163,8 @@ export default {
       if (this.localEditSearchCriteria) {
         const fieldValue = {
           label: place.title,
-          latitude: place.location.coordinates[0],
-          longitude: place.location.coordinates[1],
+          latitude: place.location.coordinates[1],
+          longitude: place.location.coordinates[0],
         }
         isStore.mutations.setSearchCriteriaField({
           field: this.$route.params.field,
@@ -178,7 +178,7 @@ export default {
       const searchCriteria = isStore.getters.getSearchCriteria
       const preferences = isStore.getters.getPlanningRequest?.preferences
       const { from, to, travelTime } = searchCriteria
-      isStore.actions.submitPlanningsRequest({
+      isStore.actions.searchTripPlan({
         from,
         to,
         travelTime,

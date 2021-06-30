@@ -20,10 +20,10 @@ export default {
     imageSize: { type: Number, default: 70, required: false },
     avatarSize: { type: Number, default: 78, required: false },
   },
-  data() {
-    return {
-      imageURL: null,
-    }
+  computed: {
+    imageURL() {
+      return psStore.getters.getExternalUser.profile.image || null
+    },
   },
   watch: {
     managedIdentity() {
@@ -35,14 +35,7 @@ export default {
   },
   methods: {
     fetchExternalUser() {
-      // fetch profile of external user
-      psStore.actions
-        .fetchUserProfile({ profileId: this.managedIdentity })
-        .then(() => {
-          // extract the image from external profile (because external profile might change again...)
-          const { image } = psStore.getters.getExternalUser.profile
-          this.imageURL = image ? `${config.BASE_URL}/${image}` : null
-        })
+      psStore.actions.fetchUserProfile({ profileId: this.managedIdentity })
     },
   },
 }
