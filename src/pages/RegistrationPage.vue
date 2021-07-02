@@ -32,7 +32,7 @@
             />
           </v-col>
         </v-row>
-        <v-card v-if="step == 4" class="rounded-border">
+        <v-card v-if="step === 4" class="rounded-border">
           <v-card-title class="justify-center">Aanmaken account</v-card-title>
           <v-card-text>
             <v-row no-gutters>
@@ -58,6 +58,12 @@
               >
                 {{ getRegistrationStatus.message }}
               </v-alert>
+              <v-progress-circular
+                v-if="getRegistrationStatus.success === undefined"
+                indeterminate
+                :value="true"
+                class="rotate"
+              ></v-progress-circular>
             </v-row>
           </v-card-text>
           <v-card-actions>
@@ -129,7 +135,7 @@ export default {
       if (this.step < 0) {
         this.$router.push('/')
       }
-      if (this.step == 4) {
+      if (this.step === 4) {
         this.submitForm()
       }
     },
@@ -151,7 +157,6 @@ export default {
         success: undefined,
         message: '',
       })
-
       rsStore.actions.submitRegistrationRequest(this.registrationRequest)
     },
   },
