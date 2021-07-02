@@ -37,4 +37,8 @@ module.exports = {
       longitude: place.location.coordinates[0],
     }
   },
+  isAbsoluteUrl: function(url) {
+    const absoluteUrlRegEx = new RegExp('^(?:[a-z]+:)?//', 'i')
+    return absoluteUrlRegEx.test(url)
+  },
 }
