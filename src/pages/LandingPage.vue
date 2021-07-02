@@ -23,6 +23,7 @@
 <script>
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import { isAbsoluteUrl } from '@/utils/Utils'
 
 export default {
   beforeCreate() {
@@ -34,7 +35,14 @@ export default {
       psStore.actions.fetchProfile()
       psStore.mutations.setUserToken(this.$keycloak.token)
       if (this.$route.query.redirect) {
-        this.$router.push({ path: this.$route.query.redirect })
+        if (isAbsoluteUrl(this.$route.query.redirect)) {
+          console.warn(`Blocked redirect: '${this.$route.query.redirect}'`)
+          uiStore.actions.queueErrorNotification(`Externe pagina geblokkeerd`)
+          // Redirect to the home page
+          this.$router.push({ path: '/home' })
+        } else {
+          this.$router.push({ path: this.$route.query.redirect })
+        }
       } else {
         // Preserve query string when routing to home.
         this.$router.push({ path: '/home', query: this.$route.query })
