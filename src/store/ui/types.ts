@@ -37,11 +37,13 @@ export interface UiUpdateMessageLink {
 
 export interface NetworkRequest {
   location?: string
+  method?: string
   submitStatus?: SubmitStatus
 }
 
 export interface SubmitStatus {
   status: NetworkRequestStatus
+  statusCode?: number
   message?: string
 }
 
