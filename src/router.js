@@ -326,7 +326,6 @@ router.beforeEach((to, from, next) => {
   uiStore.mutations.hideBackButton()
   uiStore.mutations.enableFooter()
   uiStore.mutations.enableHeader()
-  console.log(`Route to ${to.path}`)
   if (
     !psStore.getters.getUser.accessToken &&
     to.path !== '/' &&
