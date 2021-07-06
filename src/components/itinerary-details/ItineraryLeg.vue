@@ -127,7 +127,7 @@ const headers = {
   WAIT() {
     return `Even wachten.. (${Math.round(this.leg.duration / 60)} minuten)`
   },
-  FINISH: 'Gearriveerd',
+  FINISH: 'Aankomst',
   ARRIVAL: 'Aankomst',
   SUBWAY() {
     return `${this.leg.routeShortName} naar ${this.leg.to.label}`
