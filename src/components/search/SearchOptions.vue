@@ -48,6 +48,45 @@
               <v-expansion-panel-header>
                 <v-row no-gutters>
                   <v-col>
+                    <span>Hulp nodig bij instappen</span>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col class="text-end pr-3">
+                    <v-icon v-if="value.longerPickupTime">check</v-icon>
+                    <v-icon v-else color="red">close</v-icon>
+                  </v-col>
+                </v-row>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-row no-gutters>
+                  <v-col>
+                    <v-alert type="warning" color="orange">
+                      Indien u moeite hebt met instappen dan kunt u dit hier
+                      aangeven. Er wordt dan een verzoek verstuurd naar de
+                      chauffeur om hier rekening mee te houden.
+                    </v-alert>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters>
+                  <v-col class="shrink" cols="10">
+                    Ik heb hulp nodig met instappen:
+                  </v-col>
+                  <v-col class="shrink">
+                    <v-switch
+                      v-model="value.longerPickupTime"
+                      class="switch-overwrite"
+                      color="green"
+                    >
+                    </v-switch>
+                  </v-col>
+                </v-row>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel>
+              <v-expansion-panel-header>
+                <v-row no-gutters>
+                  <v-col>
                     <span>Overstappen</span>
                   </v-col>
                 </v-row>
