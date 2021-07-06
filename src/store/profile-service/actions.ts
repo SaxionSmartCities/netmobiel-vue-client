@@ -8,6 +8,7 @@ import { mutations } from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
 import store from '..'
 import { LocalDate } from '@js-joda/core'
+import { addInterceptors } from '@/store/api-middelware'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -22,7 +23,9 @@ const { generateHeaders } = util
 function fetchProfile(context: ActionContext) {
   const delegatorId = context.state.user.delegatorId
   const URL = `${PROFILE_BASE_URL}/profiles/me`
-  axios
+  let axiosInstance = axios.create()
+  addInterceptors(axiosInstance)
+  axiosInstance
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
     })

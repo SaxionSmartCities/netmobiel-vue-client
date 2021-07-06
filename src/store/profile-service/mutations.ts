@@ -17,6 +17,7 @@ import { RootState } from '@/store/Rootstate'
 function setUserToken(state: ProfileState, token: string) {
   state.user.accessToken = token
   let decodedObject = VueJwtDecode.decode(token)
+  state.user.managedIdentity = decodedObject['sub']
   state.user.givenName = decodedObject['given_name']
   state.user.familyName = decodedObject['family_name']
   state.user.email = decodedObject['email']
@@ -25,6 +26,7 @@ function setUserToken(state: ProfileState, token: string) {
 
 function deleteAccessToken(state: ProfileState) {
   state.user.accessToken = null
+  state.user.managedIdentity = null
 }
 
 function setProfile(state: ProfileState, payload: Profile) {

@@ -42,13 +42,16 @@
                 type="success"
                 color="green"
               >
-                Profiel aangemaakt!
-                <br />
-                U ontvangt een e-mail waarmee U de registratie kunt voltooien.
-                Controleer de spamfolder als de e-mail niet verschijnt in de
-                inbox!
-                <br />
-                We sturen U over enkele seconden terug naar het login-scherm.
+                <p>Profiel aangemaakt!</p>
+                <!-- When the user already has a Keycloak account, no verification email is sent -->
+                <p v-if="!isAuthenticated">
+                  U ontvangt een e-mail waarmee U de registratie kunt voltooien.
+                  Controleer de spamfolder als de e-mail niet verschijnt in de
+                  inbox!
+                </p>
+                <p>
+                  We sturen U over enkele seconden terug naar het login-scherm.
+                </p>
               </v-alert>
               <v-alert
                 v-if="getRegistrationStatus.success === false"
@@ -97,6 +100,7 @@ import NewAccountCard from '@/components/onboarding/NewAccountCard.vue'
 import HomeTownCard from '@/components/onboarding/HomeTownCard.vue'
 import UserTypeCard from '@/components/onboarding/UserTypeCard.vue'
 import { setTimeout } from 'timers'
+import * as psStore from '@/store/profile-service'
 import * as rsStore from '@/store/registration-service'
 import * as uiStore from '@/store/ui'
 
@@ -109,6 +113,7 @@ export default {
   },
   data: function() {
     return {
+      dryRun: false,
       step: 0,
       registrationRequest: {
         firstName: '',
@@ -128,6 +133,9 @@ export default {
   computed: {
     getRegistrationStatus() {
       return rsStore.getters.getRegistrationStatus
+    },
+    isAuthenticated() {
+      return this.$keycloak.authenticated
     },
   },
   watch: {
@@ -151,13 +159,28 @@ export default {
   beforeCreate() {
     uiStore.mutations.disableFooter()
   },
+  mounted() {
+    if (this.$keycloak.authenticated) {
+      const user = psStore.getters.getUser
+      this.registrationRequest.firstName = user.givenName || ''
+      this.registrationRequest.lastName = user.familyName || ''
+      this.registrationRequest.email = user.email || ''
+    }
+  },
   methods: {
     submitForm: function() {
-      rsStore.mutations.setRegistrationStatus({
-        success: undefined,
-        message: '',
-      })
-      rsStore.actions.submitRegistrationRequest(this.registrationRequest)
+      if (this.dryRun) {
+        rsStore.mutations.setRegistrationStatus({
+          success: true,
+          message: '',
+        })
+      } else {
+        rsStore.mutations.setRegistrationStatus({
+          success: undefined,
+          message: '',
+        })
+        rsStore.actions.submitRegistrationRequest(this.registrationRequest)
+      }
     },
   },
 }
