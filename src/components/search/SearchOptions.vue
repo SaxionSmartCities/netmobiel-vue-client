@@ -62,8 +62,8 @@
                 <v-row no-gutters>
                   <v-col>
                     <v-alert type="warning" color="orange">
-                      Indien u moeite hebt met instappen dan kunt u dit hier
-                      aangeven. Er wordt dan een verzoek verstuurd naar de
+                      Indien u hulp nodig heeft bij het instappen dan kunt u dit
+                      hier aangeven. Er wordt dan een verzoek verstuurd naar de
                       chauffeur om hier rekening mee te houden.
                     </v-alert>
                   </v-col>
