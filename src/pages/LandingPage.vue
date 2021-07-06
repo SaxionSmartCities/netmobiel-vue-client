@@ -36,6 +36,7 @@ export default {
       psStore.mutations.setUserToken(this.$keycloak.token)
       if (this.$route.query.redirect) {
         if (isAbsoluteUrl(this.$route.query.redirect)) {
+          // eslint-disable-next-line
           console.warn(`Blocked redirect: '${this.$route.query.redirect}'`)
           uiStore.actions.queueErrorNotification(`Externe pagina geblokkeerd`)
           // Redirect to the home page
