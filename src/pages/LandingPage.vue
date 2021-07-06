@@ -24,6 +24,7 @@
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import { NetworkRequestStatus } from '@/store/ui/types'
+import { isAbsoluteUrl } from '@/utils/Utils'
 
 export default {
   computed: {
@@ -33,9 +34,6 @@ export default {
   },
   watch: {
     networkRequest(newValue) {
-      // console.log(
-      //   `Status: ${newValue.method} ${newValue.location} ${newValue.submitStatus.status} ${newValue.submitStatus.message}`
-      // )
       if (newValue.submitStatus.status === NetworkRequestStatus.SUCCESS) {
         this.continueNavigation()
       } else if (newValue.submitStatus.status === NetworkRequestStatus.FAILED) {
@@ -56,7 +54,6 @@ export default {
   mounted() {
     if (this.$keycloak.authenticated) {
       // Token and Profile are also fetched in the main template (App.vue)
-      // psStore.mutations.setUserToken(this.$keycloak.token)
       uiStore.mutations.resetNetworkRequest()
       psStore.actions.fetchProfile()
       // How are we sure the networkRequestStatus concerns our request? We need a correlationId!
@@ -70,7 +67,15 @@ export default {
   methods: {
     continueNavigation: function() {
       if (this.$route.query.redirect) {
-        this.$router.push({ path: this.$route.query.redirect })
+        if (isAbsoluteUrl(this.$route.query.redirect)) {
+          // eslint-disable-next-line
+          console.warn(`Blocked redirect: '${this.$route.query.redirect}'`)
+          uiStore.actions.queueErrorNotification(`Externe pagina geblokkeerd`)
+          // Redirect to the home page
+          this.$router.push({ path: '/home' })
+        } else {
+          this.$router.push({ path: this.$route.query.redirect })
+        }
       } else {
         // Preserve query string when routing to home.
         this.$router.push({ path: '/home', query: this.$route.query })
