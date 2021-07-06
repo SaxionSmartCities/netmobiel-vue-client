@@ -27,6 +27,9 @@ Vue.use(VueKeyCloak, {
     authUrl: 'https://keycloak.actmedialab.nl/auth',
     authClientId: 'netmobiel-frontend',
   },
+  logout: {
+    redirectUri: window.location.origin,
+  },
   init: {
     onLoad: 'check-sso',
     enableLogging: true,
