@@ -47,6 +47,7 @@
               </v-row>
             </v-list-item-title>
             <v-list-item-subtitle>
+              {{ getConversationTimestamp(conversation) }}
               Van
               {{ getFromLabelFromContext(conversation.context) }}
               naar
@@ -67,6 +68,8 @@ import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as msStore from '@/store/message-service'
+import moment from 'moment'
+import { upperCaseFirst } from '@/utils/Utils.js'
 
 export default {
   components: {
@@ -133,13 +136,20 @@ export default {
         name: `conversation`,
         params: {
           context: conversation.context,
-          participants: conversation.participants,
+          participants: conversation.participants.map(p => p.managedIdentity),
         },
       })
     },
     getNewMessageCount(conversation) {
       //TODO: Get the count from somewhere.
       return 0
+    },
+    getConversationTimestamp(conversation) {
+      return upperCaseFirst(
+        moment(conversation.creationTime)
+          .locale('nl')
+          .calendar()
+      )
     },
   },
 }
