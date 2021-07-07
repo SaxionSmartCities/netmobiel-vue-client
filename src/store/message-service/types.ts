@@ -1,19 +1,19 @@
 export class MessageState {
   conversations: any[] = []
-  messages: Map<string, any[]> = new Map()
+  messages: Map<string, Message[]> = new Map()
   contexts: string[] = []
   activeMessages: any[] = []
 }
 
 export interface Message {
-  // body: string | null
-  // context: string
-  // creationTime: Date | null
-  // deliveryMode: string
-  // envelopes: Envelope[] | null
-  // id: number
-  // sender: CommunicationUser | null
-  // subject: string | null
+  body: string | null
+  context: string
+  creationTime: Date | null
+  deliveryMode: string
+  envelopes?: Envelope[]
+  id?: number
+  sender: CommunicationUser | null
+  subject?: string
 }
 
 export interface Envelope {
@@ -25,9 +25,9 @@ export interface Envelope {
 export interface Conversation extends Message {}
 
 export interface CommunicationUser {
-  id: number | null
-  email: string | null
-  familyName: string | null
-  givenName: string | null
+  id?: number
+  email?: string
+  familyName?: string
+  givenName?: string
   managedIdentity: string
 }
