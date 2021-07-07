@@ -32,22 +32,26 @@
           <v-list-item-content>
             <v-list-item-title>
               <v-row dense>
-                <v-col>
+                <v-col class="font-weight-medium">
                   {{
                     getReceiverViaConversationParticipants(
                       conversation.participants
                     )
                   }}
                 </v-col>
+                <!-- Let's hide the number of unread message for now until we have fixed it.
                 <v-col class="px-2" cols="2">
                   <div class="message-counter">
                     {{ getNewMessageCount(conversation) }}
                   </div>
-                </v-col>
+                </v-col> -->
               </v-row>
             </v-list-item-title>
             <v-list-item-subtitle>
-              {{ getConversationTimestamp(conversation) }}
+              <em>
+                Laatst gewijzigd: {{ getConversationTimestamp(conversation) }}
+              </em>
+              <br />
               Van
               {{ getFromLabelFromContext(conversation.context) }}
               naar
