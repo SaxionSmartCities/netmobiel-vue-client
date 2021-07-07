@@ -4,17 +4,24 @@
       <v-container class="py-1">
         <v-row dense>
           <v-col class="shrink">
-            <v-img class="profile-image" :src="profile.image" />
+            <v-img
+              v-if="recipientProfile"
+              class="profile-image"
+              :src="recipientProfile.image"
+            />
           </v-col>
           <v-col align-self="center" class="d-flex px-3">
-            <h4>
-              {{ recipient.givenName + ' ' + recipient.familyName }}
+            <h4 v-if="recipientProfile">
+              {{ recipientProfile.firstName + ' ' + recipientProfile.lastName }}
             </h4>
             <v-spacer></v-spacer>
             <v-btn color="primary" small rounded outlined>
               <i class="fas fa-comments"></i>
             </v-btn>
           </v-col>
+        </v-row>
+        <v-row v-if="contextText" dense>
+          <p class="description">{{ contextText }}</p>
         </v-row>
         <v-divider class="mt-1" />
       </v-container>
@@ -85,6 +92,11 @@ export default {
       type: String,
       required: true,
     },
+    contextText: {
+      type: String,
+      required: false,
+      default: '',
+    },
     participants: {
       type: Array,
       required: true,
@@ -92,51 +104,52 @@ export default {
   },
   data() {
     return {
-      urn: '',
       newMessage: '',
       isFetchingMessages: true,
+      recipientProfile: undefined,
     }
   },
   computed: {
     sortedMessages() {
       let messages = Object.assign([], msStore.getters.getActiveMessages)
-      return messages.sort(function(a, b) {
-        a = new Date(a.creationTime)
-        b = new Date(b.creationTime)
-        return a < b ? -1 : a < b ? 1 : 0
+      return messages.sort(function(msg1, msg2) {
+        const a = msg1.creationTime
+        const b = msg2.creationTime
+        return a < b ? -1 : a > b ? 1 : 0
       })
     },
-    recipient() {
-      const myId = this.profile.id
-      return this.participants.find(
-        recipient => recipient.managedIdentity !== myId
-      )
+    recipients() {
+      return this.participants.filter(p => p !== this.profile.id)
+    },
+    mainRecipient() {
+      return this.recipients?.length > 0 ? this.recipients[0] : undefined
     },
     profile() {
       return psStore.getters.getProfile
-    },
-    sender() {
-      return msStore.getters.getConversationByContext(this.context).sender
     },
   },
   mounted() {
     uiStore.mutations.showBackButton()
   },
-  updated() {
-    this.scrollToBottomMessageContainer()
-  },
   created() {
-    //This.context is the urn as path parameter in URL.
-    //In this URN the ':' needs to be replaced cause javascript wont like it being used as a key
+    psStore.actions
+      .fetchUserProfile({
+        profileId: this.mainRecipient,
+      })
+      .then(profile => {
+        this.recipientProfile = profile
+      })
     msStore.actions
       .fetchMessagesByParams({
         context: this.context,
-        participant: this.recipient.managedIdentity,
+        participants: this.profile.id,
       })
       .then(() => {
         this.isFetchingMessages = false
       })
-    this.urn = (' ' + this.context.replace(/:/gi, '')).slice(1)
+  },
+  updated() {
+    this.scrollToBottomMessageContainer()
   },
   methods: {
     onInputMessageFocus() {
@@ -162,10 +175,9 @@ export default {
     },
     sendMessage() {
       const { firstName, lastName } = this.profile
-      const { familyName, givenName, managedIdentity } = this.recipient
-      const envelopes = [
-        { recipient: { familyName, givenName, managedIdentity } },
-      ]
+      const envelopes = this.recipients.map(rcp =>
+        Object.assign({}, { recipient: { managedIdentity: rcp } })
+      )
       msStore.actions
         .sendMessage({
           body: this.newMessage,
@@ -173,7 +185,7 @@ export default {
           deliveryMode: 'ALL',
           envelopes: envelopes,
           managedIdentity: this.profile.id,
-          subject: `Nieuw bericht van ${firstName} ${lastName}`,
+          subject: `Persoonlijk bericht van ${firstName} ${lastName}`,
         })
         .then(() => {
           this.newMessage = null

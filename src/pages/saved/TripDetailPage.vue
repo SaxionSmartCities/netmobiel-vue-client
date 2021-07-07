@@ -102,11 +102,14 @@ export default {
     }
   },
   computed: {
+    profile() {
+      return psStore.getters.getProfile
+    },
     isShoutOut() {
       return false
     },
     hasRideShareDriver() {
-      return this.getRideShareDriver !== null
+      return this.getRideShareDriverId !== null
     },
     drivers() {
       return this.selectedTrip.legs
@@ -115,19 +118,16 @@ export default {
           return {
             name: leg.driverName,
             id: leg.driverId,
-            tripContext: leg.tripId,
+            // context: leg.bookingId ? leg.bookingId : leg.tripId,
+            context: leg.tripId,
+            contextText: `Meerijden ${this.formatTime(leg.startTime)} van ${
+              leg.from.label
+            } naar ${leg.to.label}`,
           }
         })
     },
-    getRideShareDriver() {
-      const rideshareMode = travelModes.RIDESHARE.mode
-      const legs = this.selectedTrip.legs
-      for (let i = 0; i < legs.length; i++) {
-        if (legs[i].traverseMode === rideshareMode) {
-          return legs[i].driverId
-        }
-      }
-      return null
+    getRideShareDriverId() {
+      return this.drivers.length > 0 ? this.drivers[0].id : null
     },
     selectedTrip() {
       let trip = isStore.getters.getSelectedTrip
@@ -195,11 +195,15 @@ export default {
   },
   created() {
     uiStore.mutations.showBackButton()
-    if (this.selectedTrip.state === 'SCHEDULED') {
-      this.showConfirmationButton = false
-    }
   },
   methods: {
+    formatTime(t) {
+      return t
+        ? moment(t)
+            .locale('nl')
+            .calendar()
+        : '- - : - -'
+    },
     saveTrip() {
       const selectedTrip = isStore.getters.getSelectedTrip
       isStore.actions
@@ -210,17 +214,18 @@ export default {
       this.showMap = true
     },
     contactDriver() {
-      if (this.selectedTrip.legs.length > 1) {
-        //Open the modal
+      const drvs = this.drivers
+      if (drvs.length === 0) {
+        // eslint-disable-next-line
+        console.warn(
+          `Expected to find at least one driver in the selected trip!`
+        )
+      } else if (drvs.length > 1) {
+        //Open the modal to select a driver
         this.showContactDriverModal = true
       } else {
         // You can directly push to the router
-        const leg = this.selectedTrip.legs[0]
-        this.onDriverSelectForMessage({
-          name: leg.driverName,
-          id: leg.driverId,
-          tripContext: leg.tripId,
-        })
+        this.onDriverSelectForMessage(drvs[0])
       }
     },
     onTripReplan() {
@@ -243,7 +248,7 @@ export default {
     },
     onTripEdit() {
       const { from, to, itinerary, arrivalTimeIsPinned } = this.selectedTrip
-      const { searchPreferences } = psStore.getters.getProfile
+      const { searchPreferences } = this.profile
       let searchCriteria = {
         from,
         to,
@@ -262,52 +267,22 @@ export default {
         params: { tripId: String(this.selectedTrip.id) },
       })
     },
-    onDriverSelectForMessage(event) {
-      //The backend sends an urn for now so we need to split on ':' and get the last element
-      //Maybe this will later change to an id and we can delete the split code... :)
-      const driverUrn = event.id
-      const driverId = driverUrn.split(':').splice(-1)[0]
-      //Gets the driver his profile
+    onDriverSelectForMessage(driver) {
+      // Gets the driver's profile from the rideshare service, we need the managed identity of the driver
       csStore.actions
         .fetchUser({
-          userRef: driverId,
+          userRef: driver.id,
         })
         .then(driverProfile => {
-          this.routeToConversation(event.tripContext, driverProfile)
+          this.$router.push({
+            name: `conversation`,
+            params: {
+              context: driver.context,
+              contextText: driver.contextText,
+              participants: [this.profile.id, driverProfile.managedIdentity],
+            },
+          })
         })
-    },
-    routeToConversation(ctx, driverProfile) {
-      //Get the conversations and see if it already exists
-      msStore.actions.fetchConversations().then(conversations => {
-        const index = conversations.findIndex(
-          conversation => conversation.context === ctx
-        )
-        let params = null
-        if (index !== -1) {
-          //So if the conversation already exists...
-          params = conversations[index]
-        } else {
-          //If the conversation does not exists
-          //Then create a ghost conversation
-          params = {
-            context: ctx,
-            participants: [
-              {
-                managedIdentity: psStore.getters.getProfile.id,
-                urn: '',
-              },
-              {
-                ...driverProfile,
-                urn: this.getRideShareDriver,
-              },
-            ],
-          }
-        }
-        this.$router.push({
-          name: `conversation`,
-          params: params,
-        })
-      })
     },
   },
 }
