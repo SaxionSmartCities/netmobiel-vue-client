@@ -216,6 +216,7 @@ export default {
     contactDriver() {
       const drvs = this.drivers
       if (drvs.length === 0) {
+        // eslint-disable-next-line
         console.warn(
           `Expected to find at least one driver in the selected trip!`
         )
