@@ -10,7 +10,9 @@ function setMessages(
   if (!state.messages.has(context)) {
     state.messages.set(context, [])
   }
-  state.messages.get(context)!.push(messages)
+  for (let message of messages) {
+    state.messages.get(context)!.push(message)
+  }
   state.activeMessages = messages
 }
 

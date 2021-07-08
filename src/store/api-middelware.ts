@@ -35,9 +35,11 @@ const addUiRequestInterceptor = (axiosInstance: AxiosInstance) => {
       // Do something before request is sent
       uiStore.mutations.updateNetworkRequest({
         location: config.url,
+        method: config.method?.toUpperCase(),
         submitStatus: {
           message: undefined,
           status: NetworkRequestStatus.PENDING,
+          statusCode: undefined,
         },
       })
       return config
@@ -51,18 +53,24 @@ const addUiResponseInterceptor = (axiosInstance: AxiosInstance) => {
   axiosInstance.interceptors.response.use(
     response => {
       uiStore.mutations.updateNetworkRequest({
+        location: response.config.url,
+        method: response.config.method?.toUpperCase(),
         submitStatus: {
           message: response.data.message,
           status: NetworkRequestStatus.SUCCESS,
+          statusCode: response.status,
         },
       })
       return response
     },
     error => {
       uiStore.mutations.updateNetworkRequest({
+        location: error.config.url,
+        method: error.config.method?.toUpperCase(),
         submitStatus: {
           message: error.message,
           status: NetworkRequestStatus.FAILED,
+          statusCode: error.response.status,
         },
       })
       return Promise.reject(error)

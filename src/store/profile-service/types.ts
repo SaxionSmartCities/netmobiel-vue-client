@@ -16,10 +16,9 @@ export class ProfileState {
     reviews: [],
   }
   user: User = {
-    // Access token
     accessToken: null,
-
-    // Credentials provided by identity provider.
+    // Attributes from the token
+    managedIdentity: null,
     givenName: '',
     familyName: '',
     fullName: '',
@@ -112,7 +111,7 @@ export interface User {
   // Access token
   accessToken: string | null
 
-  // Credentials provided by identity provider.
+  managedIdentity: string | null
   givenName: string
   familyName: string
   fullName: string

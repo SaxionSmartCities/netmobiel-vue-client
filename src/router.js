@@ -51,6 +51,7 @@ import AddDelegationPage from '@/pages/profile/delegation/AddDelegationPage'
 import DelegationNew from '@/pages/profile/delegation/NewDelegationPage'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import LogoutPage from '@/pages/home/LogoutPage'
 
 Vue.use(Router)
 
@@ -66,6 +67,11 @@ const router = new Router({
       path: '/home',
       name: 'home',
       component: HomePage,
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: LogoutPage,
     },
     {
       path: '/createUser',
@@ -320,11 +326,11 @@ router.beforeEach((to, from, next) => {
   uiStore.mutations.hideBackButton()
   uiStore.mutations.enableFooter()
   uiStore.mutations.enableHeader()
-
   if (
+    !psStore.getters.getUser.accessToken &&
     to.path !== '/' &&
     to.path !== '/createUser' &&
-    psStore.getters.getUser.accessToken === null
+    to.path !== '/logout'
   ) {
     next(`/?redirect=${to.path}`)
   } else {

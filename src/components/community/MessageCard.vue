@@ -29,7 +29,9 @@ export default {
   },
   computed: {
     timeStamp() {
-      return moment(this.message.creationTime).format('HH:mm')
+      return moment(this.message.creationTime)
+        .locale('nl')
+        .calendar()
     },
     isMessageSendByMe: function() {
       return this.sendByMe
