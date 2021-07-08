@@ -8,8 +8,8 @@
             <p>
               In het innovatieproject Netmobiel werken bewoners van de
               Achterhoek, kennisinstellingen en de regio Achterhoek samen aan
+              een slimme mobiliteitsoplossing voor de Achterhoek. Via de app
               worden personen die vervoer zoeken gekoppeld aan personen die een
-              een slimme mobiliteitsoplossing voor de Achterhoek te. Via de app
               plek over hebben in de auto en/of aan openbaarvervoersopties. De
               app heeft het doel om de bereikbaarheid in de Achterhoek te
               verbeteren. In de eerste maanden wordt er onderzoek gedaan naar de
@@ -27,7 +27,6 @@
               worden van Vereniging Netmobiel, voordat je gebruik kunt maken van
               de Netmobiel-app.
             </p>
-
             <p>
               Nadere informatie over de verwerking van persoonsgegevens binnen
               project Netmobiel door Vereniging Netmobiel en Stichting Saxion is
@@ -48,9 +47,13 @@
             ></v-checkbox>
           </v-col>
           <v-col cols="11">
-            Ik ga hierbij akkoord met het reglement van Vereniging Netmobiel en
-            de ‘Code Goed Gedrag’ die gelden bij het gebruik van de
-            Netmobiel-app. Ik verklaar daarnaast kennis te hebben genomen van de
+            Ik ga hierbij akkoord met het
+            <a href="https://www.netmobiel.eu/reglement/" target="_blank">
+              reglement</a
+            >
+            van Vereniging Netmobiel en de ‘Code Goed Gedrag’ die gelden bij het
+            gebruik van de Netmobiel-app. Ik verklaar daarnaast kennis te hebben
+            genomen van de
             <a
               href="https://www.netmobiel.eu/privacyverklaring-app/"
               target="_blank"
