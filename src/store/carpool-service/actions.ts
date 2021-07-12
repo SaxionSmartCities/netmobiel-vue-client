@@ -288,53 +288,43 @@ function fetchUser(context: ActionContext, { userRef }: UserRef) {
     })
 }
 
-function fetchTravelProposals(
+/**
+ * Fetch the rides of the driver (i.e., the caller) having a
+ * booking state 'PROPOSED'
+ * @param context Store context
+ * @param offset Offset in the list to retrieve
+ * @param maxResults The number of results
+ * @param until limit the list to rides departing before this time
+ * @param since limit the list to rides departing after this time
+ * @param sortDir the direction to sort the list.
+ */
+function fetchRideProposals(
   context: ActionContext,
-  { driverManagedId, offset, maxResults, until, since, sortDir }: any
+  { offset, maxResults, until, since, sortDir }: any
 ) {
-  if (driverManagedId) {
-    const URL = `${RIDESHARE_BASE_URL}/users`
-    axios
-      .get(URL, {
-        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
-      })
-      .then(function(resp) {
-        const driver = resp.data.find(
-          (u: any) => u.managedIdentity === driverManagedId
-        )
-        if (driver) {
-          const URL = `${RIDESHARE_BASE_URL}/rides`
-          const params: any = {}
-          params['maxResults'] = maxResults || 10
-          params['offset'] = offset || 0
-          params['bookingState'] = 'PROPOSED'
-          driver.id && (params['driverId'] = driver.id)
-          until && (params['until'] = until)
-          since && (params['since'] = since)
-          sortDir && (params['sortDir'] = sortDir)
-          axios
-            .get(URL, {
-              headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
-              params: params,
-            })
-            .then(function(resp) {
-              mutations.setProposedRides(resp.data.data)
-            })
-            .catch(function(error) {
-              // eslint-disable-next-line
-              console.log(error)
-              uiStore.actions.queueErrorNotification(
-                'Fout bij het ophalen van uw rit-aanbod.'
-              )
-            })
-        }
-      })
-      .catch(function(error) {
-        // TODO: Proper error handling.
-        // eslint-disable-next-line
+  const URL = `${RIDESHARE_BASE_URL}/rides`
+  const params: any = {}
+  params.maxResults = maxResults || 10
+  params.offset = offset || 0
+  params.bookingState = 'PROPOSED'
+  params.until = until
+  params.since = since
+  params.sortDir = sortDir
+  axios
+    .get(URL, {
+      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      params: params,
+    })
+    .then(function(resp) {
+      mutations.setProposedRides(resp.data.data)
+    })
+    .catch(function(error) {
+      // eslint-disable-next-line
         console.log(error)
-      })
-  }
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van uw rit-aanbod.'
+      )
+    })
 }
 
 function fetchRidesFromConversations(context: ActionContext, payload: any) {
@@ -371,7 +361,7 @@ export const buildActions = (
     confirmRide: csBuilder.dispatch(confirmRide),
     deleteRide: csBuilder.dispatch(deleteRide),
     fetchUser: csBuilder.dispatch(fetchUser),
-    fetchTravelProposals: csBuilder.dispatch(fetchTravelProposals),
+    fetchRideProposals: csBuilder.dispatch(fetchRideProposals),
     fetchRidesFromConversations: csBuilder.dispatch(
       fetchRidesFromConversations
     ),
