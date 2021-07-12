@@ -32,21 +32,26 @@
           <v-list-item-content>
             <v-list-item-title>
               <v-row dense>
-                <v-col>
+                <v-col class="font-weight-medium">
                   {{
                     getReceiverViaConversationParticipants(
                       conversation.participants
                     )
                   }}
                 </v-col>
+                <!-- Let's hide the number of unread message for now until we have fixed it.
                 <v-col class="px-2" cols="2">
                   <div class="message-counter">
                     {{ getNewMessageCount(conversation) }}
                   </div>
-                </v-col>
+                </v-col> -->
               </v-row>
             </v-list-item-title>
             <v-list-item-subtitle>
+              <em>
+                Laatst gewijzigd: {{ getConversationTimestamp(conversation) }}
+              </em>
+              <br />
               Van
               {{ getFromLabelFromContext(conversation.context) }}
               naar
@@ -67,6 +72,8 @@ import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as msStore from '@/store/message-service'
+import moment from 'moment'
+import { upperCaseFirst } from '@/utils/Utils.js'
 
 export default {
   components: {
@@ -133,13 +140,20 @@ export default {
         name: `conversation`,
         params: {
           context: conversation.context,
-          participants: conversation.participants,
+          participants: conversation.participants.map(p => p.managedIdentity),
         },
       })
     },
     getNewMessageCount(conversation) {
       //TODO: Get the count from somewhere.
       return 0
+    },
+    getConversationTimestamp(conversation) {
+      return upperCaseFirst(
+        moment(conversation.creationTime)
+          .locale('nl')
+          .calendar()
+      )
     },
   },
 }

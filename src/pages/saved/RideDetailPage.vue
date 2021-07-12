@@ -95,6 +95,8 @@ import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as msStore from '@/store/message-service'
+import BookingList from '@/components/common/BookingList'
+import moment from 'moment'
 
 export default {
   name: 'RideDetailPage',
@@ -124,30 +126,43 @@ export default {
     }
   },
   computed: {
+    profile() {
+      return psStore.getters.getProfile
+    },
     localId() {
       return parseInt(this.id)
     },
-    passengersInBookings() {
-      let bookings = !this.ride
+    confirmedBookings() {
+      return !this.ride?.bookings
         ? []
-        : this.ride.bookings.map(booking => {
-            return {
-              name: `${booking.passenger.givenName} ${booking.passenger.familyName}`,
-              passengerRef: booking.passengerRef,
-              ...booking.passenger,
-            }
-          })
-      return bookings
+        : this.ride.bookings.filter(
+            booking => booking.state.toUpperCase() === 'CONFIRMED'
+          )
+    },
+    activeBookings() {
+      return !this.ride?.bookings
+        ? []
+        : this.ride.bookings.filter(
+            booking => booking.state.toUpperCase() !== 'CANCELLED'
+          )
+    },
+    passengersInBookings() {
+      return this.confirmedBookings.map(booking => {
+        return {
+          name: `${booking.passenger.givenName} ${booking.passenger.familyName}`,
+          id: booking.passenger.managedIdentity,
+          context: this.ride.rideRef,
+          contextText: `Meerijden ${this.formatTime(
+            booking.departureTime
+          )} van ${booking.pickup.label} naar ${booking.dropOff.label}`,
+        }
+      })
     },
     ride() {
       return csStore.getters.getSelectedRide
     },
     numBookings() {
-      return !this.ride.bookings
-        ? 0
-        : this.ride.bookings.filter(
-            booking => booking.state.toUpperCase() === 'CONFIRMED'
-          ).length
+      return this.confirmedBookings.length
     },
     rideOptions() {
       let options = []
@@ -184,6 +199,13 @@ export default {
     csStore.actions.fetchRide({ id: this.localId })
   },
   methods: {
+    formatTime(t) {
+      return t
+        ? moment(t)
+            .locale('nl')
+            .calendar()
+        : '- - : - -'
+    },
     generateSteps() {
       const { ride } = this
       return generateRideItineraryDetailSteps(ride)
@@ -205,16 +227,22 @@ export default {
       })
       this.$router.push('/tripsOverviewPage')
     },
-    async onTravellerSelectForMessage(event) {
-      const tripContext = 'urn:nb:rs:ride:' + this.ride.id
-      this.routeToConversation(tripContext, event)
-    },
     contactPassenger() {
       if (this.passengersInBookings.length > 1) {
         this.showContactTravellerModal = true
       } else {
         this.onTravellerSelectForMessage(this.passengersInBookings[0])
       }
+    },
+    onTravellerSelectForMessage(traveller) {
+      this.$router.push({
+        name: `conversation`,
+        params: {
+          context: traveller.context,
+          contextText: traveller.contextText,
+          participants: [this.profile.id, traveller.id],
+        },
+      })
     },
     onRideEdit() {
       this.showEditRideModal = true
@@ -248,39 +276,6 @@ export default {
     },
     onCancel() {
       this.showEditRideModal = false
-    },
-    routeToConversation(ctx, passengerProfile) {
-      msStore.actions.fetchConversations().then(conversations => {
-        const index = conversations.findIndex(
-          conversation => conversation.context === ctx
-        )
-        let params = null
-        if (index !== -1) {
-          //So if the conversation already exists...
-          params = conversations[index]
-        } else {
-          //If the conversation does not exists
-          //Then create a ghost conversation
-          params = {
-            context: ctx,
-            participants: [
-              {
-                managedIdentity: psStore.getters.getProfile.id,
-                urn: '',
-              },
-              {
-                ...passengerProfile,
-                urn: passengerProfile.passengerRef,
-              },
-            ],
-          }
-        }
-
-        this.$router.push({
-          name: `conversation`,
-          params: params,
-        })
-      })
     },
   },
 }
