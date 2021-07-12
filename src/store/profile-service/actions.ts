@@ -4,9 +4,8 @@ import util from '@/utils/Utils'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { Profile, ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
-import { mutations } from '@/store/profile-service'
+import { mutations, psBuilder } from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
-import store from '..'
 import { LocalDate } from '@js-joda/core'
 import { addInterceptors } from '@/store/api-middelware'
 
@@ -59,7 +58,8 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
   if (!profileId) {
     return
   }
-  const URL = `${PROFILE_BASE_URL}/profiles/${profileId}`
+  // Add public flag to assure the public profile is fetched, even when elevated privileges apply
+  const URL = `${PROFILE_BASE_URL}/profiles/${profileId}?public=true`
   return axios
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
