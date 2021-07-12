@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined @click="$emit('rideSelected', ride.id)">
+  <v-card outlined @click="$emit('rideSelected', ride.rideRef)">
     <v-row no-gutters>
       <v-col>
         <v-card-title class="d-flex justify-space-between pt-2">

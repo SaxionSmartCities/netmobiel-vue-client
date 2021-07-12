@@ -203,7 +203,7 @@ const router = new Router({
       props: true,
     },
     {
-      path: '/rideDetailPage/:id',
+      path: '/rideDetailPage/:rideId',
       component: RideDetailPage,
       name: 'rideDetailPage',
       props: true,
