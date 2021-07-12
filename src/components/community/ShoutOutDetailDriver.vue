@@ -74,8 +74,7 @@ export default {
   },
   methods: {
     generateSteps() {
-      const shoutout = { ride: { ...this.ride } }
-      return generateShoutOutDetailSteps(shoutout)
+      return generateShoutOutDetailSteps(undefined, this.ride)
     },
     onTripCancelled() {
       this.warningDialog = true
@@ -83,7 +82,7 @@ export default {
     deleteRide() {
       this.warningDialog = false
       csStore.actions.deleteRide({
-        id: this.ride.id,
+        id: this.ride.rideRef,
         cancelReason: this.cancelReason,
       })
       this.$router.go(-1)

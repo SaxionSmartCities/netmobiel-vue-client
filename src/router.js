@@ -255,20 +255,20 @@ const router = new Router({
       props: true,
     },
     {
-      path: '/shoutouts',
+      path: '/shout-outs',
       component: ShoutOutOverviewPage,
-      name: 'shoutouts',
+      name: 'shoutOuts',
     },
     {
-      path: '/shoutoutdriver/:id',
+      path: '/shout-out-driver/:shoutOutId;:rideId',
       component: ShoutOutDriverDetailPage,
-      name: 'shoutoutdriver',
+      name: 'shoutOutDriver',
       props: true,
     },
     {
-      path: '/shoutoutpassenger/:id',
+      path: '/shout-out-passenger/:shoutOutId',
       component: ShoutOutPassengerDetailPage,
-      name: 'shoutoutpassenger',
+      name: 'shoutOutPassenger',
       props: true,
     },
     {

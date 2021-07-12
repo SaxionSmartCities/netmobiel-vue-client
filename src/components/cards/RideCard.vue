@@ -8,13 +8,17 @@
               class="d-flex justify-space-between subtitle-1 font-weight-bold"
             >
               <span>Vertrek</span>
-              <span class="booking-count">
-                {{
-                  ride.bookings.filter(
-                    booking => booking.state.toUpperCase() === 'CONFIRMED'
-                  ).length
-                }}
-                boekingen
+              <span
+                v-if="confirmedBookingCount > 0 || proposedBookingCount === 0"
+                class="booking-count"
+                >{{ confirmedBookingCount }}
+                <span v-if="singleBooking">boeking</span
+                ><span v-else>boekingen</span>
+              </span>
+              <span v-if="proposedBookingCount > 0" class="booking-count"
+                >{{ proposedBookingCount }} voorgestelde
+                <span v-if="singleBooking">boeking</span
+                ><span v-else>boekingen</span>
               </span>
             </v-col>
           </v-row>
@@ -57,11 +61,26 @@ export default {
       required: true,
     },
   },
+  computed: {
+    proposedBookingCount() {
+      return this.ride.bookings.filter(
+        b => b.state.toUpperCase() === 'PROPOSED'
+      ).length
+    },
+    confirmedBookingCount() {
+      return this.ride.bookings.filter(
+        b => b.state.toUpperCase() === 'CONFIRMED'
+      ).length
+    },
+    singleBooking() {
+      return this.confirmedBookingCount + this.proposedBookingCount === 1
+    },
+  },
   methods: {
     formatTime() {
       return moment(this.ride.departureTime)
         .locale('nl')
-        .calendar()
+        .format('LT')
     },
     formatDuration() {
       const seconds = this.ride.estimatedDrivingTime,

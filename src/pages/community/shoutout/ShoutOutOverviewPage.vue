@@ -2,17 +2,20 @@
   <content-pane>
     <template v-slot:header>
       <tab-bar
-        v-if="showTabs"
+        v-if="isDrivingPassenger"
         :selected-tab-model="selectedTab"
         @tabChange="selectedTab = $event"
       >
         <template v-slot:firstTab>
+          <!-- Community shout-outs are directed to (potential) drivers -->
+          <!-- The selection is made by the backend based on the geo locations of traveller and driver -->
           <span>
             Community
             <sup>{{ communityShoutOuts.length }}</sup>
           </span>
         </template>
         <template v-slot:secondTab>
+          <!-- My shout-outs are my own calls to the community -->
           <span>
             Mijn oproepen
             <sup>{{ myShoutOuts.length }}</sup>
@@ -20,9 +23,7 @@
         </template>
       </tab-bar>
     </template>
-    <v-row
-      v-if="userRole === 'driver' || (userRole === 'both' && selectedTab === 0)"
-    >
+    <v-row v-if="isDriverView">
       <v-col class="py-0">
         <v-row>
           <v-col>
@@ -35,22 +36,18 @@
           </v-col>
         </v-row>
         <shout-out-list
-          :shoutouts="communityShoutOuts"
-          no-items-label="Er zijn op dit moment opgeslagen oproepen in de buurt."
-          @shoutoutSelected="onShoutOutSelected"
+          :shout-outs="shoutOuts"
+          no-items-label="Er zijn op dit moment geen oproepen uit de buurt."
+          @shoutOutSelected="onShoutOutSelected"
         />
       </v-col>
     </v-row>
-    <v-row
-      v-if="
-        userRole === 'passenger' || (userRole === 'both' && selectedTab === 1)
-      "
-    >
+    <v-row v-if="isPassengerView">
       <v-col class="py-0">
         <shout-out-list
-          :shoutouts="myShoutOuts"
+          :shout-outs="myShoutOuts"
           no-items-label="U heeft op dit moment geen opgeslagen oproepen."
-          @shoutoutSelected="onShoutOutSelected"
+          @shoutOutSelected="onShoutOutSelected"
         />
       </v-col>
     </v-row>
@@ -76,39 +73,49 @@ export default {
     return {
       selectedTab: 0,
       baseLocation: 'Home',
-      communityShoutOuts: [],
     }
   },
   computed: {
+    profile() {
+      return psStore.getters.getProfile
+    },
+    isDriverTab() {
+      return this.selectedTab === 0
+    },
+    isPassengerTab() {
+      return this.selectedTab === 1
+    },
+    isDriverView() {
+      return this.isDriverOnly || (this.isDrivingPassenger && this.isDriverTab)
+    },
+    isPassengerView() {
+      return (
+        this.isPassengerOnly || (this.isDrivingPassenger && this.isPassengerTab)
+      )
+    },
+    isPassengerOnly() {
+      return (
+        psStore.getters.getProfile.userRole === constants.PROFILE_ROLE_PASSENGER
+      )
+    },
+    isDriverOnly() {
+      return (
+        psStore.getters.getProfile.userRole === constants.PROFILE_ROLE_DRIVER
+      )
+    },
+    isDrivingPassenger() {
+      return psStore.getters.getProfile.userRole === constants.PROFILE_ROLE_BOTH
+    },
+    /**
+     * List my shout-outs. Note that my shout-out is a trip plan with all itineraries offered.
+     * A driver can also fetch a shout-out, but that will never contain itineraries (for privacy).
+     * A driver can see his own ride, which is also an itinerary.
+     */
     myShoutOuts() {
-      const profile = psStore.getters.getProfile
-      const listMyShoutOuts = isStore.getters.getMyShoutOuts
-      return listMyShoutOuts.map(shoutout => ({
-        ...shoutout,
-        traveller: profile,
-      }))
+      return isStore.getters.getMyShoutOuts
     },
-    proposedRides() {
-      return csStore.getters.getProposedRides
-    },
-    showTabs() {
-      const role = psStore.getters.getProfile.userRole
-      return !role || role === constants.PROFILE_ROLE_BOTH
-    },
-    userRole() {
-      return psStore.getters.getProfile.userRole
-    },
-  },
-  watch: {
-    proposedRides(proposed) {
-      let updatedShoutOuts = []
-      for (const s of isStore.getters.getShoutOuts) {
-        s.ride = proposed.find(p => {
-          return !!p.bookings.find(b => b.passengerTripRef === s.planRef)
-        })
-        updatedShoutOuts.push(s)
-      }
-      this.communityShoutOuts = updatedShoutOuts
+    shoutOuts() {
+      return isStore.getters.getShoutOuts
     },
   },
   created() {
@@ -122,41 +129,43 @@ export default {
     editDepart: editing => editing || false,
   }),
   mounted() {
-    this.communityShoutOuts = [...isStore.getters.getShoutOuts]
-    const { id, address } = psStore.getters.getProfile
-    if (address && address.location) {
-      isStore.actions.fetchShoutOuts({
-        latitude: address.location.coordinates[1],
-        longitude: address.location.coordinates[0],
+    csStore.mutations.setProposedRides([])
+    isStore.mutations.setMyShoutOuts([])
+    isStore.mutations.setShoutOuts([])
+    if (this.isPassengerOnly || this.isDrivingPassenger) {
+      isStore.actions.fetchMyShoutOutTripPlans({
+        offset: 0,
       })
     }
-    isStore.actions.fetchMyShoutOutTripPlans({
-      offset: 0,
-    })
-    // If our role is 'chauffeur' or 'both' fetch any travel proposal we may have.
-    if (
-      this.userRole === constants.PROFILE_ROLE_DRIVER ||
-      this.userRole === constants.PROFILE_ROLE_BOTH
-    ) {
-      csStore.actions.fetchTravelProposals({
+    if (this.isDriverOnly || this.isDrivingPassenger) {
+      const { address } = psStore.getters.getProfile
+      if (address?.location) {
+        isStore.actions.fetchShoutOuts({
+          latitude: address.location.coordinates[1],
+          longitude: address.location.coordinates[0],
+        })
+      }
+      csStore.actions.fetchRideProposals({
         since: moment().format(),
-        driverManagedId: id,
       })
     }
     isStore.mutations.clearPlanningRequest()
   },
   methods: {
     onShoutOutSelected(selected) {
-      if (selected.isUserTraveller) {
+      if (selected.shoutOut.traveller.managedIdentity === this.profile.id) {
         this.$router.push({
-          name: 'shoutoutpassenger',
-          params: { id: selected.id },
+          name: 'shoutOutPassenger',
+          params: { shoutOutId: selected.shoutOut.planRef },
         })
       } else {
+        // Only a driver can see his own ride
         this.$router.push({
-          name: 'shoutoutdriver',
+          name: 'shoutOutDriver',
           params: {
-            id: selected.id,
+            shoutOutId: selected.shoutOut.planRef,
+            // Is it possible to pass an optional parameter? For now set the default to 'none'
+            rideId: selected.proposedRide?.rideRef || 'none',
           },
         })
       }
