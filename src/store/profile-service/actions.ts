@@ -74,7 +74,9 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
             : '',
         }
         mutations.setPublicProfile(profile)
+        return profile
       }
+      return undefined
     })
     .catch(error => {
       // eslint-disable-next-line
@@ -82,6 +84,7 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
       uiStore.actions.queueInfoNotification(
         `Fout bij het ophalen van het profiel`
       )
+      return undefined
     })
 }
 
