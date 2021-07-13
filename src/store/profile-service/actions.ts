@@ -6,7 +6,6 @@ import { Profile, ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { mutations } from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
-import store from '..'
 import { LocalDate } from '@js-joda/core'
 import { addInterceptors } from '@/store/api-middelware'
 
