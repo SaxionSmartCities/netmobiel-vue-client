@@ -86,7 +86,6 @@ export default {
     },
     // The ride, if any, offered to the traveller
     proposedRide() {
-      // console.log(`has proposedRide: ${!!csStore.getters.getSelectedRide}`)
       return csStore.getters.getSelectedRide
     },
     itinerarySummaryItems() {
@@ -106,6 +105,8 @@ export default {
       if (this.proposedRide?.duration) {
         const duration = this.proposedRide?.duration
         reisduur = `${Math.round(duration / 60)} minuten`
+      } else if (this.planResult?.itineraries?.length > 0) {
+        reisduur = this.planResult?.itineraries[0].duration
       }
       return reisduur
     },
@@ -130,9 +131,6 @@ export default {
       return null
     },
     travelOffer() {
-      console.log(
-        `Get travel offer ${isStore.getters.getPlanningRequest.result}`
-      )
       return isStore.getters.getPlanningRequest.result
     },
   },
@@ -145,8 +143,8 @@ export default {
         const time = isStore.getters.getShoutoutPlanTime
         const location = {
           label: ridefrom.title,
-          latitude: ridefrom.position[0],
-          longitude: ridefrom.position[1],
+          latitude: ridefrom.location.coordinates[1],
+          longitude: ridefrom.location.coordinates[0],
         }
         this.fetchShoutOutPlan(time, location)
         gsStore.mutations.setGeoLocationPicked({
