@@ -69,6 +69,8 @@ import NewDelegation from '@/components/onboarding/NewDelegation'
 import NewDelegationOptions from '@/components/onboarding/NewDelegatorOptions'
 import NewDelegationCommsSettings from '@/components/onboarding/DelegationCommsSettings'
 import NewDelegationImage from '@/components/onboarding/NewDelegatorImage'
+import constants from '@/constants/constants'
+import * as rsStore from '@/store/registration-service'
 import * as uiStore from '@/store/ui'
 
 export default {
@@ -97,9 +99,12 @@ export default {
           olderThanSixteen: true,
         },
         searchPreferences: {
+          ...constants.DEFAULT_PROFILE_SEARCH_PREFERENCES,
           luggageOptions: [],
         },
+        profileImage: null,
       },
+      image: null,
     }
   },
   mounted() {
@@ -113,7 +118,9 @@ export default {
       this.currStep--
     },
     complete() {
-      console.log(`TODO: onComplete ${this.registrationRequest}`)
+      this.image = this.registrationRequest.profileImage
+      delete this.registrationRequest.profileImage
+      rsStore.actions.newDelegateRegistration(this.registrationRequest)
     },
     currentFormValid(isValid) {
       this.nextStepEnabled = isValid

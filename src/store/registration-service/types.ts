@@ -19,13 +19,13 @@ export interface SubmitStatus {
 }
 
 export interface RegistrationRequest {
-  firstName: ''
-  lastName: ''
-  email: ''
+  firstName: string
+  lastName: string
+  email: string
   address: {
-    locality: ''
+    locality: string
   }
-  userRole: ''
+  userRole: string
   consent: {
     olderThanSixteen: false
     acceptedTerms: false
