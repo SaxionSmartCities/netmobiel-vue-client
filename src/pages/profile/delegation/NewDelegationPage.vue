@@ -18,10 +18,10 @@
             />
           </v-col>
           <v-col v-if="currStep === 2">
-            <delegation-options v-model="registrationRequest" />
+            <new-delegation-options v-model="registrationRequest" />
           </v-col>
           <v-col v-if="currStep === 3">
-            <delegation-comms-settings v-model="registrationRequest" />
+            <new-delegation-comms-settings v-model="registrationRequest" />
           </v-col>
           <v-col v-if="currStep === 4">
             <new-delegation-image v-model="registrationRequest" />
@@ -66,8 +66,8 @@
 <script>
 import ContentPane from '@/components/common/ContentPane'
 import NewDelegation from '@/components/onboarding/NewDelegation'
-import DelegationOptions from '@/components/onboarding/NewDelegatorOptions'
-import DelegationCommsSettings from '@/components/onboarding/DelegationCommsSettings'
+import NewDelegationOptions from '@/components/onboarding/NewDelegatorOptions'
+import NewDelegationCommsSettings from '@/components/onboarding/DelegationCommsSettings'
 import NewDelegationImage from '@/components/onboarding/NewDelegatorImage'
 import * as uiStore from '@/store/ui'
 
@@ -76,8 +76,8 @@ export default {
   components: {
     ContentPane,
     NewDelegation,
-    DelegationOptions,
-    DelegationCommsSettings,
+    NewDelegationOptions,
+    NewDelegationCommsSettings,
     NewDelegationImage,
   },
   data() {
