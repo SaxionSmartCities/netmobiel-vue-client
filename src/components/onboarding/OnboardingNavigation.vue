@@ -3,7 +3,7 @@
     <v-col class="pt-0">
       <v-row align="end">
         <v-col>
-          <h3>{{ title }}</h3>
+          <h3>{{ titles[currStep - 1] }}</h3>
         </v-col>
         <v-col class="shrink stappen caption text--gray"
           >Stap {{ currStep }} / {{ maxSteps }}
@@ -83,6 +83,12 @@ export default {
       maxSteps: 4,
       currStep: 1,
       nextStepEnabled: false,
+      titles: [
+        'Nieuw account',
+        'Ritvoorkeuren',
+        'Communicatie',
+        'Profiel foto',
+      ],
       registrationRequest: {
         extraTransferTime: false,
         consent: {
