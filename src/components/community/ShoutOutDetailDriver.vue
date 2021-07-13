@@ -29,7 +29,8 @@
         </v-card-title>
         <v-card-text>
           <p>
-            Weet u zeker dat u uw aanbod wilt intrekken?
+            Weet u zeker dat u uw aanbod wilt intrekken? Indien u uw aanbod
+            intrekt zullen we de passagier op de hoogte brengen.
           </p>
         </v-card-text>
         <v-card-actions>
