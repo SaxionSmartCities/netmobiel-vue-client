@@ -1,18 +1,56 @@
 <template>
   <v-card class="rounded-border">
-    <v-card-title>Maak een account aan</v-card-title>
+    <v-card-title>Voer je thuis adres in</v-card-title>
     <v-card-text class="py-0">
-      <v-row vertical-align-center>
-        <v-col class="d-flex" cols="12" sm="6">
-          <v-select
-            v-model="value.address.locality"
-            :items="items"
-            label="Woonplaats"
-            outlined
-          >
-          </v-select>
-        </v-col>
-      </v-row>
+      <v-form ref="form" v-model="valid">
+        <v-row vertical-align-center no-gutters>
+          <v-col dense>
+            <v-text-field
+              v-model="value.address.street"
+              label="Straat"
+              maxlength="250"
+              outlined
+              :rules="[rules.required]"
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row vertical-align-center no-gutters>
+          <v-col dense cols="5">
+            <v-text-field
+              v-model="value.address.houseNumber"
+              label="Huisnummer"
+              maxlength="25"
+              outlined
+              :rules="[rules.required]"
+            >
+            </v-text-field>
+          </v-col>
+          <v-col dense cols="1"></v-col>
+          <v-col dense cols="6">
+            <v-text-field
+              v-model="value.address.postalCode"
+              label="Postcode"
+              maxlength="6"
+              outlined
+              :rules="[rules.required, rules.postalcode]"
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row vertical-align-center no-gutters>
+          <v-col dense>
+            <v-text-field
+              v-model="value.address.locality"
+              label="Woonplaats"
+              maxlength="250"
+              outlined
+              :rules="[rules.required]"
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+      </v-form>
     </v-card-text>
     <v-card-actions>
       <v-row no-gutters class="mb-2">
@@ -26,8 +64,9 @@
           <v-btn
             block
             rounded
+            depressed
             color="button"
-            :disabled="!value.address.locality"
+            :disabled="!valid"
             @click="submitForm()"
           >
             Verder
@@ -39,8 +78,6 @@
 </template>
 
 <script>
-import * as uiStore from '@/store/ui'
-
 export default {
   name: 'HomeTownCard',
   props: {
@@ -51,35 +88,31 @@ export default {
   },
   data() {
     return {
-      items: [
-        'Aalten',
-        'Beltrum',
-        'Borculo',
-        'Eibergen',
-        'Groenlo',
-        'Harreveld',
-        'Lievelde',
-        'Lichtenvoorde',
-        'Mariënvelde',
-        'Meddo',
-        'Neede',
-        'Ruurlo',
-        'Vragender',
-        'Winterswijk',
-        'Zieuwent',
-        'Zwolle',
-      ],
+      rules: {
+        required: value => !!value || '',
+        postalcode: value =>
+          !!(value && value.match(/^([0-9]{4}[a-zA-Z]{2})$/)) ||
+          'Ongeldige postcode',
+      },
+      valid: false,
       showSubmitButton: true,
     }
   },
-  beforeCreate() {
-    uiStore.mutations.disableFooter()
-  },
   methods: {
-    submitForm: function() {
-      this.$emit('next-step')
+    validate() {
+      this.$nextTick(() => {
+        const isValid = this.$refs.form.validate()
+        this.$emit('onFormValid', isValid)
+      })
     },
-    back: function() {
+    submitForm() {
+      this.value.address.countryCode = 'NL'
+      this.validate()
+      if (this.valid) {
+        this.$emit('next-step')
+      }
+    },
+    back() {
       this.$emit('prev-step')
     },
   },

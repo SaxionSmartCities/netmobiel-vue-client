@@ -10,8 +10,9 @@
               <span>Vertrek</span>
               <span class="booking-count">
                 {{
-                  ride.bookings.filter(booking => booking.state === 'CONFIRMED')
-                    .length
+                  ride.bookings.filter(
+                    booking => booking.state.toUpperCase() === 'CONFIRMED'
+                  ).length
                 }}
                 boekingen
               </span>

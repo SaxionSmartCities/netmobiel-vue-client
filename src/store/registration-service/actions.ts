@@ -30,7 +30,7 @@ function submitRegistrationRequest(payload: RegistrationRequest) {
           'Ga akkoord  met de voorwaarden en bevestig 16 jaar of ouder te zijn.'
       } else if (status === 500) {
         // No clue what is going on, but the server should report something about it
-        errorMsg = error.response.data.message
+        errorMsg = error.response.data.message || error.response.data
       } else if (status === 409) {
         errorMsg = 'Het emailadres is al in gebruik.'
       }

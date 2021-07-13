@@ -6,7 +6,8 @@
         <v-icon color="white">arrow_back</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn icon @click="onProfileImageClick">
+      <!-- Show only when a profile has been created and the profile id (managed identity) is defined -->
+      <v-btn v-if="isProfileManaged" icon @click="onProfileImageClick">
         <round-user-image
           :profile-image="profileImage"
           :image-size="30"
@@ -123,6 +124,9 @@ export default {
     },
     isBackButtonVisible() {
       return uiStore.getters.isBackButtonVisible
+    },
+    isProfileManaged() {
+      return !!psStore.getters.getProfile?.id
     },
   },
   watch: {

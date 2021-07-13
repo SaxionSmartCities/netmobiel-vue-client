@@ -7,6 +7,8 @@ import { RootState } from '@/store/Rootstate'
 import { mutations } from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
 import store from '..'
+import { LocalDate } from '@js-joda/core'
+import { addInterceptors } from '@/store/api-middelware'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -21,7 +23,9 @@ const { generateHeaders } = util
 function fetchProfile(context: ActionContext) {
   const delegatorId = context.state.user.delegatorId
   const URL = `${PROFILE_BASE_URL}/profiles/me`
-  axios
+  let axiosInstance = axios.create()
+  addInterceptors(axiosInstance)
+  axiosInstance
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
     })
@@ -30,10 +34,12 @@ function fetchProfile(context: ActionContext) {
         let profile = {
           ...context.state.user.profile,
           ...response.data.profiles[0],
-        }
-        if (profile.image && !profile.image.startsWith('http')) {
-          // turn relative image URL into absolute URL
-          profile.image = `${IMAGES_BASE_URL}/${profile.image}`
+          dateOfBirth: response.data.profiles[0].dateOfBirth
+            ? LocalDate.parse(response.data.profiles[0].dateOfBirth)
+            : null,
+          image: response.data.profiles[0].image
+            ? `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
+            : '',
         }
         if (!!localStorage.fcm && localStorage.fcm !== profile.fcmToken) {
           profile.fcmToken = localStorage.fcm
@@ -41,11 +47,13 @@ function fetchProfile(context: ActionContext) {
         } else {
           mutations.setProfile(profile)
         }
+        return profile
       }
     })
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
+      return error
     })
 }
 
@@ -53,7 +61,7 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
   if (!profileId) {
     return
   }
-  const URL = `${PROFILE_BASE_URL}/profiles/${profileId}`
+  const URL = `${PROFILE_BASE_URL}/profiles/${profileId}?public=true`
   return axios
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
@@ -62,12 +70,12 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
       if (response.data.profiles.length > 0) {
         let profile = {
           ...response.data.profiles[0],
-          dateOfBirth: Date.parse(response.data.profiles[0].dateOfBirth),
           image: response.data.profiles[0].image
             ? `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
             : '',
         }
         mutations.setPublicProfile(profile)
+        return profile
       }
     })
     .catch(error => {
@@ -76,6 +84,7 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
       uiStore.actions.queueInfoNotification(
         `Fout bij het ophalen van het profiel`
       )
+      return error
     })
 }
 

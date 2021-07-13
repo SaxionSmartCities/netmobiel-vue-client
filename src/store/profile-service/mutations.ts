@@ -4,7 +4,6 @@ import { ModuleBuilder } from 'vuex-typex'
 import {
   Compliment,
   ComplimentType,
-  CoronaCheck,
   Place,
   Profile,
   ProfileState,
@@ -18,6 +17,7 @@ import { RootState } from '@/store/Rootstate'
 function setUserToken(state: ProfileState, token: string) {
   state.user.accessToken = token
   let decodedObject = VueJwtDecode.decode(token)
+  state.user.managedIdentity = decodedObject['sub']
   state.user.givenName = decodedObject['given_name']
   state.user.familyName = decodedObject['family_name']
   state.user.email = decodedObject['email']
@@ -26,6 +26,7 @@ function setUserToken(state: ProfileState, token: string) {
 
 function deleteAccessToken(state: ProfileState) {
   state.user.accessToken = null
+  state.user.managedIdentity = null
 }
 
 function setProfile(state: ProfileState, payload: Profile) {
@@ -74,10 +75,6 @@ function setPrivacySecurityValue(state: ProfileState, payload: any) {
       return item
     }
   })
-}
-
-function setCoronaCheck(state: ProfileState, payload: CoronaCheck) {
-  state.user.coronaCheck = payload
 }
 
 function setComplimentTypes(
@@ -148,7 +145,6 @@ export const buildMutations = (
     setReviewOptionsValue: psBuilder.commit(setReviewOptionsValue),
     setRidePlanOptions: psBuilder.commit(setRidePlanOptions),
     setPrivacySecurityValue: psBuilder.commit(setPrivacySecurityValue),
-    setCoronaCheck: psBuilder.commit(setCoronaCheck),
     setComplimentTypes: psBuilder.commit(setComplimentTypes),
     setPublicProfile: psBuilder.commit(setPublicProfile),
     setPublicCompliments: psBuilder.commit(setPublicCompliments),

@@ -33,7 +33,9 @@ export default {
   },
   computed: {
     bookings() {
-      return this.bookingList.filter(booking => booking.state === 'CONFIRMED')
+      return this.bookingList.filter(
+        booking => booking.state.toUpperCase() === 'CONFIRMED'
+      )
     },
     label() {
       return !!this.bookings && this.bookings.length > 0

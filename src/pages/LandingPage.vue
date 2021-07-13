@@ -23,23 +23,67 @@
 <script>
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import { NetworkRequestStatus } from '@/store/ui/types'
+import { isAbsoluteUrl } from '@/utils/Utils'
 
 export default {
+  computed: {
+    networkRequest() {
+      return uiStore.getters.getNetworkRequest
+    },
+  },
+  watch: {
+    networkRequest(newValue) {
+      if (newValue.submitStatus.status === NetworkRequestStatus.SUCCESS) {
+        this.continueNavigation()
+      } else if (newValue.submitStatus.status === NetworkRequestStatus.FAILED) {
+        if (newValue.submitStatus.statusCode === 404) {
+          this.startRegistration()
+        } else {
+          uiStore.actions.queueErrorNotification(
+            'Fout bij het ophalen van het profiel.'
+          )
+        }
+      }
+    },
+  },
   beforeCreate() {
     uiStore.mutations.disableHeader()
     uiStore.mutations.disableFooter()
   },
   mounted() {
     if (this.$keycloak.authenticated) {
+      // Token and Profile are also fetched in the main template (App.vue)
+      uiStore.mutations.resetNetworkRequest()
       psStore.actions.fetchProfile()
-      psStore.mutations.setUserToken(this.$keycloak.token)
+      // How are we sure the networkRequestStatus concerns our request? We need a correlationId!
+      // Now we have to wait for the results from the database: Does the user already exists?
+      // If yes, then proceed to the home page
+      // If no then go to the registration page
+      // Note: This is only needed for a smooth transition between multiple instances of Netmobiel while using a
+      // single Keycloak instance.
+    }
+  },
+  methods: {
+    continueNavigation: function() {
       if (this.$route.query.redirect) {
-        this.$router.push({ path: this.$route.query.redirect })
+        if (isAbsoluteUrl(this.$route.query.redirect)) {
+          // eslint-disable-next-line
+          console.warn(`Blocked redirect: '${this.$route.query.redirect}'`)
+          uiStore.actions.queueErrorNotification(`Externe pagina geblokkeerd`)
+          // Redirect to the home page
+          this.$router.push({ path: '/home' })
+        } else {
+          this.$router.push({ path: this.$route.query.redirect })
+        }
       } else {
         // Preserve query string when routing to home.
         this.$router.push({ path: '/home', query: this.$route.query })
       }
-    }
+    },
+    startRegistration: function() {
+      this.$router.push({ name: 'createUser' })
+    },
   },
 }
 </script>

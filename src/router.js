@@ -1,8 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
-Vue.use(Router)
-
 import CommunityOverviewPage from './pages/community/CommunityOverviewPage.vue'
 import Credits from './pages/profile/Creditspage.vue'
 import InboxPage from './pages/community/messages/InboxPage.vue'
@@ -45,7 +42,6 @@ import DriverReviewPage from './pages/review/DriverReviewPage'
 import TripReviewedPage from './pages/review/TripReviewedPage'
 import SupportGoal from './pages/community/goals/SupportGoal'
 import Donated from './pages/community/goals/Donated'
-import RideSafeNetmobiel from '@/pages/profile/RideSafeNetmobiel'
 import About from '@/pages/profile/About'
 import UserProfile from '@/pages/profile/UserProfile'
 import Purchase from '@/pages/profile/credits/Purchase'
@@ -53,6 +49,11 @@ import ConfirmDeposit from '@/pages/profile/credits/ReturnAfterDeposit'
 import DelegationOverview from '@/pages/profile/delegation/DelegationOverview'
 import AddDelegationPage from '@/pages/profile/delegation/AddDelegationPage'
 import DelegationNew from '@/pages/profile/delegation/NewDelegationPage'
+import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
+import LogoutPage from '@/pages/home/LogoutPage'
+
+Vue.use(Router)
 
 const router = new Router({
   mode: 'history',
@@ -66,6 +67,11 @@ const router = new Router({
       path: '/home',
       name: 'home',
       component: HomePage,
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: LogoutPage,
     },
     {
       path: '/createUser',
@@ -298,11 +304,6 @@ const router = new Router({
       name: 'about',
     },
     {
-      path: '/rideSafeNetmobiel',
-      component: RideSafeNetmobiel,
-      name: 'rideSafeNetmobiel',
-    },
-    {
       path: '/userProfilePage/:profileId',
       component: UserProfile,
       name: 'userProfile',
@@ -320,18 +321,16 @@ const router = new Router({
     },
   ],
 })
-import * as uiStore from '@/store/ui'
-import * as psStore from '@/store/profile-service'
 
 router.beforeEach((to, from, next) => {
   uiStore.mutations.hideBackButton()
   uiStore.mutations.enableFooter()
   uiStore.mutations.enableHeader()
-
   if (
+    !psStore.getters.getUser.accessToken &&
     to.path !== '/' &&
     to.path !== '/createUser' &&
-    psStore.getters.getUser.accessToken === null
+    to.path !== '/logout'
   ) {
     next(`/?redirect=${to.path}`)
   } else {

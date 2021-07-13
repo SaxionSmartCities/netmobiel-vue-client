@@ -195,8 +195,10 @@ export default {
       this.$router.push({ name: name })
     },
     logOut: function() {
-      this.$keycloak.logoutFn()
       psStore.mutations.deleteAccessToken()
+      this.$keycloak.logoutFn()
+      // In the mean time show our logout page, the redirect from keycloak will navigate to the landing page
+      this.$router.push({ name: 'logout' })
     },
     readFile(event) {
       if (event.target.files[0]) {
@@ -207,7 +209,7 @@ export default {
         fileReader.addEventListener('loadend', async () => {
           this.isUploadingFile = false
           const imageString = fileReader.result
-          scaleImageDown(imageString, 20).then(resizedImage => {
+          scaleImageDown(imageString, 200).then(resizedImage => {
             const profile = { ...psStore.getters.getProfile }
             psStore.actions.updateProfileImage({
               id: profile.id,

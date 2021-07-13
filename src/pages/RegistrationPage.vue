@@ -1,23 +1,30 @@
 <template>
   <v-container fluid fill-height class="background-primary">
-    <v-row align="center" justify="center" class="pa-4">
+    <v-row align="center" justify="center">
       <v-col>
         <v-row>
           <v-col v-if="step === 0">
-            <new-account-card
+            <new-account-terms
               v-model="registrationRequest"
               @prev-step="step--"
               @next-step="step++"
             />
           </v-col>
           <v-col v-if="step === 1">
-            <home-town-card
+            <new-account-card
               v-model="registrationRequest"
               @prev-step="step--"
               @next-step="step++"
             />
           </v-col>
           <v-col v-if="step === 2">
+            <home-town-card
+              v-model="registrationRequest"
+              @prev-step="step--"
+              @next-step="step++"
+            />
+          </v-col>
+          <v-col v-if="step === 3">
             <user-type-card
               v-model="registrationRequest"
               @prev-step="step--"
@@ -25,7 +32,7 @@
             />
           </v-col>
         </v-row>
-        <v-card v-if="step == 3" class="rounded-border">
+        <v-card v-if="step === 4" class="rounded-border">
           <v-card-title class="justify-center">Aanmaken account</v-card-title>
           <v-card-text>
             <v-row no-gutters>
@@ -35,13 +42,16 @@
                 type="success"
                 color="green"
               >
-                Profiel aangemaakt!
-                <br />
-                U ontvangt een e-mail waarmee U de registratie kunt voltooien.
-                Controleer de spamfolder als de e-mail niet verschijnt in de
-                inbox!
-                <br />
-                We sturen U over enkele seconden terug naar het login-scherm.
+                <p>Profiel aangemaakt!</p>
+                <!-- When the user already has a Keycloak account, no verification email is sent -->
+                <p v-if="!isAuthenticated">
+                  U ontvangt een e-mail waarmee U de registratie kunt voltooien.
+                  Controleer de spamfolder als de e-mail niet verschijnt in de
+                  inbox!
+                </p>
+                <p>
+                  We sturen U over enkele seconden terug naar het login-scherm.
+                </p>
               </v-alert>
               <v-alert
                 v-if="getRegistrationStatus.success === false"
@@ -51,6 +61,12 @@
               >
                 {{ getRegistrationStatus.message }}
               </v-alert>
+              <v-progress-circular
+                v-if="getRegistrationStatus.success === undefined"
+                indeterminate
+                :value="true"
+                class="rotate"
+              ></v-progress-circular>
             </v-row>
           </v-card-text>
           <v-card-actions>
@@ -79,20 +95,25 @@
 </template>
 
 <script>
+import NewAccountTerms from '@/components/onboarding/NewAccountTerms.vue'
 import NewAccountCard from '@/components/onboarding/NewAccountCard.vue'
 import HomeTownCard from '@/components/onboarding/HomeTownCard.vue'
 import UserTypeCard from '@/components/onboarding/UserTypeCard.vue'
 import { setTimeout } from 'timers'
+import * as psStore from '@/store/profile-service'
 import * as rsStore from '@/store/registration-service'
+import * as uiStore from '@/store/ui'
 
 export default {
   components: {
+    NewAccountTerms,
     NewAccountCard,
     HomeTownCard,
     UserTypeCard,
   },
   data() {
     return {
+      dryRun: false,
       step: 0,
       registrationRequest: {
         firstName: '',
@@ -113,13 +134,16 @@ export default {
     getRegistrationStatus() {
       return rsStore.getters.getRegistrationStatus
     },
+    isAuthenticated() {
+      return this.$keycloak.authenticated
+    },
   },
   watch: {
     step() {
       if (this.step < 0) {
         this.$router.push('/')
       }
-      if (this.step == 3) {
+      if (this.step === 4) {
         this.submitForm()
       }
     },
@@ -132,9 +156,31 @@ export default {
       }
     },
   },
+  beforeCreate() {
+    uiStore.mutations.disableFooter()
+  },
+  mounted() {
+    if (this.$keycloak.authenticated) {
+      const user = psStore.getters.getUser
+      this.registrationRequest.firstName = user.givenName || ''
+      this.registrationRequest.lastName = user.familyName || ''
+      this.registrationRequest.email = user.email || ''
+    }
+  },
   methods: {
     submitForm() {
-      rsStore.actions.submitRegistrationRequest(this.registrationRequest)
+      if (this.dryRun) {
+        rsStore.mutations.setRegistrationStatus({
+          success: true,
+          message: '',
+        })
+      } else {
+        rsStore.mutations.setRegistrationStatus({
+          success: undefined,
+          message: '',
+        })
+        rsStore.actions.submitRegistrationRequest(this.registrationRequest)
+      }
     },
   },
 }
