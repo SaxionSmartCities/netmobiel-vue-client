@@ -96,6 +96,9 @@ export default {
         consent: {
           olderThanSixteen: true,
         },
+        searchPreferences: {
+          luggageOptions: [],
+        },
       },
     }
   },

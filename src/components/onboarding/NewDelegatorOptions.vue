@@ -12,11 +12,7 @@
             <search-options-icon-expansion-panel
               v-model="luggage"
               class="pa-0"
-              @onChanged="
-                newLugagge => {
-                  luggage = newLugagge
-                }
-              "
+              @onChanged="onLuggageChanged"
             />
           </v-expansion-panels>
         </v-col>
@@ -52,10 +48,10 @@
       </v-row>
       <v-row>
         <v-col class="options ma-2">
-          <v-radio-group v-model="value.extraTransferTime">
+          <v-radio-group v-model="extraTransferTime">
             <v-radio label="Ja" value="false" />
             <v-radio
-              label="Nee (de chauffeur houdt rekening met extra instaptijd."
+              label="Nee (de chauffeur houdt rekening met extra instaptijd)"
               value="true"
             />
           </v-radio-group>
@@ -80,7 +76,6 @@ export default {
   },
   data() {
     return {
-      luggageOptions: [],
       options: [
         { title: 'Slechthorend', value: false },
         { title: 'Verminderd gezichtsvermogen', value: false },
@@ -94,30 +89,34 @@ export default {
         return {
           title: 'Bagage',
           options: luggageTypes,
-          selected: this.luggageOptions.map(o => luggageTypes[o]),
+          selected: this.value.searchPreferences.luggageOptions.map(
+            o => luggageTypes[o]
+          ),
         }
       },
       set(selection) {
-        this.luggageOptions = selection.selected.map(option => option.type)
+        this.value.searchPreferences.luggageOptions = selection.selected.map(
+          option => option.type
+        )
       },
     },
-    luggageSelected: {
+    extraTransferTime: {
       get() {
-        return this.luggageOptions.map(option => luggageTypes[option])
+        return `${this.value.extraTransferTime}`
       },
-      set(selection) {
-        this.luggageOptions = selection.map(x => x.type)
+      set(value) {
+        this.value.extraTransferTime = value == 'true'
       },
     },
   },
   methods: {
-    saveSearchOptions() {
-      // eslint-disable-next-line
-      console.log('TODO')
+    onLuggageChanged(newLuggage) {
+      this.luggage = newLuggage
     },
-    onOptionChange() {
+    onOptionChange(option) {
+      // TODO: Find somewhere in the profile to store this information.
       // eslint-disable-next-line
-      console.log('TODO')
+      console.log(`TODO: ${JSON.stringify(this.options)}`)
     },
   },
 }
