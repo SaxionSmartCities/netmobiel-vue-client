@@ -3,16 +3,7 @@
     <v-col dense>
       <v-row>
         <v-col class="pb-0">
-          Hier kunt u de communicatievoorkeuren aangeven voor
-          <em>{{ value.firstName }}</em>
-          .
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col class="pb-0">
-          <h4 class="netmobiel">
-            Hoe wil {{ value.firstName }} meldingen ontvangen?
-          </h4>
+          Hoe wil <em>{{ value.firstName }}</em> meldingen ontvangen?
         </v-col>
       </v-row>
       <v-row>
@@ -39,9 +30,7 @@
       </v-row>
       <v-row>
         <v-col class="pb-0">
-          <h4 class="netmobiel">
-            Meldingen die {{ value.firstName }} ontvangt?
-          </h4>
+          Meldingen die <em>{{ value.firstName }}</em> ontvangt?
         </v-col>
       </v-row>
       <v-row>
