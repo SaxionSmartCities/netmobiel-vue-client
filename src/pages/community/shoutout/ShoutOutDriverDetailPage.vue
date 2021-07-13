@@ -126,10 +126,6 @@ export default {
       }
       return 'Onbekend'
     },
-    itinerary() {
-      //TODO: ?
-      return null
-    },
     travelOffer() {
       return isStore.getters.getPlanningRequest.result
     },

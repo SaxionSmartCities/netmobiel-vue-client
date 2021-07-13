@@ -58,7 +58,6 @@
             @click="onProposeTravelOffer"
           >
             Aanbod bevestigen
-            <v-icon dark right>error_outline</v-icon>
           </v-btn>
         </v-col>
         <v-col>
