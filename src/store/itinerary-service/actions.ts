@@ -496,7 +496,8 @@ function addShoutOutTravelOffer(
     })
     .then(response => {
       if (response.status == 202) {
-        let message = 'Je aanbod is verstuurd'
+        let message =
+          'Je aanbod is verstuurd en de passagier op de hoogte gebracht.'
         uiStore.actions.queueInfoNotification(message)
       } else {
         uiStore.actions.queueErrorNotification(response.data.message)
