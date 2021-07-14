@@ -101,20 +101,30 @@ export default {
       return result
     },
     rideDuration() {
-      let reisduur = 'Onbekend'
+      const shoutOutPlan =
+        this.planResult?.itineraries && this.planResult?.itineraries[0]
+      let duration = 0
       if (this.proposedRide?.duration) {
-        const duration = this.proposedRide?.duration
-        reisduur = `${Math.round(duration / 60)} minuten`
-      } else if (this.planResult?.itineraries?.length > 0) {
-        reisduur = this.planResult?.itineraries[0].duration
+        duration = this.proposedRide?.duration
+      } else if (shoutOutPlan?.duration) {
+        duration = shoutOutPlan.duration
       }
-      return reisduur
+      return duration > 0 ? `${Math.round(duration / 60)} minuten` : 'Onbekend'
     },
+    // Get the distance the driver has to ride in total
     rideDistance() {
+      const shoutOutPlan =
+        this.planResult?.itineraries && this.planResult?.itineraries[0]
       let distance = 'Onbekend'
       if (this.proposedRide?.distance) {
         distance = Math.round(this.proposedRide.distance / 1000)
+      } else if (shoutOutPlan) {
+        const summedDistance = shoutOutPlan.legs
+          .map(leg => leg.distance)
+          .reduce((sum, d) => sum + d)
+        distance = Math.round(summedDistance / 1000)
       } else if (this.shoutOut?.from && this.shoutOut?.to) {
+        // FIXME As the bird flies is not a good estimator
         distance =
           getDistance(this.shoutOut.from, this.shoutOut.to, 1000) / 1000
       }
