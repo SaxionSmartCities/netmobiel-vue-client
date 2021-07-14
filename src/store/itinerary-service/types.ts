@@ -46,13 +46,6 @@ export interface Location {
   longitude: number
 }
 
-export interface TripSelection {
-  from: Location
-  to: Location
-  nrSeats: number
-  itineraryRef: string
-}
-
 export interface ShoutOut {
   from: Location
   to: Location

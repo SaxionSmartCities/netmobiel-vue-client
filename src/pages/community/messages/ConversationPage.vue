@@ -128,10 +128,9 @@ export default {
       return psStore.getters.getProfile
     },
   },
-  mounted() {
-    uiStore.mutations.showBackButton()
-  },
+  mounted() {},
   created() {
+    uiStore.mutations.showBackButton()
     psStore.actions
       .fetchPublicProfile({
         profileId: this.mainRecipient,
@@ -142,7 +141,7 @@ export default {
     msStore.actions
       .fetchMessagesByParams({
         context: this.context,
-        participants: this.profile.id,
+        participant: this.profile.id,
       })
       .then(() => {
         this.isFetchingMessages = false

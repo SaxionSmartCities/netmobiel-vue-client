@@ -124,10 +124,8 @@ export default {
       return conversation.sender.managedIdentity
     },
     getRideFromContext(context) {
-      const rideId = context.substring('urn:nb:rs:ride:'.length)
       const rides = csStore.getters.getInboxRides
-      const ride = rides.find(r => r.id.toString() === rideId)
-      return ride
+      return rides.find(r => r.rideRef === context)
     },
     getFromLabelFromContext(context) {
       return this.getRideFromContext(context)?.fromPlace?.label || 'Onbekend'

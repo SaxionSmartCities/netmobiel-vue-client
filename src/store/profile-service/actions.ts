@@ -47,13 +47,11 @@ function fetchProfile(context: ActionContext) {
         } else {
           mutations.setProfile(profile)
         }
-        return profile
       }
     })
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      return error
     })
 }
 
@@ -65,6 +63,7 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
   if (usr && usr.profile.id) {
     return Promise.resolve(usr.profile)
   }
+  // Add public flag to assure the public profile is fetched, even when elevated privileges apply
   const URL = `${PROFILE_BASE_URL}/profiles/${profileId}?public=true`
   return axios
     .get(URL, {
@@ -81,6 +80,7 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
         mutations.addPublicProfile(profile)
         return profile
       }
+      return undefined
     })
     .catch(error => {
       // eslint-disable-next-line
@@ -88,7 +88,7 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
       uiStore.actions.queueInfoNotification(
         `Fout bij het ophalen van het profiel`
       )
-      return error
+      return undefined
     })
 }
 

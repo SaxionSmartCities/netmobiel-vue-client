@@ -1,20 +1,21 @@
 <template>
   <v-card
     outlined
-    class="shoutout-container"
+    class="shout-out-container"
     :class="{ 'travel-offer': hasOffer }"
-    @click="
-      $emit('shoutoutSelected', { id: shoutout.planRef, isUserTraveller })
-    "
+    @click="onShoutOutSelected"
   >
     <v-row class="mb-2">
       <v-col class="shrink">
         <v-img
           v-if="isUserTraveller"
-          class="shoutout-image"
-          :src="profileImage"
+          class="shout-out-image"
+          :src="myProfileImage"
         />
-        <external-user-image v-else :managed-identity="travellerIdentity" />
+        <external-user-image
+          v-else
+          :managed-identity="shoutOut.traveller.managedIdentity"
+        />
       </v-col>
       <v-col>
         <p class="font-weight-regular header mb-0">Reiziger</p>
@@ -26,7 +27,7 @@
         <v-icon>chevron_right</v-icon>
       </v-col>
     </v-row>
-    <v-row v-if="shoutout.ride">
+    <v-row v-if="proposedRide">
       <v-col class="pt-0 pb-4">
         <h4>Jouw aanboden rit:</h4>
       </v-col>
@@ -38,21 +39,24 @@
     >
       <itinerary-leg
         :leg="leg"
-        :showicon="!!shoutout.ride"
-        :showdottedline="!shoutout.ride"
+        :showicon="!!proposedRide"
+        :showdottedline="!proposedRide"
       />
     </v-row>
-    <v-row v-if="shoutout.itineraries.length > 0">
+    <v-row v-if="hasOffer && isUserTraveller">
       <v-col class="">
-        <h5>Er zijn {{ shoutout.itineraries.length }} ritten aangeboden.</h5>
+        <h5 v-if="offeredItineraries.length === 1">Er is 1 rit aangeboden.</h5>
+        <h5 v-else>
+          Er zijn {{ offeredItineraries.length }} ritten aangeboden.
+        </h5>
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-col align="start" class="header ma">
+      <v-col class="header ma text-left">
         <span>Afstand </span>
         <strong class="text-color-primary ">{{ distance }} km</strong>
       </v-col>
-      <v-col align="end">
+      <v-col class="text-right">
         <v-btn small rounded depressed color="button">
           {{ nextAction }}
         </v-btn>
@@ -65,56 +69,77 @@
 import { getDistance } from 'geolib'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ExternalUserImage from '@/components/profile/ExternalUserImage.vue'
-import constants from '@/constants/constants'
 import { generateShoutOutDetailSteps } from '@/utils/itinerary_steps.js'
 import * as psStore from '@/store/profile-service'
+import * as csStore from '@/store/carpool-service'
 
 export default {
   name: 'ShoutOut',
   components: { ItineraryLeg, ExternalUserImage },
   props: {
-    shoutout: { type: Object, required: true },
+    shoutOut: { type: Object, required: true },
   },
   computed: {
     profile() {
       return psStore.getters.getProfile
     },
-    profileImage() {
+    myProfileImage() {
       return this.profile.image
     },
     isUserTraveller() {
-      return this.profile.id === this.travellerIdentity
+      return this.profile.id === this.shoutOut.traveller.managedIdentity
     },
     travellerName() {
-      const { traveller } = this.shoutout
-      if (this.isUserTraveller) {
-        return `${this.profile.firstName} ${this.profile.lastName}`
-      }
-      return `${traveller.givenName} ${traveller.familyName}`
+      return `${this.shoutOut.traveller.givenName} ${this.shoutOut.traveller.familyName}`
     },
     distance() {
-      return getDistance(this.shoutout.from, this.shoutout.to, 1000) / 1000
-    },
-    travellerIdentity() {
-      const { traveller } = this.shoutout
-      return traveller.managedIdentity
-        ? traveller.managedIdentity
-        : traveller.id
+      let d = 'Onbekend'
+      if (this.proposedRide?.distance) {
+        d = Math.round(this.proposedRide.distance / 1000)
+      } else if (this.shoutOut.from && this.shoutOut.to) {
+        d = getDistance(this.shoutOut.from, this.shoutOut.to, 1000) / 1000
+      }
+      return d
     },
     nextAction() {
       return this.isUserTraveller
-        ? 'Bekijk shoutout'
+        ? 'Bekijk shout-out'
         : this.hasOffer
         ? 'Aanbod bekijken'
         : 'Rit aanbieden'
     },
+    offeredItineraries() {
+      return this.shoutOut.itineraries.filter(it => {
+        return !it.legs.find(leg => leg.state === 'CANCELLED')
+      })
+    },
     hasOffer() {
-      return !!this.shoutout.ride || this.shoutout.itineraries.length > 0
+      return !!this.proposedRide || this.offeredItineraries.length > 0
+    },
+    proposedRides() {
+      return csStore.getters.getProposedRides
+    },
+    /**
+     * Loop through my rides and try to combine the shout-outs with the rides to find the shout-outs with
+     * an offer from me. If so then attach the ride to the shout-out. Not so clean, but will do.
+     */
+    proposedRide() {
+      return this.proposedRides.find(ride => {
+        return !!ride.bookings.find(
+          b => b.passengerTripPlanRef === this.shoutOut.planRef
+        )
+      })
     },
   },
   methods: {
     generateSteps() {
-      return generateShoutOutDetailSteps(this.shoutout)
+      return generateShoutOutDetailSteps(this.shoutOut, this.proposedRide)
+    },
+    onShoutOutSelected() {
+      this.$emit('shoutOutSelected', {
+        shoutOut: this.shoutOut,
+        proposedRide: this.proposedRide,
+      })
     },
   },
 }
@@ -128,10 +153,10 @@ export default {
   border: 1px solid $color-primary;
 }
 
-.shoutout-container {
+.shout-out-container {
   padding: 5px 15px;
 
-  .shoutout-image {
+  .shout-out-image {
     padding-right: 0;
     width: 60px;
     height: 60px;

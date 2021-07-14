@@ -94,7 +94,8 @@ export default {
   },
   methods: {
     onPlanTrip() {
-      isStore.actions.createTrip(this.selectedTrip)
+      const { itineraryRef } = this.selectedTrip
+      isStore.actions.createTrip({ itineraryRef })
       if (this.tripId !== '-1') {
         // We are editing a trip so remove the old one.
         isStore.actions.deleteTrip({

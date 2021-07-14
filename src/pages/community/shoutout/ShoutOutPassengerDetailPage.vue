@@ -62,7 +62,7 @@ export default {
     ShoutOutDetailPassenger,
   },
   props: {
-    id: { type: String, required: true },
+    shoutOutId: { type: String, required: true },
   },
   data() {
     return {
@@ -123,7 +123,7 @@ export default {
   },
   mounted() {
     isStore.mutations.clearPlanningResults()
-    isStore.actions.fetchTripPlan({ id: this.id })
+    isStore.actions.fetchTripPlan({ id: this.shoutOutId })
   },
   created() {
     uiStore.mutations.showBackButton()
@@ -155,15 +155,13 @@ export default {
       this.cancelDialog.isVisible = true
     },
     onTravelOfferConfirmed(itinerary) {
-      const { from, to, nrSeats } = this.trip
       const { itineraryRef } = itinerary
-      const trip = { from, to, nrSeats, itineraryRef }
-      isStore.actions.createTrip(trip)
-      this.$router.push({ name: 'shoutouts' })
+      isStore.actions.createTrip({ itineraryRef })
+      this.$router.push({ name: 'shoutOuts' })
     },
     onConfirmCancel() {
       this.cancelDialog.isVisible = false
-      isStore.actions.cancelTripPlan({ shoutoutPlanId: this.id })
+      isStore.actions.cancelTripPlan({ tripPlanId: this.shoutOutId })
       this.$router.go(-1)
     },
     onCloseCancel() {
