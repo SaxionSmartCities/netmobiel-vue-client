@@ -133,7 +133,7 @@ export default {
   },
   created() {
     psStore.actions
-      .fetchUserProfile({
+      .fetchPublicProfile({
         profileId: this.mainRecipient,
       })
       .then(profile => {

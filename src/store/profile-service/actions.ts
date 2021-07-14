@@ -4,7 +4,7 @@ import util from '@/utils/Utils'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { Profile, ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
-import { mutations } from '@/store/profile-service'
+import { getters, mutations } from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
 import store from '..'
 import { LocalDate } from '@js-joda/core'
@@ -59,7 +59,11 @@ function fetchProfile(context: ActionContext) {
 
 function fetchPublicProfile(context: ActionContext, { profileId }: any) {
   if (!profileId) {
-    return
+    return Promise.reject('Specify a profile id')
+  }
+  let usr = getters.getPublicUsers.get(profileId)
+  if (usr && usr.profile.id) {
+    return Promise.resolve(usr.profile)
   }
   const URL = `${PROFILE_BASE_URL}/profiles/${profileId}?public=true`
   return axios
@@ -74,7 +78,7 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
             ? `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
             : '',
         }
-        mutations.setPublicProfile(profile)
+        mutations.addPublicProfile(profile)
         return profile
       }
     })
@@ -116,6 +120,10 @@ function fetchProfiles(context: ActionContext, { keyword }: any) {
  * @returns {Array<Object>} returns Array of compliments in the response.data
  */
 function fetchUserCompliments(context: ActionContext, { profileId }: any) {
+  let usr = getters.getPublicUsers.get(profileId)
+  if (usr && usr.compliments) {
+    return Promise.resolve(usr.compliments)
+  }
   const URL = `${PROFILE_BASE_URL}/compliments`
   return axios
     .get(URL, {
@@ -123,7 +131,12 @@ function fetchUserCompliments(context: ActionContext, { profileId }: any) {
       params: { receiverId: profileId },
     })
     .then(response => {
-      mutations.setPublicCompliments(response.data.compliments)
+      // @ts-ignore
+      mutations.addPublicCompliments({
+        profileId,
+        compliments: response.data.compliments,
+      })
+      return response.data.compliments
     })
     .catch(error => {
       // eslint-disable-next-line
@@ -178,7 +191,7 @@ function addUserCompliment(
       }
     )
     .then(response => {
-      // SKIP: Do nothing.
+      mutations.clearPublicCompliments(receiver.id)
     })
     .catch(error => {
       // eslint-disable-next-line
@@ -194,6 +207,10 @@ function addUserCompliment(
  * @returns {Array<Object>} Returns an Array of reviews in the response.data.reviews
  */
 function fetchUserReviews(context: ActionContext, { profileId }: any) {
+  let usr = getters.getPublicUsers.get(profileId)
+  if (usr && usr.reviews) {
+    return Promise.resolve(usr.reviews)
+  }
   const URL = `${PROFILE_BASE_URL}/reviews`
   axios
     .get(URL, {
@@ -201,7 +218,12 @@ function fetchUserReviews(context: ActionContext, { profileId }: any) {
       params: { receiverId: profileId },
     })
     .then(response => {
-      mutations.setPublicReviews(response.data.reviews)
+      // @ts-ignore
+      mutations.addPublicReviews({
+        profileId,
+        reviews: response.data.reviews,
+      })
+      return response.data.reviews
     })
 }
 
@@ -227,6 +249,7 @@ function addUserReview(
     .then(response => {
       if (response.status === 201) {
         uiStore.actions.queueInfoNotification(`Je beoordeling is opgeslagen!`)
+        mutations.clearPublicReviews(receiver.id)
       }
     })
     .catch(error => {
@@ -485,7 +508,7 @@ export const buildActions = (
 ) => {
   return {
     fetchProfile: psBuilder.dispatch(fetchProfile),
-    fetchUserProfile: psBuilder.dispatch(fetchPublicProfile),
+    fetchPublicProfile: psBuilder.dispatch(fetchPublicProfile),
     fetchProfiles: psBuilder.dispatch(fetchProfiles),
     fetchUserCompliments: psBuilder.dispatch(fetchUserCompliments),
     fetchComplimentTypes: psBuilder.dispatch(fetchComplimentTypes),

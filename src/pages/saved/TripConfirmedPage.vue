@@ -172,7 +172,7 @@ export default {
         .then(response => {
           // Fetch the profile (image) of the driver via the profile-service
           psStore.actions
-            .fetchUserProfile({
+            .fetchPublicProfile({
               profileId: response.managedIdentity,
             })
             .then(res => {

@@ -1,6 +1,6 @@
 <template>
   <content-pane class="pa-0">
-    <public-profile-info :profile="profile" />
+    <public-profile-info v-if="profile" :profile="profile" />
     <highlighted-info
       :rides-driven="ridesDriven"
       :compliments-received="totalCompliments"
@@ -64,14 +64,17 @@ export default {
     }
   },
   computed: {
+    publicUser() {
+      return psStore.getters.getPublicUsers.get(this.profileId)
+    },
     profile() {
-      return psStore.getters.getExternalUser.profile
+      return this.publicUser?.profile
     },
     compliments() {
-      return psStore.getters.getExternalUser.compliments
+      return this.publicUser?.compliments
     },
     reviews() {
-      return psStore.getters.getExternalUser.reviews
+      return this.publicUser?.reviews
     },
     ridesDriven() {
       // TODO: fetch from backend
@@ -95,7 +98,7 @@ export default {
       return result
     },
     totalCompliments() {
-      if (Object.values([]).length === 0) {
+      if (!this.refinedCompliments) {
         return 0
       }
       return Object.values(this.refinedCompliments)?.reduce(
@@ -103,8 +106,22 @@ export default {
       )
     },
   },
+  watch: {
+    reviews(rvs) {
+      this.profileImages = []
+      rvs.forEach(review => {
+        psStore.actions
+          .fetchPublicProfile({
+            profileId: review.sender.id,
+          })
+          .then(res => {
+            this.profileImages.push(res.image)
+          })
+      })
+    },
+  },
   mounted() {
-    psStore.actions.fetchUserProfile({
+    psStore.actions.fetchPublicProfile({
       profileId: this.profileId,
     })
     psStore.actions.fetchUserCompliments({
@@ -117,19 +134,19 @@ export default {
   created() {
     uiStore.mutations.showBackButton()
   },
-  methods: {
-    fetchProfileImages() {
-      this.reviews.forEach(review => {
-        psStore.actions
-          .fetchUserProfile({
-            profileId: review.sender.id,
-          })
-          .then(res => {
-            this.profileImages.push(config.BASE_URL + res.image)
-          })
-      })
-    },
-  },
+  // methods: {
+  //   fetchProfileImages() {
+  //     this.reviews.forEach(review => {
+  //       psStore.actions
+  //         .fetchPublicProfile({
+  //           profileId: review.sender.id,
+  //         })
+  //         .then(res => {
+  //           this.profileImages.push(config.BASE_URL + res.image)
+  //         })
+  //     })
+  //   },
+  // },
 }
 </script>
 
