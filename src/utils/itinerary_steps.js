@@ -5,7 +5,7 @@ const MIN_WAITING_TIME = 60 // Time in seconds
 
 export function generateItineraryDetailSteps(itinerary) {
   // Guard: If we have no legs then we have no steps.
-  if (itinerary == null || !itinerary.legs || itinerary.legs.length == 0) {
+  if (itinerary == null || !itinerary.legs) {
     return []
   }
   let steps = []
@@ -88,7 +88,7 @@ function setPassenger(leg, bookingDict) {
   // TODO: Check why modality is not provided
   if (leg) {
     leg.mode = travelModes.CAR.mode
-    let passenger = bookingDict.find(b => b.legRef == leg.legRef)
+    let passenger = bookingDict.find(b => b.legRef === leg.legRef)
     if (passenger) {
       leg.passenger = passenger
       leg.mode = travelModes.RIDESHARE.mode
@@ -96,12 +96,11 @@ function setPassenger(leg, bookingDict) {
   }
 }
 
-export function generateShoutOutDetailSteps(shoutout) {
-  if (shoutout.ride) {
-    return generateShoutOutOfferDetailSteps(shoutout)
-  } else {
-    return generateCommunityShoutOutDetailSteps(shoutout)
+export function generateShoutOutDetailSteps(shoutout, ride) {
+  if (ride) {
+    return generateShoutOutRideOfferDetailSteps(ride)
   }
+  return generateCommunityShoutOutDetailSteps(shoutout)
 }
 
 function generateCommunityShoutOutDetailSteps(shoutout) {
@@ -115,32 +114,32 @@ function generateCommunityShoutOutDetailSteps(shoutout) {
         .toDate()
         .getTime()
     : null
-  const from = shoutout.from ? shoutout.from.label : '',
-    to = shoutout.to ? shoutout.to.label : ''
+  const fromLabel = shoutout.from ? shoutout.from.label : ''
+  const toLabel = shoutout.to ? shoutout.to.label : ''
   return [
     {
       mode: 'CAR',
       startTime: departure,
       endTime: arrival,
-      from: { name: from },
+      from: { name: fromLabel },
     },
     {
       mode: 'ARRIVAL',
       startTime: arrival,
-      from: { name: to },
+      from: { name: toLabel },
     },
   ]
 }
 
-function generateShoutOutOfferDetailSteps(shoutout) {
-  const { fromPlace, car, bookings } = shoutout.ride
-  let steps = []
-  const booking = bookings?.find(b => b.state === 'PROPOSED')
+function generateShoutOutRideOfferDetailSteps(ride) {
+  const { fromPlace, car, bookings } = ride
+  const steps = []
+  const booking = bookings?.find(b => b.state.toUpperCase() === 'PROPOSED')
   if (booking) {
-    let departureTime = moment(shoutout.ride.departureTime)
+    let departureTime = moment(ride.departureTime)
       .toDate()
       .getTime()
-    let arrivalTime = moment(shoutout.ride.arrivalTime)
+    let arrivalTime = moment(ride.arrivalTime)
       .toDate()
       .getTime()
     let pickupTime = moment(booking.departureTime)
@@ -163,7 +162,7 @@ function generateShoutOutOfferDetailSteps(shoutout) {
       driverName: 'Jij',
       vehicleName: car.brand,
       vehicleLicensePlate: car.model,
-      tripId: shoutout.ride.id,
+      tripId: ride.id,
     })
     steps.push({
       mode: 'ARRIVAL',

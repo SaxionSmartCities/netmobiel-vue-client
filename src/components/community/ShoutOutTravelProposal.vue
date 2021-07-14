@@ -58,7 +58,6 @@
             @click="onProposeTravelOffer"
           >
             Aanbod bevestigen
-            <v-icon dark right>error_outline</v-icon>
           </v-btn>
         </v-col>
         <v-col>
@@ -96,7 +95,7 @@ export default {
     ShoutOutTravelProposalEditor,
   },
   props: {
-    trip: { type: Object, required: true },
+    shoutOut: { type: Object, required: true },
     offer: { type: Object, default: () => {} },
     editing: { type: Boolean, default: false },
   },
@@ -117,24 +116,28 @@ export default {
   methods: {
     generateSteps() {
       //HACK: this.steps is not a data prop, if it was it would lead to inf loop.
-      if (this.offer) {
-        this.steps = generateItineraryDetailSteps(this.offer.itineraries[0])
-        if (this.steps.length > 2) {
-          this.steps[0].isEditable = true
-          this.steps[this.steps.length - 2].passenger = {
-            ...this.trip.traveller,
+      let steps
+      if (this.offer?.planRef) {
+        //FIXME Backend must annotate a leg with the shout-out that it resolves
+        steps = generateItineraryDetailSteps(this.offer.itineraries[0])
+        if (steps.length > 2) {
+          steps[0].isEditable = true
+          steps[steps.length - 2].passenger = {
+            ...this.shoutOut.traveller,
           }
         }
+      } else if (this.shoutOut?.planRef) {
+        steps = generateShoutOutDetailSteps(this.shoutOut, undefined)
       } else {
-        this.steps = generateShoutOutDetailSteps(this.trip)
+        steps = []
       }
-      return this.steps
+      return steps
     },
     onLegEdit({ step }) {
       if (step === 0) {
         this.editDeparture = !this.editDeparture
         isStore.mutations.setShoutoutPlanTime(
-          moment(this.steps[step].startTime)
+          moment(this.offer.itineraries[0].departureTime)
         )
       }
     },

@@ -6,11 +6,7 @@ import constants from '../../constants/constants'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { RootState } from '../Rootstate'
 import { mutations } from '@/store/itinerary-service/index'
-import {
-  ItineraryState,
-  TripSelection,
-  SearchCriteria,
-} from '@/store/itinerary-service/types'
+import { ItineraryState, SearchCriteria } from '@/store/itinerary-service/types'
 import * as uiStore from '@/store/ui'
 import { addInterceptors } from '../api-middelware'
 
@@ -118,12 +114,13 @@ function fetchTripPlan(context: ActionContext, { id }: any) {
 
 function fetchMyShoutOutTripPlans(
   context: ActionContext,
-  { offset: offset }: any
+  { offset, maxResults }: any
 ) {
   const delegatorId = context.rootState.ps.user.delegatorId
   const params = {
-    offset,
-    inProgressOnly: true,
+    offset: offset || 0,
+    maxResults: maxResults,
+    inProgressOnly: true, // Only shout-outs that are still running
     planType: 'SHOUT_OUT',
     since: moment().format(),
   }
@@ -135,9 +132,14 @@ function fetchMyShoutOutTripPlans(
     .then(response => {
       if (response.status === 200) {
         mutations.setMyShoutOutsTotalCount(response.data.totalCount)
-        // When you using a offset you want to append the shoutouts and not clear the already fetched shoutouts.
-        if (offset > 0) mutations.appendMyShoutOuts(response.data.data)
-        else mutations.setMyShoutOuts(response.data.data)
+        if (maxResults !== 0) {
+          // When you using a offset you want to append the shoutouts and not clear the already fetched shoutouts.
+          if (offset > 0) {
+            mutations.appendMyShoutOuts(response.data.data)
+          } else {
+            mutations.setMyShoutOuts(response.data.data)
+          }
+        }
       }
     })
     .catch(error => {
@@ -146,9 +148,9 @@ function fetchMyShoutOutTripPlans(
     })
 }
 
-// Cancel a shout-out trip plan
-function cancelTripPlan(context: ActionContext, { shoutoutPlanId }: any) {
-  const URL = `${PLANNER_BASE_URL}/plans/${shoutoutPlanId}`
+// Cancel a (shout-out) trip plan. A regular plan cannot be cancelled because it is already closed.
+function cancelTripPlan(context: ActionContext, { tripPlanId }: any) {
+  const URL = `${PLANNER_BASE_URL}/plans/${tripPlanId}`
   axios
     .delete(URL, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
@@ -171,12 +173,18 @@ function cancelTripPlan(context: ActionContext, { shoutoutPlanId }: any) {
 
 // ============  TRIP MANAGEMENT  ================
 
-function createTrip(context: ActionContext, payload: TripSelection) {
+/**
+ * Creates a trip from a previously created itinerary reference.
+ * @param context
+ * @param itineraryRef the itinerary from a planning request (regular or shout-out).
+ */
+function createTrip(context: ActionContext, { itineraryRef }: any) {
   const delegatorId = context.rootState.ps.user.delegatorId
+  const trip = { itineraryRef }
   mutations.setBookingStatus({ status: 'PENDING' })
   const URL = `${PLANNER_BASE_URL}/trips`
   axios
-    .post(URL, payload, {
+    .post(URL, trip, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
     })
     .then(response => {
@@ -402,33 +410,6 @@ function confirmTrip(context: ActionContext, payload: any) {
 // ============  SHOUT-OUT MANAGEMENT  ================
 // driver calls!
 
-function addShoutOutTravelOffer(
-  context: ActionContext,
-  { shoutoutPlanId, planRef, vehicleRef, driverRef }: any
-) {
-  let payload = { planRef, vehicleRef, driverRef }
-  const URL = `${PLANNER_BASE_URL}/shout-outs/${shoutoutPlanId}`
-  axios
-    .post(URL, payload, {
-      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
-    })
-    .then(response => {
-      if (response.status == 202) {
-        let message = 'Je aanbod is verstuurd'
-        uiStore.actions.queueInfoNotification(message)
-      } else {
-        uiStore.actions.queueErrorNotification(response.data.message)
-      }
-    })
-    .catch(error => {
-      // eslint-disable-next-line
-      console.log(error)
-      uiStore.actions.queueErrorNotification(
-        'Fout bij het opslaan van uw oproep.'
-      )
-    })
-}
-
 function fetchShoutOut(context: ActionContext, { id }: any) {
   const delegatorId = context.rootState.ps.user.delegatorId
   const URL = `${PLANNER_BASE_URL}/shout-outs/${id}`
@@ -475,8 +456,8 @@ function fetchShoutOuts(
 }
 
 function planShoutOutSolution(context: ActionContext, payload: any) {
-  const { id, from, to = {}, travelTime } = payload
-  const URL = `${PLANNER_BASE_URL}/shout-outs/${id}/plan`
+  const { shoutOutId, from, to = {}, travelTime } = payload
+  const URL = `${PLANNER_BASE_URL}/shout-outs/${shoutOutId}/plan`
   const params: any = {
     from: `${from.label}::${from.latitude},${from.longitude}`,
   }
@@ -499,6 +480,34 @@ function planShoutOutSolution(context: ActionContext, payload: any) {
       mutations.setPlanningStatus({ status: 'FAILED' })
       uiStore.actions.queueErrorNotification(
         error.response ? error.response.data.message : 'Network failure'
+      )
+    })
+}
+
+function addShoutOutTravelOffer(
+  context: ActionContext,
+  { shoutOutPlanId, planRef, vehicleRef, driverRef }: any
+) {
+  let payload = { planRef, vehicleRef, driverRef }
+  const URL = `${PLANNER_BASE_URL}/shout-outs/${shoutOutPlanId}`
+  axios
+    .post(URL, payload, {
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
+    })
+    .then(response => {
+      if (response.status == 202) {
+        let message =
+          'Je aanbod is verstuurd en de passagier op de hoogte gebracht.'
+        uiStore.actions.queueInfoNotification(message)
+      } else {
+        uiStore.actions.queueErrorNotification(response.data.message)
+      }
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het opslaan van uw oproep.'
       )
     })
 }

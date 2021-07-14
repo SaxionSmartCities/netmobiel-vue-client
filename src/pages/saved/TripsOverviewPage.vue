@@ -2,11 +2,19 @@
   <content-pane id="scroll">
     <template v-slot:header>
       <tab-bar
-        v-if="showTabs"
+        v-if="isDrivingPassenger"
         :selected-tab-model="selectedTab"
         @tabChange="selectedTab = $event"
       >
         <template v-slot:firstTab>
+          <v-icon color="white">directions_car</v-icon>
+          <span>
+            Chauffeur
+            <sup>{{ getPlannedRidesCount }}</sup>
+          </span>
+        </template>
+
+        <template v-slot:secondTab>
           <v-icon color="white">commute</v-icon>
           <span>
             Passagier
@@ -17,20 +25,9 @@
             }}</sup>
           </span>
         </template>
-
-        <template v-slot:secondTab>
-          <v-icon color="white">directions_car</v-icon>
-          <span>
-            Chauffeur
-            <sup>{{ getPlannedRidesCount }}</sup>
-          </span>
-        </template>
       </tab-bar>
       <slide-show-cancelled-trips
-        v-if="
-          ((showTabs && selectedTab === 0) || isPassenger) &&
-            getCancelledTrips.length > 0
-        "
+        v-if="isPassengerView && getCancelledTrips.length > 0"
         :trips="getCancelledTrips"
       >
         <template v-slot:card="{ trip }">
@@ -43,7 +40,7 @@
         </template>
       </slide-show-cancelled-trips>
     </template>
-    <v-row v-if="(showTabs && selectedTab === 0) || isPassenger" dense>
+    <v-row v-if="isPassengerView" dense>
       <v-col class="pa-0">
         <v-row dense>
           <v-col>
@@ -92,7 +89,7 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-row v-if="(showTabs && selectedTab === 1) || isDriver" dense>
+    <v-row v-if="isDriverView" dense>
       <v-col class="pa-0">
         <v-row dense>
           <v-col>
@@ -204,17 +201,32 @@ export default {
     getPlannedRides() {
       return csStore.getters.getRides
     },
-    showTabs() {
-      const role = psStore.getters.getProfile.userRole
-      return !role || role === constants.PROFILE_ROLE_BOTH
+    isDriverTab() {
+      return this.selectedTab === 0
     },
-    isPassenger() {
-      const role = psStore.getters.getProfile.userRole
-      return role === constants.PROFILE_ROLE_PASSENGER
+    isPassengerTab() {
+      return this.selectedTab === 1
     },
-    isDriver() {
-      const role = psStore.getters.getProfile.userRole
-      return role === constants.PROFILE_ROLE_DRIVER
+    isDriverView() {
+      return this.isDriverOnly || (this.isDrivingPassenger && this.isDriverTab)
+    },
+    isPassengerView() {
+      return (
+        this.isPassengerOnly || (this.isDrivingPassenger && this.isPassengerTab)
+      )
+    },
+    isPassengerOnly() {
+      return (
+        psStore.getters.getProfile.userRole === constants.PROFILE_ROLE_PASSENGER
+      )
+    },
+    isDriverOnly() {
+      return (
+        psStore.getters.getProfile.userRole === constants.PROFILE_ROLE_DRIVER
+      )
+    },
+    isDrivingPassenger() {
+      return psStore.getters.getProfile.userRole === constants.PROFILE_ROLE_BOTH
     },
   },
   watch: {
@@ -249,6 +261,7 @@ export default {
     this.fetchPastTrips()
     this.fetchRides()
     this.fetchPastRides()
+    // The logic does not seem to be right for cancelled trips
     // isStore.actions.fetchCancelledTrips()
     window.addEventListener('scroll', this.scrollHandler)
   },
@@ -309,7 +322,7 @@ export default {
     onRideSelected(id) {
       this.$router.push({
         name: 'rideDetailPage',
-        params: { id: String(id) },
+        params: { rideId: String(id) },
       })
     },
   },

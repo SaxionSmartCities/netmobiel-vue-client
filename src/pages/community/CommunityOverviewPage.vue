@@ -13,9 +13,9 @@
         <community-button
           class="mx-auto"
           icon="fa-map"
-          forward="shoutouts"
+          forward="shoutOuts"
           naam="Oproepen"
-          :aantal-berichten="shoutoutCount"
+          :aantal-berichten="shoutOutCount"
         ></community-button>
       </v-col>
     </v-row>
@@ -51,6 +51,10 @@ import * as isStore from '@/store/itinerary-service'
 
 const CREDITS_ENABLED = config.CREDITS_ENABLED
 
+/**
+ * The community overview page shows the community activities: Messages about trips, shout-outs, goals to donate to and
+ * an overview of rewards received.
+ */
 export default {
   components: {
     CommunityButton: CommunityButton,
@@ -62,22 +66,39 @@ export default {
     }
   },
   computed: {
-    shoutoutCount() {
+    isPassenger() {
       const userRole = psStore.getters.getProfile.userRole
-      if (userRole == constants.PROFILE_ROLE_PASSENGER) {
-        return isStore.getters.getMyShoutOutsCount
-      } else {
-        return isStore.getters.getShoutOutsTotalCount
+      return (
+        userRole === constants.PROFILE_ROLE_PASSENGER ||
+        userRole === constants.PROFILE_ROLE_BOTH
+      )
+    },
+    isDriver() {
+      const userRole = psStore.getters.getProfile.userRole
+      return (
+        userRole === constants.PROFILE_ROLE_DRIVER ||
+        userRole === constants.PROFILE_ROLE_BOTH
+      )
+    },
+    shoutOutCount() {
+      let count = 0
+      if (this.isPassenger) {
+        count += isStore.getters.getMyShoutOutsCount
       }
+      if (this.isDriver) {
+        count += isStore.getters.getShoutOutsTotalCount
+      }
+      return count
     },
   },
   mounted() {
     const { address, userRole } = psStore.getters.getProfile
-    if (userRole === constants.PROFILE_ROLE_PASSENGER) {
-      // Display the count of the users' own shoutouts.
-      isStore.actions.fetchMyShoutOutTripPlans({ offset: 0 })
-    } else if (address && address.location) {
-      // Display the community shoutouts.
+    if (this.isPassenger) {
+      // Display the count of the user's own shout-outs.
+      isStore.actions.fetchMyShoutOutTripPlans({ offset: 0, maxResults: 0 })
+    }
+    if (this.isDriver && address?.location) {
+      // Display the community shout-out count, but only if my address is known
       isStore.actions.fetchShoutOuts({
         latitude: address.location.coordinates[1],
         longitude: address.location.coordinates[0],

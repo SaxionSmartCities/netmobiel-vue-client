@@ -1,5 +1,5 @@
 <template>
-  <content-pane v-if="ride && ride.bookings">
+  <content-pane>
     <v-row>
       <v-col class="py-0">
         <ride-details :ride="ride" class="mb-4" />
@@ -111,7 +111,7 @@ export default {
     RideDetails,
   },
   props: {
-    id: {
+    rideId: {
       type: String,
       required: true,
     },
@@ -128,9 +128,6 @@ export default {
   computed: {
     profile() {
       return psStore.getters.getProfile
-    },
-    localId() {
-      return parseInt(this.id)
     },
     confirmedBookings() {
       return !this.ride?.bookings
@@ -196,7 +193,8 @@ export default {
   },
   mounted() {
     // Fetch the ride on details page. This is needed for deeplinking.
-    csStore.actions.fetchRide({ id: this.localId })
+    csStore.mutations.setSelectedRide({})
+    csStore.actions.fetchRide({ id: this.rideId })
   },
   methods: {
     formatTime(t) {
@@ -214,7 +212,7 @@ export default {
       this.selectedLeg = leg
     },
     onRideReview() {
-      csStore.actions.confirmRide({ id: this.localId })
+      csStore.actions.confirmRide({ id: this.rideId })
     },
     onRideCancelled() {
       this.warningDialog = true
@@ -222,7 +220,7 @@ export default {
     deleteTrip() {
       this.warningDialog = false
       csStore.actions.deleteRide({
-        id: this.localId,
+        id: this.rideId,
         cancelReason: this.cancelReason,
       })
       this.$router.push('/tripsOverviewPage')
