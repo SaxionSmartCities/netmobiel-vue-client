@@ -2,15 +2,14 @@
 import VueJwtDecode from 'vue-jwt-decode'
 import { ModuleBuilder } from 'vuex-typex'
 import {
-  Compliment,
   ComplimentType,
+  Delegation,
+  emptyPublicUser,
   Place,
   Profile,
   ProfileState,
   PublicProfile,
   RidePlanOptions,
-  Review,
-  Delegation,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 
@@ -84,16 +83,61 @@ function setComplimentTypes(
   state.complimentTypes = complimentTypes
 }
 
-function setPublicProfile(state: ProfileState, profile: PublicProfile) {
-  state.externalUser.profile = profile
+function getOrCreatePublicUser(state: ProfileState, profileId: string) {
+  let usr = state.publicUsers.get(profileId)
+  if (!usr) {
+    usr = Object.assign({}, emptyPublicUser)
+    state.publicUsers.set(profileId, usr)
+  }
+  return usr
 }
 
-function setPublicCompliments(state: ProfileState, compliments: Compliment[]) {
-  state.externalUser.compliments = compliments
+function addPublicProfile(state: ProfileState, profile: PublicProfile) {
+  if (profile.id !== null) {
+    let usr = getOrCreatePublicUser(state, profile.id)
+    usr.profile = profile
+    // Brute force reactivity, is this really needed?
+    state.publicUsers = new Map(state.publicUsers)
+  }
 }
 
-function setPublicReviews(state: ProfileState, reviews: Review[]) {
-  state.externalUser.reviews = reviews
+function clearPublicProfile(state: ProfileState, profileId: string) {
+  let usr = getOrCreatePublicUser(state, profileId)
+  usr.profile = Object.assign({}, emptyPublicUser.profile)
+  // Brute force reactivity, is this really needed?
+  state.publicUsers = new Map(state.publicUsers)
+}
+
+function addPublicCompliments(state: ProfileState, payload: any) {
+  if (payload && payload.profileId) {
+    let usr = getOrCreatePublicUser(state, payload.profileId)
+    usr.compliments = payload.compliments
+  }
+  // Brute force reactivity, is this really needed?
+  state.publicUsers = new Map(state.publicUsers)
+}
+
+function clearPublicCompliments(state: ProfileState, profileId: string) {
+  let usr = getOrCreatePublicUser(state, profileId)
+  usr.compliments = []
+  // Brute force reactivity, is this really needed?
+  state.publicUsers = new Map(state.publicUsers)
+}
+
+function addPublicReviews(state: ProfileState, payload: any) {
+  if (payload && payload.profileId) {
+    let usr = getOrCreatePublicUser(state, payload.profileId)
+    usr.reviews = payload.reviews
+  }
+  // Brute force reactivity, is this really needed?
+  state.publicUsers = new Map(state.publicUsers)
+}
+
+function clearPublicReviews(state: ProfileState, profileId: string) {
+  let usr = getOrCreatePublicUser(state, profileId)
+  usr.reviews = []
+  // Brute force reactivity, is this really needed?
+  state.publicUsers = new Map(state.publicUsers)
 }
 
 function setFavoriteLocations(state: ProfileState, places: Place[]) {
@@ -146,9 +190,12 @@ export const buildMutations = (
     setRidePlanOptions: psBuilder.commit(setRidePlanOptions),
     setPrivacySecurityValue: psBuilder.commit(setPrivacySecurityValue),
     setComplimentTypes: psBuilder.commit(setComplimentTypes),
-    setPublicProfile: psBuilder.commit(setPublicProfile),
-    setPublicCompliments: psBuilder.commit(setPublicCompliments),
-    setPublicReviews: psBuilder.commit(setPublicReviews),
+    addPublicProfile: psBuilder.commit(addPublicProfile),
+    clearPublicProfile: psBuilder.commit(clearPublicProfile),
+    addPublicCompliments: psBuilder.commit(addPublicCompliments),
+    clearPublicCompliments: psBuilder.commit(clearPublicCompliments),
+    addPublicReviews: psBuilder.commit(addPublicReviews),
+    clearPublicReviews: psBuilder.commit(clearPublicReviews),
     setFavoriteLocations: psBuilder.commit(setFavoriteLocations),
     setDelegations: psBuilder.commit(setDelegations),
     setDelegateProfile: psBuilder.commit(setDelegateProfile),

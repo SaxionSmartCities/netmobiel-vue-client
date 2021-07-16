@@ -2,6 +2,7 @@ import { LocalDate } from '@js-joda/core'
 
 export class ProfileState {
   complimentTypes: ComplimentType[] = []
+  publicUsers: Map<string, ExternalUser> = new Map()
   externalUser: ExternalUser = {
     profile: {
       id: null,
@@ -86,7 +87,19 @@ export class ProfileState {
     results: [],
   }
 }
-
+export const emptyPublicUser: ExternalUser = {
+  profile: {
+    id: null,
+    age: null,
+    image: null,
+    firstName: null,
+    lastName: null,
+    address: {},
+    interests: [],
+  },
+  compliments: [],
+  reviews: [],
+}
 export interface ExternalUser {
   profile: PublicProfile
   compliments: Compliment[] | []

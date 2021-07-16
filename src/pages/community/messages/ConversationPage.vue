@@ -132,7 +132,7 @@ export default {
   created() {
     uiStore.mutations.showBackButton()
     psStore.actions
-      .fetchUserProfile({
+      .fetchPublicProfile({
         profileId: this.mainRecipient,
       })
       .then(profile => {

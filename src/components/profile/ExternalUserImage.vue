@@ -21,8 +21,14 @@ export default {
     avatarSize: { type: Number, default: 78, required: false },
   },
   computed: {
+    publicUser() {
+      if (this.managedIdentity) {
+        return psStore.getters.getPublicUsers.get(this.managedIdentity)
+      }
+      return null
+    },
     imageURL() {
-      return psStore.getters.getExternalUser.profile.image || null
+      return this.publicUser?.profile.image
     },
   },
   watch: {
@@ -35,7 +41,9 @@ export default {
   },
   methods: {
     fetchExternalUser() {
-      psStore.actions.fetchUserProfile({ profileId: this.managedIdentity })
+      if (this.managedIdentity) {
+        psStore.actions.fetchPublicProfile({ profileId: this.managedIdentity })
+      }
     },
   },
 }
