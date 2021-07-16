@@ -31,13 +31,9 @@
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>
-              <v-row dense>
+              <v-row dense class="justify-space-between flex-nowrap">
                 <v-col class="font-weight-medium">
-                  {{
-                    getReceiverViaConversationParticipants(
-                      conversation.participants
-                    )
-                  }}
+                  {{ getReceiverViaConversationParticipants(conversation) }}
                 </v-col>
                 <!-- Let's hide the number of unread message for now until we have fixed it.
                 <v-col class="px-2" cols="2">
@@ -48,14 +44,12 @@
               </v-row>
             </v-list-item-title>
             <v-list-item-subtitle>
-              <em>
-                Laatst gewijzigd: {{ getConversationTimestamp(conversation) }}
-              </em>
-              <br />
-              Van
-              {{ getFromLabelFromContext(conversation.context) }}
-              naar
-              {{ getToLabelFromContext(conversation.context) }}
+              <div class="px-1 py-1 text-right">
+                <em>{{ getConversationTimestamp(conversation) }}</em>
+              </div>
+              <div>
+                {{ getSubject(conversation) }}
+              </div>
             </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -95,9 +89,9 @@ export default {
     },
   },
   watch: {
-    conversations(newValue) {
-      const conversations = msStore.getters.getConversations
-      csStore.actions.fetchRidesFromConversations(conversations)
+    conversations(convs) {
+      const rideConvs = convs.filter(c => c.context.includes(':ride:'))
+      csStore.actions.fetchRidesFromConversations(rideConvs)
     },
   },
   created: function() {
@@ -105,23 +99,36 @@ export default {
     msStore.actions.fetchConversations()
   },
   methods: {
-    getReceiverViaConversationParticipants(participants) {
-      const res = participants.filter(
+    getOtherParticipant(conversation) {
+      const others = conversation.participants.filter(
         user => user.managedIdentity !== this.myId
-      )[0]
-      if (res) {
-        return res.givenName + ' ' + res.familyName
+      )
+      return others ? others[0] : undefined
+    },
+    getReceiverViaConversationParticipants(conversation) {
+      const op = this.getOtherParticipant(conversation)
+      if (op) {
+        return op.givenName + ' ' + op.familyName
       }
       return 'not found'
     },
     getIdentityViaConversation(conversation) {
-      const res = conversation.participants.filter(
-        user => user.managedIdentity !== this.myId
-      )[0]
-      if (res) {
-        return res.managedIdentity
+      const op = this.getOtherParticipant(conversation)
+      if (op) {
+        return op.managedIdentity
       }
       return conversation.sender.managedIdentity
+    },
+    getSubject(conversation) {
+      const context = conversation.context
+      const ride = this.getRideFromContext(context)
+      if (ride) {
+        return `Van ${this.getFromLabelFromContext(
+          context
+        )} naar ${this.getToLabelFromContext(context)}`
+      } else {
+        return conversation.subject
+      }
     },
     getRideFromContext(context) {
       const rides = csStore.getters.getInboxRides
@@ -138,6 +145,7 @@ export default {
         name: `conversation`,
         params: {
           context: conversation.context,
+          contextText: this.getSubject(conversation),
           participants: conversation.participants.map(p => p.managedIdentity),
         },
       })

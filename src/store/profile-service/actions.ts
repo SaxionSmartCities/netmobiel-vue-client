@@ -84,10 +84,11 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
     })
     .catch(error => {
       // eslint-disable-next-line
-      console.log(error)
-      uiStore.actions.queueInfoNotification(
-        `Fout bij het ophalen van het profiel`
-      )
+      console.warn(`Error fetching public profile - ${error.response.status} ${error.response.statusText}: ${error.response.data?.message}`)
+      // Don't trouble the user with public profile that seem absent ot so
+      // uiStore.actions.queueInfoNotification(
+      //   `Fout bij het ophalen van het profiel`
+      // )
       return undefined
     })
 }
