@@ -20,7 +20,7 @@
         <v-col class="mt-2">
           <h3>Aangeboden ritten</h3>
         </v-col>
-        <v-col v-if="!itineraries || itineraries.length == 0">
+        <v-col v-if="!itineraries">
           <em>Er zijn nog geen ritten aangeboden.</em>
         </v-col>
         <v-col v-else class="py-3">
@@ -32,7 +32,7 @@
             <travel-proposal-summary
               :index="index"
               :itinerary="offer"
-              :selected="index == selectedOfferIndex"
+              :selected="index === selectedOfferIndex"
               @travel-proposal-selected="onTravelProposalSelected"
             />
           </v-row>
@@ -57,7 +57,7 @@ export default {
     TravelProposalSummary,
   },
   props: {
-    trip: { type: Object, required: true },
+    shoutOut: { type: Object, required: true },
   },
   data() {
     return {
@@ -66,9 +66,9 @@ export default {
   },
   computed: {
     itineraries() {
-      // A filtered list of itineraries (removing cancelled offers)
-      if (this.trip?.itineraries) {
-        return this.trip.itineraries.filter(
+      // A filtered list of itineraries (removing cancelled offers). Passenger itineraries comprise a single leg.
+      if (this.shoutOut?.itineraries) {
+        return this.shoutOut.itineraries.filter(
           i => i.legs[0].state !== 'CANCELLED'
         )
       }
@@ -91,7 +91,7 @@ export default {
     },
     legs() {
       if (this.selectedOffer == null) {
-        return generateShoutOutDetailSteps(this.trip)
+        return generateShoutOutDetailSteps(this.shoutOut)
       }
       return generateItineraryDetailSteps(this.selectedOffer)
     },

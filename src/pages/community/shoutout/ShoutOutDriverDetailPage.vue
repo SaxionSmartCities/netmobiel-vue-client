@@ -13,12 +13,12 @@
           <v-col><v-divider /></v-col>
           <v-col>
             <v-row dense class="d-flex flex-column">
-              <v-col v-if="hasTravelOffer">
-                <shout-out-detail-driver :ride="ride" />
+              <v-col v-if="proposedRide && proposedRide.rideRef">
+                <shout-out-detail-driver :ride="proposedRide" />
               </v-col>
               <v-col v-else>
                 <shout-out-travel-proposal
-                  :trip="trip"
+                  :shout-out="shoutOut"
                   :offer="travelOffer"
                   :editing="editDepart"
                   @proposeTravelOffer="onProposeTravelOffer"
@@ -61,7 +61,10 @@ export default {
     ShoutOutTravelProposal,
   },
   props: {
-    id: { type: String, required: true },
+    // The urn of the shout-out
+    shoutOutId: { type: String, required: true },
+    // The urn of the proposed ride, if any
+    rideId: { type: String, required: false, default: '' },
   },
   data() {
     return {
@@ -71,72 +74,73 @@ export default {
   computed: {
     ...{
       profile: () => psStore.getters.getProfile,
-      trip: () => isStore.getters.getSelectedTrip,
-      ride: () => csStore.getters.getSelectedRide,
+      // The planning results to offer to the traveller
       planningRequest: () => isStore.getters.getPlanningRequest,
       planningStatus: () => isStore.getters.getPlanningStatus,
       planResult: () => isStore.getters.getPlanningResults,
     },
+    // The shout-out of the traveller
+    shoutOut() {
+      // console.log(`has shoutOut: ${!!csStore.getters.getSelectedRide}`)
+      return isStore.getters.getSelectedTrip
+    },
+    // The ride, if any, offered to the traveller
+    proposedRide() {
+      return csStore.getters.getSelectedRide
+    },
     itinerarySummaryItems() {
       let result = []
-      const { travelTime } = this.trip
+      const travelTime =
+        this.proposedRide?.departureTime || this.shoutOut?.travelTime
       if (travelTime) {
         result.push({ label: 'Datum', value: formatDateTimeLong(travelTime) })
       }
-      result.push({ label: 'Reisduur', value: this.tripDuration })
-      const hasCoordinates =
-        this.trip.from !== undefined && this.trip.to !== undefined
-      const kilometers = hasCoordinates
-        ? getDistance(this.trip.from, this.trip.to, 1000) / 1000
-        : 'Onbekend'
-      result.push({ label: 'Afstand', value: `${kilometers} km` })
+      result.push({ label: 'Reisduur', value: this.rideDuration })
+      result.push({ label: 'Afstand', value: `${this.rideDistance} km` })
       result.push({ label: 'Reiziger', value: this.travellerName })
       return result
     },
-    tripDuration() {
-      let reisduur = 'Onbekend'
-      if (this.itinerary?.duration) {
-        const { duration } = this.itinerary
-        reisduur = `${Math.round(duration / 60)} minuten`
+    rideDuration() {
+      const shoutOutPlan =
+        this.planResult?.itineraries && this.planResult?.itineraries[0]
+      let duration = 0
+      if (this.proposedRide?.duration) {
+        duration = this.proposedRide?.duration
+      } else if (shoutOutPlan?.duration) {
+        duration = shoutOutPlan.duration
       }
-      return reisduur
+      return duration > 0 ? `${Math.round(duration / 60)} minuten` : 'Onbekend'
+    },
+    // Get the distance the driver has to ride in total
+    rideDistance() {
+      const shoutOutPlan =
+        this.planResult?.itineraries && this.planResult?.itineraries[0]
+      let distance = 'Onbekend'
+      if (this.proposedRide?.distance) {
+        distance = Math.round(this.proposedRide.distance / 1000)
+      } else if (shoutOutPlan) {
+        const summedDistance = shoutOutPlan.legs
+          .map(leg => leg.distance)
+          .reduce((sum, d) => sum + d)
+        distance = Math.round(summedDistance / 1000)
+      } else if (this.shoutOut?.from && this.shoutOut?.to) {
+        // FIXME As the bird flies is not a good estimator
+        distance =
+          getDistance(this.shoutOut.from, this.shoutOut.to, 1000) / 1000
+      }
+      return distance
     },
     travellerName() {
-      if (this.trip?.traveller) {
-        return `${this.trip.traveller.givenName} ${this.trip.traveller.familyName}`
+      if (this.shoutOut?.traveller) {
+        return `${this.shoutOut.traveller.givenName} ${this.shoutOut.traveller.familyName}`
       }
       return 'Onbekend'
-    },
-    hasTravelOffer() {
-      const itineraries = this.trip.itineraries || []
-      const fullName = psStore.getters.getUser.fullName
-      for (let itinerary of itineraries) {
-        const found = itinerary?.legs.find(l => l.driverName === fullName)
-        if (found) {
-          return found.state !== 'CANCELLED'
-        }
-      }
-      return false
-    },
-    itinerary() {
-      //TODO: ?
-      return null
     },
     travelOffer() {
       return isStore.getters.getPlanningRequest.result
     },
   },
   watch: {
-    trip(newValue) {
-      //HACK: Find the first leg in the first itinerary for the ride id.
-      for (const itinerary of newValue.itineraries) {
-        if (itinerary.legs.length > 0) {
-          const rideId = itinerary.legs[0].tripId
-          csStore.actions.fetchRide({ id: rideId })
-          break
-        }
-      }
-    },
     editDepart(newValue) {
       // Note: BeforeRouteEnter fires after mount so we will watch the editDepart value
       // here to get the updated value.
@@ -145,8 +149,8 @@ export default {
         const time = isStore.getters.getShoutoutPlanTime
         const location = {
           label: ridefrom.title,
-          latitude: ridefrom.position[0],
-          longitude: ridefrom.position[1],
+          latitude: ridefrom.location.coordinates[1],
+          longitude: ridefrom.location.coordinates[0],
         }
         this.fetchShoutOutPlan(time, location)
         gsStore.mutations.setGeoLocationPicked({
@@ -157,8 +161,15 @@ export default {
     },
   },
   mounted() {
+    isStore.mutations.setSelectedTrip({})
+    csStore.mutations.setSelectedRide({})
     isStore.mutations.clearPlanningResults()
-    isStore.actions.fetchShoutOut({ id: this.id })
+    isStore.actions.fetchShoutOut({ id: this.shoutOutId })
+    if (this.rideId && this.rideId !== 'none') {
+      csStore.actions.fetchRide({
+        id: this.rideId,
+      })
+    }
   },
   created() {
     uiStore.mutations.showBackButton()
@@ -172,7 +183,7 @@ export default {
   methods: {
     fetchShoutOutPlan(time, location) {
       let request = {
-        id: this.id,
+        shoutOutId: this.shoutOutId,
         from: location,
         travelTime: { when: time, arriving: false },
       }
@@ -187,13 +198,15 @@ export default {
         longitude: address?.location?.coordinates[0],
       }
       let request = {
-        id: this.id,
+        shoutOutId: this.shoutOutId,
         from: from,
-        travelTime: {
-          when: moment(this.trip.travelTime),
-          arriving: this.trip.useAsArrivalTime,
-        },
+        // When travelTime is omitted the backend will calculate to arrive in time at the pickup location
+        // travelTime: {
+        //   when: moment(this.shoutOut.travelTime),
+        //   arriving: this.shoutOut.useAsArrivalTime,
+        // },
       }
+      // FIXME This is actually the time the driver starts riding. That can be read from the plan, no need for the store.
       if (isStore.getters.getShoutoutPlanTime) {
         request.travelTime = {
           when: isStore.getters.getShoutoutPlanTime,
@@ -206,7 +219,7 @@ export default {
       const { selectedCarId } = this.profile?.ridePlanOptions
       if (selectedCarId) {
         const travelOffer = {
-          shoutoutPlanId: this.id,
+          shoutOutPlanId: this.shoutOutId,
           planRef: this.planResult.planRef,
           vehicleRef: `urn:nb:rs:car:${selectedCarId}`,
         }

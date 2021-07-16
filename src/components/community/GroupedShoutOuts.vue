@@ -6,11 +6,11 @@
           <h4 class="netmobiel">{{ label }}</h4>
         </v-col>
       </v-row>
-      <v-row v-for="(shoutout, index) in shoutouts" :key="index">
+      <v-row v-for="(shoutOut, index) in shoutOuts" :key="index">
         <v-col>
           <shout-out
-            :shoutout="shoutout"
-            @shoutoutSelected="onShoutoutSelected"
+            :shout-out="shoutOut"
+            @shoutOutSelected="onShoutOutSelected"
           ></shout-out>
         </v-col>
       </v-row>
@@ -26,12 +26,12 @@ export default {
   components: { ShoutOut },
   props: {
     label: { type: String, required: true },
-    shoutouts: { type: Array, required: true, default: () => [] },
+    shoutOuts: { type: Array, required: true, default: () => [] },
+    proposedRides: { type: Array, required: false, default: () => [] },
   },
   methods: {
-    onShoutoutSelected(selected) {
-      const { id, isUserTraveller } = selected
-      this.$emit('shoutoutSelected', { id, isUserTraveller })
+    onShoutOutSelected(selected) {
+      this.$emit('shoutOutSelected', selected)
     },
   },
 }

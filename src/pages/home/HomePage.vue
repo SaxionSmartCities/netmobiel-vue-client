@@ -199,7 +199,7 @@ export default {
     onRideSelected(id) {
       this.$router.push({
         name: 'rideDetailPage',
-        params: { id: String(id) },
+        params: { rideId: id },
       })
     },
     routeToMode() {

@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col class="py-0">
-      <v-row v-if="shoutouts.length == 0">
+      <v-row v-if="shoutOuts.length === 0">
         <v-col>
           <em>{{ noItemsLabel }}</em>
         </v-col>
@@ -10,8 +10,8 @@
         <v-col class="py-0">
           <grouped-shout-outs
             :label="formatDate(group)"
-            :shoutouts="groupedShoutOuts[group]"
-            @shoutoutSelected="onShoutOutSelected"
+            :shout-outs="groupedShoutOuts[group]"
+            @shoutOutSelected="onShoutOutSelected"
           />
         </v-col>
       </v-row>
@@ -27,19 +27,14 @@ export default {
   name: 'ShoutOutList',
   components: { GroupedShoutOuts },
   props: {
-    shoutouts: { type: Array, required: true, default: () => [] },
+    shoutOuts: { type: Array, required: true, default: () => [] },
     shouldGroupItems: { type: Boolean, default: true },
     noItemsLabel: { type: String, required: true },
   },
   computed: {
     groupedShoutOuts() {
-      return this.groupShoutOuts(this.shoutouts)
-    },
-  },
-  methods: {
-    groupShoutOuts(shoutouts) {
       let groupedShoutOuts = {}
-      for (const s of this.shoutouts) {
+      for (const s of this.shoutOuts) {
         const date = moment(s.travelTime).format('YYYYMMDD')
         if (!groupedShoutOuts[date]) {
           groupedShoutOuts[date] = []
@@ -48,9 +43,10 @@ export default {
       }
       return groupedShoutOuts
     },
+  },
+  methods: {
     onShoutOutSelected(selected) {
-      const { id, isUserTraveller } = selected
-      this.$emit('shoutoutSelected', { id, isUserTraveller })
+      this.$emit('shoutOutSelected', selected)
     },
     formatDate(date) {
       return date

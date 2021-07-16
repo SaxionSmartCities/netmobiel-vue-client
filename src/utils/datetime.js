@@ -16,5 +16,5 @@ export function formatDatePickerFromInput(date) {
 export function formatDateTimeLong(date) {
   return moment(date)
     .locale('nl')
-    .format('dddd DD-MM-YYYY')
+    .format('dddd DD-MMM-YYYY')
 }

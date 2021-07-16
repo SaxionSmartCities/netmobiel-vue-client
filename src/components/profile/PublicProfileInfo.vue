@@ -13,8 +13,10 @@
           <span> {{ username }}</span>
           <span class="caption">{{ address }}</span>
         </div>
-        <div class="d-flex flex-column mt-3">
-          <span>{{ age }}</span>
+      </v-row>
+      <v-row>
+        <div class="d-flex flex-column shrink">
+          <span>Leeftijd: {{ age }}</span>
           <span>Houdt van: {{ interests }}</span>
         </div>
       </v-row>
@@ -48,13 +50,11 @@ export default {
       return this.profile?.address?.locality || 'Onbekend adres'
     },
     age() {
-      return this.profile?.age
-        ? `Leeftijd: ${this.profile.age} jaar`
-        : 'Leeftijd onbekend'
+      return this.profile?.age ? `${this.profile.age} jaar` : 'Onbekend'
     },
     interests() {
       const interests = this.profile?.interests || []
-      return interests.length > 0 ? interests.join(', ') : 'Geen interesses'
+      return interests.length > 0 ? interests.join(', ') : '---'
     },
   },
 }
