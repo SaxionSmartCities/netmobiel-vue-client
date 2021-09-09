@@ -90,17 +90,18 @@ export default {
   methods: {
     initialize() {
       const { searchPreferences } = psStore.getters.getProfile
-      const { from, to } = gsStore.getters.getPickedLocation
+      const fromPlace = gsStore.getters.getPickedLocations.get('from')?.place
+      const toPlace = gsStore.getters.getPickedLocations.get('to')?.place
       const { travelTime } = this.searchCriteria
       let newCriteria = {
         ...this.searchCriteria,
         preferences: searchPreferences,
       }
-      if (from?.location) {
-        newCriteria.from = geoPlaceToCriteria(from)
+      if (fromPlace?.location) {
+        newCriteria.from = geoPlaceToCriteria(fromPlace)
       }
-      if (to?.location) {
-        newCriteria.to = geoPlaceToCriteria(to)
+      if (toPlace?.location) {
+        newCriteria.to = geoPlaceToCriteria(toPlace)
       }
       if (!travelTime) {
         // Set the default date and time to today and the next whole hour.

@@ -9,16 +9,16 @@ export const buildGetters = (
     return state.geocoder.suggestions
   }, 'getGeocoderSuggestions')
 
-  const getPickedLocation = gsBuilder.read((state: GeoCoderState) => {
+  const getPickedLocations = gsBuilder.read((state: GeoCoderState) => {
     return state.geocoder.pickedLocations
-  }, 'getPickedLocation')
+  }, 'getPickedLocations')
 
   return {
     get getGeocoderSuggestions() {
       return getGeocoderSuggestions()
     },
-    get getPickedLocation() {
-      return getPickedLocation()
+    get getPickedLocations() {
+      return getPickedLocations()
     },
   }
 }

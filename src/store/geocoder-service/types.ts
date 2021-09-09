@@ -2,24 +2,20 @@ import { Place } from '../profile-service/types'
 
 export class GeoCoderState {
   geocoder: GeoCoder = {
-    query: '',
-    pickedLocations: {
-      home: null,
-      from: null,
-      to: null,
-    },
+    pickedLocations: new Map(),
     suggestions: [],
   }
 }
 
 export interface GeoCoder {
-  query: string
-  pickedLocations: {
-    home: Place | null
-    from: Place | null
-    to: Place | null
-  }
+  pickedLocations: Map<string, PickedLocation | undefined>
   suggestions: GeoCoderSuggestion[]
+}
+
+export interface PickedLocation {
+  query: string
+  field: string
+  place: Place
 }
 
 export interface GeoLocation {
@@ -51,4 +47,10 @@ export interface GeoCoderSuggestion {
 export interface Range {
   start: number
   end: number
+}
+
+export interface GeoCoderRequest {
+  query: string
+  radius?: number
+  center?: GeoLocation
 }
