@@ -148,7 +148,7 @@ function submitRide(context: ActionContext, payload: any) {
 
 function updateRide(context: ActionContext, payload: any) {
   const { ride } = payload
-  const URL = `${RIDESHARE_BASE_URL}/rides/${ride.id}`
+  const URL = `${RIDESHARE_BASE_URL}/rides/${ride.rideRef}`
   const params: any = {}
   payload.scope && (params['scope'] = payload.scope)
 
@@ -159,7 +159,15 @@ function updateRide(context: ActionContext, payload: any) {
     })
     .then(function(resp) {
       // eslint-disable-next-line
-      console.log(resp)
+      uiStore.actions.queueInfoNotification('Uw rit is gewijzigd.')
+      fetchRide(context, { id: ride.rideRef })
+    })
+    .catch(function(error) {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het wijzigen van uw rit.'
+      )
     })
 }
 
