@@ -7,7 +7,7 @@
         </v-col>
       </v-row>
       <v-row
-        v-for="(leg, index) in generateSteps()"
+        v-for="(leg, index) in generateSteps"
         :key="index"
         class="mx-1 py-0"
       >
@@ -30,8 +30,15 @@
         <v-card-text>
           <p>
             Weet u zeker dat u uw aanbod wilt intrekken? Indien u uw aanbod
-            intrekt zullen we de passagier op de hoogte brengen.
+            intrekt zullen we de passagier op de hoogte brengen. Geef eventueel
+            in een persoonlijke boodschap aan waarom u uw aanbod intrekt.
           </p>
+          <v-textarea
+            outlined
+            name="input-7-4"
+            label="Reden voor intrekking"
+            :value="cancelReason"
+          ></v-textarea>
         </v-card-text>
         <v-card-actions>
           <v-btn text color="primary" @click="deleteRide()">
@@ -64,6 +71,7 @@ export default {
   data() {
     return {
       warningDialog: false,
+      cancelReason: '',
       options: [
         {
           icon: 'fa-times-circle',
@@ -73,10 +81,16 @@ export default {
       ],
     }
   },
-  methods: {
+  computed: {
     generateSteps() {
-      return generateShoutOutDetailSteps(undefined, this.ride)
+      let steps = []
+      if (this.ride?.rideRef) {
+        steps = generateShoutOutDetailSteps(undefined, this.ride, true)
+      }
+      return steps
     },
+  },
+  methods: {
     onTripCancelled() {
       this.warningDialog = true
     },

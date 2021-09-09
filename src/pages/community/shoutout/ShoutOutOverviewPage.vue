@@ -36,7 +36,7 @@
           </v-col>
         </v-row>
         <shout-out-list
-          :shout-outs="shoutOuts"
+          :shout-outs="communityShoutOuts"
           no-items-label="Er zijn op dit moment geen oproepen uit de buurt."
           @shoutOutSelected="onShoutOutSelected"
         />
@@ -59,7 +59,7 @@ import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane'
 import ShoutOutList from '@/components/community/ShoutOutList'
 import TabBar from '../../../components/common/TabBar'
-import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
+import { beforeRouteEnter, beforeRouteLeave } from '@/utils/navigation.js'
 import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
@@ -114,7 +114,7 @@ export default {
     myShoutOuts() {
       return isStore.getters.getMyShoutOuts
     },
-    shoutOuts() {
+    communityShoutOuts() {
       return isStore.getters.getShoutOuts
     },
   },
@@ -126,7 +126,6 @@ export default {
   }),
   beforeRouteLeave: beforeRouteLeave({
     selectedTab: number => number || 0,
-    editDepart: editing => editing || false,
   }),
   mounted() {
     csStore.mutations.setProposedRides([])

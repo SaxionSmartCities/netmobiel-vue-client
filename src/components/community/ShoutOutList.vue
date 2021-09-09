@@ -32,6 +32,7 @@ export default {
     noItemsLabel: { type: String, required: true },
   },
   computed: {
+    // Group the shout-outs by date
     groupedShoutOuts() {
       let groupedShoutOuts = {}
       for (const s of this.shoutOuts) {

@@ -5,12 +5,8 @@
         <ride-details :ride="ride" class="mb-4" />
       </v-col>
     </v-row>
-    <v-row
-      v-for="(leg, index) in generateSteps()"
-      :key="index"
-      class="mx-3 py-0"
-    >
-      <itinerary-leg :leg="leg" />
+    <v-row v-for="(leg, index) in generateSteps" :key="index" class="mx-3 py-0">
+      <itinerary-leg :leg="leg" :step="index" />
     </v-row>
     <v-row v-if="numBookings > 0">
       <v-col class="mx-1">
@@ -43,9 +39,11 @@
         </v-card-title>
         <v-card-text v-if="numBookings > 0">
           <p>
-            Op dit moment heeft uw rit
-            {{ numBookings }} boekingen, wilt u uw passagier(s) een reden geven
-            waarom u de rit annuleert.
+            Uw rit heeft
+            {{ numBookings }}
+            {{ confirmedBookings.length === 0 ? 'voorgestelde' : '' }}
+            boeking(en), meldt met een persoonlijke boodschap aan uw
+            passagier(s) waarom u de rit annuleert.
           </p>
           <v-textarea
             outlined
@@ -60,7 +58,7 @@
           </p>
         </v-card-text>
         <v-card-actions>
-          <v-btn text color="primary" @click="deleteTrip()">
+          <v-btn text color="primary" @click="deleteRide()">
             Ja
           </v-btn>
 
@@ -144,7 +142,7 @@ export default {
           )
     },
     passengersInBookings() {
-      return this.confirmedBookings.map(booking => {
+      return this.activeBookings.map(booking => {
         return {
           name: `${booking.passenger.givenName} ${booking.passenger.familyName}`,
           id: booking.passenger.managedIdentity,
@@ -159,18 +157,28 @@ export default {
       return csStore.getters.getSelectedRide
     },
     numBookings() {
-      return this.confirmedBookings.length
+      return this.activeBookings.length
+    },
+    generateSteps() {
+      let steps = []
+      if (this.ride?.rideRef) {
+        steps = generateRideItineraryDetailSteps(this.ride)
+      }
+      return steps
     },
     rideOptions() {
       let options = []
       const { state } = this.ride
       switch (state) {
         case 'SCHEDULED':
-          options.push({
-            icon: 'fa-pencil-alt',
-            label: 'Wijzig deze rit',
-            callback: this.onRideEdit,
-          })
+          // A ride with a proposed or confirmed booking cannot be modified right now
+          if (this.activeBookings === 0) {
+            options.push({
+              icon: 'fa-pencil-alt',
+              label: 'Wijzig deze rit',
+              callback: this.onRideEdit,
+            })
+          }
           options.push({
             icon: 'fa-times-circle',
             label: 'Annuleer deze rit',
@@ -204,10 +212,6 @@ export default {
             .calendar()
         : '- - : - -'
     },
-    generateSteps() {
-      const { ride } = this
-      return generateRideItineraryDetailSteps(ride)
-    },
     onLegSelected(leg) {
       this.selectedLeg = leg
     },
@@ -217,7 +221,7 @@ export default {
     onRideCancelled() {
       this.warningDialog = true
     },
-    deleteTrip() {
+    deleteRide() {
       this.warningDialog = false
       csStore.actions.deleteRide({
         id: this.rideId,

@@ -45,7 +45,7 @@ import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vu
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
 import ShoutOutDetailPassenger from '@/components/community/ShoutOutDetailPassenger.vue'
 import ShoutOutCancelDialog from '@/components/dialogs/ShoutoutCancelDialog.vue'
-import { formatDateTimeLong } from '@/utils/datetime.js'
+import { formatDateTimeLongNoYear } from '@/utils/datetime.js'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as gsStore from '@/store/geocoder-service'
@@ -88,7 +88,7 @@ export default {
       return psStore.getters.getProfile
     },
     shoutOut() {
-      return isStore.getters.getSelectedTrip
+      return isStore.getters.getSelectedTripPlan
     },
     // The itinerary of the new shout-out
     itinerary() {
@@ -102,23 +102,33 @@ export default {
     },
     itinerarySummaryItems() {
       let result = []
-      const { travelTime } = this.shoutOut
-      if (travelTime) {
-        result.push({ label: 'Datum', value: formatDateTimeLong(travelTime) })
-      }
+      const travelTime = this.shoutOut.travelTime
+      result.push({
+        label: 'Datum',
+        value: formatDateTimeLongNoYear(this.shoutOut.travelTime),
+      })
+      let durationSecs
       if (this.itinerary?.duration) {
-        const { duration } = this.itinerary
-        const reisduur = `${Math.round(duration / 60)} minuten`
-        result.push({ label: 'Reisduur', value: reisduur })
-      } else {
-        result.push({ label: 'Reisduur', value: 'Onbekend' })
+        durationSecs = this.itinerary.duration
+      } else if (this.shoutOut?.referenceDuration) {
+        durationSecs = this.shoutOut?.referenceDuration
       }
-      const hasCoordinates =
-        this.shoutOut.from !== undefined && this.shoutOut.to !== undefined
-      const kilometers = hasCoordinates
-        ? getDistance(this.shoutOut.from, this.shoutOut.to, 1000) / 1000
-        : 'Onbekend'
-      result.push({ label: 'Afstand', value: `${kilometers} km` })
+      if (durationSecs) {
+        result.push({
+          label: 'Reisduur',
+          value: `${Math.round(durationSecs / 60)} minuten`,
+        })
+      }
+      let distanceMeters
+      if (this.shoutOut.referenceDistance) {
+        distanceMeters = this.shoutOut.referenceDistance
+      }
+      if (distanceMeters) {
+        result.push({
+          label: 'Afstand',
+          value: `${Math.round(distanceMeters / 1000)} km`,
+        })
+      }
       return result
     },
   },
