@@ -90,7 +90,7 @@ function createShoutOutTripPlan(
   const URL = `${PLANNER_BASE_URL}/plans`
   let instance = axios.create()
   addInterceptors(instance)
-  instance
+  return instance
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
@@ -102,6 +102,9 @@ function createShoutOutTripPlan(
         let message = response.data.message
         uiStore.actions.queueErrorNotification(message)
       }
+      return `urn:nb:pn:tripplan:${util.getCreatedObjectIdFromResponse(
+        response
+      )}`
     })
     .catch(error => {
       // eslint-disable-next-line
@@ -170,7 +173,7 @@ function fetchMyShoutOutTripPlans(
 // Cancel a (shout-out) trip plan. A regular plan cannot be cancelled because it is already closed.
 function cancelTripPlan(context: ActionContext, { tripPlanId }: any) {
   const URL = `${PLANNER_BASE_URL}/plans/${tripPlanId}`
-  axios
+  return axios
     .delete(URL, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
@@ -457,12 +460,24 @@ function fetchShoutOut(context: ActionContext, { id }: any) {
 
 function fetchShoutOuts(
   context: ActionContext,
-  { latitude, longitude, maxResults }: any
+  { location, depArrRadius, travelRadius, maxResults }: any
 ) {
+  let driverLocation = location
+  let theDepArrRadius = depArrRadius
+  let theTravelRadius = travelRadius
+  if (!driverLocation) {
+    driverLocation = constants.GEOLOCATION_CENTER_NL
+    theDepArrRadius = constants.shoutOutDepArrRadiusWhole_NL
+  }
+  if (!theDepArrRadius) {
+    theDepArrRadius = constants.shoutOutDepArrRadiusNearby
+    theTravelRadius = constants.shoutOutTravelRadius
+  }
   const params = {
     maxResults: maxResults,
-    location: `${latitude},${longitude}`,
-    depArrRadius: constants.defaultShoutOutRadius,
+    location: `${driverLocation.latitude},${driverLocation.longitude}`,
+    depArrRadius: theDepArrRadius,
+    travelRadius: theTravelRadius,
   }
   axios
     .get(`${PLANNER_BASE_URL}/shout-outs`, {
@@ -478,6 +493,9 @@ function fetchShoutOuts(
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van de oproepen'
+      )
     })
 }
 
@@ -523,7 +541,7 @@ function addShoutOutTravelOffer(
 ) {
   let payload = { planRef, vehicleRef, driverRef }
   const URL = `${PLANNER_BASE_URL}/shout-outs/${shoutOutPlanId}`
-  axios
+  return axios
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
