@@ -69,7 +69,7 @@ import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
 // map category to Material icon name (needs more work...)
 // show at most 8 suitable suggestions
 import { throttle } from 'lodash'
-import { geoSuggestionToPlace } from '@/utils/Utils'
+import { geoPlaceToCriteria, geoSuggestionToPlace } from '@/utils/Utils'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'

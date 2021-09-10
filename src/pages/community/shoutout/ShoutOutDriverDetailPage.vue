@@ -218,13 +218,9 @@ export default {
       }
     }
     const fromPlace = gsStore.getters.getPickedLocations.get('from')?.place
-    this.searchCriteria.from = fromPlace?.location
-      ? geoPlaceToCriteria(fromPlace)
-      : undefined
+    this.searchCriteria.from = geoPlaceToCriteria(fromPlace)
     const toPlace = gsStore.getters.getPickedLocations.get('to')?.place
-    this.searchCriteria.to = toPlace?.location
-      ? geoPlaceToCriteria(toPlace)
-      : undefined
+    this.searchCriteria.to = geoPlaceToCriteria(toPlace)
     // console.log(
     //   `SearchCriteria: From: ${this.searchCriteria.from?.label} To: ${this.searchCriteria.to?.label} Travel time: ${this.searchCriteria.travelTime?.when} ${this.searchCriteria.travelTime?.arriving}`
     // )

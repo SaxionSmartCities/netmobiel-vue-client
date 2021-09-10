@@ -31,6 +31,9 @@ module.exports = {
     return place
   },
   geoPlaceToCriteria: function(place) {
+    if (!place?.location?.coordinates) {
+      return undefined
+    }
     return {
       label: place.title,
       latitude: place.location.coordinates[1],
@@ -42,6 +45,9 @@ module.exports = {
     return absoluteUrlRegEx.test(url)
   },
   coordinatesToGeoLocation: function(location) {
+    if (!location?.coordinates) {
+      return undefined
+    }
     return {
       latitude: location.coordinates[1],
       longitude: location.coordinates[0],
