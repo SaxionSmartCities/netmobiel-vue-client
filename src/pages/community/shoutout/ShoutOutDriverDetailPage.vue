@@ -4,10 +4,10 @@
       <v-col class="py-0">
         <v-row dense class="d-flex flex-column">
           <v-col>
-            <h1 v-if="rideId">
-              Oproep invulling
+            <h1 v-if="isProposedRideView">
+              Oproep voorstel
             </h1>
-            <h1 v-else>Oproep invullen</h1>
+            <h1 v-else>Oproep invulling</h1>
           </v-col>
           <v-col><v-divider /></v-col>
           <v-col class="py-0">
@@ -16,7 +16,7 @@
           <v-col><v-divider /></v-col>
           <v-col>
             <v-row dense class="d-flex flex-column">
-              <v-col v-if="rideId">
+              <v-col v-if="isProposedRideView">
                 <shout-out-detail-driver :ride="proposedRide" />
               </v-col>
               <v-col v-else>
@@ -101,8 +101,8 @@ export default {
     proposedRide() {
       return csStore.getters.getSelectedRide
     },
-    isProposalView() {
-      return this.rideId && this.rideId !== 'none'
+    isProposedRideView() {
+      return this.rideId !== 'none'
     },
     itinerarySummaryItems() {
       let result = []
@@ -173,6 +173,9 @@ export default {
     travelOffer() {
       return isStore.getters.getPlanningRequest.tripPlan
     },
+    selectedCar() {
+      return csStore.getters.getSelectedCar
+    },
   },
   watch: {
     shoutOut(newValue, oldValue) {
@@ -180,7 +183,7 @@ export default {
       //   `shoutOut: old = ${oldValue?.planRef}, new = ${newValue?.planRef}`
       // )
       // Do not just simply check the truthiness of the object (if (newValue) { ....}), that does not work with observed values.
-      if (newValue?.planRef && !this.rideId) {
+      if (newValue?.planRef && !this.isProposedRideView) {
         // Fetch the default plan: Driver and passenger same plan
         // But only when there is no rideId, because then we have already made a proposal.
         this.fetchShoutOutPlan()
@@ -204,10 +207,15 @@ export default {
     csStore.mutations.setSelectedRide({})
     isStore.mutations.clearPlanningResults()
     isStore.actions.fetchShoutOut({ id: this.shoutOutId })
-    if (this.isProposalView) {
+    if (this.isProposedRideView) {
       csStore.actions.fetchRide({
         id: this.rideId,
       })
+    } else {
+      const { selectedCarId } = this.profile?.ridePlanOptions
+      if (selectedCarId) {
+        csStore.actions.fetchCar({ id: selectedCarId })
+      }
     }
     const fromPlace = gsStore.getters.getPickedLocations.get('from')?.place
     this.searchCriteria.from = fromPlace?.location
@@ -229,24 +237,19 @@ export default {
       isStore.actions.planShoutOutSolution(this.searchCriteria)
     },
     onConfirmTravelOffer() {
-      // console.log(`onConfirmTravelOffer`)
-      const { selectedCarId } = this.profile?.ridePlanOptions
-      if (selectedCarId) {
+      if (!this.selectedCar?.carRef) {
+        uiStore.actions.queueErrorNotification(
+          'Voer eerst een auto in voordat je een rit gaat aanbieden.'
+        )
+      } else {
         const travelOffer = {
           shoutOutPlanId: this.shoutOutId,
           planRef: this.planResult.planRef,
-          vehicleRef: `urn:nb:rs:car:${selectedCarId}`,
+          vehicleRef: this.selectedCar.carRef,
         }
-        isStore.actions.addShoutOutTravelOffer(travelOffer)
-        //TODO: Router to proper page after submitting a ride.
-        // this.$router.go(-1)
-      } else {
-        //TODO: error handling.
-        // eslint-disable-next-line
-        console.log('No default car!')
-        uiStore.actions.queueErrorNotification(
-          'Voer eerste een auto in voordat je een rit gaat aanbieden.'
-        )
+        isStore.actions.addShoutOutTravelOffer(travelOffer).then(() => {
+          this.$router.push({ name: 'shoutOuts' })
+        })
       }
     },
     onDepartureLocationReset() {
