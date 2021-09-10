@@ -41,7 +41,7 @@ export class ItineraryState {
 }
 
 export interface Location {
-  label: string
+  label?: string
   latitude: number
   longitude: number
 }
