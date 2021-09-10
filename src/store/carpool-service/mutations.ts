@@ -27,6 +27,9 @@ function setAvailableCars(state: CarpoolState, payload: Car[]) {
   state.cars = payload
 }
 
+function setSelectedCar(state: CarpoolState, payload: Car) {
+  state.selectedCar = payload
+}
 function setPlannedRidesCount(state: CarpoolState, payload: number) {
   state.plannedRidesCount = payload
 }
@@ -78,6 +81,7 @@ export const buildMutations = (
     setSearchResult: csBuilder.commit(setSearchResult),
     clearSearchResult: csBuilder.commit(clearSearchResult),
     setAvailableCars: csBuilder.commit(setAvailableCars),
+    setSelectedCar: csBuilder.commit(setSelectedCar),
     setPlannedRidesCount: csBuilder.commit(setPlannedRidesCount),
     saveRides: csBuilder.commit(saveRides),
     savePastRides: csBuilder.commit(savePastRides),
