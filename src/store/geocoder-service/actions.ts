@@ -6,27 +6,25 @@ import { GeoCoderRequest, GeoCoderState } from './types'
 import { RootState } from '@/store/Rootstate'
 import { mutations } from '@/store/geocoder-service/index'
 import * as uiStore from '@/store/ui'
+import constants from '@/constants/constants'
 
 type ActionContext = BareActionContext<GeoCoderState, RootState>
 
 const { GEOCODE_BASE_URL, GRAVITEE_GEOCODE_SERVICE_API_KEY } = config
 const { generateHeaders } = util
-// Geographic center of the Netherlands (near Lunteren)
-const CENTER_NL = '52.063045,5.349972'
-// Default radius in meter
-const DEFAULT_RADIUS = 150000
 
 async function fetchGeocoderSuggestions(
   context: ActionContext,
   { query, center, radius }: GeoCoderRequest
 ) {
   try {
+    const theCenter = center ? center : constants.GEOLOCATION_CENTER_NL
     const resp = await axios.get(`${GEOCODE_BASE_URL}/suggestions`, {
       params: {
         query,
         details: true,
-        radius: radius || DEFAULT_RADIUS,
-        center: center ? `${center.latitude},${center.longitude}` : CENTER_NL,
+        radius: radius || constants.DEFAULT_GEOCODER_RADIUS,
+        center: `${theCenter.latitude},${theCenter.longitude}`,
       },
       headers: generateHeaders(GRAVITEE_GEOCODE_SERVICE_API_KEY),
     })
