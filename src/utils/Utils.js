@@ -41,4 +41,16 @@ module.exports = {
     const absoluteUrlRegEx = new RegExp('^(?:[a-z]+:)?//', 'i')
     return absoluteUrlRegEx.test(url)
   },
+  coordinatesToGeoLocation: function(location) {
+    return {
+      latitude: location.coordinates[1],
+      longitude: location.coordinates[0],
+    }
+  },
+  getCreatedObjectIdFromResponse: function(response) {
+    // if the response has status 201, the location header defines the api url to
+    // fetch the object. Extract the object id.
+    const loc = response.headers.location
+    return loc.substring(loc.lastIndexOf('/') + 1)
+  },
 }
