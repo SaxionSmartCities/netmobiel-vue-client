@@ -96,11 +96,13 @@ export default {
     },
     deleteRide() {
       this.warningDialog = false
-      csStore.actions.deleteRide({
-        id: this.ride.rideRef,
-        cancelReason: this.cancelReason,
-      })
-      this.$router.go(-1)
+      csStore.actions
+        .deleteRide({
+          id: this.ride.rideRef,
+          reason: this.cancelReason,
+          scope: 'this',
+        })
+        .then(() => this.$router.go(-1))
     },
   },
 }
