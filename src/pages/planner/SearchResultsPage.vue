@@ -43,21 +43,18 @@
       </v-col>
       <v-col v-else>
         <v-row justify="space-between">
-          <v-col v-if="planResult.itineraries.length == 0" my-4>
+          <v-col v-if="!sortedItineraries" my-4>
             Helaas, er zijn geen ritten gevonden!
           </v-col>
           <v-col v-else>
             <section
-              v-for="(date, index) in getAllDifferentDays(sortedItineraries())"
+              v-for="(date, index) in getAllDifferentDays"
               :key="index"
               class="px-0"
             >
               <h4 class="netmobiel py-1">{{ formatToCategoryDate(date) }}</h4>
               <v-col
-                v-for="(itinerary, indx) in getItinerariesForThatDay(
-                  sortedItineraries(),
-                  date
-                )"
+                v-for="(itinerary, indx) in getItinerariesForThatDay(date)"
                 :key="indx"
                 class="px-0 py-1"
               >
@@ -138,7 +135,6 @@ export default {
         { title: 'Snelste', value: 'fastest' },
         { title: 'Chronologisch', value: 'chronologically' },
       ],
-      shoutout: {},
     }
   },
   computed: {
@@ -151,7 +147,7 @@ export default {
     planRequest() {
       return isStore.getters.getPlanningRequest
     },
-    planResult() {
+    tripPlan() {
       return isStore.getters.getPlanningResults
     },
     searchPreferences() {
@@ -163,24 +159,34 @@ export default {
     localTripId() {
       return Number.parseInt(this.tripId)
     },
-    networkRequest() {
-      return uiStore.getters.getNetworkRequest
+    sortedItineraries() {
+      const list = Object.assign([], this.tripPlan?.itineraries)
+      if (this.selectedSortModus.value === 'fastest') {
+        list.sort((a, b) => {
+          return new Date(a.duration) - new Date(b.duration)
+        })
+      } else {
+        list.sort((a, b) => {
+          return new Date(a.departureTime) - new Date(b.departureTime)
+        })
+      }
+      return list
+    },
+    getAllDifferentDays() {
+      let differentDays = []
+      this.sortedItineraries.forEach(it => {
+        const calendarDate = moment(it.arrivalTime).format('LL')
+        if (!differentDays.includes(calendarDate)) {
+          differentDays.push(calendarDate)
+        }
+      })
+      return differentDays
     },
   },
   watch: {
     planningStatus(newValue) {
       if (newValue.status === 'SUCCESS') {
         isStore.mutations.clearPlanningRequest()
-      }
-    },
-    networkRequest(newValue) {
-      if (newValue.submitStatus.status === 'SUCCESS') {
-        uiStore.mutations.resetNetworkRequest()
-        const shoutout = this.shoutout
-        this.$router.push({
-          name: 'shoutoutSubmittedPage',
-          params: { shoutout },
-        })
       }
     },
   },
@@ -212,18 +218,8 @@ export default {
         preferences: this.searchPreferences,
       })
     },
-    getAllDifferentDays(itineraries) {
-      let differentDays = []
-      itineraries.forEach(it => {
-        const calendarDate = moment(it.arrivalTime).format('LL')
-        if (!differentDays.includes(calendarDate)) {
-          differentDays.push(calendarDate)
-        }
-      })
-      return differentDays
-    },
-    getItinerariesForThatDay(itineraries, sectionDay) {
-      return itineraries.filter(it => {
+    getItinerariesForThatDay(sectionDay) {
+      return this.sortedItineraries.filter(it => {
         const dateToCheck = moment(it.arrivalTime.valueOf())
         return (
           moment(sectionDay, 'LL').isSame(dateToCheck, 'day') &&
@@ -236,26 +232,13 @@ export default {
         .locale('NL')
         .format('dddd DD MMMM')
     },
-    sortedItineraries() {
-      const list = Object.assign([], this.planResult.itineraries)
-      if (this.selectedSortModus.value === 'fastest') {
-        list.sort((a, b) => {
-          return new Date(a.duration) - new Date(b.duration)
-        })
-      } else {
-        list.sort((a, b) => {
-          return new Date(a.departureTime) - new Date(b.departureTime)
-        })
-      }
-      return list
-    },
-    onTripSelected(selected) {
+    onTripSelected(selectedTravelCard) {
       let selectedTrip = {
-        from: this.planResult.from,
-        to: this.planResult.to,
-        nrSeats: this.planResult.nrSeats,
-        itineraryRef: selected.itinerary.itineraryRef,
-        itinerary: selected.itinerary,
+        from: this.tripPlan.from,
+        to: this.tripPlan.to,
+        nrSeats: this.tripPlan.nrSeats,
+        itineraryRef: selectedTravelCard.itinerary.itineraryRef,
+        itinerary: selectedTravelCard.itinerary,
       }
       isStore.mutations.setSelectedTrip(selectedTrip)
       this.$router.push({
@@ -264,16 +247,17 @@ export default {
       })
     },
     createShoutOut() {
-      isStore.actions.createShoutOutTripPlan(this.searchCriteria)
-      const { firstName, lastName, id } = psStore.getters.getProfile
-      const { from, to, travelTime } = this.searchCriteria
-      this.shoutout = {
-        from,
-        to,
-        travelTime: travelTime.when.format(),
-        useAsArrivalTime: travelTime.arriving,
-        traveller: { firstName, lastName, managedIdentity: id },
-      }
+      isStore.actions
+        .createShoutOutTripPlan(this.searchCriteria)
+        .then(shoutOutId => {
+          console.log(`Created shout-out, urn: ${shoutOutId}`)
+          if (shoutOutId) {
+            this.$router.push({
+              name: 'shoutOutSubmittedPage',
+              params: { shoutOutId },
+            })
+          }
+        })
     },
     toDate(string) {
       return moment(string)
