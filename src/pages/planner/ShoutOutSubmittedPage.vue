@@ -13,8 +13,8 @@
     <v-row class="mb-2">
       <v-col>
         <shout-out
-          :shoutout="shoutout"
-          @shoutoutSelected="onShoutoutSelected"
+          :shout-out="shoutOut"
+          @shoutOutSelected="onShoutOutSelected"
         ></shout-out>
       </v-col>
     </v-row>
@@ -38,16 +38,31 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import ShoutOut from '@/components/community/ShoutOut'
+import * as psStore from '@/store/profile-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
-  name: 'ShoutoutSubmittedPage',
+  name: 'ShoutOutSubmittedPage',
   components: { ContentPane, ShoutOut },
   props: {
-    shoutout: { type: Object, required: true },
+    shoutOutId: { type: String, required: true },
+  },
+  computed: {
+    shoutOut() {
+      return isStore.getters.getSelectedTripPlan
+    },
+  },
+  mounted() {
+    isStore.mutations.clearPlanningResults()
+    // For a traveller a shout-out is just another trip plan.
+    isStore.actions.fetchTripPlan({ id: this.shoutOutId })
   },
   methods: {
-    onShoutoutSelected() {
-      this.$router.push('/shoutouts')
+    onShoutOutSelected() {
+      this.$router.push({
+        name: 'shoutOutPassenger',
+        params: { shoutOutId: this.shoutOutId },
+      })
     },
   },
 }

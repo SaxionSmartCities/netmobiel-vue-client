@@ -12,10 +12,7 @@
           class="shout-out-image"
           :src="myProfileImage"
         />
-        <external-user-image
-          v-else
-          :managed-identity="shoutOut.traveller.managedIdentity"
-        />
+        <external-user-image v-else :managed-identity="travellerIdentity" />
       </v-col>
       <v-col>
         <p class="font-weight-regular header mb-0">Reiziger</p>
@@ -108,11 +105,17 @@ export default {
     myProfileImage() {
       return this.profile.image
     },
+    traveller() {
+      return this.shoutOut.traveller
+    },
+    travellerIdentity() {
+      return this.traveller ? this.traveller.managedIdentity : ''
+    },
     isUserTraveller() {
-      return this.profile.id === this.shoutOut.traveller.managedIdentity
+      return this.profile.id === this.travellerIdentity
     },
     travellerName() {
-      return `${this.shoutOut.traveller.givenName} ${this.shoutOut.traveller.familyName}`
+      return `${this.traveller?.givenName} ${this.traveller?.familyName}`
     },
     cost() {
       let fare
@@ -168,12 +171,12 @@ export default {
         : 'Rit aanbieden'
     },
     offeredItineraries() {
-      return this.shoutOut.itineraries.filter(it => {
+      return this.shoutOut?.itineraries?.filter(it => {
         return !it.legs.find(leg => leg.state === 'CANCELLED')
       })
     },
     hasOffer() {
-      return !!this.proposedRide?.rideRef || this.offeredItineraries.length > 0
+      return !!this.proposedRide?.rideRef || this.offeredItineraries?.length > 0
     },
     proposedRides() {
       return csStore.getters.getProposedRides

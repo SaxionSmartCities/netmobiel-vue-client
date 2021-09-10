@@ -13,6 +13,7 @@
           <v-col><v-divider /></v-col>
           <v-col>
             <shout-out-detail-passenger
+              v-if="shoutOut && shoutOut.planRef"
               :shout-out="shoutOut"
               @travel-proposal-confirm="onTravelOfferConfirmed"
             />
@@ -98,20 +99,28 @@ export default {
       return null
     },
     itineraries() {
-      return this.planResult?.itineraries || []
+      // A filtered list of itineraries (removing cancelled offers). Passenger itineraries comprise a single leg.
+      if (this.shoutOut?.itineraries) {
+        return this.shoutOut.itineraries.filter(
+          i => i.legs[0].state !== 'CANCELLED'
+        )
+      }
+      return []
     },
     itinerarySummaryItems() {
       let result = []
-      const travelTime = this.shoutOut.travelTime
-      result.push({
-        label: 'Datum',
-        value: formatDateTimeLongNoYear(this.shoutOut.travelTime),
-      })
+      const travelTime = this.shoutOut?.travelTime
+      if (travelTime) {
+        result.push({
+          label: 'Datum',
+          value: formatDateTimeLongNoYear(this.shoutOut?.travelTime),
+        })
+      }
       let durationSecs
       if (this.itinerary?.duration) {
         durationSecs = this.itinerary.duration
-      } else if (this.shoutOut?.referenceDuration) {
-        durationSecs = this.shoutOut?.referenceDuration
+      } else if (this.shoutOut?.referenceItinerary?.duration) {
+        durationSecs = this.shoutOut?.referenceItinerary.duration
       }
       if (durationSecs) {
         result.push({
@@ -120,8 +129,10 @@ export default {
         })
       }
       let distanceMeters
-      if (this.shoutOut.referenceDistance) {
-        distanceMeters = this.shoutOut.referenceDistance
+      if (this.shoutOut?.referenceItinerary) {
+        distanceMeters = this.shoutOut.referenceItinerary.legs
+          .map(leg => leg.distance)
+          .reduce((sum, d) => sum + d)
       }
       if (distanceMeters) {
         result.push({
@@ -135,7 +146,6 @@ export default {
   mounted() {
     isStore.mutations.clearPlanningResults()
     // For a traveller a shout-out is just another trip plan.
-    // FIXME The fetched trip plan is stored as selectedTrip
     isStore.actions.fetchTripPlan({ id: this.shoutOutId })
   },
   created() {
@@ -144,6 +154,7 @@ export default {
   methods: {
     onTripEdit() {
       const { searchPreferences } = this.profile
+      let now = moment()
       let searchCriteria = {
         from: this.shoutOut.from,
         to: this.shoutOut.to,
@@ -154,6 +165,9 @@ export default {
             : moment(this.shoutOut.earliestDepartureTime),
           arriving: this.shoutOut.useAsArrivalTime,
         },
+      }
+      if (searchCriteria.travelTime.when.isBefore(now)) {
+        searchCriteria.travelTime.when = now.add(2, 'hours')
       }
       isStore.mutations.setSearchCriteria(searchCriteria)
       isStore.actions.searchTripPlan(searchCriteria)
@@ -174,8 +188,9 @@ export default {
     },
     onConfirmCancel() {
       this.cancelDialog.isVisible = false
-      isStore.actions.cancelTripPlan({ tripPlanId: this.shoutOutId })
-      this.$router.go(-1)
+      isStore.actions
+        .cancelTripPlan({ tripPlanId: this.shoutOutId })
+        .then(() => this.$router.push({ name: 'shoutOuts' }))
     },
     onCloseCancel() {
       this.cancelDialog.isVisible = false

@@ -114,7 +114,7 @@ export default {
         !this.searchCriteria.travelTime.arriving
       ) {
         dtime = this.searchCriteria.travelTime.when
-      } else if (this.offer?.itineraries[0].departureTime) {
+      } else if (this.offer?.itineraries[0]?.departureTime) {
         dtime = moment(this.offer.itineraries[0].departureTime)
       } else {
         dtime = moment(this.shoutOut.referenceItinerary.departureTime)
@@ -131,7 +131,7 @@ export default {
         this.searchCriteria.travelTime.arriving
       ) {
         atime = this.searchCriteria.travelTime.when
-      } else if (this.offer?.itineraries[0].arrivalTime) {
+      } else if (this.offer?.itineraries[0]?.arrivalTime) {
         atime = moment(this.offer.itineraries[0].arrivalTime)
       } else {
         atime = moment(this.shoutOut.referenceItinerary.arrivalTime)

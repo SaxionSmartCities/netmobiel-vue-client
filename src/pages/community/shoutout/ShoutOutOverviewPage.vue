@@ -30,14 +30,19 @@
             <h3>Community oproepen</h3>
             <p class="mt-2 mb-0">Gezochte ritten in de buurt van mijn:</p>
             <v-radio-group v-model="baseLocation" class="location" row>
-              <v-radio label="Woonplaats" value="Home" selected></v-radio>
+              <v-radio
+                label="Woonplaats"
+                value="Home"
+                :disabled="!profile.address.location"
+              ></v-radio>
               <v-radio label="Huidige locatie" value="Here" disabled></v-radio>
+              <v-radio label="Land" value="All"></v-radio>
             </v-radio-group>
           </v-col>
         </v-row>
         <shout-out-list
           :shout-outs="communityShoutOuts"
-          no-items-label="Er zijn op dit moment geen oproepen uit de buurt."
+          no-items-label="Er zijn op dit moment geen oproepen gevonden."
           @shoutOutSelected="onShoutOutSelected"
         />
       </v-col>
@@ -65,6 +70,7 @@ import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
+import { coordinatesToGeoLocation } from '@/utils/Utils'
 
 export default {
   name: 'ShoutOutOverview',
@@ -72,7 +78,7 @@ export default {
   data() {
     return {
       selectedTab: 0,
-      baseLocation: 'Home',
+      baseLocation: '',
     }
   },
   computed: {
@@ -106,6 +112,9 @@ export default {
     isDrivingPassenger() {
       return psStore.getters.getProfile.userRole === constants.PROFILE_ROLE_BOTH
     },
+    hasHomeLocation() {
+      return !!this.profile.address?.location
+    },
     /**
      * List my shout-outs. Note that my shout-out is a trip plan with all itineraries offered.
      * A driver can also fetch a shout-out, but that will never contain itineraries (for privacy).
@@ -116,6 +125,12 @@ export default {
     },
     communityShoutOuts() {
       return isStore.getters.getShoutOuts
+    },
+  },
+  watch: {
+    baseLocation(newValue, oldValue) {
+      console.log(`baseLocation: ${oldValue} --> ${newValue}`)
+      this.fetchShoutOuts()
     },
   },
   created() {
@@ -137,13 +152,8 @@ export default {
       })
     }
     if (this.isDriverOnly || this.isDrivingPassenger) {
-      const { address } = psStore.getters.getProfile
-      if (address?.location) {
-        isStore.actions.fetchShoutOuts({
-          latitude: address.location.coordinates[1],
-          longitude: address.location.coordinates[0],
-        })
-      }
+      // Initialize the base location radio
+      this.baseLocation = this.profile?.address?.location ? 'Home' : 'All'
       csStore.actions.fetchRideProposals({
         since: moment().format(),
       })
@@ -151,6 +161,13 @@ export default {
     isStore.mutations.clearPlanningRequest()
   },
   methods: {
+    fetchShoutOuts() {
+      const location =
+        this.baseLocation === 'Home'
+          ? coordinatesToGeoLocation(this.profile?.address?.location)
+          : undefined
+      isStore.actions.fetchShoutOuts({ location })
+    },
     onShoutOutSelected(selected) {
       if (selected.shoutOut.traveller.managedIdentity === this.profile.id) {
         this.$router.push({
@@ -158,7 +175,7 @@ export default {
           params: { shoutOutId: selected.shoutOut.planRef },
         })
       } else {
-        // Only a driver can see his own ride
+        // Only a driver can see his own proposed ride
         this.$router.push({
           name: 'shoutOutDriver',
           params: {
