@@ -250,7 +250,7 @@ export default {
       isStore.actions
         .createShoutOutTripPlan(this.searchCriteria)
         .then(shoutOutId => {
-          console.log(`Created shout-out, urn: ${shoutOutId}`)
+          // console.log(`Created shout-out, urn: ${shoutOutId}`)
           if (shoutOutId) {
             this.$router.push({
               name: 'shoutOutSubmittedPage',

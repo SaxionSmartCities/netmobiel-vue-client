@@ -129,7 +129,7 @@ export default {
   },
   watch: {
     baseLocation(newValue, oldValue) {
-      console.log(`baseLocation: ${oldValue} --> ${newValue}`)
+      // console.log(`baseLocation: ${oldValue} --> ${newValue}`)
       this.fetchShoutOuts()
     },
   },
