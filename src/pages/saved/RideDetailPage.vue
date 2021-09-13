@@ -46,10 +46,10 @@
             passagier(s) waarom u de rit annuleert.
           </p>
           <v-textarea
+            v-model="cancelReason"
             outlined
             name="input-7-4"
             label="Reden voor annulering"
-            :value="cancelReason"
           ></v-textarea>
         </v-card-text>
         <v-card-text v-else>
@@ -223,11 +223,12 @@ export default {
     },
     deleteRide() {
       this.warningDialog = false
-      csStore.actions.deleteRide({
-        id: this.rideId,
-        cancelReason: this.cancelReason,
-      })
-      this.$router.push('/tripsOverviewPage')
+      csStore.actions
+        .deleteRide({
+          id: this.rideId,
+          cancelReason: this.cancelReason,
+        })
+        .then(() => this.$router.push('/tripsOverviewPage'))
     },
     contactPassenger() {
       if (this.passengersInBookings.length > 1) {

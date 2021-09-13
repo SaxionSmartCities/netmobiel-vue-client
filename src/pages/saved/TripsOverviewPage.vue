@@ -257,10 +257,14 @@ export default {
     tripsSearchTime: searchtime => searchtime,
   }),
   mounted() {
-    this.fetchTrips()
-    this.fetchPastTrips()
-    this.fetchRides()
-    this.fetchPastRides()
+    if (this.isPassengerView) {
+      this.fetchTrips()
+      this.fetchPastTrips()
+    }
+    if (this.isDriverView) {
+      this.fetchRides()
+      this.fetchPastRides()
+    }
     // The logic does not seem to be right for cancelled trips
     // isStore.actions.fetchCancelledTrips()
     window.addEventListener('scroll', this.scrollHandler)
@@ -275,7 +279,7 @@ export default {
     needsReview(trip) {
       //TODO: Base this on the status for the trip.
       if (trip?.legs) {
-        return trip.legs.find(l => l.traverseMode == 'RIDESHARE')
+        return trip.legs.find(l => l.traverseMode === 'RIDESHARE')
       }
       return false
     },
@@ -287,7 +291,7 @@ export default {
       })
     },
     fetchPastTrips(offset = 0) {
-      if (offset == 0 || offset < this.getPastTripsCount) {
+      if (offset === 0 || offset < this.getPastTripsCount) {
         isStore.actions.fetchTrips({
           pastTrips: true,
           maxResults: this.maxResultsPastTrips,

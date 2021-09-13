@@ -63,6 +63,39 @@
         <itinerary-options :options="tripOptions" />
       </v-col>
     </v-row>
+    <v-dialog v-model="warningDialog">
+      <v-card>
+        <v-card-title class="headline">
+          Weet u dit zeker?
+        </v-card-title>
+        <v-card-text v-if="drivers.length > 0">
+          <p>
+            U rijdt mee met iemand, meldt met een persoonlijke boodschap aan uw
+            chaufeur waarom u de rit annuleert.
+          </p>
+          <v-textarea
+            v-model="cancelReason"
+            outlined
+            name="input-7-4"
+            label="Reden voor annulering"
+          ></v-textarea>
+        </v-card-text>
+        <v-card-text v-else>
+          <p>
+            Weet u zeker dat u deze rit wil annuleren?
+          </p>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn text color="primary" @click="deleteTrip()">
+            Ja
+          </v-btn>
+
+          <v-btn text color="primary" @click="warningDialog = false">
+            Nee
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <contact-driver-modal
       v-if="showContactDriverModal"
       :show="showContactDriverModal"
@@ -103,8 +136,10 @@ export default {
   },
   data() {
     return {
+      cancelReason: '',
       showMap: false,
       showContactDriverModal: false,
+      warningDialog: false,
     }
   },
   computed: {
@@ -251,11 +286,17 @@ export default {
       })
     },
     onTripCancelled() {
-      isStore.actions.deleteTrip({
-        tripId: this.selectedTrip.id,
-        displayWarning: true,
-      })
-      this.$router.push('/tripCancelledPage')
+      this.warningDialog = true
+    },
+    deleteTrip() {
+      this.warningDialog = false
+      isStore.actions
+        .deleteTrip({
+          tripId: this.selectedTrip.id,
+          cancelReason: this.cancelReason,
+          displayWarning: true,
+        })
+        .then(() => this.$router.push('/tripCancelledPage'))
     },
     onTripEdit() {
       const { from, to, itinerary, arrivalTimeIsPinned } = this.selectedTrip

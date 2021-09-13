@@ -323,9 +323,13 @@ function fetchTrip(context: ActionContext, payload: any) {
 function deleteTrip(context: ActionContext, payload: any) {
   const delegatorId = context.rootState.ps.user.delegatorId
   const URL = `${PLANNER_BASE_URL}/trips/${payload.tripId}`
-  axios
+  const params: any = {
+    reason: payload.cancelReason,
+  }
+  return axios
     .delete(URL, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
+      params: params,
     })
     .then(response => {
       if (response.status === 204) {
@@ -333,18 +337,11 @@ function deleteTrip(context: ActionContext, payload: any) {
         if (payload.displayWarning) {
           uiStore.actions.queueInfoNotification('Rit is succesvol geannuleerd')
         }
-        fetchTrips(context, {
-          maxResults: constants.fetchTripsMaxResults,
-          offset: 0,
-        })
       } else if (response.status === 404) {
         //requested trip could not be found
         uiStore.actions.queueErrorNotification(
           'De opgegeven rit kon niet worden gevonden.'
         )
-      } else if (response.status === 401) {
-        //The requested object does no longer exist
-        uiStore.actions.queueErrorNotification('Deze rit is al geannuleerd')
       } else {
         uiStore.actions.queueErrorNotification(response.data.message)
       }
