@@ -56,7 +56,7 @@ module.exports = {
   getCreatedObjectIdFromResponse: function(response) {
     // if the response has status 201, the location header defines the api url to
     // fetch the object. Extract the object id.
-    const loc = response.headers.location
-    return loc.substring(loc.lastIndexOf('/') + 1)
+    const loc = response.headers?.location
+    return loc ? loc.substring(loc.lastIndexOf('/') + 1) : undefined
   },
 }

@@ -95,16 +95,17 @@ function createShoutOutTripPlan(
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
     .then(response => {
+      let shoutOutId
       if (response.status == 201) {
         let message = 'Oproep naar de community is geplaatst'
         uiStore.actions.queueInfoNotification(message)
+        const id = util.getCreatedObjectIdFromResponse(response)
+        shoutOutId = id ? `urn:nb:pn:tripplan:${id}` : undefined
       } else {
         let message = response.data.message
         uiStore.actions.queueErrorNotification(message)
       }
-      return `urn:nb:pn:tripplan:${util.getCreatedObjectIdFromResponse(
-        response
-      )}`
+      return shoutOutId
     })
     .catch(error => {
       // eslint-disable-next-line
