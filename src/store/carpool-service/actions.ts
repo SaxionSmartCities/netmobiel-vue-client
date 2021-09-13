@@ -59,8 +59,6 @@ function submitCar(context: ActionContext, payload: Car) {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
     })
     .then(function(resp) {
-      // eslint-disable-next-line
-      console.log(resp)
       fetchCars(context)
     })
     .catch(function(error) {
@@ -71,6 +69,22 @@ function submitCar(context: ActionContext, payload: Car) {
           `Kenteken ${payload.licensePlate} is al geregistreerd.`
         )
       }
+    })
+}
+
+function fetchCar(context: ActionContext, payload: any) {
+  const URL = `${RIDESHARE_BASE_URL}/cars/${payload.id}`
+  return axios
+    .get(URL, {
+      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+    })
+    .then(resp => {
+      mutations.setSelectedCar(resp.data)
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      mutations.setSelectedCar({})
     })
 }
 
@@ -148,7 +162,7 @@ function submitRide(context: ActionContext, payload: any) {
 
 function updateRide(context: ActionContext, payload: any) {
   const { ride } = payload
-  const URL = `${RIDESHARE_BASE_URL}/rides/${ride.id}`
+  const URL = `${RIDESHARE_BASE_URL}/rides/${ride.rideRef}`
   const params: any = {}
   payload.scope && (params['scope'] = payload.scope)
 
@@ -159,7 +173,15 @@ function updateRide(context: ActionContext, payload: any) {
     })
     .then(function(resp) {
       // eslint-disable-next-line
-      console.log(resp)
+      uiStore.actions.queueInfoNotification('Uw rit is gewijzigd.')
+      fetchRide(context, { id: ride.rideRef })
+    })
+    .catch(function(error) {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het wijzigen van uw rit.'
+      )
     })
 }
 
@@ -248,10 +270,14 @@ function confirmRide(context: ActionContext, payload: any) {
 
 function deleteRide(context: ActionContext, payload: any) {
   const URL = `${RIDESHARE_BASE_URL}/rides/${payload.id}`
-  //TODO: Pass reason to message service.
-  axios
+  const params: any = {
+    scope: payload.scope || 'this',
+    reason: payload.cancelReason,
+  }
+  return axios
     .delete(URL, {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      params: params,
     })
     .then(function(resp) {
       if (resp.status == 204) {
@@ -353,6 +379,7 @@ export const buildActions = (
     fetchLicense: csBuilder.dispatch(fetchLicense),
     fetchCars: csBuilder.dispatch(fetchCars),
     submitCar: csBuilder.dispatch(submitCar),
+    fetchCar: csBuilder.dispatch(fetchCar),
     removeCar: csBuilder.dispatch(removeCar),
     submitRide: csBuilder.dispatch(submitRide),
     updateRide: csBuilder.dispatch(updateRide),

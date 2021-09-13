@@ -9,6 +9,10 @@ export const buildGetters = (
     return state.cars
   }, 'getAvailableCars')
 
+  const getSelectedCar = csBuilder.read((state: CarpoolState) => {
+    return state.selectedCar
+  }, 'getSelectedCar')
+
   const getRides = csBuilder.read((state: CarpoolState) => {
     return state.rides
   }, 'getRides')
@@ -44,6 +48,9 @@ export const buildGetters = (
   return {
     get getAvailableCars() {
       return getAvailableCars()
+    },
+    get getSelectedCar() {
+      return getSelectedCar()
     },
     get getRides() {
       return getRides()

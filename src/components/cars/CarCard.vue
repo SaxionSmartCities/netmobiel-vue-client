@@ -5,7 +5,7 @@
         <v-card-title justify-center>
           <span>{{ car.brand }} {{ car.model }}</span>
           <v-spacer />
-          <v-icon v-if="selectedCar == car.id">directions_car</v-icon>
+          <v-icon v-if="isSelectedCar">directions_car</v-icon>
         </v-card-title>
         <v-card-subtitle>
           <span>Kenteken: {{ car.licensePlate }}</span>
@@ -21,7 +21,7 @@
                 Verwijder
               </v-btn>
             </v-col>
-            <v-col v-if="selectedCar == car.id" align="right">
+            <v-col v-if="isSelectedCar" align="right">
               <v-btn outlined disabled rounded color="primary">
                 Geselecteerd
               </v-btn>
@@ -45,9 +45,17 @@ export default {
       required: true,
     },
     selectedCar: {
-      type: Number,
+      type: String,
       required: false,
-      default: 0,
+      default: '',
+    },
+  },
+  computed: {
+    isSelectedCar() {
+      return (
+        this.selectedCar === String(this.car.id) ||
+        this.selectedCar === this.car.carRef
+      )
     },
   },
   methods: {

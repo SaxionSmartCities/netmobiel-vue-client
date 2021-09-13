@@ -11,7 +11,7 @@
 
 <script>
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
-import { formatDateTimeLong } from '@/utils/datetime.js'
+import { formatDateTimeLongNoYear } from '@/utils/datetime.js'
 
 export default {
   name: 'RideDetails',
@@ -20,10 +20,35 @@ export default {
     ride: { type: Object, required: true },
   },
   computed: {
+    activeBookings() {
+      return this.ride.bookings?.filter(
+        booking => booking.state.toUpperCase() !== 'CANCELLED'
+      )
+    },
+    confirmedBookings() {
+      return this.ride.bookings?.filter(
+        booking => booking.state.toUpperCase() === 'CONFIRMED'
+      )
+    },
+    bookingLabel() {
+      let label = 'Geen'
+      if (this.confirmedBookings?.length > 0) {
+        label = `${this.confirmedBookings.length}`
+      } else if (this.activeBookings?.length > 0) {
+        label = `${this.activeBookings.length} (voorgesteld)`
+      }
+      return label
+    },
     items() {
       let result = []
+      if (!this.ride.rideRef) {
+        return result
+      }
       const { departureTime, duration, bookings, car, recurrence } = this.ride
-      result.push({ label: 'Datum', value: formatDateTimeLong(departureTime) })
+      result.push({
+        label: 'Datum',
+        value: formatDateTimeLongNoYear(departureTime),
+      })
       if (duration) {
         const reisduur = `${Math.round(duration / 60)} minuten`
         result.push({ label: 'Reisduur', value: reisduur })
@@ -32,10 +57,15 @@ export default {
         ? `${this.ride.car.brand} ${this.ride.car.model}`
         : 'Onbekend'
       result.push({ label: 'Auto', value: auto })
+      // result.push({
+      //   label: 'Boekingen',
+      //   value: bookings,
+      //   renderingComponent: 'BookingList',
+      // })
+      const bookingLabel = this.bookingLabel
       result.push({
         label: 'Boekingen',
-        value: bookings,
-        renderingComponent: 'BookingList',
+        value: bookingLabel,
       })
       if (recurrence) {
         result.push({

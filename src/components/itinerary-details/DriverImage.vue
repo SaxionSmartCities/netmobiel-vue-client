@@ -35,6 +35,7 @@ export default {
   },
   methods: {
     fetchDriverIdentity() {
+      // TODO should be cached somehow
       const driverId = this.leg.driverId
       if (driverId) {
         csStore.actions.fetchUser({ userRef: driverId }).then(resp => {

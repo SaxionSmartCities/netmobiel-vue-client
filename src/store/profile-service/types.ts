@@ -183,6 +183,8 @@ export interface SearchPreferences {
   maximumTransferTime: number
   luggageOptions: string[]
   allowedTravelModes: string[]
+  allowFirstLegTransfer: boolean
+  allowLastLegTransfer: boolean
 }
 
 export interface RidePlanOptions {

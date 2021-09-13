@@ -95,6 +95,12 @@ export default {
     TripDetails,
     ItineraryOptions,
   },
+  props: {
+    tripId: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       showMap: false,
@@ -195,6 +201,11 @@ export default {
   },
   created() {
     uiStore.mutations.showBackButton()
+  },
+  mounted() {
+    if (this.tripId) {
+      isStore.actions.fetchTrip({ id: this.tripId })
+    }
   },
   methods: {
     formatTime(t) {

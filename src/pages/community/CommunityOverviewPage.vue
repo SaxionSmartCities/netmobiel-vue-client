@@ -48,6 +48,7 @@ import constants from '@/constants/constants'
 import config from '@/config/config'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
+import { coordinatesToGeoLocation } from '@/utils/Utils'
 
 const CREDITS_ENABLED = config.CREDITS_ENABLED
 
@@ -66,15 +67,18 @@ export default {
     }
   },
   computed: {
+    profile() {
+      return psStore.getters.getProfile
+    },
     isPassenger() {
-      const userRole = psStore.getters.getProfile.userRole
+      const userRole = this.profile.userRole
       return (
         userRole === constants.PROFILE_ROLE_PASSENGER ||
         userRole === constants.PROFILE_ROLE_BOTH
       )
     },
     isDriver() {
-      const userRole = psStore.getters.getProfile.userRole
+      const userRole = this.profile.userRole
       return (
         userRole === constants.PROFILE_ROLE_DRIVER ||
         userRole === constants.PROFILE_ROLE_BOTH
@@ -92,18 +96,17 @@ export default {
     },
   },
   mounted() {
-    const { address, userRole } = psStore.getters.getProfile
     if (this.isPassenger) {
       // Display the count of the user's own shout-outs.
       isStore.actions.fetchMyShoutOutTripPlans({ offset: 0, maxResults: 0 })
     }
-    if (this.isDriver && address?.location) {
+    if (this.isDriver) {
       // Display the community shout-out count, but only if my address is known
-      isStore.actions.fetchShoutOuts({
-        latitude: address.location.coordinates[1],
-        longitude: address.location.coordinates[0],
-        maxResults: 0,
-      })
+      const { address } = this.profile
+      const location = address?.location
+        ? coordinatesToGeoLocation(address.location)
+        : undefined
+      isStore.actions.fetchShoutOuts({ location, maxResults: 0 })
     }
   },
 }

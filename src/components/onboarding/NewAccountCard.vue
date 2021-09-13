@@ -59,7 +59,7 @@
             ></v-checkbox>
           </v-col>
           <v-col cols="11">
-            Ik ben 16 jaar of ouder.
+            Ik ben 16 jaar of ouder of heb toestemming van een ouder of voogd.
           </v-col>
         </v-row>
         <v-row no-gutters>
@@ -71,7 +71,7 @@
               color="red"
             >
               Vul alle verplichte velden in en ga akkoord gaan met de
-              voorwaarden (alsmede de minimale leeftijd) om door te kunnen gaan.
+              voorwaarden om door te kunnen gaan.
             </v-alert>
           </v-col>
         </v-row>

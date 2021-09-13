@@ -85,32 +85,34 @@ export default {
     },
   },
   mounted() {
-    this.initialize()
+    const { searchPreferences } = psStore.getters.getProfile
+    const fromPlace = gsStore.getters.getPickedLocations.get('from')?.place
+    const toPlace = gsStore.getters.getPickedLocations.get('to')?.place
+    const { travelTime } = this.searchCriteria
+    let newCriteria = {
+      ...this.searchCriteria,
+      preferences: searchPreferences,
+      from: geoPlaceToCriteria(fromPlace),
+      to: geoPlaceToCriteria(toPlace),
+    }
+    if (!travelTime) {
+      // Set the default date and time to today and the next whole hour.
+      newCriteria.travelTime = {
+        when: this.topOfTheHour,
+        arriving: true,
+      }
+    }
+    isStore.mutations.setSearchCriteria(newCriteria)
+  },
+  beforeRouteEnter(to, from, next) {
+    // console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
+    // Clear the search location when navigating from a different page than the location lookup page
+    if (from?.name !== 'searchLocation') {
+      gsStore.mutations.clearAllGeoLocationPicked()
+    }
+    next()
   },
   methods: {
-    initialize() {
-      const { searchPreferences } = psStore.getters.getProfile
-      const { from, to } = gsStore.getters.getPickedLocation
-      const { travelTime } = this.searchCriteria
-      let newCriteria = {
-        ...this.searchCriteria,
-        preferences: searchPreferences,
-      }
-      if (from?.location) {
-        newCriteria.from = geoPlaceToCriteria(from)
-      }
-      if (to?.location) {
-        newCriteria.to = geoPlaceToCriteria(to)
-      }
-      if (!travelTime) {
-        // Set the default date and time to today and the next whole hour.
-        newCriteria.travelTime = {
-          when: this.topOfTheHour,
-          arriving: true,
-        }
-      }
-      isStore.mutations.setSearchCriteria(newCriteria)
-    },
     onLocationFieldSelected(newField) {
       this.$router.push({
         name: 'searchLocation',

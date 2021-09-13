@@ -1,24 +1,25 @@
 <template>
   <v-row>
     <v-col>
-      <v-row v-if="showEditor">
-        <v-col v-if="offer" class="pt-0">
+      <v-row v-if="shoutOut && shoutOut.planRef">
+        <v-col class="pt-0">
           <shout-out-travel-proposal-editor
-            :time="pickedTime"
-            :location="offer.from"
-            @updateProposal="onUpdateProposal"
-            @locationUpdate="onLocationUpdate"
-            @locationReset="onLocationReset"
+            :time="departureTime"
+            :location="departureLocation"
+            :is-arrival="false"
+            @updateTravelTime="onUpdateTravelTime"
+            @locationUpdate="onDepartureLocationUpdate"
+            @locationReset="onDepartureLocationReset"
           />
         </v-col>
       </v-row>
-      <v-row v-if="generateSteps().length === 0">
+      <v-row v-if="generateSteps.length === 0">
         <v-col>
           <em>Helaas, er is geen route gevonden!</em>
         </v-col>
       </v-row>
       <v-row
-        v-for="(leg, index) in generateSteps()"
+        v-for="(leg, index) in generateSteps"
         :key="index"
         class="mx-1 py-0"
       >
@@ -26,26 +27,22 @@
           :leg="leg"
           :showicon="false"
           :showdottedline="true"
-          @legEdit="onLegEdit"
+          :step="index"
         />
       </v-row>
-      <v-row v-if="!offer">
-        <v-col class="pt-3 pb-0">
-          <v-btn
-            large
-            rounded
-            block
-            mb-4
-            depressed
-            color="button"
-            :disabled="isProposing"
-            @click="onStartProposal"
-          >
-            Rit aanbieden
-          </v-btn>
+      <v-row v-if="shoutOut && shoutOut.planRef">
+        <v-col class="pt-0">
+          <shout-out-travel-proposal-editor
+            :time="arrivalTime"
+            :location="arrivalLocation"
+            :is-arrival="true"
+            @updateTravelTime="onUpdateTravelTime"
+            @locationUpdate="onArrivalLocationUpdate"
+            @locationReset="onArrivalLocationReset"
+          />
         </v-col>
       </v-row>
-      <v-row v-else>
+      <v-row>
         <v-col class="pt-3 pb-0">
           <v-btn
             large
@@ -54,8 +51,8 @@
             mb-4
             depressed
             color="button"
-            :disabled="generateSteps().length === 0"
-            @click="onProposeTravelOffer"
+            :disabled="generateSteps.length === 0"
+            @click="onConfirmTravelOffer"
           >
             Aanbod bevestigen
           </v-btn>
@@ -87,6 +84,8 @@ import {
   generateItineraryDetailSteps,
 } from '@/utils/itinerary_steps.js'
 import * as isStore from '@/store/itinerary-service'
+import * as gsStore from '@/store/geocoder-service'
+import { geoPlaceToCriteria } from '@/utils/Utils'
 
 export default {
   name: 'ShoutOutTravelProposal',
@@ -97,35 +96,56 @@ export default {
   props: {
     shoutOut: { type: Object, required: true },
     offer: { type: Object, default: () => {} },
-    editing: { type: Boolean, default: false },
+    searchCriteria: { type: Object, default: () => {} },
   },
   data() {
-    return {
-      editDeparture: false,
-      isProposing: false,
-    }
+    return {}
   },
   computed: {
-    showEditor() {
-      return this.editDeparture || this.editing
+    departureLocation() {
+      return this.searchCriteria.from
+        ? this.searchCriteria.from
+        : this.shoutOut.from
     },
-    pickedTime() {
-      return isStore.getters.getShoutoutPlanTime
+    departureTime() {
+      let dtime
+      if (
+        this.searchCriteria.travelTime &&
+        !this.searchCriteria.travelTime.arriving
+      ) {
+        dtime = this.searchCriteria.travelTime.when
+      } else if (this.offer?.itineraries[0]?.departureTime) {
+        dtime = moment(this.offer.itineraries[0].departureTime)
+      } else {
+        dtime = moment(this.shoutOut.referenceItinerary.departureTime)
+      }
+      return dtime
     },
-  },
-  methods: {
+    arrivalLocation() {
+      return this.searchCriteria.to ? this.searchCriteria.to : this.shoutOut.to
+    },
+    arrivalTime() {
+      let atime
+      if (
+        this.searchCriteria.travelTime &&
+        this.searchCriteria.travelTime.arriving
+      ) {
+        atime = this.searchCriteria.travelTime.when
+      } else if (this.offer?.itineraries[0]?.arrivalTime) {
+        atime = moment(this.offer.itineraries[0].arrivalTime)
+      } else {
+        atime = moment(this.shoutOut.referenceItinerary.arrivalTime)
+      }
+      return atime
+    },
     generateSteps() {
-      //HACK: this.steps is not a data prop, if it was it would lead to inf loop.
       let steps
       if (this.offer?.planRef) {
-        //FIXME Backend must annotate a leg with the shout-out that it resolves
         steps = generateItineraryDetailSteps(this.offer.itineraries[0])
-        if (steps.length > 2) {
-          steps[0].isEditable = true
-          steps[steps.length - 2].passenger = {
-            ...this.shoutOut.traveller,
-          }
-        }
+        // Add the passenger to the rideshare legs for the GUI
+        steps
+          .filter(leg => leg.traverseMode === 'RIDESHARE')
+          .forEach(leg => (leg.passenger = { ...this.shoutOut.traveller }))
       } else if (this.shoutOut?.planRef) {
         steps = generateShoutOutDetailSteps(this.shoutOut, undefined)
       } else {
@@ -133,34 +153,28 @@ export default {
       }
       return steps
     },
-    onLegEdit({ step }) {
-      if (step === 0) {
-        this.editDeparture = !this.editDeparture
-        isStore.mutations.setShoutoutPlanTime(
-          moment(this.offer.itineraries[0].departureTime)
-        )
-      }
-    },
-    onStartProposal() {
-      this.isProposing = !this.isProposing
-      this.$emit('proposeTravelOffer')
-    },
+  },
+  methods: {
     onCancelProposal() {
-      this.isProposing = false
-      this.editDeparture = false
       this.$emit('proposalCancel')
     },
-    onLocationReset() {
-      this.$emit('locationReset')
+    onDepartureLocationReset() {
+      this.$emit('departureLocationReset')
     },
-    onLocationUpdate() {
-      this.$emit('locationUpdate')
+    onDepartureLocationUpdate() {
+      this.$emit('departureLocationUpdate')
     },
-    onUpdateProposal(request) {
-      // Request consists of a time (moment) and location.
-      this.$emit('updateProposal', request)
+    onArrivalLocationReset() {
+      this.$emit('arrivalLocationReset')
     },
-    onProposeTravelOffer() {
+    onArrivalLocationUpdate() {
+      this.$emit('arrivalLocationUpdate')
+    },
+    onUpdateTravelTime(travelTime) {
+      // travelTime.when is a moment, travelTime.arriving flags which field.
+      this.$emit('updateTravelTime', travelTime)
+    },
+    onConfirmTravelOffer() {
       this.$emit('confirmTravelOffer')
     },
   },

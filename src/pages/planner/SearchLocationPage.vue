@@ -69,7 +69,7 @@ import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
 // map category to Material icon name (needs more work...)
 // show at most 8 suitable suggestions
 import { throttle } from 'lodash'
-import { geoSuggestionToPlace } from '@/utils/Utils'
+import { geoPlaceToCriteria, geoSuggestionToPlace } from '@/utils/Utils'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
@@ -106,7 +106,7 @@ export default {
           {
             ...address,
             title: 'Thuis',
-            label: `${address.street}, ${address.postalCode} ${address.locality}`,
+            label: `${address.street}, ${address.houseNumber} ${address.postalCode} ${address.locality}`,
           },
         ]
       }
@@ -116,7 +116,7 @@ export default {
       return psStore.getters.getProfile.favoriteLocations.map(p => {
         let mapped = { ...p }
         mapped.title = p.label
-        mapped.label = `${p.street}, ${p.postalCode} ${p.locality}`
+        mapped.label = `${p.street}, ${p.houseNumber}, ${p.postalCode} ${p.locality}`
         mapped.favorite = true
         return mapped
       })
@@ -148,28 +148,34 @@ export default {
   },
   mounted() {
     psStore.actions.fetchFavoriteLocations()
+    gsStore.mutations.setGeocoderSuggestions([])
+    this.searchInput = gsStore.getters.getPickedLocations.get(
+      this.$route.params.field
+    )?.query
   },
   methods: {
-    parseHighlightedLabel(suggestion) {
-      return `${suggestion.highlightedTitle} ${suggestion.highlightedVicinity}`
-    },
     completeSearch(place) {
+      const fieldName = this.$route.params.field
       gsStore.mutations.setGeoLocationPicked({
-        field: this.$route.params.field,
+        query: this.searchInput,
+        field: fieldName,
         place: place,
       })
       // If we are editing our current search results then
-      // set the criteria accoordingly and do the search.
+      // set the criteria accordingly and do the search.
       if (this.localEditSearchCriteria) {
-        const fieldValue = {
-          label: place.title,
-          latitude: place.location.coordinates[1],
-          longitude: place.location.coordinates[0],
+        const fieldValue = geoPlaceToCriteria(place)
+        const searchCriteria = isStore.getters.getSearchCriteria
+        if (fieldName === 'from') {
+          searchCriteria.from = fieldValue
+        } else if (fieldName === 'to') {
+          searchCriteria.to = fieldValue
+        } else {
+          uiStore.actions.queueErrorNotification(
+            `Interne fout: Onbekend veld ${fieldName}.`
+          )
         }
-        isStore.mutations.setSearchCriteriaField({
-          field: this.$route.params.field,
-          value: fieldValue,
-        })
+        isStore.mutations.setSearchCriteria(searchCriteria)
         this.sendPlanningRequest()
       }
       this.$router.go(-1)
@@ -188,6 +194,7 @@ export default {
     clearSearchInput() {
       this.searchInput = ''
       this.showSuggestionsList = false
+      gsStore.mutations.setGeocoderSuggestions([])
     },
     promptFavorite(suggestion) {
       this.selectedLocation = suggestion

@@ -31,6 +31,9 @@ module.exports = {
     return place
   },
   geoPlaceToCriteria: function(place) {
+    if (!place?.location?.coordinates) {
+      return undefined
+    }
     return {
       label: place.title,
       latitude: place.location.coordinates[1],
@@ -40,5 +43,20 @@ module.exports = {
   isAbsoluteUrl: function(url) {
     const absoluteUrlRegEx = new RegExp('^(?:[a-z]+:)?//', 'i')
     return absoluteUrlRegEx.test(url)
+  },
+  coordinatesToGeoLocation: function(location) {
+    if (!location?.coordinates) {
+      return undefined
+    }
+    return {
+      latitude: location.coordinates[1],
+      longitude: location.coordinates[0],
+    }
+  },
+  getCreatedObjectIdFromResponse: function(response) {
+    // if the response has status 201, the location header defines the api url to
+    // fetch the object. Extract the object id.
+    const loc = response.headers.location
+    return loc.substring(loc.lastIndexOf('/') + 1)
   },
 }

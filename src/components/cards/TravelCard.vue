@@ -2,7 +2,7 @@
   <v-card
     outlined
     :class="{ 'is-cancelled': cancelled, 'is-completed': completed }"
-    @click="$emit('on-trip-selected', { tripId, itinerary })"
+    @click="onTripSelected"
   >
     <v-overlay
       :color="overlayColor"
@@ -151,6 +151,12 @@ export default {
     this.calculateLegDivison()
   },
   methods: {
+    onTripSelected() {
+      this.$emit('on-trip-selected', {
+        tripId: this.tripId,
+        itinerary: this.itinerary,
+      })
+    },
     formatDateTime(dateTime, format) {
       if (!format)
         return moment(dateTime)

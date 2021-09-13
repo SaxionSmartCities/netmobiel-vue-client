@@ -6,7 +6,11 @@ import constants from '../../constants/constants'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { RootState } from '../Rootstate'
 import { mutations } from '@/store/itinerary-service/index'
-import { ItineraryState, SearchCriteria } from '@/store/itinerary-service/types'
+import {
+  ItineraryState,
+  SearchCriteria,
+  ShoutOutSearchCriteria,
+} from '@/store/itinerary-service/types'
 import * as uiStore from '@/store/ui'
 import { addInterceptors } from '../api-middelware'
 
@@ -18,10 +22,25 @@ const { generateHeaders } = util
 // ============  TRIP PLAN MANAGEMENT  ================
 // Creates a regular TripPlan on success
 
-function searchTripPlan(context: ActionContext, searchCiteria: SearchCriteria) {
-  mutations.storePlanningRequest(searchCiteria)
+function searchTripPlan(
+  context: ActionContext,
+  searchCriteria: SearchCriteria
+) {
+  mutations.setPlanningSearchCriteria(searchCriteria)
   const URL = `${PLANNER_BASE_URL}/search/plan`
-  const { from, to, travelTime, preferences } = searchCiteria
+  const { from, to, travelTime, preferences } = searchCriteria
+  if (!from) {
+    throw new Error('from is mandatory')
+  }
+  if (!to) {
+    throw new Error('to is mandatory')
+  }
+  if (!travelTime || !travelTime.when) {
+    throw new Error('travelTime is mandatory')
+  }
+  if (!preferences) {
+    throw new Error('preferences is mandatory')
+  }
   const params = {
     from: `${from.label}::${from.latitude},${from.longitude}`,
     to: `${to.label}::${to.latitude},${to.longitude}`,
@@ -41,7 +60,7 @@ function searchTripPlan(context: ActionContext, searchCiteria: SearchCriteria) {
       params: params,
     })
     .then(response => {
-      mutations.setPlanningResults({ data: response.data })
+      mutations.setPlanningResults(response.data)
       mutations.setPlanningStatus({ status: 'SUCCESS' })
     })
     .catch(error => {
@@ -71,7 +90,7 @@ function createShoutOutTripPlan(
   const URL = `${PLANNER_BASE_URL}/plans`
   let instance = axios.create()
   addInterceptors(instance)
-  instance
+  return instance
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
@@ -83,6 +102,9 @@ function createShoutOutTripPlan(
         let message = response.data.message
         uiStore.actions.queueErrorNotification(message)
       }
+      return `urn:nb:pn:tripplan:${util.getCreatedObjectIdFromResponse(
+        response
+      )}`
     })
     .catch(error => {
       // eslint-disable-next-line
@@ -102,7 +124,7 @@ function fetchTripPlan(context: ActionContext, { id }: any) {
     })
     .then(response => {
       if (response.status == 200) {
-        mutations.setSelectedTrip(response.data)
+        mutations.setSelectedTripPlan(response.data)
       }
     })
     .catch(error => {
@@ -151,7 +173,7 @@ function fetchMyShoutOutTripPlans(
 // Cancel a (shout-out) trip plan. A regular plan cannot be cancelled because it is already closed.
 function cancelTripPlan(context: ActionContext, { tripPlanId }: any) {
   const URL = `${PLANNER_BASE_URL}/plans/${tripPlanId}`
-  axios
+  return axios
     .delete(URL, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
@@ -233,18 +255,17 @@ function fetchTrips(
     })
     .then(response => {
       if (response.status === 200) {
-        if (offset === 0) {
-          pastTrips
+        if (pastTrips) {
+          offset === 0
             ? mutations.setPastTrips(response.data.data)
-            : mutations.setPlannedTrips(response.data.data)
+            : mutations.appendPastTrips(response.data.data)
+          mutations.setPastTripsCount(response.data.totalCount)
         } else {
-          pastTrips
-            ? mutations.appendPastTrips(response.data.data)
+          offset === 0
+            ? mutations.setPlannedTrips(response.data.data)
             : mutations.appendPlannedTrips(response.data.data)
+          mutations.setPlannedTripsCount(response.data.totalCount)
         }
-        pastTrips
-          ? mutations.setPastTripsCount(response.data.totalCount)
-          : mutations.setPlannedTripsCount(response.data.totalCount)
       }
     })
     .catch(error => {
@@ -410,6 +431,12 @@ function confirmTrip(context: ActionContext, payload: any) {
 // ============  SHOUT-OUT MANAGEMENT  ================
 // driver calls!
 
+/**
+ * Fetches a shout-out, A shout-out is the same as a trip plan, but the itineraries
+ * are not visible for others than the owner.
+ * @param context
+ * @param id the trip plan to fetch (should be a shout-out)
+ */
 function fetchShoutOut(context: ActionContext, { id }: any) {
   const delegatorId = context.rootState.ps.user.delegatorId
   const URL = `${PLANNER_BASE_URL}/shout-outs/${id}`
@@ -419,24 +446,38 @@ function fetchShoutOut(context: ActionContext, { id }: any) {
     })
     .then(response => {
       if (response.status == 200) {
-        mutations.setSelectedTrip(response.data)
+        mutations.setSelectedShoutOut(response.data)
       }
     })
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueErrorNotification('Fout bij het ophalen van de rit.')
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van de oproep.'
+      )
     })
 }
 
 function fetchShoutOuts(
   context: ActionContext,
-  { latitude, longitude, maxResults }: any
+  { location, depArrRadius, travelRadius, maxResults }: any
 ) {
+  let driverLocation = location
+  let theDepArrRadius = depArrRadius
+  let theTravelRadius = travelRadius
+  if (!driverLocation) {
+    driverLocation = constants.GEOLOCATION_CENTER_NL
+    theDepArrRadius = constants.shoutOutDepArrRadiusWhole_NL
+  }
+  if (!theDepArrRadius) {
+    theDepArrRadius = constants.shoutOutDepArrRadiusNearby
+    theTravelRadius = constants.shoutOutTravelRadius
+  }
   const params = {
     maxResults: maxResults,
-    location: `${latitude},${longitude}`,
-    depArrRadius: constants.defaultShoutOutRadius,
+    location: `${driverLocation.latitude},${driverLocation.longitude}`,
+    depArrRadius: theDepArrRadius,
+    travelRadius: theTravelRadius,
   }
   axios
     .get(`${PLANNER_BASE_URL}/shout-outs`, {
@@ -452,20 +493,30 @@ function fetchShoutOuts(
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van de oproepen'
+      )
     })
 }
 
-function planShoutOutSolution(context: ActionContext, payload: any) {
-  const { shoutOutId, from, to = {}, travelTime } = payload
+function planShoutOutSolution(
+  context: ActionContext,
+  payload: ShoutOutSearchCriteria
+) {
+  const { shoutOutId, from, to, travelTime } = payload
   const URL = `${PLANNER_BASE_URL}/shout-outs/${shoutOutId}/plan`
-  const params: any = {
-    from: `${from.label}::${from.latitude},${from.longitude}`,
+  const params: any = {}
+  if (from) {
+    params.from = `${from.label}::${from.latitude},${from.longitude}`
+  }
+  if (to) {
+    params.to = `${to.label}::${to.latitude},${to.longitude}`
   }
   if (travelTime) {
     params.travelTime = travelTime.when.format()
     params.useAsArrivalTime = travelTime.arriving
   }
-  mutations.storePlanningRequest({ from, to, travelTime })
+  mutations.setPlanningSearchCriteria({ from, to, travelTime })
   mutations.setPlanningStatus({ status: 'PENDING' })
   axios
     .get(URL, {
@@ -474,7 +525,7 @@ function planShoutOutSolution(context: ActionContext, payload: any) {
     })
     .then(response => {
       mutations.setPlanningStatus({ status: 'SUCCESS' })
-      mutations.setPlanningResults({ data: response.data })
+      mutations.setPlanningResults(response.data)
     })
     .catch(error => {
       mutations.setPlanningStatus({ status: 'FAILED' })
@@ -490,7 +541,7 @@ function addShoutOutTravelOffer(
 ) {
   let payload = { planRef, vehicleRef, driverRef }
   const URL = `${PLANNER_BASE_URL}/shout-outs/${shoutOutPlanId}`
-  axios
+  return axios
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })

@@ -2,10 +2,11 @@ import axios from 'axios'
 import util from '@/utils/Utils'
 import config from '@/config/config'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
-import { GeoCoderState } from './types'
+import { GeoCoderRequest, GeoCoderState } from './types'
 import { RootState } from '@/store/Rootstate'
 import { mutations } from '@/store/geocoder-service/index'
 import * as uiStore from '@/store/ui'
+import constants from '@/constants/constants'
 
 type ActionContext = BareActionContext<GeoCoderState, RootState>
 
@@ -14,16 +15,16 @@ const { generateHeaders } = util
 
 async function fetchGeocoderSuggestions(
   context: ActionContext,
-  { query, area }: any
+  { query, center, radius }: GeoCoderRequest
 ) {
   try {
+    const theCenter = center ? center : constants.GEOLOCATION_CENTER_NL
     const resp = await axios.get(`${GEOCODE_BASE_URL}/suggestions`, {
       params: {
         query,
         details: true,
-        radius: 150000,
-        // Default geographic center of the Netherlands (near Lunteren)
-        center: area || '52.063045,5.349972',
+        radius: radius || constants.DEFAULT_GEOCODER_RADIUS,
+        center: `${theCenter.latitude},${theCenter.longitude}`,
       },
       headers: generateHeaders(GRAVITEE_GEOCODE_SERVICE_API_KEY),
     })

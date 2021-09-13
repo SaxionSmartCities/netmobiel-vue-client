@@ -9,8 +9,8 @@
             hide-details
             outlined
             readonly
-            label="Vertrek"
-            :value="pickedTime"
+            :label="timeFieldLabel"
+            :value="timeLabel"
             v-on="on"
           />
         </template>
@@ -48,8 +48,8 @@
         hide-details
         outlined
         readonly
-        label="Van"
-        :value="departureLabel"
+        :label="locationFieldLabel"
+        :value="locationLabel"
         append-icon="close"
         @click:append="onLocationReset"
         @click="onLocationUpdate"
@@ -67,8 +67,9 @@ export default {
   props: {
     // The time prop should be a moment object.
     time: { type: Object, required: true },
-    location: { type: Object, required: true },
-    allowedMinutes: { type: Function, default: m => m % 5 == 0 },
+    location: { type: Object, required: false, default: null },
+    allowedMinutes: { type: Function, default: m => m % 5 === 0 },
+    isArrival: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -77,25 +78,39 @@ export default {
     }
   },
   computed: {
-    departureLabel() {
+    locationLabel() {
       return this.location?.label || 'Onbekende locatie'
     },
+    locationFieldLabel() {
+      return this.isArrival ? 'Naar' : 'Van'
+    },
+    timeFieldLabel() {
+      return this.isArrival ? 'Aankomst' : 'Vertrek'
+    },
+    timeLabel() {
+      return this.pickedTime
+    },
   },
-  mounted() {
-    if (this.time !== null) {
+  watch: {
+    /**
+     * Update the time displayed whenever the input time changes.
+     * This does not interfere with the value set by the time editor.
+     */
+    time(newValue, oldValue) {
       this.pickedTime = this.time.format('HH:mm')
-    }
+    },
   },
   methods: {
     onConfirmTime() {
       this.showTimePicker = false
-      const depart = moment(this.time)
-      const timestamp = `${depart.format(DATE_FORMAT_PICKER)} ${
+      // Combine the selected time with the original (!) input date
+      //TODO Handle edge case around midnight departure and arrival next day
+      const timestamp = `${this.time.format(DATE_FORMAT_PICKER)} ${
         this.pickedTime
       }`
-      this.$emit('updateProposal', {
-        time: timestamp,
-        location: this.location,
+      this.$emit('updateTravelTime', {
+        when: moment(timestamp),
+        arriving: this.isArrival,
       })
     },
     onLocationReset() {

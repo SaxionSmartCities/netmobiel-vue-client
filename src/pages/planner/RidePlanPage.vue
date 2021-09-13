@@ -140,7 +140,22 @@ export default {
   },
   mounted() {
     csStore.actions.fetchCars()
-    this.initialize()
+    const fromPlace = gsStore.getters.getPickedLocations.get('from')?.place
+    const toPlace = gsStore.getters.getPickedLocations.get('to')?.place
+    const { travelTime } = this.searchCriteria
+    let newCriteria = {
+      ...this.searchCriteria,
+      from: geoPlaceToCriteria(fromPlace),
+      to: geoPlaceToCriteria(toPlace),
+    }
+    if (!travelTime) {
+      // Set the default date and time to today and the next whole hour.
+      newCriteria.travelTime = {
+        when: this.topOfTheHour,
+        arriving: true,
+      }
+    }
+    isStore.mutations.setSearchCriteria(newCriteria)
   },
   beforeRouteEnter: beforeRouteEnter({
     recurrence: json => json,
@@ -149,27 +164,6 @@ export default {
     recurrence: model => model && { ...model },
   }),
   methods: {
-    initialize() {
-      const { from, to } = gsStore.getters.getPickedLocation
-      const { travelTime } = this.searchCriteria
-      let newCriteria = {
-        ...this.searchCriteria,
-      }
-      if (from?.location) {
-        newCriteria.from = geoPlaceToCriteria(from)
-      }
-      if (to?.location) {
-        newCriteria.to = geoPlaceToCriteria(to)
-      }
-      if (!travelTime) {
-        // Set the default date and time to today and the next whole hour.
-        newCriteria.travelTime = {
-          when: this.topOfTheHour,
-          arriving: true,
-        }
-      }
-      isStore.mutations.setSearchCriteria(newCriteria)
-    },
     toRidePlanOptions() {
       this.$router.push('/planOptions')
     },

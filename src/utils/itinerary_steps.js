@@ -1,7 +1,12 @@
 import moment from 'moment'
 import travelModes from '@/constants/travel-modes.js'
+import { getDistance } from 'geolib'
 
 const MIN_WAITING_TIME = 60 // Time in seconds
+/**
+ * Minimal distance [meter] to consider two consecutive steps as one step.
+ */
+const MIN_DISTANCE = 10
 
 export function generateItineraryDetailSteps(itinerary) {
   // Guard: If we have no legs then we have no steps.
@@ -38,8 +43,8 @@ export function generateItineraryDetailSteps(itinerary) {
 }
 
 export function generateRideItineraryDetailSteps(ride) {
-  // Guard: If we have nog ride (id) then don't do the processing.
-  if (!ride.id) return []
+  // Guard: If we have no ride (id) then don't do the processing.
+  if (!ride?.id) return []
 
   let result = []
   let bookingDict = generateBookingDictionary(ride.bookings)
@@ -96,9 +101,9 @@ function setPassenger(leg, bookingDict) {
   }
 }
 
-export function generateShoutOutDetailSteps(shoutout, ride) {
+export function generateShoutOutDetailSteps(shoutout, ride, veryDetailed) {
   if (ride) {
-    return generateShoutOutRideOfferDetailSteps(ride)
+    return generateShoutOutRideOfferDetailSteps(ride, veryDetailed)
   }
   return generateCommunityShoutOutDetailSteps(shoutout)
 }
@@ -121,18 +126,24 @@ function generateCommunityShoutOutDetailSteps(shoutout) {
       mode: 'CAR',
       startTime: departure,
       endTime: arrival,
-      from: { name: fromLabel },
+      from: { label: fromLabel },
     },
     {
       mode: 'ARRIVAL',
       startTime: arrival,
-      from: { name: toLabel },
+      from: { label: toLabel },
     },
   ]
 }
 
-function generateShoutOutRideOfferDetailSteps(ride) {
-  const { fromPlace, car, bookings } = ride
+/**
+ * Generates the steps for a ride. A ride from a list of rides has no leg information.
+ * @param ride the ride from a list of rides
+ * @param veryDetailed if true then add all details
+ * @return {*[]} a list of steps
+ */
+function generateShoutOutRideOfferDetailSteps(ride, veryDetailed) {
+  const { fromPlace, toPlace, car, bookings } = ride
   const steps = []
   const booking = bookings?.find(b => b.state.toUpperCase() === 'PROPOSED')
   if (booking) {
@@ -148,27 +159,40 @@ function generateShoutOutRideOfferDetailSteps(ride) {
     let dropOffTime = moment(booking.arrivalTime)
       .toDate()
       .getTime()
-    steps.push({
-      mode: 'CAR',
-      startTime: departureTime,
-      endTime: pickupTime,
-      from: { name: fromPlace.label },
-    })
-    steps.push({
+    if (getDistance(fromPlace, booking.pickup) >= MIN_DISTANCE) {
+      steps.push({
+        mode: 'CAR',
+        startTime: departureTime,
+        endTime: pickupTime,
+        from: { label: fromPlace.label },
+      })
+    }
+    const rideshareStep = {
       mode: 'RIDESHARE',
       startTime: pickupTime,
       endTime: dropOffTime,
       from: { label: booking.pickup.label },
-      driverName: 'Jij',
-      vehicleName: car.brand,
-      vehicleLicensePlate: car.model,
-      tripId: ride.id,
-    })
+    }
+    if (veryDetailed) {
+      rideshareStep.driverName = 'Jij'
+      rideshareStep.vehicleName = car.brand
+      rideshareStep.vehicleLicensePlate = car.model
+      // FIXME Id the tripId really required here?
+      rideshareStep.tripId = ride.id
+    }
+    steps.push(rideshareStep)
+    if (getDistance(toPlace, booking.dropOff) >= MIN_DISTANCE) {
+      steps.push({
+        mode: 'CAR',
+        startTime: dropOffTime,
+        endTime: arrivalTime,
+        from: { label: booking.dropOff.label },
+      })
+    }
     steps.push({
-      mode: 'ARRIVAL',
-      startTime: dropOffTime,
-      endTime: arrivalTime,
-      from: { name: booking.dropOff.label },
+      mode: 'FINISH',
+      startTime: arrivalTime,
+      to: { label: toPlace.label },
     })
   }
   return steps

@@ -36,7 +36,7 @@ import TripNotMade from './pages/saved/TripNotMade'
 import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
 import ShoutOutDriverDetailPage from '@/pages/community/shoutout/ShoutOutDriverDetailPage'
 import ShoutOutPassengerDetailPage from '@/pages/community/shoutout/ShoutOutPassengerDetailPage'
-import ShoutoutSubmittedPage from '@/pages/planner/ShoutoutSubmittedPage'
+import ShoutOutSubmittedPage from '@/pages/planner/ShoutOutSubmittedPage'
 import Account from '@/pages/profile/Account'
 import DriverReviewPage from './pages/review/DriverReviewPage'
 import TripReviewedPage from './pages/review/TripReviewedPage'
@@ -186,9 +186,10 @@ const router = new Router({
       name: 'tripCancelledPage',
     },
     {
-      path: '/tripDetailPage',
+      path: '/tripDetailPage/:tripId',
       component: TripDetailPage,
       name: 'tripDetailPage',
+      props: true,
     },
     {
       path: '/tripConfimPage/:id',
@@ -293,9 +294,9 @@ const router = new Router({
       name: 'tripConfirmedPage',
     },
     {
-      path: '/shoutoutSubmittedPage/:shoutout',
-      component: ShoutoutSubmittedPage,
-      name: 'shoutoutSubmittedPage',
+      path: '/shoutOutSubmittedPage/:shoutOutId',
+      component: ShoutOutSubmittedPage,
+      name: 'shoutOutSubmittedPage',
       props: true,
     },
     {
