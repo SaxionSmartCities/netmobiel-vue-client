@@ -12,10 +12,7 @@
           class="shout-out-image"
           :src="myProfileImage"
         />
-        <external-user-image
-          v-else
-          :managed-identity="shoutOut.traveller.managedIdentity"
-        />
+        <external-user-image v-else :managed-identity="travellerIdentity" />
       </v-col>
       <v-col>
         <p class="font-weight-regular header mb-0">Reiziger</p>
@@ -41,6 +38,7 @@
         :leg="leg"
         :showicon="!!proposedRide"
         :showdottedline="!proposedRide"
+        :step="index"
       />
     </v-row>
     <v-row v-if="hasOffer && isUserTraveller">
@@ -51,12 +49,34 @@
         </h5>
       </v-col>
     </v-row>
-    <v-row justify="center">
+    <v-row justify="center" no-gutters>
       <v-col class="header ma text-left">
-        <span>Afstand </span>
-        <strong class="text-color-primary ">{{ distance }} km</strong>
+        <v-row v-if="duration" no-gutters>
+          <v-col>
+            <span>Reisduur </span>
+          </v-col>
+          <v-col>
+            <span>{{ duration }} minuten</span>
+          </v-col>
+        </v-row>
+        <v-row v-if="distance" no-gutters>
+          <v-col>
+            <span>Afstand </span>
+          </v-col>
+          <v-col>
+            <span>{{ distance }} km</span>
+          </v-col>
+        </v-row>
+        <v-row v-if="cost" no-gutters>
+          <v-col>
+            <span>Vergoeding </span>
+          </v-col>
+          <v-col>
+            <span>{{ cost }} credits</span>
+          </v-col>
+        </v-row>
       </v-col>
-      <v-col class="text-right">
+      <v-col d-flex class="text-right" align-self="center">
         <v-btn small rounded depressed color="button">
           {{ nextAction }}
         </v-btn>
@@ -66,7 +86,6 @@
 </template>
 
 <script>
-import { getDistance } from 'geolib'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ExternalUserImage from '@/components/profile/ExternalUserImage.vue'
 import { generateShoutOutDetailSteps } from '@/utils/itinerary_steps.js'
@@ -86,20 +105,63 @@ export default {
     myProfileImage() {
       return this.profile.image
     },
+    traveller() {
+      return this.shoutOut.traveller
+    },
+    travellerIdentity() {
+      return this.traveller ? this.traveller.managedIdentity : ''
+    },
     isUserTraveller() {
-      return this.profile.id === this.shoutOut.traveller.managedIdentity
+      return this.profile.id === this.travellerIdentity
     },
     travellerName() {
-      return `${this.shoutOut.traveller.givenName} ${this.shoutOut.traveller.familyName}`
+      return `${this.traveller?.givenName} ${this.traveller?.familyName}`
+    },
+    cost() {
+      let fare
+      if (this.proposedRide?.distance) {
+        // FIXME A proposed ride should have a fare!
+        fare = 0
+      } else if (this.shoutOut.referenceItinerary) {
+        // Assumption: Always a car/rideshare leg
+        fare = this.shoutOut.referenceItinerary.legs
+          .map(leg => leg.fareInCredits)
+          .reduce((sum, f) => sum + f)
+      }
+      // Return cost in credits
+      return fare
     },
     distance() {
-      let d = 'Onbekend'
-      if (this.proposedRide?.distance) {
-        d = Math.round(this.proposedRide.distance / 1000)
-      } else if (this.shoutOut.from && this.shoutOut.to) {
-        d = getDistance(this.shoutOut.from, this.shoutOut.to, 1000) / 1000
+      let distanceMeters
+      // if (this.proposedRide?.distance) {
+      //   distanceMeters = this.proposedRide.distance
+      // } else if (this.shoutOut.referenceItinerary) {
+      //   // Assumption: Always a car/rideshare leg
+      //   distanceMeters = this.shoutOut.referenceItinerary.legs
+      //     .map(leg => leg.distance)
+      //     .reduce((sum, d) => sum + d)
+      // }
+      if (!this.proposedRide?.distance && this.shoutOut.referenceItinerary) {
+        // Assumption: Always a car/rideshare leg
+        distanceMeters = this.shoutOut.referenceItinerary.legs
+          .map(leg => leg.distance)
+          .reduce((sum, d) => sum + d)
       }
-      return d
+      // Return distance in kilometers
+      return distanceMeters ? Math.round(distanceMeters / 1000) : distanceMeters
+    },
+    duration() {
+      let durationSecs
+      // if (this.proposedRide?.duration) {
+      //   durationSecs = this.proposedRide.duration
+      // } else if (this.shoutOut.referenceItinerary) {
+      //   durationSecs = this.shoutOut.referenceItinerary.duration
+      // }
+      if (!this.proposedRide?.duration && this.shoutOut.referenceItinerary) {
+        durationSecs = this.shoutOut.referenceItinerary.duration
+      }
+      // Return duration in minutes
+      return durationSecs ? Math.round(durationSecs / 60) : durationSecs
     },
     nextAction() {
       return this.isUserTraveller
@@ -109,12 +171,12 @@ export default {
         : 'Rit aanbieden'
     },
     offeredItineraries() {
-      return this.shoutOut.itineraries.filter(it => {
+      return this.shoutOut?.itineraries?.filter(it => {
         return !it.legs.find(leg => leg.state === 'CANCELLED')
       })
     },
     hasOffer() {
-      return !!this.proposedRide || this.offeredItineraries.length > 0
+      return !!this.proposedRide?.rideRef || this.offeredItineraries?.length > 0
     },
     proposedRides() {
       return csStore.getters.getProposedRides

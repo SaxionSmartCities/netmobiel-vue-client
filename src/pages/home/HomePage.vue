@@ -193,8 +193,12 @@ export default {
   },
   methods: {
     onTripSelected(selected) {
-      isStore.actions.fetchTrip({ id: selected.tripId })
-      this.$router.push('/tripDetailPage')
+      //TODO Use trips from the list (less detailed, then immediate result on page change)
+      isStore.mutations.setSelectedTrip({})
+      this.$router.push({
+        name: 'tripDetailPage',
+        params: { tripId: String(selected.tripId) },
+      })
     },
     onRideSelected(id) {
       this.$router.push({

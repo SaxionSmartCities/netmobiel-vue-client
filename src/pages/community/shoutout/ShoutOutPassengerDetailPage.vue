@@ -13,6 +13,7 @@
           <v-col><v-divider /></v-col>
           <v-col>
             <shout-out-detail-passenger
+              v-if="shoutOut && shoutOut.planRef"
               :shout-out="shoutOut"
               @travel-proposal-confirm="onTravelOfferConfirmed"
             />
@@ -45,7 +46,7 @@ import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vu
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
 import ShoutOutDetailPassenger from '@/components/community/ShoutOutDetailPassenger.vue'
 import ShoutOutCancelDialog from '@/components/dialogs/ShoutoutCancelDialog.vue'
-import { formatDateTimeLong } from '@/utils/datetime.js'
+import { formatDateTimeLongNoYear } from '@/utils/datetime.js'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as gsStore from '@/store/geocoder-service'
@@ -88,7 +89,7 @@ export default {
       return psStore.getters.getProfile
     },
     shoutOut() {
-      return isStore.getters.getSelectedTrip
+      return isStore.getters.getSelectedTripPlan
     },
     // The itinerary of the new shout-out
     itinerary() {
@@ -98,34 +99,53 @@ export default {
       return null
     },
     itineraries() {
-      return this.planResult?.itineraries || []
+      // A filtered list of itineraries (removing cancelled offers). Passenger itineraries comprise a single leg.
+      if (this.shoutOut?.itineraries) {
+        return this.shoutOut.itineraries.filter(
+          i => i.legs[0].state !== 'CANCELLED'
+        )
+      }
+      return []
     },
     itinerarySummaryItems() {
       let result = []
-      const { travelTime } = this.shoutOut
+      const travelTime = this.shoutOut?.travelTime
       if (travelTime) {
-        result.push({ label: 'Datum', value: formatDateTimeLong(travelTime) })
+        result.push({
+          label: 'Datum',
+          value: formatDateTimeLongNoYear(this.shoutOut?.travelTime),
+        })
       }
+      let durationSecs
       if (this.itinerary?.duration) {
-        const { duration } = this.itinerary
-        const reisduur = `${Math.round(duration / 60)} minuten`
-        result.push({ label: 'Reisduur', value: reisduur })
-      } else {
-        result.push({ label: 'Reisduur', value: 'Onbekend' })
+        durationSecs = this.itinerary.duration
+      } else if (this.shoutOut?.referenceItinerary?.duration) {
+        durationSecs = this.shoutOut?.referenceItinerary.duration
       }
-      const hasCoordinates =
-        this.shoutOut.from !== undefined && this.shoutOut.to !== undefined
-      const kilometers = hasCoordinates
-        ? getDistance(this.shoutOut.from, this.shoutOut.to, 1000) / 1000
-        : 'Onbekend'
-      result.push({ label: 'Afstand', value: `${kilometers} km` })
+      if (durationSecs) {
+        result.push({
+          label: 'Reisduur',
+          value: `${Math.round(durationSecs / 60)} minuten`,
+        })
+      }
+      let distanceMeters
+      if (this.shoutOut?.referenceItinerary) {
+        distanceMeters = this.shoutOut.referenceItinerary.legs
+          .map(leg => leg.distance)
+          .reduce((sum, d) => sum + d)
+      }
+      if (distanceMeters) {
+        result.push({
+          label: 'Afstand',
+          value: `${Math.round(distanceMeters / 1000)} km`,
+        })
+      }
       return result
     },
   },
   mounted() {
     isStore.mutations.clearPlanningResults()
     // For a traveller a shout-out is just another trip plan.
-    // FIXME The fetched trip plan is stored as selectedTrip
     isStore.actions.fetchTripPlan({ id: this.shoutOutId })
   },
   created() {
@@ -134,6 +154,7 @@ export default {
   methods: {
     onTripEdit() {
       const { searchPreferences } = this.profile
+      let now = moment()
       let searchCriteria = {
         from: this.shoutOut.from,
         to: this.shoutOut.to,
@@ -144,6 +165,9 @@ export default {
             : moment(this.shoutOut.earliestDepartureTime),
           arriving: this.shoutOut.useAsArrivalTime,
         },
+      }
+      if (searchCriteria.travelTime.when.isBefore(now)) {
+        searchCriteria.travelTime.when = now.add(2, 'hours')
       }
       isStore.mutations.setSearchCriteria(searchCriteria)
       isStore.actions.searchTripPlan(searchCriteria)
@@ -164,8 +188,9 @@ export default {
     },
     onConfirmCancel() {
       this.cancelDialog.isVisible = false
-      isStore.actions.cancelTripPlan({ tripPlanId: this.shoutOutId })
-      this.$router.go(-1)
+      isStore.actions
+        .cancelTripPlan({ tripPlanId: this.shoutOutId })
+        .then(() => this.$router.push({ name: 'shoutOuts' }))
     },
     onCloseCancel() {
       this.cancelDialog.isVisible = false

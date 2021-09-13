@@ -4,9 +4,8 @@ import {
   Itinerary,
   ItineraryState,
   PlanningRequest,
-  PlanningResult,
   SubmitStatus,
-  ShoutOut,
+  TripPlan,
   Trip,
   SearchCriteria,
 } from '@/store/itinerary-service/types'
@@ -29,7 +28,10 @@ function setSearchCriteriaField(state: ItineraryState, payload: any) {
   state.searchCriteria[payload.field] = payload.value
 }
 
-function storePlanningRequest(state: ItineraryState, payload: PlanningRequest) {
+function setPlanningSearchCriteria(
+  state: ItineraryState,
+  payload: SearchCriteria
+) {
   state.planningRequest.from = payload.from
   state.planningRequest.to = payload.to
   state.planningRequest.travelTime = payload.travelTime
@@ -40,12 +42,12 @@ function setPlanningStatus(state: ItineraryState, payload: SubmitStatus) {
   state.planningRequest.submitStatus = payload
 }
 
-function setPlanningResults(state: ItineraryState, payload: PlanningResult) {
-  state.planningRequest.result = payload.data
+function setPlanningResults(state: ItineraryState, payload: TripPlan) {
+  state.planningRequest.tripPlan = payload
 }
 
 function clearPlanningResults(state: ItineraryState, payload: any) {
-  state.planningRequest.result = null
+  state.planningRequest.tripPlan = null
 }
 
 function clearPlanningRequest(state: ItineraryState, payload: any) {
@@ -72,6 +74,14 @@ function sortItineraries(state: ItineraryState, payload: Itinerary[]) {
   state.planningRequest.result!.data.itineraries.sort(payload)
 }
 
+function setSelectedTripPlan(state: ItineraryState, payload: TripPlan) {
+  state.selectedTripPlan = payload
+}
+
+function setSelectedShoutOut(state: ItineraryState, payload: TripPlan) {
+  state.selectedShoutOut = payload
+}
+
 function setSelectedTrip(state: ItineraryState, payload: Trip) {
   state.selectedTrip = payload
 }
@@ -88,16 +98,16 @@ function appendPlannedTrips(state: ItineraryState, payload: Trip[]) {
   state.plannedTrips = safeConcatTrips(state.plannedTrips, payload)
 }
 
-function setShoutOuts(state: ItineraryState, payload: ShoutOut[]) {
+function setShoutOuts(state: ItineraryState, payload: TripPlan[]) {
   const length = state.shoutOuts.length
   state.shoutOuts.splice(0, length, ...payload)
 }
 
-function setMyShoutOuts(state: ItineraryState, payload: ShoutOut[]) {
+function setMyShoutOuts(state: ItineraryState, payload: TripPlan[]) {
   state.myShoutOuts = payload
 }
 
-function appendMyShoutOuts(state: ItineraryState, payload: ShoutOut[]) {
+function appendMyShoutOuts(state: ItineraryState, payload: TripPlan[]) {
   state.myShoutOuts.concat(payload)
 }
 
@@ -134,8 +144,7 @@ export const buildMutations = (
 ) => {
   return {
     setSearchCriteria: isBuilder.commit(setSearchCriteria),
-    setSearchCriteriaField: isBuilder.commit(setSearchCriteriaField),
-    storePlanningRequest: isBuilder.commit(storePlanningRequest),
+    setPlanningSearchCriteria: isBuilder.commit(setPlanningSearchCriteria),
     setPlanningStatus: isBuilder.commit(setPlanningStatus),
     setPlanningResults: isBuilder.commit(setPlanningResults),
     clearPlanningResults: isBuilder.commit(clearPlanningResults),
@@ -143,6 +152,8 @@ export const buildMutations = (
     clearBookingRequest: isBuilder.commit(clearBookingRequest),
     setBookingStatus: isBuilder.commit(setBookingStatus),
     sortItineraries: isBuilder.commit(sortItineraries),
+    setSelectedTripPlan: isBuilder.commit(setSelectedTripPlan),
+    setSelectedShoutOut: isBuilder.commit(setSelectedShoutOut),
     setSelectedTrip: isBuilder.commit(setSelectedTrip),
     setPlannedTripsCount: isBuilder.commit(setPlannedTripsCount),
     setPlannedTrips: isBuilder.commit(setPlannedTrips),

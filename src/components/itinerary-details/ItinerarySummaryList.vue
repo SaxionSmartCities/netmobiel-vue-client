@@ -1,3 +1,4 @@
+/* Show a list of name value pairs in a table-like markup. */
 <template>
   <v-row class="d-flex flex-column py-3">
     <v-col v-for="(item, index) of items" :key="index" class="py-0">
@@ -16,7 +17,7 @@
           <booking-list :booking-list="item.value" />
         </v-col>
         <v-col v-else class="capitalize pl-3">
-          <template v-if="item.label !== 'Boekingen'">
+          <template>
             {{ item.value }}
           </template>
         </v-col>

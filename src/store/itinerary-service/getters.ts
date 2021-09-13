@@ -14,8 +14,16 @@ export const buildGetters = (
   }, 'getPlanningStatus')
 
   const getPlanningResults = isBuilder.read((state: ItineraryState) => {
-    return state.planningRequest.result
+    return state.planningRequest.tripPlan
   }, 'getPlanningResults')
+
+  const getSelectedTripPlan = isBuilder.read((state: ItineraryState) => {
+    return state.selectedTripPlan
+  }, 'getSelectedTripPlan')
+
+  const getSelectedShoutOut = isBuilder.read((state: ItineraryState) => {
+    return state.selectedShoutOut
+  }, 'getSelectedShoutOut')
 
   const getSelectedTrip = isBuilder.read((state: ItineraryState) => {
     return state.selectedTrip
@@ -78,6 +86,12 @@ export const buildGetters = (
     },
     get getPlanningResults() {
       return getPlanningResults()
+    },
+    get getSelectedTripPlan() {
+      return getSelectedTripPlan()
+    },
+    get getSelectedShoutOut() {
+      return getSelectedShoutOut()
     },
     get getSelectedTrip() {
       return getSelectedTrip()

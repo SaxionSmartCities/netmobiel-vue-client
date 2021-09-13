@@ -46,7 +46,7 @@ import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummar
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import RouteMap from '@/components/itinerary-details/RouteMap.vue'
 import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
-import { formatDateTimeLong } from '@/utils/datetime.js'
+import { formatDateTimeLongNoYear } from '@/utils/datetime.js'
 
 export default {
   name: 'TripDetails',
@@ -73,7 +73,7 @@ export default {
         const { departureTime, duration, legs } = this.trip.itinerary
         result.push({
           label: 'Datum',
-          value: formatDateTimeLong(departureTime),
+          value: formatDateTimeLongNoYear(departureTime),
         })
         if (duration) {
           const reisduur = `${Math.round(duration / 60)} minuten`

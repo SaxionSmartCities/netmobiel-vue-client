@@ -6,7 +6,9 @@ export default {
   defaultMaxResults: 10,
   defaultProfileImage: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
   defaultCharityImage: '@/assets/default_charity_image.jpg',
-  defaultShoutOutRadius: 1000000,
+  shoutOutDepArrRadiusWhole_NL: 200000,
+  shoutOutDepArrRadiusNearby: 20000,
+  shoutOutTravelRadius: 50000,
   defaultNotificationTimeout: 3000,
   searchSuggestionCategoryIcons: {
     airport: 'local_airport',
@@ -70,4 +72,12 @@ export default {
       value: '',
     },
   ],
+  // Geographic center of the Netherlands (near Lunteren)
+  GEOLOCATION_CENTER_NL: {
+    label: 'Midden van Nederland',
+    latitude: 52.063045,
+    longitude: 5.349972,
+  },
+  // Default radius in meter
+  DEFAULT_GEOCODER_RADIUS: 150000,
 }

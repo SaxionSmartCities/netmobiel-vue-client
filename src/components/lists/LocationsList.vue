@@ -20,8 +20,8 @@
                 v-for="(split, i) in location.titleHighlights"
                 :key="i"
                 class="highlight"
-                >{{ location.title.substring(split.start, split.end) }}</span
-              >
+                >{{ location.title.substring(split.start, split.end) }}
+              </span>
               <span>{{
                 location.title.substring(
                   location.titleHighlights[location.titleHighlights.length - 1]

@@ -1,5 +1,5 @@
 import { ModuleBuilder } from 'vuex-typex'
-import { GeoCoderState, GeoCoderSuggestion } from './types'
+import { GeoCoderState, GeoCoderSuggestion, PickedLocation } from './types'
 import { RootState } from '@/store/Rootstate'
 
 function setGeocoderSuggestions(
@@ -9,19 +9,23 @@ function setGeocoderSuggestions(
   state.geocoder.suggestions = payload
 }
 
-function setGeoLocationPicked(state: GeoCoderState, payload: any) {
-  // @ts-ignore
-  state.geocoder.pickedLocations[payload.field] = payload.place
-}
-
-function setGeoLocationsPicked(state: GeoCoderState, payload: any) {
-  state.geocoder.pickedLocations = payload
+function setGeoLocationPicked(state: GeoCoderState, payload: PickedLocation) {
+  state.geocoder.pickedLocations.set(payload.field, payload)
 }
 
 function swapLocations(state: GeoCoderState, payload: any) {
-  let tmp = state.geocoder.pickedLocations.to
-  state.geocoder.pickedLocations.to = state.geocoder.pickedLocations.from
-  state.geocoder.pickedLocations.from = tmp
+  const fieldA = 'to'
+  const fieldB = 'from'
+  let tmp = state.geocoder.pickedLocations.get(fieldA)
+  state.geocoder.pickedLocations.set(
+    fieldA,
+    state.geocoder.pickedLocations.get(fieldB)
+  )
+  state.geocoder.pickedLocations.set(fieldB, tmp)
+}
+
+function clearAllGeoLocationPicked(state: GeoCoderState, payload: void) {
+  state.geocoder.pickedLocations.clear()
 }
 
 export const buildMutations = (
@@ -30,7 +34,7 @@ export const buildMutations = (
   return {
     setGeocoderSuggestions: gsBuilder.commit(setGeocoderSuggestions),
     setGeoLocationPicked: gsBuilder.commit(setGeoLocationPicked),
-    setGeoLocationsPicked: gsBuilder.commit(setGeoLocationsPicked),
+    clearAllGeoLocationPicked: gsBuilder.commit(clearAllGeoLocationPicked),
     swapLocations: gsBuilder.commit(swapLocations),
   }
 }

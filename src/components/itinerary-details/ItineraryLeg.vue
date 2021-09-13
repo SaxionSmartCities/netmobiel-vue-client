@@ -58,7 +58,6 @@
 <script>
 import moment from 'moment'
 import travelModes from '@/constants/travel-modes.js'
-import delegation from '@/utils/delegation'
 import ItineraryLegPassenger from '@/components/itinerary-details/ItineraryLegPassenger.vue'
 import ItineraryLegDriver from '@/components/itinerary-details/ItineraryLegDriver.vue'
 
@@ -88,10 +87,14 @@ export default {
         : '- - : - -'
     },
     header() {
-      return delegation(this, this.travelMode, headers)
+      return headers[this.travelMode]
+        ? headers[this.travelMode].call(this, this.step)
+        : 'Undefined mode'
     },
     description() {
-      return delegation(this, this.travelMode, descriptions)
+      return descriptions[this.travelMode]
+        ? descriptions[this.travelMode].call(this, this.step)
+        : 'Undefined mode'
     },
     passenger() {
       return this.leg.passenger
@@ -116,8 +119,14 @@ const headers = {
   WALK() {
     return `Lopen (${humanDistance(this.leg.distance)})`
   },
-  CAR: 'Vertrek',
-  RIDESHARE: 'Meerijden',
+  CAR(step) {
+    // Bit of a hack. Car is always first or last leg in a rideshare driver's view.
+    // In case of three legs, the last leg is to get the driver at his destination.
+    return step === 0 ? 'Vertrek' : 'Uitstappen'
+  },
+  RIDESHARE() {
+    return 'Meerijden'
+  },
   RAIL() {
     return `${this.leg.routeShortName} naar ${this.leg.to.label}`
   },
@@ -127,8 +136,12 @@ const headers = {
   WAIT() {
     return `Even wachten.. (${Math.round(this.leg.duration / 60)} minuten)`
   },
-  FINISH: 'Aankomst',
-  ARRIVAL: 'Aankomst',
+  FINISH() {
+    return 'Aankomst'
+  },
+  ARRIVAL() {
+    return 'Aankomst'
+  },
   SUBWAY() {
     return `${this.leg.routeShortName} naar ${this.leg.to.label}`
   },
@@ -138,9 +151,8 @@ const descriptions = {
   WALK() {
     return `${this.leg.from.label} - ${this.leg.to.label}`
   },
-  CAR() {
-    //HACK: In trips label is used, in shoutouts name.
-    return this.leg.from.label || this.leg.from.name
+  CAR(step) {
+    return (step === 0 ? '' : 'Uitstappen op ') + this.leg.from.label
   },
   RIDESHARE() {
     return `Instappen vanaf ${this.leg.from.label}`
@@ -152,16 +164,18 @@ const descriptions = {
   BUS() {
     return `${this.leg.from.label} - ${this.leg.to.label}`
   },
-  WAIT: '',
+  WAIT() {
+    return ''
+  },
   FINISH() {
     return this.leg.to.label
   },
   ARRIVAL() {
-    // car arrival when sharing a rideg
-    return this.leg.from.name
+    // car arrival when sharing a ride
+    return this.leg.from.label
   },
   SUBWAY() {
-    return `${this.leg.from.name} - ${this.leg.to.name}`
+    return `${this.leg.from.label} - ${this.leg.to.label}`
   },
   default: 'DESCRIPTION NOT DEFINED FOR THIS LEG MODE!',
 }
