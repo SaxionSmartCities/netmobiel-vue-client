@@ -12,6 +12,17 @@ type ActionContext = BareActionContext<GeoCoderState, RootState>
 
 const { GEOCODE_BASE_URL, GRAVITEE_GEOCODE_SERVICE_API_KEY } = config
 const { generateHeaders } = util
+function isPhonetic(s: string) {
+  // Detection: multiple short words (<= 4 chars) between ()
+  if (!s) {
+    return false
+  }
+  const memes: string[] = s
+    .substring(s.indexOf('(') + 1, s.indexOf(')'))
+    .split(' ')
+    .filter(elem => elem.length <= 4)
+  return memes.length > 1
+}
 
 async function fetchGeocoderSuggestions(
   context: ActionContext,
@@ -38,7 +49,7 @@ async function fetchGeocoderSuggestions(
     })
     let suggestions: GeoCoderSuggestion[] = resp.data.data
     if (hidePhoneticMatches) {
-      suggestions = suggestions.filter(s => s.title && !s.title.includes('('))
+      suggestions = suggestions.filter(s => !isPhonetic(s.title))
     }
     mutations.setGeocoderSuggestions(suggestions)
   } catch (problem) {
