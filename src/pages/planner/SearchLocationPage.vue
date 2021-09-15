@@ -30,14 +30,14 @@
       class="d-flex flex-column align-self-start"
       dense
     >
-      <v-col v-if="homeAddress.length > 0">
-        <h4 class="netmobiel">Thuis</h4>
-      </v-col>
+      <!--      <v-col v-if="homeAddress.length > 0">-->
+      <!--        <h4 class="netmobiel">Thuis</h4>-->
+      <!--      </v-col>-->
       <locations-list
         :locations="homeAddress"
         :show-highlighted-text="false"
         :show-favorite-icon="false"
-        empty-list-label="Geen thuis adres"
+        empty-list-label="Geef je thuisadres op in je profiel"
         @onItemClicked="completeSearch($event)"
         @onUnFavoriteClicked="removeFavorite"
       />
@@ -101,34 +101,31 @@ export default {
   computed: {
     homeAddress() {
       const address = psStore.getters.getProfile.address
-      if (address) {
+      if (address?.location?.coordinates) {
         return [
           {
             ...address,
             title: 'Thuis',
-            label: `${address.street}, ${address.houseNumber} ${address.postalCode} ${address.locality}`,
+            label: this.addressLine(address),
           },
         ]
       }
       return []
     },
     favorites() {
-      return psStore.getters.getProfile.favoriteLocations.map(p => {
-        let mapped = { ...p }
-        mapped.title = p.label
-        mapped.label = `${p.street}, ${p.houseNumber}, ${p.postalCode} ${p.locality}`
-        mapped.favorite = true
-        return mapped
+      return psStore.getters.getProfile.favoriteLocations.map(place => {
+        return {
+          ...place,
+          title: place.label,
+          label: this.addressLine(place),
+          favorite: true,
+        }
       })
     },
     suggestions() {
-      let suggestions = gsStore.getters.getGeocoderSuggestions
-      // Mark suggestion that have already been favorited.
-      return suggestions.map(suggestion => ({
-        ...geoSuggestionToPlace(suggestion),
-        favorite: !!this.favorites.find(fav => fav.ref === suggestion.id),
-        resultType: suggestion.resultType,
-      }))
+      return gsStore.getters.getGeocoderSuggestions.map(suggestion =>
+        this.createLocationFromSuggestion(suggestion)
+      )
     },
     localEditSearchCriteria() {
       return this.editSearchCriteria === 'true'
@@ -155,6 +152,61 @@ export default {
     )?.query
   },
   methods: {
+    createLocationFromSuggestion(sug) {
+      // A location is an extended Place.
+      // It has a title as suggested by the geo service.
+      // It has titleParts, a list of objects comprising a text and a highlight flag.
+      // It has a flag indicating whether the entry is a favorite (stored in the profile).
+      let loc = {
+        ...geoSuggestionToPlace(sug),
+        favorite: !!this.favorites.find(fav => fav.ref === sug.id),
+        titleParts: [],
+        title: sug.title.replace(', Nederland', ''),
+        label: '',
+      }
+      let prevTitleIx = 0
+      // Base the loc.titleParts on the possibly modified loc.title
+      for (let ix = 0; ix < sug.titleHighlights?.length; ix++) {
+        let thl = sug.titleHighlights[ix]
+        if (thl.start !== prevTitleIx) {
+          loc.titleParts.push({
+            text: loc.title.substring(prevTitleIx, thl.start),
+            highlight: false,
+          })
+        }
+        loc.titleParts.push({
+          text: loc.title.substring(thl.start, thl.end),
+          highlight: true,
+        })
+        prevTitleIx = thl.end
+      }
+      if (prevTitleIx < loc.title.length) {
+        loc.titleParts.push({
+          text: loc.title.substring(prevTitleIx),
+          highlight: false,
+        })
+      }
+      switch (sug.resultType) {
+        case 'place':
+          // A place has a short title, add the address line
+          loc.label = this.addressLine(loc)
+          break
+        case 'locality':
+        case 'street':
+        case 'houseNumber':
+        default:
+          // All others have a complete address line as title (from the geoservice)
+          break
+      }
+      return loc
+    },
+    addressLine(addr) {
+      return addr
+        ? `${addr.street}${addr.houseNumber ? ' ' + addr.houseNumber : ''}, ${
+            addr.locality
+          } (${addr.stateCode})`
+        : ''
+    },
     completeSearch(place) {
       const fieldName = this.$route.params.field
       gsStore.mutations.setGeoLocationPicked({

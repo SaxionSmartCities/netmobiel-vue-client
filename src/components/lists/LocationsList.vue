@@ -1,20 +1,24 @@
 <template>
-  <generic-list :items="suggestions" :empty-list-label="emptyListLabel">
-    <template v-slot:list-item="{ item: locView }">
+  <generic-list
+    :items="locations"
+    :empty-list-label="emptyListLabel"
+    :key-name="'ref'"
+  >
+    <template v-slot:list-item="{ item: location }">
       <v-row no-gutters>
         <v-col
           class="shrink category align-center pa-2 ml-1"
-          @click="onItemClicked(locView.location)"
+          @click="onItemClicked(location)"
         >
-          <v-icon>{{ iconicCategory(locView.location.category) }}</v-icon>
+          <v-icon>{{ iconicCategory(location.category) }}</v-icon>
         </v-col>
-        <v-col class="grow px-2" @click="onItemClicked(locView.location)">
+        <v-col class="grow px-2" @click="onItemClicked(location)">
           <v-row no-gutters>
             <v-col v-if="showHighlightedText" class="">
               <!-- Leave the peculiar looking comment in the line below,
                    it prevents insertion of an additional space in the span -->
               <span
-                v-for="(part, i) in locView.titleParts"
+                v-for="(part, i) in location.titleParts"
                 :key="i"
                 :class="part.highlight ? 'highlight' : ''"
                 >{{ part.text
@@ -22,26 +26,26 @@
               --></span>
             </v-col>
             <v-col v-else>
-              {{ locView.title }}
+              {{ location.title }}
             </v-col>
           </v-row>
           <v-row no-gutters>
             <v-col class="subtitle-2 font-weight-light">
-              {{ locView.label }}
+              {{ location.label }}
             </v-col>
           </v-row>
         </v-col>
         <v-col
-          v-if="!locView.location.favorite && showFavoriteIcon"
+          v-if="!location.favorite && showFavoriteIcon"
           class="shrink pa-2"
-          @click="onFavoriteClicked(locView.location, $event)"
+          @click="onFavoriteClicked(location, $event)"
         >
           <v-icon>favorite_border</v-icon>
         </v-col>
         <v-col
-          v-if="locView.location.favorite && showFavoriteIcon"
+          v-if="location.favorite && showFavoriteIcon"
           class="shrink pa-2"
-          @click="onUnFavoriteClicked(locView.location, $event)"
+          @click="onUnFavoriteClicked(location, $event)"
         >
           <v-icon>favorite</v-icon>
         </v-col>
@@ -54,6 +58,17 @@
 import GenericList from '@/components/lists/GenericList'
 import constants from '@/constants/constants.js'
 
+/**
+ * The LocationsList shows a list of elements, comprising of the following elements:
+ * - An icon (if the location.category is recognized)
+ * - A location.title, the upper text line. Used to display the full address from the geoservice or
+ *   the name of the favorite place.
+ * - A location.titleParts array. If not empty it overrides the title field with a sequence of text parts, each
+ *   flagged to be highlighted or not.
+ * - A location.label, the lower text line. In general used to display an address
+ * - A favorite flag, used to indicate whether the location is a favorite. Clicking the icon will raise an event to
+ *   add or remove the favorite.
+ */
 export default {
   name: 'LocationsList',
   components: { GenericList },
@@ -68,58 +83,7 @@ export default {
       selectedListItem: null,
     }
   },
-  computed: {
-    suggestions() {
-      return this.locations.map(loc => this.createLocationView(loc))
-    },
-  },
   methods: {
-    createLocationView(loc) {
-      let v = {
-        location: loc,
-        titleParts: [],
-        title: loc.title.replace(', Nederland', ''),
-        label: '',
-      }
-      let prevTitleIx = 0
-      for (let ix = 0; ix < loc.titleHighlights?.length; ix++) {
-        let thl = loc.titleHighlights[ix]
-        if (thl.start !== prevTitleIx) {
-          v.titleParts.push({
-            text: v.title.substring(prevTitleIx, thl.start),
-            highlight: false,
-          })
-        }
-        v.titleParts.push({
-          text: v.title.substring(thl.start, thl.end),
-          highlight: true,
-        })
-        prevTitleIx = thl.end
-      }
-      if (prevTitleIx < v.title.length) {
-        v.titleParts.push({
-          text: v.title.substring(prevTitleIx),
-          highlight: false,
-        })
-      }
-      switch (loc.resultType) {
-        case 'place':
-          v.label = this.addressLine(loc)
-          break
-        case 'locality':
-          break
-        case 'street':
-          break
-        case 'houseNumber':
-          break
-      }
-      return v
-    },
-    addressLine(addr) {
-      return addr
-        ? `${addr.street} ${addr.houseNumber} ${addr.locality} (${addr.stateCode})`
-        : ''
-    },
     iconicCategory(category) {
       return (
         constants.searchSuggestionCategoryIcons[category] ||
