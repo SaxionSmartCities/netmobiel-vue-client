@@ -98,10 +98,10 @@ export default {
     },
   },
   watch: {
-    suggestions(value) {
-      if (value.length > 0) {
-        const address = value.find(
-          s => s.resultType == 'houseNumber' || s.resultType == 'street'
+    suggestions(newSug) {
+      if (newSug.length > 0) {
+        const address = newSug.find(
+          s => s.resultType === 'houseNumber' || s.resultType === 'street'
         )
         if (address) {
           let newProfile = JSON.parse(JSON.stringify(this.user))
