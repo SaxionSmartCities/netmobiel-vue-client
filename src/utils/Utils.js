@@ -25,9 +25,8 @@ module.exports = {
       coordinates: [location.longitude, location.latitude],
       type: 'Point',
     }
+    place.category = suggestion.category
     place.ref = suggestion.id
-    place.title = suggestion.title
-    place.titleHighlights = suggestion.titleHighlights
     return place
   },
   geoPlaceToCriteria: function(place) {
