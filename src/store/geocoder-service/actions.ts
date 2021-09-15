@@ -2,7 +2,7 @@ import axios from 'axios'
 import util from '@/utils/Utils'
 import config from '@/config/config'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
-import { GeoCoderRequest, GeoCoderState } from './types'
+import { GeoCoderRequest, GeoCoderState, GeoCoderSuggestion } from './types'
 import { RootState } from '@/store/Rootstate'
 import { mutations } from '@/store/geocoder-service/index'
 import * as uiStore from '@/store/ui'
@@ -19,16 +19,28 @@ async function fetchGeocoderSuggestions(
 ) {
   try {
     const theCenter = center ? center : constants.GEOLOCATION_CENTER_NL
+    // Include address information details?
+    const showAddressDetails = true
+    // Hide phonetic matches like: Input 'rembrandt 8 hen' matches
+    // Rembrandtstraat 8, 7651 BW Tubbergen (Di Bei Heng), Nederland
+    // This does not help with the input of address info, so remove it by
+    // matching on '('
+    const hidePhoneticMatches = true
     const resp = await axios.get(`${GEOCODE_BASE_URL}/suggestions`, {
       params: {
         query,
-        details: true,
+        // Include details: Address information
+        details: showAddressDetails,
         radius: radius || constants.DEFAULT_GEOCODER_RADIUS,
         center: `${theCenter.latitude},${theCenter.longitude}`,
       },
       headers: generateHeaders(GRAVITEE_GEOCODE_SERVICE_API_KEY),
     })
-    mutations.setGeocoderSuggestions(resp.data.data)
+    let suggestions: GeoCoderSuggestion[] = resp.data.data
+    if (hidePhoneticMatches) {
+      suggestions = suggestions.filter(s => s.title && !s.title.includes('('))
+    }
+    mutations.setGeocoderSuggestions(suggestions)
   } catch (problem) {
     uiStore.actions.queueErrorNotification(
       'Fout bij het ophalen van locatiesuggesties.'

@@ -127,6 +127,7 @@ export default {
       return suggestions.map(suggestion => ({
         ...geoSuggestionToPlace(suggestion),
         favorite: !!this.favorites.find(fav => fav.ref === suggestion.id),
+        resultType: suggestion.resultType,
       }))
     },
     localEditSearchCriteria() {
@@ -218,7 +219,10 @@ export default {
     },
     removeFavorite(favorite) {
       const profileId = psStore.getters.getProfile.id
-      const placeId = favorite.id
+      let placeId = favorite.id
+      if (!placeId) {
+        placeId = this.favorites.find(f => f.ref === favorite.ref)?.id
+      }
       psStore.actions.deleteFavoriteLocation({ profileId, placeId })
     },
   },

@@ -290,11 +290,12 @@ function storeFavoriteLocation(
   { profileId, place }: any
 ) {
   const URL = `${PROFILE_BASE_URL}/profiles/${profileId}/places`
-  axios
+  return axios
     .post(URL, place, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
     .then(response => {
+      fetchFavoriteLocations(context)
       if (response.status === 201) {
         uiStore.actions.queueInfoNotification(`Je favoriet is opgeslagen!`)
       }
