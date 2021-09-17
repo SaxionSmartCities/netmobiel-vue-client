@@ -10,7 +10,7 @@
           class="shrink category align-center pa-2 ml-1"
           @click="onItemClicked(location)"
         >
-          <v-icon>{{ iconicCategory(location.category) }}</v-icon>
+          <v-icon>{{ location.iconName }}</v-icon>
         </v-col>
         <v-col class="grow px-2" @click="onItemClicked(location)">
           <v-row no-gutters>
@@ -31,7 +31,7 @@
           </v-row>
           <v-row no-gutters>
             <v-col class="subtitle-2 font-weight-light">
-              {{ location.label }}
+              {{ location.subtitle }}
             </v-col>
           </v-row>
         </v-col>
@@ -65,7 +65,7 @@ import constants from '@/constants/constants.js'
  *   the name of the favorite place.
  * - A location.titleParts array. If not empty it overrides the title field with a sequence of text parts, each
  *   flagged to be highlighted or not.
- * - A location.label, the lower text line. In general used to display an address
+ * - A location.subtitle, the lower text line. In general used to display an address
  * - A favorite flag, used to indicate whether the location is a favorite. Clicking the icon will raise an event to
  *   add or remove the favorite.
  */
@@ -84,12 +84,6 @@ export default {
     }
   },
   methods: {
-    iconicCategory(category) {
-      return (
-        constants.searchSuggestionCategoryIcons[category] ||
-        constants.searchSuggestionDefaultIcon
-      )
-    },
     onItemClicked(location) {
       this.$emit('onItemClicked', location)
     },
