@@ -211,6 +211,7 @@ export interface Address {
 }
 export interface Place extends Address {
   id: number
+  name: string
   ref: string
 }
 
