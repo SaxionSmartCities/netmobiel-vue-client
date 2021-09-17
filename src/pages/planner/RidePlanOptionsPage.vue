@@ -137,9 +137,10 @@ export default {
         return {
           title: 'Bagage',
           options: luggageTypes,
-          selected: this.ridePlanOptions.luggageOptions.map(
-            o => luggageTypes[o]
-          ),
+          selected: this.ridePlanOptions.luggageOptions
+            .map(o => luggageTypes[o])
+            // filter away the non-existing types
+            .filter(lt => lt),
         }
       },
       set(selection) {

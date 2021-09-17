@@ -12,6 +12,7 @@ export default {
   defaultNotificationTimeout: 3000,
   searchSuggestionCategoryIcons: {
     airport: 'local_airport',
+    'bus-station': 'directions_bus',
     'city-town-village': 'location_city',
     hotel: 'local_hotel',
     'railway-station': 'train',

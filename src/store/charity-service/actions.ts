@@ -4,14 +4,13 @@ import { CharityState } from './types'
 import { mutations } from '@/store/charity-service/index'
 import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios'
-import util from '@/utils/Utils'
 import config from '@/config/config'
 import * as uiStore from '@/store/ui'
+import { generateHeaders } from '@/utils/Utils'
 
 type ActionContext = BareActionContext<CharityState, RootState>
 
 const { BANKER_BASE_URL, GRAVITEE_BANKER_SERVICE_API_KEY } = config
-const { generateHeaders } = util
 
 async function fetchCharities(context: ActionContext, payload: any = {}) {
   try {

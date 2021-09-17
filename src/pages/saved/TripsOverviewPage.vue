@@ -230,6 +230,9 @@ export default {
     },
   },
   watch: {
+    // selectedTab(newValue, oldValue) {
+    //   console.log(`SelectedTab ${oldValue} --> ${newValue}`)
+    // },
     bottom(bottom) {
       if (bottom) {
         if (this.selectedTab === 0) {
@@ -249,7 +252,10 @@ export default {
     },
   },
   beforeRouteEnter: beforeRouteEnter({
-    selectedTab: number => number || 0,
+    selectedTab: number => {
+      // console.log(`BeforeRouteEnter selectedTab: ${number}`)
+      return number || 0
+    },
     tripsSearchTime: searchtime => searchtime || 'Future',
   }),
   beforeRouteLeave: beforeRouteLeave({
@@ -257,11 +263,11 @@ export default {
     tripsSearchTime: searchtime => searchtime,
   }),
   mounted() {
-    if (this.isPassengerView) {
+    if (this.isPassengerOnly || this.isDrivingPassenger) {
       this.fetchTrips()
       this.fetchPastTrips()
     }
-    if (this.isDriverView) {
+    if (this.isDriverOnly || this.isDrivingPassenger) {
       this.fetchRides()
       this.fetchPastRides()
     }

@@ -1,7 +1,7 @@
 <template>
   <v-row v-if="items.length > 0">
     <v-col>
-      <v-row v-for="(item, index) in items" :key="index">
+      <v-row v-for="(item, index) in items" :key="item[keyName] || index">
         <v-col class="pt-0">
           <v-divider class="pb-3" />
           <slot name="list-item" :item="item" :index="index"></slot>
@@ -22,6 +22,7 @@ export default {
   name: 'GenericList',
   props: {
     items: { type: Array, required: true },
+    keyName: { type: String, required: false, default: '' },
     emptyListLabel: { type: String, required: true },
   },
 }

@@ -6,13 +6,13 @@
         <v-row>
           <v-col class="col-2 favo-icon">
             <v-icon>
-              {{ iconicCategory(location.category) }}
+              {{ location.iconName }}
             </v-icon>
           </v-col>
           <v-col>
             <v-row>
               <v-text-field
-                v-model="location.title"
+                v-model="name"
                 label="Naam favoriet"
                 :rules="rules"
               />
@@ -44,7 +44,7 @@
                 block
                 depressed
                 color="button"
-                :disabled="location.title.length < 3"
+                :disabled="name.length < 3"
                 @click="onSaveFavorite()"
               >
                 Opslaan
@@ -59,29 +59,24 @@
 
 <script>
 import constants from '@/constants/constants.js'
+import { geoPlaceToAddressLabel } from '@/utils/Utils'
 
 export default {
   name: 'AddFavoriteDialog',
   props: {
     location: { type: Object, required: true },
+    initialName: { type: String, required: false, default: '' },
     show: { type: Boolean, default: true },
   },
   data() {
     return {
       rules: [v => v.length >= 3 || 'Minimaal 3 karakters'],
+      name: this.initialName,
     }
   },
   computed: {
     locationLabel() {
-      const { street, postalCode, locality } = this.location
-      if (postalCode != undefined) {
-        if (street != undefined) {
-          return `${street}, ${postalCode} ${locality}`
-        } else {
-          return `${postalCode} ${locality}`
-        }
-      }
-      return `${locality}`
+      return geoPlaceToAddressLabel(this.location, true)
     },
   },
   methods: {
@@ -91,15 +86,9 @@ export default {
     onSaveFavorite() {
       this.$emit('onAddFavorite', {
         ...this.location,
-        label: this.location.title,
+        name: this.name,
         favorite: true,
       })
-    },
-    iconicCategory(category) {
-      return (
-        constants.searchSuggestionCategoryIcons[category] ||
-        constants.searchSuggestionDefaultIcon
-      )
     },
   },
 }
