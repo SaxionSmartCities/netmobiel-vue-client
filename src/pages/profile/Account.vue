@@ -104,8 +104,15 @@ export default {
           s => s.resultType === 'houseNumber' || s.resultType === 'street'
         )
         if (address) {
-          let newProfile = JSON.parse(JSON.stringify(this.user))
+          // let newProfile = JSON.parse(JSON.stringify(this.user))
+          // See comments below
+          let newProfile = { ...this.user, address: { ...this.user.address } }
           newProfile.address = geoSuggestionToPlace(address)
+          psStore.actions.updateProfile(newProfile)
+        } else if (this.user.address?.location) {
+          // Invalidate current GPS location, if any.
+          let newProfile = { ...this.user }
+          newProfile.address.location = null
           psStore.actions.updateProfile(newProfile)
         }
       }
@@ -134,7 +141,10 @@ export default {
       // Fires when the user onfocusses the input
       // HACK: JSON parse/stringify to prevent "[vuex] do not mutate vuex store
       // state outside mutation handlers." error.
-      let newProfile = JSON.parse(JSON.stringify(this.user))
+      // Do not use the spread operato, that would create a shallow copy.
+      // For detection of changes in the address, we need a deep copy
+      // let newProfile = JSON.parse(JSON.stringify(this.user))
+      let newProfile = { ...this.user, address: { ...this.user.address } }
       // check for parse function in account config
       const { parse } = this.findSelectedItem()
       if (parse) {
@@ -142,23 +152,35 @@ export default {
         input = parse(input)
       }
       set(newProfile, this.selectedProperty, input)
-      psStore.actions.updateProfile(newProfile)
       // Fetch geocode for address if different.
       if (!isEqual(this.user.address, newProfile.address)) {
         const query = this.addressQuery(newProfile.address)
-        if (query) gsStore.actions.fetchGeocoderSuggestions({ query: query })
+        if (query) {
+          gsStore.actions.fetchGeocoderSuggestions({ query: query })
+        } else if (newProfile.address?.location) {
+          // Invalidate current GPS location, if any.
+          newProfile.address.location = null
+        }
       }
+      psStore.actions.updateProfile(newProfile)
     },
     addressQuery(address) {
       let query = ''
       // A locality is the minimum requirement.
-      if (address['locality']) query = address['locality']
-      else return query
+      if (address['locality']) {
+        query = address['locality']
+      } else {
+        return query
+      }
 
-      if (address['postalCode']) query = `${address['postalCode']}, ` + query
-      if (address['street'] && address['houseNumber'])
+      if (address['postalCode']) {
+        query = `${address['postalCode']}, ` + query
+      }
+      if (address['street'] && address['houseNumber']) {
         query = `${address['street']} ${address['houseNumber']}, ` + query
-      else if (address['street']) query = `${address['street']}, ` + query
+      } else if (address['street']) {
+        query = `${address['street']}, ` + query
+      }
 
       return query
     },
