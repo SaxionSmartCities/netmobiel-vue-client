@@ -10,7 +10,6 @@
     <v-col class="py-0">
       <date-time-selector
         v-model="localTravelTime"
-        :allowed-dates="allowedDates"
         @dateTimeChanged="onDateTimeChanged"
       />
     </v-col>
@@ -44,9 +43,6 @@ export default {
     },
   },
   methods: {
-    allowedDates(v) {
-      return moment(v) >= moment().startOf('day')
-    },
     onFieldSelected(newField) {
       this.$emit('locationFieldSelected', newField)
     },
