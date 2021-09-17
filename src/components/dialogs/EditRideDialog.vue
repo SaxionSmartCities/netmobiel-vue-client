@@ -51,7 +51,6 @@
           <v-col>
             <date-time-selector
               v-model="localTravelTime"
-              :allowed-dates="allowedDates"
               @dateTimeChanged="onDateTimeChanged"
             />
           </v-col>
@@ -154,9 +153,6 @@ export default {
       }
       this.recurrence = this.ride.recurrence
       this.showWarning = this.recurrence !== undefined
-    },
-    allowedDates(v) {
-      return moment(v) >= moment().startOf('day')
     },
     onDateTimeChanged(newDateTime) {
       this.localTravelTime.when = newDateTime.when

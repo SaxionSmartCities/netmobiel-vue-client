@@ -1,17 +1,16 @@
 import axios from 'axios'
 import config from '@/config/config'
-import util from '@/utils/Utils'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { getters, mutations } from '@/store/credits-service'
 import { CreditsState, Deposit, OrderId, Statement } from './types'
 import { Page, PageSelection } from '../types'
 import { RootState } from '@/store/Rootstate'
 import * as uiStore from '@/store/ui'
+import { generateHeaders } from '@/utils/Utils'
 
 type ActionContext = BareActionContext<CreditsState, RootState>
 
 const { BANKER_BASE_URL, GRAVITEE_BANKER_SERVICE_API_KEY } = config
-const { generateHeaders } = util
 
 async function fetchSettings(context: ActionContext) {
   try {

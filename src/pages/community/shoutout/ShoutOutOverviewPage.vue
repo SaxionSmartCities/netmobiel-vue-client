@@ -138,9 +138,11 @@ export default {
   },
   beforeRouteEnter: beforeRouteEnter({
     selectedTab: number => number || 0,
+    baseLocation: value => value,
   }),
   beforeRouteLeave: beforeRouteLeave({
     selectedTab: number => number || 0,
+    baseLocation: value => value,
   }),
   mounted() {
     csStore.mutations.setProposedRides([])

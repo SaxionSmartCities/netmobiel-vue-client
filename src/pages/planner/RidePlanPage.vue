@@ -94,12 +94,16 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import SearchCriteria from '@/components/common/SearchCriteria.vue'
 import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
 import { geoPlaceToCriteria } from '@/utils/Utils'
-import { beforeRouteEnter, beforeRouteLeave } from '@/utils/navigation.js'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as gsStore from '@/store/geocoder-service'
 import * as isStore from '@/store/itinerary-service'
+import {
+  beforeRouteEnter,
+  beforeRouteLeave,
+  restoreDataBeforeRouteEnter,
+} from '@/utils/navigation'
 
 export default {
   name: 'RidePlanPage',
@@ -159,9 +163,23 @@ export default {
     }
     isStore.mutations.setSearchCriteria(newCriteria)
   },
-  beforeRouteEnter: beforeRouteEnter({
-    recurrence: json => json,
-  }),
+  beforeRouteEnter(to, from, next) {
+    // console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
+    const keepWhenComingFrom = ['searchLocation', 'CarsPage', 'planOptions']
+    // Clear the search location when navigating from a different page than the location lookup page of one of the subpages
+    if (!keepWhenComingFrom.includes(from?.name)) {
+      gsStore.mutations.clearAllGeoLocationPicked()
+      isStore.mutations.setSearchCriteria({})
+    }
+    next(vm =>
+      restoreDataBeforeRouteEnter(vm, {
+        recurrence: value => value,
+      })
+    )
+  },
+  // beforeRouteEnter: beforeRouteEnter({
+  //   recurrence: json => json,
+  // }),
   beforeRouteLeave: beforeRouteLeave({
     recurrence: model => model && { ...model },
   }),

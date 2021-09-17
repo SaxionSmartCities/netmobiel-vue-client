@@ -30,16 +30,15 @@
       class="d-flex flex-column align-self-start"
       dense
     >
-      <v-col v-if="homeAddress.length > 0">
-        <h4 class="netmobiel">Thuis</h4>
-      </v-col>
+      <!--      <v-col v-if="homeAddress.length > 0">-->
+      <!--        <h4 class="netmobiel">Thuis</h4>-->
+      <!--      </v-col>-->
       <locations-list
         :locations="homeAddress"
         :show-highlighted-text="false"
         :show-favorite-icon="false"
-        empty-list-label="Geen thuis adres"
+        empty-list-label="Geef je thuisadres op in je profiel"
         @onItemClicked="completeSearch($event)"
-        @onUnFavoriteClicked="removeFavorite"
       />
       <v-col class="mt-2">
         <h4 class="netmobiel">Mijn favorieten</h4>
@@ -56,6 +55,7 @@
       v-if="selectedLocation"
       :show="selectedLocation != null"
       :location="selectedLocation"
+      :initial-name="searchInput"
       @onCancelFavorite="cancelFavorite"
       @onAddFavorite="addFavorite"
     />
@@ -69,11 +69,16 @@ import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
 // map category to Material icon name (needs more work...)
 // show at most 8 suitable suggestions
 import { throttle } from 'lodash'
-import { geoPlaceToCriteria, geoSuggestionToPlace } from '@/utils/Utils'
+import {
+  geoPlaceToAddressLabel,
+  geoPlaceToCriteria,
+  geoSuggestionToPlace,
+} from '@/utils/Utils'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 import * as gsStore from '@/store/geocoder-service'
+import constants from '@/constants/constants'
 const skipCategories = new Set(['intersection'])
 const maxSuggestions = 8
 
@@ -101,33 +106,33 @@ export default {
   computed: {
     homeAddress() {
       const address = psStore.getters.getProfile.address
-      if (address) {
+      if (address?.location?.coordinates) {
         return [
           {
             ...address,
             title: 'Thuis',
-            label: `${address.street}, ${address.houseNumber} ${address.postalCode} ${address.locality}`,
+            subtitle: geoPlaceToAddressLabel(address, false),
+            iconName: 'home',
           },
         ]
       }
       return []
     },
     favorites() {
-      return psStore.getters.getProfile.favoriteLocations.map(p => {
-        let mapped = { ...p }
-        mapped.title = p.label
-        mapped.label = `${p.street}, ${p.houseNumber}, ${p.postalCode} ${p.locality}`
-        mapped.favorite = true
-        return mapped
+      return psStore.getters.getProfile.favoriteLocations.map(place => {
+        return {
+          ...place,
+          title: place.name,
+          subtitle: geoPlaceToAddressLabel(place, true),
+          favorite: true,
+          iconName: this.iconicCategory(place.category),
+        }
       })
     },
     suggestions() {
-      let suggestions = gsStore.getters.getGeocoderSuggestions
-      // Mark suggestion that have already been favorited.
-      return suggestions.map(suggestion => ({
-        ...geoSuggestionToPlace(suggestion),
-        favorite: !!this.favorites.find(fav => fav.ref === suggestion.id),
-      }))
+      return gsStore.getters.getGeocoderSuggestions.map(suggestion =>
+        this.createLocationFromSuggestion(suggestion)
+      )
     },
     localEditSearchCriteria() {
       return this.editSearchCriteria === 'true'
@@ -154,6 +159,51 @@ export default {
     )?.query
   },
   methods: {
+    createLocationFromSuggestion(sug) {
+      // A location is an extended Place.
+      // It has a title as suggested by the geo service.
+      // It has a subtitle, something shown at the second line.
+      // It has titleParts, a list of objects comprising a text and a highlight flag.
+      // It has a flag indicating whether the entry is a favorite (stored in the profile).
+      // It has an iconName, associated with the category of the location
+      let loc = {
+        ...geoSuggestionToPlace(sug),
+        favorite: !!this.favorites.find(fav => fav.ref === sug.id),
+        titleParts: [],
+        title: sug.title.replace(', Nederland', ''),
+        subtitle: '',
+        iconName: this.iconicCategory(sug.category),
+      }
+      let prevTitleIx = 0
+      // Base the loc.titleParts on the possibly modified loc.title
+      for (let ix = 0; ix < sug.titleHighlights?.length; ix++) {
+        let thl = sug.titleHighlights[ix]
+        if (thl.start !== prevTitleIx) {
+          loc.titleParts.push({
+            text: loc.title.substring(prevTitleIx, thl.start),
+            highlight: false,
+          })
+        }
+        loc.titleParts.push({
+          text: loc.title.substring(thl.start, thl.end),
+          highlight: true,
+        })
+        prevTitleIx = thl.end
+      }
+      if (prevTitleIx < loc.title.length) {
+        loc.titleParts.push({
+          text: loc.title.substring(prevTitleIx),
+          highlight: false,
+        })
+      }
+      if (sug.resultType === 'place') {
+        // A place has only a short title, add the address line as subtitle
+        loc.subtitle = geoPlaceToAddressLabel(loc, false)
+      } else {
+        // 'locality', 'street', 'houseNumber' have a complete address line as title (from the geoservice)
+      }
+      return loc
+    },
     completeSearch(place) {
       const fieldName = this.$route.params.field
       gsStore.mutations.setGeoLocationPicked({
@@ -218,8 +268,17 @@ export default {
     },
     removeFavorite(favorite) {
       const profileId = psStore.getters.getProfile.id
-      const placeId = favorite.id
+      let placeId = favorite.id
+      if (!placeId) {
+        placeId = this.favorites.find(f => f.ref === favorite.ref)?.id
+      }
       psStore.actions.deleteFavoriteLocation({ profileId, placeId })
+    },
+    iconicCategory(category) {
+      return (
+        constants.searchSuggestionCategoryIcons[category] ||
+        constants.searchSuggestionDefaultIcon
+      )
     },
   },
 }

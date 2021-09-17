@@ -96,7 +96,7 @@ export default {
   name: 'ShoutOut',
   components: { ItineraryLeg, ExternalUserImage },
   props: {
-    shoutOut: { type: Object, required: true },
+    shoutOut: { type: Object, required: false, default: () => null },
   },
   computed: {
     profile() {
@@ -106,7 +106,7 @@ export default {
       return this.profile.image
     },
     traveller() {
-      return this.shoutOut.traveller
+      return this.shoutOut?.traveller
     },
     travellerIdentity() {
       return this.traveller ? this.traveller.managedIdentity : ''
@@ -115,14 +115,16 @@ export default {
       return this.profile.id === this.travellerIdentity
     },
     travellerName() {
-      return `${this.traveller?.givenName} ${this.traveller?.familyName}`
+      return this.traveller
+        ? `${this.traveller.givenName} ${this.traveller.familyName}`
+        : ''
     },
     cost() {
       let fare
       if (this.proposedRide?.distance) {
         // FIXME A proposed ride should have a fare!
         fare = 0
-      } else if (this.shoutOut.referenceItinerary) {
+      } else if (this.shoutOut?.referenceItinerary) {
         // Assumption: Always a car/rideshare leg
         fare = this.shoutOut.referenceItinerary.legs
           .map(leg => leg.fareInCredits)
@@ -141,7 +143,7 @@ export default {
       //     .map(leg => leg.distance)
       //     .reduce((sum, d) => sum + d)
       // }
-      if (!this.proposedRide?.distance && this.shoutOut.referenceItinerary) {
+      if (!this.proposedRide?.distance && this.shoutOut?.referenceItinerary) {
         // Assumption: Always a car/rideshare leg
         distanceMeters = this.shoutOut.referenceItinerary.legs
           .map(leg => leg.distance)
@@ -157,7 +159,7 @@ export default {
       // } else if (this.shoutOut.referenceItinerary) {
       //   durationSecs = this.shoutOut.referenceItinerary.duration
       // }
-      if (!this.proposedRide?.duration && this.shoutOut.referenceItinerary) {
+      if (!this.proposedRide?.duration && this.shoutOut?.referenceItinerary) {
         durationSecs = this.shoutOut.referenceItinerary.duration
       }
       // Return duration in minutes
@@ -188,7 +190,7 @@ export default {
     proposedRide() {
       return this.proposedRides.find(ride => {
         return !!ride.bookings.find(
-          b => b.passengerTripPlanRef === this.shoutOut.planRef
+          b => b.passengerTripPlanRef === this.shoutOut?.planRef
         )
       })
     },

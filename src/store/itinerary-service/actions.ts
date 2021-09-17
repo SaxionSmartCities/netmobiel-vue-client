@@ -1,6 +1,5 @@
 import axios from 'axios'
 import moment from 'moment'
-import util from '@/utils/Utils'
 import config from '@/config/config'
 import constants from '../../constants/constants'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
@@ -13,11 +12,11 @@ import {
 } from '@/store/itinerary-service/types'
 import * as uiStore from '@/store/ui'
 import { addInterceptors } from '../api-middelware'
+import { generateHeaders, getCreatedObjectIdFromResponse } from '@/utils/Utils'
 
 type ActionContext = BareActionContext<ItineraryState, RootState>
 
 const { PLANNER_BASE_URL, GRAVITEE_PLANNER_SERVICE_API_KEY } = config
-const { generateHeaders } = util
 
 // ============  TRIP PLAN MANAGEMENT  ================
 // Creates a regular TripPlan on success
@@ -99,7 +98,7 @@ function createShoutOutTripPlan(
       if (response.status == 201) {
         let message = 'Oproep naar de community is geplaatst'
         uiStore.actions.queueInfoNotification(message)
-        const id = util.getCreatedObjectIdFromResponse(response)
+        const id = getCreatedObjectIdFromResponse(response)
         shoutOutId = id ? `urn:nb:pn:tripplan:${id}` : undefined
       } else {
         let message = response.data.message

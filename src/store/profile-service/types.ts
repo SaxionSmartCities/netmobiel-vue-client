@@ -207,9 +207,11 @@ export interface Address {
   postalCode?: string
   stateCode?: string
   street?: string
+  category?: string
 }
 export interface Place extends Address {
   id: number
+  name: string
   ref: string
 }
 

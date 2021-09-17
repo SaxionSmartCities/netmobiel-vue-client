@@ -99,16 +99,22 @@ export default {
       // Set the default date and time to today and the next whole hour.
       newCriteria.travelTime = {
         when: this.topOfTheHour,
-        arriving: true,
+        arriving: false,
       }
     }
     isStore.mutations.setSearchCriteria(newCriteria)
   },
   beforeRouteEnter(to, from, next) {
     // console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
-    // Clear the search location when navigating from a different page than the location lookup page
-    if (from?.name !== 'searchLocation') {
+    const keepWhenComingFrom = [
+      'searchLocation',
+      'searchOptions',
+      'searchResults',
+    ]
+    // Clear the search location when navigating from a different page than the location lookup page of one of the subpages
+    if (!keepWhenComingFrom.includes(from?.name)) {
       gsStore.mutations.clearAllGeoLocationPicked()
+      isStore.mutations.setSearchCriteria({})
     }
     next()
   },
