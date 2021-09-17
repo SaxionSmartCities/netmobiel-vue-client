@@ -39,7 +39,6 @@
         :show-favorite-icon="false"
         empty-list-label="Geef je thuisadres op in je profiel"
         @onItemClicked="completeSearch($event)"
-        @onUnFavoriteClicked="removeFavorite"
       />
       <v-col class="mt-2">
         <h4 class="netmobiel">Mijn favorieten</h4>
@@ -56,6 +55,7 @@
       v-if="selectedLocation"
       :show="selectedLocation != null"
       :location="selectedLocation"
+      :initial-name="searchInput"
       @onCancelFavorite="cancelFavorite"
       @onAddFavorite="addFavorite"
     />
@@ -69,11 +69,16 @@ import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
 // map category to Material icon name (needs more work...)
 // show at most 8 suitable suggestions
 import { throttle } from 'lodash'
-import { geoPlaceToCriteria, geoSuggestionToPlace } from '@/utils/Utils'
+import {
+  geoPlaceToAddressLabel,
+  geoPlaceToCriteria,
+  geoSuggestionToPlace,
+} from '@/utils/Utils'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 import * as gsStore from '@/store/geocoder-service'
+import constants from '@/constants/constants'
 const skipCategories = new Set(['intersection'])
 const maxSuggestions = 8
 
@@ -106,7 +111,8 @@ export default {
           {
             ...address,
             title: 'Thuis',
-            label: this.addressLine(address),
+            subtitle: geoPlaceToAddressLabel(address, false),
+            iconName: 'home',
           },
         ]
       }
@@ -116,9 +122,10 @@ export default {
       return psStore.getters.getProfile.favoriteLocations.map(place => {
         return {
           ...place,
-          title: place.label,
-          label: this.addressLine(place),
+          title: place.name,
+          subtitle: geoPlaceToAddressLabel(place, true),
           favorite: true,
+          iconName: this.iconicCategory(place.category),
         }
       })
     },
@@ -155,14 +162,17 @@ export default {
     createLocationFromSuggestion(sug) {
       // A location is an extended Place.
       // It has a title as suggested by the geo service.
+      // It has a subtitle, something shown at the second line.
       // It has titleParts, a list of objects comprising a text and a highlight flag.
       // It has a flag indicating whether the entry is a favorite (stored in the profile).
+      // It has an iconName, associated with the category of the location
       let loc = {
         ...geoSuggestionToPlace(sug),
         favorite: !!this.favorites.find(fav => fav.ref === sug.id),
         titleParts: [],
         title: sug.title.replace(', Nederland', ''),
-        label: '',
+        subtitle: '',
+        iconName: this.iconicCategory(sug.category),
       }
       let prevTitleIx = 0
       // Base the loc.titleParts on the possibly modified loc.title
@@ -186,26 +196,13 @@ export default {
           highlight: false,
         })
       }
-      switch (sug.resultType) {
-        case 'place':
-          // A place has a short title, add the address line
-          loc.label = this.addressLine(loc)
-          break
-        case 'locality':
-        case 'street':
-        case 'houseNumber':
-        default:
-          // All others have a complete address line as title (from the geoservice)
-          break
+      if (sug.resultType === 'place') {
+        // A place has only a short title, add the address line as subtitle
+        loc.subtitle = geoPlaceToAddressLabel(loc, false)
+      } else {
+        // 'locality', 'street', 'houseNumber' have a complete address line as title (from the geoservice)
       }
       return loc
-    },
-    addressLine(addr) {
-      return addr
-        ? `${addr.street}${addr.houseNumber ? ' ' + addr.houseNumber : ''}, ${
-            addr.locality
-          } (${addr.stateCode})`
-        : ''
     },
     completeSearch(place) {
       const fieldName = this.$route.params.field
@@ -276,6 +273,12 @@ export default {
         placeId = this.favorites.find(f => f.ref === favorite.ref)?.id
       }
       psStore.actions.deleteFavoriteLocation({ profileId, placeId })
+    },
+    iconicCategory(category) {
+      return (
+        constants.searchSuggestionCategoryIcons[category] ||
+        constants.searchSuggestionDefaultIcon
+      )
     },
   },
 }
