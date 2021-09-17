@@ -1,5 +1,4 @@
 import axios from 'axios'
-import util from '@/utils/Utils'
 import config from '@/config/config'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { GeoCoderRequest, GeoCoderState, GeoCoderSuggestion } from './types'
@@ -7,11 +6,12 @@ import { RootState } from '@/store/Rootstate'
 import { mutations } from '@/store/geocoder-service/index'
 import * as uiStore from '@/store/ui'
 import constants from '@/constants/constants'
+import { generateHeaders } from '@/utils/Utils'
 
 type ActionContext = BareActionContext<GeoCoderState, RootState>
 
 const { GEOCODE_BASE_URL, GRAVITEE_GEOCODE_SERVICE_API_KEY } = config
-const { generateHeaders } = util
+
 function isPhonetic(s: string) {
   // Detection: multiple short words (<= 4 chars) between ()
   if (!s) {
