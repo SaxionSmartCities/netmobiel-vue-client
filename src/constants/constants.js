@@ -36,7 +36,7 @@ export default {
   DEFAULT_PROFILE_SEARCH_PREFERENCES: {
     numPassengers: 1,
     maxTransfers: undefined,
-    maxWalkDistance: 2000,
+    maxWalkDistance: 500,
     luggageOptions: ['HANDLUGGAGE', 'GROCERIES'],
     allowedTravelModes: ['BUS', 'RAIL', 'RIDESHARE', 'WALK'],
     allowFirstLegRideshare: false,
@@ -50,7 +50,6 @@ export default {
     maxDistanceDetour: 100000,
     luggageOptions: ['HANDLUGGAGE', 'GROCERIES', 'STROLLER'],
     selectedCarRef: undefined,
-    cars: [],
   },
   PROFILE_ROLE_DRIVER: 'driver',
   PROFILE_ROLE_PASSENGER: 'passenger',
