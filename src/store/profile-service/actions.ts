@@ -333,7 +333,7 @@ function storeSearchPreferences(context: ActionContext, payload: any) {
     ...context.state.user.profile,
     searchPreferences: { ...payload },
   }
-  updateProfile(context, profile)
+  return updateProfile(context, profile)
 }
 
 function storeRidePreferences(context: ActionContext, payload: any) {
@@ -342,7 +342,7 @@ function storeRidePreferences(context: ActionContext, payload: any) {
     ...context.state.user.profile,
     ridePlanOptions: { ...payload },
   }
-  updateProfile(context, profile)
+  return updateProfile(context, profile)
 }
 
 function storeFcmToken(context: ActionContext, payload: { fcmToken: string }) {
@@ -353,7 +353,7 @@ function storeFcmToken(context: ActionContext, payload: { fcmToken: string }) {
 
 function updateProfile(context: ActionContext, profile: Profile) {
   const URL = `${PROFILE_BASE_URL}/profiles/${profile.id}`
-  axios
+  return axios
     .put(URL, profile, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })

@@ -212,9 +212,9 @@ export default {
         id: this.rideId,
       })
     } else {
-      const { selectedCarId } = this.profile?.ridePlanOptions
-      if (selectedCarId) {
-        csStore.actions.fetchCar({ id: selectedCarId })
+      const { selectedCarRef } = this.profile?.ridePlanOptions
+      if (selectedCarRef) {
+        csStore.actions.fetchCar({ id: selectedCarRef })
       }
     }
     const fromPlace = gsStore.getters.getPickedLocations.get('from')?.place

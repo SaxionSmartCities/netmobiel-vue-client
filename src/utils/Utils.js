@@ -91,6 +91,27 @@ function getCreatedObjectIdFromResponse(response) {
   const loc = response.headers?.location
   return loc ? loc.substring(loc.lastIndexOf('/') + 1) : undefined
 }
+
+/**
+ * Finds the index of the value in the haystack that is numerical closest to the needle value.
+ * @param needle The value to lookup for
+ * @param haystack The array with values. Sorting is not necessary
+ * @return {*} The index of the element that is closest.
+ */
+function findClosestIndexOf(needle, haystack) {
+  // console.log(`Needle: ${needle} Haystack: [${haystack.join(', ')}]`)
+  return haystack.reduce((prev, curr, ix) => {
+    // console.log(`Prev ${prev} ${haystack[prev]} Ix ${ix} Curr ${curr} `)
+    let prevDiff = Math.abs(haystack[prev] - needle)
+    let currDiff = Math.abs(curr - needle)
+    if (prevDiff === currDiff) {
+      return haystack[prev] > curr ? prev : ix
+    } else {
+      return prevDiff < currDiff ? prev : ix
+    }
+  }, 0)
+}
+
 export {
   upperCaseFirst,
   generateHeaders,
@@ -100,4 +121,5 @@ export {
   isAbsoluteUrl,
   coordinatesToGeoLocation,
   getCreatedObjectIdFromResponse,
+  findClosestIndexOf,
 }

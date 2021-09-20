@@ -11,8 +11,8 @@ type ActionContext = BareActionContext<CarpoolState, RootState>
 
 const { RIDESHARE_BASE_URL, GRAVITEE_RIDESHARE_SERVICE_API_KEY } = config
 
-function fetchLicense(context: ActionContext, payload: string): void {
-  mutations.setSearchLicensePlate(payload)
+function fetchByLicensePlate(context: ActionContext, payload: string): void {
+  mutations.setCarSearchLicensePlate(payload)
   const plate = payload
   const URL = `${RIDESHARE_BASE_URL}/carLicenses?country=NL&plate=${plate}`
   axios
@@ -20,7 +20,7 @@ function fetchLicense(context: ActionContext, payload: string): void {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
     })
     .then(function(resp) {
-      mutations.setSearchResult(resp.data)
+      mutations.setCarSearchResult(resp.data)
     })
     .catch(function(error) {
       // eslint-disable-next-line
@@ -116,18 +116,21 @@ function removeCar(context: ActionContext, payload: Car) {
 
 function submitRide(context: ActionContext, payload: any) {
   const { from, to, ridePlanOptions, recurrence, travelTime } = payload
-  if (ridePlanOptions.selectedCarId < 0) {
+  if (!ridePlanOptions.selectedCarRef) {
     uiStore.actions.queueErrorNotification('Voeg eerst een auto toe.')
     return
   }
   const request = {
-    carRef: 'urn:nb:rs:car:' + ridePlanOptions.selectedCarId,
+    carRef: ridePlanOptions.selectedCarRef,
     recurrence,
     fromPlace: from,
     toPlace: to,
-    remarks: 'What does this do?',
-    nrSeatsAvailable: ridePlanOptions.numPassengers,
-    maxDetourSeconds: ridePlanOptions.maxMinutesDetour * 60,
+    // remarks: 'Opmerkingen van de chauffeur',
+    nrSeatsAvailable: ridePlanOptions.maxPassengers,
+    maxDetourSeconds: ridePlanOptions.maxTimeDetour
+      ? ridePlanOptions.maxTimeDetour * 60
+      : undefined,
+    maxDetourMeters: ridePlanOptions.maxDistanceDetour,
   }
   // Set arrival or departure time.
   const formattedDate = travelTime.when.toISOString()
@@ -165,7 +168,7 @@ function updateRide(context: ActionContext, payload: any) {
   const params: any = {}
   payload.scope && (params['scope'] = payload.scope)
 
-  axios
+  return axios
     .put(URL, ride, {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       params: params,
@@ -375,7 +378,7 @@ export const buildActions = (
   csBuilder: ModuleBuilder<CarpoolState, RootState>
 ) => {
   return {
-    fetchLicense: csBuilder.dispatch(fetchLicense),
+    fetchByLicensePlate: csBuilder.dispatch(fetchByLicensePlate),
     fetchCars: csBuilder.dispatch(fetchCars),
     submitCar: csBuilder.dispatch(submitCar),
     fetchCar: csBuilder.dispatch(fetchCar),
