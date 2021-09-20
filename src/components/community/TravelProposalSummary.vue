@@ -21,11 +21,11 @@
           </p>
           <p class="font-weight-light subtitle-1 mb-0">
             <span>Vertrek: </span>
-            <span class="capitalize">
+            <span class="text-capitalize">
               {{ formatDateTime(itinerary.departureTime) }}
             </span>
             <span> - Aankomst: </span>
-            <span class="capitalize">
+            <span class="text-capitalize">
               {{ formatDateTime(itinerary.arrivalTime) }}
             </span>
           </p>

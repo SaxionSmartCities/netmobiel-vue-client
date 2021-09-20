@@ -53,7 +53,7 @@
                 </v-row>
                 <v-row no-gutters>
                   <v-col class="text-end pr-3">
-                    <v-icon v-if="value.longerPickupTime">check</v-icon>
+                    <v-icon v-if="value.needsAssistance">check</v-icon>
                     <v-icon v-else color="red">close</v-icon>
                   </v-col>
                 </v-row>
@@ -74,7 +74,7 @@
                   </v-col>
                   <v-col class="shrink">
                     <v-switch
-                      v-model="value.longerPickupTime"
+                      v-model="value.needsAssistance"
                       class="switch-overwrite"
                       color="green"
                     >
@@ -92,11 +92,11 @@
                 </v-row>
                 <v-row no-gutters>
                   <v-col class="text-end pr-3">
-                    <v-icon v-if="value.allowFirstLegTransfer">check</v-icon>
+                    <v-icon v-if="value.allowFirstLegRideshare">check</v-icon>
                     <v-icon v-else color="red">close</v-icon>
                   </v-col>
                   <v-col class="text-end shrink pr-3">
-                    <v-icon v-if="value.allowLastLegTransfer">check</v-icon>
+                    <v-icon v-if="value.allowLastLegRideshare">check</v-icon>
                     <v-icon v-else color="red">close</v-icon>
                   </v-col>
                 </v-row>
@@ -125,7 +125,7 @@
                   </v-col>
                   <v-col class="shrink">
                     <v-switch
-                      v-model="value.allowFirstLegTransfer"
+                      v-model="value.allowFirstLegRideshare"
                       class="switch-overwrite"
                       color="green"
                     >
@@ -138,7 +138,7 @@
                   </v-col>
                   <v-col class="my-0">
                     <v-switch
-                      v-model="value.allowLastLegTransfer"
+                      v-model="value.allowLastLegRideshare"
                       class="switch-overwrite"
                       color="green"
                     >
@@ -164,7 +164,7 @@
                 </v-row>
                 <v-row dense>
                   <v-col class="text-end pr-3">
-                    {{ value.maximumTransferTime }} meter
+                    {{ walkDistance }} meter
                   </v-col>
                 </v-row>
               </v-expansion-panel-header>
@@ -172,15 +172,15 @@
                 <v-row dense>
                   <v-col>
                     <v-slider
-                      v-model="selectedWalkingDistance"
+                      v-model="walkDistanceIndex"
                       thumb-color="thumb-grey"
                       thumb-label
                       ticks="always"
                       tick-size="2"
-                      :tick-labels="transferDistanceOptions"
+                      :tick-labels="walkDistanceOptions"
                       min="0"
-                      max="2000"
-                      step="500"
+                      :max="walkDistanceOptions.length - 1"
+                      step="1"
                     />
                   </v-col>
                 </v-row>
@@ -191,14 +191,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-btn
-            large
-            rounded
-            block
-            depressed
-            color="button"
-            @click="$emit('onSearchOptionsSave')"
-          >
+          <v-btn large rounded block depressed color="button" @click="save">
             Voorkeuren opslaan
           </v-btn>
         </v-col>
@@ -211,6 +204,8 @@
 import SearchOptionsIconExpansionPanel from './SearchOptionsIconExpansionPanel.vue'
 import travelModes from '@/constants/travel-modes.js'
 import luggageTypes from '@/constants/luggage-types.js'
+import { findClosestIndexOf } from '@/utils/Utils'
+import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'SearchOptions',
@@ -225,21 +220,15 @@ export default {
   },
   data() {
     return {
-      maxNrOfPersons: 4,
+      maxNrOfPersons: 8,
       showOverstapAlert: true,
-      transferDistanceOptions: [250, 500, 1000, 1500, 2000],
+      walkDistanceOptions: [250, 500, 1000, 2000, 3500, 5000],
+      walkDistanceIndex: 0,
     }
   },
   computed: {
-    selectedWalkingDistance: {
-      get() {
-        return this.value.maximumTransferTime == 250
-          ? 0
-          : this.value.maximumTransferTime
-      },
-      set(newValue) {
-        this.value.maximumTransferTime = newValue == 0 ? 250 : newValue
-      },
+    walkDistance() {
+      return this.walkDistanceOptions[this.walkDistanceIndex]
     },
     generatePersonRange() {
       let result = []
@@ -289,6 +278,19 @@ export default {
       },
     },
   },
+  created() {
+    // Find closest index for walk distance
+    this.walkDistanceIndex = findClosestIndexOf(
+      this.value.maxWalkDistance,
+      this.walkDistanceOptions
+    )
+  },
+  methods: {
+    save() {
+      this.value.maxWalkDistance = this.walkDistance
+      this.$emit('onSearchOptionsSave')
+    },
+  },
 }
 </script>
 
@@ -300,7 +302,7 @@ export default {
 
 .switch-overwrite {
   &.v-input--selection-controls {
-    margin-top: 0px;
+    margin-top: 0;
   }
 }
 .v-input__control {

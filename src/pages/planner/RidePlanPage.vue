@@ -125,13 +125,9 @@ export default {
       return psStore.getters.getProfile?.ridePlanOptions
     },
     selectedCar() {
-      const selectedCarId = this.ridePlanOptions?.selectedCarId
+      const selectedCarRef = this.ridePlanOptions?.selectedCarRef
       const cars = csStore.getters.getAvailableCars
-      // HACK: selectedCarId is a string (in the backend) but we expect a number. Using the == comparison
-      // we will get the correct selected car. We want to use === however. But the backend should be
-      // updated first.
-      // JR: No, selectedCarId should be a urn, not a number.
-      return cars.find(car => car.id == selectedCarId)
+      return cars.find(car => car.carRef === selectedCarRef)
     },
     disabledRideAddition() {
       const { from, to, travelTime } = this.searchCriteria
