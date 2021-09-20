@@ -154,7 +154,7 @@ export default {
       // Set the default date and time to today and the next whole hour.
       newCriteria.travelTime = {
         when: this.topOfTheHour,
-        arriving: true,
+        arriving: false,
       }
     }
     isStore.mutations.setSearchCriteria(newCriteria)
