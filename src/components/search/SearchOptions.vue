@@ -222,7 +222,7 @@ export default {
     return {
       maxNrOfPersons: 8,
       showOverstapAlert: true,
-      walkDistanceOptions: [250, 500, 1000, 2000, 3500, 5000],
+      walkDistanceOptions: [250, 500, 1000, 2000, 4000, 8000],
       walkDistanceIndex: 0,
     }
   },
