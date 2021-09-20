@@ -25,7 +25,7 @@
         </v-card-title>
         <v-card-subtitle>
           <v-row no-gutters class="justify-space-between pb-0">
-            <v-col class="text-capitalize">{{ formatTime() }}</v-col>
+            <v-col class="capitalize">{{ formatTime() }}</v-col>
             <v-col v-if="ride.recurrence" class="text-right">
               <v-icon>replay</v-icon>
               {{ formatRecurrence() }}

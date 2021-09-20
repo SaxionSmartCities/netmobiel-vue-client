@@ -33,7 +33,7 @@
         </v-card-title>
         <v-card-subtitle class="pr-1">
           <v-row justify="space-between" no-gutters class="pb-0">
-            <v-col class="text-capitalize">
+            <v-col class="capitalize">
               {{ formatDateTime(departureTime) }}
             </v-col>
             <v-col class="text-right">
