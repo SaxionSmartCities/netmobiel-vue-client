@@ -102,20 +102,20 @@ export default {
   },
   computed: {
     searchResult() {
-      return csStore.getters.getSearchResult
+      return csStore.getters.getCarSearchResult
     },
   },
   watch: {
     searchLicensePlate(newValue) {
-      if (newValue.length == 8) {
-        csStore.actions.fetchLicense(newValue)
+      if (newValue.length === 8) {
+        csStore.actions.fetchByLicensePlate(newValue)
       } else {
-        csStore.mutations.clearSearchResult()
+        csStore.mutations.clearCarSearchResult()
       }
     },
   },
   mounted() {
-    csStore.mutations.clearSearchResult()
+    csStore.mutations.clearCarSearchResult()
   },
   created: function() {
     uiStore.mutations.showBackButton()

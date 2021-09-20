@@ -3,7 +3,7 @@ import {
   Car,
   CarpoolState,
   Ride,
-  SearchResult,
+  CarSearchResult,
 } from '@/store/carpool-service/types'
 import { RootState } from '@/store/Rootstate'
 
@@ -11,16 +11,16 @@ function addRideToList(state: CarpoolState, payload: Ride) {
   state.rides.push(payload)
 }
 
-function setSearchLicensePlate(state: CarpoolState, payload: string) {
-  state.search.licensePlate = payload
+function setCarSearchLicensePlate(state: CarpoolState, payload: string) {
+  state.carSearch.licensePlate = payload
 }
 
-function setSearchResult(state: CarpoolState, payload: SearchResult) {
-  state.search.result = payload
+function setCarSearchResult(state: CarpoolState, payload: CarSearchResult) {
+  state.carSearch.result = payload
 }
 
-function clearSearchResult(state: CarpoolState) {
-  state.search.result = null
+function clearCarSearchResult(state: CarpoolState) {
+  state.carSearch.result = null
 }
 
 function setAvailableCars(state: CarpoolState, payload: Car[]) {
@@ -77,9 +77,9 @@ export const buildMutations = (
 ) => {
   return {
     addRideToList: csBuilder.commit(addRideToList),
-    setSearchLicensePlate: csBuilder.commit(setSearchLicensePlate),
-    setSearchResult: csBuilder.commit(setSearchResult),
-    clearSearchResult: csBuilder.commit(clearSearchResult),
+    setCarSearchLicensePlate: csBuilder.commit(setCarSearchLicensePlate),
+    setCarSearchResult: csBuilder.commit(setCarSearchResult),
+    clearCarSearchResult: csBuilder.commit(clearCarSearchResult),
     setAvailableCars: csBuilder.commit(setAvailableCars),
     setSelectedCar: csBuilder.commit(setSelectedCar),
     setPlannedRidesCount: csBuilder.commit(setPlannedRidesCount),

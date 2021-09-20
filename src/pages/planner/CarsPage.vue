@@ -5,11 +5,11 @@
         <h3>Mijn auto's</h3>
       </v-col>
     </v-row>
-    <v-row v-for="car in availableCars" :key="car.id" dense>
+    <v-row v-for="car in availableCars" :key="car.carRef" dense>
       <v-col>
         <car-card
           :car="car"
-          :selected-car="selectedCarId"
+          :selected-car="selectedCarRef"
           @set-car="selectAlternativeCar"
           @check-delete-car="checkDeleteCar"
         ></car-card>
@@ -82,10 +82,10 @@ export default {
         .join(', ')
     },
     passengerCount() {
-      return psStore.getters.getProfile.ridePlanOptions.numPassengers
+      return psStore.getters.getProfile.ridePlanOptions.maxPassengers
     },
-    selectedCarId() {
-      return psStore.getters.getProfile.ridePlanOptions.selectedCarId
+    selectedCarRef() {
+      return psStore.getters.getProfile.ridePlanOptions.selectedCarRef
     },
   },
   created() {
@@ -99,7 +99,7 @@ export default {
         ...profile,
         ridePlanOptions: {
           ...profile.ridePlanOptions,
-          selectedCarId: car.id,
+          selectedCarRef: car.carRef,
         },
       })
     },
@@ -109,12 +109,11 @@ export default {
     },
     removeCar(car) {
       this.dialog = false
-      // Update profile if the car that has been removed the default car is.
-      // Set the slected car id to -1 if the user has no other cars configured.
-      // HACK: selectedCarId is a string (in the backend) but we expect a number.
-      if (this.selectedCarId == car.id) {
+      if (this.selectedCarRef === car.carRef) {
         const alternative =
-          this.availableCars.length > 1 ? this.availableCars[0] : { id: -1 }
+          this.availableCars.length > 1
+            ? this.availableCars[0]
+            : { carRef: undefined }
         this.selectAlternativeCar(alternative)
       }
       // Remove car in the backend.
