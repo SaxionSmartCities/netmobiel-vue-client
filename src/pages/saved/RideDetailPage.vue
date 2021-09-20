@@ -172,7 +172,7 @@ export default {
       switch (state) {
         case 'SCHEDULED':
           // A ride with a proposed or confirmed booking cannot be modified right now
-          if (this.activeBookings === 0) {
+          if (this.activeBookings.length === 0) {
             options.push({
               icon: 'fa-pencil-alt',
               label: 'Wijzig deze rit',
@@ -273,9 +273,10 @@ export default {
           ? (scope = 'this-and-following')
           : (scope = 'this')
       }
-      csStore.actions.updateRide({ ride: newRide, scope: scope })
-      this.showEditRideModal = false
-      this.$router.go(-1)
+      csStore.actions.updateRide({ ride: newRide, scope: scope }).then(() => {
+        this.showEditRideModal = false
+        this.$router.go(-1)
+      })
     },
     onCancel() {
       this.showEditRideModal = false
