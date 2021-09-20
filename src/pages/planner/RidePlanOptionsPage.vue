@@ -20,12 +20,14 @@
                 >
                   <v-row no-gutters>
                     <v-col>
-                      <span>Max. aantal passagiers</span>
+                      <span
+                        >Max. aantal passagiers (als de auto het toelaat)</span
+                      >
                     </v-col>
                   </v-row>
                   <v-row no-gutters>
                     <v-col class="text-end pr-2">
-                      {{ ridePlanOptions.numPassengers }}
+                      {{ ridePlanOptions.maxPassengers }}
                     </v-col>
                   </v-row>
                 </v-expansion-panel-header>
@@ -34,7 +36,7 @@
                     <v-col>
                       <v-slider
                         v-if="maxNrOfPersons > 1"
-                        v-model="ridePlanOptions.numPassengers"
+                        v-model="ridePlanOptions.maxPassengers"
                         class="px-4"
                         thumb-color="thumb-grey"
                         thumb-label
@@ -51,11 +53,43 @@
               <search-options-icon-expansion-panel
                 v-model="luggage"
                 @onChanged="
-                  newLugagge => {
-                    luggage = newLugagge
+                  newLuggage => {
+                    luggage = newLuggage
                   }
                 "
               />
+              <v-expansion-panel>
+                <v-expansion-panel-header>
+                  <v-row no-gutters>
+                    <v-col>
+                      <span class="form-label py-2">Maximale omrijafstand</span>
+                    </v-col>
+                  </v-row>
+                  <v-row no-gutters>
+                    <v-col class="text-end pr-2">
+                      {{ detourDistance }} km
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-row dense>
+                    <v-col>
+                      <v-slider
+                        v-model="detourDistanceIndex"
+                        class="px-4"
+                        thumb-color="thumb-grey"
+                        thumb-label
+                        ticks="always"
+                        tick-size="2"
+                        :tick-labels="detourDistanceOptions"
+                        min="0"
+                        :max="detourDistanceOptions.length - 1"
+                        step="1"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
               <v-expansion-panel>
                 <v-expansion-panel-header>
                   <v-row no-gutters>
@@ -64,26 +98,62 @@
                     </v-col>
                   </v-row>
                   <v-row no-gutters>
-                    <v-col class="text-end pr-2">
-                      {{ ridePlanOptions.maxMinutesDetour }} min
-                    </v-col>
+                    <v-col class="text-end pr-2"> {{ detourTime }} min </v-col>
                   </v-row>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                   <v-row dense>
                     <v-col>
                       <v-slider
-                        v-model="ridePlanOptions.maxMinutesDetour"
+                        v-model="detourTimeIndex"
                         class="px-4"
                         thumb-color="thumb-grey"
                         thumb-label
                         ticks="always"
                         tick-size="2"
-                        :tick-labels="detourOptions"
+                        :tick-labels="detourTimeOptions"
                         min="0"
-                        max="20"
-                        step="5"
+                        :max="detourTimeOptions.length - 1"
+                        step="1"
                       />
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-header>
+                  <v-row no-gutters>
+                    <v-col>
+                      <span>Hulp bieden bij instappen</span>
+                    </v-col>
+                  </v-row>
+                  <v-row no-gutters>
+                    <v-col class="text-end pr-3">
+                      <v-icon v-if="ridePlanOptions.ableToAssist">check</v-icon>
+                      <v-icon v-else color="red">close</v-icon>
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-row no-gutters>
+                    <v-col>
+                      <v-alert type="warning" color="orange">
+                        Indien u de passagier hulp kunt bieden bij het in- en
+                        uitstappen, dan kunt u dit hier aangeven.
+                      </v-alert>
+                    </v-col>
+                  </v-row>
+                  <v-row no-gutters>
+                    <v-col class="shrink" cols="10">
+                      Ik kan hulp bieden bij in- en uitstappen:
+                    </v-col>
+                    <v-col class="shrink">
+                      <v-switch
+                        v-model="ridePlanOptions.ableToAssist"
+                        class="switch-overwrite"
+                        color="green"
+                      >
+                      </v-switch>
                     </v-col>
                   </v-row>
                 </v-expansion-panel-content>
@@ -109,6 +179,7 @@ import SearchOptionsIconExpansionPanel from '@/components/search/SearchOptionsIc
 import luggageTypes from '@/constants/luggage-types.js'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import { findClosestIndexOf } from '@/utils/Utils'
 
 export default {
   name: 'RidePreferences',
@@ -118,13 +189,22 @@ export default {
   },
   data() {
     return {
-      maxNrOfPersons: 4,
+      maxNrOfPersons: 8,
       ridePlanOptions: {},
-      detourOptions: [0, 5, 10, 15, 20],
+      detourTimeOptions: [15, 30, 45, 60],
+      detourTimeIndex: 0,
+      detourDistanceOptions: [5, 10, 20, 50, 100],
+      detourDistanceIndex: 0,
       luggageSelected: [],
     }
   },
   computed: {
+    detourTime() {
+      return this.detourTimeOptions[this.detourTimeIndex]
+    },
+    detourDistance() {
+      return this.detourDistanceOptions[this.detourDistanceIndex]
+    },
     generatePersonRange() {
       let result = []
       for (let i = 1; i <= this.maxNrOfPersons; i++) {
@@ -157,14 +237,27 @@ export default {
     this.ridePlanOptions = {
       ...psStore.getters.getProfile.ridePlanOptions,
     }
-    if (this.ridePlanOptions.numPassengers > this.maxNrOfPersons) {
-      this.ridePlanOptions.numPassengers = this.maxNrOfPersons
+    if (this.ridePlanOptions.maxPassengers > this.maxNrOfPersons) {
+      this.ridePlanOptions.maxPassengers = this.maxNrOfPersons
     }
+    // Find closest index for detourTime
+    this.detourTimeIndex = findClosestIndexOf(
+      this.ridePlanOptions.maxTimeDetour,
+      this.detourTimeOptions
+    )
+    // Find closest index for detourDistance
+    this.detourDistanceIndex = findClosestIndexOf(
+      this.ridePlanOptions.maxDistanceDetour / 1000,
+      this.detourDistanceOptions
+    )
   },
   methods: {
     save() {
-      psStore.actions.storeRidePreferences(this.ridePlanOptions)
-      this.$router.go(-1)
+      this.ridePlanOptions.maxTimeDetour = this.detourTime
+      this.ridePlanOptions.maxDistanceDetour = this.detourDistance * 1000
+      psStore.actions
+        .storeRidePreferences(this.ridePlanOptions)
+        .then(() => this.$router.go(-1))
     },
   },
 }

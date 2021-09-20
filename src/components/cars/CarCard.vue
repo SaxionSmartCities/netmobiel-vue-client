@@ -52,10 +52,7 @@ export default {
   },
   computed: {
     isSelectedCar() {
-      return (
-        this.selectedCar === String(this.car.id) ||
-        this.selectedCar === this.car.carRef
-      )
+      return this.selectedCar === this.car.carRef
     },
   },
   methods: {
