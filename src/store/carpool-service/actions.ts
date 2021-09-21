@@ -1,7 +1,7 @@
 import { CarpoolState, Car, UserRef } from './types'
 import { RootState } from '@/store/Rootstate'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
-import { actions, mutations } from '@/store/carpool-service/index'
+import { actions, getters, mutations } from '@/store/carpool-service/index'
 import * as uiStore from '@/store/ui'
 import axios from 'axios'
 import config from '@/config/config'
@@ -205,16 +205,17 @@ function fetchRides(
       params: params,
     })
     .then(function(resp) {
-      if (offset == 0) {
-        pastRides
+      if (pastRides) {
+        offset === 0
           ? mutations.savePastRides(resp.data.data)
-          : mutations.saveRides(resp.data.data)
+          : mutations.appendPastRides(resp.data.data)
+        mutations.setPastRidesCount(resp.data.totalCount)
       } else {
-        pastRides
-          ? mutations.appendPastRides(resp.data.data)
+        offset === 0
+          ? mutations.saveRides(resp.data.data)
           : mutations.appendRides(resp.data.data)
+        mutations.setPlannedRidesCount(resp.data.totalCount)
       }
-      mutations.setPlannedRidesCount(resp.data.totalCount)
     })
     .catch(function(error) {
       // eslint-disable-next-line
@@ -302,11 +303,16 @@ function deleteRide(context: ActionContext, payload: any) {
 
 function fetchUser(context: ActionContext, { userRef }: UserRef) {
   const URL = `${RIDESHARE_BASE_URL}/users/${userRef}`
+  let usr = getters.getUsers.get(userRef)
+  if (usr) {
+    return Promise.resolve(usr)
+  }
   return axios
     .get(URL, {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
     })
     .then(function(resp) {
+      mutations.addUser({ userRef, ...resp.data })
       return resp.data
     })
     .catch(function(error) {
