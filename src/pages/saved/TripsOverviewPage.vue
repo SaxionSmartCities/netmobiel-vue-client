@@ -10,7 +10,11 @@
           <v-icon color="white">directions_car</v-icon>
           <span>
             Chauffeur
-            <sup>{{ getPlannedRidesCount }}</sup>
+            <sup>{{
+              ridesSearchTime === 'Future'
+                ? getPlannedRidesCount
+                : getPastRidesCount
+            }}</sup>
           </span>
         </template>
 
@@ -186,14 +190,12 @@ export default {
   computed: {
     ...{
       getPlannedTripsCount: () => isStore.getters.getPlannedTripsCount,
-      getPlannedTrips: () =>
-        isStore.getters.getPlannedTrips.filter(
-          trip => trip.state !== 'CANCELLED'
-        ),
+      getPlannedTrips: () => isStore.getters.getPlannedTrips,
       getPastTripsCount: () => isStore.getters.getPastTripsCount,
       getPastTrips: () => isStore.getters.getPastTrips,
       getCancelledTrips: () => isStore.getters.getCancelledTrips,
       getPastRides: () => csStore.getters.getPastRides,
+      getPastRidesCount: () => csStore.getters.getPastRidesCount,
     },
     getPlannedRidesCount() {
       return csStore.getters.getPlannedRidesCount
@@ -235,13 +237,13 @@ export default {
     // },
     bottom(bottom) {
       if (bottom) {
-        if (this.selectedTab === 0) {
+        if (this.isPassengerView) {
           if (this.tripsSearchTime === 'Future') {
             this.fetchTrips(this.getPlannedTrips.length)
           } else {
             this.fetchPastTrips(this.getPastTrips.length)
           }
-        } else if (this.selectedTab === 1) {
+        } else if (this.isDriverView) {
           if (this.ridesSearchTime === 'Future') {
             this.fetchRides(this.getPlannedRides.length)
           } else {
@@ -257,10 +259,12 @@ export default {
       return number || 0
     },
     tripsSearchTime: searchtime => searchtime || 'Future',
+    ridesSearchTime: searchtime => searchtime || 'Future',
   }),
   beforeRouteLeave: beforeRouteLeave({
     selectedTab: number => number || 0,
     tripsSearchTime: searchtime => searchtime,
+    ridesSearchTime: searchtime => searchtime,
   }),
   mounted() {
     if (this.isPassengerOnly || this.isDrivingPassenger) {
@@ -271,7 +275,7 @@ export default {
       this.fetchRides()
       this.fetchPastRides()
     }
-    // The logic does not seem to be right for cancelled trips
+    // The logic does not seem to be right for cancelled trips, disable that slide show.
     // isStore.actions.fetchCancelledTrips()
     window.addEventListener('scroll', this.scrollHandler)
   },
@@ -314,16 +318,18 @@ export default {
       })
     },
     fetchPastRides(offset = 0) {
-      csStore.actions.fetchRides({
-        pastRides: true,
-        offset: offset,
-        maxResults: this.maxResultsPastRides,
-        sortDir: 'DESC',
-        since: moment()
-          .subtract(1, 'months')
-          .format(),
-        until: moment().format(),
-      })
+      if (offset === 0 || offset < this.getPastRidesCount) {
+        csStore.actions.fetchRides({
+          pastRides: true,
+          offset: offset,
+          maxResults: this.maxResultsPastRides,
+          sortDir: 'DESC',
+          since: moment()
+            .subtract(1, 'months')
+            .format(),
+          until: moment().format(),
+        })
+      }
     },
     onTripSelected(selected) {
       isStore.mutations.setSelectedTrip({})
