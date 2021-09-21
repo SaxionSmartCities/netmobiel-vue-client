@@ -1,13 +1,13 @@
 <template>
   <v-card class="pa-3">
+    <v-card-title class="headline">
+      Rit Wijzigen
+    </v-card-title>
     <v-row class="d-flex flex-column">
-      <v-col>
-        <h2>Rit wijzigen</h2>
-      </v-col>
       <v-card-text v-if="showWarning">
         <p>
-          Let op! Je gaat een rit wijzigen die ingevoerd is als reeks. Wat wil
-          je wijzigen?
+          Let op! U gaat een rit wijzigen die ingevoerd is als reeks. Wat wilt u
+          wijzigen?
         </p>
         <v-radio-group v-model="rideChoiceRadio">
           <v-radio label="Alleen deze rit" value="single" />
@@ -60,27 +60,6 @@
               :origin="localTravelTime ? localTravelTime.when : null"
             />
           </v-col>
-          <!-- <v-col>
-            <v-row dense>
-              <v-col cols="1">
-                <v-icon>directions_car</v-icon>
-              </v-col>
-              <v-col v-if="!selectedCar" class="pl-3">
-                <router-link to="cars">
-                  <span>Voer je auto in</span>
-                </router-link>
-              </v-col>
-              <v-col v-else class="pl-3">
-                <router-link to="cars">
-                  <span> {{ selectedCar.licensePlate }}</span>
-                </router-link>
-                <div class="car-model">
-                  {{ selectedCar.brand }}
-                  {{ selectedCar.model }}
-                </div>
-              </v-col>
-            </v-row>
-          </v-col> -->
           <v-col>
             <v-btn
               large
@@ -131,14 +110,6 @@ export default {
       recurrence: undefined,
       localTravelTime: { when: null, arriving: false },
     }
-  },
-  computed: {
-    searchCriteria() {
-      return { travelTime: null }
-    },
-    selectedCar() {
-      return this.ride.car
-    },
   },
   created() {
     this.init()

@@ -7,8 +7,11 @@
         dense
         no-gutters
       >
-        <v-col>
-          Deze rit is niet meer beschikbaar.
+        <v-col v-if="isTripInThePast">
+          Deze rit was geannuleerd
+        </v-col>
+        <v-col v-else>
+          Deze rit is geannuleerd
         </v-col>
       </v-row>
     </template>
@@ -66,34 +69,56 @@
     <v-dialog v-model="warningDialog">
       <v-card>
         <v-card-title class="headline">
-          Weet u dit zeker?
+          Rit Verwijderen
         </v-card-title>
-        <v-card-text v-if="drivers.length > 0">
-          <p>
-            U rijdt mee met iemand, meldt met een persoonlijke boodschap aan uw
-            chaufeur waarom u de rit annuleert.
-          </p>
-          <v-textarea
-            v-model="cancelReason"
-            outlined
-            name="input-7-4"
-            label="Reden voor annulering"
-          ></v-textarea>
+        <v-card-text>
+          <v-row class="d-flex flex-column">
+            <v-col v-if="drivers.length > 0" class="py-1">
+              <p>
+                U rijdt mee met iemand, geef in een persoonlijke boodschap aan
+                waarom u uw rit annuleert.
+              </p>
+              <v-textarea
+                v-model="cancelReason"
+                outlined
+                :auto-grow="true"
+                rows="3"
+                label="Reden voor annulering"
+                hide-details="true"
+              ></v-textarea>
+            </v-col>
+            <v-col v-else class="py-1">
+              Weet u zeker dat u deze rit wil annuleren?
+            </v-col>
+          </v-row>
+          <v-row class="d-flex flex-column py-2">
+            <v-col class="py-1">
+              <v-btn
+                large
+                rounded
+                block
+                depressed
+                color="button"
+                @click="deleteTrip"
+              >
+                Verwijderen
+              </v-btn>
+            </v-col>
+            <v-col class="py-1">
+              <v-btn
+                large
+                rounded
+                outlined
+                block
+                depressed
+                color="primary"
+                @click="cancelDialog"
+              >
+                Behouden
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-card-text>
-        <v-card-text v-else>
-          <p>
-            Weet u zeker dat u deze rit wil annuleren?
-          </p>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn text color="primary" @click="deleteTrip()">
-            Ja
-          </v-btn>
-
-          <v-btn text color="primary" @click="warningDialog = false">
-            Nee
-          </v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
     <contact-driver-modal
@@ -143,6 +168,12 @@ export default {
     }
   },
   computed: {
+    isTripInThePast() {
+      return (
+        this.selectedTrip?.itinerary.departureTime &&
+        moment(this.selectedTrip.itinerary.departureTime).isBefore(moment())
+      )
+    },
     profile() {
       return psStore.getters.getProfile
     },
@@ -179,7 +210,10 @@ export default {
       let options = []
       const { state } = this.selectedTrip
       const legs = this.selectedTrip?.itinerary?.legs
-      const found = legs ? legs.find(l => l.confirmed !== undefined) : undefined
+      // I can confirm or deny my leg, in both cases the validating is done
+      const validatedMyLeg = legs
+        ? legs.find(l => l.confirmed !== undefined)
+        : undefined
       switch (state) {
         case 'SCHEDULED':
           options.push({
@@ -190,11 +224,11 @@ export default {
           options.push({
             icon: 'fa-times-circle',
             label: 'Annuleer deze rit',
-            callback: this.onTripCancelled,
+            callback: this.onCancelTrip,
           })
           break
         case 'VALIDATING':
-          if (found === undefined) {
+          if (validatedMyLeg === undefined) {
             options.push({
               icon: 'fa-check-circle',
               label: 'Bevestig deze rit',
@@ -213,11 +247,11 @@ export default {
             label: 'Plan deze rit opnieuw',
             callback: this.onTripReplan,
           })
-          options.push({
-            icon: 'fa-times-circle',
-            label: 'Verwijder deze rit',
-            callback: this.onTripCancelled,
-          })
+          // options.push({
+          //   icon: 'fa-times-circle',
+          //   label: 'Verwijder deze rit',
+          //   callback: this.onTripCancelled,
+          // })
           break
         case 'CANCELLED':
           options.push({
@@ -225,11 +259,12 @@ export default {
             label: 'Plan deze rit opnieuw',
             callback: this.onTripReplan,
           })
-          options.push({
-            icon: 'fa-times-circle',
-            label: 'Verwijder deze rit',
-            callback: this.onTripCancelled,
-          })
+          break
+        // options.push({
+        //   icon: 'fa-times-circle',
+        //   label: 'Verwijder deze rit',
+        //   callback: this.onTripCancelled,
+        // })
       }
       return options
     },
@@ -285,7 +320,10 @@ export default {
         params: { id: this.selectedTrip.id.toString() },
       })
     },
-    onTripCancelled() {
+    cancelDialog() {
+      this.warningDialog = false
+    },
+    onCancelTrip() {
       this.warningDialog = true
     },
     deleteTrip() {

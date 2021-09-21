@@ -85,6 +85,16 @@ function coordinatesToGeoLocation(location) {
   }
 }
 
+function geoLocationToPlace(location) {
+  const place = {}
+  place.label = location.label
+  place.location = {
+    coordinates: [location.longitude, location.latitude],
+    type: 'Point',
+  }
+  return place
+}
+
 function getCreatedObjectIdFromResponse(response) {
   // if the response has status 201, the location header defines the api url to
   // fetch the object. Extract the object id.
@@ -120,6 +130,7 @@ export {
   geoPlaceToCriteria,
   isAbsoluteUrl,
   coordinatesToGeoLocation,
+  geoLocationToPlace,
   getCreatedObjectIdFromResponse,
   findClosestIndexOf,
 }

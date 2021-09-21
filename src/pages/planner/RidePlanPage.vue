@@ -154,16 +154,22 @@ export default {
       // Set the default date and time to today and the next whole hour.
       newCriteria.travelTime = {
         when: this.topOfTheHour,
-        arriving: true,
+        arriving: false,
       }
     }
     isStore.mutations.setSearchCriteria(newCriteria)
   },
   beforeRouteEnter(to, from, next) {
-    // console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
-    const keepWhenComingFrom = ['searchLocation', 'CarsPage', 'planOptions']
+    console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
+    const keepWhenComingFrom = [
+      'searchLocation',
+      'CarsPage',
+      'planOptions',
+      'rideDetailPage',
+    ]
     // Clear the search location when navigating from a different page than the location lookup page of one of the subpages
     if (!keepWhenComingFrom.includes(from?.name)) {
+      console.log(`Clear Search Criteria`)
       gsStore.mutations.clearAllGeoLocationPicked()
       isStore.mutations.setSearchCriteria({})
     }

@@ -1,16 +1,20 @@
+import { ExternalUser } from '@/store/profile-service/types'
+
 export class CarpoolState {
   cars: Car[] = []
-  plannedRidesCount: number = 0
-  rides: Ride[] = []
   selectedCar: Car = {}
-  selectedRide: Ride = {}
   carSearch: CarSearch = {
     licensePlate: null,
     result: {},
   }
+  plannedRidesCount: number = 0
+  rides: Ride[] = []
+  selectedRide: Ride = {}
+  pastRidesCount: number = 0
   pastRides: Ride[] = []
   proposedRides: Ride[] = []
   inboxRides: Ride[] = []
+  users: Map<string, RideshareUser> = new Map()
 }
 
 export interface Car {
@@ -33,4 +37,13 @@ export interface CarSearch {
 
 export interface UserRef {
   userRef: string
+}
+
+export interface RideshareUser {
+  userRef?: string
+  managedIdentity: string
+  familyNmae: string
+  givenName: string
+  id: string
+  email: string
 }

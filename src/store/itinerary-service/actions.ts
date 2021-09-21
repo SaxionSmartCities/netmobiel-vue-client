@@ -171,11 +171,18 @@ function fetchMyShoutOutTripPlans(
 }
 
 // Cancel a (shout-out) trip plan. A regular plan cannot be cancelled because it is already closed.
-function cancelTripPlan(context: ActionContext, { tripPlanId }: any) {
+function cancelTripPlan(
+  context: ActionContext,
+  { tripPlanId, cancelReason }: any
+) {
   const URL = `${PLANNER_BASE_URL}/plans/${tripPlanId}`
+  const params: any = {
+    reason: cancelReason ? cancelReason : undefined,
+  }
   return axios
     .delete(URL, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      params,
     })
     .then(response => {
       if (response.status == 204) {
@@ -323,7 +330,7 @@ function deleteTrip(context: ActionContext, payload: any) {
   const delegatorId = context.rootState.ps.user.delegatorId
   const URL = `${PLANNER_BASE_URL}/trips/${payload.tripId}`
   const params: any = {
-    reason: payload.cancelReason,
+    reason: payload.cancelReason ? payload.cancelReason : undefined,
   }
   return axios
     .delete(URL, {
