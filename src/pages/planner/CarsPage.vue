@@ -28,22 +28,46 @@
       </v-col>
     </v-row>
     <v-dialog v-model="dialog" max-width="290">
-      <v-card>
-        <v-card-title class="headline">Weet u dit zeker?</v-card-title>
+      <v-card class="py-1 px-3">
+        <v-card-title class="headline">Auto Verwijderen</v-card-title>
         <v-card-text>
-          Weet u zeker dat u de {{ carToDelete.brand }}
-          {{ carToDelete.model }} met nummerplaats
-          {{ carToDelete.licensePlate }}
+          <v-row class="d-flex flex-column">
+            <v-col class="py-1">
+              Weet u zeker dat u de {{ carToDelete.brand }}
+              {{ carToDelete.model }} met nummerplaat
+              {{ carToDelete.licensePlate }} wilt verwijderen?
+            </v-col>
+          </v-row>
+          <v-row class="d-flex flex-column py-2">
+            <v-col class="py-1">
+              <v-btn
+                large
+                rounded
+                block
+                mb-4
+                depressed
+                color="button"
+                @click="removeCar(carToDelete)"
+              >
+                Verwijderen
+              </v-btn>
+            </v-col>
+            <v-col class="py-1">
+              <v-btn
+                large
+                rounded
+                outlined
+                block
+                mb-4
+                depressed
+                color="primary"
+                @click="onCancel"
+              >
+                Behouden
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="dialog = false">
-            Annuleren
-          </v-btn>
-          <v-btn text @click="removeCar(carToDelete)">
-            Ja
-          </v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
   </content-pane>
@@ -106,6 +130,15 @@ export default {
     checkDeleteCar(car) {
       this.dialog = true
       this.carToDelete = car
+    },
+    onDelete() {
+      this.$emit('delete', {
+        scope: this.rideScopeRadio,
+        cancelReason: this.cancelReason,
+      })
+    },
+    onCancel() {
+      this.dialog = false
     },
     removeCar(car) {
       this.dialog = false
