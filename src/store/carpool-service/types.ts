@@ -40,7 +40,7 @@ export interface UserRef {
 }
 
 export interface RideshareUser {
-  userRef?: string
+  userRef: string
   managedIdentity: string
   familyNmae: string
   givenName: string
