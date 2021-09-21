@@ -11,7 +11,7 @@
       <v-row v-if="selectedOffer != null">
         <v-col>
           <v-btn block rounded depressed color="button" @click="onConfirm">
-            Deze rit bevestigen
+            Rit Bevestigen
           </v-btn>
         </v-col>
       </v-row>

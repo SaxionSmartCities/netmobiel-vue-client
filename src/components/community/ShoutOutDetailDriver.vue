@@ -23,31 +23,57 @@
       </v-row>
     </v-col>
     <v-dialog v-model="warningDialog">
-      <v-card>
+      <v-card class="py-1 px-3">
         <v-card-title class="headline">
-          Weet u dit zeker?
+          Verwijder rit met aanbod
         </v-card-title>
         <v-card-text>
-          <p>
-            Weet u zeker dat u uw aanbod wilt intrekken? Indien u uw aanbod
-            intrekt zullen we de passagier op de hoogte brengen. Geef eventueel
-            in een persoonlijke boodschap aan waarom u uw aanbod intrekt.
-          </p>
-          <v-textarea
-            outlined
-            name="input-7-4"
-            label="Reden voor intrekking"
-            :value="cancelReason"
-          ></v-textarea>
+          <v-row class="d-flex flex-column">
+            <v-col class="py-0">
+              <p class="mb-1">
+                Weet u zeker dat u uw aanbod wilt intrekken? Geef in een
+                persoonlijke boodschap aan waarom u uw aanbod intrekt.
+              </p>
+            </v-col>
+            <v-col class="py-0">
+              <v-textarea
+                outlined
+                :auto-grow="true"
+                rows="3"
+                label="Reden voor intrekking"
+                hide-details="true"
+                :value="cancelReason"
+              ></v-textarea>
+            </v-col>
+          </v-row>
+          <v-row class="d-flex flex-column py-2">
+            <v-col class="py-1">
+              <v-btn
+                large
+                rounded
+                block
+                depressed
+                color="button"
+                @click="deleteRide"
+              >
+                Aanbod Intrekken
+              </v-btn>
+            </v-col>
+            <v-col class="py-1">
+              <v-btn
+                large
+                rounded
+                outlined
+                block
+                depressed
+                color="primary"
+                @click="cancelDialog"
+              >
+                Aanbod toch bewaren
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-card-text>
-        <v-card-actions>
-          <v-btn text color="primary" @click="deleteRide()">
-            Ja
-          </v-btn>
-          <v-btn text color="primary" @click="warningDialog = false">
-            Nee
-          </v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
   </v-row>
@@ -76,7 +102,7 @@ export default {
         {
           icon: 'fa-times-circle',
           label: 'Aanbod intrekken',
-          callback: this.onTripCancelled,
+          callback: this.onCancelOffer,
         },
       ],
     }
@@ -91,7 +117,10 @@ export default {
     },
   },
   methods: {
-    onTripCancelled() {
+    cancelDialog() {
+      this.warningDialog = false
+    },
+    onCancelOffer() {
       this.warningDialog = true
     },
     deleteRide() {

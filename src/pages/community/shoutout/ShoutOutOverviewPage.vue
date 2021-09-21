@@ -171,6 +171,7 @@ export default {
       isStore.actions.fetchShoutOuts({ location })
     },
     onShoutOutSelected(selected) {
+      isStore.mutations.setSelectedTripPlan({})
       if (selected.shoutOut.traveller.managedIdentity === this.profile.id) {
         this.$router.push({
           name: 'shoutOutPassenger',
