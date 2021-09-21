@@ -50,7 +50,7 @@
       <v-row dense>
         <v-col>Max. loopafstand</v-col>
         <v-col class="text-right">
-          {{ getSearchPreferences.maxWalkDistance }} meters
+          {{ getSearchPreferences.maxWalkDistance }} meter
         </v-col>
       </v-row>
     </v-col>

@@ -137,11 +137,13 @@ export default {
       return ''
     },
     cancelled() {
-      const found = this.legs.find(l => l.state === 'CANCELLED')
-      return found !== undefined
+      // const found = this.legs.find(l => l.state === 'CANCELLED')
+      // return found !== undefined
+      return this.tripState === 'CANCELLED'
     },
     completed() {
-      return this.tripState === 'COMPLETED' && !this.cancelled
+      // return this.tripState === 'COMPLETED' && !this.cancelled
+      return this.tripState === 'COMPLETED'
     },
     needsReview() {
       return this.tripState === 'VALIDATING'
@@ -170,7 +172,7 @@ export default {
     // Function to pre-determine the divions of column per leg
     calculateLegDivison() {
       // Skip calculation if we have no legs.
-      if (this.legs.length == 0) {
+      if (this.legs.length === 0) {
         return
       }
       // Calculate total travel time

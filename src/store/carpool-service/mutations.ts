@@ -4,6 +4,7 @@ import {
   CarpoolState,
   Ride,
   CarSearchResult,
+  RideshareUser,
 } from '@/store/carpool-service/types'
 import { RootState } from '@/store/Rootstate'
 
@@ -32,6 +33,9 @@ function setSelectedCar(state: CarpoolState, payload: Car) {
 }
 function setPlannedRidesCount(state: CarpoolState, payload: number) {
   state.plannedRidesCount = payload
+}
+function setPastRidesCount(state: CarpoolState, payload: number) {
+  state.pastRidesCount = payload
 }
 
 function saveRides(state: CarpoolState, payload: Ride[]) {
@@ -72,6 +76,12 @@ function setInboxRides(state: CarpoolState, payload: Ride[]) {
   state.inboxRides = payload
 }
 
+function addUser(state: CarpoolState, user: RideshareUser) {
+  if (user.managedIdentity) {
+    state.users.set(user.userRef, user)
+  }
+}
+
 export const buildMutations = (
   csBuilder: ModuleBuilder<CarpoolState, RootState>
 ) => {
@@ -83,6 +93,7 @@ export const buildMutations = (
     setAvailableCars: csBuilder.commit(setAvailableCars),
     setSelectedCar: csBuilder.commit(setSelectedCar),
     setPlannedRidesCount: csBuilder.commit(setPlannedRidesCount),
+    setPastRidesCount: csBuilder.commit(setPastRidesCount),
     saveRides: csBuilder.commit(saveRides),
     savePastRides: csBuilder.commit(savePastRides),
     appendPastRides: csBuilder.commit(appendPastRides),
@@ -91,5 +102,6 @@ export const buildMutations = (
     setSelectedRide: csBuilder.commit(setSelectedRide),
     setProposedRides: csBuilder.commit(setProposedRides),
     setInboxRides: csBuilder.commit(setInboxRides),
+    addUser: csBuilder.commit(addUser),
   }
 }

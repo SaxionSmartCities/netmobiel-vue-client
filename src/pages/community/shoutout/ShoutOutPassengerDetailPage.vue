@@ -24,34 +24,30 @@
           <v-col>
             <itinerary-options :options="options" />
           </v-col>
-          <v-col>
-            <shout-out-cancel-dialog
-              :value="cancelDialog"
-              @onConfirm="onConfirmCancel"
-              @onClose="onCloseCancel"
-            />
-          </v-col>
         </v-row>
       </v-col>
     </v-row>
+    <v-dialog v-model="showCancelDialog">
+      <shout-out-cancel-dialog
+        :shout-out="shoutOut"
+        @onConfirm="onConfirmCancel"
+        @onClose="onCloseCancel"
+      />
+    </v-dialog>
   </content-pane>
 </template>
 
 <script>
 import moment from 'moment'
-import { getDistance } from 'geolib'
-import { mapGetters } from 'vuex'
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
 import ShoutOutDetailPassenger from '@/components/community/ShoutOutDetailPassenger.vue'
-import ShoutOutCancelDialog from '@/components/dialogs/ShoutoutCancelDialog.vue'
+import ShoutOutCancelDialog from '@/components/dialogs/ShoutOutCancelDialog.vue'
 import { formatDateTimeLongNoYear } from '@/utils/datetime.js'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
-import * as gsStore from '@/store/geocoder-service'
 import * as isStore from '@/store/itinerary-service'
-import ShoutOut from '@/components/community/ShoutOut.vue'
 
 export default {
   name: 'ShoutOutPassengerDetailPage',
@@ -71,17 +67,15 @@ export default {
         {
           icon: 'fa-pencil-alt',
           label: 'Wijzig deze oproep',
-          callback: this.onTripEdit,
+          callback: this.onEditShoutOut,
         },
         {
           icon: 'fa-times-circle',
           label: 'Annuleer deze oproep',
-          callback: this.onTripCancelled,
+          callback: this.onCancelShoutOut,
         },
       ],
-      cancelDialog: {
-        isVisible: false,
-      },
+      showCancelDialog: false,
     }
   },
   computed: {
@@ -152,7 +146,7 @@ export default {
     uiStore.mutations.showBackButton()
   },
   methods: {
-    onTripEdit() {
+    onEditShoutOut() {
       const { searchPreferences } = this.profile
       let now = moment()
       let searchCriteria = {
@@ -178,22 +172,25 @@ export default {
         },
       })
     },
-    onTripCancelled() {
-      this.cancelDialog.isVisible = true
+    onCancelShoutOut() {
+      this.showCancelDialog = true
     },
     onTravelOfferConfirmed(itinerary) {
       const { itineraryRef } = itinerary
       isStore.actions.createTrip({ itineraryRef })
       this.$router.push({ name: 'shoutOuts' })
     },
-    onConfirmCancel() {
-      this.cancelDialog.isVisible = false
+    onConfirmCancel(args) {
+      this.showCancelDialog = false
       isStore.actions
-        .cancelTripPlan({ tripPlanId: this.shoutOutId })
+        .cancelTripPlan({
+          tripPlanId: this.shoutOutId,
+          cancelReason: this.cancelReason,
+        })
         .then(() => this.$router.push({ name: 'shoutOuts' }))
     },
     onCloseCancel() {
-      this.cancelDialog.isVisible = false
+      this.showCancelDialog = false
     },
   },
 }

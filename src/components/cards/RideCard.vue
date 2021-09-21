@@ -1,5 +1,16 @@
 <template>
-  <v-card outlined @click="$emit('rideSelected', ride.rideRef)">
+  <v-card
+    outlined
+    :class="{ 'is-cancelled': cancelled, 'is-completed': completed }"
+    @click="$emit('rideSelected', ride.rideRef)"
+  >
+    <v-overlay
+      :color="overlayColor"
+      :value="displayOverlay"
+      :absolute="true"
+      opacity="0.08"
+      z-index="99"
+    />
     <v-row no-gutters>
       <v-col>
         <v-card-title class="d-flex justify-space-between pt-2">
@@ -62,6 +73,18 @@ export default {
     },
   },
   computed: {
+    displayOverlay() {
+      return this.completed || this.cancelled
+    },
+    // HACK: Should be done using CSS.
+    overlayColor() {
+      if (this.cancelled) {
+        return '#d0021b'
+      } else if (this.completed) {
+        return '#2e8997'
+      }
+      return ''
+    },
     proposedBookingCount() {
       return this.ride.bookings.filter(
         b => b.state.toUpperCase() === 'PROPOSED'
@@ -74,6 +97,15 @@ export default {
     },
     singleBooking() {
       return this.confirmedBookingCount + this.proposedBookingCount === 1
+    },
+    cancelled() {
+      return this.ride.state === 'CANCELLED'
+    },
+    completed() {
+      return this.ride.state === 'COMPLETED'
+    },
+    needsReview() {
+      return this.ride.state === 'VALIDATING'
     },
   },
   methods: {
@@ -103,9 +135,15 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .booking-count {
   color: rgba(0, 0, 0, 0.54);
   font-size: 0.8em;
+}
+.is-cancelled {
+  border-color: $color-alertRed !important;
+}
+.is-completed {
+  border-color: $color-primary !important;
 }
 </style>
