@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     swapLocations() {
-      gsStore.mutations.swapLocations
+      gsStore.mutations.swapLocations()
       this.$router.push('/search')
     },
   },

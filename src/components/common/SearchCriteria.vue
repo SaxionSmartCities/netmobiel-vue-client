@@ -19,6 +19,7 @@
 import moment from 'moment'
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
+import * as gsStore from '@/store/geocoder-service'
 
 export default {
   name: 'SearchCriteria',
@@ -48,6 +49,7 @@ export default {
     },
     onSwapLocations() {
       const { from, to } = this.value
+      gsStore.mutations.swapLocations()
       this.localCriteria = {
         ...this.value,
         from: to,

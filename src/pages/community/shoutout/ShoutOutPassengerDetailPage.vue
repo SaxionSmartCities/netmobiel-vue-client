@@ -48,6 +48,8 @@ import { formatDateTimeLongNoYear } from '@/utils/datetime.js'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
+import * as gsStore from '@/store/geocoder-service'
+import { geoLocationToPlace } from '@/utils/Utils'
 
 export default {
   name: 'ShoutOutPassengerDetailPage',
@@ -147,23 +149,35 @@ export default {
   },
   methods: {
     onEditShoutOut() {
-      const { searchPreferences } = this.profile
+      const { from, to, useAsArrivalTime } = this.shoutOut
       let now = moment()
-      let searchCriteria = {
-        from: this.shoutOut.from,
-        to: this.shoutOut.to,
+      let travelTime = useAsArrivalTime
+        ? moment(this.shoutOut.latestArrivalTime)
+        : moment(this.shoutOut.earliestDepartureTime)
+      if (travelTime.isBefore(now)) {
+        travelTime = now.add(2, 'hours')
+      }
+      const { searchPreferences } = this.profile
+      const searchCriteria = {
+        from: from,
+        to: to,
         preferences: searchPreferences,
         travelTime: {
-          when: this.shoutOut.useAsArrivalTime
-            ? moment(this.shoutOut.latestArrivalTime)
-            : moment(this.shoutOut.earliestDepartureTime),
-          arriving: this.shoutOut.useAsArrivalTime,
+          when: travelTime,
+          arriving: useAsArrivalTime,
         },
       }
-      if (searchCriteria.travelTime.when.isBefore(now)) {
-        searchCriteria.travelTime.when = now.add(2, 'hours')
-      }
       isStore.mutations.setSearchCriteria(searchCriteria)
+      gsStore.mutations.setGeoLocationPicked({
+        query: from.label,
+        field: 'from',
+        place: geoLocationToPlace(from),
+      })
+      gsStore.mutations.setGeoLocationPicked({
+        query: to.label,
+        field: 'to',
+        place: geoLocationToPlace(to),
+      })
       isStore.actions.searchTripPlan(searchCriteria)
       this.$router.push({
         name: 'searchResults',

@@ -65,6 +65,7 @@
                   :trip-id="trip.id"
                   :trip-state="trip.state"
                   :itinerary="trip.itinerary"
+                  :relative-time="false"
                   class="trip-card"
                   @on-trip-selected="onTripSelected"
                 />
@@ -84,6 +85,7 @@
                   :trip-id="trip.id"
                   :trip-state="trip.state"
                   :itinerary="trip.itinerary"
+                  :relative-time="false"
                   class="trip-card"
                   @on-trip-selected="onTripSelected"
                 />
@@ -117,6 +119,7 @@
                   class="trip-card"
                   :index="index"
                   :ride="ride"
+                  :relative-time="false"
                   @rideSelected="onRideSelected"
                 />
               </template>
@@ -137,6 +140,7 @@
                   class="trip-card"
                   :index="index"
                   :ride="ride"
+                  :relative-time="false"
                   @rideSelected="onRideSelected"
                 />
               </template>

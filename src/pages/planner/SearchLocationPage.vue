@@ -207,7 +207,7 @@ export default {
     completeSearch(place) {
       const fieldName = this.$route.params.field
       gsStore.mutations.setGeoLocationPicked({
-        query: this.searchInput,
+        query: this.searchInput || place.subtitle,
         field: fieldName,
         place: place,
       })

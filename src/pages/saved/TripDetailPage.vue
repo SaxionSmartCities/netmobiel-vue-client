@@ -144,6 +144,8 @@ import * as msStore from '@/store/message-service'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
+import * as gsStore from '@/store/geocoder-service'
+import { geoLocationToPlace } from '@/utils/Utils'
 
 export default {
   name: 'TripDetailPage',
@@ -339,18 +341,29 @@ export default {
     onTripEdit() {
       const { from, to, itinerary, arrivalTimeIsPinned } = this.selectedTrip
       const { searchPreferences } = this.profile
-      let searchCriteria = {
+      const travelTime = arrivalTimeIsPinned
+        ? moment(itinerary.arrivalTime)
+        : moment(itinerary.departureTime)
+      const searchCriteria = {
         from,
         to,
         preferences: searchPreferences,
         travelTime: {
-          when: arrivalTimeIsPinned
-            ? moment(itinerary.arrivalTime)
-            : moment(itinerary.departureTime),
+          when: travelTime,
           arriving: arrivalTimeIsPinned,
         },
       }
       isStore.mutations.setSearchCriteria(searchCriteria)
+      gsStore.mutations.setGeoLocationPicked({
+        query: from.label,
+        field: 'from',
+        place: geoLocationToPlace(from),
+      })
+      gsStore.mutations.setGeoLocationPicked({
+        query: to.label,
+        field: 'to',
+        place: geoLocationToPlace(to),
+      })
       isStore.actions.searchTripPlan(searchCriteria)
       this.$router.push({
         name: 'searchResults',
