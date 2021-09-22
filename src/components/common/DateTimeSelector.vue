@@ -53,7 +53,11 @@
           </v-text-field>
         </template>
         <v-card>
-          <v-tabs :value="pickedArriving ? 0 : 1" grow>
+          <v-tabs
+            :value="pickedArriving ? 0 : 1"
+            grow
+            active-class="tab-active"
+          >
             <v-tab @click="pickedArriving = true">Aankomst</v-tab>
             <v-tab @click="pickedArriving = false">Vertrek</v-tab>
           </v-tabs>
@@ -230,5 +234,8 @@ export default {
 
 .bg-white {
   background-color: white !important;
+}
+.tab-active {
+  font-weight: bold;
 }
 </style>
