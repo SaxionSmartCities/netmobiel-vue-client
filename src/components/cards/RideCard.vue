@@ -122,9 +122,12 @@ export default {
         : `${Math.floor(minutes / 60)} uur ${minutes % 60} minuten`
     },
     formatRecurrence() {
-      const { unit, interval } = this.ride.recurrence
+      const { unit, interval, daysOfWeekMask } = this.ride.recurrence
       if (unit === 'DAY') {
         return 'dagelijks'
+      }
+      if (daysOfWeekMask === 0x1f && interval === 1) {
+        return 'elke werkdag'
       }
       const weekday = moment(this.ride.departureTime)
           .locale('nl')
