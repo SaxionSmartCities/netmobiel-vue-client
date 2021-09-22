@@ -289,33 +289,30 @@ export default {
       })
       this.$router.push('/plan')
     },
-    onUpdateRide(update) {
-      let newRide = { ...this.ride }
-      delete newRide.state
-      delete newRide.legs
-      const wasRecurring = newRide.recurrence !== undefined
-      const travelTime = update.travelTime.when.toISOString()
-      newRide.arrivalTimePinned = update.travelTime.arriving
+    onUpdateRide(updated) {
+      let newRide = {}
+      newRide.rideRef = this.ride.rideRef
+      newRide.carRef = this.ride.carRef
+      newRide.ableToAssist = this.ride.ableToAssist
+      newRide.maxDetourMeters = this.ride.maxDetourMeters
+      newRide.maxDetourSeconds = this.ride.maxDetourSeconds
+      newRide.nrSeatsAvailable = this.ride.nrSeatsAvailable
+      newRide.fromPlace = this.ride.fromPlace
+      newRide.toPlace = this.ride.toPlace
+      const travelTime = updated.travelTime.when.toISOString()
+      newRide.arrivalTimePinned = updated.travelTime.arriving
       if (newRide.arrivalTimePinned) {
         newRide.arrivalTime = travelTime
-        delete newRide.departureTime
       } else {
         newRide.departureTime = travelTime
-        delete newRide.arrivalTime
       }
-      if (update.choice === 'sequence') {
-        newRide.recurrence = update.recurrence
-      }
-      let scope = null
-      if (wasRecurring) {
-        update.choice === 'sequence'
-          ? (scope = 'this-and-following')
-          : (scope = 'this')
-      }
-      csStore.actions.updateRide({ ride: newRide, scope: scope }).then(() => {
-        this.showEditRideModal = false
-        this.$router.go(-1)
-      })
+      newRide.recurrence = updated.recurrence
+      csStore.actions
+        .updateRide({ ride: newRide, scope: updated.scope })
+        .then(() => {
+          this.showEditRideModal = false
+          this.$router.go(-1)
+        })
     },
     onCancelDialog() {
       this.showEditRideModal = false
