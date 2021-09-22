@@ -45,47 +45,41 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="px-1 pb-0">
+      <v-col v-if="!isDrivingPassenger" class="px-1 pb-0">
         <h4 class="netmobiel">Jouw ritten</h4>
       </v-col>
+      <v-col v-else class="px-1 pb-0">
+        <h4 class="netmobiel">Jouw autoritten</h4>
+      </v-col>
     </v-row>
-    <v-row class="py-0">
-      <v-col v-if="rides.length === 0 && trips.length === 0" class="py-0 px-1">
-        <v-row dense>
-          <v-col class="py-0">
-            <span class="font-italic">
-              Je hebt nog geen ritten gepland.
-            </span>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col class="px-1">
-            <v-btn
-              large
-              rounded
-              block
-              depressed
-              color="button"
-              @click="routeToMode()"
-            >
-              Direct aan de slag!
-            </v-btn>
-          </v-col>
-        </v-row>
+    <v-row v-if="isDriverOnly || isDrivingPassenger" class="py-0">
+      <v-col v-if="rides.length === 0" class="py-0 px-1">
+        <span class="font-italic">
+          Je hebt nog geen autoritten gepland.
+        </span>
       </v-col>
       <v-col v-else class="pt-0">
-        <v-row v-for="(ride, index) in rides" :key="index" xs12>
+        <v-row v-for="ride in rides" :key="ride.id" xs12>
           <v-col class="px-1 py-0">
-            <ride-card
-              class="my-2"
-              :index="index"
-              :ride="ride"
-              @rideSelected="onRideSelected"
-            >
+            <ride-card class="my-2" :ride="ride" @rideSelected="onRideSelected">
             </ride-card>
           </v-col>
         </v-row>
-        <v-row v-for="(trip, index) in trips" :key="index" xs12>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col v-if="isDrivingPassenger" class="px-1 pb-0">
+        <h4 class="netmobiel">Jouw ritten</h4>
+      </v-col>
+    </v-row>
+    <v-row v-if="isPassengerOnly || isDrivingPassenger" class="py-0">
+      <v-col v-if="trips.length === 0" class="py-0 px-1">
+        <span class="font-italic">
+          Je hebt nog geen ritten gepland.
+        </span>
+      </v-col>
+      <v-col v-else class="pt-0">
+        <v-row v-for="trip in trips" :key="trip.id" xs12>
           <v-col class="px-1 py-0">
             <travel-card
               :trip-id="trip.id"
@@ -95,20 +89,34 @@
             />
           </v-col>
         </v-row>
-        <v-row>
-          <v-col>
-            <v-btn
-              large
-              rounded
-              block
-              outlined
-              color="primary"
-              to="/tripsOverviewPage"
-            >
-              Bekijk alle activiteiten
-            </v-btn>
-          </v-col>
-        </v-row>
+      </v-col>
+    </v-row>
+    <v-row v-if="rides.length === 0 && trips.length === 0">
+      <v-col class="px-1">
+        <v-btn
+          large
+          rounded
+          block
+          depressed
+          color="button"
+          @click="routeToMode()"
+        >
+          Direct aan de slag!
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row v-else>
+      <v-col>
+        <v-btn
+          large
+          rounded
+          block
+          outlined
+          color="primary"
+          to="/tripsOverviewPage"
+        >
+          Bekijk alle activiteiten
+        </v-btn>
       </v-col>
     </v-row>
   </content-pane>
@@ -148,21 +156,14 @@ export default {
       return `${firstName} ${lastName}`
     },
     rides() {
-      //HACK: Only display first 3 rides.
-      let sortedList = []
-      const rides = csStore.getters.getRides
-      if (rides) {
-        sortedList = rides.slice(0, 3)
-        sortedList.sort((a, b) => {
-          return new Date(a.departureTime) - new Date(b.departureTime)
-        })
-      }
-      return sortedList
+      return csStore.getters.getRides
+        .filter(ride => ride.state !== 'CANCELLED')
+        .slice(0, 2)
     },
     trips() {
-      return isStore.getters.getPlannedTrips.filter(
-        trip => trip.state !== 'CANCELLED'
-      )
+      return isStore.getters.getPlannedTrips
+        .filter(trip => trip.state !== 'CANCELLED')
+        .slice(0, 2)
     },
     timeOfDayGreeting() {
       let currentHour = moment().format('HH')
@@ -181,17 +182,45 @@ export default {
     profileImage() {
       return this.profile.image
     },
+    isPassengerOnly() {
+      return this.profile.userRole === constants.PROFILE_ROLE_PASSENGER
+    },
+    isDriverOnly() {
+      return this.profile.userRole === constants.PROFILE_ROLE_DRIVER
+    },
+    isDrivingPassenger() {
+      return this.profile.userRole === constants.PROFILE_ROLE_BOTH
+    },
+  },
+  watch: {
+    profile(newProfile, oldProfile) {
+      if (newProfile.userRole !== oldProfile.userRole) {
+        this.fetchTripsAndRides()
+      }
+    },
   },
   mounted() {
-    //TODO: How many cards do we want?
-    csStore.actions.fetchRides({ offset: 0, maxResults: 2 })
-    isStore.actions.fetchTrips({
-      offset: 0,
-      maxResults: 2,
-      since: moment().format(),
-    })
+    this.fetchTripsAndRides()
   },
   methods: {
+    fetchTripsAndRides() {
+      //TODO: How many cards do we want? Get enough to skip the cancelled rides and trips
+      const maxCards = 8
+      if (this.isDriverOnly || this.isDrivingPassenger) {
+        csStore.actions.fetchRides({
+          offset: 0,
+          maxResults: maxCards,
+          since: moment().format(),
+        })
+      }
+      if (this.isPassengerOnly || this.isDrivingPassenger) {
+        isStore.actions.fetchTrips({
+          offset: 0,
+          maxResults: maxCards,
+          since: moment().format(),
+        })
+      }
+    },
     onTripSelected(selected) {
       //TODO Use trips from the list (less detailed, then immediate result on page change)
       isStore.mutations.setSelectedTrip({})
