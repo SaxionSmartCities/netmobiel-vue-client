@@ -143,6 +143,7 @@ export interface User {
 }
 
 export interface PublicProfile {
+  // The id is the managed identity!
   id: string | null
   age: number | null
   image: string | null
