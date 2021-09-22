@@ -30,8 +30,11 @@
             de reeks wilt u verwijderen?
           </p>
           <v-radio-group v-model="rideScopeRadio">
-            <v-radio label="Alleen deze rit" value="single" />
-            <v-radio label="Deze en alle volgende ritten" value="sequence" />
+            <v-radio label="Alleen deze rit" value="this" />
+            <v-radio
+              label="Deze en alle volgende ritten"
+              value="this-and-following"
+            />
           </v-radio-group>
         </v-col>
         <v-col v-else class="py-0">
