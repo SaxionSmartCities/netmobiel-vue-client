@@ -36,7 +36,13 @@
         </v-card-title>
         <v-card-subtitle>
           <v-row no-gutters class="justify-space-between pb-0">
-            <v-col class="capitalize">{{ formatTime() }}</v-col>
+            <v-col class="capitalize"
+              >{{
+                relativeTime
+                  ? formatDateTime(ride.departureTime)
+                  : formatDateTime(ride.departureTime, 'HH:mm')
+              }}
+            </v-col>
             <v-col v-if="ride.recurrence" class="text-right">
               <v-icon>replay</v-icon>
               {{ formatRecurrence() }}
@@ -67,10 +73,8 @@
 import moment from 'moment'
 export default {
   props: {
-    ride: {
-      type: Object,
-      required: true,
-    },
+    ride: { type: Object, required: true },
+    relativeTime: { type: Boolean, default: true },
   },
   computed: {
     displayOverlay() {
@@ -109,10 +113,15 @@ export default {
     },
   },
   methods: {
-    formatTime() {
-      return moment(this.ride.departureTime)
-        .locale('nl')
-        .format('LT')
+    formatDateTime(dateTime, format) {
+      if (!format)
+        return moment(dateTime)
+          .locale('nl')
+          .calendar()
+      else
+        return moment(dateTime)
+          .local('nl')
+          .format(format)
     },
     formatDuration() {
       const seconds = this.ride.estimatedDrivingTime,

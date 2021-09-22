@@ -34,10 +34,14 @@
         <v-card-subtitle class="pr-1">
           <v-row justify="space-between" no-gutters class="pb-0">
             <v-col class="capitalize">
-              {{ formatDateTime(departureTime) }}
+              {{
+                relativeTime
+                  ? formatDateTime(departureTime)
+                  : formatDateTime(departureTime, 'HH:mm')
+              }}
             </v-col>
             <v-col class="text-right">
-              {{ formatDateTime(arrivalTime, 'HH:mm uur') }}
+              {{ formatDateTime(arrivalTime, 'HH:mm') }}
             </v-col>
           </v-row>
         </v-card-subtitle>
@@ -88,6 +92,7 @@ export default {
     tripId: { type: Number, required: false, default: null },
     tripState: { type: String, required: false, default: null },
     itinerary: { type: Object, required: true },
+    relativeTime: { type: Boolean, default: true },
   },
   data() {
     return {
