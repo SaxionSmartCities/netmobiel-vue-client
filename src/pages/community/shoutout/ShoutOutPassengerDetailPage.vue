@@ -190,9 +190,10 @@ export default {
       this.showCancelDialog = true
     },
     onTravelOfferConfirmed(itinerary) {
-      const { itineraryRef } = itinerary
-      isStore.actions.createTrip({ itineraryRef })
-      this.$router.push({ name: 'shoutOuts' })
+      isStore.actions
+        .createTrip(itinerary)
+        .then(() => this.$router.push({ name: 'shoutOuts' }))
+        .catch(() => {})
     },
     onConfirmCancel(args) {
       this.showCancelDialog = false
