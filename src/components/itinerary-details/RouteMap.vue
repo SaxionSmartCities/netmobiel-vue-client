@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="map-container">
     <mgl-map
       id="map"
       ref="routeMap"
@@ -19,42 +19,38 @@
         color="#ff8500"
       />
     </mgl-map>
-    <div class="ghost-map"></div>
-    <v-row v-if="!isLoading">
-      <v-col class="py-0">
-        <v-btn
-          v-if="mapSize !== 'fullscreen'"
-          fab
-          small
-          class="map-fullscreen"
-          @click="mapSize = 'fullscreen'"
-        >
-          <v-icon>fullscreen</v-icon>
-        </v-btn>
-        <v-btn
-          v-if="mapSize === 'fullscreen'"
-          fab
-          small
-          class="map-fullscreen-exit"
-          @click="mapSize = 'small'"
-        >
-          <v-icon>
-            fullscreen_exit
-          </v-icon>
-        </v-btn>
-      </v-col>
-      <v-col class="py-0">
-        <v-btn fab small class="map-close" @click="$emit('closeMap')">
-          <v-icon>close</v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
+    <div v-if="!isLoading">
+      <v-btn
+        v-if="mapSize !== 'fullscreen'"
+        fab
+        small
+        class="map-fullscreen"
+        @click="mapSize = 'fullscreen'"
+      >
+        <v-icon>fullscreen</v-icon>
+      </v-btn>
+      <v-btn
+        v-if="mapSize === 'fullscreen'"
+        fab
+        small
+        class="map-fullscreen"
+        @click="mapSize = 'small'"
+      >
+        <v-icon>
+          fullscreen_exit
+        </v-icon>
+      </v-btn>
+      <v-btn fab small class="map-close" @click="$emit('closeMap')">
+        <v-icon>close</v-icon>
+      </v-btn>
+    </div>
   </div>
 </template>
 
 <script>
 import { MglMap, MglMarker } from 'vue-mapbox'
 import config from '@/config/config'
+import constants from '@/constants/constants'
 
 const polyline = require('@mapbox/polyline')
 const MAP_STYLE = 'mapbox://styles/mapbox/streets-v11'
@@ -78,7 +74,10 @@ export default {
       mapStyle: MAP_STYLE, // your map style
       destinationCoordinates: [],
       isLoading: true,
-      center: [4.895168, 52.370216],
+      center: [
+        constants.GEOLOCATION_CENTER_NL.longitude,
+        constants.GEOLOCATION_CENTER_NL.latitude,
+      ],
       mapbox: null,
       showShrinkMeBtn: false,
     }
@@ -292,64 +291,45 @@ export default {
       this.map.fitBounds(this.map.getBounds())
     },
     changeMapSize({ height, width }) {
-      var mapDiv = document.getElementById('map')
-      var mapCanvas = document.getElementsByClassName('mapboxgl-canvas')[0]
+      const mapDiv = document.getElementById('map')
+      const mapCanvas = document.getElementsByClassName('mapboxgl-canvas')[0]
       if (mapDiv && mapCanvas) {
         mapDiv.style.height = height
         mapCanvas.style.width = width
       }
-      if (this.map) this.map.resize()
+      if (this.map) {
+        this.map.resize()
+      }
     },
     setMapSize(size) {
-      size === 'small' && this.changeMapSize({ height: '200px', width: '100%' })
-      size === 'fullscreen' &&
+      if (size === 'small') {
+        this.changeMapSize({ height: '200px', width: '100%' })
+      } else if (size === 'fullscreen') {
         this.changeMapSize({ height: '100vh', width: '100%' })
+      }
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.activated {
-  width: 100px !important;
+.map-container {
+  position: relative;
 }
 
 #map {
-  position: fixed;
-  z-index: 1;
-  top: $header-height;
-  left: 0;
-  width: $map-width;
-  height: $map-height;
-}
-
-.ghost-map {
   height: $map-height;
 }
 
 .map-fullscreen {
+  position: absolute;
   top: 10px;
   left: 10px;
-  position: absolute;
-  z-index: 4;
-}
-
-.map-fullscreen-exit {
-  top: 10px;
-  left: 10px;
-  position: absolute;
-  z-index: 4;
 }
 
 .map-close {
-  top: 10px;
-  border-radius: 50%;
-  height: 40px;
-  min-height: 40px;
-  width: 40px;
-  min-width: 40px !important;
-  left: 87vw;
-  z-index: 100;
   position: absolute;
+  top: 10px;
+  right: 10px;
 }
 </style>
