@@ -94,15 +94,18 @@ export default {
   },
   methods: {
     onPlanTrip() {
-      const { itineraryRef } = this.selectedTrip
-      isStore.actions.createTrip({ itineraryRef })
-      if (this.tripId !== '-1') {
-        // We are editing a trip so remove the old one.
-        isStore.actions.deleteTrip({
-          tripId: this.tripId,
-          displayWarning: false,
+      isStore.actions
+        .createTrip(this.selectedTrip.itinerary)
+        .then(() => {
+          if (this.tripId !== '-1') {
+            // We are editing a trip so remove the old one.
+            isStore.actions.deleteTrip({
+              tripId: this.tripId,
+              displayWarning: false,
+            })
+          }
         })
-      }
+        .catch(() => {})
     },
     showFullRouteOnMap() {
       this.showMap = true

@@ -6,9 +6,11 @@ import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { RootState } from '../Rootstate'
 import { mutations } from '@/store/itinerary-service/index'
 import {
+  Itinerary,
   ItineraryState,
   SearchCriteria,
   ShoutOutSearchCriteria,
+  Trip,
 } from '@/store/itinerary-service/types'
 import * as uiStore from '@/store/ui'
 import { addInterceptors } from '../api-middelware'
@@ -205,15 +207,22 @@ function cancelTripPlan(
 /**
  * Creates a trip from a previously created itinerary reference.
  * @param context
- * @param itineraryRef the itinerary from a planning request (regular or shout-out).
+ * @param itinerary the itinerary and itinerary reference from a planning request (regular or shout-out).
  */
-function createTrip(context: ActionContext, { itineraryRef }: any) {
+function createTrip(context: ActionContext, itinerary: Itinerary) {
   const delegatorId = context.rootState.ps.user.delegatorId
-  const trip = { itineraryRef }
+  const tripRequest = { itineraryRef: itinerary.itineraryRef }
   mutations.setBookingStatus({ status: 'PENDING' })
+  const now = moment()
+  if (moment(itinerary.departureTime).isBefore(now)) {
+    uiStore.actions.queueErrorNotification(
+      'De vertrektijd van deze rit is al verstreken'
+    )
+    return Promise.reject()
+  }
   const URL = `${PLANNER_BASE_URL}/trips`
-  axios
-    .post(URL, trip, {
+  return axios
+    .post(URL, tripRequest, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
     })
     .then(response => {
