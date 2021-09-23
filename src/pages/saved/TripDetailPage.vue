@@ -73,7 +73,7 @@
         </v-card-title>
         <v-card-text>
           <v-row class="d-flex flex-column">
-            <v-col v-if="drivers.length > 0" class="py-1">
+            <v-col v-if="drivers && drivers.length > 0" class="py-1">
               <p>
                 U rijdt mee met iemand, geef in een persoonlijke boodschap aan
                 waarom u uw rit annuleert.
@@ -186,7 +186,7 @@ export default {
       return this.getRideShareDriverId !== null
     },
     drivers() {
-      return this.selectedTrip.legs
+      return this.selectedTrip.itinerary?.legs
         .filter(leg => leg.traverseMode === 'RIDESHARE')
         .map(leg => {
           return {
@@ -201,7 +201,7 @@ export default {
         })
     },
     getRideShareDriverId() {
-      return this.drivers.length > 0 ? this.drivers[0].id : null
+      return this.drivers && this.drivers.length > 0 ? this.drivers[0].id : null
     },
     selectedTrip() {
       let trip = isStore.getters.getSelectedTrip
@@ -286,12 +286,6 @@ export default {
             .locale('nl')
             .calendar()
         : '- - : - -'
-    },
-    saveTrip() {
-      const selectedTrip = isStore.getters.getSelectedTrip
-      isStore.actions
-        .createTrip(selectedTrip)
-        .then(() => this.$router.push('/tripPlanSubmitted'))
     },
     showFullRouteOnMap() {
       this.showMap = true
