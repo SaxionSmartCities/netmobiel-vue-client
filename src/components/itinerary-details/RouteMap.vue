@@ -66,10 +66,10 @@ export default {
       required: true,
     },
     mapSizeProp: { type: String, default: 'small', required: false },
+    // singleLegDashed: { type: Boolean, default: true, required: false },
   },
   data() {
     return {
-      leg: null,
       accessToken: ACCESS_TOKEN, // your access token. Needed if you using Mapbox maps
       mapStyle: MAP_STYLE, // your map style
       destinationCoordinates: [],
@@ -99,9 +99,6 @@ export default {
   },
   created() {
     this.isLoading = true
-    if (this.legs.length === 1) {
-      this.leg = this.legs[0]
-    }
   },
   methods: {
     onMoveEnd() {
@@ -111,7 +108,6 @@ export default {
     async onMapLoad(event) {
       this.map = event.map
       this.setMapSize(this.mapSizeProp)
-
       if (this.legs.length === 1) {
         this.initiateMapSingleLeg(event.map, this.legs[0])
       } else if (this.legs.length > 1) {

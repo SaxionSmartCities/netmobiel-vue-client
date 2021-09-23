@@ -20,7 +20,7 @@
         <trip-details
           :trip="selectedTrip"
           :show-map="showMap"
-          @closeMap="showMap = false"
+          @closeMap="onCloseMap"
         />
       </v-col>
     </v-row>
@@ -50,7 +50,7 @@
           mb-4
           depressed
           color="primary"
-          @click="showFullRouteOnMap()"
+          @click="onShowMap"
         >
           Bekijk op de kaart
         </v-btn>
@@ -284,8 +284,11 @@ export default {
             .calendar()
         : '- - : - -'
     },
-    showFullRouteOnMap() {
+    onShowMap() {
       this.showMap = true
+    },
+    onCloseMap() {
+      this.showMap = false
     },
     contactDriver() {
       const drvs = this.drivers

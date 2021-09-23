@@ -224,17 +224,9 @@ export default {
       this.showMap = false
       this.selectedLegsIndex = null
     },
-    forceRerender() {
-      // Remove my-component from the DOM
-      this.showMap = false
-      this.$nextTick(() => {
-        // Add the component back in
-        this.showMap = true
-      })
-    },
     onMapShow() {
       this.mapSize = 'small'
-      this.forceRerender()
+      this.showMap = true
     },
   },
 }

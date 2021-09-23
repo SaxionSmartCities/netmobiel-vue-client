@@ -2,6 +2,18 @@
   <content-pane>
     <v-row>
       <v-col class="py-0">
+        <v-row v-if="selectedLegs && shouldShowMap" class="pa-0">
+          <v-col class="pa-0">
+            <route-map
+              ref="mapComp"
+              :legs="selectedLegs"
+              :map-size-prop="mapSize"
+              @sizeChanged="onMapSizeChanged"
+              @closeMap="onMapClose"
+            >
+            </route-map>
+          </v-col>
+        </v-row>
         <v-row dense class="d-flex flex-column">
           <v-col>
             <h1 v-if="isProposedRideView">
@@ -17,7 +29,10 @@
           <v-col>
             <v-row dense class="d-flex flex-column">
               <v-col v-if="isProposedRideView">
-                <shout-out-detail-driver :ride="proposedRide" />
+                <shout-out-detail-driver
+                  :ride="proposedRide"
+                  @show-map-proposal="onMapShow"
+                />
               </v-col>
               <v-col v-else>
                 <shout-out-travel-proposal
@@ -25,6 +40,7 @@
                   :shout-out="shoutOut"
                   :offer="travelOffer"
                   :search-criteria="searchCriteria"
+                  @show-map-proposal="onMapShow"
                   @confirmTravelOffer="onConfirmTravelOffer"
                   @proposalCancel="onProposalCancel"
                   @updateTravelTime="onUpdateTravelTime"
@@ -54,6 +70,7 @@ import * as psStore from '@/store/profile-service'
 import * as gsStore from '@/store/geocoder-service'
 import * as isStore from '@/store/itinerary-service'
 import { geoPlaceToCriteria } from '@/utils/Utils'
+import RouteMap from '@/components/itinerary-details/RouteMap'
 
 /**
  * This Page is used to show the driver view of details of an existing shout-out proposal (with a rideId) as well as an
@@ -66,6 +83,7 @@ export default {
     ItinerarySummaryList,
     ShoutOutDetailDriver,
     ShoutOutTravelProposal,
+    RouteMap,
   },
   props: {
     // The urn of the shout-out
@@ -75,6 +93,8 @@ export default {
   },
   data() {
     return {
+      showMap: false,
+      mapSize: 'small',
       editDepart: true,
       searchCriteria: {
         shoutOutId: this.shoutOutId,
@@ -134,31 +154,21 @@ export default {
       return result
     },
     rideDuration() {
-      const offeredItinerary =
-        this.planResult?.itineraries && this.planResult?.itineraries[0]
       let duration
       if (this.proposedRide?.duration) {
-        duration = this.proposedRide?.duration
-      } else if (offeredItinerary?.duration) {
-        duration = offeredItinerary.duration
-      } else if (this.shoutOut?.referenceItinerary?.duration) {
-        duration = this.shoutOut.referenceItinerary.duration
+        duration = this.proposedRide.duration
+      } else if (this.itinerary?.duration) {
+        duration = this.itinerary.duration
       }
       return duration ? Math.round(duration / 60) : duration
     },
     // Get the distance the driver has to ride in total
     rideDistance() {
-      const offeredItinerary =
-        this.planResult?.itineraries && this.planResult?.itineraries[0]
       let distance
       if (this.proposedRide?.distance) {
         distance = this.proposedRide.distance
-      } else if (offeredItinerary) {
-        distance = offeredItinerary.legs
-          .map(leg => leg.distance)
-          .reduce((sum, d) => sum + d)
-      } else if (this.shoutOut?.referenceItinerary) {
-        distance = this.shoutOut.referenceItinerary.legs
+      } else if (this.itinerary) {
+        distance = this.itinerary.legs
           .map(leg => leg.distance)
           .reduce((sum, d) => sum + d)
       }
@@ -170,11 +180,33 @@ export default {
       }
       return 'Onbekend'
     },
+    suggestedItinerary() {
+      return this.planResult?.itineraries && this.planResult?.itineraries[0]
+    },
     travelOffer() {
       return isStore.getters.getPlanningRequest.tripPlan
     },
     selectedCar() {
       return csStore.getters.getSelectedCar
+    },
+    shouldShowMap() {
+      return this.showMap
+    },
+    selectedLegs() {
+      let legs = null
+      if (this.showMap) {
+        if (this.proposedRide?.legs) {
+          legs = this.proposedRide.legs
+        } else if (this.itinerary?.legs) {
+          legs = this.itinerary.legs
+        }
+      }
+      return legs
+    },
+    itinerary() {
+      return this.suggestedItinerary?.itineraryRef
+        ? this.suggestedItinerary
+        : this.shoutOut?.referenceItinerary
     },
   },
   watch: {
@@ -279,6 +311,25 @@ export default {
     onProposalCancel() {
       isStore.mutations.clearPlanningResults()
       this.$router.push({ name: 'shoutOuts' })
+    },
+    onMapSizeChanged({ size }) {
+      this.mapSize = size
+    },
+    onMapClose() {
+      this.showMap = false
+    },
+    forceRerender() {
+      // Remove my-component from the DOM
+      this.showMap = false
+      this.$nextTick(() => {
+        // Add the component back in
+        this.showMap = true
+      })
+    },
+    onMapShow() {
+      this.showMap = true
+      this.mapSize = 'small'
+      this.forceRerender()
     },
   },
 }

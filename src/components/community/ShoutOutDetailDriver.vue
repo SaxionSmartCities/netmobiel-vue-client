@@ -13,6 +13,22 @@
       >
         <itinerary-leg :leg="leg" :showicon="true" :showdottedline="false" />
       </v-row>
+      <v-row>
+        <v-col class="pt-0">
+          <v-btn
+            large
+            rounded
+            outlined
+            block
+            mb-4
+            depressed
+            color="primary"
+            @click="onShowMap"
+          >
+            Bekijk op de kaart
+          </v-btn>
+        </v-col>
+      </v-row>
       <v-row class="d-flex flex-column">
         <v-col class="pt-3 pb-0">
           <h3>Wijzigen</h3>
@@ -132,6 +148,9 @@ export default {
           scope: 'this',
         })
         .then(() => this.$router.go(-1))
+    },
+    onShowMap() {
+      this.$emit('show-map-proposal')
     },
   },
 }
