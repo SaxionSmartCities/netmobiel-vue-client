@@ -8,6 +8,22 @@
           :showdottedline="showdottedline"
         />
       </v-row>
+      <v-row>
+        <v-col class="pt-0">
+          <v-btn
+            large
+            rounded
+            outlined
+            block
+            mb-4
+            depressed
+            color="primary"
+            @click="onShowMap"
+          >
+            Bekijk op de kaart
+          </v-btn>
+        </v-col>
+      </v-row>
       <v-row v-if="selectedOffer != null">
         <v-col>
           <v-btn block rounded depressed color="button" @click="onConfirm">
@@ -44,8 +60,8 @@
 
 <script>
 import {
-  generateShoutOutDetailSteps,
   generateItineraryDetailSteps,
+  generateShoutOutDetailSteps,
 } from '@/utils/itinerary_steps.js'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import TravelProposalSummary from '@/components/community/TravelProposalSummary.vue'
@@ -99,12 +115,16 @@ export default {
   methods: {
     onTravelProposalSelected(index) {
       this.selectedOfferIndex = index
+      this.$emit('travel-proposal-selected', this.selectedOffer)
     },
     onConfirm() {
       this.$emit('travel-proposal-confirm', this.selectedOffer)
     },
     onClear() {
       this.selectedOffer = null
+    },
+    onShowMap() {
+      this.$emit('show-map')
     },
   },
 }
