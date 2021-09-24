@@ -14,8 +14,8 @@
       @moveend="onMoveEnd"
     >
       <mgl-marker
-        v-if="destinationCoordinates.length > 1"
-        :coordinates="destinationCoordinates"
+        v-if="arrivalCoords.length > 1"
+        :coordinates="arrivalCoords"
         color="#ff8500"
       />
     </mgl-map>
@@ -66,20 +66,19 @@ export default {
       required: true,
     },
     mapSizeProp: { type: String, default: 'small', required: false },
-    // singleLegDashed: { type: Boolean, default: true, required: false },
+    singleLegDashed: { type: Boolean, default: true, required: false },
   },
   data() {
     return {
       accessToken: ACCESS_TOKEN, // your access token. Needed if you using Mapbox maps
       mapStyle: MAP_STYLE, // your map style
-      destinationCoordinates: [],
+      arrivalCoords: [],
       isLoading: true,
       center: [
         constants.GEOLOCATION_CENTER_NL.longitude,
         constants.GEOLOCATION_CENTER_NL.latitude,
       ],
       mapbox: null,
-      showShrinkMeBtn: false,
     }
   },
   computed: {
@@ -108,98 +107,20 @@ export default {
     async onMapLoad(event) {
       this.map = event.map
       this.setMapSize(this.mapSizeProp)
-      if (this.legs.length === 1) {
-        this.initiateMapSingleLeg(event.map, this.legs[0])
-      } else if (this.legs.length > 1) {
-        this.initiateMapWholeRoute(event.map, this.legs)
-      }
-    },
-    initiateMapSingleLeg(map, leg) {
-      const result = polyline.toGeoJSON(leg.legGeometry.points)
-      this.destinationCoordinates =
-        result.coordinates[result.coordinates.length - 1]
-
-      let route = {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            geometry: result,
-          },
-        ],
-      }
-
-      let points = {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            properties: {
-              title: 'start',
-            },
-            geometry: {
-              type: 'Point',
-              coordinates: result.coordinates[0],
-            },
-          },
-          {
-            type: 'Feature',
-            properties: {
-              title: 'end',
-            },
-            geometry: {
-              type: 'Point',
-              coordinates: result.coordinates[result.coordinates.length - 1],
-            },
-          },
-        ],
-      }
-
-      map.fitBounds(
-        [
-          result.coordinates[0],
-          result.coordinates[result.coordinates.length - 1],
-        ],
-        { padding: 50 }
+      this.drawRoute(
+        event.map,
+        this.legs,
+        this.legs.length === 1 && this.singleLegDashed
       )
-
-      map.addSource('route', {
-        type: 'geojson',
-        data: route,
-      })
-
-      map.addSource('points', {
-        type: 'geojson',
-        data: points,
-      })
-
-      map.addLayer({
-        id: 'points',
-        source: 'points',
-        type: 'circle',
-      })
-
-      map.addLayer({
-        id: 'route',
-        source: 'route',
-        type: 'line',
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round',
-        },
-        paint: {
-          'line-width': 4,
-          'line-color': '#2e8997',
-          'line-dasharray': [2, 4],
-        },
-      })
     },
-    initiateMapWholeRoute(map, legs) {
-      const result = legs.map(leg => polyline.toGeoJSON(leg.legGeometry.points))
+    drawRoute(map, legs, dashedLines) {
+      const geoLegs = legs.map(leg =>
+        polyline.toGeoJSON(leg.legGeometry.points)
+      )
       let features = []
       let beginPoints = []
       let endPoints = []
-      result.forEach(leg => {
+      geoLegs.forEach(leg => {
         features.push({
           type: 'Feature',
           geometry: leg,
@@ -241,7 +162,13 @@ export default {
           features: endPoints,
         },
       })
-
+      const legPaintStyle = {
+        'line-color': '#2e8997',
+        'line-width': 4,
+      }
+      if (dashedLines) {
+        legPaintStyle['line-dasharray'] = [2, 4]
+      }
       map.addLayer({
         id: 'legs',
         type: 'line',
@@ -250,26 +177,22 @@ export default {
           'line-join': 'round',
           'line-cap': 'round',
         },
-        paint: {
-          'line-color': '#2e8997',
-          'line-width': 4,
-        },
+        paint: legPaintStyle,
       })
-      const finalDestinationCoordinates =
-        result[result.length - 1].coordinates[
-          result[result.length - 1].coordinates.length - 1
-        ]
-      map.fitBounds([result[0].coordinates[0], finalDestinationCoordinates], {
-        padding: 15,
+      const bbox = this.findBoundingBox(geoLegs)
+      map.fitBounds(bbox, {
+        padding: 25,
       })
-
-      this.destinationCoordinates = finalDestinationCoordinates
+      const lastGeoLeg = geoLegs[geoLegs.length - 1]
+      this.arrivalCoords = [
+        ...lastGeoLeg.coordinates[lastGeoLeg.coordinates.length - 1],
+      ]
       map.addLayer({
         id: 'beginPoints',
         source: 'beginPoints',
         type: 'circle',
         paint: {
-          'circle-radius': 3,
+          'circle-radius': 4,
           'circle-color': '#ff0a10',
         },
       })
@@ -278,10 +201,43 @@ export default {
         source: 'endPoints',
         type: 'circle',
         paint: {
-          'circle-radius': 3,
+          'circle-radius': 4,
           'circle-color': '#000000',
         },
       })
+    },
+    /**
+     * Finds the left upper corner (nw) and right lower corner (se) to fit in the view port.
+     * @param geoLegs an array of geo coordinates
+     * @return {*[]} two coordinates (longitude, latitude)
+     */
+    findBoundingBox(geoLegs) {
+      const firstGeoLeg = geoLegs[0]
+      const lastGeoLeg = geoLegs[geoLegs.length - 1]
+      const nw = [...geoLegs[0].coordinates[0]]
+      const se = [...lastGeoLeg.coordinates[lastGeoLeg.coordinates.length - 1]]
+      const minReducer = (previous, current) =>
+        current < previous ? current : previous
+      const maxReducer = (previous, current) =>
+        current > previous ? current : previous
+
+      nw[1] = geoLegs
+        .flatMap(leg => leg.coordinates)
+        .map(coord => coord[1])
+        .reduce(maxReducer, nw[1])
+      nw[0] = geoLegs
+        .flatMap(leg => leg.coordinates)
+        .map(coord => coord[0])
+        .reduce(minReducer, nw[0])
+      se[1] = geoLegs
+        .flatMap(leg => leg.coordinates)
+        .map(coord => coord[1])
+        .reduce(minReducer, nw[1])
+      se[0] = geoLegs
+        .flatMap(leg => leg.coordinates)
+        .map(coord => coord[0])
+        .reduce(maxReducer, nw[0])
+      return [nw, se]
     },
     onResize() {
       this.map.fitBounds(this.map.getBounds())

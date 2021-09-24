@@ -7,6 +7,7 @@
             ref="mapComp"
             :legs="selectedLegs"
             :map-size-prop="mapSize"
+            :single-leg-dashed="false"
             @sizeChanged="onMapSizeChanged"
             @closeMap="onMapClose"
           >
