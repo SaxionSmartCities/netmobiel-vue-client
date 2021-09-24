@@ -88,8 +88,11 @@ export default {
     }
   },
   computed: {
+    deleteScope() {
+      return this.numBookings > 0 ? 'this' : this.rideScopeRadio
+    },
     isDisabled() {
-      return this.isRecurrentRide && this.rideScopeRadio === null
+      return this.isRecurrentRide && this.deleteScope === null
     },
     isRecurrentRide() {
       return this.ride.recurrence !== undefined
@@ -115,7 +118,7 @@ export default {
   methods: {
     onDelete() {
       this.$emit('delete', {
-        scope: this.rideScopeRadio,
+        scope: this.deleteScope,
         cancelReason: this.cancelReason,
       })
     },
