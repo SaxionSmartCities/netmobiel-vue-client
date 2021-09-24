@@ -6,6 +6,7 @@
           <v-text-field
             v-model="date"
             label="Datum"
+            :error="isDateBeforeNow"
             readonly
             prepend-icon="event"
             hide-details
@@ -18,7 +19,7 @@
         <v-date-picker
           v-if="showDatePicker"
           v-model="pickedDate"
-          :allowed-dates="allowedDates"
+          :min="minimumDate"
           locale="nl-NL"
           scrollable
         >
@@ -42,6 +43,7 @@
           <v-text-field
             v-model="time"
             :label="arriving ? 'Aankomst' : 'Vertrek'"
+            :error="isTimeBeforeNow"
             prepend-icon="access_time"
             readonly
             hide-details
@@ -51,7 +53,11 @@
           </v-text-field>
         </template>
         <v-card>
-          <v-tabs :value="pickedArriving ? 0 : 1" grow>
+          <v-tabs
+            :value="pickedArriving ? 0 : 1"
+            grow
+            active-class="tab-active"
+          >
             <v-tab @click="pickedArriving = true">Aankomst</v-tab>
             <v-tab @click="pickedArriving = false">Vertrek</v-tab>
           </v-tabs>
@@ -62,6 +68,7 @@
             full-width
             scrollable
             :allowed-minutes="allowedMinutes"
+            :min="minimumTime"
             format="24hr"
             class="time-picker"
           />
@@ -103,13 +110,13 @@ export default {
       type: Object,
       default: () => undefined,
     },
-    allowedDates: {
-      type: Function,
-      default: () => true,
+    futureOnly: {
+      type: Boolean,
+      default: true,
     },
     allowedMinutes: {
       type: Function,
-      default: m => m % 5 == 0,
+      default: m => m % 5 === 0,
     },
   },
   data() {
@@ -118,11 +125,40 @@ export default {
       showTimePicker: false,
       pickedDate: null,
       pickedTime: null,
-      pickedArriving: true,
+      pickedArriving: false,
       date: null,
       time: null,
-      arriving: true,
+      arriving: false,
     }
+  },
+  computed: {
+    minimumDate() {
+      return this.futureOnly ? moment().format(DATE_FORMAT_PICKER) : undefined
+    },
+    minimumTime() {
+      const sameDate = moment(this.pickedDate, DATE_FORMAT_PICKER).isSame(
+        moment().startOf('day')
+      )
+      return this.futureOnly && sameDate
+        ? moment()
+            .add(1, 'minute')
+            .format(TIME_FORMAT)
+        : undefined
+    },
+    isTimeBeforeNow() {
+      return (
+        this.time &&
+        this.date &&
+        moment(`${this.date} ${this.time}`, TIMESTAMP_FORMAT).isBefore(moment())
+      )
+    },
+    isDateBeforeNow() {
+      const t = this.time || '24:00'
+      return (
+        this.date &&
+        moment(`${this.date} ${t}`, TIMESTAMP_FORMAT).isBefore(moment())
+      )
+    },
   },
   watch: { value: 'initialize' },
   mounted() {
@@ -198,5 +234,8 @@ export default {
 
 .bg-white {
   background-color: white !important;
+}
+.tab-active {
+  font-weight: bold;
 }
 </style>

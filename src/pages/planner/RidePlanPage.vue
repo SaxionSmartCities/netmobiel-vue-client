@@ -94,12 +94,16 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import SearchCriteria from '@/components/common/SearchCriteria.vue'
 import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
 import { geoPlaceToCriteria } from '@/utils/Utils'
-import { beforeRouteEnter, beforeRouteLeave } from '@/utils/navigation.js'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as gsStore from '@/store/geocoder-service'
 import * as isStore from '@/store/itinerary-service'
+import {
+  beforeRouteEnter,
+  beforeRouteLeave,
+  restoreDataBeforeRouteEnter,
+} from '@/utils/navigation'
 
 export default {
   name: 'RidePlanPage',
@@ -117,15 +121,13 @@ export default {
     searchCriteria() {
       return isStore.getters.getSearchCriteria
     },
+    ridePlanOptions() {
+      return psStore.getters.getProfile?.ridePlanOptions
+    },
     selectedCar() {
-      const selectedCarId =
-          psStore.getters.getProfile.ridePlanOptions.selectedCarId,
-        cars = csStore.getters.getAvailableCars
-      // HACK: selectedCarId is a string (in the backend) but we expect a number. Using the == comparison
-      // we will get the correct selected car. We want to use === however. But the backend should be
-      // updated first.
-      // JR: No, selectedCarId should be a urn, not a number.
-      return cars.find(car => car.id == selectedCarId)
+      const selectedCarRef = this.ridePlanOptions?.selectedCarRef
+      const cars = csStore.getters.getAvailableCars
+      return cars.find(car => car.carRef === selectedCarRef)
     },
     disabledRideAddition() {
       const { from, to, travelTime } = this.searchCriteria
@@ -152,14 +154,34 @@ export default {
       // Set the default date and time to today and the next whole hour.
       newCriteria.travelTime = {
         when: this.topOfTheHour,
-        arriving: true,
+        arriving: false,
       }
     }
     isStore.mutations.setSearchCriteria(newCriteria)
   },
-  beforeRouteEnter: beforeRouteEnter({
-    recurrence: json => json,
-  }),
+  beforeRouteEnter(to, from, next) {
+    // console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
+    const keepWhenComingFrom = [
+      'searchLocation',
+      'CarsPage',
+      'planOptions',
+      'rideDetailPage',
+    ]
+    // Clear the search location when navigating from a different page than the location lookup page of one of the subpages
+    if (!keepWhenComingFrom.includes(from?.name)) {
+      // console.log(`Clear Search Criteria`)
+      gsStore.mutations.clearAllGeoLocationPicked()
+      isStore.mutations.setSearchCriteria({})
+    }
+    next(vm =>
+      restoreDataBeforeRouteEnter(vm, {
+        recurrence: value => value,
+      })
+    )
+  },
+  // beforeRouteEnter: beforeRouteEnter({
+  //   recurrence: json => json,
+  // }),
   beforeRouteLeave: beforeRouteLeave({
     recurrence: model => model && { ...model },
   }),

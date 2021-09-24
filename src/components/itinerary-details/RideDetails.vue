@@ -1,23 +1,47 @@
 <template>
-  <v-row dense class="d-flex flex-column">
-    <v-col><h1>Ritdetails</h1></v-col>
-    <v-col><v-divider /></v-col>
-    <v-col class="py-0">
-      <itinerary-summary-list :items="items" />
+  <v-row dense no-gutters>
+    <v-col>
+      <v-row v-if="selectedLegs && shouldShowMap" class="pa-0">
+        <v-col class="pa-0">
+          <route-map
+            ref="mapComp"
+            :legs="selectedLegs"
+            :map-size-prop="mapSize"
+            :single-leg-dashed="false"
+            @sizeChanged="onMapSizeChanged"
+            @closeMap="onMapClose"
+          >
+          </route-map>
+        </v-col>
+      </v-row>
+      <v-row dense class="d-flex flex-column">
+        <v-col><h1>Ritdetails</h1></v-col>
+        <v-col><v-divider /></v-col>
+        <v-col class="py-0">
+          <itinerary-summary-list :items="items" />
+        </v-col>
+        <v-col><v-divider /></v-col>
+      </v-row>
     </v-col>
-    <v-col><v-divider /></v-col>
   </v-row>
 </template>
 
 <script>
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
 import { formatDateTimeLongNoYear } from '@/utils/datetime.js'
+import RouteMap from '@/components/itinerary-details/RouteMap'
 
 export default {
   name: 'RideDetails',
-  components: { ItinerarySummaryList },
+  components: { ItinerarySummaryList, RouteMap },
   props: {
     ride: { type: Object, required: true },
+    showMap: { type: Boolean, default: false },
+  },
+  data() {
+    return {
+      mapSize: 'small',
+    }
   },
   computed: {
     activeBookings() {
@@ -75,6 +99,22 @@ export default {
         })
       }
       return result
+    },
+    shouldShowMap() {
+      return this.showMap
+    },
+    selectedLegs() {
+      return this.ride?.legs
+    },
+  },
+  methods: {
+    onMapSizeChanged({ size }) {
+      this.mapSize = size
+    },
+    onMapClose() {
+      this.selectedLegsIndex = null
+      this.mapSize = 'small'
+      this.$emit('closeMap')
     },
   },
 }

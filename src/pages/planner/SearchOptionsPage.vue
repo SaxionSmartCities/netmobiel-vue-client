@@ -47,8 +47,9 @@ export default {
   },
   methods: {
     saveSearchOptions() {
-      psStore.actions.storeSearchPreferences(this.searchPreferences)
-      this.$router.go(-1)
+      psStore.actions
+        .storeSearchPreferences(this.searchPreferences)
+        .then(() => this.$router.go(-1))
     },
   },
 }

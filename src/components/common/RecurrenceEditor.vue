@@ -33,7 +33,7 @@
         </v-row>
         <v-row row align-center ml-0>
           <v-col xs9 pl-7>
-            <week-pattern-editor v-model="weekpattern" />
+            <week-pattern-editor v-model="weekPattern" />
           </v-col>
         </v-row>
         <v-row row align-center ml-0>
@@ -79,7 +79,7 @@
           <v-btn
             text
             color="primary"
-            :disabled="!weekpattern"
+            :disabled="!weekPattern"
             @click="confirmPatternEditor"
           >
             Ok
@@ -97,7 +97,7 @@ import {
   formatDatePickerFromInput,
 } from '@/utils/datetime.js'
 
-// weekdays according to JavaScript Date class (which differs from recurrence weekpattern that starts at Monday)
+// weekdays according to JavaScript Date class (which differs from recurrence week pattern that starts at Monday)
 const weekdays = [
   'zondag',
   'maandag',
@@ -148,7 +148,7 @@ function computeState(model, origin) {
   // if horizon is unspecified and repetition follows weekly pattern
   if (!horizon && interval === 1) {
     // repeat weekly for every workday
-    if (daysOfWeekMask === 31) {
+    if (daysOfWeekMask === 0x1f) {
       return { selectedRepetition: 'WORKDAILY' }
     }
     // repeat weekly for weekday of specified origin
@@ -159,7 +159,7 @@ function computeState(model, origin) {
   // custom repetition
   return {
     selectedRepetition: undefined,
-    weekpattern: daysOfWeekMask,
+    weekPattern: daysOfWeekMask,
     weeks: interval === 2 ? 'TWO_WEEKS' : 'ONE_WEEK',
     horizon: horizon,
   }
@@ -191,7 +191,7 @@ export default {
       showHorizonPicker: false,
       previousRepetition: 'ONCE',
       repetitions: computeRepetitions(this.origin),
-      weekpattern: 0,
+      weekPattern: 0,
       weeks: 'ONE_WEEK',
       pickedHorizon: '',
       horizon: '',
@@ -213,18 +213,22 @@ export default {
         }
         case 'DAILY': {
           this.weeks = 'ONE_WEEK'
-          this.weekpattern = 127
+          this.weekPattern = 0xff
           this.horizon = ''
-          // weekpattern is not significant, when unit is DAY
+          // week pattern is not significant, when unit is DAY
           this.$emit('input', { interval: 1, unit: 'DAY' })
           break
         }
         case 'WORKDAILY': {
           this.weeks = 'ONE_WEEK'
-          this.weekpattern = 31
-          this.horizon = ''
           // every week on monday (1), tuesday (2), wednesday (4), thursday (8), friday (16) = 31
-          this.$emit('input', { daysOfWeekMask: 31, interval: 1, unit: 'WEEK' })
+          this.weekPattern = 0x1f
+          this.horizon = ''
+          this.$emit('input', {
+            daysOfWeekMask: this.weekPattern,
+            interval: 1,
+            unit: 'WEEK',
+          })
           break
         }
         case 'WEEKLY': {
@@ -252,10 +256,10 @@ export default {
       // convert from Moment API convention (i.e. sunday = 0) to ISO8601 convention (i.e. monday = 0)
       const index = (6 + this.origin.day()) % 7
       this.weeks = 'ONE_WEEK'
-      this.weekpattern = 1 << index
+      this.weekPattern = 1 << index
       this.horizon = ''
       this.$emit('input', {
-        daysOfWeekMask: this.weekpattern,
+        daysOfWeekMask: this.weekPattern,
         interval: 1,
         unit: 'WEEK',
       })
@@ -276,24 +280,24 @@ export default {
       this.showCustom = false
       if (this.weeks === 'ONE_WEEK' && !this.horizon) {
         const weekdaySelection = 1 << (6 + new Date(this.origin).getDay()) % 7
-        if (this.weekpattern === weekdaySelection) {
+        if (this.weekPattern === weekdaySelection) {
           this.selectedRepetition = 'WEEKLY'
           return
         }
         // check whether 'custom' pattern matches every workday
-        if (this.weekpattern === 31) {
+        if (this.weekPattern === 0x1f) {
           this.selectedRepetition = 'WORKDAILY'
           return
         }
         // check whether 'custom' pattern matches every day
-        if (this.weekpattern === 127) {
+        if (this.weekPattern === 0xff) {
           this.selectedRepetition = 'DAILY'
           return
         }
       }
       this.selectedRepetition = undefined
       this.$emit('input', {
-        daysOfWeekMask: this.weekpattern,
+        daysOfWeekMask: this.weekPattern,
         interval: this.weeks === 'ONE_WEEK' ? 1 : 2,
         unit: 'WEEK',
         horizon:

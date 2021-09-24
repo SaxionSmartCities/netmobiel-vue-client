@@ -1,12 +1,48 @@
 <template>
   <content-pane>
+    <template v-slot:header>
+      <v-row
+        v-if="ride.state === 'CANCELLED'"
+        class="cancelled-banner text-center py-1"
+        dense
+        no-gutters
+      >
+        <v-col v-if="isRideInThePast">
+          Deze rit was geannuleerd
+        </v-col>
+        <v-col v-else>
+          Deze rit is geannuleerd
+        </v-col>
+      </v-row>
+    </template>
     <v-row>
       <v-col class="py-0">
-        <ride-details :ride="ride" class="mb-4" />
+        <ride-details
+          :ride="ride"
+          :show-map="showMap"
+          class="mb-4"
+          @closeMap="onCloseMap"
+        />
       </v-col>
     </v-row>
     <v-row v-for="(leg, index) in generateSteps" :key="index" class="mx-3 py-0">
       <itinerary-leg :leg="leg" :step="index" />
+    </v-row>
+    <v-row>
+      <v-col class="pt-0">
+        <v-btn
+          large
+          rounded
+          outlined
+          block
+          mb-4
+          depressed
+          color="primary"
+          @click="onShowMap"
+        >
+          Bekijk op de kaart
+        </v-btn>
+      </v-col>
     </v-row>
     <v-row v-if="numBookings > 0">
       <v-col class="mx-1">
@@ -32,42 +68,6 @@
         <itinerary-options :options="rideOptions" />
       </v-col>
     </v-row>
-    <v-dialog v-model="warningDialog">
-      <v-card>
-        <v-card-title class="headline">
-          Weet u dit zeker?
-        </v-card-title>
-        <v-card-text v-if="numBookings > 0">
-          <p>
-            Uw rit heeft
-            {{ numBookings }}
-            {{ confirmedBookings.length === 0 ? 'voorgestelde' : '' }}
-            boeking(en), meldt met een persoonlijke boodschap aan uw
-            passagier(s) waarom u de rit annuleert.
-          </p>
-          <v-textarea
-            outlined
-            name="input-7-4"
-            label="Reden voor annulering"
-            :value="cancelReason"
-          ></v-textarea>
-        </v-card-text>
-        <v-card-text v-else>
-          <p>
-            Weet u zeker dat u deze rit wil annuleren?
-          </p>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn text color="primary" @click="deleteRide()">
-            Ja
-          </v-btn>
-
-          <v-btn text color="primary" @click="warningDialog = false">
-            Nee
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
     <contact-traveller-modal
       v-if="showContactTravellerModal"
       :show="showContactTravellerModal"
@@ -76,7 +76,18 @@
       @select="onTravellerSelectForMessage"
     ></contact-traveller-modal>
     <v-dialog v-model="showEditRideModal">
-      <edit-ride-dialog :ride="ride" @save="onSave" @cancel="onCancel" />
+      <edit-ride-dialog
+        :ride="ride"
+        @save="onUpdateRide"
+        @cancel="onCancelDialog"
+      />
+    </v-dialog>
+    <v-dialog v-model="showDeleteRideModal">
+      <cancel-ride-dialog
+        :ride="ride"
+        @delete="onDeleteRide"
+        @cancel="onCancelDialog"
+      />
     </v-dialog>
   </content-pane>
 </template>
@@ -95,11 +106,16 @@ import * as psStore from '@/store/profile-service'
 import * as msStore from '@/store/message-service'
 import BookingList from '@/components/common/BookingList'
 import moment from 'moment'
+import * as isStore from '@/store/itinerary-service'
+import * as gsStore from '@/store/geocoder-service'
+import { geoLocationToPlace } from '@/utils/Utils'
+import CancelRideDialog from '@/components/dialogs/CancelRideDialog'
 
 export default {
   name: 'RideDetailPage',
   components: {
     EditRideDialog,
+    CancelRideDialog,
     ContactTravellerModal,
     ContentPane,
     // JR Note: A Ride is NOT the same as a Trip itinerary
@@ -121,6 +137,8 @@ export default {
       cancelReason: '',
       showContactTravellerModal: false,
       showEditRideModal: false,
+      showDeleteRideModal: false,
+      showMap: false,
     }
   },
   computed: {
@@ -141,6 +159,9 @@ export default {
             booking => booking.state.toUpperCase() !== 'CANCELLED'
           )
     },
+    numBookings() {
+      return this.activeBookings.length
+    },
     passengersInBookings() {
       return this.activeBookings.map(booking => {
         return {
@@ -156,8 +177,11 @@ export default {
     ride() {
       return csStore.getters.getSelectedRide
     },
-    numBookings() {
-      return this.activeBookings.length
+    isRideInThePast() {
+      return (
+        this.ride?.departureTime &&
+        moment(this.ride.departureTime).isBefore(moment())
+      )
     },
     generateSteps() {
       let steps = []
@@ -172,7 +196,7 @@ export default {
       switch (state) {
         case 'SCHEDULED':
           // A ride with a proposed or confirmed booking cannot be modified right now
-          if (this.activeBookings === 0) {
+          if (this.activeBookings.length === 0) {
             options.push({
               icon: 'fa-pencil-alt',
               label: 'Wijzig deze rit',
@@ -182,7 +206,7 @@ export default {
           options.push({
             icon: 'fa-times-circle',
             label: 'Annuleer deze rit',
-            callback: this.onRideCancelled,
+            callback: this.onRideCancel,
           })
           break
         case 'VALIDATING':
@@ -190,6 +214,25 @@ export default {
             icon: 'fa-check-circle',
             label: 'Bevestig deze rit',
             callback: this.onRideReview,
+          })
+          options.push({
+            icon: 'fa-redo',
+            label: 'Plan deze rit opnieuw',
+            callback: this.onRideReplan,
+          })
+          break
+        case 'COMPLETED':
+          options.push({
+            icon: 'fa-redo',
+            label: 'Plan deze rit opnieuw',
+            callback: this.onRideReplan,
+          })
+          break
+        case 'CANCELLED':
+          options.push({
+            icon: 'fa-redo',
+            label: 'Plan deze rit opnieuw',
+            callback: this.onRideReplan,
           })
           break
       }
@@ -218,16 +261,19 @@ export default {
     onRideReview() {
       csStore.actions.confirmRide({ id: this.rideId })
     },
-    onRideCancelled() {
-      this.warningDialog = true
+    onRideCancel() {
+      this.showDeleteRideModal = true
     },
-    deleteRide() {
-      this.warningDialog = false
-      csStore.actions.deleteRide({
-        id: this.rideId,
-        cancelReason: this.cancelReason,
-      })
-      this.$router.push('/tripsOverviewPage')
+    onDeleteRide(params) {
+      const { scope, cancelReason } = params
+      this.showDeleteRideModal = false
+      csStore.actions
+        .deleteRide({
+          id: this.rideId,
+          cancelReason: cancelReason,
+          scope: scope,
+        })
+        .then(() => this.$router.push('/tripsOverviewPage'))
     },
     contactPassenger() {
       if (this.passengersInBookings.length > 1) {
@@ -249,35 +295,56 @@ export default {
     onRideEdit() {
       this.showEditRideModal = true
     },
-    onSave(update) {
-      let newRide = { ...this.ride }
-      delete newRide.state
-      delete newRide.legs
-      const wasRecurring = newRide.recurrence !== undefined
-      const travelTime = update.travelTime.when.toISOString()
-      newRide.arrivalTimePinned = update.travelTime.arriving
+    onRideReplan() {
+      const from = this.ride.fromPlace
+      const to = this.ride.toPlace
+      isStore.mutations.setSearchCriteria({ from, to })
+      gsStore.mutations.setGeoLocationPicked({
+        query: from.label,
+        field: 'from',
+        place: geoLocationToPlace(from),
+      })
+      gsStore.mutations.setGeoLocationPicked({
+        query: to.label,
+        field: 'to',
+        place: geoLocationToPlace(to),
+      })
+      this.$router.push('/plan')
+    },
+    onUpdateRide(updated) {
+      let newRide = {}
+      newRide.rideRef = this.ride.rideRef
+      newRide.carRef = this.ride.carRef
+      newRide.ableToAssist = this.ride.ableToAssist
+      newRide.maxDetourMeters = this.ride.maxDetourMeters
+      newRide.maxDetourSeconds = this.ride.maxDetourSeconds
+      newRide.nrSeatsAvailable = this.ride.nrSeatsAvailable
+      newRide.fromPlace = this.ride.fromPlace
+      newRide.toPlace = this.ride.toPlace
+      const travelTime = updated.travelTime.when.toISOString()
+      newRide.arrivalTimePinned = updated.travelTime.arriving
       if (newRide.arrivalTimePinned) {
         newRide.arrivalTime = travelTime
-        delete newRide.departureTime
       } else {
         newRide.departureTime = travelTime
-        delete newRide.arrivalTime
       }
-      if (update.choice === 'sequence') {
-        newRide.recurrence = update.recurrence
-      }
-      let scope = null
-      if (wasRecurring) {
-        update.choice === 'sequence'
-          ? (scope = 'this-and-following')
-          : (scope = 'this')
-      }
-      csStore.actions.updateRide({ ride: newRide, scope: scope })
-      this.showEditRideModal = false
-      this.$router.go(-1)
+      newRide.recurrence = updated.recurrence
+      csStore.actions
+        .updateRide({ ride: newRide, scope: updated.scope })
+        .then(() => {
+          this.showEditRideModal = false
+          this.$router.go(-1)
+        })
     },
-    onCancel() {
+    onCancelDialog() {
       this.showEditRideModal = false
+      this.showDeleteRideModal = false
+    },
+    onShowMap() {
+      this.showMap = true
+    },
+    onCloseMap() {
+      this.showMap = false
     },
   },
 }

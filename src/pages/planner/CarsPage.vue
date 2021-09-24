@@ -5,11 +5,11 @@
         <h3>Mijn auto's</h3>
       </v-col>
     </v-row>
-    <v-row v-for="car in availableCars" :key="car.id" dense>
+    <v-row v-for="car in availableCars" :key="car.carRef" dense>
       <v-col>
         <car-card
           :car="car"
-          :selected-car="selectedCarId"
+          :selected-car="selectedCarRef"
           @set-car="selectAlternativeCar"
           @check-delete-car="checkDeleteCar"
         ></car-card>
@@ -28,22 +28,46 @@
       </v-col>
     </v-row>
     <v-dialog v-model="dialog" max-width="290">
-      <v-card>
-        <v-card-title class="headline">Weet u dit zeker?</v-card-title>
+      <v-card class="py-1 px-3">
+        <v-card-title class="headline">Auto Verwijderen</v-card-title>
         <v-card-text>
-          Weet u zeker dat u de {{ carToDelete.brand }}
-          {{ carToDelete.model }} met nummerplaats
-          {{ carToDelete.licensePlate }}
+          <v-row class="d-flex flex-column">
+            <v-col class="py-1">
+              Weet u zeker dat u de {{ carToDelete.brand }}
+              {{ carToDelete.model }} met nummerplaat
+              {{ carToDelete.licensePlate }} wilt verwijderen?
+            </v-col>
+          </v-row>
+          <v-row class="d-flex flex-column py-2">
+            <v-col class="py-1">
+              <v-btn
+                large
+                rounded
+                block
+                mb-4
+                depressed
+                color="button"
+                @click="removeCar(carToDelete)"
+              >
+                Verwijderen
+              </v-btn>
+            </v-col>
+            <v-col class="py-1">
+              <v-btn
+                large
+                rounded
+                outlined
+                block
+                mb-4
+                depressed
+                color="primary"
+                @click="onCancel"
+              >
+                Behouden
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="dialog = false">
-            Annuleren
-          </v-btn>
-          <v-btn text @click="removeCar(carToDelete)">
-            Ja
-          </v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
   </content-pane>
@@ -82,10 +106,10 @@ export default {
         .join(', ')
     },
     passengerCount() {
-      return psStore.getters.getProfile.ridePlanOptions.numPassengers
+      return psStore.getters.getProfile.ridePlanOptions.maxPassengers
     },
-    selectedCarId() {
-      return psStore.getters.getProfile.ridePlanOptions.selectedCarId
+    selectedCarRef() {
+      return psStore.getters.getProfile.ridePlanOptions.selectedCarRef
     },
   },
   created() {
@@ -99,7 +123,7 @@ export default {
         ...profile,
         ridePlanOptions: {
           ...profile.ridePlanOptions,
-          selectedCarId: car.id,
+          selectedCarRef: car.carRef,
         },
       })
     },
@@ -107,14 +131,22 @@ export default {
       this.dialog = true
       this.carToDelete = car
     },
+    onDelete() {
+      this.$emit('delete', {
+        scope: this.rideScopeRadio,
+        cancelReason: this.cancelReason,
+      })
+    },
+    onCancel() {
+      this.dialog = false
+    },
     removeCar(car) {
       this.dialog = false
-      // Update profile if the car that has been removed the default car is.
-      // Set the slected car id to -1 if the user has no other cars configured.
-      // HACK: selectedCarId is a string (in the backend) but we expect a number.
-      if (this.selectedCarId == car.id) {
+      if (this.selectedCarRef === car.carRef) {
         const alternative =
-          this.availableCars.length > 1 ? this.availableCars[0] : { id: -1 }
+          this.availableCars.length > 1
+            ? this.availableCars[0]
+            : { carRef: undefined }
         this.selectAlternativeCar(alternative)
       }
       // Remove car in the backend.

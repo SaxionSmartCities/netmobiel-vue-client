@@ -7,8 +7,11 @@
         dense
         no-gutters
       >
-        <v-col>
-          Deze rit is niet meer beschikbaar.
+        <v-col v-if="isDepartureInThePast">
+          Deze rit was geannuleerd
+        </v-col>
+        <v-col v-else>
+          Deze rit is geannuleerd
         </v-col>
       </v-row>
     </template>
@@ -17,11 +20,11 @@
         <trip-details
           :trip="selectedTrip"
           :show-map="showMap"
-          @closeMap="showMap = false"
+          @closeMap="onCloseMap"
         />
       </v-col>
     </v-row>
-    <v-row v-if="!isShoutOut && hasRideShareDriver">
+    <v-row v-if="hasRideShareDriver">
       <v-col>
         <v-btn
           large
@@ -37,7 +40,7 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row v-if="!isShoutOut">
+    <v-row>
       <v-col class="pt-0">
         <v-btn
           large
@@ -47,7 +50,7 @@
           mb-4
           depressed
           color="primary"
-          @click="showFullRouteOnMap()"
+          @click="onShowMap"
         >
           Bekijk op de kaart
         </v-btn>
@@ -63,6 +66,61 @@
         <itinerary-options :options="tripOptions" />
       </v-col>
     </v-row>
+    <v-dialog v-model="warningDialog">
+      <v-card>
+        <v-card-title class="headline">
+          Rit Verwijderen
+        </v-card-title>
+        <v-card-text>
+          <v-row class="d-flex flex-column">
+            <v-col v-if="drivers && drivers.length > 0" class="py-1">
+              <p>
+                U rijdt mee met iemand, geef in een persoonlijke boodschap aan
+                waarom u uw rit annuleert.
+              </p>
+              <v-textarea
+                v-model="cancelReason"
+                outlined
+                :auto-grow="true"
+                rows="3"
+                label="Reden voor annulering"
+                hide-details="true"
+              ></v-textarea>
+            </v-col>
+            <v-col v-else class="py-1">
+              Weet u zeker dat u deze rit wil annuleren?
+            </v-col>
+          </v-row>
+          <v-row class="d-flex flex-column py-2">
+            <v-col class="py-1">
+              <v-btn
+                large
+                rounded
+                block
+                depressed
+                color="button"
+                @click="deleteTrip"
+              >
+                Verwijderen
+              </v-btn>
+            </v-col>
+            <v-col class="py-1">
+              <v-btn
+                large
+                rounded
+                outlined
+                block
+                depressed
+                color="primary"
+                @click="cancelDialog"
+              >
+                Behouden
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <contact-driver-modal
       v-if="showContactDriverModal"
       :show="showContactDriverModal"
@@ -86,6 +144,8 @@ import * as msStore from '@/store/message-service'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
+import * as gsStore from '@/store/geocoder-service'
+import { geoLocationToPlace } from '@/utils/Utils'
 
 export default {
   name: 'TripDetailPage',
@@ -103,22 +163,27 @@ export default {
   },
   data() {
     return {
+      cancelReason: '',
       showMap: false,
       showContactDriverModal: false,
+      warningDialog: false,
     }
   },
   computed: {
+    isDepartureInThePast() {
+      return (
+        this.selectedTrip?.itinerary.departureTime &&
+        moment(this.selectedTrip.itinerary.departureTime).isBefore(moment())
+      )
+    },
     profile() {
       return psStore.getters.getProfile
     },
-    isShoutOut() {
-      return false
-    },
     hasRideShareDriver() {
-      return this.getRideShareDriverId !== null
+      return this.rideshareDriverId !== null
     },
     drivers() {
-      return this.selectedTrip.legs
+      return this.selectedTrip.itinerary?.legs
         .filter(leg => leg.traverseMode === 'RIDESHARE')
         .map(leg => {
           return {
@@ -132,8 +197,8 @@ export default {
           }
         })
     },
-    getRideShareDriverId() {
-      return this.drivers.length > 0 ? this.drivers[0].id : null
+    rideshareDriverId() {
+      return this.drivers && this.drivers.length > 0 ? this.drivers[0].id : null
     },
     selectedTrip() {
       let trip = isStore.getters.getSelectedTrip
@@ -144,7 +209,10 @@ export default {
       let options = []
       const { state } = this.selectedTrip
       const legs = this.selectedTrip?.itinerary?.legs
-      const found = legs ? legs.find(l => l.confirmed !== undefined) : undefined
+      // I can confirm or deny my leg, in both cases the validating is done
+      const validatedMyLeg = legs
+        ? legs.find(l => l.confirmed !== undefined)
+        : undefined
       switch (state) {
         case 'SCHEDULED':
           options.push({
@@ -155,11 +223,11 @@ export default {
           options.push({
             icon: 'fa-times-circle',
             label: 'Annuleer deze rit',
-            callback: this.onTripCancelled,
+            callback: this.onCancelTrip,
           })
           break
         case 'VALIDATING':
-          if (found === undefined) {
+          if (validatedMyLeg === undefined) {
             options.push({
               icon: 'fa-check-circle',
               label: 'Bevestig deze rit',
@@ -178,11 +246,11 @@ export default {
             label: 'Plan deze rit opnieuw',
             callback: this.onTripReplan,
           })
-          options.push({
-            icon: 'fa-times-circle',
-            label: 'Verwijder deze rit',
-            callback: this.onTripCancelled,
-          })
+          // options.push({
+          //   icon: 'fa-times-circle',
+          //   label: 'Verwijder deze rit',
+          //   callback: this.onTripCancelled,
+          // })
           break
         case 'CANCELLED':
           options.push({
@@ -190,11 +258,12 @@ export default {
             label: 'Plan deze rit opnieuw',
             callback: this.onTripReplan,
           })
-          options.push({
-            icon: 'fa-times-circle',
-            label: 'Verwijder deze rit',
-            callback: this.onTripCancelled,
-          })
+          break
+        // options.push({
+        //   icon: 'fa-times-circle',
+        //   label: 'Verwijder deze rit',
+        //   callback: this.onTripCancelled,
+        // })
       }
       return options
     },
@@ -215,14 +284,11 @@ export default {
             .calendar()
         : '- - : - -'
     },
-    saveTrip() {
-      const selectedTrip = isStore.getters.getSelectedTrip
-      isStore.actions
-        .createTrip(selectedTrip)
-        .then(() => this.$router.push('/tripPlanSubmitted'))
-    },
-    showFullRouteOnMap() {
+    onShowMap() {
       this.showMap = true
+    },
+    onCloseMap() {
+      this.showMap = false
     },
     contactDriver() {
       const drvs = this.drivers
@@ -250,28 +316,48 @@ export default {
         params: { id: this.selectedTrip.id.toString() },
       })
     },
-    onTripCancelled() {
-      isStore.actions.deleteTrip({
-        tripId: this.selectedTrip.id,
-        displayWarning: true,
-      })
-      this.$router.push('/tripCancelledPage')
+    cancelDialog() {
+      this.warningDialog = false
+    },
+    onCancelTrip() {
+      this.warningDialog = true
+    },
+    deleteTrip() {
+      this.warningDialog = false
+      isStore.actions
+        .deleteTrip({
+          tripId: this.selectedTrip.id,
+          cancelReason: this.cancelReason,
+          displayWarning: true,
+        })
+        .then(() => this.$router.push('/tripCancelledPage'))
     },
     onTripEdit() {
       const { from, to, itinerary, arrivalTimeIsPinned } = this.selectedTrip
       const { searchPreferences } = this.profile
-      let searchCriteria = {
+      const travelTime = arrivalTimeIsPinned
+        ? moment(itinerary.arrivalTime)
+        : moment(itinerary.departureTime)
+      const searchCriteria = {
         from,
         to,
         preferences: searchPreferences,
         travelTime: {
-          when: arrivalTimeIsPinned
-            ? moment(itinerary.arrivalTime)
-            : moment(itinerary.departureTime),
+          when: travelTime,
           arriving: arrivalTimeIsPinned,
         },
       }
       isStore.mutations.setSearchCriteria(searchCriteria)
+      gsStore.mutations.setGeoLocationPicked({
+        query: from.label,
+        field: 'from',
+        place: geoLocationToPlace(from),
+      })
+      gsStore.mutations.setGeoLocationPicked({
+        query: to.label,
+        field: 'to',
+        place: geoLocationToPlace(to),
+      })
       isStore.actions.searchTripPlan(searchCriteria)
       this.$router.push({
         name: 'searchResults',

@@ -54,6 +54,7 @@ export default {
   },
   mounted() {
     isStore.mutations.clearPlanningResults()
+    isStore.mutations.setSelectedTripPlan({})
     // For a traveller a shout-out is just another trip plan.
     isStore.actions.fetchTripPlan({ id: this.shoutOutId })
   },

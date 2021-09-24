@@ -120,6 +120,7 @@ export default {
     onMapClose() {
       this.showMapInternal = false
       this.selectedLegsIndex = null
+      this.mapSize = 'small'
       this.$emit('closeMap')
     },
     onLegSelected({ step }) {
@@ -138,11 +139,6 @@ export default {
         // Add the component back in
         this.showMapInternal = true
       })
-    },
-    showFullRouteOnMap() {
-      this.mapSize = 'fullscreen'
-      this.selectedLegs = this.selectedTrip.itinerary.legs
-      this.forceRerender()
     },
   },
 }

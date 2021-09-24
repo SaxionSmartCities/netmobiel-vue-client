@@ -1,23 +1,24 @@
 import axios from 'axios'
 import moment from 'moment'
-import util from '@/utils/Utils'
 import config from '@/config/config'
 import constants from '../../constants/constants'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { RootState } from '../Rootstate'
 import { mutations } from '@/store/itinerary-service/index'
 import {
+  Itinerary,
   ItineraryState,
   SearchCriteria,
   ShoutOutSearchCriteria,
+  Trip,
 } from '@/store/itinerary-service/types'
 import * as uiStore from '@/store/ui'
 import { addInterceptors } from '../api-middelware'
+import { generateHeaders, getCreatedObjectIdFromResponse } from '@/utils/Utils'
 
 type ActionContext = BareActionContext<ItineraryState, RootState>
 
 const { PLANNER_BASE_URL, GRAVITEE_PLANNER_SERVICE_API_KEY } = config
-const { generateHeaders } = util
 
 // ============  TRIP PLAN MANAGEMENT  ================
 // Creates a regular TripPlan on success
@@ -46,9 +47,9 @@ function searchTripPlan(
     to: `${to.label}::${to.latitude},${to.longitude}`,
     nrSeats: preferences.numPassengers,
     modalities: preferences.allowedTravelModes.toString(),
-    maxWalkDistance: preferences.maximumTransferTime,
-    firstLegRideshare: preferences.allowFirstLegTransfer || false,
-    lastLegRideshare: preferences.allowLastLegTransfer || false,
+    maxWalkDistance: preferences.maxWalkDistance,
+    firstLegRideshare: preferences.allowFirstLegRideshare || false,
+    lastLegRideshare: preferences.allowLastLegRideshare || false,
     travelTime: travelTime.when.format(),
     useAsArrivalTime: travelTime.arriving,
   }
@@ -80,9 +81,9 @@ function createShoutOutTripPlan(
     to,
     nrSeats: preferences.numPassengers,
     modalities: preferences.allowedTravelModes,
-    maxWalkDistance: preferences.maximumTransferTime,
-    firstLegRideshare: preferences.allowFirstLegTransfer || false,
-    lastLegRideshare: preferences.allowLastLegTransfer || false,
+    maxWalkDistance: preferences.maxWalkDistance,
+    firstLegRideshare: preferences.allowFirstLegRideshare || false,
+    lastLegRideshare: preferences.allowLastLegRideshare || false,
     travelTime: travelTime.when.format(),
     useAsArrivalTime: travelTime.arriving,
     planType: 'SHOUT_OUT',
@@ -95,16 +96,17 @@ function createShoutOutTripPlan(
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
     .then(response => {
+      let shoutOutId
       if (response.status == 201) {
         let message = 'Oproep naar de community is geplaatst'
         uiStore.actions.queueInfoNotification(message)
+        const id = getCreatedObjectIdFromResponse(response)
+        shoutOutId = id ? `urn:nb:pn:tripplan:${id}` : undefined
       } else {
         let message = response.data.message
         uiStore.actions.queueErrorNotification(message)
       }
-      return `urn:nb:pn:tripplan:${util.getCreatedObjectIdFromResponse(
-        response
-      )}`
+      return shoutOutId
     })
     .catch(error => {
       // eslint-disable-next-line
@@ -171,11 +173,18 @@ function fetchMyShoutOutTripPlans(
 }
 
 // Cancel a (shout-out) trip plan. A regular plan cannot be cancelled because it is already closed.
-function cancelTripPlan(context: ActionContext, { tripPlanId }: any) {
+function cancelTripPlan(
+  context: ActionContext,
+  { tripPlanId, cancelReason }: any
+) {
   const URL = `${PLANNER_BASE_URL}/plans/${tripPlanId}`
+  const params: any = {
+    reason: cancelReason ? cancelReason : undefined,
+  }
   return axios
     .delete(URL, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      params,
     })
     .then(response => {
       if (response.status == 204) {
@@ -198,15 +207,22 @@ function cancelTripPlan(context: ActionContext, { tripPlanId }: any) {
 /**
  * Creates a trip from a previously created itinerary reference.
  * @param context
- * @param itineraryRef the itinerary from a planning request (regular or shout-out).
+ * @param itinerary the itinerary and itinerary reference from a planning request (regular or shout-out).
  */
-function createTrip(context: ActionContext, { itineraryRef }: any) {
+function createTrip(context: ActionContext, itinerary: Itinerary) {
   const delegatorId = context.rootState.ps.user.delegatorId
-  const trip = { itineraryRef }
+  const tripRequest = { itineraryRef: itinerary.itineraryRef }
   mutations.setBookingStatus({ status: 'PENDING' })
+  const now = moment()
+  if (moment(itinerary.departureTime).isBefore(now)) {
+    uiStore.actions.queueErrorNotification(
+      'De vertrektijd van deze rit is al verstreken'
+    )
+    return Promise.reject()
+  }
   const URL = `${PLANNER_BASE_URL}/trips`
-  axios
-    .post(URL, trip, {
+  return axios
+    .post(URL, tripRequest, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
     })
     .then(response => {
@@ -322,9 +338,13 @@ function fetchTrip(context: ActionContext, payload: any) {
 function deleteTrip(context: ActionContext, payload: any) {
   const delegatorId = context.rootState.ps.user.delegatorId
   const URL = `${PLANNER_BASE_URL}/trips/${payload.tripId}`
-  axios
+  const params: any = {
+    reason: payload.cancelReason ? payload.cancelReason : undefined,
+  }
+  return axios
     .delete(URL, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
+      params: params,
     })
     .then(response => {
       if (response.status === 204) {
@@ -332,18 +352,11 @@ function deleteTrip(context: ActionContext, payload: any) {
         if (payload.displayWarning) {
           uiStore.actions.queueInfoNotification('Rit is succesvol geannuleerd')
         }
-        fetchTrips(context, {
-          maxResults: constants.fetchTripsMaxResults,
-          offset: 0,
-        })
       } else if (response.status === 404) {
         //requested trip could not be found
         uiStore.actions.queueErrorNotification(
           'De opgegeven rit kon niet worden gevonden.'
         )
-      } else if (response.status === 401) {
-        //The requested object does no longer exist
-        uiStore.actions.queueErrorNotification('Deze rit is al geannuleerd')
       } else {
         uiStore.actions.queueErrorNotification(response.data.message)
       }

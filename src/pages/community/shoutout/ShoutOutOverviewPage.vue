@@ -129,7 +129,7 @@ export default {
   },
   watch: {
     baseLocation(newValue, oldValue) {
-      console.log(`baseLocation: ${oldValue} --> ${newValue}`)
+      // console.log(`baseLocation: ${oldValue} --> ${newValue}`)
       this.fetchShoutOuts()
     },
   },
@@ -138,9 +138,11 @@ export default {
   },
   beforeRouteEnter: beforeRouteEnter({
     selectedTab: number => number || 0,
+    baseLocation: value => value,
   }),
   beforeRouteLeave: beforeRouteLeave({
     selectedTab: number => number || 0,
+    baseLocation: value => value,
   }),
   mounted() {
     csStore.mutations.setProposedRides([])
@@ -169,6 +171,7 @@ export default {
       isStore.actions.fetchShoutOuts({ location })
     },
     onShoutOutSelected(selected) {
+      isStore.mutations.setSelectedTripPlan({})
       if (selected.shoutOut.traveller.managedIdentity === this.profile.id) {
         this.$router.push({
           name: 'shoutOutPassenger',

@@ -1,41 +1,37 @@
 <template>
-  <generic-list :items="locations" :empty-list-label="emptyListLabel">
+  <generic-list
+    :items="locations"
+    :empty-list-label="emptyListLabel"
+    :key-name="'ref'"
+  >
     <template v-slot:list-item="{ item: location }">
       <v-row no-gutters>
         <v-col
           class="shrink category align-center pa-2 ml-1"
           @click="onItemClicked(location)"
         >
-          <v-icon>{{ iconicCategory(location.category) }}</v-icon>
+          <v-icon>{{ location.iconName }}</v-icon>
         </v-col>
         <v-col class="grow px-2" @click="onItemClicked(location)">
           <v-row no-gutters>
-            <v-col
-              v-if="showHighlightedText && location.titleHighlights.length > 0"
-            >
-              <span>{{
-                location.title.substring(0, location.titleHighlights[0].start)
-              }}</span>
+            <v-col v-if="showHighlightedText" class="">
+              <!-- Leave the peculiar looking comment in the line below,
+                   it prevents insertion of an additional space in the span -->
               <span
-                v-for="(split, i) in location.titleHighlights"
+                v-for="(part, i) in location.titleParts"
                 :key="i"
-                class="highlight"
-                >{{ location.title.substring(split.start, split.end) }}
-              </span>
-              <span>{{
-                location.title.substring(
-                  location.titleHighlights[location.titleHighlights.length - 1]
-                    .end
-                )
-              }}</span>
+                :class="part.highlight ? 'highlight' : ''"
+                >{{ part.text
+                }}<!--
+              --></span>
             </v-col>
             <v-col v-else>
-              {{ location.title || location.label }}
+              {{ location.title }}
             </v-col>
           </v-row>
           <v-row no-gutters>
             <v-col class="subtitle-2 font-weight-light">
-              {{ location.label }}
+              {{ location.subtitle }}
             </v-col>
           </v-row>
         </v-col>
@@ -62,6 +58,17 @@
 import GenericList from '@/components/lists/GenericList'
 import constants from '@/constants/constants.js'
 
+/**
+ * The LocationsList shows a list of elements, comprising of the following elements:
+ * - An icon (if the location.category is recognized)
+ * - A location.title, the upper text line. Used to display the full address from the geoservice or
+ *   the name of the favorite place.
+ * - A location.titleParts array. If not empty it overrides the title field with a sequence of text parts, each
+ *   flagged to be highlighted or not.
+ * - A location.subtitle, the lower text line. In general used to display an address
+ * - A favorite flag, used to indicate whether the location is a favorite. Clicking the icon will raise an event to
+ *   add or remove the favorite.
+ */
 export default {
   name: 'LocationsList',
   components: { GenericList },
@@ -77,12 +84,6 @@ export default {
     }
   },
   methods: {
-    iconicCategory(category) {
-      return (
-        constants.searchSuggestionCategoryIcons[category] ||
-        constants.searchSuggestionDefaultIcon
-      )
-    },
     onItemClicked(location) {
       this.$emit('onItemClicked', location)
     },

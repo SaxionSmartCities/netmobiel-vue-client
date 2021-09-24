@@ -34,10 +34,14 @@
         <v-card-subtitle class="pr-1">
           <v-row justify="space-between" no-gutters class="pb-0">
             <v-col class="capitalize">
-              {{ formatDateTime(departureTime) }}
+              {{
+                relativeTime
+                  ? formatDateTime(departureTime)
+                  : formatDateTime(departureTime, 'HH:mm')
+              }}
             </v-col>
             <v-col class="text-right">
-              {{ formatDateTime(arrivalTime, 'HH:mm uur') }}
+              {{ formatDateTime(arrivalTime, 'HH:mm') }}
             </v-col>
           </v-row>
         </v-card-subtitle>
@@ -88,6 +92,7 @@ export default {
     tripId: { type: Number, required: false, default: null },
     tripState: { type: String, required: false, default: null },
     itinerary: { type: Object, required: true },
+    relativeTime: { type: Boolean, default: true },
   },
   data() {
     return {
@@ -137,11 +142,13 @@ export default {
       return ''
     },
     cancelled() {
-      const found = this.legs.find(l => l.state === 'CANCELLED')
-      return found !== undefined
+      // const found = this.legs.find(l => l.state === 'CANCELLED')
+      // return found !== undefined
+      return this.tripState === 'CANCELLED'
     },
     completed() {
-      return this.tripState === 'COMPLETED' && !this.cancelled
+      // return this.tripState === 'COMPLETED' && !this.cancelled
+      return this.tripState === 'COMPLETED'
     },
     needsReview() {
       return this.tripState === 'VALIDATING'
@@ -170,7 +177,7 @@ export default {
     // Function to pre-determine the divions of column per leg
     calculateLegDivison() {
       // Skip calculation if we have no legs.
-      if (this.legs.length == 0) {
+      if (this.legs.length === 0) {
         return
       }
       // Calculate total travel time

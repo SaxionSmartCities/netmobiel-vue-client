@@ -1,14 +1,13 @@
 import axios from 'axios'
 import config from '@/config/config'
-import util from '@/utils/Utils'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { RegistrationRequest, RegistrationState } from './types'
 import { mutations } from '@/store/registration-service'
 import { RootState } from '@/store/Rootstate'
+import { generateHeaders } from '@/utils/Utils'
 type ActionContext = BareActionContext<RegistrationState, RootState>
 
 const { PROFILE_BASE_URL, GRAVITEE_PROFILE_SERVICE_API_KEY } = config
-const { generateHeaders } = util
 
 function submitRegistrationRequest(
   context: ActionContext,

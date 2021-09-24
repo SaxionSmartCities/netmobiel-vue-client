@@ -101,11 +101,14 @@ function setPassenger(leg, bookingDict) {
   }
 }
 
-export function generateShoutOutDetailSteps(shoutout, ride, veryDetailed) {
+export function generateShoutOutDetailSteps(shoutOut, ride, veryDetailed) {
   if (ride) {
     return generateShoutOutRideOfferDetailSteps(ride, veryDetailed)
   }
-  return generateCommunityShoutOutDetailSteps(shoutout)
+  if (shoutOut) {
+    return generateCommunityShoutOutDetailSteps(shoutOut)
+  }
+  return []
 }
 
 function generateCommunityShoutOutDetailSteps(shoutout) {

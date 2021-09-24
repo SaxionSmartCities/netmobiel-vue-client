@@ -1,6 +1,5 @@
 import axios from 'axios'
 import config from '@/config/config'
-import util from '@/utils/Utils'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { Profile, ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
@@ -9,6 +8,7 @@ import * as uiStore from '@/store/ui'
 import store from '..'
 import { LocalDate } from '@js-joda/core'
 import { addInterceptors } from '@/store/api-middelware'
+import { generateHeaders } from '@/utils/Utils'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -17,8 +17,6 @@ const {
   IMAGES_BASE_URL,
   GRAVITEE_PROFILE_SERVICE_API_KEY,
 } = config
-
-const { generateHeaders } = util
 
 function fetchProfile(context: ActionContext) {
   const delegatorId = context.state.user.delegatorId
@@ -290,11 +288,12 @@ function storeFavoriteLocation(
   { profileId, place }: any
 ) {
   const URL = `${PROFILE_BASE_URL}/profiles/${profileId}/places`
-  axios
+  return axios
     .post(URL, place, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
     .then(response => {
+      fetchFavoriteLocations(context)
       if (response.status === 201) {
         uiStore.actions.queueInfoNotification(`Je favoriet is opgeslagen!`)
       }
@@ -334,7 +333,7 @@ function storeSearchPreferences(context: ActionContext, payload: any) {
     ...context.state.user.profile,
     searchPreferences: { ...payload },
   }
-  updateProfile(context, profile)
+  return updateProfile(context, profile)
 }
 
 function storeRidePreferences(context: ActionContext, payload: any) {
@@ -343,7 +342,7 @@ function storeRidePreferences(context: ActionContext, payload: any) {
     ...context.state.user.profile,
     ridePlanOptions: { ...payload },
   }
-  updateProfile(context, profile)
+  return updateProfile(context, profile)
 }
 
 function storeFcmToken(context: ActionContext, payload: { fcmToken: string }) {
@@ -354,7 +353,7 @@ function storeFcmToken(context: ActionContext, payload: { fcmToken: string }) {
 
 function updateProfile(context: ActionContext, profile: Profile) {
   const URL = `${PROFILE_BASE_URL}/profiles/${profile.id}`
-  axios
+  return axios
     .put(URL, profile, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })

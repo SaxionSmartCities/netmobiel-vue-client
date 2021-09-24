@@ -25,17 +25,21 @@ export const buildGetters = (
     return state.plannedRidesCount
   }, 'getPlannedRidesCount')
 
-  const getSearchResult = csBuilder.read((state: CarpoolState) => {
-    return state.search.result
-  }, 'getSearchResult')
+  const getCarSearchResult = csBuilder.read((state: CarpoolState) => {
+    return state.carSearch.result
+  }, 'getCarSearchResult')
 
-  const getSearchLicensePlate = csBuilder.read((state: CarpoolState) => {
-    return state.search.licensePlate
-  }, 'getSearchLicensePlate')
+  const getCarSearchLicensePlate = csBuilder.read((state: CarpoolState) => {
+    return state.carSearch.licensePlate
+  }, 'getCarSearchLicensePlate')
 
   const getPastRides = csBuilder.read((state: CarpoolState) => {
     return state.pastRides
   }, 'getPastRides')
+
+  const getPastRidesCount = csBuilder.read((state: CarpoolState) => {
+    return state.pastRidesCount
+  }, 'getPastRidesCount')
 
   const getProposedRides = csBuilder.read((state: CarpoolState) => {
     return state.proposedRides
@@ -45,7 +49,17 @@ export const buildGetters = (
     return state.inboxRides
   }, 'getInboxRides')
 
+  const getUsers = csBuilder.read((state: CarpoolState) => {
+    return state.users
+  }, 'getUsers')
+
   return {
+    get getCarSearchResult() {
+      return getCarSearchResult()
+    },
+    get getCarSearchLicensePlate() {
+      return getCarSearchLicensePlate()
+    },
     get getAvailableCars() {
       return getAvailableCars()
     },
@@ -61,20 +75,20 @@ export const buildGetters = (
     get getPlannedRidesCount() {
       return getPlannedRidesCount()
     },
-    get getSearchResult() {
-      return getSearchResult()
-    },
-    get getSearchLicensePlate() {
-      return getSearchLicensePlate()
-    },
     get getPastRides() {
       return getPastRides()
+    },
+    get getPastRidesCount() {
+      return getPastRidesCount()
     },
     get getProposedRides() {
       return getProposedRides()
     },
     get getInboxRides() {
       return getInboxRides()
+    },
+    get getUsers() {
+      return getUsers()
     },
   }
 }

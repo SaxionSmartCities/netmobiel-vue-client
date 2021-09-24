@@ -143,6 +143,7 @@ export interface User {
 }
 
 export interface PublicProfile {
+  // The id is the managed identity!
   id: string | null
   age: number | null
   image: string | null
@@ -179,19 +180,22 @@ export interface UserConsent {
 
 export interface SearchPreferences {
   numPassengers: number
-  allowTransfer: boolean
-  maximumTransferTime: number
+  maxWalkDistance: number
   luggageOptions: string[]
   allowedTravelModes: string[]
-  allowFirstLegTransfer: boolean
-  allowLastLegTransfer: boolean
+  allowFirstLegRideshare: boolean
+  allowLastLegRideshare: boolean
+  needsAssistance: boolean
+  maxTransfers: number
 }
 
 export interface RidePlanOptions {
-  numPassengers: number
-  maxMinutesDetour: number
+  ableToAssist: boolean
+  maxPassengers: number
+  maxTimeDetour: number
+  maxDistanceDetour: number
   luggageOptions: string[]
-  selectedCarId: number
+  selectedCarRef: string
   cars: any[]
 }
 
@@ -207,9 +211,11 @@ export interface Address {
   postalCode?: string
   stateCode?: string
   street?: string
+  category?: string
 }
 export interface Place extends Address {
   id: number
+  name: string
   ref: string
 }
 

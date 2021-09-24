@@ -43,6 +43,22 @@
         </v-col>
       </v-row>
       <v-row>
+        <v-col class="pt-0">
+          <v-btn
+            large
+            rounded
+            outlined
+            block
+            mb-4
+            depressed
+            color="primary"
+            @click="onShowMap"
+          >
+            Bekijk op de kaart
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col class="pt-3 pb-0">
           <v-btn
             large
@@ -107,6 +123,11 @@ export default {
         ? this.searchCriteria.from
         : this.shoutOut.from
     },
+    itinerary() {
+      return this.offer?.itineraries[0]
+        ? this.offer?.itineraries[0]
+        : this.shoutOut?.referenceItinerary
+    },
     departureTime() {
       let dtime
       if (
@@ -114,10 +135,8 @@ export default {
         !this.searchCriteria.travelTime.arriving
       ) {
         dtime = this.searchCriteria.travelTime.when
-      } else if (this.offer?.itineraries[0]?.departureTime) {
-        dtime = moment(this.offer.itineraries[0].departureTime)
-      } else {
-        dtime = moment(this.shoutOut.referenceItinerary.departureTime)
+      } else if (this.itinerary?.departureTime) {
+        dtime = moment(this.itinerary.departureTime)
       }
       return dtime
     },
@@ -131,10 +150,8 @@ export default {
         this.searchCriteria.travelTime.arriving
       ) {
         atime = this.searchCriteria.travelTime.when
-      } else if (this.offer?.itineraries[0]?.arrivalTime) {
-        atime = moment(this.offer.itineraries[0].arrivalTime)
-      } else {
-        atime = moment(this.shoutOut.referenceItinerary.arrivalTime)
+      } else if (this.itinerary?.arrivalTime) {
+        atime = moment(this.itinerary?.arrivalTime)
       }
       return atime
     },
@@ -176,6 +193,9 @@ export default {
     },
     onConfirmTravelOffer() {
       this.$emit('confirmTravelOffer')
+    },
+    onShowMap() {
+      this.$emit('show-map-proposal')
     },
   },
 }
