@@ -7,7 +7,7 @@
         dense
         no-gutters
       >
-        <v-col v-if="isTripInThePast">
+        <v-col v-if="isDepartureInThePast">
           Deze rit was geannuleerd
         </v-col>
         <v-col v-else>
@@ -20,11 +20,11 @@
         <trip-details
           :trip="selectedTrip"
           :show-map="showMap"
-          @closeMap="showMap = false"
+          @closeMap="onCloseMap"
         />
       </v-col>
     </v-row>
-    <v-row v-if="!isShoutOut && hasRideShareDriver">
+    <v-row v-if="hasRideShareDriver">
       <v-col>
         <v-btn
           large
@@ -40,7 +40,7 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row v-if="!isShoutOut">
+    <v-row>
       <v-col class="pt-0">
         <v-btn
           large
@@ -50,7 +50,7 @@
           mb-4
           depressed
           color="primary"
-          @click="showFullRouteOnMap()"
+          @click="onShowMap"
         >
           Bekijk op de kaart
         </v-btn>
@@ -170,7 +170,7 @@ export default {
     }
   },
   computed: {
-    isTripInThePast() {
+    isDepartureInThePast() {
       return (
         this.selectedTrip?.itinerary.departureTime &&
         moment(this.selectedTrip.itinerary.departureTime).isBefore(moment())
@@ -179,11 +179,8 @@ export default {
     profile() {
       return psStore.getters.getProfile
     },
-    isShoutOut() {
-      return false
-    },
     hasRideShareDriver() {
-      return this.getRideShareDriverId !== null
+      return this.rideshareDriverId !== null
     },
     drivers() {
       return this.selectedTrip.itinerary?.legs
@@ -200,7 +197,7 @@ export default {
           }
         })
     },
-    getRideShareDriverId() {
+    rideshareDriverId() {
       return this.drivers && this.drivers.length > 0 ? this.drivers[0].id : null
     },
     selectedTrip() {
@@ -287,8 +284,11 @@ export default {
             .calendar()
         : '- - : - -'
     },
-    showFullRouteOnMap() {
+    onShowMap() {
       this.showMap = true
+    },
+    onCloseMap() {
+      this.showMap = false
     },
     contactDriver() {
       const drvs = this.drivers

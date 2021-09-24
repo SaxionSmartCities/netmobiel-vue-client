@@ -2,6 +2,19 @@
   <content-pane>
     <v-row>
       <v-col class="py-0">
+        <v-row v-if="selectedLegs && shouldShowMap" class="pa-0">
+          <v-col class="pa-0">
+            <route-map
+              ref="mapComp"
+              :legs="selectedLegs"
+              :map-size-prop="mapSize"
+              :single-leg-dashed="false"
+              @sizeChanged="onMapSizeChanged"
+              @closeMap="onMapClose"
+            >
+            </route-map>
+          </v-col>
+        </v-row>
         <v-row dense class="d-flex flex-column">
           <v-col>
             <h1>Oproep details</h1>
@@ -15,7 +28,9 @@
             <shout-out-detail-passenger
               v-if="shoutOut && shoutOut.planRef"
               :shout-out="shoutOut"
+              @travel-proposal-selected="onTravelOfferSelected"
               @travel-proposal-confirm="onTravelOfferConfirmed"
+              @show-map="onMapShow"
             />
           </v-col>
           <v-col class="pt-3 pb-0">
@@ -50,6 +65,7 @@ import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 import * as gsStore from '@/store/geocoder-service'
 import { geoLocationToPlace } from '@/utils/Utils'
+import RouteMap from '@/components/itinerary-details/RouteMap'
 
 export default {
   name: 'ShoutOutPassengerDetailPage',
@@ -59,6 +75,7 @@ export default {
     ItinerarySummaryList,
     ShoutOutCancelDialog,
     ShoutOutDetailPassenger,
+    RouteMap,
   },
   props: {
     shoutOutId: { type: String, required: true },
@@ -78,6 +95,9 @@ export default {
         },
       ],
       showCancelDialog: false,
+      showMap: false,
+      selectedOffer: null,
+      mapSize: 'small',
     }
   },
   computed: {
@@ -86,22 +106,6 @@ export default {
     },
     shoutOut() {
       return isStore.getters.getSelectedTripPlan
-    },
-    // The itinerary of the new shout-out
-    itinerary() {
-      if (this.itineraries.length > 0) {
-        return this.itineraries[0]
-      }
-      return null
-    },
-    itineraries() {
-      // A filtered list of itineraries (removing cancelled offers). Passenger itineraries comprise a single leg.
-      if (this.shoutOut?.itineraries) {
-        return this.shoutOut.itineraries.filter(
-          i => i.legs[0].state !== 'CANCELLED'
-        )
-      }
-      return []
     },
     itinerarySummaryItems() {
       let result = []
@@ -112,31 +116,35 @@ export default {
           value: formatDateTimeLongNoYear(this.shoutOut?.travelTime),
         })
       }
-      let durationSecs
       if (this.itinerary?.duration) {
-        durationSecs = this.itinerary.duration
-      } else if (this.shoutOut?.referenceItinerary?.duration) {
-        durationSecs = this.shoutOut?.referenceItinerary.duration
-      }
-      if (durationSecs) {
         result.push({
           label: 'Reisduur',
-          value: `${Math.round(durationSecs / 60)} minuten`,
+          value: `${Math.round(this.itinerary.duration / 60)} minuten`,
         })
       }
-      let distanceMeters
-      if (this.shoutOut?.referenceItinerary) {
-        distanceMeters = this.shoutOut.referenceItinerary.legs
+      if (this.itinerary?.legs) {
+        const distanceMeters = this.itinerary.legs
           .map(leg => leg.distance)
           .reduce((sum, d) => sum + d)
-      }
-      if (distanceMeters) {
-        result.push({
-          label: 'Afstand',
-          value: `${Math.round(distanceMeters / 1000)} km`,
-        })
+        if (distanceMeters) {
+          result.push({
+            label: 'Afstand',
+            value: `${Math.round(distanceMeters / 1000)} km`,
+          })
+        }
       }
       return result
+    },
+    shouldShowMap() {
+      return this.showMap
+    },
+    selectedLegs() {
+      return this.showMap && this.itinerary ? this.itinerary.legs : null
+    },
+    itinerary() {
+      return this.selectedOffer
+        ? this.selectedOffer
+        : this.shoutOut?.referenceItinerary
     },
   },
   mounted() {
@@ -195,17 +203,31 @@ export default {
         .then(() => this.$router.push({ name: 'shoutOuts' }))
         .catch(() => {})
     },
+    onTravelOfferSelected(itinerary) {
+      this.selectedOffer = itinerary
+    },
     onConfirmCancel(args) {
       this.showCancelDialog = false
       isStore.actions
         .cancelTripPlan({
           tripPlanId: this.shoutOutId,
-          cancelReason: this.cancelReason,
+          cancelReason: args.cancelReason,
         })
         .then(() => this.$router.push({ name: 'shoutOuts' }))
     },
     onCloseCancel() {
       this.showCancelDialog = false
+    },
+    onMapSizeChanged({ size }) {
+      this.mapSize = size
+    },
+    onMapClose() {
+      this.showMap = false
+      this.selectedLegsIndex = null
+    },
+    onMapShow() {
+      this.mapSize = 'small'
+      this.showMap = true
     },
   },
 }

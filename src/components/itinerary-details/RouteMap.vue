@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="map-container">
     <mgl-map
       id="map"
       ref="routeMap"
@@ -14,47 +14,43 @@
       @moveend="onMoveEnd"
     >
       <mgl-marker
-        v-if="destinationCoordinates.length > 1"
-        :coordinates="destinationCoordinates"
+        v-if="arrivalCoords.length > 1"
+        :coordinates="arrivalCoords"
         color="#ff8500"
       />
     </mgl-map>
-    <div class="ghost-map"></div>
-    <v-row v-if="!isLoading">
-      <v-col class="py-0">
-        <v-btn
-          v-if="mapSize !== 'fullscreen'"
-          fab
-          small
-          class="map-fullscreen"
-          @click="mapSize = 'fullscreen'"
-        >
-          <v-icon>fullscreen</v-icon>
-        </v-btn>
-        <v-btn
-          v-if="mapSize === 'fullscreen'"
-          fab
-          small
-          class="map-fullscreen-exit"
-          @click="mapSize = 'small'"
-        >
-          <v-icon>
-            fullscreen_exit
-          </v-icon>
-        </v-btn>
-      </v-col>
-      <v-col class="py-0">
-        <v-btn fab small class="map-close" @click="$emit('closeMap')">
-          <v-icon>close</v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
+    <div v-if="!isLoading">
+      <v-btn
+        v-if="mapSize !== 'fullscreen'"
+        fab
+        small
+        class="map-fullscreen"
+        @click="mapSize = 'fullscreen'"
+      >
+        <v-icon>fullscreen</v-icon>
+      </v-btn>
+      <v-btn
+        v-if="mapSize === 'fullscreen'"
+        fab
+        small
+        class="map-fullscreen"
+        @click="mapSize = 'small'"
+      >
+        <v-icon>
+          fullscreen_exit
+        </v-icon>
+      </v-btn>
+      <v-btn fab small class="map-close" @click="$emit('closeMap')">
+        <v-icon>close</v-icon>
+      </v-btn>
+    </div>
   </div>
 </template>
 
 <script>
 import { MglMap, MglMarker } from 'vue-mapbox'
 import config from '@/config/config'
+import constants from '@/constants/constants'
 
 const polyline = require('@mapbox/polyline')
 const MAP_STYLE = 'mapbox://styles/mapbox/streets-v11'
@@ -70,17 +66,19 @@ export default {
       required: true,
     },
     mapSizeProp: { type: String, default: 'small', required: false },
+    singleLegDashed: { type: Boolean, default: true, required: false },
   },
   data() {
     return {
-      leg: null,
       accessToken: ACCESS_TOKEN, // your access token. Needed if you using Mapbox maps
       mapStyle: MAP_STYLE, // your map style
-      destinationCoordinates: [],
+      arrivalCoords: [],
       isLoading: true,
-      center: [4.895168, 52.370216],
+      center: [
+        constants.GEOLOCATION_CENTER_NL.longitude,
+        constants.GEOLOCATION_CENTER_NL.latitude,
+      ],
       mapbox: null,
-      showShrinkMeBtn: false,
     }
   },
   computed: {
@@ -100,9 +98,6 @@ export default {
   },
   created() {
     this.isLoading = true
-    if (this.legs.length === 1) {
-      this.leg = this.legs[0]
-    }
   },
   methods: {
     onMoveEnd() {
@@ -112,99 +107,20 @@ export default {
     async onMapLoad(event) {
       this.map = event.map
       this.setMapSize(this.mapSizeProp)
-
-      if (this.legs.length === 1) {
-        this.initiateMapSingleLeg(event.map, this.legs[0])
-      } else if (this.legs.length > 1) {
-        this.initiateMapWholeRoute(event.map, this.legs)
-      }
-    },
-    initiateMapSingleLeg(map, leg) {
-      const result = polyline.toGeoJSON(leg.legGeometry.points)
-      this.destinationCoordinates =
-        result.coordinates[result.coordinates.length - 1]
-
-      let route = {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            geometry: result,
-          },
-        ],
-      }
-
-      let points = {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            properties: {
-              title: 'start',
-            },
-            geometry: {
-              type: 'Point',
-              coordinates: result.coordinates[0],
-            },
-          },
-          {
-            type: 'Feature',
-            properties: {
-              title: 'end',
-            },
-            geometry: {
-              type: 'Point',
-              coordinates: result.coordinates[result.coordinates.length - 1],
-            },
-          },
-        ],
-      }
-
-      map.fitBounds(
-        [
-          result.coordinates[0],
-          result.coordinates[result.coordinates.length - 1],
-        ],
-        { padding: 50 }
+      this.drawRoute(
+        event.map,
+        this.legs,
+        this.legs.length === 1 && this.singleLegDashed
       )
-
-      map.addSource('route', {
-        type: 'geojson',
-        data: route,
-      })
-
-      map.addSource('points', {
-        type: 'geojson',
-        data: points,
-      })
-
-      map.addLayer({
-        id: 'points',
-        source: 'points',
-        type: 'circle',
-      })
-
-      map.addLayer({
-        id: 'route',
-        source: 'route',
-        type: 'line',
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round',
-        },
-        paint: {
-          'line-width': 4,
-          'line-color': '#2e8997',
-          'line-dasharray': [2, 4],
-        },
-      })
     },
-    initiateMapWholeRoute(map, legs) {
-      const result = legs.map(leg => polyline.toGeoJSON(leg.legGeometry.points))
+    drawRoute(map, legs, dashedLines) {
+      const geoLegs = legs.map(leg =>
+        polyline.toGeoJSON(leg.legGeometry.points)
+      )
       let features = []
       let beginPoints = []
       let endPoints = []
-      result.forEach(leg => {
+      geoLegs.forEach(leg => {
         features.push({
           type: 'Feature',
           geometry: leg,
@@ -246,7 +162,13 @@ export default {
           features: endPoints,
         },
       })
-
+      const legPaintStyle = {
+        'line-color': '#2e8997',
+        'line-width': 4,
+      }
+      if (dashedLines) {
+        legPaintStyle['line-dasharray'] = [2, 4]
+      }
       map.addLayer({
         id: 'legs',
         type: 'line',
@@ -255,26 +177,22 @@ export default {
           'line-join': 'round',
           'line-cap': 'round',
         },
-        paint: {
-          'line-color': '#2e8997',
-          'line-width': 4,
-        },
+        paint: legPaintStyle,
       })
-      const finalDestinationCoordinates =
-        result[result.length - 1].coordinates[
-          result[result.length - 1].coordinates.length - 1
-        ]
-      map.fitBounds([result[0].coordinates[0], finalDestinationCoordinates], {
-        padding: 15,
+      const bbox = this.findBoundingBox(geoLegs)
+      map.fitBounds(bbox, {
+        padding: 25,
       })
-
-      this.destinationCoordinates = finalDestinationCoordinates
+      const lastGeoLeg = geoLegs[geoLegs.length - 1]
+      this.arrivalCoords = [
+        ...lastGeoLeg.coordinates[lastGeoLeg.coordinates.length - 1],
+      ]
       map.addLayer({
         id: 'beginPoints',
         source: 'beginPoints',
         type: 'circle',
         paint: {
-          'circle-radius': 3,
+          'circle-radius': 4,
           'circle-color': '#ff0a10',
         },
       })
@@ -283,73 +201,87 @@ export default {
         source: 'endPoints',
         type: 'circle',
         paint: {
-          'circle-radius': 3,
+          'circle-radius': 4,
           'circle-color': '#000000',
         },
       })
+    },
+    /**
+     * Finds the left upper corner (nw) and right lower corner (se) to fit in the view port.
+     * @param geoLegs an array of geo coordinates
+     * @return {*[]} two coordinates (longitude, latitude)
+     */
+    findBoundingBox(geoLegs) {
+      const firstGeoLeg = geoLegs[0]
+      const lastGeoLeg = geoLegs[geoLegs.length - 1]
+      const nw = [...geoLegs[0].coordinates[0]]
+      const se = [...lastGeoLeg.coordinates[lastGeoLeg.coordinates.length - 1]]
+      const minReducer = (previous, current) =>
+        current < previous ? current : previous
+      const maxReducer = (previous, current) =>
+        current > previous ? current : previous
+
+      nw[1] = geoLegs
+        .flatMap(leg => leg.coordinates)
+        .map(coord => coord[1])
+        .reduce(maxReducer, nw[1])
+      nw[0] = geoLegs
+        .flatMap(leg => leg.coordinates)
+        .map(coord => coord[0])
+        .reduce(minReducer, nw[0])
+      se[1] = geoLegs
+        .flatMap(leg => leg.coordinates)
+        .map(coord => coord[1])
+        .reduce(minReducer, nw[1])
+      se[0] = geoLegs
+        .flatMap(leg => leg.coordinates)
+        .map(coord => coord[0])
+        .reduce(maxReducer, nw[0])
+      return [nw, se]
     },
     onResize() {
       this.map.fitBounds(this.map.getBounds())
     },
     changeMapSize({ height, width }) {
-      var mapDiv = document.getElementById('map')
-      var mapCanvas = document.getElementsByClassName('mapboxgl-canvas')[0]
+      const mapDiv = document.getElementById('map')
+      const mapCanvas = document.getElementsByClassName('mapboxgl-canvas')[0]
       if (mapDiv && mapCanvas) {
         mapDiv.style.height = height
         mapCanvas.style.width = width
       }
-      if (this.map) this.map.resize()
+      if (this.map) {
+        this.map.resize()
+      }
     },
     setMapSize(size) {
-      size === 'small' && this.changeMapSize({ height: '200px', width: '100%' })
-      size === 'fullscreen' &&
+      if (size === 'small') {
+        this.changeMapSize({ height: '200px', width: '100%' })
+      } else if (size === 'fullscreen') {
         this.changeMapSize({ height: '100vh', width: '100%' })
+      }
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.activated {
-  width: 100px !important;
+.map-container {
+  position: relative;
 }
 
 #map {
-  position: fixed;
-  z-index: 1;
-  top: $header-height;
-  left: 0;
-  width: $map-width;
-  height: $map-height;
-}
-
-.ghost-map {
   height: $map-height;
 }
 
 .map-fullscreen {
+  position: absolute;
   top: 10px;
   left: 10px;
-  position: absolute;
-  z-index: 4;
-}
-
-.map-fullscreen-exit {
-  top: 10px;
-  left: 10px;
-  position: absolute;
-  z-index: 4;
 }
 
 .map-close {
-  top: 10px;
-  border-radius: 50%;
-  height: 40px;
-  min-height: 40px;
-  width: 40px;
-  min-width: 40px !important;
-  left: 87vw;
-  z-index: 100;
   position: absolute;
+  top: 10px;
+  right: 10px;
 }
 </style>

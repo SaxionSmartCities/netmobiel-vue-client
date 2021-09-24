@@ -17,11 +17,32 @@
     </template>
     <v-row>
       <v-col class="py-0">
-        <ride-details :ride="ride" class="mb-4" />
+        <ride-details
+          :ride="ride"
+          :show-map="showMap"
+          class="mb-4"
+          @closeMap="onCloseMap"
+        />
       </v-col>
     </v-row>
     <v-row v-for="(leg, index) in generateSteps" :key="index" class="mx-3 py-0">
       <itinerary-leg :leg="leg" :step="index" />
+    </v-row>
+    <v-row>
+      <v-col class="pt-0">
+        <v-btn
+          large
+          rounded
+          outlined
+          block
+          mb-4
+          depressed
+          color="primary"
+          @click="onShowMap"
+        >
+          Bekijk op de kaart
+        </v-btn>
+      </v-col>
     </v-row>
     <v-row v-if="numBookings > 0">
       <v-col class="mx-1">
@@ -117,6 +138,7 @@ export default {
       showContactTravellerModal: false,
       showEditRideModal: false,
       showDeleteRideModal: false,
+      showMap: false,
     }
   },
   computed: {
@@ -317,6 +339,12 @@ export default {
     onCancelDialog() {
       this.showEditRideModal = false
       this.showDeleteRideModal = false
+    },
+    onShowMap() {
+      this.showMap = true
+    },
+    onCloseMap() {
+      this.showMap = false
     },
   },
 }
