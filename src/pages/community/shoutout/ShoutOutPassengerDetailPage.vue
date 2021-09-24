@@ -116,6 +116,7 @@ export default {
           value: formatDateTimeLongNoYear(this.shoutOut?.travelTime),
         })
       }
+      let durationSecs
       if (this.itinerary?.duration) {
         result.push({
           label: 'Reisduur',
@@ -174,6 +175,9 @@ export default {
           when: travelTime,
           arriving: useAsArrivalTime,
         },
+      }
+      if (searchCriteria.travelTime.when.isBefore(now)) {
+        searchCriteria.travelTime.when = now.add(2, 'hours')
       }
       isStore.mutations.setSearchCriteria(searchCriteria)
       gsStore.mutations.setGeoLocationPicked({
