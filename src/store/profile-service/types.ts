@@ -43,6 +43,7 @@ export class ProfileState {
       email: null,
       phoneNumber: null,
       userRole: null,
+      actingRole: null,
       address: null,
       searchPreferences: null,
       ridePlanOptions: null,
@@ -165,6 +166,7 @@ export interface Profile extends PublicProfile {
   notificationOptions: NotificationOptions
   favoriteLocations: Place[]
   userRole: string | null
+  actingRole: string | null
 }
 
 export interface ProfileSearch {

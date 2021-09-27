@@ -132,6 +132,13 @@ export default {
       // console.log(`baseLocation: ${oldValue} --> ${newValue}`)
       this.fetchShoutOuts()
     },
+    selectedTab(newValue, oldValue) {
+      this.profile.actualRole =
+        newValue === 1
+          ? constants.PROFILE_ROLE_PASSENGER
+          : constants.PROFILE_ROLE_DRIVER
+      psStore.actions.updateProfile(this.profile)
+    },
   },
   created() {
     uiStore.mutations.showBackButton()
@@ -145,6 +152,8 @@ export default {
     baseLocation: value => value,
   }),
   mounted() {
+    this.selectedTab =
+      this.profile.actualRole === constants.PROFILE_ROLE_PASSENGER ? 1 : 0
     csStore.mutations.setProposedRides([])
     isStore.mutations.setMyShoutOuts([])
     isStore.mutations.setShoutOuts([])
