@@ -362,9 +362,10 @@ function updateProfile(context: ActionContext, profile: Profile) {
         let profile = {
           ...context.state.user.profile,
           ...response.data.profiles[0],
+          image: response.data.profiles[0].image
+            ? `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
+            : '',
         }
-        const imgSrc = `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
-        profile.image = imgSrc
         mutations.setProfile(profile)
       }
     })
