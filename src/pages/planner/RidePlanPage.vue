@@ -39,7 +39,9 @@
                     </v-col>
                     <v-col v-if="!selectedCar" class="pl-3">
                       <router-link to="cars">
-                        <span>Voer je auto in</span>
+                        <span :class="[{ 'color-alert-red': warnMissingCar }]"
+                          >Voer je auto in</span
+                        >
                       </router-link>
                     </v-col>
                     <v-col v-else class="pl-3">
@@ -115,6 +117,7 @@ export default {
   data() {
     return {
       recurrence: undefined,
+      warnMissingCar: false,
     }
   },
   computed: {
@@ -207,6 +210,11 @@ export default {
     },
     onPlanRide() {
       const { ridePlanOptions } = psStore.getters.getProfile
+      if (!ridePlanOptions.selectedCarRef) {
+        uiStore.actions.queueInfoNotification('Voeg eerst een auto toe.')
+        this.warnMissingCar = true
+        return
+      }
       csStore.actions.submitRide({
         ...this.searchCriteria,
         recurrence: this.recurrence,
