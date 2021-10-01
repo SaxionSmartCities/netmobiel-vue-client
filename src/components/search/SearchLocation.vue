@@ -100,8 +100,7 @@ export default {
       const addr = this.addressInternal?.locality
         ? this.addressInternal
         : this.address
-      const line = addr?.locality ? geoPlaceToAddressLabel(addr, true) : ''
-      return line
+      return addr?.locality ? geoPlaceToAddressLabel(addr, true) : ''
     },
     suggestions() {
       return gsStore.getters.getGeocoderSuggestions.map(suggestion =>
