@@ -1,6 +1,6 @@
 <template>
   <v-card class="rounded-border">
-    <v-card-title>Maak een account aan</v-card-title>
+    <v-card-title>Registratie</v-card-title>
     <v-card-text class="py-0">
       <v-form ref="form" v-model="valid">
         <v-row vertical-align-center>
@@ -11,6 +11,7 @@
               hide-details
               outlined
               label="Voornaam"
+              readonly
               :rules="[rules.required]"
             ></v-text-field>
           </v-col>
@@ -22,6 +23,7 @@
               required
               hide-details
               outlined
+              readonly
               label="Achternaam"
               :rules="[rules.required]"
             ></v-text-field>
@@ -34,6 +36,7 @@
               required
               hide-details
               outlined
+              readonly
               label="E-mail"
               :rules="[rules.required, rules.email]"
             ></v-text-field>

@@ -11,32 +11,12 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-menu
-            ref="menu"
-            v-model="menu"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                hide-details
-                dense
-                :value="displayDate"
-                prepend-icon="event"
-                readonly
-                v-on="on"
-              >
-              </v-text-field>
-            </template>
-            <v-date-picker
-              ref="picker"
-              v-model="date"
-              :max="new Date().toISOString().substr(0, 10)"
-              min="1900-01-01"
-            ></v-date-picker>
-          </v-menu>
+          <date-menu-selector
+            :value="dateOfBirth"
+            label="Geboortedatum"
+            :outlined="true"
+            @date-selected="onUpdateDate"
+          ></date-menu-selector>
         </v-col>
       </v-row>
     </v-card-text>
@@ -58,40 +38,37 @@
 </template>
 
 <script>
-import moment from 'moment'
-import '@js-joda/timezone'
-import { Locale } from '@js-joda/locale_en'
 import * as psStore from '@/store/profile-service'
-import { DateTimeFormatter, LocalDate } from '@js-joda/core'
+import DateMenuSelector from '@/components/common/DateMenuSelector'
 
 export default {
+  name: 'AgeCard',
+  components: { DateMenuSelector },
   data: function() {
     return {
-      date: LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE),
+      dateOfBirth: null,
       menu: false,
     }
   },
   computed: {
-    displayDate: function() {
-      const formatter = DateTimeFormatter.ofPattern('dd-MM-yyyy').withLocale(
-        Locale.ENGLISH
-      )
-      return LocalDate.parse(this.date).format(formatter)
+    profile() {
+      return psStore.getters.getProfile
     },
   },
-  watch: {
-    menu(val) {
-      val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
-    },
+  mounted() {
+    this.dateOfBirth = this.profile.dateOfBirth
   },
   methods: {
-    nextStep: function() {
+    onUpdateDate(date) {
+      this.dateOfBirth = date
+    },
+    nextStep() {
       let profile = { ...psStore.getters.getProfile }
-      profile.dateOfBirth = LocalDate.parse(this.date)
+      profile.dateOfBirth = this.dateOfBirth
       psStore.actions.updateProfile(profile)
       this.$emit('next-step')
     },
-    prevStep: function() {
+    prevStep() {
       this.$emit('prev-step')
     },
   },

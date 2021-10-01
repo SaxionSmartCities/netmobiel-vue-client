@@ -33,7 +33,9 @@
           </v-col>
         </v-row>
         <v-card v-if="step === 4" class="rounded-border">
-          <v-card-title class="justify-center">Aanmaken account</v-card-title>
+          <v-card-title class="justify-center"
+            >Afronden registratie</v-card-title
+          >
           <v-card-text>
             <v-row no-gutters>
               <v-alert
@@ -50,7 +52,7 @@
                   inbox!
                 </p>
                 <p>
-                  We sturen U over enkele seconden terug naar het login-scherm.
+                  We sturen U over enkele seconden terug naar beginscherm.
                 </p>
               </v-alert>
               <v-alert
@@ -126,6 +128,7 @@ export default {
         consent: {
           olderThanSixteen: false,
           acceptedTerms: false,
+          safetyGuidelines: false,
         },
       },
     }
@@ -161,6 +164,7 @@ export default {
   },
   mounted() {
     if (this.$keycloak.authenticated) {
+      psStore.mutations.setUserToken(this.$keycloak.token)
       const user = psStore.getters.getUser
       this.registrationRequest.firstName = user.givenName || ''
       this.registrationRequest.lastName = user.familyName || ''
