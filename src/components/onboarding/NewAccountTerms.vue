@@ -12,8 +12,8 @@
               worden personen die vervoer zoeken gekoppeld aan personen die een
               plek over hebben in de auto en/of aan openbaarvervoersopties. De
               app heeft het doel om de bereikbaarheid in de Achterhoek te
-              verbeteren. Tot en met Maart wordt er onderzoek gedaan naar de
-              effecten van de app, onder andere door Hogeschool Saxion.
+              verbeteren. Tot en met Maart 2022 wordt er onderzoek gedaan naar
+              de effecten van de app, onder andere door Hogeschool Saxion.
             </p>
             <p>
               Binnen het project Netmobiel heeft Hogeschool Saxion de app
@@ -23,7 +23,7 @@
               aan de vergoeding die je kunt krijgen als je een rit aanbiedt. Ook
               stelt Vereniging Netmobiel bepaalde gedragsregels op om het reizen
               met Netmobiel voor zowel reiziger als passagier veilig en
-              comfortabel te houden. In dat kader is het verplicht om (grati)
+              comfortabel te houden. In dat kader is het verplicht om (gratis)
               lid te worden van Vereniging Netmobiel, voordat je gebruik kunt
               maken van de Netmobiel-app.
             </p>
