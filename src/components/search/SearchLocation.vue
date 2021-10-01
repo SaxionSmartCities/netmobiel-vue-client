@@ -101,7 +101,6 @@ export default {
         ? this.addressInternal
         : this.address
       const line = addr?.locality ? geoPlaceToAddressLabel(addr, true) : ''
-      console.log(`Computed address: ${line}`)
       return line
     },
     suggestions() {
@@ -112,7 +111,6 @@ export default {
   },
   watch: {
     showDialog(newValue) {
-      console.log(`showDialog(${newValue})`)
       if (newValue) {
         this.searchInput = gsStore.getters.getPickedLocations.get(
           this.field
@@ -121,7 +119,6 @@ export default {
       }
     },
     searchInput: throttle(function(val) {
-      console.log(`searchInput(${val})`)
       if (val != null) {
         const show = (this.showSuggestionsList = val.length > 3)
         if (show) {
