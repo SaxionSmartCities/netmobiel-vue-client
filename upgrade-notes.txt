@@ -1,0 +1,4 @@
+Sass should be limited to version 1.32 due to the excessive amount of deprecation warnings on vuetify.
+Vuetify should first upgrade heir scss fioles to conform to Sass Dart 2.0.
+
+Vuetify 2.4 has breaking changes for Netmobiel, see release notes at https://github.com/vuetifyjs/vuetify/releases
