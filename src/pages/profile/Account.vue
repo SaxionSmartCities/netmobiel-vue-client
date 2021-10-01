@@ -1,212 +1,191 @@
 <template>
-  <content-pane>
-    <v-row>
-      <v-col class="px-0">
-        <span class="headline">Account</span>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col class="pa-0">
-        <div v-for="section in sections" :key="section">
+  <v-form ref="form" v-model="valid">
+    <content-pane>
+      <v-row>
+        <v-col class="px-0">
+          <span class="headline">Account</span>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="pa-0">
           <span
             class="text-uppercase caption font-weight-bold text-color-primary"
           >
-            {{ section }}
+            persoonlijk
           </span>
           <v-divider></v-divider>
-          <template v-for="(item, index) in accountConfig[section]">
-            <v-row
-              :key="item.title"
-              :class="{ 'mb-3': index === accountConfig[section].length - 1 }"
-            >
-              <v-col cols="5" class="d-flex flex-row">
-                <span class="align-self-center body-1 font-weight-light">
-                  {{ item.title }}
-                </span>
-              </v-col>
-              <v-col
-                cols="6"
-                :class="{
-                  'selected-property-column': selectedProperty === item.key,
-                }"
-                @click="selectedProperty = item.key"
-              >
-                <v-text-field
-                  v-if="selectedProperty === item.key"
-                  class="change-property-input"
-                  :value="
-                    item.format
-                      ? item.format(get(user, item.key))
-                      : get(user, item.key)
-                  "
-                  solo
-                  autofocus
-                  flat
-                  single-line
-                  clearable
-                  :hide-details="true"
-                  @change="onChangedInfoProperty"
-                >
-                </v-text-field>
-                <span v-else>
-                  {{
-                    item.format
-                      ? item.format(get(user, item.key))
-                      : get(user, item.key)
-                  }}
-                </span>
-              </v-col>
-            </v-row>
-            <v-divider
-              v-if="index !== accountConfig[section].length - 1"
-              :key="index"
-            ></v-divider>
-          </template>
-        </div>
-      </v-col>
-    </v-row>
-  </content-pane>
+          <v-row vertical-align-center>
+            <v-col>
+              <v-text-field
+                v-model="user.firstName"
+                hide-details="auto"
+                validate-on-blur
+                outlined
+                label="Voornaam"
+                :rules="[rules.required]"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="user.lastName"
+                hide-details="auto"
+                validate-on-blur
+                outlined
+                label="Achternaam"
+                :rules="[rules.required]"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <date-menu-selector
+                :value="user.dateOfBirth"
+                label="Geboortedatum"
+                :outlined="true"
+                @date-selected="onDateSelected"
+              ></date-menu-selector>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="pa-0">
+          <span
+            class="text-uppercase caption font-weight-bold text-color-primary"
+          >
+            adres
+          </span>
+          <v-divider></v-divider>
+          <v-row vertical-align-center>
+            <v-col>
+              <search-location
+                :address="user.address"
+                label="Woonadres"
+                :outlined="true"
+                field="home"
+                :favorable="false"
+                @search-completed="onSearchCompleted"
+              ></search-location>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="pa-0">
+          <span
+            class="text-uppercase caption font-weight-bold text-color-primary"
+          >
+            contactgegevens
+          </span>
+          <v-divider></v-divider>
+          <v-row vertical-align-center>
+            <v-col>
+              <v-text-field
+                v-model="user.email"
+                hide-details="auto"
+                validate-on-blur
+                outlined
+                label="E-mailadres"
+                :rules="[rules.required, rules.email]"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="user.phoneNumber"
+                hide-details="true"
+                outlined
+                label="Telefoonnummer"
+                validate-on-blur
+                :rules="[rules.phone]"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col xs6 class="mx-2">
+          <v-btn block rounded outlined color="primary" @click="onCancel()">
+            Annuleren
+          </v-btn>
+        </v-col>
+        <v-col xs6 class="mx-2">
+          <v-btn block rounded depressed color="button" @click="onSave()">
+            Opslaan
+          </v-btn>
+        </v-col>
+      </v-row>
+    </content-pane>
+  </v-form>
 </template>
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
-import account_config from '@/config/account_config'
-import { geoSuggestionToPlace } from '@/utils/Utils'
-import { get, set, isEqual } from 'lodash'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
-import * as gsStore from '@/store/geocoder-service'
+import DateMenuSelector from '@/components/common/DateMenuSelector'
+import SearchLocation from '@/components/search/SearchLocation'
 
 export default {
   name: 'Account',
-  components: { ContentPane },
+  components: { SearchLocation, DateMenuSelector, ContentPane },
   data() {
     return {
-      accountConfig: account_config,
+      user: {
+        address: {},
+      },
       selectedProperty: null,
+      valid: false,
+      rules: {
+        required: value => !!value || 'Veld is verplicht',
+        email: value =>
+          !!value?.match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          ) ||
+          !value ||
+          'Ongeldig email adres',
+        phone: value =>
+          !!value?.match(
+            /(^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0-9\-\s]{10}$)/
+          ) ||
+          !value ||
+          'Ongeldig nummer',
+      },
     }
-  },
-  computed: {
-    user() {
-      return psStore.getters.getProfile
-    },
-    suggestions() {
-      return gsStore.getters.getGeocoderSuggestions
-    },
-    sections() {
-      return Object.keys(account_config)
-    },
-  },
-  watch: {
-    suggestions(newSug) {
-      if (newSug.length > 0) {
-        const address = newSug.find(
-          s => s.resultType === 'houseNumber' || s.resultType === 'street'
-        )
-        if (address) {
-          // let newProfile = JSON.parse(JSON.stringify(this.user))
-          // See comments below
-          let newProfile = { ...this.user, address: { ...this.user.address } }
-          newProfile.address = geoSuggestionToPlace(address)
-          psStore.actions.updateProfile(newProfile)
-        } else if (this.user.address?.location) {
-          // Invalidate current GPS location, if any.
-          let newProfile = { ...this.user }
-          newProfile.address.location = null
-          psStore.actions.updateProfile(newProfile)
-        }
-      }
-    },
   },
   created() {
     uiStore.mutations.showBackButton()
   },
+  mounted() {
+    // Shallow copy
+    this.user = { ...psStore.getters.getProfile }
+    if (this.user?.address) {
+      // Deep copy of address
+      this.user.address = JSON.parse(JSON.stringify(this.user.address))
+    }
+  },
   methods: {
-    get: get,
-    set: set,
-    findSelectedItem() {
-      // find item in account config whose key equals the selected property
-      for (const section in account_config) {
-        const item = account_config[section].find(
-          item => item.key === this.selectedProperty
-        )
-        if (item) {
-          return item
-        }
-      }
-      // should not happen (famous last words...)
-      return undefined
+    onDateSelected(date) {
+      this.user.dateOfBirth = date
     },
-    onChangedInfoProperty(input) {
-      // Fires when the user onfocusses the input
-      // HACK: JSON parse/stringify to prevent "[vuex] do not mutate vuex store
-      // state outside mutation handlers." error.
-      // Do not use the spread operato, that would create a shallow copy.
-      // For detection of changes in the address, we need a deep copy
-      // let newProfile = JSON.parse(JSON.stringify(this.user))
-      let newProfile = { ...this.user, address: { ...this.user.address } }
-      // check for parse function in account config
-      const { parse } = this.findSelectedItem()
-      if (parse) {
-        // convert text input back to format that backend expects
-        input = parse(input)
-      }
-      set(newProfile, this.selectedProperty, input)
-      // Fetch geocode for address if different.
-      if (!isEqual(this.user.address, newProfile.address)) {
-        const query = this.addressQuery(newProfile.address)
-        if (query) {
-          gsStore.actions.fetchGeocoderSuggestions({ query: query })
-        } else if (newProfile.address?.location) {
-          // Invalidate current GPS location, if any.
-          newProfile.address.location = null
-        }
-      }
-      psStore.actions.updateProfile(newProfile)
+    onSearchCompleted(place) {
+      this.user.address = { ...place }
+      console.log(`Selected address: ${place.title}`)
+      // this.valid = this.user.address.location?.coordinates?.length === 2
     },
-    addressQuery(address) {
-      let query = ''
-      // A locality is the minimum requirement.
-      if (address['locality']) {
-        query = address['locality']
-      } else {
-        return query
-      }
-
-      if (address['postalCode']) {
-        query = `${address['postalCode']}, ` + query
-      }
-      if (address['street'] && address['houseNumber']) {
-        query = `${address['street']} ${address['houseNumber']}, ` + query
-      } else if (address['street']) {
-        query = `${address['street']}, ` + query
-      }
-
-      return query
+    onCancel() {
+      this.$router.push({ name: 'profile' })
+    },
+    onSave() {
+      psStore.actions
+        .updateProfile(this.user)
+        .then(() => this.router.push({ name: 'profile' }))
     },
   },
 }
 </script>
 
-<style lang="scss" scoped>
-.selected-property-column {
-  padding: 0px;
-  align-content: center;
-  display: flex;
-  flex-direction: row;
-}
-
-.change-property-input {
-  align-self: center;
-
-  .v-text-field.v-text-field--enclosed:not(.v-text-field--rounded)
-    > .v-input__control
-    > .v-input__slot,
-  .v-text-field.v-text-field--enclosed .v-text-field__details {
-    padding: 0px;
-    svg {
-      height: 32px !important;
-    }
-  }
-}
-</style>
+<style lang="scss" scoped></style>
