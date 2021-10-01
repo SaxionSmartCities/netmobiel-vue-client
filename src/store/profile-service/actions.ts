@@ -5,8 +5,6 @@ import { Profile, ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { getters, mutations } from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
-import store from '..'
-import { LocalDate } from '@js-joda/core'
 import { addInterceptors } from '@/store/api-middelware'
 import { generateHeaders } from '@/utils/Utils'
 
@@ -17,6 +15,10 @@ const {
   IMAGES_BASE_URL,
   GRAVITEE_PROFILE_SERVICE_API_KEY,
 } = config
+
+function createAbsoluteImageUrl(imageName: string | null | undefined): string {
+  return imageName ? `${IMAGES_BASE_URL}/${imageName}` : ''
+}
 
 function fetchProfile(context: ActionContext) {
   const delegatorId = context.state.user.delegatorId
@@ -32,12 +34,7 @@ function fetchProfile(context: ActionContext) {
         let profile = {
           ...context.state.user.profile,
           ...response.data.profiles[0],
-          dateOfBirth: response.data.profiles[0].dateOfBirth
-            ? LocalDate.parse(response.data.profiles[0].dateOfBirth)
-            : null,
-          image: response.data.profiles[0].image
-            ? `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
-            : '',
+          image: createAbsoluteImageUrl(response.data.profiles[0].image),
         }
         if (!!localStorage.fcm && localStorage.fcm !== profile.fcmToken) {
           profile.fcmToken = localStorage.fcm
@@ -71,9 +68,7 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
       if (response.data.profiles.length > 0) {
         let profile = {
           ...response.data.profiles[0],
-          image: response.data.profiles[0].image
-            ? `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
-            : '',
+          image: createAbsoluteImageUrl(response.data.profiles[0].image),
         }
         mutations.addPublicProfile(profile)
         return profile
@@ -102,7 +97,7 @@ function fetchProfiles(context: ActionContext, { keyword }: any) {
         const results = response.data.data.map((r: any) => {
           return {
             ...r,
-            image: r.image ? `${IMAGES_BASE_URL}/${r.image}` : '',
+            image: createAbsoluteImageUrl(r.image),
           }
         })
         mutations.setSearchResults(results)
@@ -362,9 +357,7 @@ function updateProfile(context: ActionContext, profile: Profile) {
         let profile = {
           ...context.state.user.profile,
           ...response.data.profiles[0],
-          image: response.data.profiles[0].image
-            ? `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
-            : '',
+          image: createAbsoluteImageUrl(response.data.profiles[0].image),
         }
         mutations.setProfile(profile)
       }
