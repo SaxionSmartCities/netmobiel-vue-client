@@ -188,11 +188,12 @@ export default {
       }
     },
     isProfileComplete(profile) {
-      return (
-        !!profile.dateOfBirth &&
-        !!profile.interests &&
-        profile.interests.length > 0
-      )
+      return !!profile.dateOfBirth
+      // return (
+      //   !!profile.dateOfBirth &&
+      //   !!profile.interests &&
+      //   profile.interests.length > 0
+      // )
     },
   },
 }
