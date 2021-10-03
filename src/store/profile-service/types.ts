@@ -32,6 +32,7 @@ export class ProfileState {
       consent: {
         acceptedTerms: false,
         olderThanSixteen: false,
+        safetyGuidelines: false,
       },
       dateOfBirth: null,
       fcmToken: null,
@@ -177,6 +178,7 @@ export interface ProfileSearch {
 export interface UserConsent {
   acceptedTerms: boolean
   olderThanSixteen: boolean
+  safetyGuidelines: boolean
 }
 
 export interface SearchPreferences {
