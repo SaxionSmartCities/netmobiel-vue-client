@@ -6,7 +6,6 @@ import { ProfileState } from '@/store/profile-service/types'
 import { GeoCoderState } from '@/store/geocoder-service/types'
 import { ItineraryState } from '@/store/itinerary-service/types'
 import { MessageState } from '@/store/message-service/types'
-import { RegistrationState } from '@/store/registration-service/types'
 
 export interface RootState {
   chs: CharityState
@@ -15,7 +14,6 @@ export interface RootState {
   is: ItineraryState
   ms: MessageState
   ps: ProfileState
-  rs: RegistrationState
   ui: UiState
 }
 
