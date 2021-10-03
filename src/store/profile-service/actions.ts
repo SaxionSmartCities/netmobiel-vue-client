@@ -20,6 +20,38 @@ function createAbsoluteImageUrl(imageName: string | null | undefined): string {
   return imageName ? `${IMAGES_BASE_URL}/${imageName}` : ''
 }
 
+function createProfile(
+  context: ActionContext,
+  payload: Profile
+): Promise<void> {
+  const URL = `${PROFILE_BASE_URL}/profiles`
+  return axios
+    .post(URL, payload, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+    })
+    .then(function() {
+      fetchProfile(context)
+      return Promise.resolve()
+    })
+    .catch(function(error) {
+      // eslint-disable-next-line
+      console.log(error)
+      const status = error.response.status
+      let errorMsg = ''
+      if (status === 422) {
+        errorMsg = 'Ontbrekende data (email, voornaam of achternaam).'
+      } else if (status === 451) {
+        errorMsg = 'Ga akkoord  met de gevraagde voorwaarden.'
+      } else if (status === 409) {
+        errorMsg = 'U bent al geregistreerd bij Netmobiel.'
+      } else {
+        errorMsg = error.response.data.message || error.response.data
+      }
+      uiStore.actions.queueErrorNotification(errorMsg)
+      return Promise.reject(status)
+    })
+}
+
 function fetchProfile(context: ActionContext) {
   const delegatorId = context.state.user.delegatorId
   const URL = `${PROFILE_BASE_URL}/profiles/me`
@@ -36,6 +68,7 @@ function fetchProfile(context: ActionContext) {
           ...response.data.profiles[0],
           image: createAbsoluteImageUrl(response.data.profiles[0].image),
         }
+        //TODO Fix this strange construction
         if (!!localStorage.fcm && localStorage.fcm !== profile.fcmToken) {
           profile.fcmToken = localStorage.fcm
           updateProfile(context, profile)
@@ -223,8 +256,10 @@ function fetchUserReviews(context: ActionContext, { profileId }: any) {
 
 /**
  * Adds a review to the user in the profile-service
+ * @param context: the calling context
  * @param sender: {id, firstName, lastName}
  * @param receiver: {id, firstName, lastName}
+ * @param review the review to add
  * @returns {Object} Returns the review object in the response.data
  */
 function addUserReview(
@@ -501,6 +536,7 @@ export const buildActions = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
   return {
+    createProfile: psBuilder.dispatch(createProfile),
     fetchProfile: psBuilder.dispatch(fetchProfile),
     fetchPublicProfile: psBuilder.dispatch(fetchPublicProfile),
     fetchProfiles: psBuilder.dispatch(fetchProfiles),
