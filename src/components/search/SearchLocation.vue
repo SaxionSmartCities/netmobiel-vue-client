@@ -194,8 +194,13 @@ export default {
       })
       this.showSuggestionsList = false
       this.showDialog = false
-      this.addressInternal = place
-      this.$emit('search-completed', place)
+      // Make a copy of the selection
+      this.addressInternal = JSON.parse(JSON.stringify(place))
+      delete this.addressInternal.titleParts
+      delete this.addressInternal.title
+      delete this.addressInternal.subtitle
+      delete this.addressInternal.iconName
+      this.$emit('search-completed', this.addressInternal)
     },
     clearField() {
       this.addressInternal = {}
