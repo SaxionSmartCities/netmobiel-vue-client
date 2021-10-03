@@ -182,7 +182,7 @@ export default {
     onSave() {
       psStore.actions
         .updateProfile(this.user)
-        .then(() => this.router.push({ name: 'profile' }))
+        .then(() => this.$router.push({ name: 'profile' }))
     },
   },
 }
