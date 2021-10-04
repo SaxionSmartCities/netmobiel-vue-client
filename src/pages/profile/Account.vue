@@ -173,7 +173,7 @@ export default {
     },
     onSearchCompleted(place) {
       this.user.address = { ...place }
-      console.log(`Selected address: ${place.title}`)
+      // home address is not mandatory (?)
       // this.valid = this.user.address.location?.coordinates?.length === 2
     },
     onCancel() {

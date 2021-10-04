@@ -149,12 +149,10 @@ export default {
         psStore.actions
           .createProfile(this.profile)
           .then(() => {
-            console.log(`CreateProfile success`)
             this.status = 200
             this.gotoLandingPage()
           })
           .catch(status => {
-            console.log(`CreateProfile returns status ${status}`)
             if (status === 409 /* Conflict */) {
               this.status = 409
               // Meaning: Profile does already exist. Continue to the landing page
