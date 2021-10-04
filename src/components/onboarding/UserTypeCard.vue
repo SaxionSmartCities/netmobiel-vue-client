@@ -1,11 +1,20 @@
 <template>
   <v-card class="rounded-border">
-    <v-card-title>Hoe ga je netmobiel gebruiken?</v-card-title>
+    <v-card-title>Hoe ga je Netmobiel gebruiken?</v-card-title>
     <v-card-text class="py-0">
       <v-radio-group v-model="value.userRole" :mandatory="false">
-        <v-radio label="Meerijden of via het OV" value="passenger"></v-radio>
-        <v-radio label="Zelf ritten aanbieden" value="driver"></v-radio>
-        <v-radio label="Meerijden én zelf ritten aanbieden" value="both">
+        <v-radio
+          label="Passagier - Meerijden of via het OV"
+          :value="PROFILE_ROLE_PASSENGER"
+        ></v-radio>
+        <v-radio
+          label="Chauffeur - Zelf ritten aanbieden"
+          :value="driverRole"
+        ></v-radio>
+        <v-radio
+          label="Beide - Meerijden én zelf ritten aanbieden"
+          :value="bothRole"
+        >
         </v-radio>
       </v-radio-group>
     </v-card-text>
@@ -35,6 +44,7 @@
 </template>
 
 <script>
+import constants from '@/constants/constants'
 export default {
   name: 'HomeTownCard',
   props: {
@@ -45,8 +55,19 @@ export default {
   },
   data() {
     return {
+      // The constants should not be reactive
+      passengerRole: Object.freeze(constants.PROFILE_ROLE_PASSENGER),
+      driverRole: Object.freeze(constants.PROFILE_ROLE_DRIVER),
+      bothRole: Object.freeze(constants.PROFILE_ROLE_BOTH),
       showSubmitButton: true,
     }
+  },
+  created() {
+    // This does not seem to work
+    // See https://stackoverflow.com/questions/42662144/how-could-i-use-const-in-vue-template
+    // this.PROFILE_ROLE_PASSENGER = constants.PROFILE_ROLE_PASSENGER
+    // this.PROFILE_ROLE_DRIVER = constants.PROFILE_ROLE_DRIVER
+    // this.PROFILE_ROLE_BOTH = constants.PROFILE_ROLE_BOTH
   },
   methods: {
     submitForm() {

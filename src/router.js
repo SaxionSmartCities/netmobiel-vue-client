@@ -86,6 +86,7 @@ const router = new Router({
     {
       path: '/profile',
       component: ProfilePage,
+      name: 'profile',
     },
     {
       path: '/profile/delegate',

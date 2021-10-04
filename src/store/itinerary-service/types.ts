@@ -64,6 +64,7 @@ export interface TripPlan {
   planRef: string
   planType: string
   itineraries: Itinerary[]
+  // Format: ISO8601, including time zone (or 'Z')
   travelTime: string
   useAsArrivalTime: boolean
   traveller: Traveller

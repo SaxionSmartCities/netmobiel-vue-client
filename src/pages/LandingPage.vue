@@ -1,18 +1,18 @@
 <template>
   <v-container fluid class="background-primary fill-height container">
-    <v-row>
-      <v-col cols="12" class="pa-0">
+    <v-row class="image-container">
+      <v-col align-self="end" cols="12" class="pa-0">
         <v-img id="logo" :src="require('@/assets/logo_splash.png')" />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="buttonsVisible">
       <v-col cols="12" class="pa-0">
-        <v-btn color="button" rounded large block @click="$keycloak.loginFn()">
+        <v-btn color="button" rounded large block @click="loginAtKeycloak()">
           Login
         </v-btn>
       </v-col>
       <v-col cols="12" class="pa-0 mt-3">
-        <v-btn color="button" rounded large block to="/createUser">
+        <v-btn color="button" rounded large block @click="registerAtKeycloak()">
           Registreren
         </v-btn>
       </v-col>
@@ -30,6 +30,13 @@ export default {
   computed: {
     networkRequest() {
       return uiStore.getters.getNetworkRequest
+    },
+    buttonsVisible() {
+      const nwstatus = this.networkRequest?.submitStatus?.status
+      return (
+        nwstatus === NetworkRequestStatus.FAILED ||
+        !this.$keycloak.authenticated
+      )
     },
   },
   watch: {
@@ -53,6 +60,8 @@ export default {
   },
   mounted() {
     if (this.$keycloak.authenticated) {
+      // Show YBug on normal pages
+      Ybug.show('launcher')
       // Token and Profile are also fetched in the main template (App.vue)
       uiStore.mutations.resetNetworkRequest()
       psStore.actions.fetchProfile()
@@ -62,6 +71,9 @@ export default {
       // If no then go to the registration page
       // Note: This is only needed for a smooth transition between multiple instances of Netmobiel while using a
       // single Keycloak instance.
+    } else {
+      // No Ybug on the landing page, not nice to see and not necessary
+      Ybug.hide('launcher')
     }
   },
   methods: {
@@ -84,6 +96,12 @@ export default {
     startRegistration: function() {
       this.$router.push({ name: 'createUser' })
     },
+    loginAtKeycloak() {
+      return this.$keycloak.loginFn()
+    },
+    registerAtKeycloak() {
+      return this.$keycloak.register()
+    },
   },
 }
 </script>
@@ -95,5 +113,10 @@ export default {
 }
 .container {
   align-content: flex-start;
+}
+// Prevent moving buttons during loading of image
+// by setting the buttons on a relatively fixed position
+.image-container {
+  min-height: 40vh;
 }
 </style>

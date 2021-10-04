@@ -1,42 +1,21 @@
 <template>
   <v-card class="rounded-border">
-    <v-card-title>Maak een account aan</v-card-title>
+    <v-card-title>Welkom bij Netmobiel!</v-card-title>
     <v-card-text class="py-0">
       <v-form ref="form" v-model="valid">
-        <v-row vertical-align-center>
-          <v-col>
-            <v-text-field
-              v-model="value.firstName"
-              required
-              hide-details
-              outlined
-              label="Voornaam"
-              :rules="[rules.required]"
-            ></v-text-field>
-          </v-col>
-        </v-row>
         <v-row>
           <v-col>
-            <v-text-field
-              v-model="value.lastName"
-              required
-              hide-details
-              outlined
-              label="Achternaam"
-              :rules="[rules.required]"
-            ></v-text-field>
+            Je registreert je met de volgende gegevens:
           </v-col>
         </v-row>
-        <v-row>
-          <v-col>
-            <v-text-field
-              v-model="value.email"
-              required
-              hide-details
-              outlined
-              label="E-mail"
-              :rules="[rules.required, rules.email]"
-            ></v-text-field>
+        <v-row no-gutters>
+          <v-col class="col-6 offset-1">
+            {{ user.givenName }} {{ user.familyName }}
+          </v-col>
+        </v-row>
+        <v-row no-gutters>
+          <v-col class="col-6 offset-1">
+            {{ user.email }}
           </v-col>
         </v-row>
         <v-row no-gutters align="center">
@@ -47,7 +26,7 @@
             ></v-checkbox>
           </v-col>
           <v-col cols="11">
-            Bij het gebruik van de Netmobiel-app houd ik mij aan de geldende
+            Bij het gebruik van de Netmobiel-app hou ik mij aan de geldende
             RIVM-richtlijnen.
           </v-col>
         </v-row>
@@ -96,6 +75,8 @@
 </template>
 
 <script>
+import * as psStore from '@/store/profile-service'
+
 export default {
   name: 'NewAccountCard',
   props: {
@@ -117,6 +98,11 @@ export default {
           ) || 'Ongeldig email adres',
       },
     }
+  },
+  computed: {
+    user() {
+      return psStore.getters.getUser
+    },
   },
   methods: {
     submitForm() {
