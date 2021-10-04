@@ -5,28 +5,28 @@
         <v-row>
           <v-col v-if="step === 0">
             <new-account-terms
-              v-model="registrationRequest"
+              v-model="profile"
               @prev-step="step--"
               @next-step="step++"
             />
           </v-col>
           <v-col v-if="step === 1">
             <new-account-card
-              v-model="registrationRequest"
+              v-model="profile"
               @prev-step="step--"
               @next-step="step++"
             />
           </v-col>
           <v-col v-if="step === 2">
             <home-town-card
-              v-model="registrationRequest"
+              v-model="profile"
               @prev-step="step--"
               @next-step="step++"
             />
           </v-col>
           <v-col v-if="step === 3">
             <user-type-card
-              v-model="registrationRequest"
+              v-model="profile"
               @prev-step="step--"
               @next-step="step++"
             />
@@ -38,37 +38,18 @@
           >
           <v-card-text>
             <v-row no-gutters>
-              <v-alert
-                v-if="getRegistrationStatus.success === true"
-                :value="true"
-                type="success"
-                color="green"
-              >
+              <v-alert :value="status === 200" type="success">
                 <p>Profiel aangemaakt!</p>
-                <!-- When the user already has a Keycloak account, no verification email is sent -->
-                <p v-if="!isAuthenticated">
-                  U ontvangt een e-mail waarmee U de registratie kunt voltooien.
-                  Controleer de spamfolder als de e-mail niet verschijnt in de
-                  inbox!
-                </p>
                 <p>
-                  We sturen U over enkele seconden terug naar beginscherm.
+                  We sturen U over enkele seconden naar het beginscherm.
                 </p>
               </v-alert>
-              <v-alert
-                v-if="getRegistrationStatus.success === false"
-                :value="true"
-                type="error"
-                color="red"
-              >
-                {{ getRegistrationStatus.message }}
+              <v-alert :value="status === 409" type="warning">
+                <p>Profiel bestaat al!</p>
+                <p>
+                  We sturen U over enkele seconden naar het beginscherm.
+                </p>
               </v-alert>
-              <v-progress-circular
-                v-if="getRegistrationStatus.success === undefined"
-                indeterminate
-                :value="true"
-                class="rotate"
-              ></v-progress-circular>
             </v-row>
           </v-card-text>
           <v-card-actions>
@@ -102,8 +83,10 @@ import NewAccountCard from '@/components/onboarding/NewAccountCard.vue'
 import HomeTownCard from '@/components/onboarding/HomeTownCard.vue'
 import UserTypeCard from '@/components/onboarding/UserTypeCard.vue'
 import * as psStore from '@/store/profile-service'
-import * as rsStore from '@/store/registration-service'
 import * as uiStore from '@/store/ui'
+
+// The delay after creation to show the success message
+const DELAY_AFTER_CREATION = 7000
 
 export default {
   components: {
@@ -116,13 +99,10 @@ export default {
     return {
       dryRun: false,
       step: 0,
-      registrationRequest: {
-        firstName: '',
-        lastName: '',
-        email: '',
-        address: {
-          locality: '',
-        },
+      status: 0,
+      // Profile with only those fields that are collected in the registration
+      profile: {
+        address: {},
         userRole: '',
         consent: {
           olderThanSixteen: false,
@@ -133,11 +113,8 @@ export default {
     }
   },
   computed: {
-    getRegistrationStatus() {
-      return rsStore.getters.getRegistrationStatus
-    },
-    isAuthenticated() {
-      return this.$keycloak.authenticated
+    user() {
+      return psStore.getters.getUser
     },
   },
   watch: {
@@ -149,40 +126,44 @@ export default {
         this.submitForm()
       }
     },
-    getRegistrationStatus(newValue) {
-      if (newValue.success === true) {
-        setTimeout(() => {
-          rsStore.mutations.clearRegistrationRequest()
-          this.$router.push('/')
-        }, 7000)
-      }
-    },
   },
   beforeCreate() {
+    // The registration page should not offer other options
     uiStore.mutations.disableFooter()
-  },
-  mounted() {
-    if (this.$keycloak.authenticated) {
-      psStore.mutations.setUserToken(this.$keycloak.token)
-      const user = psStore.getters.getUser
-      this.registrationRequest.firstName = user.givenName || ''
-      this.registrationRequest.lastName = user.familyName || ''
-      this.registrationRequest.email = user.email || ''
-    }
+    Ybug.show('launcher')
   },
   methods: {
+    gotoLandingPage() {
+      setTimeout(() => {
+        this.$router.push({ name: 'landing' })
+      }, DELAY_AFTER_CREATION)
+    },
     submitForm: function() {
       if (this.dryRun) {
-        rsStore.mutations.setRegistrationStatus({
-          success: true,
-          message: '',
-        })
+        this.gotoLandingPage()
       } else {
-        rsStore.mutations.setRegistrationStatus({
-          success: undefined,
-          message: '',
-        })
-        rsStore.actions.submitRegistrationRequest(this.registrationRequest)
+        this.profile.id = this.user.managedIdentity
+        this.profile.firstName = this.user.givenName
+        this.profile.lastName = this.user.familyName
+        this.profile.email = this.user.email
+        psStore.actions
+          .createProfile(this.profile)
+          .then(() => {
+            console.log(`CreateProfile success`)
+            this.status = 200
+            this.gotoLandingPage()
+          })
+          .catch(status => {
+            console.log(`CreateProfile returns status ${status}`)
+            if (status === 409 /* Conflict */) {
+              this.status = 409
+              // Meaning: Profile does already exist. Continue to the landing page
+              psStore.actions.fetchProfile()
+              this.gotoLandingPage()
+            } else {
+              // What can we do?
+            }
+          })
       }
     },
   },

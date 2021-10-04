@@ -1,21 +1,22 @@
 <template>
   <v-card class="rounded-border">
-    <v-card-title>Uw Woonadres</v-card-title>
+    <v-card-title>Geef je woonadres op</v-card-title>
     <v-card-text class="py-0">
       <v-row>
         <v-col
-          >Uw woonadres wordt gebruikt bij het plannen. U kunt het later altijd
-          wijzigen. Voer minimaal 3 karakters in om adressuggesties te
-          krijgen.</v-col
+          >Je woonadres wordt gebruikt bij het plannen en/of zoeken van ritten.
+          Je kunt het later altijd wijzigen. Type minimaal 3 karakters in om
+          suggesties te krijgen.</v-col
         >
       </v-row>
       <v-row>
         <v-col>
           <search-location
+            :address="value.address"
             field="home"
             :favorable="false"
             :outlined="true"
-            label="Adres"
+            label="Mijn adres"
             @search-completed="onSearchCompleted"
           ></search-location>
         </v-col>
@@ -63,19 +64,13 @@ export default {
       showSubmitButton: true,
     }
   },
-  computed: {
-    stateOrCountryCode() {
-      let code
-      if (this.value?.address) {
-        code =
-          this.value.address?.countryCode === 'NLD'
-            ? this.value.address.stateCode
-            : this.value.address.countryCode
-      }
-      return code ? `(${code})` : ''
-    },
+  mounted() {
+    this.valid = this.isValidAddress()
   },
   methods: {
+    isValidAddress() {
+      return this.value.address.location?.coordinates?.length === 2
+    },
     submitForm() {
       if (this.valid) {
         this.$emit('next-step')
@@ -90,7 +85,7 @@ export default {
       } else {
         this.value.address = {}
       }
-      this.valid = this.value.address.location?.coordinates?.length === 2
+      this.valid = this.isValidAddress()
     },
   },
 }
