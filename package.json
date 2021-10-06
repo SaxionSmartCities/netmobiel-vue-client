@@ -13,7 +13,6 @@
     "@mapbox/polyline": "^1.1.1",
     "@types/uuid": "^8.3.1",
     "axios": "^0.21.1",
-    "geolib": "^3.3.1",
     "lodash": "~4.17.21",
     "mapbox-gl": "^1.12.0",
     "moment": "^2.29.1",
