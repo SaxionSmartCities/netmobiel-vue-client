@@ -167,7 +167,7 @@ export default {
     },
     nextAction() {
       return this.isUserTraveller
-        ? 'Bekijk shout-out'
+        ? 'Bekijk Oproep'
         : this.hasOffer
         ? 'Aanbod bekijken'
         : 'Rit aanbieden'

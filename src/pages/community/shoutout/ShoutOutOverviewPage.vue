@@ -51,7 +51,7 @@
       <v-col class="py-0">
         <shout-out-list
           :shout-outs="myShoutOuts"
-          no-items-label="U heeft op dit moment geen opgeslagen oproepen."
+          no-items-label="Je hebt op dit moment geen opgeslagen oproepen."
           @shoutOutSelected="onShoutOutSelected"
         />
       </v-col>
