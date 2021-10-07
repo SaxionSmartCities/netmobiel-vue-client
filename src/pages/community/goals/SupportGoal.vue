@@ -34,6 +34,7 @@
           hide-details
           placeholder="0"
           type="number"
+          :rules="[rules.positive]"
         >
         </v-text-field>
       </v-col>
@@ -88,6 +89,9 @@ export default {
       donationAmount: 0,
       donationMessage: '',
       isAnonymous: false,
+      rules: {
+        positive: value => value > 0 || '',
+      },
     }
   },
   computed: {
@@ -100,7 +104,6 @@ export default {
   },
   methods: {
     donate() {
-      const { id, firstName, lastName } = psStore.getters.getProfile
       chsStore.actions.donate({
         id: this.id,
         amount: this.donationAmount,
@@ -110,8 +113,8 @@ export default {
       this.$router.push({
         name: 'donated',
         params: {
-          id: this.id,
-          name: this.charity.name,
+          charityId: this.id,
+          charityName: this.charity.name,
         },
       })
     },

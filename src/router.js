@@ -128,7 +128,7 @@ const router = new Router({
       props: true,
     },
     {
-      path: '/donated/:name',
+      path: '/donated/:charityId;:charityName',
       component: Donated,
       name: 'donated',
       props: true,
