@@ -20,6 +20,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import * as crsStore from '@/store/credits-service'
+import * as uiStore from '@/store/ui'
 
 const loc = new URL(location.href)
 
@@ -46,9 +47,10 @@ export default {
       .then(({ status }) => {
         if (status === 'COMPLETED') {
           // de overboeking is gelukt
-          this.$router.push({ name: 'home' })
+          uiStore.actions.queueInfoNotification(`Er zijn credits bijgeboekt.`)
+          this.$router.push({ name: 'credits' })
         }
-        // kan de status ook anders zijn? volgens apicuro kan het alleen COMPLETED zijn?
+        //FIXME Kan zijn: ACTIVE, EXPIRED, COMPLETED, REQUESTED, CANCELLED
       })
       .finally(() => {
         clearInterval(timer)
