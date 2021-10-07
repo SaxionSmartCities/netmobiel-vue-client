@@ -30,11 +30,12 @@ export interface Charity {
 }
 
 export interface Donation {
-  sender: {
+  donor: {
     id: string
     firstName: string
     lastName: string
   } | null
+  donorRef: string | null
   charityId: string
   credits: number
   message: string

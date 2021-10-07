@@ -32,7 +32,7 @@
         <community-button
           class="mx-auto"
           icon="fa-bullseye"
-          naam="Doelen"
+          naam="Goede Doelen"
           :disabled="!creditsEnabled"
           forward="charityOverviewPage"
         ></community-button>
