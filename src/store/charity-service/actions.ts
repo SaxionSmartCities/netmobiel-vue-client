@@ -102,14 +102,14 @@ async function fetchDonationsForCharity(context: ActionContext, id: string) {
     const charities = resp.data
     const donations = charities.data.map((d: any) => ({
       donor: {
+        id: d.donorRef,
         firstName: d.donor?.givenName,
         lastName: d.donor?.familyName,
       },
-      donorId: d.donorRef,
       credits: d.amount,
       message: d.description,
       isAnonymous: d.anonymous,
-      published: d.donationDate,
+      published: d.donationTime,
     }))
     mutations.setCharityDonations(donations)
   } catch (problem) {

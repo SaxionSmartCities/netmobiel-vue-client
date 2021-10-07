@@ -9,11 +9,7 @@
               {{ formatDateTime(donation.published) }}
             </span>
             <span class="body-2">
-              {{
-                donation.isAnonymous
-                  ? 'Anoniem'
-                  : donation.donor.firstName + ' ' + donation.donor.lastName
-              }}
+              {{ formatName(donation) }}
             </span>
             <span class="body-2 grey--text">
               {{ donation.credits + ' credits' }}
@@ -46,6 +42,18 @@ export default {
         return moment(dateTime)
           .local('nl')
           .format(format)
+    },
+    formatName(donation) {
+      let name = ''
+      if (donation.donor?.id) {
+        const donor = donation.donor
+        name = `${donor.firstName ? donor.firstName : ''} ${
+          donor.lastName ? donor.lastName : ''
+        } ${donation.isAnonymous ? ' (anoniem)' : ''}`
+      } else {
+        name = 'Anoniem'
+      }
+      return name
     },
   },
 }
