@@ -11,8 +11,8 @@
         </div>
         <div class="mt-6">
           <span>
-            Jouw credits zijn gedoneerd, dankjewel! <em>{{ name }}</em> is
-            automatisch op de hoogte gebracht.
+            Jouw credits zijn gedoneerd, dankjewel!
+            <em>{{ charityName }}</em> is automatisch op de hoogte gebracht.
           </span>
         </div>
 
@@ -51,15 +51,18 @@ export default {
   name: 'Donated',
   components: { ContentPane },
   props: {
-    id: { type: String, required: true },
-    name: { type: String, required: true },
+    charityId: { type: String, required: true },
+    charityName: { type: String, required: true },
   },
   methods: {
     supportGoal() {
       this.$router.push({ name: 'charityOverviewPage' })
     },
     showAllDonations() {
-      this.$router.push({ name: 'charityDetails', params: { id: this.id } })
+      this.$router.push({
+        name: 'charityDetails',
+        params: { id: this.charityId },
+      })
     },
   },
 }
