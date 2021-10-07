@@ -8,9 +8,18 @@
     <v-row>
       <v-divider />
     </v-row>
+    <v-row v-if="bankSimulated">
+      <v-alert type="warning">
+        In de huidige testfase van de Netmobiel-app hoef je nog niet écht te
+        betalen voor credits. Wel heb je de fictieve credits nodig om ritten te
+        boeken. Het aankoopproces dat je straks doorloopt is slechts een
+        simulatie en het kost je helemaal niks! Spreek onderling met de
+        chauffeur een eventuele vergoeding af.
+      </v-alert>
+    </v-row>
     <v-row>
       <v-col>
-        U kunt Netmobiel credits inkopen mbv iDEAL.<br />
+        U kunt Netmobiel credits inkopen via iDEAL.<br />
         Eén credit kost {{ CREDIT_IN_EUROCENTS }} eurocent.
       </v-col>
     </v-row>
@@ -51,6 +60,7 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import * as crsStore from '@/store/credits-service'
 import * as uiStore from '@/store/ui'
+import config from '@/config/config'
 
 const MIN_AMOUNT = 10,
   MAX_AMOUNT = 1000
@@ -63,6 +73,7 @@ export default {
   data: function() {
     return {
       creditAmount: MIN_AMOUNT,
+      bankSimulated: config.BANK_SIMULATED || false,
     }
   },
   computed: {
