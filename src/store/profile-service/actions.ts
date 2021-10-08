@@ -5,8 +5,6 @@ import { Profile, ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { getters, mutations } from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
-import store from '..'
-import { LocalDate } from '@js-joda/core'
 import { addInterceptors } from '@/store/api-middelware'
 import { generateHeaders } from '@/utils/Utils'
 
@@ -17,6 +15,42 @@ const {
   IMAGES_BASE_URL,
   GRAVITEE_PROFILE_SERVICE_API_KEY,
 } = config
+
+function createAbsoluteImageUrl(imageName: string | null | undefined): string {
+  return imageName ? `${IMAGES_BASE_URL}/${imageName}` : ''
+}
+
+function createProfile(
+  context: ActionContext,
+  payload: Profile
+): Promise<void> {
+  const URL = `${PROFILE_BASE_URL}/profiles`
+  return axios
+    .post(URL, payload, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+    })
+    .then(function() {
+      fetchProfile(context)
+      return Promise.resolve()
+    })
+    .catch(function(error) {
+      // eslint-disable-next-line
+      console.log(error)
+      const status = error.response.status
+      let errorMsg = ''
+      if (status === 422) {
+        errorMsg = 'Ontbrekende data (email, voornaam of achternaam).'
+      } else if (status === 451) {
+        errorMsg = 'Ga akkoord  met de gevraagde voorwaarden.'
+      } else if (status === 409) {
+        errorMsg = 'U bent al geregistreerd bij Netmobiel.'
+      } else {
+        errorMsg = error.response.data.message || error.response.data
+      }
+      uiStore.actions.queueErrorNotification(errorMsg)
+      return Promise.reject(status)
+    })
+}
 
 function fetchProfile(context: ActionContext) {
   const delegatorId = context.state.user.delegatorId
@@ -32,13 +66,9 @@ function fetchProfile(context: ActionContext) {
         let profile = {
           ...context.state.user.profile,
           ...response.data.profiles[0],
-          dateOfBirth: response.data.profiles[0].dateOfBirth
-            ? LocalDate.parse(response.data.profiles[0].dateOfBirth)
-            : null,
-          image: response.data.profiles[0].image
-            ? `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
-            : '',
+          image: createAbsoluteImageUrl(response.data.profiles[0].image),
         }
+        //TODO Fix this strange construction
         if (!!localStorage.fcm && localStorage.fcm !== profile.fcmToken) {
           profile.fcmToken = localStorage.fcm
           updateProfile(context, profile)
@@ -71,9 +101,7 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
       if (response.data.profiles.length > 0) {
         let profile = {
           ...response.data.profiles[0],
-          image: response.data.profiles[0].image
-            ? `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
-            : '',
+          image: createAbsoluteImageUrl(response.data.profiles[0].image),
         }
         mutations.addPublicProfile(profile)
         return profile
@@ -102,7 +130,7 @@ function fetchProfiles(context: ActionContext, { keyword }: any) {
         const results = response.data.data.map((r: any) => {
           return {
             ...r,
-            image: r.image ? `${IMAGES_BASE_URL}/${r.image}` : '',
+            image: createAbsoluteImageUrl(r.image),
           }
         })
         mutations.setSearchResults(results)
@@ -228,8 +256,10 @@ function fetchUserReviews(context: ActionContext, { profileId }: any) {
 
 /**
  * Adds a review to the user in the profile-service
+ * @param context: the calling context
  * @param sender: {id, firstName, lastName}
  * @param receiver: {id, firstName, lastName}
+ * @param review the review to add
  * @returns {Object} Returns the review object in the response.data
  */
 function addUserReview(
@@ -362,9 +392,8 @@ function updateProfile(context: ActionContext, profile: Profile) {
         let profile = {
           ...context.state.user.profile,
           ...response.data.profiles[0],
+          image: createAbsoluteImageUrl(response.data.profiles[0].image),
         }
-        const imgSrc = `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
-        profile.image = imgSrc
         mutations.setProfile(profile)
       }
     })
@@ -507,6 +536,7 @@ export const buildActions = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
   return {
+    createProfile: psBuilder.dispatch(createProfile),
     fetchProfile: psBuilder.dispatch(fetchProfile),
     fetchPublicProfile: psBuilder.dispatch(fetchPublicProfile),
     fetchProfiles: psBuilder.dispatch(fetchProfiles),

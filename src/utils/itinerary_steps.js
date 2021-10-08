@@ -1,12 +1,7 @@
 import moment from 'moment'
 import travelModes from '@/constants/travel-modes.js'
-import { getDistance } from 'geolib'
 
 const MIN_WAITING_TIME = 60 // Time in seconds
-/**
- * Minimal distance [meter] to consider two consecutive steps as one step.
- */
-const MIN_DISTANCE = 10
 
 export function generateItineraryDetailSteps(itinerary) {
   // Guard: If we have no legs then we have no steps.
@@ -141,12 +136,22 @@ function generateCommunityShoutOutDetailSteps(shoutout) {
 
 /**
  * Generates the steps for a ride. A ride from a list of rides has no leg information.
+ * (it is taken from a list of proposed rides).
+ * When a detailed view is requested, the legs of a ride are available too.
+ * The bookings of a ride are always available.
  * @param ride the ride from a list of rides
  * @param veryDetailed if true then add all details
  * @return {*[]} a list of steps
  */
 function generateShoutOutRideOfferDetailSteps(ride, veryDetailed) {
-  const { fromPlace, toPlace, car, bookings } = ride
+  const { fromPlace, toPlace, car, bookings, legs } = ride
+  // If the legs are available too, then booking.legs[].legRef points to the
+  // leg with passenger.
+  // The leg also has info on the distance.
+  // All other information is available in the booking too.
+  // If there would be waiting steps in between, then the leg information is really needed.
+  // A detailed ride has all car information.
+  // A listed ride has only cat brand and model.
   const steps = []
   const booking = bookings?.find(b => b.state.toUpperCase() === 'PROPOSED')
   if (booking) {
@@ -162,7 +167,9 @@ function generateShoutOutRideOfferDetailSteps(ride, veryDetailed) {
     let dropOffTime = moment(booking.arrivalTime)
       .toDate()
       .getTime()
-    if (getDistance(fromPlace, booking.pickup) >= MIN_DISTANCE) {
+    // Check whether the driver has to ride a part to pickup the passenger
+    // If so, he departs before he does a pickup
+    if (ride.departureTime !== booking.departureTime) {
       steps.push({
         mode: 'CAR',
         startTime: departureTime,
@@ -180,11 +187,15 @@ function generateShoutOutRideOfferDetailSteps(ride, veryDetailed) {
       rideshareStep.driverName = 'Jij'
       rideshareStep.vehicleName = car.brand
       rideshareStep.vehicleLicensePlate = car.model
-      // FIXME Id the tripId really required here?
-      rideshareStep.tripId = ride.id
+      // Omit the driver image, it is always the current driver.
+      // if (ride.driverRef) {
+      //   rideshareStep.driverId = ride.driverRef
+      // }
     }
     steps.push(rideshareStep)
-    if (getDistance(toPlace, booking.dropOff) >= MIN_DISTANCE) {
+    // Check whether the driver has to ride a part to reach his own final destination
+    // If so, he arrives after he does a drop-off
+    if (ride.arrivalTime !== booking.arrivalTime) {
       steps.push({
         mode: 'CAR',
         startTime: dropOffTime,

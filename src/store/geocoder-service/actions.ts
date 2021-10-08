@@ -26,7 +26,7 @@ function isPhonetic(s: string) {
 
 async function fetchGeocoderSuggestions(
   context: ActionContext,
-  { query, center, radius }: GeoCoderRequest
+  { query, center, radius, maxResults }: GeoCoderRequest
 ) {
   try {
     const theCenter = center ? center : constants.GEOLOCATION_CENTER_NL
@@ -44,6 +44,7 @@ async function fetchGeocoderSuggestions(
         details: showAddressDetails,
         radius: radius || constants.DEFAULT_GEOCODER_RADIUS,
         center: `${theCenter.latitude},${theCenter.longitude}`,
+        maxResults: maxResults || 20,
       },
       headers: generateHeaders(GRAVITEE_GEOCODE_SERVICE_API_KEY),
     })

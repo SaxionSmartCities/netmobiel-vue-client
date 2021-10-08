@@ -2,7 +2,6 @@ import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { RootState } from '@/store/Rootstate'
 import { CharityState } from './types'
 import { mutations } from '@/store/charity-service/index'
-import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios'
 import config from '@/config/config'
 import * as uiStore from '@/store/ui'
@@ -102,15 +101,15 @@ async function fetchDonationsForCharity(context: ActionContext, id: string) {
     )
     const charities = resp.data
     const donations = charities.data.map((d: any) => ({
-      sender: {
-        id: d.anonymous ? uuidv4() : d.donor.id,
-        firstName: d.anonymous ? 'Anoniem' : d.donor.givenName,
-        lastName: d.anonymous ? '' : d.donor.familyName,
+      donor: {
+        id: d.donorRef,
+        firstName: d.donor?.givenName,
+        lastName: d.donor?.familyName,
       },
       credits: d.amount,
       message: d.description,
       isAnonymous: d.anonymous,
-      published: d.donationDate,
+      published: d.donationTime,
     }))
     mutations.setCharityDonations(donations)
   } catch (problem) {

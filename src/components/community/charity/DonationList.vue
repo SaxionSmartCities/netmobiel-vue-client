@@ -5,15 +5,14 @@
         <div class="d-flex flex-row mt-1 mb-2">
           <round-user-image :image-size="40" :avatar-size="46" />
           <div class="d-flex flex-column ml-4">
-            <span class="body-1">
-              {{
-                donation.isAnonymous
-                  ? 'Anoniem'
-                  : donation.sender.firstName + ' ' + donation.sender.lastName
-              }}
+            <span class="body-2 grey--text">
+              {{ formatDateTime(donation.published) }}
+            </span>
+            <span class="body-2">
+              {{ formatName(donation) }}
             </span>
             <span class="body-2 grey--text">
-              {{ donation.credits + ' credits gedoneerd' }}
+              {{ donation.credits + ' credits' }}
             </span>
             <span class="mt-2">
               {{ donation.message }}
@@ -28,10 +27,35 @@
 
 <script>
 import RoundUserImage from '@/components/common/RoundUserImage'
+import moment from 'moment'
 export default {
   name: 'DonationList',
   components: { RoundUserImage },
   props: { donations: { type: Array, required: true } },
+  methods: {
+    formatDateTime(dateTime, format) {
+      if (!format)
+        return moment(dateTime)
+          .locale('nl')
+          .calendar()
+      else
+        return moment(dateTime)
+          .local('nl')
+          .format(format)
+    },
+    formatName(donation) {
+      let name = ''
+      if (donation.donor?.id) {
+        const donor = donation.donor
+        name = `${donor.firstName ? donor.firstName : ''} ${
+          donor.lastName ? donor.lastName : ''
+        } ${donation.isAnonymous ? ' (anoniem)' : ''}`
+      } else {
+        name = 'Anoniem'
+      }
+      return name
+    },
+  },
 }
 </script>
 

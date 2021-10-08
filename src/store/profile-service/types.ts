@@ -1,5 +1,3 @@
-import { LocalDate } from '@js-joda/core'
-
 export class ProfileState {
   complimentTypes: ComplimentType[] = []
   publicUsers: Map<string, ExternalUser> = new Map()
@@ -34,6 +32,7 @@ export class ProfileState {
       consent: {
         acceptedTerms: false,
         olderThanSixteen: false,
+        safetyGuidelines: false,
       },
       dateOfBirth: null,
       fcmToken: null,
@@ -43,6 +42,7 @@ export class ProfileState {
       email: null,
       phoneNumber: null,
       userRole: null,
+      actingRole: null,
       address: null,
       searchPreferences: null,
       ridePlanOptions: null,
@@ -155,7 +155,8 @@ export interface PublicProfile {
 
 export interface Profile extends PublicProfile {
   consent: UserConsent | null
-  dateOfBirth: LocalDate | null
+  // Format: ISO8601: yyyy-MM-dd
+  dateOfBirth: string | null
   email: string | null
   fcmToken: string | null
   image: string | null
@@ -165,6 +166,7 @@ export interface Profile extends PublicProfile {
   notificationOptions: NotificationOptions
   favoriteLocations: Place[]
   userRole: string | null
+  actingRole: string | null
 }
 
 export interface ProfileSearch {
@@ -176,6 +178,7 @@ export interface ProfileSearch {
 export interface UserConsent {
   acceptedTerms: boolean
   olderThanSixteen: boolean
+  safetyGuidelines: boolean
 }
 
 export interface SearchPreferences {

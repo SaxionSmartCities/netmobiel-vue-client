@@ -44,10 +44,8 @@ function geoPlaceToAddressLabel(place, includeLabel) {
     line += `${place.label}, `
   }
   if (place.street) {
-    line += place.street
-    if (place.houseNumber) {
-      line += ` ${place.houseNumber}, `
-    }
+    let shn = [place.street, place.houseNumber ? place.houseNumber : '']
+    line += `${shn.filter(piece => piece).join(' ')}, `
   }
   line += place.locality
   if (place.countryCode === 'NLD') {

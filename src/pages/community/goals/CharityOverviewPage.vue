@@ -3,7 +3,7 @@
     <v-row mb-3>
       <v-col ml-3>
         <h1 class="netmobiel">
-          Doelen
+          Goede Doelen
         </h1>
         <v-divider class="mt-2"></v-divider>
       </v-col>

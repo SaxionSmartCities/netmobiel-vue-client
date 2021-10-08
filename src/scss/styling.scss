@@ -89,14 +89,14 @@ h3 {
 }
 
 .lighter-tab {
-  opacity: 0.88;
+  opacity: 0.70;
 }
 
 .secondary-color {
   color: $color-orange;
 }
 
-//HACK: Upgrading vuetity has a different max-width. 
+//HACK: Upgrading vuetity has a different max-width.
 // We are reverting this here.
 .container.fill-height > .row {
   max-width: 100% !important;

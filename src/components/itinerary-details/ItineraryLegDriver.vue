@@ -1,7 +1,12 @@
 <template>
   <v-row no-gutters>
     <v-col>
-      <driver-image :image-size="60" :avatar-size="66" :leg="leg" />
+      <driver-image
+        v-if="leg.driverId"
+        :image-size="60"
+        :avatar-size="66"
+        :leg="leg"
+      />
       <br />
       <span v-if="leg.driverName === 'Jij'">
         <b>{{ leg.driverName }}</b> bent de chauffeur.

@@ -192,6 +192,9 @@ export default {
     }
   },
   computed: {
+    profile() {
+      return psStore.getters.getProfile
+    },
     ...{
       getPlannedTripsCount: () => isStore.getters.getPlannedTripsCount,
       getPlannedTrips: () => isStore.getters.getPlannedTrips,
@@ -222,17 +225,13 @@ export default {
       )
     },
     isPassengerOnly() {
-      return (
-        psStore.getters.getProfile.userRole === constants.PROFILE_ROLE_PASSENGER
-      )
+      return this.profile.userRole === constants.PROFILE_ROLE_PASSENGER
     },
     isDriverOnly() {
-      return (
-        psStore.getters.getProfile.userRole === constants.PROFILE_ROLE_DRIVER
-      )
+      return this.profile.userRole === constants.PROFILE_ROLE_DRIVER
     },
     isDrivingPassenger() {
-      return psStore.getters.getProfile.userRole === constants.PROFILE_ROLE_BOTH
+      return this.profile.userRole === constants.PROFILE_ROLE_BOTH
     },
   },
   watch: {
@@ -256,6 +255,13 @@ export default {
         }
       }
     },
+    selectedTab(newValue, oldValue) {
+      this.profile.actualRole =
+        newValue === 1
+          ? constants.PROFILE_ROLE_PASSENGER
+          : constants.PROFILE_ROLE_DRIVER
+      psStore.actions.updateProfile(this.profile)
+    },
   },
   beforeRouteEnter: beforeRouteEnter({
     selectedTab: number => {
@@ -271,6 +277,8 @@ export default {
     ridesSearchTime: searchtime => searchtime,
   }),
   mounted() {
+    this.selectedTab =
+      this.profile.actualRole === constants.PROFILE_ROLE_PASSENGER ? 1 : 0
     if (this.isPassengerOnly || this.isDrivingPassenger) {
       this.fetchTrips()
       this.fetchPastTrips()

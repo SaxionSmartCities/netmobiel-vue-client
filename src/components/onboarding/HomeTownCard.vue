@@ -1,56 +1,26 @@
 <template>
   <v-card class="rounded-border">
-    <v-card-title>Voer je thuis adres in</v-card-title>
+    <v-card-title>Geef je woonadres op</v-card-title>
     <v-card-text class="py-0">
-      <v-form ref="form" v-model="valid">
-        <v-row vertical-align-center no-gutters>
-          <v-col dense>
-            <v-text-field
-              v-model="value.address.street"
-              label="Straat"
-              maxlength="250"
-              outlined
-              :rules="[rules.required]"
-            >
-            </v-text-field>
-          </v-col>
-        </v-row>
-        <v-row vertical-align-center no-gutters>
-          <v-col dense cols="5">
-            <v-text-field
-              v-model="value.address.houseNumber"
-              label="Huisnummer"
-              maxlength="25"
-              outlined
-              :rules="[rules.required]"
-            >
-            </v-text-field>
-          </v-col>
-          <v-col dense cols="1"></v-col>
-          <v-col dense cols="6">
-            <v-text-field
-              v-model="value.address.postalCode"
-              label="Postcode"
-              maxlength="6"
-              outlined
-              :rules="[rules.required, rules.postalcode]"
-            >
-            </v-text-field>
-          </v-col>
-        </v-row>
-        <v-row vertical-align-center no-gutters>
-          <v-col dense>
-            <v-text-field
-              v-model="value.address.locality"
-              label="Woonplaats"
-              maxlength="250"
-              outlined
-              :rules="[rules.required]"
-            >
-            </v-text-field>
-          </v-col>
-        </v-row>
-      </v-form>
+      <v-row>
+        <v-col
+          >Je woonadres wordt gebruikt bij het plannen en/of zoeken van ritten.
+          Je kunt het later altijd wijzigen. Type minimaal 3 karakters in om
+          suggesties te krijgen.</v-col
+        >
+      </v-row>
+      <v-row>
+        <v-col>
+          <search-location
+            :address="value.address"
+            field="home"
+            :favorable="false"
+            :outlined="true"
+            label="Mijn adres"
+            @search-completed="onSearchCompleted"
+          ></search-location>
+        </v-col>
+      </v-row>
     </v-card-text>
     <v-card-actions>
       <v-row no-gutters class="mb-2">
@@ -78,8 +48,10 @@
 </template>
 
 <script>
+import SearchLocation from '@/components/search/SearchLocation'
 export default {
   name: 'HomeTownCard',
+  components: { SearchLocation },
   props: {
     value: {
       type: Object,
@@ -88,32 +60,32 @@ export default {
   },
   data() {
     return {
-      rules: {
-        required: value => !!value || '',
-        postalcode: value =>
-          !!(value && value.match(/^([0-9]{4}[a-zA-Z]{2})$/)) ||
-          'Ongeldige postcode',
-      },
       valid: false,
       showSubmitButton: true,
     }
   },
+  mounted() {
+    this.valid = this.isValidAddress()
+  },
   methods: {
-    validate() {
-      this.$nextTick(() => {
-        const isValid = this.$refs.form.validate()
-        this.$emit('onFormValid', isValid)
-      })
+    isValidAddress() {
+      return this.value.address.location?.coordinates?.length === 2
     },
     submitForm() {
-      this.value.address.countryCode = 'NL'
-      this.validate()
       if (this.valid) {
         this.$emit('next-step')
       }
     },
     back() {
       this.$emit('prev-step')
+    },
+    onSearchCompleted(place) {
+      if (place?.locality) {
+        this.value.address = { ...place }
+      } else {
+        this.value.address = {}
+      }
+      this.valid = this.isValidAddress()
     },
   },
 }

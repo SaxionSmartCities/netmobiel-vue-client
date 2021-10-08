@@ -26,9 +26,6 @@
 
 <script>
 import RoundUserImage from '@/components/common/RoundUserImage'
-import config from '@/config/config'
-import moment from 'moment'
-import { LocalDate, Period } from '@js-joda/core'
 
 export default {
   name: 'PublicProfileInfo',
@@ -43,8 +40,11 @@ export default {
       return this.profile?.image
     },
     username() {
-      if (!this.profile?.firstName) return 'Onbekende gebruiker'
-      else return this.profile.firstName + ' ' + this.profile.lastName
+      if (!this.profile?.firstName) {
+        return 'Onbekende gebruiker'
+      } else {
+        return this.profile.firstName + ' ' + this.profile.lastName
+      }
     },
     address() {
       return this.profile?.address?.locality || 'Onbekend adres'

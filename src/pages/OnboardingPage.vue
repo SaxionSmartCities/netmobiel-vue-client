@@ -6,9 +6,9 @@
           <v-col v-if="step === 0">
             <age-card @prev-step="goBack()" @next-step="step++" />
           </v-col>
-          <v-col v-if="step === 1">
-            <interests-card @prev-step="step--" @next-step="step++" />
-          </v-col>
+          <!--          <v-col v-if="step === 1">-->
+          <!--            <interests-card @prev-step="step&#45;&#45;" @next-step="step++" />-->
+          <!--          </v-col>-->
         </v-row>
         <v-row justify="center">
           <v-col class="text-center">
@@ -31,7 +31,7 @@ import InterestsCard from '@/components/onboarding/InterestsCard.vue'
 export default {
   components: {
     AgeCard,
-    InterestsCard,
+    // InterestsCard,
   },
   data: function() {
     return {
@@ -40,7 +40,7 @@ export default {
   },
   watch: {
     step: function() {
-      if (this.step >= 2) {
+      if (this.step >= 1) {
         this.$router.push('/onboardingComplete')
       }
     },

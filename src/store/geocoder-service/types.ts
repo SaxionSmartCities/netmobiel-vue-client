@@ -53,4 +53,5 @@ export interface GeoCoderRequest {
   query: string
   radius?: number
   center?: GeoLocation
+  maxResults?: number
 }

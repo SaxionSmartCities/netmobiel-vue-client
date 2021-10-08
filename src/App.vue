@@ -142,6 +142,10 @@ export default {
         psStore.actions.storeFcmToken({ fcmToken: passedFcmToken })
       }
     },
+    // Log all route changes
+    // $route(to, from) {
+    //   console.log('Route changed from ' + from.path + ' to ' + to.path)
+    // },
   },
   mounted() {
     const user = { name: 'netmobiel', version: this.commithash.trim() }
@@ -151,7 +155,7 @@ export default {
     if (this.$route.query.fcm) {
       localStorage.fcm = this.$route.query.fcm
     }
-    // Only fetch profile of user has been authenticated
+    // Only fetch profile of authenticated user
     if (this.$keycloak.authenticated) {
       psStore.actions.fetchProfile()
       psStore.mutations.setUserToken(this.$keycloak.token)
@@ -188,11 +192,7 @@ export default {
       }
     },
     isProfileComplete(profile) {
-      return (
-        !!profile.dateOfBirth &&
-        !!profile.interests &&
-        profile.interests.length > 0
-      )
+      return !!profile.dateOfBirth
     },
   },
 }
