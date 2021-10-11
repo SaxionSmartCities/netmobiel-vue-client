@@ -32,11 +32,13 @@ export default {
       return uiStore.getters.getNetworkRequest
     },
     buttonsVisible() {
-      const nwstatus = this.networkRequest?.submitStatus?.status
-      return (
-        nwstatus === NetworkRequestStatus.FAILED ||
-        !this.$keycloak.authenticated
-      )
+      return true
+      // 2021-10-11 Sometimes the app is stuck on this page
+      // const nwstatus = this.networkRequest?.submitStatus?.status
+      // return (
+      //   nwstatus === NetworkRequestStatus.FAILED ||
+      //   !this.$keycloak.authenticated
+      // )
     },
   },
   watch: {
