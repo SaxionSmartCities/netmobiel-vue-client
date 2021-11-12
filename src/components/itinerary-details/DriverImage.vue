@@ -35,9 +35,9 @@ export default {
   },
   methods: {
     fetchDriverIdentity() {
-      // TODO should be cached somehow
       const driverId = this.leg.driverId
       if (driverId) {
+        // The mapping is cached
         csStore.actions.fetchUser({ userRef: driverId }).then(resp => {
           this.managedIdentity = resp.managedIdentity
         })
