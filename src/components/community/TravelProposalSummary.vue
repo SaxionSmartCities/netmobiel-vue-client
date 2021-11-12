@@ -6,6 +6,13 @@
       :class="{ 'selected-offer': selected }"
       @click="$emit('travel-proposal-selected', index)"
     >
+      <v-overlay
+        :color="overlayColor"
+        :value="displayOverlay"
+        :absolute="true"
+        opacity="0.08"
+        z-index="99"
+      />
       <v-row>
         <v-col class="shrink ml-2 mr-0 pr-0">
           <driver-image
@@ -15,7 +22,7 @@
             :class="{ 'selected-offer': selected }"
           />
         </v-col>
-        <v-col>
+        <v-col :class="{ 'text-decoration-line-through': cancelled }">
           <p class="font-weight-regular header mb-0">
             {{ driver }}
           </p>
@@ -55,6 +62,19 @@ export default {
     },
     leg() {
       return this.itinerary.legs.find(l => l.agencyId === 'NB:RS')
+    },
+    displayOverlay() {
+      return this.completed || this.cancelled
+    },
+    // HACK: Should be done using CSS.
+    overlayColor() {
+      if (this.cancelled) {
+        return '#d0021b'
+      }
+      return ''
+    },
+    cancelled() {
+      return this.itinerary.legs.find(leg => leg.state === 'CANCELLED')
     },
   },
   methods: {
