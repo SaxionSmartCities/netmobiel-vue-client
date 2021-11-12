@@ -9,8 +9,7 @@
 <script>
 import RoundUserImage from '@/components/common/RoundUserImage'
 import * as psStore from '@/store/profile-service'
-import * as csStore from '@/store/carpool-service'
-import config from '@/config/config'
+import constants from '@/constants/constants'
 
 export default {
   name: 'ExternalUserImage',
@@ -21,14 +20,19 @@ export default {
     avatarSize: { type: Number, default: 78, required: false },
   },
   computed: {
+    isSystemUser() {
+      return this.managedIdentity === constants.SYSTEM_IDENTITY
+    },
     publicUser() {
-      if (this.managedIdentity) {
+      if (this.managedIdentity && !this.isSystemUser) {
         return psStore.getters.getPublicUsers.get(this.managedIdentity)
       }
       return null
     },
     imageURL() {
-      return this.publicUser?.profile.image
+      return this.isSystemUser
+        ? constants.SYSTEM_AVATAR
+        : this.publicUser?.profile.image
     },
   },
   watch: {
@@ -41,7 +45,7 @@ export default {
   },
   methods: {
     fetchExternalUser() {
-      if (this.managedIdentity) {
+      if (this.managedIdentity && !this.isSystemUser) {
         psStore.actions.fetchPublicProfile({ profileId: this.managedIdentity })
       }
     },
