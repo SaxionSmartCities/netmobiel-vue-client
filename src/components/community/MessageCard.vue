@@ -2,20 +2,33 @@
   <v-card
     elevation="0"
     :class="{ mymessage: isMessageSendByMe, message: !isMessageSendByMe }"
+    @click="$emit('click')"
   >
-    <v-card-title class="pa-2">
-      {{ message.body }}
+    <v-card-title class="d-flex flex-row pa-1">
+      <external-user-image
+        :managed-identity="getParticipantIdentity(message.sender)"
+        :image-size="26"
+        :avatar-size="30"
+      />
+      <div class="mx-2">{{ getParticipantName(message.sender) }}</div>
     </v-card-title>
-    <v-card-subtitle class="text-right px-2 py-1">
-      {{ timeStamp }}
-    </v-card-subtitle>
+    <v-card-text class="d-flex flex-column py-1">
+      <div>{{ message.body }}</div>
+      <div class="text-right font-italic smaller-font-size">
+        {{ timeStamp }}
+      </div>
+    </v-card-text>
   </v-card>
 </template>
 
 <script>
 import moment from 'moment'
+import * as psStore from '@/store/profile-service'
+import constants from '@/constants/constants'
+import ExternalUserImage from '@/components/profile/ExternalUserImage'
 
 export default {
+  components: { ExternalUserImage },
   props: {
     message: {
       type: Object,
@@ -29,12 +42,34 @@ export default {
   },
   computed: {
     timeStamp() {
-      return moment(this.message.creationTime)
+      return moment(this.message.createdTime)
         .locale('nl')
         .calendar()
     },
-    isMessageSendByMe: function() {
+    isMessageSendByMe() {
       return this.sendByMe
+    },
+    profile() {
+      return psStore.getters.getProfile
+    },
+    myContext() {
+      if (this.isMessageSendByMe) {
+        return this.message.context
+      } else {
+        return this.message.envelopes.find(
+          env => env.recipient.managedIdentity === this.profile.id
+        ).context
+      }
+    },
+  },
+  methods: {
+    getParticipantIdentity(ptcp) {
+      return ptcp ? ptcp.managedIdentity : constants.SYSTEM_IDENTITY
+    },
+    getParticipantName(ptcp) {
+      return ptcp
+        ? ptcp.givenName + ' ' + ptcp.familyName
+        : constants.SYSTEM_NAME
     },
   },
 }

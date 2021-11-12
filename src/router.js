@@ -251,7 +251,7 @@ const router = new Router({
       name: 'community',
     },
     {
-      path: '/conversation/:context',
+      path: '/conversation/:conversationId',
       component: ConversationPage,
       name: 'conversation',
       props: true,

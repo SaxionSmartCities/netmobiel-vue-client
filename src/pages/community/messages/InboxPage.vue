@@ -15,16 +15,14 @@
       </tab-bar>
     </template>
     <v-list three-line avatar class="pt-0 conversation-list">
-      <template v-for="conversation in conversations">
-        <v-divider :key="conversation.context + '-divider'" />
-        <v-list-item
-          :key="conversation.context"
-          class=""
-          @click="showConversation(conversation)"
-        >
+      <template v-for="cvs in conversations">
+        <v-divider :key="cvs.id + '-divider'" />
+        <v-list-item :key="cvs.id" class="" @click="showConversation(cvs)">
           <v-list-item-avatar size="60">
             <external-user-image
-              :managed-identity="getIdentityViaConversation(conversation)"
+              :managed-identity="
+                getParticipantIdentity(cvs.recentMessage.sender)
+              "
               :image-size="55"
               :avatar-size="60"
             />
@@ -33,7 +31,7 @@
             <v-list-item-title>
               <v-row dense class="justify-space-between flex-nowrap">
                 <v-col class="font-weight-medium">
-                  {{ getReceiverViaConversationParticipants(conversation) }}
+                  {{ getParticipantName(cvs.recentMessage.sender) }}
                 </v-col>
                 <!-- Let's hide the number of unread message for now until we have fixed it.
                 <v-col class="px-2" cols="2">
@@ -41,14 +39,17 @@
                     {{ getNewMessageCount(conversation) }}
                   </div>
                 </v-col> -->
+                <v-col class="px-1 py-1 text-right" cols="5">
+                  <em>{{ getTimestamp(cvs.recentMessage.createdTime) }}</em>
+                </v-col>
               </v-row>
             </v-list-item-title>
             <v-list-item-subtitle>
-              <div class="px-1 py-1 text-right">
-                <em>{{ getConversationTimestamp(conversation) }}</em>
-              </div>
+              <!--              <div class="px-1 py-1 text-right">-->
+              <!--                <em>{{ getTimestamp(cvs.recentMessage.createdTime) }}</em>-->
+              <!--              </div>-->
               <div>
-                {{ getSubject(conversation) }}
+                {{ cvs.topic }}
               </div>
             </v-list-item-subtitle>
           </v-list-item-content>
@@ -68,6 +69,7 @@ import * as psStore from '@/store/profile-service'
 import * as msStore from '@/store/message-service'
 import moment from 'moment'
 import { upperCaseFirst } from '@/utils/Utils.js'
+import constants from '@/constants/constants'
 
 export default {
   components: {
@@ -82,71 +84,39 @@ export default {
   },
   computed: {
     conversations() {
-      return msStore.getters.getConversations
+      return this.isActualTab
+        ? msStore.getters.getActualConversations
+        : msStore.getters.getArchivedConversations
     },
     myId() {
       return psStore.getters.getProfile.id
     },
-  },
-  watch: {
-    conversations(convs) {
-      const rideConvs = convs.filter(c => c.context.includes(':ride:'))
-      csStore.actions.fetchRidesFromConversations(rideConvs)
+    isActualTab() {
+      return this.selectedTab === 0
+    },
+    isArchiveTab() {
+      return this.selectedTab === 1
     },
   },
   created: function() {
     uiStore.mutations.showBackButton()
-    msStore.actions.fetchConversations()
+    msStore.actions.fetchActualConversations()
+    msStore.actions.fetchArchivedConversations()
   },
   methods: {
-    getOtherParticipant(conversation) {
-      const others = conversation.participants.filter(
-        user => user.managedIdentity !== this.myId
-      )
-      return others ? others[0] : undefined
+    getParticipantIdentity(ptcp) {
+      return ptcp ? ptcp.managedIdentity : constants.SYSTEM_IDENTITY
     },
-    getReceiverViaConversationParticipants(conversation) {
-      const op = this.getOtherParticipant(conversation)
-      if (op) {
-        return op.givenName + ' ' + op.familyName
-      }
-      return 'not found'
-    },
-    getIdentityViaConversation(conversation) {
-      const op = this.getOtherParticipant(conversation)
-      if (op) {
-        return op.managedIdentity
-      }
-      return conversation.sender.managedIdentity
-    },
-    getSubject(conversation) {
-      const context = conversation.context
-      const ride = this.getRideFromContext(context)
-      if (ride) {
-        return `Van ${this.getFromLabelFromContext(
-          context
-        )} naar ${this.getToLabelFromContext(context)}`
-      } else {
-        return conversation.subject
-      }
-    },
-    getRideFromContext(context) {
-      const rides = csStore.getters.getInboxRides
-      return rides.find(r => r.rideRef === context)
-    },
-    getFromLabelFromContext(context) {
-      return this.getRideFromContext(context)?.fromPlace?.label || 'Onbekend'
-    },
-    getToLabelFromContext(context) {
-      return this.getRideFromContext(context)?.toPlace?.label || 'Onbekend'
+    getParticipantName(ptcp) {
+      return ptcp
+        ? ptcp.givenName + ' ' + ptcp.familyName
+        : constants.SYSTEM_NAME
     },
     showConversation(conversation) {
       this.$router.push({
-        name: `conversation`,
+        name: 'conversation',
         params: {
-          context: conversation.context,
-          contextText: this.getSubject(conversation),
-          participants: conversation.participants.map(p => p.managedIdentity),
+          conversationId: conversation.conversationRef,
         },
       })
     },
@@ -154,9 +124,9 @@ export default {
       //TODO: Get the count from somewhere.
       return 0
     },
-    getConversationTimestamp(conversation) {
+    getTimestamp(timestamp) {
       return upperCaseFirst(
-        moment(conversation.creationTime)
+        moment(timestamp)
           .locale('nl')
           .calendar()
       )
