@@ -1,28 +1,40 @@
 export class MessageState {
-  conversations: any[] = []
-  messages: Map<string, Message[]> = new Map()
-  contexts: string[] = []
-  activeMessages: any[] = []
+  actualConversations: Conversation[] = []
+  archivedConversations: Conversation[] = []
+  conversation: Conversation = {}
+  messages: Message[] = []
 }
 
 export interface Message {
   body: string | null
   context: string
-  creationTime: Date | null
+  createdTime: string | null
   deliveryMode: string
   envelopes?: Envelope[]
   id?: number
   sender: CommunicationUser | null
+  senderConversationRef?: string
   subject?: string
 }
 
 export interface Envelope {
-  ackTime: Date | null
-  pushTime: Date | null
+  ackTime: string | null
+  pushTime: string | null
+  context: string
   recipient: CommunicationUser
+  conversationRef?: string
 }
 
-export interface Conversation extends Message {}
+export interface Conversation {
+  id?: number
+  conversationRef?: string
+  topic?: string
+  contexts?: string[]
+  recentMessage?: Message
+  createdTime?: string
+  archivedTime?: string
+  owner?: CommunicationUser
+}
 
 export interface CommunicationUser {
   id?: number
