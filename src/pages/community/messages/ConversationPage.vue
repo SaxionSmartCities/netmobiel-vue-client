@@ -92,7 +92,7 @@ export default {
     },
     messages() {
       const msgs = msStore.getters.getMessages
-      console.log(`Got ${msgs.length} messages`)
+      // console.log(`Got ${msgs.length} messages`)
       return msgs
     },
     profile() {
