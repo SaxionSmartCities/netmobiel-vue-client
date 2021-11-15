@@ -27,6 +27,10 @@ export interface Car {
 }
 export interface Ride {
   rideRef?: string
+  departureTime?: string
+  arrivalTime?: string
+  arrivalTimePinned?: boolean
+  bookings?: Booking[]
 }
 export interface CarSearchResult {}
 
@@ -42,8 +46,16 @@ export interface UserRef {
 export interface RideshareUser {
   userRef: string
   managedIdentity: string
-  familyNmae: string
+  familyName: string
   givenName: string
   id: string
   email: string
+}
+
+export interface Booking {
+  bookingRef?: string
+  departureTime?: string
+  arrivalTime?: string
+  passenger?: RideshareUser
+  passengerRef?: string
 }
