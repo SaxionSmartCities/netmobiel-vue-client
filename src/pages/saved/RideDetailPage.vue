@@ -58,6 +58,29 @@
         </v-btn>
       </v-col>
     </v-row>
+    <v-row dense class="d-flex flex-column">
+      <v-col><v-divider /></v-col>
+      <v-col class="mt-2">
+        <h3>Boekingen</h3>
+      </v-col>
+      <v-col v-if="!bookings">
+        <em>Er zijn nog geen boekingen geweest.</em>
+      </v-col>
+      <v-col v-else class="py-3">
+        <v-row
+          v-for="(booking, index) in bookings"
+          :key="index"
+          class="dense px-2 pt-0 pb-1"
+        >
+          <booking-summary
+            :index="index"
+            :booking="booking"
+            :selected="index === selectedBookingIndex"
+            @booking-selected="onBookingSelected"
+          />
+        </v-row>
+      </v-col>
+    </v-row>
     <v-row v-if="rideOptions.length > 0" class="mb-0">
       <v-col class="pb-0">
         <h3>Wijzigen</h3>
@@ -103,17 +126,17 @@ import { generateRideItineraryDetailSteps } from '@/utils/itinerary_steps'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
-import * as msStore from '@/store/message-service'
-import BookingList from '@/components/common/BookingList'
 import moment from 'moment'
 import * as isStore from '@/store/itinerary-service'
 import * as gsStore from '@/store/geocoder-service'
 import { geoLocationToPlace } from '@/utils/Utils'
 import CancelRideDialog from '@/components/dialogs/CancelRideDialog'
+import BookingSummary from '@/components/itinerary-details/RideBookingSummary'
 
 export default {
   name: 'RideDetailPage',
   components: {
+    BookingSummary,
     EditRideDialog,
     CancelRideDialog,
     ContactTravellerModal,
@@ -139,11 +162,15 @@ export default {
       showEditRideModal: false,
       showDeleteRideModal: false,
       showMap: false,
+      selectedBookingIndex: 0,
     }
   },
   computed: {
     profile() {
       return psStore.getters.getProfile
+    },
+    bookings() {
+      return this.ride?.bookings
     },
     confirmedBookings() {
       return !this.ride?.bookings
@@ -176,6 +203,15 @@ export default {
     },
     ride() {
       return csStore.getters.getSelectedRide
+    },
+    selectedBooking() {
+      if (
+        this.ride?.bookings &&
+        this.selectedBookingIndex < this.ride.bookings.length
+      ) {
+        return this.ride?.bookings[this.selectedBookingIndex]
+      }
+      return null
     },
     isRideInThePast() {
       return (
@@ -345,6 +381,9 @@ export default {
     },
     onCloseMap() {
       this.showMap = false
+    },
+    onBookingSelected(index) {
+      this.selectedBookingIndex = index
     },
   },
 }
