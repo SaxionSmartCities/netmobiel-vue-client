@@ -1,8 +1,8 @@
 export default {
   fetchBankerStatementsMaxResults: 10,
-  fetchTripsMaxResults: 8,
-  fetchPastTripsMaxResults: 8,
-  fetchPastRidesMaxResults: 8,
+  fetchTripsMaxResults: 20,
+  fetchPastTripsMaxResults: 20,
+  fetchPastRidesMaxResults: 20,
   defaultMaxResults: 10,
   defaultProfileImage: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
   defaultCharityImage: '@/assets/default_charity_image.jpg',
