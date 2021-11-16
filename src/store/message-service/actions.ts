@@ -130,9 +130,8 @@ async function sendMessage(context: ActionContext, payload: any) {
       ),
     })
     .then(function(resp) {
-      if (resp.status === 202) {
+      if (resp.status === 200) {
         // Update the list without actually refreshing the list
-        // Sending a message is asynchronous at the backend (202 status)
         const message = {
           ...payload,
           sender: { managedIdentity: payload.managedIdentity },
