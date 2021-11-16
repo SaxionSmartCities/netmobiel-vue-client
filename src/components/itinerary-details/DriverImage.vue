@@ -10,6 +10,7 @@
 import ExternalUserImage from '@/components/profile/ExternalUserImage'
 import * as psStore from '@/store/profile-service'
 import * as csStore from '@/store/carpool-service'
+import * as UrnHelper from '@/utils/UrnHelper'
 
 export default {
   name: 'DriverImage',
@@ -36,11 +37,18 @@ export default {
   methods: {
     fetchDriverIdentity() {
       const driverId = this.leg.driverId
-      if (driverId) {
-        // The mapping is cached
-        csStore.actions.fetchUser({ userRef: driverId }).then(resp => {
-          this.managedIdentity = resp.managedIdentity
-        })
+      if (driverId && UrnHelper.isUrn(driverId)) {
+        const decodedUrn = UrnHelper.decodeUrn(driverId)
+        if (decodedUrn.service === UrnHelper.NETMOBIEL_SERVICE.KEYCLOAK) {
+          this.managedIdentity = decodedUrn.id
+        } else if (
+          decodedUrn.service === UrnHelper.NETMOBIEL_SERVICE.RIDESHARE
+        ) {
+          // The mapping is cached
+          csStore.actions.fetchUser({ userRef: driverId }).then(resp => {
+            this.managedIdentity = resp.managedIdentity
+          })
+        }
       }
     },
   },
