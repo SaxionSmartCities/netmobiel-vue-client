@@ -9,6 +9,7 @@
             hide-details
             outlined
             readonly
+            :disabled="!isEnabled"
             :label="timeFieldLabel"
             :value="timeLabel"
             v-on="on"
@@ -48,6 +49,7 @@
         hide-details
         outlined
         readonly
+        :disabled="!isEnabled"
         :label="locationFieldLabel"
         :value="locationLabel"
         append-icon="close"
@@ -70,6 +72,7 @@ export default {
     location: { type: Object, required: false, default: () => null },
     allowedMinutes: { type: Function, default: m => m % 5 === 0 },
     isArrival: { type: Boolean, default: false },
+    isEnabled: { type: Boolean, default: true },
   },
   data() {
     return {

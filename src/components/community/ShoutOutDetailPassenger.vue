@@ -118,8 +118,13 @@ export default {
       }
       return generateItineraryDetailSteps(this.selectedOffer)
     },
+    shoutOutIsClosed() {
+      // If requestDuration is set, then the shout-out has been closed.
+      return !!this.shoutOut?.requestDuration
+    },
     invalidOffer() {
       return (
+        this.shoutOutIsClosed ||
         !this.selectedOffer ||
         this.selectedOffer.legs.find(leg => leg.state === 'CANCELLED') !==
           undefined

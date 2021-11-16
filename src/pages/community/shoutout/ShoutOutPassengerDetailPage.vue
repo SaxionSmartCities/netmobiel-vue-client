@@ -1,5 +1,27 @@
 <template>
   <content-pane>
+    <template v-slot:header>
+      <v-row
+        v-if="shoutOutIsClosed"
+        class="cancelled-banner text-center py-1"
+        dense
+        no-gutters
+      >
+        <v-col>
+          Deze oproep is gesloten
+        </v-col>
+      </v-row>
+      <v-row
+        v-else-if="isShoutOutInThePast"
+        class="cancelled-banner text-center py-1"
+        dense
+        no-gutters
+      >
+        <v-col>
+          Deze oproep is vervallen
+        </v-col>
+      </v-row>
+    </template>
     <v-row>
       <v-col class="py-0">
         <v-row v-if="selectedLegs && shouldShowMap" class="pa-0">
@@ -146,6 +168,16 @@ export default {
       return this.selectedOffer
         ? this.selectedOffer
         : this.shoutOut?.referenceItinerary
+    },
+    shoutOutIsClosed() {
+      // If requestDuration is set, then the shout-out has been closed.
+      return !!this.shoutOut?.requestDuration
+    },
+    isShoutOutInThePast() {
+      return (
+        this.shoutOut?.referenceItinerary?.departureTime &&
+        moment(this.shoutOut?.latestArrivalTime).isBefore(moment())
+      )
     },
   },
   mounted() {
