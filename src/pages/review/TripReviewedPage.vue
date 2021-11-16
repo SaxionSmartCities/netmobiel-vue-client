@@ -7,7 +7,7 @@
     </v-row>
     <v-row>
       <v-col>
-        Bedankt voor jouw beoordeling! Je rit is bevestigd en de chauffer is
+        Bedankt voor jouw beoordeling! Je rit is bevestigd en de chauffeur is
         automatisch op de hoogte gebracht.
       </v-col>
     </v-row>
