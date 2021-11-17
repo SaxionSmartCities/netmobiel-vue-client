@@ -68,7 +68,7 @@ export default {
   name: 'ShoutOutTravelProposalEditor',
   props: {
     // The time prop should be a moment object.
-    time: { type: Object, required: true },
+    time: { type: Object, required: false, default: () => null },
     location: { type: Object, required: false, default: () => null },
     allowedMinutes: { type: Function, default: m => m % 5 === 0 },
     isArrival: { type: Boolean, default: false },
