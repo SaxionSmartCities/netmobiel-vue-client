@@ -44,7 +44,7 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row v-if="numBookings > 0">
+    <v-row v-if="bookings && bookings.length > 0">
       <v-col class="mx-1">
         <v-btn
           large
@@ -52,6 +52,7 @@
           block
           outlined
           color="primary"
+          :disabled="!isChatEnabled"
           @click="contactPassenger"
         >
           Stuur bericht naar passagier
@@ -91,13 +92,13 @@
         <itinerary-options :options="rideOptions" />
       </v-col>
     </v-row>
-    <contact-traveller-modal
-      v-if="showContactTravellerModal"
-      :show="showContactTravellerModal"
-      :users="passengersInBookings"
-      @close="showContactTravellerModal = false"
-      @select="onTravellerSelectForMessage"
-    ></contact-traveller-modal>
+    <!--    <contact-traveller-modal-->
+    <!--      v-if="showContactTravellerModal"-->
+    <!--      :show="showContactTravellerModal"-->
+    <!--      :users="passengersInBookings"-->
+    <!--      @close="showContactTravellerModal = false"-->
+    <!--      @select="onTravellerSelectForMessage"-->
+    <!--    ></contact-traveller-modal>-->
     <v-dialog v-model="showEditRideModal">
       <edit-ride-dialog
         :ride="ride"
@@ -139,7 +140,6 @@ export default {
     BookingSummary,
     EditRideDialog,
     CancelRideDialog,
-    ContactTravellerModal,
     ContentPane,
     // JR Note: A Ride is NOT the same as a Trip itinerary
     // This is a hacky solution
@@ -205,13 +205,13 @@ export default {
       return csStore.getters.getSelectedRide
     },
     selectedBooking() {
-      if (
-        this.ride?.bookings &&
-        this.selectedBookingIndex < this.ride.bookings.length
-      ) {
-        return this.ride?.bookings[this.selectedBookingIndex]
+      if (this.selectedBookingIndex < this.bookings?.length) {
+        return this.bookings[this.selectedBookingIndex]
       }
       return null
+    },
+    isChatEnabled() {
+      return this.selectedBooking?.state.toUpperCase() !== 'CANCELLED'
     },
     isRideInThePast() {
       return (
@@ -312,22 +312,35 @@ export default {
         .then(() => this.$router.push('/tripsOverviewPage'))
     },
     contactPassenger() {
-      if (this.passengersInBookings.length > 1) {
-        this.showContactTravellerModal = true
-      } else {
-        this.onTravellerSelectForMessage(this.passengersInBookings[0])
-      }
+      // We do not know the conversation yet
+      // eslint-disable-next-line
+      console.log('Contacting the passenger is currently not enabled')
+      // const booking = this.selectedBooking
+      // this.$router.push({
+      //   name: `conversation`,
+      //   params: {
+      //     senderContext: this.ride.rideRef,
+      //     recipientContext: booking.bookingRef,
+      //     recipientManagedIdentity: booking.passenger.managedIdentity,
+      //   },
+      // })
+      // Old code
+      // if (this.confirmedBookings.length > 1) {
+      //   this.showContactTravellerModal = true
+      // } else {
+      //   this.onTravellerSelectForMessage(this.passengersInBookings[0])
+      // }
     },
-    onTravellerSelectForMessage(traveller) {
-      this.$router.push({
-        name: `conversation`,
-        params: {
-          context: traveller.context,
-          contextText: traveller.contextText,
-          participants: [this.profile.id, traveller.id],
-        },
-      })
-    },
+    // onTravellerSelectForMessage(traveller) {
+    //   this.$router.push({
+    //     name: `conversation`,
+    //     params: {
+    //       context: traveller.context,
+    //       contextText: traveller.contextText,
+    //       participants: [this.profile.id, traveller.id],
+    //     },
+    //   })
+    // },
     onRideEdit() {
       this.showEditRideModal = true
     },
