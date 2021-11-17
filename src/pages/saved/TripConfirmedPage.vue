@@ -81,9 +81,9 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import constants from '@/constants/constants'
-import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
+import * as UrnHelper from '@/utils/UrnHelper'
 
 export default {
   name: 'TripConfirmedPage',
@@ -94,7 +94,6 @@ export default {
       feedbackMessage: '',
       showChips: true,
       inputTextArea: null,
-      driverProfile: {},
     }
   },
   computed: {
@@ -102,18 +101,27 @@ export default {
       return isStore.getters.getSelectedTrip
     },
     driverName() {
-      const found = this.trip.itinerary?.legs.find(
-        l => l.driverName !== undefined
-      )
-      return found?.driverName || 'Onbekende chauffeur'
+      return this.leg?.driverName || 'Onbekende chauffeur'
     },
     availableCompliments() {
       return psStore.getters.getComplimentTypes
     },
+    leg() {
+      return this.trip?.itinerary.legs.find(l => !!l.driverId)
+    },
+    driverManagedIdentity() {
+      const driverId = this.leg?.driverId
+      if (driverId && UrnHelper.isUrn(driverId)) {
+        const decodedUrn = UrnHelper.decodeUrn(driverId)
+        if (decodedUrn.service === UrnHelper.NETMOBIEL_SERVICE.KEYCLOAK) {
+          return decodedUrn.id
+        }
+      }
+      return undefined
+    },
   },
   mounted() {
     psStore.actions.fetchComplimentTypes()
-    this.fetchDriverProfile()
   },
   methods: {
     addCompliment(compliment) {
@@ -143,9 +151,7 @@ export default {
       const { id, firstName, lastName } = psStore.getters.getProfile
       const sender = { id, firstName, lastName }
       const receiver = {
-        id: this.driverProfile.managedIdentity,
-        firstName: this.driverProfile.firstName,
-        lastName: this.driverProfile.lastName,
+        id: this.driverManagedIdentity,
       }
       this.compliments.map(compliment =>
         psStore.actions.addUserCompliment({
@@ -162,28 +168,6 @@ export default {
         })
       }
       this.$router.push({ name: 'tripReviewedPage' })
-    },
-    fetchDriverProfile() {
-      //First fetch the driver properties via the carpool service
-      csStore.actions
-        .fetchUser({
-          userRef: this.trip.itinerary.legs[0].driverId,
-        })
-        .then(response => {
-          // Fetch the profile (image) of the driver via the profile-service
-          psStore.actions
-            .fetchPublicProfile({
-              profileId: response.managedIdentity,
-            })
-            .then(res => {
-              this.driverProfile = {
-                managedIdentity: response.managedIdentity,
-                firstName: response.givenName,
-                lastName: response.familyName,
-                email: response.email,
-              }
-            })
-        })
     },
   },
 }

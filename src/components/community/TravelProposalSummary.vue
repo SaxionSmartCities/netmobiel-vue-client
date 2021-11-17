@@ -24,7 +24,7 @@
         </v-col>
         <v-col :class="{ 'text-decoration-line-through': cancelled }">
           <p class="font-weight-regular header mb-0">
-            {{ driver }}
+            {{ driverName }}
           </p>
           <p class="font-weight-light subtitle-1 mb-0">
             <span>Vertrek: </span>
@@ -56,15 +56,14 @@ export default {
     selected: { type: Boolean, required: true, default: false },
   },
   computed: {
-    driver() {
-      const { leg } = this
-      return leg ? leg.driverName : 'Chauffeur'
+    driverName() {
+      return this.leg ? this.leg.driverName : 'Chauffeur'
     },
     leg() {
       return this.itinerary.legs.find(l => l.agencyId === 'NB:RS')
     },
     displayOverlay() {
-      return this.completed || this.cancelled
+      return this.cancelled
     },
     // HACK: Should be done using CSS.
     overlayColor() {
@@ -74,7 +73,7 @@ export default {
       return ''
     },
     cancelled() {
-      return this.itinerary.legs.find(leg => leg.state === 'CANCELLED')
+      return this.leg?.state === 'CANCELLED'
     },
   },
   methods: {
