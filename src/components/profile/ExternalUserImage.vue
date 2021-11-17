@@ -19,20 +19,19 @@ export default {
     imageSize: { type: Number, default: 70, required: false },
     avatarSize: { type: Number, default: 78, required: false },
   },
+  data() {
+    return {
+      publicProfile: undefined,
+    }
+  },
   computed: {
     isSystemUser() {
       return this.managedIdentity === constants.SYSTEM_IDENTITY
     },
-    publicUser() {
-      if (this.managedIdentity && !this.isSystemUser) {
-        return psStore.getters.getPublicUsers.get(this.managedIdentity)
-      }
-      return null
-    },
     imageURL() {
       return this.isSystemUser
         ? constants.SYSTEM_AVATAR
-        : this.publicUser?.profile.image
+        : this.publicProfile?.image
     },
   },
   watch: {
@@ -46,7 +45,12 @@ export default {
   methods: {
     fetchExternalUser() {
       if (this.managedIdentity && !this.isSystemUser) {
-        psStore.actions.fetchPublicProfile({ profileId: this.managedIdentity })
+        psStore.actions
+          .fetchPublicProfile({ profileId: this.managedIdentity })
+          .then(profile => {
+            this.publicProfile = profile
+          })
+          .catch()
       }
     },
   },
