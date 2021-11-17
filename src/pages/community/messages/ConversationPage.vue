@@ -256,7 +256,7 @@ export default {
       }
     },
     sendMessage() {
-      console.log('Send message')
+      // console.log('Send message')
       msStore.actions
         .sendMessage({
           body: this.newMessage,
@@ -270,12 +270,12 @@ export default {
           ],
         })
         .then(() => {
-          console.log('Fetch messages')
+          // console.log('Fetch messages')
           this.newMessage = null
           return msStore.actions.fetchMessages({ id: this.conversationId })
         })
         .then(() => {
-          console.log('Scroll bottom')
+          // console.log('Scroll bottom')
           this.$nextTick(() => {
             this.scrollToBottomMessageContainer(true)
           })
