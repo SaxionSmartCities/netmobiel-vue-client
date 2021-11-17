@@ -239,7 +239,7 @@ export default {
     },
     isShoutOutInThePast() {
       return (
-        this.shoutOut?.referenceItinerary?.departureTime &&
+        this.shoutOut?.latestArrivalTime &&
         moment(this.shoutOut?.latestArrivalTime).isBefore(moment())
       )
     },
@@ -253,11 +253,7 @@ export default {
       //   `shoutOut: old = ${oldValue?.planRef}, new = ${newValue?.planRef}`
       // )
       // Do not just simply check the truthiness of the object (if (newValue) { ....}), that does not work with observed values.
-      if (
-        newValue?.planRef &&
-        !this.isProposedRideView &&
-        !this.shoutOutIsClosed
-      ) {
+      if (newValue?.planRef && !this.isProposedRideView && this.canOffer) {
         // Fetch the default plan: Driver and passenger same plan
         // But only when there is no rideId, because then we have already made a proposal.
         this.fetchShoutOutPlan()
