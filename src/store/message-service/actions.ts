@@ -14,14 +14,17 @@ const { COMMUNICATOR_BASE_URL, GRAVITEE_COMMUNICATOR_SERVICE_API_KEY } = config
 
 function fetchConversations(
   context: ActionContext,
-  select: string
+  select: string | null,
+  conversationContext: string | null,
+  maxResults: number | null
 ): Promise<AxiosResponse<any>> {
   const delegatorId = context.rootState.ps.user.delegatorId
   const URL = `${COMMUNICATOR_BASE_URL}/conversations`
   return axios.get(URL, {
     params: {
+      context: conversationContext,
       select: select,
-      maxResults: 100,
+      maxResults: maxResults || 100,
     },
     headers: generateHeaders(
       GRAVITEE_COMMUNICATOR_SERVICE_API_KEY,
@@ -31,7 +34,7 @@ function fetchConversations(
 }
 
 function fetchActualConversations(context: ActionContext) {
-  return fetchConversations(context, 'ACTUAL')
+  return fetchConversations(context, 'ACTUAL', null, 100)
     .then(function(resp) {
       if (resp.status === 200) {
         mutations.setActualConversations(resp.data.data)
@@ -48,7 +51,7 @@ function fetchActualConversations(context: ActionContext) {
 }
 
 function fetchArchivedConversations(context: ActionContext) {
-  return fetchConversations(context, 'ARCHIVED')
+  return fetchConversations(context, 'ARCHIVED', null, 100)
     .then(function(resp) {
       if (resp.status === 200) {
         mutations.setArchivedConversations(resp.data.data)
@@ -88,6 +91,36 @@ function fetchConversation(context: ActionContext, { id }: any) {
     })
 }
 
+function fetchConversationByContext(
+  context: ActionContext,
+  { conversationContext }: any
+) {
+  return fetchConversations(context, null, conversationContext, 1)
+    .then(function(resp) {
+      if (resp.status === 200) {
+        const pagedResultSet = resp.data
+        if (pagedResultSet.totalCount == 0) {
+          // no conversation found
+          uiStore.actions.queueErrorNotification(
+            'Geen passende conversatie gevonden.'
+          )
+          return null
+        } else if (pagedResultSet.totalCount > 1) {
+          // Too many conversations, should be just one
+          // eslint-disable-next-line
+          console.warn(`#${pagedResultSet.totalCount} conversations found for context ${conversationContext}`)
+        }
+        // Assign the single conversation. Note that in this version the set of contexts is missing.
+        const conversation = pagedResultSet.data[0]
+        return fetchConversation(context, { id: conversation.conversationRef })
+      }
+    })
+    .catch(function(error) {
+      // TODO: Proper error handling.
+      // eslint-disable-next-line
+      console.log(error)
+    })
+}
 function fetchMessages(
   context: ActionContext,
   { id, maxResults, offset }: any
@@ -119,33 +152,15 @@ function fetchMessages(
     })
 }
 
-async function sendMessage(context: ActionContext, payload: any) {
+function sendMessage(context: ActionContext, payload: any) {
   const delegatorId = context.rootState.ps.user.delegatorId
   const URL = `${COMMUNICATOR_BASE_URL}/messages`
-  return await axios
-    .post(URL, payload, {
-      headers: generateHeaders(
-        GRAVITEE_COMMUNICATOR_SERVICE_API_KEY,
-        delegatorId
-      ),
-    })
-    .then(function(resp) {
-      if (resp.status === 200) {
-        // Update the list without actually refreshing the list
-        const message = {
-          ...payload,
-          sender: { managedIdentity: payload.managedIdentity },
-          createdTime: moment().toISOString(),
-        }
-        mutations.addMessage(message)
-        return message
-      }
-    })
-    .catch(function(error) {
-      // TODO: Proper error handling.
-      // eslint-disable-next-line
-      console.log(error)
-    })
+  return axios.post(URL, payload, {
+    headers: generateHeaders(
+      GRAVITEE_COMMUNICATOR_SERVICE_API_KEY,
+      delegatorId
+    ),
+  })
 }
 
 export const buildActions = (
@@ -155,6 +170,7 @@ export const buildActions = (
     fetchActualConversations: msBuilder.dispatch(fetchActualConversations),
     fetchArchivedConversations: msBuilder.dispatch(fetchArchivedConversations),
     fetchConversation: msBuilder.dispatch(fetchConversation),
+    fetchConversationByContext: msBuilder.dispatch(fetchConversationByContext),
     fetchMessages: msBuilder.dispatch(fetchMessages),
     sendMessage: msBuilder.dispatch(sendMessage),
   }

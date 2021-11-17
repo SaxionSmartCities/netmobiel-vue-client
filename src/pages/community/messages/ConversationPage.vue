@@ -32,7 +32,7 @@
         <span class="caption ml-2">Bericht ophalen...</span>
       </v-col>
     </v-row>
-    <template v-slot:footer>
+    <template v-if="recipientManagedIdentity" v-slot:footer>
       <v-row dense class="px-4 pb-1">
         <v-col class="pl-0">
           <v-text-field
@@ -41,9 +41,7 @@
             outlined
             hide-details
             dense
-            label="Typ een bericht"
-            @focus="onInputMessageFocus"
-            @focusout="onInputMessageFocusOut"
+            :label="'Bericht voor ' + recipientName"
           ></v-text-field>
         </v-col>
         <v-col cols="1" align-self="center">
@@ -67,6 +65,7 @@ import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as msStore from '@/store/message-service'
 import constants from '@/constants/constants'
+import { beforeRouteEnter, beforeRouteLeave } from '@/utils/navigation'
 
 export default {
   components: {
@@ -76,7 +75,23 @@ export default {
   props: {
     conversationId: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
+    },
+    senderContext: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    recipientContext: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    recipientManagedIdentity: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -84,6 +99,9 @@ export default {
       newMessage: '',
       isFetchingMessages: true,
       recipientProfile: undefined,
+      theSenderContext: this.senderContext,
+      theRecipientContext: this.recipientContext,
+      theRecipientManagedIdentity: this.recipientManagedIdentity,
     }
   },
   computed: {
@@ -91,22 +109,57 @@ export default {
       return msStore.getters.getConversation
     },
     messages() {
-      const msgs = msStore.getters.getMessages
-      // console.log(`Got ${msgs.length} messages`)
-      return msgs
+      return msStore.getters.getMessages
     },
     profile() {
       return psStore.getters.getProfile
     },
+    recipientName() {
+      return `${this.recipientProfile?.firstName} ${this.recipientProfile?.lastName}`.trim()
+    },
   },
+  beforeRouteEnter: beforeRouteEnter({
+    theSenderContext: value => value,
+    theRecipientContext: value => value,
+    theRecipientManagedIdentity: value => value,
+  }),
+  beforeRouteLeave: beforeRouteLeave({
+    theSenderContext: value => value,
+    theRecipientContext: value => value,
+    theRecipientManagedIdentity: value => value,
+  }),
   mounted() {
     msStore.mutations.setConversation({})
     msStore.mutations.setMessages([])
-    msStore.actions.fetchConversation({ id: this.conversationId })
     this.isFetchingMessages = true
-    msStore.actions
-      .fetchMessages({ id: this.conversationId })
-      .then(() => (this.isFetchingMessages = false))
+    if (this.conversationId) {
+      msStore.actions.fetchConversation({ id: this.conversationId })
+      msStore.actions
+        .fetchMessages({ id: this.conversationId })
+        .then(() => (this.isFetchingMessages = false))
+    } else if (this.theSenderContext) {
+      // Someone want to send a message
+      msStore.actions
+        .fetchConversationByContext({
+          conversationContext: this.theSenderContext,
+        })
+        .then(c => this.fetchMessages(c))
+        .then(() => (this.isFetchingMessages = false))
+    } else {
+      uiStore.actions.queueErrorNotification('Error looking up conversation')
+      // Don't do this in the mount, it can lead to endless loop
+      // this.$router.go(-1)
+    }
+    if (this.theRecipientManagedIdentity) {
+      psStore.actions
+        .fetchPublicProfile({ profileId: this.theRecipientManagedIdentity })
+        .then(profile => {
+          this.recipientProfile = profile
+        })
+        .catch()
+    }
+    // recipientContext: booking.bookingRef,
+    // recipientManagedIdentity: booking.passenger.managedIdentity,
   },
   created() {
     uiStore.mutations.showBackButton()
@@ -115,11 +168,18 @@ export default {
     this.scrollToBottomMessageContainer()
   },
   methods: {
-    onInputMessageFocus() {
-      uiStore.mutations.disableFooter()
-    },
-    onInputMessageFocusOut() {
-      uiStore.mutations.enableFooter()
+    // Lookup the messages for the conversation and return a promise.
+    // Otherwise go back to the previous page
+    // No, don't do that. In case of a reload there is no go back
+    fetchMessages(conversation) {
+      if (conversation) {
+        return msStore.actions.fetchMessages({
+          id: conversation.conversationRef,
+        })
+        // } else {
+        //   // Go back to original page
+        //   return this.$router.go(-1)
+      }
     },
     isMessageSendByMe(msg) {
       return msg.sender?.managedIdentity === this.profile.id
@@ -160,7 +220,7 @@ export default {
           })
         } else {
           // eslint-disable-next-line
-          console.log(`Don't know how to handle ${ctx}`)
+          console.error(`Expected a ride in the conversation with ${ctx}`)
         }
       } else if (ctx.includes('ride')) {
         this.$router.push({
@@ -196,24 +256,36 @@ export default {
       }
     },
     sendMessage() {
-      const { firstName, lastName } = this.profile
-      const envelopes = this.recipients.map(rcp =>
-        Object.assign({}, { recipient: { managedIdentity: rcp } })
-      )
+      console.log('Send message')
       msStore.actions
         .sendMessage({
           body: this.newMessage,
-          context: this.context,
+          context: this.senderContext,
           deliveryMode: 'ALL',
-          envelopes: envelopes,
-          managedIdentity: this.profile.id,
-          subject: `Persoonlijk bericht van ${firstName} ${lastName}`,
+          envelopes: [
+            {
+              context: this.recipientContext,
+              recipient: { managedIdentity: this.recipientManagedIdentity },
+            },
+          ],
         })
         .then(() => {
+          console.log('Fetch messages')
           this.newMessage = null
+          return msStore.actions.fetchMessages({ id: this.conversationId })
+        })
+        .then(() => {
+          console.log('Scroll bottom')
           this.$nextTick(() => {
             this.scrollToBottomMessageContainer(true)
           })
+        })
+        .catch(function(error) {
+          // eslint-disable-next-line
+          console.log(error)
+          uiStore.actions.queueErrorNotification(
+            'Versturen van bericht is niet gelukt.'
+          )
         })
     },
   },
