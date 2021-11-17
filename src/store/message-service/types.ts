@@ -34,6 +34,7 @@ export interface Conversation {
   createdTime?: string
   archivedTime?: string
   owner?: CommunicationUser
+  ownerRole?: string
 }
 
 export interface CommunicationUser {
