@@ -336,9 +336,6 @@ export default {
           offset: offset,
           maxResults: this.maxResultsPastRides,
           sortDir: 'DESC',
-          since: moment()
-            .subtract(1, 'months')
-            .format(),
           until: moment().format(),
         })
       }

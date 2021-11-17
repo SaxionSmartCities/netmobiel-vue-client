@@ -193,7 +193,7 @@ const router = new Router({
       props: true,
     },
     {
-      path: '/tripConfimPage/:id',
+      path: '/tripConfirmPage/:id',
       component: TripConfirmPage,
       name: 'tripConfirmPage',
       props: true,
@@ -251,7 +251,7 @@ const router = new Router({
       name: 'community',
     },
     {
-      path: '/conversation/:context',
+      path: '/conversation/:conversationId?',
       component: ConversationPage,
       name: 'conversation',
       props: true,

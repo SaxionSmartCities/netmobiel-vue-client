@@ -1,6 +1,6 @@
 <template>
   <external-user-image
-    :managed-identity="managedIdentity"
+    :managed-identity="driverManagedIdentity"
     :image-size="imageSize"
     :avatar-size="avatarSize"
   />
@@ -8,8 +8,7 @@
 
 <script>
 import ExternalUserImage from '@/components/profile/ExternalUserImage'
-import * as psStore from '@/store/profile-service'
-import * as csStore from '@/store/carpool-service'
+import * as UrnHelper from '@/utils/UrnHelper'
 
 export default {
   name: 'DriverImage',
@@ -19,29 +18,16 @@ export default {
     imageSize: { type: Number, default: 70, required: false },
     avatarSize: { type: Number, default: 78, required: false },
   },
-  data() {
-    return {
-      managedIdentity: '',
-    }
-  },
-  watch: {
-    leg() {
-      // if the leg changes, the driver probably changes as well
-      this.fetchDriverIdentity()
-    },
-  },
-  mounted() {
-    this.fetchDriverIdentity()
-  },
-  methods: {
-    fetchDriverIdentity() {
-      // TODO should be cached somehow
-      const driverId = this.leg.driverId
-      if (driverId) {
-        csStore.actions.fetchUser({ userRef: driverId }).then(resp => {
-          this.managedIdentity = resp.managedIdentity
-        })
+  computed: {
+    driverManagedIdentity() {
+      const driverId = this.leg?.driverId
+      if (driverId && UrnHelper.isUrn(driverId)) {
+        const decodedUrn = UrnHelper.decodeUrn(driverId)
+        if (decodedUrn.service === UrnHelper.NETMOBIEL_SERVICE.KEYCLOAK) {
+          return decodedUrn.id
+        }
       }
+      return undefined
     },
   },
 }

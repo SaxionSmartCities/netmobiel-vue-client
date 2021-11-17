@@ -26,7 +26,14 @@
       </v-row>
       <v-row v-if="selectedOffer != null">
         <v-col>
-          <v-btn block rounded depressed color="button" @click="onConfirm">
+          <v-btn
+            block
+            rounded
+            depressed
+            color="button"
+            :disabled="invalidOffer"
+            @click="onConfirm"
+          >
             Rit Bevestigen
           </v-btn>
         </v-col>
@@ -85,7 +92,7 @@ export default {
       // A filtered list of itineraries (removing cancelled offers). Passenger itineraries comprise a single leg.
       if (this.shoutOut?.itineraries) {
         return this.shoutOut.itineraries.filter(
-          i => i.legs[0].state !== 'CANCELLED'
+          i => i.legs[0].state !== 'CANCELLEDX'
         )
       }
       return []
@@ -110,6 +117,18 @@ export default {
         return generateShoutOutDetailSteps(this.shoutOut)
       }
       return generateItineraryDetailSteps(this.selectedOffer)
+    },
+    shoutOutIsClosed() {
+      // If requestDuration is set, then the shout-out has been closed.
+      return !!this.shoutOut?.requestDuration
+    },
+    invalidOffer() {
+      return (
+        this.shoutOutIsClosed ||
+        !this.selectedOffer ||
+        this.selectedOffer.legs.find(leg => leg.state === 'CANCELLED') !==
+          undefined
+      )
     },
   },
   methods: {

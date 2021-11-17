@@ -134,19 +134,6 @@ export default {
   created() {
     uiStore.mutations.showBackButton()
   },
-  // methods: {
-  //   fetchProfileImages() {
-  //     this.reviews.forEach(review => {
-  //       psStore.actions
-  //         .fetchPublicProfile({
-  //           profileId: review.sender.id,
-  //         })
-  //         .then(res => {
-  //           this.profileImages.push(config.BASE_URL + res.image)
-  //         })
-  //     })
-  //   },
-  // },
 }
 </script>
 

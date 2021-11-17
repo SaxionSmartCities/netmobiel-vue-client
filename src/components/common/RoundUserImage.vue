@@ -1,9 +1,16 @@
 <template>
   <v-avatar :size="avatarSize">
-    <!-- HACK: Passing @/asset/.. as default value for profileImage will not
-    load image in v-img. Added work around with v-if else  -->
+    <!-- src="@/asset/image-name" images are passed through webpack. These must reference a full name, no
+        javascript constructs. See https://cli.vuejs.org/guide/html-and-static-assets.html#the-public-folder
+    -->
     <v-img
-      v-if="profileImage"
+      v-if="isSystemImage"
+      src="@/assets/system-avatar.png"
+      :max-height="imageSize"
+      :max-width="imageSize"
+    />
+    <v-img
+      v-else-if="profileImage"
       :src="profileImage"
       :max-height="imageSize"
       :max-width="imageSize"
@@ -18,6 +25,8 @@
 </template>
 
 <script>
+import constants from '@/constants/constants'
+
 export default {
   name: 'RoundUserImage',
   props: {
@@ -35,6 +44,11 @@ export default {
       type: String,
       default: '',
       required: false,
+    },
+  },
+  computed: {
+    isSystemImage() {
+      return this.profileImage === constants.SYSTEM_AVATAR
     },
   },
 }

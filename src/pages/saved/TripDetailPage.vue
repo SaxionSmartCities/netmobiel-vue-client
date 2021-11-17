@@ -2,7 +2,7 @@
   <content-pane>
     <template v-slot:header>
       <v-row
-        v-if="selectedTrip.state === 'CANCELLED'"
+        v-if="selectedTrip && selectedTrip.state === 'CANCELLED'"
         class="cancelled-banner text-center py-1"
         dense
         no-gutters
@@ -18,6 +18,7 @@
     <v-row>
       <v-col class="py-0">
         <trip-details
+          v-if="selectedTrip"
           :trip="selectedTrip"
           :show-map="showMap"
           @closeMap="onCloseMap"
@@ -183,7 +184,7 @@ export default {
       return this.rideshareDriverId !== null
     },
     drivers() {
-      return this.selectedTrip.itinerary?.legs
+      return this.selectedTrip?.itinerary?.legs
         .filter(leg => leg.traverseMode === 'RIDESHARE')
         .map(leg => {
           return {
@@ -202,17 +203,21 @@ export default {
     },
     selectedTrip() {
       let trip = isStore.getters.getSelectedTrip
-      trip.legs = generateItineraryDetailSteps(trip.itinerary)
+      if (trip) {
+        //FIXME Questionable construction. Now we have trip.legs and trip.itinerary.legs at the same time.
+        trip.legs = generateItineraryDetailSteps(trip.itinerary)
+      }
       return trip
     },
     tripOptions() {
       let options = []
-      const { state } = this.selectedTrip
-      const legs = this.selectedTrip?.itinerary?.legs
+      if (!this.selectedTrip) {
+        return options
+      }
+      const state = this.selectedTrip.state
+      const legs = this.selectedTrip.itinerary?.legs
       // I can confirm or deny my leg, in both cases the validating is done
-      const validatedMyLeg = legs
-        ? legs.find(l => l.confirmed !== undefined)
-        : undefined
+      const validatedMyLeg = legs?.find(l => l.confirmed !== undefined)
       switch (state) {
         case 'SCHEDULED':
           options.push({

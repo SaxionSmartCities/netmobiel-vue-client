@@ -41,7 +41,7 @@ export default {
   overflow: hidden;
 }
 .container-scrollable {
-  overflow: scroll;
+  overflow: visible;
 }
 .no-padding {
   padding-top: 0;

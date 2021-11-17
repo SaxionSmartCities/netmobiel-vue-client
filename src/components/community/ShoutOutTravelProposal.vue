@@ -7,6 +7,7 @@
             :time="departureTime"
             :location="departureLocation"
             :is-arrival="false"
+            :is-enabled="canOffer"
             @updateTravelTime="onUpdateTravelTime"
             @locationUpdate="onDepartureLocationUpdate"
             @locationReset="onDepartureLocationReset"
@@ -36,6 +37,7 @@
             :time="arrivalTime"
             :location="arrivalLocation"
             :is-arrival="true"
+            :is-enabled="canOffer"
             @updateTravelTime="onUpdateTravelTime"
             @locationUpdate="onArrivalLocationUpdate"
             @locationReset="onArrivalLocationReset"
@@ -67,7 +69,7 @@
             mb-4
             depressed
             color="button"
-            :disabled="generateSteps.length === 0"
+            :disabled="generateSteps.length === 0 || !offer"
             @click="onConfirmTravelOffer"
           >
             Aanbod bevestigen
@@ -113,6 +115,7 @@ export default {
     shoutOut: { type: Object, required: true },
     offer: { type: Object, default: () => {} },
     searchCriteria: { type: Object, default: () => {} },
+    canOffer: { type: Boolean, required: true },
   },
   data() {
     return {}
