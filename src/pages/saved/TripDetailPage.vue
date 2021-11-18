@@ -296,19 +296,21 @@ export default {
       this.showMap = false
     },
     contactDriver() {
-      const drvs = this.drivers
-      if (drvs.length === 0) {
-        // eslint-disable-next-line
-        console.warn(
-          `Expected to find at least one driver in the selected trip!`
-        )
-      } else if (drvs.length > 1) {
-        //Open the modal to select a driver
-        this.showContactDriverModal = true
-      } else {
-        // You can directly push to the router
-        this.onDriverSelectForMessage(drvs[0])
-      }
+      // eslint-disable-next-line
+      console.log('Contacting the passenger is currently not enabled')
+      // const drvs = this.drivers
+      // if (drvs.length === 0) {
+      //   // eslint-disable-next-line
+      //   console.warn(
+      //     `Expected to find at least one driver in the selected trip!`
+      //   )
+      // } else if (drvs.length > 1) {
+      //   //Open the modal to select a driver
+      //   this.showContactDriverModal = true
+      // } else {
+      //   // You can directly push to the router
+      //   this.onDriverSelectForMessage(drvs[0])
+      // }
     },
     onTripReplan() {
       const { from, to } = this.selectedTrip
