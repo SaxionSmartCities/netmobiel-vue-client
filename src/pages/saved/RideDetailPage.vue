@@ -92,13 +92,6 @@
         <itinerary-options :options="rideOptions" />
       </v-col>
     </v-row>
-    <!--    <contact-traveller-modal-->
-    <!--      v-if="showContactTravellerModal"-->
-    <!--      :show="showContactTravellerModal"-->
-    <!--      :users="passengersInBookings"-->
-    <!--      @close="showContactTravellerModal = false"-->
-    <!--      @select="onTravellerSelectForMessage"-->
-    <!--    ></contact-traveller-modal>-->
     <v-dialog v-model="showEditRideModal">
       <edit-ride-dialog
         :ride="ride"
@@ -120,7 +113,6 @@
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
 import ContentPane from '@/components/common/ContentPane.vue'
-import ContactTravellerModal from '@/components/itinerary-details/ContactTravellerModal'
 import EditRideDialog from '@/components/dialogs/EditRideDialog'
 import RideDetails from '@/components/itinerary-details/RideDetails.vue'
 import { generateRideItineraryDetailSteps } from '@/utils/itinerary_steps'
@@ -172,34 +164,15 @@ export default {
     bookings() {
       return this.ride?.bookings
     },
-    confirmedBookings() {
-      return !this.ride?.bookings
-        ? []
-        : this.ride.bookings.filter(
-            booking => booking.state.toUpperCase() === 'CONFIRMED'
-          )
-    },
     activeBookings() {
-      return !this.ride?.bookings
-        ? []
-        : this.ride.bookings.filter(
+      return this.ride?.bookings
+        ? this.ride.bookings.filter(
             booking => booking.state.toUpperCase() !== 'CANCELLED'
           )
+        : []
     },
     numBookings() {
       return this.activeBookings.length
-    },
-    passengersInBookings() {
-      return this.activeBookings.map(booking => {
-        return {
-          name: `${booking.passenger.givenName} ${booking.passenger.familyName}`,
-          id: booking.passenger.managedIdentity,
-          context: this.ride.rideRef,
-          contextText: `Meerijden ${this.formatTime(
-            booking.departureTime
-          )} van ${booking.pickup.label} naar ${booking.dropOff.label}`,
-        }
-      })
     },
     ride() {
       return csStore.getters.getSelectedRide
@@ -313,34 +286,19 @@ export default {
     },
     contactPassenger() {
       // We do not know the conversation yet
-      // eslint-disable-next-line
-      console.log('Contacting the passenger is currently not enabled')
-      // const booking = this.selectedBooking
-      // this.$router.push({
-      //   name: `conversation`,
-      //   params: {
-      //     senderContext: this.ride.rideRef,
-      //     recipientContext: booking.bookingRef,
-      //     recipientManagedIdentity: booking.passenger.managedIdentity,
-      //   },
-      // })
-      // Old code
-      // if (this.confirmedBookings.length > 1) {
-      //   this.showContactTravellerModal = true
-      // } else {
-      //   this.onTravellerSelectForMessage(this.passengersInBookings[0])
-      // }
+      const booking = this.selectedBooking
+      const passengerContext = booking.passengerTripRef || passengerTripPlanRef
+      this.$router.push({
+        name: `conversation`,
+        params: {
+          chatMeta: {
+            senderContext: booking.bookingRef,
+            recipientContext: passengerContext,
+            recipientManagedIdentity: booking.passenger.managedIdentity,
+          },
+        },
+      })
     },
-    // onTravellerSelectForMessage(traveller) {
-    //   this.$router.push({
-    //     name: `conversation`,
-    //     params: {
-    //       context: traveller.context,
-    //       contextText: traveller.contextText,
-    //       participants: [this.profile.id, traveller.id],
-    //     },
-    //   })
-    // },
     onRideEdit() {
       this.showEditRideModal = true
     },

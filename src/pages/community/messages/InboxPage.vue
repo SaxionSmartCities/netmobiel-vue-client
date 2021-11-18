@@ -20,9 +20,7 @@
         <v-list-item :key="cvs.id" class="" @click="showConversation(cvs)">
           <v-list-item-avatar size="60">
             <external-user-image
-              :managed-identity="
-                getParticipantIdentity(cvs.recentMessage.sender)
-              "
+              :managed-identity="user(cvs.recentMessage).managedIdentity"
               :image-size="55"
               :avatar-size="60"
             />
@@ -31,7 +29,7 @@
             <v-list-item-title>
               <v-row dense class="justify-space-between flex-nowrap">
                 <v-col class="font-weight-medium">
-                  {{ getParticipantName(cvs.recentMessage.sender) }}
+                  {{ name(user(cvs.recentMessage)) }}
                 </v-col>
                 <!-- Let's hide the number of unread message for now until we have fixed it.
                 <v-col class="px-2" cols="2">
@@ -40,7 +38,7 @@
                   </div>
                 </v-col> -->
                 <v-col class="px-1 py-1 text-right" cols="5">
-                  <em>{{ getTimestamp(cvs.recentMessage.createdTime) }}</em>
+                  <em>{{ timestamp(cvs.recentMessage.createdTime) }}</em>
                 </v-col>
               </v-row>
             </v-list-item-title>
@@ -64,7 +62,6 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import ExternalUserImage from '@/components/profile/ExternalUserImage'
 import TabBar from '../../../components/common/TabBar'
 import * as uiStore from '@/store/ui'
-import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as msStore from '@/store/message-service'
 import moment from 'moment'
@@ -83,13 +80,13 @@ export default {
     }
   },
   computed: {
+    profile() {
+      return psStore.getters.getProfile
+    },
     conversations() {
       return this.isActualTab
         ? msStore.getters.getActualConversations
         : msStore.getters.getArchivedConversations
-    },
-    myId() {
-      return psStore.getters.getProfile.id
     },
     isActualTab() {
       return this.selectedTab === 0
@@ -104,13 +101,29 @@ export default {
     msStore.actions.fetchArchivedConversations()
   },
   methods: {
-    getParticipantIdentity(ptcp) {
-      return ptcp ? ptcp.managedIdentity : constants.SYSTEM_IDENTITY
+    isMessageSendByMe(msg) {
+      return msg.sender?.managedIdentity === this.profile.id
     },
-    getParticipantName(ptcp) {
-      return ptcp
-        ? ptcp.givenName + ' ' + ptcp.familyName
-        : constants.SYSTEM_NAME
+    recipient(msg) {
+      // Only the first
+      return msg.envelopes[0].recipient
+    },
+    sender(msg) {
+      return msg.sender
+        ? this.message.sender
+        : {
+            managedIdentity: constants.SYSTEM_IDENTITY,
+            givenName: '',
+            familyName: constants.SYSTEM_NAME,
+          }
+    },
+    name(user) {
+      return `${user.givenName} ${user.familyName}`.trim()
+    },
+    user(msg) {
+      return this.isMessageSendByMe(msg)
+        ? this.recipient(msg)
+        : this.sender(msg)
     },
     showConversation(conversation) {
       this.$router.push({
@@ -124,7 +137,7 @@ export default {
       //TODO: Get the count from somewhere.
       return 0
     },
-    getTimestamp(timestamp) {
+    timestamp(timestamp) {
       return upperCaseFirst(
         moment(timestamp)
           .locale('nl')

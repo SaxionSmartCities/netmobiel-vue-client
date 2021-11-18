@@ -112,7 +112,7 @@ function fetchConversationByContext(
         }
         // Assign the single conversation. Note that in this version the set of contexts is missing.
         const conversation = pagedResultSet.data[0]
-        return fetchConversation(context, { id: conversation.conversationRef })
+        return conversation
       }
     })
     .catch(function(error) {
