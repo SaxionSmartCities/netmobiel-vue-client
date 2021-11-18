@@ -79,6 +79,7 @@ export interface TripPlan {
   maxTransfers: number | null
   maxWalkDistance: number | null
   modalities: string[]
+  requestDuration?: number
 }
 
 /**

@@ -3,16 +3,15 @@
     <v-col class="pt-0">
       <v-row dense>
         <v-col cols="3">
-          <round-user-image
-            :profile-image="driverProfileImage()"
+          <external-user-image
+            :managed-identity="driverManagedIdentity"
             :image-size="60"
             :avatar-size="66"
-          >
-          </round-user-image>
+          />
         </v-col>
         <v-col>
           <span class="subtitle-2 text-no-wrap pr-2">
-            {{ itinerary.legs[0].driverName }}
+            {{ driverName }}
           </span>
           <br />
           <span class="caption">
@@ -26,7 +25,7 @@
             <h3>Beoordeel jouw rit</h3>
             <span class="body-2">
               Hoe heb jij deze rit ervaren? Geef jouw mening en laat
-              {{ itinerary.legs[0].driverName }} weten wat jij er van vond.
+              {{ driverName }} weten wat jij er van vond.
             </span>
             <div class="mt-4">
               <div v-if="showChips && availableCompliments">
@@ -90,20 +89,16 @@
 </template>
 
 <script>
-import RoundUserImage from '@/components/common/RoundUserImage'
 import constants from '@/constants/constants'
-import config from '@/config/config'
 import * as psStore from '@/store/profile-service'
+import ExternalUserImage from '@/components/profile/ExternalUserImage'
+import * as UrnHelper from '@/utils/UrnHelper'
 
 export default {
   name: 'TripMade',
-  components: { RoundUserImage },
+  components: { ExternalUserImage },
   props: {
     trip: { type: Object, required: true },
-    driverProfile: {
-      type: Object,
-      required: true,
-    },
   },
   data() {
     return {
@@ -114,11 +109,21 @@ export default {
     }
   },
   computed: {
-    itinerary() {
-      return this.trip?.itinerary
-    },
     availableCompliments() {
       return psStore.getters.getComplimentTypes
+    },
+    driverManagedIdentity() {
+      const driverId = this.trip?.itinerary.legs[0].driverId
+      if (driverId && UrnHelper.isUrn(driverId)) {
+        const decodedUrn = UrnHelper.decodeUrn(driverId)
+        if (decodedUrn.service === UrnHelper.NETMOBIEL_SERVICE.KEYCLOAK) {
+          return decodedUrn.id
+        }
+      }
+      return undefined
+    },
+    driverName() {
+      return this.trip?.itinerary.legs[0].driverName
     },
   },
   mounted() {
@@ -160,11 +165,6 @@ export default {
           feedbackMessage: this.inputTextArea,
         })
       }
-    },
-    driverProfileImage() {
-      if (this.driverProfile.image)
-        return config.BASE_URL + this.driverProfile.image
-      else return null
     },
   },
 }

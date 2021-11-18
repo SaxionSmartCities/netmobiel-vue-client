@@ -48,19 +48,6 @@
           >
             Nee
           </v-btn>
-
-          <!-- This button seems redundant because we already have a back
-            button (see top left corner)
-          <v-btn
-            block
-            rounded
-            outlined
-            depressed
-            color="primary"
-            @click="$router.push({ name: 'tripsOverviewPage' })"
-          >
-            Ga terug
-          </v-btn> -->
         </v-col>
       </v-row>
     </template>
@@ -69,7 +56,6 @@
         :is="getCurrentStepComponent()"
         v-if="trip"
         :trip="trip"
-        :driver-profile="driverProfile"
         @tripNotMade="onTripNotMade"
         @rateTrip="onTripMade"
         @nextStep="step++"
@@ -85,11 +71,10 @@ import TripMade from './TripMade'
 import TripNotMade from './TripNotMade'
 import moment from 'moment'
 import Stepper from '@/components/other/Stepper'
-import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
-import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
+import * as UrnHelper from '@/utils/UrnHelper'
 
 export default {
   name: 'DriverReviewPage',
@@ -117,14 +102,24 @@ export default {
           )
     },
     tripDepartureDate() {
-      return moment(this.trip.departureTime)
+      return moment(this.trip.itinerary.departureTime)
         .locale('nl')
         .format('dddd D MMMM')
     },
     tripDepartureTime() {
-      return moment(this.trip.departureTime)
+      return moment(this.trip.itinerary.departureTime)
         .locale('nl')
         .format('H:mm')
+    },
+    driverManagedIdentity() {
+      const driverId = this.trip?.itinerary.legs[0].driverId
+      if (driverId && UrnHelper.isUrn(driverId)) {
+        const decodedUrn = UrnHelper.decodeUrn(driverId)
+        if (decodedUrn.service === UrnHelper.NETMOBIEL_SERVICE.KEYCLOAK) {
+          return decodedUrn.id
+        }
+      }
+      return undefined
     },
   },
   created() {
@@ -159,12 +154,11 @@ export default {
     onTripMade(rate) {
       // For each compliment given do a call to the backend
       // Can be changed in the future to a call that possibly accepts array if >1 compliments can be given
+      //FIXME The client cannot (and should not) determine the sender
       const { id, firstName, lastName } = psStore.getters.getProfile
       const sender = { id, firstName, lastName }
       const receiver = {
-        id: this.driverProfile.managedIdentity,
-        firstName: this.driverProfile.firstName,
-        lastName: this.driverProfile.lastName,
+        id: this.driverManagedIdentity,
       }
       rate.compliments.map(compliment =>
         psStore.actions.addUserCompliment({
@@ -188,31 +182,6 @@ export default {
       // eslint-disable-next-line
       console.log('trip was not made: ', reason)
       this.$router.push({ name: 'tripConfirmedPage' })
-    },
-    fetchDriverProfile() {
-      //First fetch the driver properties via the carpool service
-      csStore.actions
-        .fetchUser({
-          userRef: this.trip.itinerary.legs[0].driverId,
-        })
-        .then(response => {
-          // Fetch the profile (image) of the driver via the profile-service
-          psStore.actions
-            .fetchPublicProfile({
-              profileId: response.managedIdentity,
-            })
-            .then(res => {
-              this.driverProfile = {
-                managedIdentity: response.managedIdentity,
-                firstName: response.givenName,
-                lastName: response.familyName,
-                email: response.email,
-              }
-              if (res) {
-                res.image && (this.driverProfile.image = res.image)
-              }
-            })
-        })
     },
   },
 }

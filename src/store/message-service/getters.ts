@@ -5,47 +5,34 @@ import { RootState } from '@/store/Rootstate'
 export const buildGetters = (
   msBuilder: ModuleBuilder<MessageState, RootState>
 ) => {
-  const getMessages = (urn: any) => {
-    msBuilder.read((state: MessageState) => {
-      return state.messages.get(urn)
-    }, 'getMessages')
-  }
+  const getActualConversations = msBuilder.read((state: MessageState) => {
+    return state.actualConversations
+  }, 'getActualConversations')
 
-  const getActiveMessages = msBuilder.read((state: MessageState) => {
-    return state.activeMessages
-  }, 'getActiveMessages')
+  const getArchivedConversations = msBuilder.read((state: MessageState) => {
+    return state.archivedConversations
+  }, 'getArchivedConversations')
 
-  const getMessagesNormal = msBuilder.read((state: MessageState) => {
+  const getConversation = msBuilder.read((state: MessageState) => {
+    return state.conversation
+  }, 'getConversation')
+
+  const getMessages = msBuilder.read((state: MessageState) => {
     return state.messages
-  }, 'getMessagesNormal')
-
-  const getConversations = msBuilder.read((state: MessageState) => {
-    return state.conversations
-  }, 'getConversations')
-
-  const getConversationByContext = (ctx: any) => {
-    msBuilder.read((state: MessageState) => {
-      return state.conversations.find(conv => conv.context === ctx)
-    }, 'getConversationByContext')
-  }
+  }, 'getMessages')
 
   return {
-    //@ts-ignore
+    get getActualConversations() {
+      return getActualConversations()
+    },
+    get getArchivedConversations() {
+      return getArchivedConversations()
+    },
+    get getConversation() {
+      return getConversation()
+    },
     get getMessages() {
-      return getMessages
-    },
-    get getActiveMessages() {
-      return getActiveMessages()
-    },
-    get getMessagesNormal() {
-      return getMessagesNormal()
-    },
-    get getConversations() {
-      return getConversations()
-    },
-    //@ts-ignore
-    get getConversationByContext() {
-      return getConversationByContext
+      return getMessages()
     },
   }
 }

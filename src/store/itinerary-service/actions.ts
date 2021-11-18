@@ -571,7 +571,7 @@ function addShoutOutTravelOffer(
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het opslaan van uw oproep.'
+        'Fout bij het opslaan van uw aanbod.'
       )
     })
 }

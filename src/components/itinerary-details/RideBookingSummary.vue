@@ -4,7 +4,7 @@
       fluid
       outlined
       :class="{ 'selected-offer': selected }"
-      @click="$emit('travel-proposal-selected', index)"
+      @click="$emit('booking-selected', index)"
     >
       <v-overlay
         :color="overlayColor"
@@ -15,25 +15,25 @@
       />
       <v-row>
         <v-col class="shrink ml-2 mr-0 pr-0">
-          <driver-image
-            :avatar-size="60"
+          <external-user-image
+            :managed-identity="booking.passenger.managedIdentity"
             :image-size="56"
-            :leg="leg"
-            :class="{ 'selected-offer': selected }"
+            :avatar-size="60"
+            :class="{ 'selected-booking': selected }"
           />
         </v-col>
         <v-col :class="{ 'text-decoration-line-through': cancelled }">
           <p class="font-weight-regular header mb-0">
-            {{ driverName }}
+            {{ booking.passenger.givenName }} {{ booking.passenger.familyName }}
           </p>
           <p class="font-weight-light subtitle-1 mb-0">
-            <span>Vertrek: </span>
+            <span>Ophalen: </span>
             <span class="text-capitalize">
-              {{ formatDateTime(itinerary.departureTime) }}
+              {{ formatDateTime(booking.departureTime) }}
             </span>
-            <span> - Aankomst: </span>
+            <span> - Afzetten: </span>
             <span class="text-capitalize">
-              {{ formatDateTime(itinerary.arrivalTime) }}
+              {{ formatDateTime(booking.arrivalTime) }}
             </span>
           </p>
         </v-col>
@@ -45,23 +45,17 @@
 <script>
 import moment from 'moment'
 import { TIME_FORMAT } from '@/utils/datetime.js'
-import DriverImage from '@/components/itinerary-details/DriverImage'
+import ExternalUserImage from '@/components/profile/ExternalUserImage'
 
 export default {
-  name: 'TravelProposalSummary',
-  components: { DriverImage },
+  name: 'BookingSummary',
+  components: { ExternalUserImage },
   props: {
     index: { type: Number, required: true },
-    itinerary: { type: Object, required: true },
+    booking: { type: Object, required: true },
     selected: { type: Boolean, required: true, default: false },
   },
   computed: {
-    driverName() {
-      return this.leg ? this.leg.driverName : 'Chauffeur'
-    },
-    leg() {
-      return this.itinerary.legs.find(l => l.agencyId === 'NB:RS')
-    },
     displayOverlay() {
       return this.cancelled
     },
@@ -73,7 +67,7 @@ export default {
       return ''
     },
     cancelled() {
-      return this.leg?.state === 'CANCELLED'
+      return this.booking.state.toUpperCase() === 'CANCELLED'
     },
   },
   methods: {
@@ -85,7 +79,7 @@ export default {
 </script>
 
 <style lang="scss">
-.selected-offer {
+.selected-booking {
   border-color: $color-primary !important;
   background-color: $background-light-green !important;
 }

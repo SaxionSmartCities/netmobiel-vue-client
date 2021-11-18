@@ -119,3 +119,11 @@ h3 {
 .capitalize::first-letter {
   text-transform: uppercase;
 }
+/* Fix an issue with breaking inside words */
+.v-card__text, .v-card__title {
+  word-break: normal; /* maybe !important  */
+}
+
+.smaller-font-size {
+  font-size: smaller;
+}

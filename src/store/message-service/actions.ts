@@ -1,49 +1,43 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import config from '@/config/config'
-import { MessageState } from './types'
+import { Conversation, MessageState } from './types'
 import { RootState } from '@/store/Rootstate'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { mutations } from './index'
 import { generateHeaders } from '@/utils/Utils'
+import moment from 'moment'
+import * as uiStore from '@/store/ui'
 
 type ActionContext = BareActionContext<MessageState, RootState>
 
 const { COMMUNICATOR_BASE_URL, GRAVITEE_COMMUNICATOR_SERVICE_API_KEY } = config
 
-function fetchMessages(context: ActionContext) {
-  const URL = `${COMMUNICATOR_BASE_URL}/messages`
-  axios
-    .get(URL, {
-      headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
-    })
-    .then(function(resp) {
-      mutations.setMessages(resp.data)
-    })
-    .catch(function(error) {
-      // TODO: Proper error handling.
-      // eslint-disable-next-line
-      console.log(error)
-    })
+function fetchConversations(
+  context: ActionContext,
+  select: string | null,
+  conversationContext: string | null,
+  maxResults: number | null
+): Promise<AxiosResponse<any>> {
+  const delegatorId = context.rootState.ps.user.delegatorId
+  const URL = `${COMMUNICATOR_BASE_URL}/conversations`
+  return axios.get(URL, {
+    params: {
+      context: conversationContext,
+      select: select,
+      maxResults: maxResults || 100,
+    },
+    headers: generateHeaders(
+      GRAVITEE_COMMUNICATOR_SERVICE_API_KEY,
+      delegatorId
+    ),
+  })
 }
 
-async function fetchConversations(context: ActionContext) {
-  const URL = `${COMMUNICATOR_BASE_URL}/messages`
-  return await axios
-    .get(URL, {
-      params: {
-        groupByConversation: true,
-      },
-      headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
-    })
+function fetchActualConversations(context: ActionContext) {
+  return fetchConversations(context, 'ACTUAL', null, 100)
     .then(function(resp) {
       if (resp.status === 200) {
-        resp.data.data.forEach((item: any) => {
-          item.participants = [
-            item.sender,
-            ...item.envelopes.map((envelope: any) => envelope.recipient),
-          ]
-        })
-        mutations.setConversations(resp.data.data)
+        mutations.setActualConversations(resp.data.data)
         return resp.data.data
       }
       return []
@@ -52,52 +46,73 @@ async function fetchConversations(context: ActionContext) {
       // TODO: Proper error handling.
       // eslint-disable-next-line
       console.log(error)
+      return []
     })
 }
 
-function fetchMessagesByParams(
-  actionContext: ActionContext,
-  { context, participant }: any
-) {
-  const URL = `${COMMUNICATOR_BASE_URL}/messages`
-  return axios
-    .get(URL, {
-      params: {
-        context: context,
-        participant,
-      },
-      headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
-    })
+function fetchArchivedConversations(context: ActionContext) {
+  return fetchConversations(context, 'ARCHIVED', null, 100)
     .then(function(resp) {
-      context = context.replace(/:/gi, '')
-      mutations.setMessages({ context: context, messages: resp.data.data })
-      mutations.addContext(context)
-      return resp.data.data
+      if (resp.status === 200) {
+        mutations.setArchivedConversations(resp.data.data)
+        return resp.data.data
+      }
+      return []
     })
     .catch(function(error) {
       // TODO: Proper error handling.
       // eslint-disable-next-line
       console.log(error)
+      return []
     })
 }
 
-async function sendMessage(context: ActionContext, payload: any) {
-  const URL = `${COMMUNICATOR_BASE_URL}/messages`
-  return await axios
-    .post(URL, payload, {
-      headers: generateHeaders(GRAVITEE_COMMUNICATOR_SERVICE_API_KEY),
+function fetchConversation(context: ActionContext, { id }: any) {
+  const delegatorId = context.rootState.ps.user.delegatorId
+  const URL = `${COMMUNICATOR_BASE_URL}/conversations/${id}`
+  axios
+    .get(URL, {
+      headers: generateHeaders(
+        GRAVITEE_COMMUNICATOR_SERVICE_API_KEY,
+        delegatorId
+      ),
     })
+    .then(response => {
+      if (response.status == 200) {
+        mutations.setConversation(response.data)
+      }
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van de conversatie.'
+      )
+    })
+}
+
+function fetchConversationByContext(
+  context: ActionContext,
+  { conversationContext }: any
+) {
+  return fetchConversations(context, null, conversationContext, 1)
     .then(function(resp) {
-      if (resp.status === 202) {
-        const message = {
-          sender: { managedIdentity: payload.managedIdentity },
-          body: payload.body,
-          context: payload.context,
-          creationTime: new Date(),
-          deliveryMode: payload.deliveryMode,
+      if (resp.status === 200) {
+        const pagedResultSet = resp.data
+        if (pagedResultSet.totalCount == 0) {
+          // no conversation found
+          uiStore.actions.queueErrorNotification(
+            'Geen passende conversatie gevonden.'
+          )
+          return null
+        } else if (pagedResultSet.totalCount > 1) {
+          // Too many conversations, should be just one
+          // eslint-disable-next-line
+          console.warn(`#${pagedResultSet.totalCount} conversations found for context ${conversationContext}`)
         }
-        mutations.addActiveMessage(message)
-        return message
+        // Assign the single conversation. Note that in this version the set of contexts is missing.
+        const conversation = pagedResultSet.data[0]
+        return fetchConversation(context, { id: conversation.conversationRef })
       }
     })
     .catch(function(error) {
@@ -106,14 +121,57 @@ async function sendMessage(context: ActionContext, payload: any) {
       console.log(error)
     })
 }
+function fetchMessages(
+  context: ActionContext,
+  { id, maxResults, offset }: any
+) {
+  const delegatorId = context.rootState.ps.user.delegatorId
+  const URL = `${COMMUNICATOR_BASE_URL}/conversations/${id}/messages`
+  axios
+    .get(URL, {
+      params: {
+        deliveryMode: 'MESSAGE',
+        maxResults: maxResults || 100,
+        offset: offset,
+      },
+      headers: generateHeaders(
+        GRAVITEE_COMMUNICATOR_SERVICE_API_KEY,
+        delegatorId
+      ),
+    })
+    .then(function(resp) {
+      mutations.setMessages(resp.data.data)
+    })
+    .catch(function(error) {
+      mutations.setMessages([])
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van de meldingen.'
+      )
+      // eslint-disable-next-line
+      console.log(error)
+    })
+}
+
+function sendMessage(context: ActionContext, payload: any) {
+  const delegatorId = context.rootState.ps.user.delegatorId
+  const URL = `${COMMUNICATOR_BASE_URL}/messages`
+  return axios.post(URL, payload, {
+    headers: generateHeaders(
+      GRAVITEE_COMMUNICATOR_SERVICE_API_KEY,
+      delegatorId
+    ),
+  })
+}
 
 export const buildActions = (
   msBuilder: ModuleBuilder<MessageState, RootState>
 ) => {
   return {
+    fetchActualConversations: msBuilder.dispatch(fetchActualConversations),
+    fetchArchivedConversations: msBuilder.dispatch(fetchArchivedConversations),
+    fetchConversation: msBuilder.dispatch(fetchConversation),
+    fetchConversationByContext: msBuilder.dispatch(fetchConversationByContext),
     fetchMessages: msBuilder.dispatch(fetchMessages),
-    fetchConversations: msBuilder.dispatch(fetchConversations),
-    fetchMessagesByParams: msBuilder.dispatch(fetchMessagesByParams),
     sendMessage: msBuilder.dispatch(sendMessage),
   }
 }

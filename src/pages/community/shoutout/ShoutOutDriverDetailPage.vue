@@ -1,5 +1,27 @@
 <template>
   <content-pane>
+    <template v-slot:header>
+      <v-row
+        v-if="shoutOutIsClosed"
+        class="cancelled-banner text-center py-1"
+        dense
+        no-gutters
+      >
+        <v-col>
+          Deze oproep is gesloten
+        </v-col>
+      </v-row>
+      <v-row
+        v-else-if="isShoutOutInThePast"
+        class="cancelled-banner text-center py-1"
+        dense
+        no-gutters
+      >
+        <v-col>
+          Deze oproep is vervallen
+        </v-col>
+      </v-row>
+    </template>
     <v-row>
       <v-col class="py-0">
         <v-row v-if="selectedLegs && shouldShowMap" class="pa-0">
@@ -41,6 +63,7 @@
                   :shout-out="shoutOut"
                   :offer="travelOffer"
                   :search-criteria="searchCriteria"
+                  :can-offer="canOffer"
                   @show-map-proposal="onMapShow"
                   @confirmTravelOffer="onConfirmTravelOffer"
                   @proposalCancel="onProposalCancel"
@@ -72,6 +95,7 @@ import * as gsStore from '@/store/geocoder-service'
 import * as isStore from '@/store/itinerary-service'
 import { geoPlaceToCriteria } from '@/utils/Utils'
 import RouteMap from '@/components/itinerary-details/RouteMap'
+import moment from 'moment'
 
 /**
  * This Page is used to show the driver view of details of an existing shout-out proposal (with a rideId) as well as an
@@ -209,6 +233,19 @@ export default {
         ? this.suggestedItinerary
         : this.shoutOut?.referenceItinerary
     },
+    shoutOutIsClosed() {
+      // If requestDuration is set, then the shout-out has been closed.
+      return !!this.shoutOut?.requestDuration
+    },
+    isShoutOutInThePast() {
+      return (
+        this.shoutOut?.latestArrivalTime &&
+        moment(this.shoutOut?.latestArrivalTime).isBefore(moment())
+      )
+    },
+    canOffer() {
+      return !this.shoutOutIsClosed && !this.isShoutOutInThePast
+    },
   },
   watch: {
     shoutOut(newValue, oldValue) {
@@ -216,7 +253,7 @@ export default {
       //   `shoutOut: old = ${oldValue?.planRef}, new = ${newValue?.planRef}`
       // )
       // Do not just simply check the truthiness of the object (if (newValue) { ....}), that does not work with observed values.
-      if (newValue?.planRef && !this.isProposedRideView) {
+      if (newValue?.planRef && !this.isProposedRideView && this.canOffer) {
         // Fetch the default plan: Driver and passenger same plan
         // But only when there is no rideId, because then we have already made a proposal.
         this.fetchShoutOutPlan()
