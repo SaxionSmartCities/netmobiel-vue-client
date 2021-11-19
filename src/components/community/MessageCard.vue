@@ -4,33 +4,62 @@
     :class="{ mymessage: isMessageSendByMe, message: !isMessageSendByMe }"
     @click="$emit('click')"
   >
-    <v-card-title
-      class="d-flex flex-row pa-1"
-      :class="{ 'justify-start': !sendByMe, 'justify-end': sendByMe }"
-    >
-      <external-user-image
-        v-if="!sendByMe"
-        :managed-identity="user.managedIdentity"
-        :image-size="26"
-        :avatar-size="30"
-      />
-      <div class="mx-2">{{ userName }}</div>
-      <external-user-image
-        v-if="sendByMe"
-        :managed-identity="user.managedIdentity"
-        :image-size="26"
-        :avatar-size="30"
-      />
-    </v-card-title>
-    <v-card-text class="d-flex flex-column py-1">
-      <div>{{ message.body }}</div>
-      <div
-        class="font-italic smaller-font-size"
-        :class="{ 'text-right': !sendByMe, 'text-left': sendByMe }"
-      >
-        {{ timeStamp }}
-      </div>
-    </v-card-text>
+    <!-- Layout style 1 -->
+    <v-row class="d-flex flex-row align-center" dense>
+      <v-col v-if="!sendByMe" class="flex-grow-0 mx-1">
+        <external-user-image
+          :managed-identity="user.managedIdentity"
+          :image-size="30"
+          :avatar-size="34"
+        />
+      </v-col>
+      <v-col class="flex-grow-1 mx-1">
+        <v-card-subtitle
+          class="d-flex flex-row px-0 pt-0 pb-0 text-subtitle-2 font-weight-bold"
+          :class="{ 'justify-start': !sendByMe, 'justify-end': sendByMe }"
+        >
+          <div>{{ userName }}</div>
+        </v-card-subtitle>
+        <v-card-text class="pa-0">
+          <div>{{ message.body }}</div>
+          <div class="font-italic smaller-font-size text-right mt-n1">
+            {{ timeStamp }}
+          </div>
+        </v-card-text>
+      </v-col>
+      <v-col v-if="sendByMe" class="flex-grow-0 mx-1">
+        <external-user-image
+          :managed-identity="user.managedIdentity"
+          :image-size="30"
+          :avatar-size="34"
+        />
+      </v-col>
+    </v-row>
+    <!-- Layout style 2 -->
+    <!--    <v-card-subtitle-->
+    <!--      class="d-flex flex-row px-1 pt-1 pb-0 text-subtitle-2 font-weight-bold"-->
+    <!--      :class="{ 'justify-start': !sendByMe, 'justify-end': sendByMe }"-->
+    <!--    >-->
+    <!--      <external-user-image-->
+    <!--        v-if="!sendByMe"-->
+    <!--        :managed-identity="user.managedIdentity"-->
+    <!--        :image-size="16"-->
+    <!--        :avatar-size="20"-->
+    <!--      />-->
+    <!--      <div class="mx-2">{{ userName }}</div>-->
+    <!--      <external-user-image-->
+    <!--        v-if="sendByMe"-->
+    <!--        :managed-identity="user.managedIdentity"-->
+    <!--        :image-size="16"-->
+    <!--        :avatar-size="20"-->
+    <!--      />-->
+    <!--    </v-card-subtitle>-->
+    <!--    <v-card-text class="d-flex flex-column py-0">-->
+    <!--      <div>{{ message.body }}</div>-->
+    <!--      <div class="font-italic smaller-font-size text-right mt-n1">-->
+    <!--        {{ timeStamp }}-->
+    <!--      </div>-->
+    <!--    </v-card-text>-->
   </v-card>
 </template>
 

@@ -1,12 +1,8 @@
 <template>
-  <content-pane :clearpadding="true" id="conversation-content-pane">
+  <content-pane :clearpadding="true">
     <template v-slot:header>
       <v-container class="py-1">
-        <v-row dense>
-          <v-col>
-            {{ conversation.topic }}
-          </v-col>
-        </v-row>
+        <span class="text-subtitle-2">{{ conversation.topic }}</span>
         <v-divider class="mt-1" />
       </v-container>
     </template>
@@ -44,7 +40,7 @@
             hide-details
             dense
             auto-grow
-            rows="3"
+            rows="2"
             :label="'Bericht voor ' + recipientName"
           ></v-textarea>
         </v-col>
@@ -204,7 +200,7 @@ export default {
       return msg.sender?.managedIdentity === this.profile.id
     },
     scrollToBottomMessageContainer(animation = false) {
-      let items = document.getElementById('conversation-content-pane')
+      let items = document.getElementById('message-container')
       if (items && items.children) {
         items = items.children
         if (items.length > 1) {
