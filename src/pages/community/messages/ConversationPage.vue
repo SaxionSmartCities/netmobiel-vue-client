@@ -2,11 +2,7 @@
   <content-pane :clearpadding="true">
     <template v-slot:header>
       <v-container class="py-1">
-        <v-row dense>
-          <v-col>
-            {{ conversation.topic }}
-          </v-col>
-        </v-row>
+        <span class="text-subtitle-2">{{ conversation.topic }}</span>
         <v-divider class="mt-1" />
       </v-container>
     </template>
@@ -29,20 +25,24 @@
           indeterminate
           color="primary"
         ></v-progress-circular>
-        <span class="caption ml-2">Bericht ophalen...</span>
+        <span class="ml-2">Berichten ophalen...</span>
       </v-col>
     </v-row>
-    <template v-if="recipientManagedIdentity" v-slot:footer>
+    <template
+      v-if="savedChatMeta && savedChatMeta.recipientManagedIdentity"
+      v-slot:footer
+    >
       <v-row dense class="px-4 pb-1">
         <v-col class="pl-0">
-          <v-text-field
+          <v-textarea
             v-model.trim="newMessage"
-            clearable
             outlined
             hide-details
             dense
+            auto-grow
+            rows="2"
             :label="'Bericht voor ' + recipientName"
-          ></v-text-field>
+          ></v-textarea>
         </v-col>
         <v-col cols="1" align-self="center">
           <v-icon
@@ -65,7 +65,10 @@ import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as msStore from '@/store/message-service'
 import constants from '@/constants/constants'
-import { beforeRouteEnter, beforeRouteLeave } from '@/utils/navigation'
+import {
+  restoreDataBeforeRouteEnter,
+  saveDataBeforeRouteLeave,
+} from '@/utils/navigation'
 
 export default {
   components: {
@@ -78,20 +81,10 @@ export default {
       required: false,
       default: '',
     },
-    senderContext: {
-      type: String,
+    chatMeta: {
+      type: Object,
       required: false,
-      default: '',
-    },
-    recipientContext: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    recipientManagedIdentity: {
-      type: String,
-      required: false,
-      default: '',
+      default: () => {},
     },
   },
   data() {
@@ -99,9 +92,9 @@ export default {
       newMessage: '',
       isFetchingMessages: true,
       recipientProfile: undefined,
-      theSenderContext: this.senderContext,
-      theRecipientContext: this.recipientContext,
-      theRecipientManagedIdentity: this.recipientManagedIdentity,
+      savedConversationId: undefined,
+      savedChatMeta: undefined,
+      recipientManagedIdentity: undefined,
     }
   },
   computed: {
@@ -118,69 +111,91 @@ export default {
       return `${this.recipientProfile?.firstName} ${this.recipientProfile?.lastName}`.trim()
     },
   },
-  beforeRouteEnter: beforeRouteEnter({
-    theSenderContext: value => value,
-    theRecipientContext: value => value,
-    theRecipientManagedIdentity: value => value,
-  }),
-  beforeRouteLeave: beforeRouteLeave({
-    theSenderContext: value => value,
-    theRecipientContext: value => value,
-    theRecipientManagedIdentity: value => value,
-  }),
+  watch: {
+    savedConversationId(newValue, oldValue) {
+      // console.log(`savedConversationId: ${oldValue} --> ${newValue}`)
+      if (newValue) {
+        msStore.actions.fetchConversation({ id: newValue })
+        msStore.actions
+          .fetchMessages({ id: newValue })
+          .then(() => (this.isFetchingMessages = false))
+      }
+    },
+    savedChatMeta(newValue, oldValue) {
+      // console.log(
+      //   `savedChatMeta: ${oldValue} --> Sender ${newValue?.senderContext} Recipient ${newValue?.recipientContext} ${newValue?.recipientManagedIdentity}`
+      // )
+      this.recipientManagedIdentity = newValue.recipientManagedIdentity
+      if (!this.savedConversationId) {
+        msStore.actions
+          .fetchConversationByContext({
+            conversationContext: newValue.senderContext,
+          })
+          .then(c => {
+            if (c?.conversationRef) {
+              this.savedConversationId = c.conversationRef
+            } else {
+              // eslint-disable-next-line
+              console.error(
+                `No Conversation found for urn ${newValue.senderContext}`
+              )
+            }
+          })
+      }
+    },
+    recipientManagedIdentity(newValue, oldValue) {
+      if (newValue) {
+        psStore.actions
+          .fetchPublicProfile({
+            profileId: newValue,
+          })
+          .then(profile => {
+            this.recipientProfile = profile
+          })
+          .catch()
+      }
+    },
+  },
+  beforeRouteEnter(to, from, next) {
+    // The restore is called after the mount!
+    // console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
+    next(vm =>
+      restoreDataBeforeRouteEnter(vm, {
+        savedConversationId: value => value,
+        savedChatMeta: value => value,
+      })
+    )
+  },
+  beforeRouteLeave(to, from, next) {
+    // console.log(`beforeRouteLeave: ${from.name} --> ${to.name}`)
+    saveDataBeforeRouteLeave(this, {
+      savedConversationId: value => value,
+      savedChatMeta: model => model,
+    })
+    next()
+  },
+  created() {
+    uiStore.mutations.showBackButton()
+    if (this.conversationId) {
+      this.savedConversationId = this.conversationId
+      // console.log(`set savedConversationId = ${this.savedConversationId}`)
+    }
+    if (this.chatMeta) {
+      this.savedChatMeta = this.chatMeta
+      // console.log(
+      //   `set savedChatMeta = Sender ${this.chatMeta?.senderContext} Recipient ${this.chatMeta?.recipientContext} ${this.chatMeta?.recipientManagedIdentity}`
+      // )
+    }
+  },
   mounted() {
     msStore.mutations.setConversation({})
     msStore.mutations.setMessages([])
     this.isFetchingMessages = true
-    if (this.conversationId) {
-      msStore.actions.fetchConversation({ id: this.conversationId })
-      msStore.actions
-        .fetchMessages({ id: this.conversationId })
-        .then(() => (this.isFetchingMessages = false))
-    } else if (this.theSenderContext) {
-      // Someone want to send a message
-      msStore.actions
-        .fetchConversationByContext({
-          conversationContext: this.theSenderContext,
-        })
-        .then(c => this.fetchMessages(c))
-        .then(() => (this.isFetchingMessages = false))
-    } else {
-      uiStore.actions.queueErrorNotification('Error looking up conversation')
-      // Don't do this in the mount, it can lead to endless loop
-      // this.$router.go(-1)
-    }
-    if (this.theRecipientManagedIdentity) {
-      psStore.actions
-        .fetchPublicProfile({ profileId: this.theRecipientManagedIdentity })
-        .then(profile => {
-          this.recipientProfile = profile
-        })
-        .catch()
-    }
-    // recipientContext: booking.bookingRef,
-    // recipientManagedIdentity: booking.passenger.managedIdentity,
-  },
-  created() {
-    uiStore.mutations.showBackButton()
   },
   updated() {
     this.scrollToBottomMessageContainer()
   },
   methods: {
-    // Lookup the messages for the conversation and return a promise.
-    // Otherwise go back to the previous page
-    // No, don't do that. In case of a reload there is no go back
-    fetchMessages(conversation) {
-      if (conversation) {
-        return msStore.actions.fetchMessages({
-          id: conversation.conversationRef,
-        })
-        // } else {
-        //   // Go back to original page
-        //   return this.$router.go(-1)
-      }
-    },
     isMessageSendByMe(msg) {
       return msg.sender?.managedIdentity === this.profile.id
     },
@@ -189,7 +204,7 @@ export default {
       if (items && items.children) {
         items = items.children
         if (items.length > 1) {
-          var last = items[items.length - 1]
+          const last = items[items.length - 1]
           animation
             ? last.scrollIntoView({ behavior: 'smooth', block: 'center' })
             : last.scrollIntoView()
@@ -208,51 +223,76 @@ export default {
         return this.myEnvelope(msg)?.context
       }
     },
+    // Redirect the user to the relevant page if the system is the sender
+    // Otherwise enable the chat box to reply to the sender
     onMessageClick(msg) {
-      const ctx = this.getMyContext(msg)
-      let pageName
-      if (ctx.includes('booking')) {
-        const rideId = this.conversation.contexts.find(c => c.includes('ride'))
-        if (rideId) {
+      if (msg.sender) {
+        // A real person has sent a message. That could be me or someone else.
+        if (this.isMessageSendByMe(msg)) {
+          // I was me and I want to send  a message again
+          const rcpEnvelope = msg.envelopes[0]
+          this.savedChatMeta = {
+            senderContext: msg.context,
+            recipientContext: rcpEnvelope.context,
+            recipientManagedIdentity: rcpEnvelope.recipient.managedIdentity,
+          }
+        } else {
+          // The message was sent by someone else.
+          // The chat message metadata are simply the opposite of the received message
+          this.savedChatMeta = {
+            senderContext: this.myEnvelope(msg).context,
+            recipientContext: msg.context,
+            recipientManagedIdentity: msg.sender.managedIdentity,
+          }
+          this.recipientManagedIdentity = this.savedChatMeta.recipientManagedIdentity
+        }
+      } else {
+        const ctx = this.getMyContext(msg)
+        if (ctx.includes('booking')) {
+          const rideId = this.conversation.contexts.find(c =>
+            c.includes('ride')
+          )
+          if (rideId) {
+            this.$router.push({
+              name: 'rideDetailPage',
+              params: { rideId: rideId },
+            })
+          } else {
+            // eslint-disable-next-line
+            console.error(`Expected a ride in the conversation with ${ctx}`)
+          }
+        } else if (ctx.includes('ride')) {
           this.$router.push({
             name: 'rideDetailPage',
-            params: { rideId: rideId },
+            params: { rideId: ctx },
+          })
+        } else if (ctx.includes('tripplan')) {
+          // Right. Is it the passenger or the driver looking at it
+          if (
+            this.conversation.ownerRole ===
+            constants.CONVERSATION_OWNER_ROLE.DRIVER
+          ) {
+            const rideId =
+              this.conversation.contexts.find(c => c.includes('ride')) || 'none'
+            this.$router.push({
+              name: 'shoutOutDriver',
+              params: { shoutOutId: ctx, rideId: rideId },
+            })
+          } else {
+            this.$router.push({
+              name: 'shoutOutPassenger',
+              params: { shoutOutId: ctx },
+            })
+          }
+        } else if (ctx.includes('trip')) {
+          this.$router.push({
+            name: 'tripDetailPage',
+            params: { tripId: ctx },
           })
         } else {
           // eslint-disable-next-line
-          console.error(`Expected a ride in the conversation with ${ctx}`)
+          console.warn(`No support for ${ctx}`)
         }
-      } else if (ctx.includes('ride')) {
-        this.$router.push({
-          name: 'rideDetailPage',
-          params: { rideId: ctx },
-        })
-      } else if (ctx.includes('tripplan')) {
-        // Right. Is it the passenger or the driver looking at it
-        if (
-          this.conversation.ownerRole ===
-          constants.CONVERSATION_OWNER_ROLE.DRIVER
-        ) {
-          const rideId =
-            this.conversation.contexts.find(c => c.includes('ride')) || 'none'
-          this.$router.push({
-            name: 'shoutOutDriver',
-            params: { shoutOutId: ctx, rideId: rideId },
-          })
-        } else {
-          this.$router.push({
-            name: 'shoutOutPassenger',
-            params: { shoutOutId: ctx },
-          })
-        }
-      } else if (ctx.includes('trip')) {
-        this.$router.push({
-          name: 'tripDetailPage',
-          params: { tripId: ctx },
-        })
-      } else {
-        // eslint-disable-next-line
-        console.warn(`No support for ${ctx}`)
       }
     },
     sendMessage() {
@@ -260,22 +300,22 @@ export default {
       msStore.actions
         .sendMessage({
           body: this.newMessage,
-          context: this.senderContext,
+          context: this.savedChatMeta.senderContext,
           deliveryMode: 'ALL',
           envelopes: [
             {
-              context: this.recipientContext,
-              recipient: { managedIdentity: this.recipientManagedIdentity },
+              context: this.savedChatMeta.recipientContext,
+              recipient: {
+                managedIdentity: this.savedChatMeta.recipientManagedIdentity,
+              },
             },
           ],
         })
         .then(() => {
-          // console.log('Fetch messages')
           this.newMessage = null
-          return msStore.actions.fetchMessages({ id: this.conversationId })
+          return msStore.actions.fetchMessages({ id: this.savedConversationId })
         })
         .then(() => {
-          // console.log('Scroll bottom')
           this.$nextTick(() => {
             this.scrollToBottomMessageContainer(true)
           })
@@ -291,11 +331,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-.profile-image {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-}
-</style>

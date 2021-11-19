@@ -25,22 +25,6 @@
         />
       </v-col>
     </v-row>
-    <v-row v-if="hasRideShareDriver">
-      <v-col>
-        <v-btn
-          large
-          rounded
-          outlined
-          block
-          mb-4
-          depressed
-          color="primary"
-          @click="contactDriver"
-        >
-          Stuur bericht naar chauffeur
-        </v-btn>
-      </v-col>
-    </v-row>
     <v-row>
       <v-col class="pt-0">
         <v-btn
@@ -54,6 +38,23 @@
           @click="onShowMap"
         >
           Bekijk op de kaart
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row v-if="containsRideshareLeg">
+      <v-col>
+        <v-btn
+          large
+          rounded
+          outlined
+          block
+          mb-4
+          depressed
+          color="primary"
+          :disabled="!isChatEnabled"
+          @click="contactDriver"
+        >
+          Stuur bericht naar chauffeur
         </v-btn>
       </v-col>
     </v-row>
@@ -122,13 +123,6 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <contact-driver-modal
-      v-if="showContactDriverModal"
-      :show="showContactDriverModal"
-      :users="drivers"
-      @select="onDriverSelectForMessage"
-      @close="showContactDriverModal = false"
-    ></contact-driver-modal>
   </content-pane>
 </template>
 
@@ -137,21 +131,17 @@ import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import TripDetails from '@/components/itinerary-details/TripDetails.vue'
 import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vue'
-import ContactDriverModal from '@/components/itinerary-details/ContactDriverModal'
-import travelModes from '@/constants/travel-modes.js'
 import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
 import * as uiStore from '@/store/ui'
-import * as msStore from '@/store/message-service'
-import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 import * as gsStore from '@/store/geocoder-service'
 import { geoLocationToPlace } from '@/utils/Utils'
+import * as UrnHelper from '@/utils/UrnHelper'
 
 export default {
   name: 'TripDetailPage',
   components: {
-    ContactDriverModal,
     ContentPane,
     TripDetails,
     ItineraryOptions,
@@ -181,25 +171,31 @@ export default {
       return psStore.getters.getProfile
     },
     hasRideShareDriver() {
-      return this.rideshareDriverId !== null
+      return this.rideshareDriver !== null
+    },
+    containsRideshareLeg() {
+      return !!this.selectedTrip?.itinerary?.legs.find(
+        leg => leg.traverseMode === 'RIDESHARE'
+      )
+    },
+    isChatEnabled() {
+      return this.hasRideShareDriver
     },
     drivers() {
       return this.selectedTrip?.itinerary?.legs
         .filter(leg => leg.traverseMode === 'RIDESHARE')
         .map(leg => {
+          const decodedUrn = UrnHelper.decodeUrn(leg.driverId)
           return {
             name: leg.driverName,
-            id: leg.driverId,
-            // context: leg.bookingId ? leg.bookingId : leg.tripId,
-            context: leg.tripId,
-            contextText: `Meerijden ${this.formatTime(leg.startTime)} van ${
-              leg.from.label
-            } naar ${leg.to.label}`,
+            managedIdentity: decodedUrn.id,
+            context: leg.bookingId,
           }
         })
     },
-    rideshareDriverId() {
-      return this.drivers && this.drivers.length > 0 ? this.drivers[0].id : null
+    rideshareDriver() {
+      // Assume there is only one rideshare driver in the trip.
+      return this.drivers?.length > 0 ? this.drivers[0] : null
     },
     selectedTrip() {
       let trip = isStore.getters.getSelectedTrip
@@ -296,21 +292,16 @@ export default {
       this.showMap = false
     },
     contactDriver() {
-      // eslint-disable-next-line
-      console.log('Contacting the passenger is currently not enabled')
-      // const drvs = this.drivers
-      // if (drvs.length === 0) {
-      //   // eslint-disable-next-line
-      //   console.warn(
-      //     `Expected to find at least one driver in the selected trip!`
-      //   )
-      // } else if (drvs.length > 1) {
-      //   //Open the modal to select a driver
-      //   this.showContactDriverModal = true
-      // } else {
-      //   // You can directly push to the router
-      //   this.onDriverSelectForMessage(drvs[0])
-      // }
+      this.$router.push({
+        name: `conversation`,
+        params: {
+          chatMeta: {
+            senderContext: this.selectedTrip.tripRef,
+            recipientContext: this.rideshareDriver.context,
+            recipientManagedIdentity: this.rideshareDriver.managedIdentity,
+          },
+        },
+      })
     },
     onTripReplan() {
       const { from, to } = this.selectedTrip
@@ -370,23 +361,6 @@ export default {
         name: 'searchResults',
         params: { tripId: String(this.selectedTrip.id) },
       })
-    },
-    onDriverSelectForMessage(driver) {
-      // Gets the driver's profile from the rideshare service, we need the managed identity of the driver
-      csStore.actions
-        .fetchUser({
-          userRef: driver.id,
-        })
-        .then(driverProfile => {
-          this.$router.push({
-            name: `conversation`,
-            params: {
-              context: driver.context,
-              contextText: driver.contextText,
-              participants: [this.profile.id, driverProfile.managedIdentity],
-            },
-          })
-        })
     },
   },
 }
