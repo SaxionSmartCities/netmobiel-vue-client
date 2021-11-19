@@ -17,7 +17,7 @@
     <v-list three-line avatar class="pt-0 conversation-list">
       <template v-for="cvs in conversations">
         <v-divider :key="cvs.id + '-divider'" />
-        <v-list-item :key="cvs.id" class="" @click="showConversation(cvs)">
+        <v-list-item :key="cvs.id" class="pa-0" @click="showConversation(cvs)">
           <v-list-item-avatar size="60">
             <external-user-image
               :managed-identity="user(cvs.recentMessage).managedIdentity"
@@ -25,10 +25,10 @@
               :avatar-size="60"
             />
           </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>
-              <v-row dense class="justify-space-between flex-nowrap">
-                <v-col class="font-weight-medium">
+          <v-list-item-content class="pa-0 ma-0">
+            <v-list-item-title class="pa-0 ma-0">
+              <v-row dense class="justify-space-between flex-nowrap pa-0">
+                <v-col class="text-subtitle-2 font-weight-bold">
                   {{ name(user(cvs.recentMessage)) }}
                 </v-col>
                 <!-- Let's hide the number of unread message for now until we have fixed it.
@@ -37,18 +37,23 @@
                     {{ getNewMessageCount(conversation) }}
                   </div>
                 </v-col> -->
-                <v-col class="px-1 py-1 text-right" cols="5">
-                  <em>{{ timestamp(cvs.recentMessage.createdTime) }}</em>
-                </v-col>
+                <!--                <v-col class="px-1 py-1 text-right" cols="5">-->
+                <!--                  <em>{{ timestamp(cvs.recentMessage.createdTime) }}</em>-->
+                <!--                </v-col>-->
               </v-row>
             </v-list-item-title>
-            <v-list-item-subtitle>
+            <v-list-item-subtitle class="text-body-2">
               <!--              <div class="px-1 py-1 text-right">-->
               <!--                <em>{{ getTimestamp(cvs.recentMessage.createdTime) }}</em>-->
               <!--              </div>-->
               <div>
                 {{ cvs.topic }}
               </div>
+            </v-list-item-subtitle>
+            <v-list-item-subtitle
+              class="font-italic text-caption text-right mt-n1"
+            >
+              <em>{{ timestamp(cvs.recentMessage.createdTime) }}</em>
             </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -110,7 +115,7 @@ export default {
     },
     sender(msg) {
       return msg.sender
-        ? this.message.sender
+        ? msg.sender
         : {
             managedIdentity: constants.SYSTEM_IDENTITY,
             givenName: '',
