@@ -23,6 +23,10 @@ button.button {
   color: white !important;
 }
 
+html {
+  overflow: hidden;
+}
+
 h1 {
   font-size: $h1-font-size;
 }
@@ -125,5 +129,5 @@ h3 {
 }
 
 .smaller-font-size {
-  font-size: smaller;
+  font-size: smaller !important;
 }

@@ -1,27 +1,6 @@
 <template>
   <content-pane>
     <template v-slot:header>
-      <v-row class="d-flex flex-column search-header px-3">
-        <v-col class="py-0">
-          <search-criteria
-            v-model="searchCriteria"
-            @locationFieldSelected="onLocationFieldSelected"
-            @criteriaChanged="onCriteriaChanged"
-          />
-        </v-col>
-        <v-col class="py-0">
-          <v-expansion-panels>
-            <v-expansion-panel>
-              <v-expansion-panel-header class="search-header pl-0">
-                Ritvoorkeuren tonen
-              </v-expansion-panel-header>
-              <v-expansion-panel-content class="search-header">
-                <search-options-summary-card :preferences="searchPreferences" />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-col>
-      </v-row>
       <v-row>
         <v-col class="py-0">
           <v-divider />
@@ -37,6 +16,27 @@
         </v-col>
       </v-row>
     </template>
+    <v-row class="d-flex flex-column search-header px-3">
+      <v-col class="py-0">
+        <search-criteria
+          v-model="searchCriteria"
+          @locationFieldSelected="onLocationFieldSelected"
+          @criteriaChanged="onCriteriaChanged"
+        />
+      </v-col>
+      <v-col class="py-0">
+        <v-expansion-panels>
+          <v-expansion-panel>
+            <v-expansion-panel-header class="search-header pl-0">
+              Ritvoorkeuren tonen
+            </v-expansion-panel-header>
+            <v-expansion-panel-content class="search-header">
+              <search-options-summary-card :preferences="searchPreferences" />
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-col>
+    </v-row>
     <v-row dense class="d-flex flex-column">
       <v-col v-if="planningStatus.status === 'PENDING'">
         <search-status />
