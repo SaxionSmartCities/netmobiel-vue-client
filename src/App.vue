@@ -199,16 +199,17 @@ export default {
 </script>
 
 <style lang="scss">
+.v-main {
+  overflow: hidden;
+  // Set the height of the main section.
+  // Vuetify applies automatically the padding for header and footer
+  height: 100vh;
+}
 .version {
   font-style: italic;
   font-size: 0.6em;
   color: $color-white;
 }
-
-// .v-content {
-//   height: 100vh;
-//   overflow: hidden;
-// }
 
 .homepage {
   background-image: url('assets/achterhoek_background.jpg');

@@ -36,13 +36,16 @@ export default {
 <style scoped lang="scss">
 #content-container {
   align-content: start;
+  overflow: auto;
 }
+
 .container-non-scrollable {
-  overflow: hidden;
+  overflow: hidden !important;
 }
+
 .container-scrollable {
-  overflow: visible;
 }
+
 .no-padding {
   padding-top: 0;
   padding-bottom: 0;
