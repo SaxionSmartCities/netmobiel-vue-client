@@ -290,9 +290,10 @@ const router = new Router({
       name: 'tripReviewedPage',
     },
     {
-      path: '/tripConfirmed',
+      path: '/tripConfirmed/:tripId?',
       component: TripConfirmedPage,
       name: 'tripConfirmedPage',
+      props: true,
     },
     {
       path: '/shoutOutSubmittedPage/:shoutOutId',

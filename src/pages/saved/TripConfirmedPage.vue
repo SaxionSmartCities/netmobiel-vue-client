@@ -34,12 +34,12 @@
               :value="compliment"
               @click="addCompliment(compliment)"
             >
-              {{ compliment }}
+              {{ complimentText(compliment) }}
             </v-chip>
           </div>
           <div>
             <v-textarea
-              v-model="inputTextArea"
+              v-model="reviewMessage"
               class="pt-2"
               placeholder="Beschrijving..."
               outlined
@@ -88,12 +88,14 @@ import * as UrnHelper from '@/utils/UrnHelper'
 export default {
   name: 'TripConfirmedPage',
   components: { ContentPane },
+  props: {
+    tripId: { type: String, required: false, default: '' },
+  },
   data() {
     return {
       compliments: [],
-      feedbackMessage: '',
+      reviewMessage: '',
       showChips: true,
-      inputTextArea: null,
     }
   },
   computed: {
@@ -122,8 +124,16 @@ export default {
   },
   mounted() {
     psStore.actions.fetchComplimentTypes()
+    if (this.tripId) {
+      isStore.actions.fetchTrip({ id: this.tripId })
+    } else {
+      // Assume the trip was already selected
+    }
   },
   methods: {
+    complimentText(c) {
+      return constants.COMPLIMENT_MAPPING[c]
+    },
     addCompliment(compliment) {
       const index = this.compliments.findIndex(c => c === compliment)
       if (
@@ -134,7 +144,7 @@ export default {
         this.compliments.push(compliment)
       } else if (
         // Limit reached and the compliment is not in the list.
-        // Remove the first compliment selected and add the one selected
+        // Remove the last compliment selected and add the one selected
         this.compliments.length === constants.maxComplimentsAllowed &&
         index === -1
       ) {
@@ -148,23 +158,19 @@ export default {
     submitReview() {
       // For each compliment given do a call to the backend
       // Can be changed in the future to a call that possibly accepts array if >1 compliments can be given
-      const { id, firstName, lastName } = psStore.getters.getProfile
-      const sender = { id, firstName, lastName }
       const receiver = {
         id: this.driverManagedIdentity,
       }
-      this.compliments.map(compliment =>
-        psStore.actions.addUserCompliment({
-          sender,
-          receiver,
-          complimentType: compliment,
-        })
-      )
-      if (this.feedbackMessage) {
+      psStore.actions.addUserCompliments({
+        receiver,
+        context: this.trip.tripRef,
+        compliments: this.compliments,
+      })
+      if (this.reviewMessage) {
         psStore.actions.addUserReview({
-          sender,
           receiver,
-          review: this.feedbackMessage,
+          context: this.trip.tripRef,
+          review: this.reviewMessage,
         })
       }
       this.$router.push({ name: 'tripReviewedPage' })
