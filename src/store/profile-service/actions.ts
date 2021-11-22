@@ -142,152 +142,6 @@ function fetchProfiles(context: ActionContext, { keyword }: any) {
     })
 }
 
-/**
- * @param profileId: the user his managed Identity (keycloak)
- * @returns {Array<Object>} returns Array of compliments in the response.data
- */
-function fetchUserCompliments(context: ActionContext, { profileId }: any) {
-  let usr = getters.getPublicUsers.get(profileId)
-  if (usr && usr.compliments) {
-    return Promise.resolve(usr.compliments)
-  }
-  const URL = `${PROFILE_BASE_URL}/compliments`
-  return axios
-    .get(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
-      params: { receiverId: profileId },
-    })
-    .then(response => {
-      // @ts-ignore
-      mutations.addPublicCompliments({
-        profileId,
-        compliments: response.data.compliments,
-      })
-      return response.data.compliments
-    })
-    .catch(error => {
-      // eslint-disable-next-line
-      console.log(error)
-      uiStore.actions.queueInfoNotification(
-        `Fout bij het ophalen van de complimenten`
-      )
-    })
-}
-
-/**
- * Fetches the available compliments and sets the compliment types
- * that are available in the store
- */
-function fetchComplimentTypes(context: ActionContext) {
-  const URL = `${PROFILE_BASE_URL}/compliments/types`
-  axios
-    .get(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
-    })
-    .then(response => {
-      mutations.setComplimentTypes(response.data.complimentTypes)
-    })
-}
-
-/**
- * Adds a compliment to the user in the profile-service
- * @param context
- * @param sender: {id, firstName, lastName}
- * @param receiver: {id, firstName, lastName}
- * @param complimentType: enum [
- 'Zelfde interesses',
- 'Op tijd',
- 'Soepele communicatie',
- 'Gezellig',
- 'Netjes',
- 'Goede auto',
- ]
- * @returns {Object} Returns the compliment object in the response.data
- */
-function addUserCompliment(
-  context: ActionContext,
-  { sender, receiver, complimentType }: any
-) {
-  const URL = `${PROFILE_BASE_URL}/compliments`
-  axios
-    .post(
-      URL,
-      { sender, receiver, complimentType },
-      {
-        headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
-      }
-    )
-    .then(response => {
-      mutations.clearPublicCompliments(receiver.id)
-    })
-    .catch(error => {
-      // eslint-disable-next-line
-      console.log(error)
-      uiStore.actions.queueErrorNotification(
-        `Fout bij versturen van complimenten`
-      )
-    })
-}
-
-/**
- * Fetches the reviews of a user based on the profileId
- * @returns {Array<Object>} Returns an Array of reviews in the response.data.reviews
- */
-function fetchUserReviews(context: ActionContext, { profileId }: any) {
-  let usr = getters.getPublicUsers.get(profileId)
-  if (usr && usr.reviews) {
-    return Promise.resolve(usr.reviews)
-  }
-  const URL = `${PROFILE_BASE_URL}/reviews`
-  axios
-    .get(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
-      params: { receiverId: profileId },
-    })
-    .then(response => {
-      // @ts-ignore
-      mutations.addPublicReviews({
-        profileId,
-        reviews: response.data.reviews,
-      })
-      return response.data.reviews
-    })
-}
-
-/**
- * Adds a review to the user in the profile-service
- * @param context: the calling context
- * @param sender: {id, firstName, lastName}
- * @param receiver: {id, firstName, lastName}
- * @param review the review to add
- * @returns {Object} Returns the review object in the response.data
- */
-function addUserReview(
-  context: ActionContext,
-  { sender, receiver, review }: any
-) {
-  const URL = `${PROFILE_BASE_URL}/reviews`
-  axios
-    .post(
-      URL,
-      { sender, receiver, review },
-      {
-        headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
-      }
-    )
-    .then(response => {
-      if (response.status === 201) {
-        uiStore.actions.queueInfoNotification(`Je beoordeling is opgeslagen!`)
-        mutations.clearPublicReviews(receiver.id)
-      }
-    })
-    .catch(error => {
-      // eslint-disable-next-line
-      console.log(error)
-      uiStore.actions.queueErrorNotification(`Fout bij opslaan van beoordeling`)
-    })
-}
-
 function fetchFavoriteLocations(context: ActionContext) {
   const delegatorId = context.state.user.delegatorId
   const profileId = context.state.user.profile.id
@@ -425,6 +279,144 @@ function updateProfileImage(context: ActionContext, { id, image }: any) {
     })
 }
 
+/**
+ * @param context: calling context
+ * @param profileId: the user his managed Identity (keycloak)
+ * @returns {Array<Object>} returns Array of compliments in the response.data
+ */
+function fetchUserCompliments(context: ActionContext, { profileId }: any) {
+  let usr = getters.getPublicUsers.get(profileId)
+  if (usr && usr.compliments) {
+    return Promise.resolve(usr.compliments)
+  }
+  const URL = `${PROFILE_BASE_URL}/compliments`
+  return axios
+    .get(URL, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      params: { receiverId: profileId },
+    })
+    .then(response => {
+      // @ts-ignore
+      mutations.addPublicCompliments({
+        profileId,
+        compliments: response.data.compliments,
+      })
+      return response.data.compliments
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueInfoNotification(
+        `Fout bij het ophalen van de complimenten`
+      )
+    })
+}
+
+/**
+ * Fetches the available compliments and sets the compliment types
+ * that are available in the store
+ */
+function fetchComplimentTypes(context: ActionContext) {
+  const URL = `${PROFILE_BASE_URL}/compliments/types`
+  axios
+    .get(URL, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+    })
+    .then(response => {
+      mutations.setComplimentTypes(response.data.complimentTypes)
+    })
+}
+
+/**
+ * Adds a compliment to the user in the profile-service
+ * @param actionContext
+ * @param receiver: {id, firstName, lastName}
+ * @param context: the context of the compliment
+ * @param compliments: enum [ SAME_INTERESTS, ON_TIME, TALKS_EASILY, SOCIABLE, NEATLY, NICE_CAR ]
+ * @returns {Object} Returns the compliment object in the response.data
+ */
+function addUserCompliments(
+  actionContext: ActionContext,
+  { receiver, context, compliments }: any
+) {
+  const URL = `${PROFILE_BASE_URL}/compliments`
+  axios
+    .post(
+      URL,
+      { receiver, context, compliments },
+      {
+        headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      }
+    )
+    .then(response => {
+      mutations.clearPublicCompliments(receiver.id)
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij versturen van complimenten`
+      )
+    })
+}
+
+/**
+ * Fetches the reviews of a user based on the profileId
+ * @returns {Array<Object>} Returns an Array of reviews in the response.data.reviews
+ */
+function fetchUserReviews(context: ActionContext, { profileId }: any) {
+  let usr = getters.getPublicUsers.get(profileId)
+  if (usr && usr.reviews) {
+    return Promise.resolve(usr.reviews)
+  }
+  const URL = `${PROFILE_BASE_URL}/reviews`
+  axios
+    .get(URL, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      params: { receiverId: profileId },
+    })
+    .then(response => {
+      // @ts-ignore
+      mutations.addPublicReviews({
+        profileId,
+        reviews: response.data.reviews,
+      })
+      return response.data.reviews
+    })
+}
+
+/**
+ * Adds a review to the user in the profile-service
+ * @param actionContext: the calling context
+ * @param receiver: {id}
+ * @param context: context of the review
+ * @param review the review to add
+ * @returns {Object} Returns the review object in the response.data
+ */
+function addUserReview(
+  actionContext: ActionContext,
+  { receiver, context, review }: any
+) {
+  const URL = `${PROFILE_BASE_URL}/reviews`
+  axios
+    .post(
+      URL,
+      { receiver, context, review },
+      {
+        headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      }
+    )
+    .then(response => {
+      uiStore.actions.queueInfoNotification(`Je beoordeling is opgeslagen!`)
+      mutations.clearPublicReviews(receiver.id)
+    })
+    .catch(error => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(`Fout bij opslaan van beoordeling`)
+    })
+}
+
 function fetchDelegation(context: ActionContext, { delegationId }: any) {
   const URL = `${PROFILE_BASE_URL}/delegations/${delegationId}`
   // TODO: Implement logic.
@@ -540,19 +532,24 @@ export const buildActions = (
     fetchProfile: psBuilder.dispatch(fetchProfile),
     fetchPublicProfile: psBuilder.dispatch(fetchPublicProfile),
     fetchProfiles: psBuilder.dispatch(fetchProfiles),
-    fetchUserCompliments: psBuilder.dispatch(fetchUserCompliments),
-    fetchComplimentTypes: psBuilder.dispatch(fetchComplimentTypes),
-    addUserCompliment: psBuilder.dispatch(addUserCompliment),
-    fetchUserReviews: psBuilder.dispatch(fetchUserReviews),
-    addUserReview: psBuilder.dispatch(addUserReview),
-    fetchFavoriteLocations: psBuilder.dispatch(fetchFavoriteLocations),
-    storeFavoriteLocation: psBuilder.dispatch(storeFavoriteLocation),
-    deleteFavoriteLocation: psBuilder.dispatch(deleteFavoriteLocation),
+
     storeSearchPreferences: psBuilder.dispatch(storeSearchPreferences),
     storeRidePreferences: psBuilder.dispatch(storeRidePreferences),
     storeFcmToken: psBuilder.dispatch(storeFcmToken),
     updateProfile: psBuilder.dispatch(updateProfile),
     updateProfileImage: psBuilder.dispatch(updateProfileImage),
+
+    fetchFavoriteLocations: psBuilder.dispatch(fetchFavoriteLocations),
+    storeFavoriteLocation: psBuilder.dispatch(storeFavoriteLocation),
+    deleteFavoriteLocation: psBuilder.dispatch(deleteFavoriteLocation),
+
+    fetchComplimentTypes: psBuilder.dispatch(fetchComplimentTypes),
+    fetchUserCompliments: psBuilder.dispatch(fetchUserCompliments),
+    addUserCompliments: psBuilder.dispatch(addUserCompliments),
+
+    fetchUserReviews: psBuilder.dispatch(fetchUserReviews),
+    addUserReview: psBuilder.dispatch(addUserReview),
+
     fetchDelegations: psBuilder.dispatch(fetchDelegations),
     storeDelegation: psBuilder.dispatch(storeDelegation),
     deleteDelegation: psBuilder.dispatch(deleteDelegation),
