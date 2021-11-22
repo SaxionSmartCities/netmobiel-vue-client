@@ -24,6 +24,14 @@ export default {
   },
   searchSuggestionDefaultIcon: 'fa-map-marker-alt',
   maxComplimentsAllowed: 3,
+  COMPLIMENT_MAPPING: {
+    SAME_INTERESTS: 'Zelfde interesses',
+    ON_TIME: 'Op tijd',
+    TALKS_EASILY: 'Soepele communicatie',
+    SOCIABLE: 'Gezellig',
+    NEATLY: 'Netjes',
+    NICE_CAR: 'Goede auto',
+  },
   COMPLETE_PROFILE_UPDATE: {
     title: 'Verdien een gratis rit!',
     content:
