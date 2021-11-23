@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid fill-height class="background-primary">
+  <v-container fluid fill-height class="background-primary overflow-auto">
     <v-row align="center" justify="center">
       <v-col>
         <v-row>

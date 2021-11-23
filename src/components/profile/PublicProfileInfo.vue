@@ -10,14 +10,14 @@
     <v-col class="flex-column">
       <v-row>
         <div class="d-flex flex-column shrink">
-          <span> {{ username }}</span>
-          <span class="caption">{{ address }}</span>
+          <span v-if="username"> {{ username }}</span>
+          <span v-if="address" class="caption">{{ address }}</span>
         </div>
       </v-row>
       <v-row>
         <div class="d-flex flex-column shrink">
-          <span>Leeftijd: {{ age }}</span>
-          <span>Houdt van: {{ interests }}</span>
+          <span v-if="age">Leeftijd: {{ age }} jaar</span>
+          <span v-if="interests">Houdt van: {{ interests }}</span>
         </div>
       </v-row>
     </v-col>
@@ -40,21 +40,24 @@ export default {
       return this.profile?.image
     },
     username() {
-      if (!this.profile?.firstName) {
-        return 'Onbekende gebruiker'
-      } else {
-        return this.profile.firstName + ' ' + this.profile.lastName
+      const name = []
+      if (this.profile?.firstName) {
+        name.push(this.profile.firstName)
       }
+      if (this.profile?.lastName) {
+        name.push(this.profile.lastName)
+      }
+      return name.join(' ')
     },
     address() {
-      return this.profile?.address?.locality || 'Onbekend adres'
+      return this.profile?.address?.locality
     },
     age() {
-      return this.profile?.age ? `${this.profile.age} jaar` : 'Onbekend'
+      return this.profile?.age
     },
     interests() {
       const interests = this.profile?.interests || []
-      return interests.length > 0 ? interests.join(', ') : '---'
+      return interests.join(', ')
     },
   },
 }

@@ -9,12 +9,12 @@
           </v-col>
         </v-row>
         <v-row no-gutters>
-          <v-col class="col-6 offset-1">
+          <v-col class="col-11 offset-1">
             {{ user.givenName }} {{ user.familyName }}
           </v-col>
         </v-row>
         <v-row no-gutters>
-          <v-col class="col-6 offset-1">
+          <v-col class="col-11 offset-1">
             {{ user.email }}
           </v-col>
         </v-row>
