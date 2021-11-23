@@ -45,6 +45,7 @@ import ReviewItem from '@/components/profile/ReviewItem'
 import HighlightedInfo from '@/components/profile/HighlightedInfo'
 import * as psStore from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
+import constants from '@/constants/constants'
 
 export default {
   name: 'UserProfile',
@@ -86,12 +87,13 @@ export default {
     },
     refinedCompliments() {
       const result = {}
+      for (const complimentCode of Object.keys(constants.COMPLIMENT_MAPPING)) {
+        result[complimentCode] = 0
+      }
       if (this.compliments) {
         for (const comp of this.compliments) {
-          if (!result[comp.complimentType]) {
-            result[comp.complimentType] = 1
-          } else {
-            result[comp.complimentType]++
+          for (const type of comp.compliments) {
+            result[type]++
           }
         }
       }

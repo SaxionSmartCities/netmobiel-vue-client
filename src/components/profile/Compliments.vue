@@ -6,12 +6,12 @@
     <v-col v-else>
       <div class="compliments-container">
         <div
-          v-for="compliment in Object.keys(compliments)"
+          v-for="compliment in Object.keys(filteredCompliments)"
           :key="compliment"
           class="compliment"
         >
-          <span class="body-2">{{ compliment }}</span>
-          <div class="tip caption">{{ compliments[compliment] }}</div>
+          <span class="body-2">{{ displayName(compliment) }}</span>
+          <div class="tip caption">{{ filteredCompliments[compliment] }}</div>
         </div>
       </div>
     </v-col>
@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import constants from '@/constants/constants'
+
 export default {
   name: 'Compliments',
   props: {
@@ -26,7 +28,23 @@ export default {
   },
   computed: {
     noCompliments() {
-      return !this.compliments || Object.keys(this.compliments).length === 0
+      return (
+        !this.filteredCompliments ||
+        Object.keys(this.filteredCompliments).length === 0
+      )
+    },
+    filteredCompliments() {
+      return Object.entries(this.compliments)
+        .filter(([key, value]) => value > 0)
+        .reduce((previous, [ckey, cvalue]) => {
+          previous[ckey] = cvalue
+          return previous
+        }, {})
+    },
+  },
+  methods: {
+    displayName(complimentCode) {
+      return constants.COMPLIMENT_MAPPING[complimentCode]
     },
   },
 }
@@ -35,7 +53,7 @@ export default {
 <style lang="scss" scoped>
 .compliments-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   flex-wrap: wrap;
   margin: 0 - 4px;
   .compliment {
