@@ -2,8 +2,7 @@
   <div class="d-flex flex-column fill-height">
     <slot name="header"></slot>
     <v-container
-      id="content-container"
-      class="fill-height justify-center"
+      class="fill-height justify-center align-content-start"
       :class="{
         'container-non-scrollable': !scrollable,
         'container-scrollable': scrollable,
@@ -34,16 +33,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
-#content-container {
-  align-content: start;
-  overflow: auto;
-}
-
 .container-non-scrollable {
   overflow: hidden !important;
 }
 
 .container-scrollable {
+  overflow: auto;
 }
 
 .no-padding {
