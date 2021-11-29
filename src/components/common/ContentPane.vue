@@ -1,8 +1,8 @@
 <template>
-  <div class="d-flex flex-column fill-height">
+  <div class="d-flex flex-column full-height">
     <slot name="header"></slot>
     <v-container
-      class="fill-height justify-center align-content-start"
+      class="justify-center align-content-start"
       :class="{
         'container-non-scrollable': !scrollable,
         'container-scrollable': scrollable,
