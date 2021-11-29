@@ -33,6 +33,13 @@ Vue.use(VueKeyCloak, {
   init: {
     onLoad: 'check-sso',
     enableLogging: true,
+    // The embedded browsers in Android and iOS do not store cookies
+    // We don't care about an SSO logout anyway.
+    checkLoginIframe: false,
+  },
+  onAuthRefreshError: function(e: any) {
+    // eslint-disable-next-line
+    console.error(e)
   },
   onReady: function() {
     tokenInterceptor()
@@ -44,7 +51,13 @@ Vue.use(VueKeyCloak, {
       render: h => h(App),
     }).$mount('#app')
   },
-  onInitError: function() {
+  onInitSuccess: function() {
+    // eslint-disable-next-line
+    // console.log('Initialization of Keycloak was successfully')
+  },
+  onInitError: function(err: Error, e: any) {
     // Does not work yet :(
+    // eslint-disable-next-line
+    console.error(err)
   },
 })
