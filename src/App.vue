@@ -19,6 +19,29 @@
     <v-main>
       <router-view></router-view>
     </v-main>
+    <v-snackbar
+      v-if="isNotificationBarVisible"
+      v-model="isNotificationBarVisible"
+      :timeout="-1"
+      :color="notificationColor"
+      bottom
+      absolute
+    >
+      <v-row dense>
+        <v-col class="grow">
+          {{ notificationQueue[0].message }}
+        </v-col>
+        <v-col class="shrink">
+          <v-icon
+            v-if="notificationQueue[0].timeout === 0"
+            right
+            @click="finishNotification"
+          >
+            close
+          </v-icon>
+        </v-col>
+      </v-row>
+    </v-snackbar>
     <!-- Footer -->
     <v-bottom-navigation
       v-if="isFooterVisible"
@@ -26,29 +49,6 @@
       class="bottom-nav"
       app
     >
-      <v-snackbar
-        v-if="isNotificationBarVisible"
-        v-model="isNotificationBarVisible"
-        :timeout="-1"
-        :color="notificationColor"
-        bottom
-        absolute
-      >
-        <v-row dense>
-          <v-col class="grow">
-            {{ notificationQueue[0].message }}
-          </v-col>
-          <v-col class="shrink">
-            <v-icon
-              v-if="notificationQueue[0].timeout === 0"
-              right
-              @click="finishNotification"
-            >
-              close
-            </v-icon>
-          </v-col>
-        </v-row>
-      </v-snackbar>
       <v-btn text value="home" to="/home">
         <span>Home</span>
         <v-icon>home</v-icon>
@@ -77,7 +77,6 @@
 import RoundUserImage from '@/components/common/RoundUserImage'
 import constants from '@/constants/constants'
 import hash from 'raw-loader!@/assets/current.hash'
-import ybug from './config/ybug'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 
@@ -86,11 +85,10 @@ export default {
   components: { RoundUserImage },
   data: () => ({
     offsetTop: 0,
-    commithash: hash,
   }),
   computed: {
     profileImage() {
-      return this.getProfile?.image
+      return this.myProfile?.image
     },
     selectedNav: {
       get() {
@@ -119,7 +117,7 @@ export default {
     currentNotification() {
       return uiStore.getters.getNotificationQueue[0]
     },
-    getProfile() {
+    myProfile() {
       return psStore.getters.getProfile
     },
     isBackButtonVisible() {
@@ -130,7 +128,7 @@ export default {
     },
   },
   watch: {
-    getProfile(newProfile) {
+    myProfile(newProfile) {
       if (!this.isProfileComplete(newProfile)) {
         let update = constants.COMPLETE_PROFILE_UPDATE
         uiStore.actions.addUpdate(update)
@@ -148,8 +146,6 @@ export default {
     // },
   },
   mounted() {
-    const user = { name: 'netmobiel', version: this.commithash.trim() }
-    ybug(user)
     // Set the fcm token (for push notifications) in the local storage
     // for so we can retrieve it later to update the profile.
     if (this.$route.query.fcm) {
@@ -157,7 +153,7 @@ export default {
     }
     // Only fetch profile of authenticated user
     if (this.$keycloak.authenticated) {
-      psStore.actions.fetchProfile()
+      psStore.actions.fetchProfile().catch(() => {})
       psStore.mutations.setUserToken(this.$keycloak.token)
     }
   },
@@ -179,9 +175,9 @@ export default {
     },
     routeToMode() {
       let newRoute = ''
-      if (this.getProfile.userRole === constants.PROFILE_ROLE_PASSENGER) {
+      if (this.myProfile.userRole === constants.PROFILE_ROLE_PASSENGER) {
         newRoute = '/search'
-      } else if (this.getProfile.userRole === constants.PROFILE_ROLE_DRIVER) {
+      } else if (this.myProfile.userRole === constants.PROFILE_ROLE_DRIVER) {
         newRoute = '/plan'
       } else {
         newRoute = '/modeSelection'
