@@ -12,8 +12,8 @@
               worden personen die vervoer zoeken gekoppeld aan personen die een
               plek over hebben in de auto en/of aan openbaarvervoersopties. De
               app heeft het doel om de bereikbaarheid in de Achterhoek te
-              verbeteren. Tot en met Maart 2022 wordt er onderzoek gedaan naar
-              de effecten van de app, onder andere door Hogeschool Saxion.
+              verbeteren. In het voorjaar van 2022 wordt er onderzoek gedaan
+              naar de effecten van de app, onder andere door Hogeschool Saxion.
             </p>
             <p>
               Binnen het project Netmobiel heeft Hogeschool Saxion de app
