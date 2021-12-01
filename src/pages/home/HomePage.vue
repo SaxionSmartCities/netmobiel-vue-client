@@ -153,7 +153,7 @@ export default {
     },
     fullName() {
       const { firstName, lastName } = this.profile
-      return `${firstName} ${lastName}`
+      return `${firstName || ''} ${lastName || ''}`.trim()
     },
     rides() {
       return csStore.getters.getRides
