@@ -57,34 +57,24 @@
       </v-form>
     </v-card-text>
     <v-card-actions>
-      <v-container>
-        <v-row no-gutters class="mb-2 justify-space-between">
-          <v-col xs6 class="mx-2">
-            <v-btn block text @click="back()">
-              <v-icon>arrow_back</v-icon>
-              Terug
-            </v-btn>
-          </v-col>
-          <v-col xs6 class="mx-2">
-            <v-btn block rounded depressed color="button" @click="submitForm()">
-              Verder
-            </v-btn>
-          </v-col>
-        </v-row>
-        <v-row no-gutters class="mb-2">
-          <v-col xs12 class="mx-2">
-            <v-btn
-              block
-              rounded
-              depressed
-              color="primary"
-              @click="$emit('cancel')"
-            >
-              Annuleren
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
+      <v-row no-gutters class="mb-2">
+        <v-col xs6 class="mx-2">
+          <v-btn
+            block
+            rounded
+            outlined
+            color="primary"
+            @click="$emit('cancel')"
+          >
+            Annuleren
+          </v-btn>
+        </v-col>
+        <v-col xs6 class="mx-2">
+          <v-btn block rounded depressed color="button" @click="submitForm()">
+            Verder
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-card-actions>
   </v-card>
 </template>
