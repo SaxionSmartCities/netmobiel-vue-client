@@ -10,15 +10,6 @@
           <!--            <interests-card @prev-step="step&#45;&#45;" @next-step="step++" />-->
           <!--          </v-col>-->
         </v-row>
-        <v-row justify="center">
-          <v-col class="text-center">
-            <v-btn to="/howTo" depressed color="primary">
-              <span class="text-light-grey underlined">
-                Hulp bij Netmobiel
-              </span>
-            </v-btn>
-          </v-col>
-        </v-row>
       </v-col>
     </v-row>
   </v-container>

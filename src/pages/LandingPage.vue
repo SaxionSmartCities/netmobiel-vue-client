@@ -1,17 +1,22 @@
 <template>
-  <v-container fluid class="background-primary fill-height container">
+  <v-container fluid class="background-primary full-height">
     <v-row class="image-container">
-      <v-col align-self="end" cols="12" class="pa-0">
+      <v-col align-self="end" cols="12">
         <v-img id="logo" :src="require('@/assets/logo_splash.png')" />
       </v-col>
     </v-row>
+    <v-row v-if="progressVisible" class="d-flex flex-row justify-center">
+      <v-col class="shrink">
+        <v-progress-circular indeterminate class="rotate"></v-progress-circular>
+      </v-col>
+    </v-row>
     <v-row v-if="buttonsVisible">
-      <v-col cols="12" class="pa-0">
+      <v-col cols="12">
         <v-btn color="button" rounded large block @click="loginAtKeycloak()">
-          Login
+          Aanmelden
         </v-btn>
       </v-col>
-      <v-col cols="12" class="pa-0 mt-3">
+      <v-col cols="12">
         <v-btn color="button" rounded large block @click="registerAtKeycloak()">
           Registreren
         </v-btn>
@@ -23,80 +28,62 @@
 <script>
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
-import { NetworkRequestStatus } from '@/store/ui/types'
-import { isAbsoluteUrl } from '@/utils/Utils'
 
 export default {
-  computed: {
-    networkRequest() {
-      return uiStore.getters.getNetworkRequest
-    },
-    buttonsVisible() {
-      return true
-      // 2021-10-11 Sometimes the app is stuck on this page
-      // const nwstatus = this.networkRequest?.submitStatus?.status
-      // return (
-      //   nwstatus === NetworkRequestStatus.FAILED ||
-      //   !this.$keycloak.authenticated
-      // )
-    },
-  },
-  watch: {
-    networkRequest(newValue) {
-      if (newValue.submitStatus.status === NetworkRequestStatus.SUCCESS) {
-        this.continueNavigation()
-      } else if (newValue.submitStatus.status === NetworkRequestStatus.FAILED) {
-        if (newValue.submitStatus.statusCode === 404) {
-          this.startRegistration()
-        } else {
-          uiStore.actions.queueErrorNotification(
-            'Fout bij het ophalen van het profiel.'
-          )
-        }
-      }
-    },
+  data() {
+    return {
+      buttonsVisible: false,
+      progressVisible: false,
+    }
   },
   beforeCreate() {
     uiStore.mutations.disableHeader()
     uiStore.mutations.disableFooter()
   },
   mounted() {
+    // Navigation rules:
+    // If not authenticated then show the landing page with the choice between login and register
+    // Else If the profile exists --> goto home page
+    // Else --> goto registrationPage
+    // When being redirected from external pages (e.g. credit deposit), the user should return to the proper page
+    // Follow then the redirect.
     if (this.$keycloak.authenticated) {
+      this.progressVisible = true
       // Show YBug on normal pages
-      Ybug.show('launcher')
+      // YbugHelper.show()
       // Token and Profile are also fetched in the main template (App.vue)
-      uiStore.mutations.resetNetworkRequest()
-      psStore.actions.fetchProfile()
-      // How are we sure the networkRequestStatus concerns our request? We need a correlationId!
-      // Now we have to wait for the results from the database: Does the user already exists?
-      // If yes, then proceed to the home page
-      // If no then go to the registration page
-      // Note: This is only needed for a smooth transition between multiple instances of Netmobiel while using a
-      // single Keycloak instance.
+      // Here we check what we need to do when no profile is present
+      psStore.actions
+        .fetchProfile()
+        .then(status => {
+          // If yes, then proceed to the home page
+          this.continueNavigation()
+        })
+        .catch(status => {
+          // If no then go to the registration page
+          this.progressVisible = false
+          this.buttonsVisible = true
+          if (status === 404) {
+            this.startRegistration()
+          } else if (status >= 500) {
+            uiStore.actions.queueErrorNotification(
+              'Netmobiel server is niet beschikbaar of bereikbaar'
+            )
+          }
+        })
     } else {
-      // No Ybug on the landing page, not nice to see and not necessary
-      Ybug.hide('launcher')
+      this.buttonsVisible = true
+      // Not authenticated. User decides between 'login' and 'register'
+      // YbugHelper.hide()
     }
   },
   methods: {
     continueNavigation: function() {
-      if (this.$route.query.redirect) {
-        if (isAbsoluteUrl(this.$route.query.redirect)) {
-          // eslint-disable-next-line
-          console.warn(`Blocked redirect: '${this.$route.query.redirect}'`)
-          uiStore.actions.queueErrorNotification(`Externe pagina geblokkeerd`)
-          // Redirect to the home page
-          this.$router.push({ path: '/home' })
-        } else {
-          this.$router.push({ path: this.$route.query.redirect })
-        }
-      } else {
-        // Preserve query string when routing to home.
-        this.$router.push({ path: '/home', query: this.$route.query })
-      }
+      // Redirect to the home page
+      this.$router.push({ path: '/home' })
     },
     startRegistration: function() {
-      this.$router.push({ name: 'createUser' })
+      this.$router.push({ name: 'registerUser' })
     },
     loginAtKeycloak() {
       return this.$keycloak.loginFn()
@@ -113,12 +100,12 @@ export default {
   max-width: min(500px, 100%);
   margin: 0 auto;
 }
-.container {
-  align-content: flex-start;
-}
 // Prevent moving buttons during loading of image
 // by setting the buttons on a relatively fixed position
 .image-container {
   min-height: 40vh;
+}
+.rotate {
+  color: $color-orange;
 }
 </style>

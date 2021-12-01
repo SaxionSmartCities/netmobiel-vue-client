@@ -5,7 +5,7 @@
       <v-radio-group v-model="value.userRole" :mandatory="false">
         <v-radio
           label="Passagier - Meerijden of via het OV"
-          :value="PROFILE_ROLE_PASSENGER"
+          :value="passengerRole"
         ></v-radio>
         <v-radio
           label="Chauffeur - Zelf ritten aanbieden"
@@ -21,7 +21,7 @@
     <v-card-actions>
       <v-row no-gutters class="mb-2">
         <v-col xs6 class="mx-2">
-          <v-btn block text @click="back()">
+          <v-btn block rounded outlined color="primary" @click="back()">
             <v-icon>arrow_back</v-icon>
             Terug
           </v-btn>

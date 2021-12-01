@@ -5,7 +5,6 @@ import { Profile, ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { getters, mutations } from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
-import { addInterceptors } from '@/store/api-middelware'
 import { generateHeaders } from '@/utils/Utils'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
@@ -55,9 +54,7 @@ function createProfile(
 function fetchProfile(context: ActionContext) {
   const delegatorId = context.state.user.delegatorId
   const URL = `${PROFILE_BASE_URL}/profiles/me`
-  let axiosInstance = axios.create()
-  addInterceptors(axiosInstance)
-  axiosInstance
+  return axios
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
     })
@@ -76,10 +73,12 @@ function fetchProfile(context: ActionContext) {
           mutations.setProfile(profile)
         }
       }
+      return Promise.resolve(response.status)
     })
     .catch(error => {
       // eslint-disable-next-line
       console.log(error)
+      return Promise.reject(error.response.status)
     })
 }
 

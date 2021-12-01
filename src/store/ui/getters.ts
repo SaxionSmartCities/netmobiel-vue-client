@@ -31,10 +31,6 @@ export const buildGetters = (builder: ModuleBuilder<UiState, RootState>) => {
     return state.updateMessages
   }, 'getUpdateMessages')
 
-  const getNetworkRequest = builder.read((state: UiState) => {
-    return state.networkRequest
-  }, 'getNetworkRequest')
-
   return {
     get isHeaderVisible() {
       return isHeaderVisible()
@@ -56,9 +52,6 @@ export const buildGetters = (builder: ModuleBuilder<UiState, RootState>) => {
     },
     get getUpdateMessages() {
       return getUpdateMessages()
-    },
-    get getNetworkRequest() {
-      return getNetworkRequest()
     },
   }
 }

@@ -4,14 +4,15 @@
       <v-col>
         <v-row>
           <v-col v-if="step === 0">
-            <new-account-terms
+            <new-account-card
               v-model="profile"
               @prev-step="step--"
               @next-step="step++"
+              @cancel="onCancel()"
             />
           </v-col>
           <v-col v-if="step === 1">
-            <new-account-card
+            <new-account-terms
               v-model="profile"
               @prev-step="step--"
               @next-step="step++"
@@ -63,15 +64,6 @@
             </v-row>
           </v-card-actions>
         </v-card>
-        <v-row justify="center">
-          <v-col class="text-center">
-            <v-btn to="/howTo" depressed color="primary">
-              <span class="text-light-grey underlined">
-                Hulp bij Netmobiel
-              </span>
-            </v-btn>
-          </v-col>
-        </v-row>
       </v-col>
     </v-row>
   </v-container>
@@ -130,13 +122,17 @@ export default {
   beforeCreate() {
     // The registration page should not offer other options
     uiStore.mutations.disableFooter()
-    Ybug.show('launcher')
+    // YbugHelper.show()
   },
   methods: {
     gotoLandingPage() {
       setTimeout(() => {
         this.$router.push({ name: 'landing' })
       }, DELAY_AFTER_CREATION)
+    },
+    onCancel() {
+      // Got to the logout page, logout from keycloak is handled over there
+      this.$router.push({ name: 'logout' })
     },
     submitForm: function() {
       if (this.dryRun) {
@@ -156,7 +152,7 @@ export default {
             if (status === 409 /* Conflict */) {
               this.status = 409
               // Meaning: Profile does already exist. Continue to the landing page
-              psStore.actions.fetchProfile()
+              psStore.actions.fetchProfile().catch(status => {})
               this.gotoLandingPage()
             } else {
               // What can we do?
