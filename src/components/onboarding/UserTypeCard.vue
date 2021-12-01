@@ -5,7 +5,7 @@
       <v-radio-group v-model="value.userRole" :mandatory="false">
         <v-radio
           label="Passagier - Meerijden of via het OV"
-          :value="PROFILE_ROLE_PASSENGER"
+          :value="passengerRole"
         ></v-radio>
         <v-radio
           label="Chauffeur - Zelf ritten aanbieden"
