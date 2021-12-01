@@ -195,9 +195,6 @@ export default {
       this.$router.push({ name: name })
     },
     logOut: function() {
-      psStore.mutations.deleteAccessToken()
-      this.$keycloak.logoutFn()
-      // In the mean time show our logout page, the redirect from keycloak will navigate to the landing page
       this.$router.push({ name: 'logout' })
     },
     readFile(event) {

@@ -2,14 +2,13 @@
   <content-pane>
     <v-row align="center">
       <v-col>
-        <h1>Tot ziens</h1>
+        <h1>Sessie ongeldig</h1>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
         <span>
-          Tot de volgende keer bij Netmobiel, dé mobiliteitsapp van de
-          Achterhoek en omstreken.
+          De sessie is niet meer geldig. Meld je opnieuw aan.
         </span>
       </v-col>
     </v-row>
@@ -19,7 +18,7 @@
       </v-col>
       <v-col class="align-center">
         <span>
-          U wordt nu afgemeld...
+          Je wordt binnen enkele seconden doorgestuurd...
         </span>
       </v-col>
     </v-row>
@@ -29,7 +28,8 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import * as uiStore from '@/store/ui'
-import * as psStore from '@/store/profile-service'
+
+const DELAY_KEYCLOAK_LOGIN = 2000
 
 export default {
   components: {
@@ -38,15 +38,24 @@ export default {
   data() {
     return {}
   },
-  beforeCreate() {
-    uiStore.mutations.disableFooter()
-  },
   mounted() {
-    psStore.mutations.deleteAccessToken()
-    this.$keycloak.logoutFn()
-    // Show our logout page, the redirect from keycloak will navigate to the landing page
+    this.gotoKeycloakLogin()
+  },
+  methods: {
+    gotoKeycloakLogin() {
+      setTimeout(() => {
+        const options = {
+          redirectUri: window.location.origin,
+        }
+        this.$keycloak.loginFn(options)
+      }, DELAY_KEYCLOAK_LOGIN)
+    },
   },
 }
 </script>
 
-<style lang="scss"></style>
+<style scoped lang="scss">
+.rotate {
+  color: #ff8500;
+}
+</style>

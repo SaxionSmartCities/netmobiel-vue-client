@@ -43,9 +43,11 @@ function fetchActualConversations(context: ActionContext) {
       return []
     })
     .catch(function(error) {
-      // TODO: Proper error handling.
       // eslint-disable-next-line
       console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van de conversaties.'
+      )
       return []
     })
 }
@@ -60,9 +62,13 @@ function fetchArchivedConversations(context: ActionContext) {
       return []
     })
     .catch(function(error) {
-      // TODO: Proper error handling.
       // eslint-disable-next-line
       console.log(error)
+      // Omit the message as the conversations are fetched in twins
+      // The new conversations listing would be in error too, probably
+      // uiStore.actions.queueErrorNotification(
+      //   'Fout bij het ophalen van de conversaties.'
+      // )
       return []
     })
 }

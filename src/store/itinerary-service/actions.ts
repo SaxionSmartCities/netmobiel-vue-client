@@ -10,10 +10,8 @@ import {
   ItineraryState,
   SearchCriteria,
   ShoutOutSearchCriteria,
-  Trip,
 } from '@/store/itinerary-service/types'
 import * as uiStore from '@/store/ui'
-import { addInterceptors } from '../api-middelware'
 import { generateHeaders, getCreatedObjectIdFromResponse } from '@/utils/Utils'
 
 type ActionContext = BareActionContext<ItineraryState, RootState>
@@ -89,9 +87,7 @@ function createShoutOutTripPlan(
     planType: 'SHOUT_OUT',
   }
   const URL = `${PLANNER_BASE_URL}/plans`
-  let instance = axios.create()
-  addInterceptors(instance)
-  return instance
+  return axios
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
@@ -376,9 +372,7 @@ function putTripConfirmation({ id, delegatorId, acknowledge }: any) {
   const config = {
     headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
   }
-  let instance = axios.create()
-  addInterceptors(instance)
-  return instance.put(URL, data, config)
+  return axios.put(URL, data, config)
 }
 
 function rejectTrip(context: ActionContext, payload: any) {

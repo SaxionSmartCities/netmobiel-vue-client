@@ -45,7 +45,7 @@
       </slide-show-cancelled-trips>
     </template>
     <v-row v-if="isPassengerView" dense>
-      <v-col class="pa-0">
+      <v-col class="pa-1">
         <v-row dense>
           <v-col>
             <v-radio-group v-model="tripsSearchTime" class="mt-1" row>
@@ -96,7 +96,7 @@
       </v-col>
     </v-row>
     <v-row v-if="isDriverView" dense>
-      <v-col class="pa-0">
+      <v-col class="pa-1">
         <v-row dense>
           <v-col>
             <v-radio-group v-model="ridesSearchTime" class="mt-1" row>
