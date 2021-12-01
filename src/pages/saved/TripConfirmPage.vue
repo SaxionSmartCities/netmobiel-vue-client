@@ -32,7 +32,7 @@
           block
           depressed
           color="primary"
-          :disabled="networkRequest.status === 'PENDING'"
+          :disabled="processing"
           @click="reject"
         >
           Rit heeft niet plaatsgevonden
@@ -47,7 +47,7 @@
           rounded
           depressed
           color="button"
-          :disabled="networkRequest.status === 'PENDING'"
+          :disabled="processing"
           @click="confirm"
         >
           Bevestigen
@@ -74,6 +74,11 @@ export default {
   props: {
     id: { type: String, required: true },
   },
+  data() {
+    return {
+      processing: false,
+    }
+  },
   computed: {
     trip() {
       return isStore.getters.getSelectedTrip
@@ -90,25 +95,19 @@ export default {
     generateSteps() {
       return generateItineraryDetailSteps(this.trip.itinerary)
     },
-    networkRequest() {
-      return uiStore.getters.getNetworkRequest?.submitStatus?.status || ''
-    },
-  },
-  watch: {
-    networkRequest(newValue) {
-      if (newValue === 'SUCCESS') {
-        this.$router.push({ name: 'tripConfirmedPage' })
-      }
-    },
   },
   created() {
     uiStore.mutations.showBackButton()
   },
   methods: {
     confirm() {
-      isStore.actions.confirmTrip({ id: this.id })
+      this.processing = true
+      isStore.actions
+        .confirmTrip({ id: this.id })
+        .then(() => this.$router.push({ name: 'tripConfirmedPage' }))
     },
     reject() {
+      this.processing = true
       this.$router.push({
         name: 'tripNotMade',
         params: { id: this.id },
