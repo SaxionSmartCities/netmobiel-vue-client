@@ -9,13 +9,43 @@ import VueKeyCloak from '@dsb-norge/vue-keycloak-js'
 
 Vue.config.productionTip = false
 
-function tokenInterceptor() {
+function addStaticTokenInterceptor() {
   axios.interceptors.request.use(
     config => {
-      config.headers.Authorization = `Bearer ${Vue.prototype.$keycloak.token}`
+      if (Vue.prototype.$keycloak.authenticated) {
+        config.headers.Authorization = `Bearer ${Vue.prototype.$keycloak.token}`
+      }
       return config
     },
     error => {
+      return Promise.reject(error)
+    }
+  )
+}
+
+function addStaticResponseInterceptor() {
+  axios.interceptors.response.use(
+    response => response,
+    error => {
+      if (error.response.status === 401) {
+        // eslint-disable-next-line
+        console.warn(
+          `No authorization for ${error.config.method?.toUpperCase()} ${
+            error.config.url
+          }`
+        )
+        // Redirect to the session expired. Ignore errors saying that others also redirected to that same page.
+        router.push('/session-expired').catch(error => {
+          if (error.name !== 'NavigationDuplicated') {
+            throw error
+          }
+        })
+      } else if (error.response.status === 500) {
+        if (error.response?.data?.includes('ECONNREFUSED')) {
+          // eslint-disable-next-line
+          console.warn('Network issue detected')
+        }
+      }
       return Promise.reject(error)
     }
   )
@@ -39,10 +69,11 @@ Vue.use(VueKeyCloak, {
   },
   onAuthRefreshError: function(e: any) {
     // eslint-disable-next-line
-    console.error(e)
+    // console.error(e)
   },
   onReady: function() {
-    tokenInterceptor()
+    addStaticTokenInterceptor()
+    addStaticResponseInterceptor()
     /* eslint-disable no-new */
     new Vue({
       store,
@@ -58,6 +89,6 @@ Vue.use(VueKeyCloak, {
   onInitError: function(err: Error, e: any) {
     // Does not work yet :(
     // eslint-disable-next-line
-    console.error(err)
+    // console.error(err)
   },
 })

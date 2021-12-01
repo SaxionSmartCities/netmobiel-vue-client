@@ -52,6 +52,7 @@ import DelegationNew from '@/pages/profile/delegation/NewDelegationPage'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import LogoutPage from '@/pages/home/LogoutPage'
+import SessionExpiredPage from '@/pages/SessionExpiredPage'
 
 Vue.use(Router)
 
@@ -64,6 +65,11 @@ const router = new Router({
       component: LandingPage,
     },
     {
+      path: '/session-expired',
+      name: 'sessionExpired',
+      component: SessionExpiredPage,
+    },
+    {
       path: '/home',
       name: 'home',
       component: HomePage,
@@ -74,9 +80,9 @@ const router = new Router({
       component: LogoutPage,
     },
     {
-      path: '/createUser',
+      path: '/register-user',
       component: RegistrationPage,
-      name: 'createUser',
+      name: 'registerUser',
     },
     {
       path: '/credits',
@@ -325,17 +331,23 @@ const router = new Router({
   ],
 })
 
+const unprotectedPaths = ['/', '/logout', '/session-expired']
+
 router.beforeEach((to, from, next) => {
+  //console.log(`Route ${from.path} --> ${to.path}`)
   uiStore.mutations.hideBackButton()
   uiStore.mutations.enableFooter()
   uiStore.mutations.enableHeader()
+  // Ignore the 'to' path when we are not authenticated yet, instead go to the landing page
+  // except for when the destination is unprotected
   if (
-    !psStore.getters.getUser.accessToken &&
-    to.path !== '/' &&
-    to.path !== '/createUser' &&
-    to.path !== '/logout'
+    !Vue.prototype.$keycloak.authenticated &&
+    !unprotectedPaths.includes(to.path)
   ) {
-    next(`/?redirect=${to.path}`)
+    uiStore.actions.queueInfoNotification(
+      'Je sessie is niet meer geldig, meld je opnieuw aan'
+    )
+    next(`/`)
   } else {
     next()
   }
