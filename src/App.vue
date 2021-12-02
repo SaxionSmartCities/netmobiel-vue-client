@@ -76,9 +76,9 @@
 <script>
 import RoundUserImage from '@/components/common/RoundUserImage'
 import constants from '@/constants/constants'
-import hash from 'raw-loader!@/assets/current.hash'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import * as NetmobielApp from '@/utils/NetmobielApp'
 
 export default {
   name: 'App',
@@ -114,9 +114,6 @@ export default {
     isNotificationBarVisible() {
       return uiStore.getters.isNotificationBarVisible
     },
-    currentNotification() {
-      return uiStore.getters.getNotificationQueue[0]
-    },
     myProfile() {
       return psStore.getters.getProfile
     },
@@ -133,12 +130,6 @@ export default {
         let update = constants.COMPLETE_PROFILE_UPDATE
         uiStore.actions.addUpdate(update)
       }
-      // Update profile if the passed FCM token is different compared
-      // to the one in the profile.
-      let passedFcmToken = localStorage.fcm
-      if (passedFcmToken && passedFcmToken !== newProfile.fcmToken) {
-        psStore.actions.storeFcmToken({ fcmToken: passedFcmToken })
-      }
     },
     // Log all route changes
     // $route(to, from) {
@@ -146,18 +137,23 @@ export default {
     // },
   },
   mounted() {
-    // Set the fcm token (for push notifications) in the local storage
-    // for so we can retrieve it later to update the profile.
-    if (this.$route.query.fcm) {
-      localStorage.fcm = this.$route.query.fcm
-    }
     // Only fetch profile of authenticated user
     if (this.$keycloak.authenticated) {
+      window.addEventListener('NetmobielFcmToken', this.onFcmTokenReceived)
+      NetmobielApp.requestFcmToken()
       psStore.actions.fetchProfile().catch(() => {})
       psStore.mutations.setUserToken(this.$keycloak.token)
     }
   },
+  beforeDestroy() {
+    window.removeEventListener('NetmobielFcmToken', this.onFcmTokenReceived)
+  },
   methods: {
+    onFcmTokenReceived(evt) {
+      const fcmToken = evt.detail
+      // console.log(`FCM received: ${fcmToken}`)
+      psStore.actions.storeFcmToken({ fcmToken })
+    },
     onProfileImageClick() {
       // TODO: Only navigate to delegate if role is delegate (route to profile otherwise)
       const route = '/profile/delegate'
@@ -223,7 +219,7 @@ export default {
 }
 
 .small #content {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 .modeSelectPage #content {

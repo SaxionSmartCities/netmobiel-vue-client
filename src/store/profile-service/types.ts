@@ -86,6 +86,8 @@ export class ProfileState {
     status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
     results: [],
   }
+  // The FCM token received from the current device
+  deviceFcmToken: string = ''
 }
 export const emptyPublicUser: ExternalUser = {
   profile: {
