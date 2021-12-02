@@ -62,7 +62,7 @@ Vue.use(VueKeyCloak, {
   },
   init: {
     onLoad: 'check-sso',
-    enableLogging: true,
+    enableLogging: false,
     // The embedded browsers in Android and iOS do not store cookies
     // We don't care about an SSO logout anyway.
     checkLoginIframe: false,
