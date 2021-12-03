@@ -169,7 +169,7 @@ export default {
     },
     onFcmTokenReceived(evt) {
       const fcmToken = evt.detail?.fcmToken
-      console.log(`FCM received: ${fcmToken}`)
+      // console.log(`FCM received: ${fcmToken}`)
       psStore.actions.storeFcmToken({ fcmToken })
     },
     onProfileImageClick() {

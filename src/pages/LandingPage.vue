@@ -88,11 +88,10 @@ export default {
       let conversationId
       if (this.$route.query.msgId) {
         // eslint-disable-next-line
-        console.log(`Got an initial message: '${this.$route.query.msgId}'`)
+        // console.log(`Got an initial message: '${this.$route.query.msgId}'`)
         msStore.actions
           .fetchMessage({ id: this.$route.query.msgId })
           .then(msg => {
-            console.log(`Retrieved the message: ${msg.id}`)
             // Now goto the relevant (i.e., my) conversation. Find whether
             // that should be the sender's conversation or the recipient
             if (msg.sender?.managedIdentity === this.profile.id) {
