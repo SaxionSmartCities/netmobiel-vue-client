@@ -24,19 +24,22 @@ function createProfile(
   payload: Profile
 ): Promise<void> {
   const URL = `${PROFILE_BASE_URL}/profiles`
+  if (context.state.deviceFcmToken) {
+    payload.fcmToken = context.state.deviceFcmToken
+  }
   return axios
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
     .then(function() {
-      fetchProfile(context)
+      fetchProfile(context).catch(() => {})
       return Promise.resolve()
     })
     .catch(function(error) {
       // eslint-disable-next-line
       console.log(error)
       const status = error.response.status
-      let errorMsg = ''
+      let errorMsg
       if (status === 422) {
         errorMsg = 'Ontbrekende data (email, voornaam of achternaam).'
       } else if (status === 451) {
@@ -65,13 +68,7 @@ function fetchProfile(context: ActionContext) {
           ...response.data.profiles[0],
           image: createAbsoluteImageUrl(response.data.profiles[0].image),
         }
-        //TODO Fix this strange construction
-        if (!!localStorage.fcm && localStorage.fcm !== profile.fcmToken) {
-          profile.fcmToken = localStorage.fcm
-          updateProfile(context, profile)
-        } else {
-          mutations.setProfile(profile)
-        }
+        mutations.setProfile(profile)
       }
       return Promise.resolve(response.status)
     })
@@ -230,12 +227,19 @@ function storeRidePreferences(context: ActionContext, payload: any) {
 
 function storeFcmToken(context: ActionContext, payload: { fcmToken: string }) {
   let profile = { ...context.state.user.profile }
-  profile.fcmToken = payload.fcmToken
-  updateProfile(context, profile)
+  context.state.deviceFcmToken = payload.fcmToken
+  if (profile.id && payload.fcmToken && payload.fcmToken !== profile.fcmToken) {
+    return updateProfile(context, profile)
+  } else {
+    return Promise.resolve()
+  }
 }
 
 function updateProfile(context: ActionContext, profile: Profile) {
   const URL = `${PROFILE_BASE_URL}/profiles/${profile.id}`
+  if (context.state.deviceFcmToken) {
+    profile.fcmToken = context.state.deviceFcmToken
+  }
   return axios
     .put(URL, profile, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),

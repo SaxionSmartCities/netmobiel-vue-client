@@ -50,7 +50,6 @@ import DelegationOverview from '@/pages/profile/delegation/DelegationOverview'
 import AddDelegationPage from '@/pages/profile/delegation/AddDelegationPage'
 import DelegationNew from '@/pages/profile/delegation/NewDelegationPage'
 import * as uiStore from '@/store/ui'
-import * as psStore from '@/store/profile-service'
 import LogoutPage from '@/pages/home/LogoutPage'
 import SessionExpiredPage from '@/pages/SessionExpiredPage'
 
@@ -341,7 +340,7 @@ router.beforeEach((to, from, next) => {
   // Ignore the 'to' path when we are not authenticated yet, instead go to the landing page
   // except for when the destination is unprotected
   if (
-    !Vue.prototype.$keycloak.authenticated &&
+    !Vue?.prototype.$keycloak.authenticated &&
     !unprotectedPaths.includes(to.path)
   ) {
     uiStore.actions.queueInfoNotification(
