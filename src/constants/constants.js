@@ -9,7 +9,7 @@ export default {
   shoutOutDepArrRadiusWhole_NL: 200000,
   shoutOutDepArrRadiusNearby: 20000,
   shoutOutTravelRadius: 50000,
-  defaultNotificationTimeout: 3000,
+  defaultNotificationTimeout: 5000,
   searchSuggestionCategoryIcons: {
     airport: 'local_airport',
     'bus-station': 'directions_bus',

@@ -169,6 +169,28 @@ function sendMessage(context: ActionContext, payload: any) {
   })
 }
 
+function fetchMessage(context: ActionContext, { id }: any) {
+  const delegatorId = context.rootState.ps.user.delegatorId
+  const URL = `${COMMUNICATOR_BASE_URL}/messages/${id}`
+  return axios
+    .get(URL, {
+      headers: generateHeaders(
+        GRAVITEE_COMMUNICATOR_SERVICE_API_KEY,
+        delegatorId
+      ),
+    })
+    .then(function(resp) {
+      return Promise.resolve(resp.data)
+    })
+    .catch(function(error) {
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van het bericht.'
+      )
+      // eslint-disable-next-line
+      console.log(error)
+    })
+}
+
 export const buildActions = (
   msBuilder: ModuleBuilder<MessageState, RootState>
 ) => {
@@ -178,6 +200,7 @@ export const buildActions = (
     fetchConversation: msBuilder.dispatch(fetchConversation),
     fetchConversationByContext: msBuilder.dispatch(fetchConversationByContext),
     fetchMessages: msBuilder.dispatch(fetchMessages),
+    fetchMessage: msBuilder.dispatch(fetchMessage),
     sendMessage: msBuilder.dispatch(sendMessage),
   }
 }
