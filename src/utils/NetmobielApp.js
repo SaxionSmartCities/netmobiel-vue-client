@@ -39,6 +39,29 @@ export function requestFcmToken() {
  * @param token the current fcm token.
  */
 window.setNetmobielFcmToken = function(token) {
-  const fcmEvent = new CustomEvent('NetmobielFcmToken', { detail: token })
+  const fcmEvent = new CustomEvent('NetmobielFcmToken', {
+    detail: {
+      fcmToken: token,
+    },
+  })
   window.dispatchEvent(fcmEvent)
+}
+
+/**
+ * Setter for passing a push message ID to the Netmobiel application.
+ * The message is dispatched as a Javascript custom event
+ * 'NetmobielPushMessage' on the window object.
+ * @param msgId the message ID as a urn.
+ * @param titleEnc the message title (might be null), URI encoded.
+ * @param bodyEnc the message text, URI encoded.
+ */
+window.dispatchNetmobielPushMessage = function(msgId, titleEnc, bodyEnc) {
+  const event = new CustomEvent('NetmobielPushMessage', {
+    detail: {
+      msgId,
+      title: titleEnc ? decodeURIComponent(titleEnc) : undefined,
+      body: bodyEnc ? decodeURIComponent(bodyEnc) : undefined,
+    },
+  })
+  window.dispatchEvent(event)
 }

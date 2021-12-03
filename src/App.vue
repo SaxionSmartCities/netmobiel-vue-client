@@ -137,21 +137,39 @@ export default {
     // },
   },
   mounted() {
-    // Only fetch profile of authenticated user
+    // The initial message, if any, is passed by a query parameter to the url
+    window.addEventListener('NetmobielPushMessage', this.onPushMessageReceived)
     if (this.$keycloak.authenticated) {
       window.addEventListener('NetmobielFcmToken', this.onFcmTokenReceived)
       NetmobielApp.requestFcmToken()
+      // Only fetch profile of authenticated user
       psStore.actions.fetchProfile().catch(() => {})
       psStore.mutations.setUserToken(this.$keycloak.token)
     }
   },
   beforeDestroy() {
     window.removeEventListener('NetmobielFcmToken', this.onFcmTokenReceived)
+    window.removeEventListener(
+      'NetmobielPushMessage',
+      this.onPushMessageReceived
+    )
   },
   methods: {
+    onPushMessageReceived(evt) {
+      const detail = evt.detail
+      // console.log(
+      //   `Message received: ${detail.msgId} ${detail.title} ${detail.body}`
+      // )
+      if (detail.body) {
+        const textMessage = [detail.title || '', detail.body]
+          .filter(elem => elem)
+          .join(': ')
+        uiStore.actions.queueInfoNotification(textMessage)
+      }
+    },
     onFcmTokenReceived(evt) {
-      const fcmToken = evt.detail
-      // console.log(`FCM received: ${fcmToken}`)
+      const fcmToken = evt.detail?.fcmToken
+      console.log(`FCM received: ${fcmToken}`)
       psStore.actions.storeFcmToken({ fcmToken })
     },
     onProfileImageClick() {

@@ -28,6 +28,7 @@
 <script>
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import * as msStore from '@/store/message-service'
 
 export default {
   data() {
@@ -35,6 +36,11 @@ export default {
       buttonsVisible: false,
       progressVisible: false,
     }
+  },
+  computed: {
+    profile() {
+      return psStore.getters.getProfile
+    },
   },
   beforeCreate() {
     uiStore.mutations.disableHeader()
@@ -79,8 +85,36 @@ export default {
   },
   methods: {
     continueNavigation: function() {
-      // Redirect to the home page
-      this.$router.push({ path: '/home' })
+      let conversationId
+      if (this.$route.query.msgId) {
+        // eslint-disable-next-line
+        console.log(`Got an initial message: '${this.$route.query.msgId}'`)
+        msStore.actions
+          .fetchMessage({ id: this.$route.query.msgId })
+          .then(msg => {
+            console.log(`Retrieved the message: ${msg.id}`)
+            // Now goto the relevant (i.e., my) conversation. Find whether
+            // that should be the sender's conversation or the recipient
+            if (msg.sender?.managedIdentity === this.profile.id) {
+              conversationId = msg.senderConversationRef
+            } else {
+              conversationId = msg.envelopes.find(
+                env => env.recipient.managedIdentity === this.profile.id
+              )?.conversationRef
+            }
+            if (conversationId) {
+              this.$router.push({
+                name: 'conversation',
+                params: { conversationId },
+              })
+            }
+          })
+          .catch(() => {})
+      }
+      if (!conversationId) {
+        // Redirect to the home page
+        this.$router.push({ path: '/home' })
+      }
     },
     startRegistration: function() {
       this.$router.push({ name: 'registerUser' })
