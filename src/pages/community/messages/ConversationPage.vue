@@ -32,7 +32,7 @@
       v-if="savedChatMeta && savedChatMeta.recipientManagedIdentity"
       v-slot:footer
     >
-      <v-row dense class="px-4 pb-1">
+      <v-row dense class="px-4 pb-1 align-content-end">
         <v-col class="pl-0">
           <v-textarea
             v-model.trim="newMessage"
