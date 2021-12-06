@@ -5,7 +5,7 @@
       <v-row no-gutters>
         <v-col>
           <p>
-            Laat weten wie je bent, zodat reizigers of chauffeurs vertrouwen in
+            Laat weten wie je bent, zodat passagiers of chauffeurs vertrouwen in
             jou krijgen.
           </p>
           <span class="text-uppercase text-color-primary">

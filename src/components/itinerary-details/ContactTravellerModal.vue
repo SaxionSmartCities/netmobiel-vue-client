@@ -2,7 +2,7 @@
   <v-dialog v-model="showMe" max-width="400px">
     <v-card>
       <v-card-title class="headline">
-        Welke reiziger wilt u een bericht sturen?
+        Welke passagier wilt u een bericht sturen?
       </v-card-title>
 
       <v-card-text class="mt-2">
