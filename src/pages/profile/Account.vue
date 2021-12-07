@@ -88,6 +88,8 @@
                   hide-details="auto"
                   validate-on-blur
                   outlined
+                  readonly
+                  hint="Emailadres kan niet gewijzigd worden"
                   label="E-mailadres"
                   :rules="[rules.required, rules.email]"
                 ></v-text-field>
