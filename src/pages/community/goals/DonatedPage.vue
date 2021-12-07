@@ -48,7 +48,7 @@
 import ContentPane from '../../../components/common/ContentPane'
 import * as chsStore from '@/store/charity-service'
 export default {
-  name: 'Donated',
+  name: 'DonatedPage',
   components: { ContentPane },
   props: {
     charityId: { type: String, required: true },

@@ -10,7 +10,7 @@ import OnboardingNavigation from '@/components/onboarding/OnboardingNavigation.v
 import * as uiStore from '@/store/ui'
 
 export default {
-  name: 'DelegationOverview',
+  name: 'NewDelegationPage',
   components: { ContentPane, OnboardingNavigation },
   mounted() {
     uiStore.mutations.showBackButton()

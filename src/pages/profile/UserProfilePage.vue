@@ -48,7 +48,7 @@ import * as uiStore from '@/store/ui'
 import constants from '@/constants/constants'
 
 export default {
-  name: 'UserProfile',
+  name: 'UserProfilePage',
   components: {
     HighlightedInfo,
     ReviewItem,

@@ -10,7 +10,7 @@
         }"
         @click="onSelect(option)"
       >
-        <span class="subtitle-1">
+        <span class="subtitle-1 text-center">
           {{ option.title }}
         </span>
       </div>
@@ -61,6 +61,7 @@ export default {
     border-radius: $single-select-border-radius;
     color: $single-select-text-color;
     padding: 7px;
+    cursor: pointer;
   }
   .active-option {
     background-color: white;

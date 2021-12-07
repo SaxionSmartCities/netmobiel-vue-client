@@ -1,13 +1,13 @@
 <template>
   <content-pane>
-    <v-row>
-      <v-col class="pa-0 ">
+    <v-row dense>
+      <v-col>
         <h1>Instellingen</h1>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col class="pa-0">
-        <h4 class="mt-4 mb-2 font-weight-bold text-color-primary">
+    <v-row dense>
+      <v-col>
+        <h4 class="font-weight-bold text-color-primary">
           Gebruik netmobiel als
         </h4>
         <single-select
@@ -19,9 +19,9 @@
         ></single-select>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row dense>
       <profile-info-dialog :value="dialog" />
-      <v-col class="pa-0">
+      <v-col>
         <div
           v-for="section in Object.keys(notificationSettings)"
           :key="section"

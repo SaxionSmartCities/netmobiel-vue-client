@@ -1,22 +1,19 @@
 <template>
-  <v-col class="py-0 my-3 ">
-    <v-row class="py-0 my-0" align="center">
-      <v-col class="pa-0 pb-2 my-0 body-2 font-weight-medium">
+  <v-col>
+    <v-row dense>
+      <v-col class="body-2 font-weight-medium">
         {{ formatDate }}
       </v-col>
-      <v-col class="pa-0 pb-2 my-0 body-2 align-self-end shrink text-kind">
+      <v-col class="body-2 align-self-end shrink text-kind">
         {{ transactionKind }}
       </v-col>
     </v-row>
-    <v-row align="center" class="py-0 my-0">
-      <v-col class="pa-0 my-0 body-2 align-self-start text-gray shrink mr-2">
+    <v-row dense>
+      <v-col class="body-2 align-self-start text-gray shrink">
         {{ formatTime }}
       </v-col>
-      <v-col class="pa-0 my-0 body-2">{{ description }}</v-col>
-      <v-col
-        class="pa-0 my-0 body-2 align-self-end shrink"
-        :class="transactionColor"
-      >
+      <v-col class="body-2">{{ description }}</v-col>
+      <v-col class="body-2 align-self-end shrink" :class="transactionColor">
         {{ amountFormat }}
       </v-col>
     </v-row>
