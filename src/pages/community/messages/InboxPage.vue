@@ -2,6 +2,7 @@
   <content-pane :clearpadding="true">
     <template v-slot:header>
       <tab-bar
+        class="shrink"
         :selected-tab-model="selectedTab"
         @tabChange="selectedTab = $event"
       >

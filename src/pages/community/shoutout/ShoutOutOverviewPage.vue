@@ -3,6 +3,7 @@
     <template v-slot:header>
       <tab-bar
         v-if="isDrivingPassenger"
+        class="shrink"
         :selected-tab-model="selectedTab"
         @tabChange="selectedTab = $event"
       >
