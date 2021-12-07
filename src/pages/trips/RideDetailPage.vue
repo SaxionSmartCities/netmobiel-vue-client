@@ -184,7 +184,8 @@ export default {
       return null
     },
     isChatEnabled() {
-      return this.selectedBooking?.state.toUpperCase() !== 'CANCELLED'
+      // return this.selectedBooking?.state.toUpperCase() !== 'CANCELLED'
+      return true
     },
     isRideInThePast() {
       return (
