@@ -28,7 +28,7 @@ import ContentPane from '@/components/common/ContentPane'
 import * as uiStore from '@/store/ui'
 
 export default {
-  name: 'About',
+  name: 'AboutPage',
   components: { ContentPane },
   mounted() {
     uiStore.mutations.showBackButton()

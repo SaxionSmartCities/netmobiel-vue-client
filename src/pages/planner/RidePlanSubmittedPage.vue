@@ -7,30 +7,22 @@
     </v-row>
     <v-row class="ma-auto mt-2">
       <v-col>
-        Jouw rit is bevestigd. We sturen je een herinnering voor jouw vertrek.
+        Dank je wel! Jouw rit wordt meegenomen in de zoekresultaten! Je krijgt
+        automatisch bericht als er iemand met je mee wil.
       </v-col>
     </v-row>
     <v-row class="ma-auto mt-2">
       <v-col>
         <v-btn
-          large
           block
           rounded
           depressed
           class="my-3 button"
-          @click="swapLocations()"
+          to="/tripsOverviewPage"
         >
-          Plan direct je terugrit
+          Bekijk geplande ritten
         </v-btn>
-        <v-btn
-          large
-          block
-          rounded
-          depressed
-          outlined
-          color="primary"
-          to="/plan"
-        >
+        <v-btn block rounded depressed outlined color="primary" to="/plan">
           Plan een nieuwe rit
         </v-btn>
       </v-col>
@@ -40,20 +32,10 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-import * as gsStore from '@/store/geocoder-service'
 
 export default {
-  name: 'TripPlanSubmitted',
+  name: 'RidePlanSubmittedPage',
   components: { ContentPane },
-  data() {
-    return {}
-  },
-  methods: {
-    swapLocations() {
-      gsStore.mutations.swapLocations()
-      this.$router.push('/search')
-    },
-  },
 }
 </script>
 

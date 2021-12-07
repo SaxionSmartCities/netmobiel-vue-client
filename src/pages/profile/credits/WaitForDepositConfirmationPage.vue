@@ -25,7 +25,7 @@ import * as uiStore from '@/store/ui'
 const loc = new URL(location.href)
 
 export default {
-  name: 'ConfirmDeposit',
+  name: 'WaitForDepositConfirmationPage',
   components: {
     ContentPane,
   },

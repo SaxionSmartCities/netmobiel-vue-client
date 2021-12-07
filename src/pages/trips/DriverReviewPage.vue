@@ -67,8 +67,8 @@
 
 <script>
 import ContentPane from '../../components/common/ContentPane'
-import TripMade from './TripMade'
-import TripNotMade from './TripNotMade'
+import TripMade from '../../components/review/TripMade'
+import TripNotMade from '../../components/review/TripNotMade'
 import moment from 'moment'
 import Stepper from '@/components/other/Stepper'
 import * as uiStore from '@/store/ui'

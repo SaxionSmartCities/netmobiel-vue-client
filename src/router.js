@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import CommunityOverviewPage from './pages/community/CommunityOverviewPage.vue'
-import Credits from './pages/profile/Creditspage.vue'
+import CreditsPage from './pages/profile/CreditsPage.vue'
 import InboxPage from './pages/community/messages/InboxPage.vue'
 import ConversationPage from './pages/community/messages/ConversationPage.vue'
 import ItineraryDetailPage from './pages/planner/ItineraryDetailPage.vue'
@@ -10,7 +10,7 @@ import HomePage from './pages/home/HomePage.vue'
 import HowToPage from './pages/home/HowToPage.vue'
 import ModeSelectionPage from './pages/planner/ModeSelectionPage.vue'
 import NotificationOptionsPage from './pages/profile/NotificationOptionsPage.vue'
-import OnboardingComplete from './pages/OnboardingComplete.vue'
+import OnboardingCompletedPage from './pages/OnboardingCompletedPage.vue'
 import OnboardingPage from './pages/OnboardingPage.vue'
 import CarsPage from './pages/planner/CarsPage.vue'
 import CarAddPage from './pages/planner/CarAddPage.vue'
@@ -20,35 +20,35 @@ import SearchOptionsPage from './pages/planner/SearchOptionsPage'
 import SearchPage from './pages/planner/SearchPage.vue'
 import SearchResultsPage from './pages/planner/SearchResultsPage.vue'
 import RegistrationPage from './pages/RegistrationPage.vue'
-import RideDetailPage from './pages/saved/RideDetailPage.vue'
+import RideDetailPage from './pages/trips/RideDetailPage.vue'
 import RidePlanPage from './pages/planner/RidePlanPage.vue'
 import RidePlanOptionsPage from './pages/planner/RidePlanOptionsPage.vue'
-import RidePlanSubmitted from './pages/planner/RidePlanSubmitted.vue'
-import TripPlanSubmitted from './pages/planner/TripPlanSubmitted.vue'
-import TripsOverviewPage from './pages/saved/TripsOverviewPage.vue'
+import RidePlanSubmittedPage from './pages/planner/RidePlanSubmittedPage.vue'
+import TripPlanSubmittedPage from './pages/planner/TripPlanSubmittedPage.vue'
+import TripsOverviewPage from './pages/trips/TripsOverviewPage.vue'
 import CharityOverviewPage from './pages/community/goals/CharityOverviewPage'
 import CharityDetailPage from './pages/community/goals/CharityDetailsPage'
-import TripCancelledPage from './pages/saved/TripCancelledPage'
-import TripDetailPage from './pages/saved/TripDetailPage'
-import TripConfirmPage from './pages/saved/TripConfirmPage'
-import TripConfirmedPage from './pages/saved/TripConfirmedPage'
-import TripNotMade from './pages/saved/TripNotMade'
+import TripCancelledPage from './pages/trips/TripCancelledPage'
+import TripDetailPage from './pages/trips/TripDetailPage'
+import TripConfirmPage from './pages/trips/TripConfirmPage'
+import TripConfirmedPage from './pages/trips/TripConfirmedPage'
+import TripNotMadePage from './pages/trips/TripNotMadePage'
 import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
 import ShoutOutDriverDetailPage from '@/pages/community/shoutout/ShoutOutDriverDetailPage'
 import ShoutOutPassengerDetailPage from '@/pages/community/shoutout/ShoutOutPassengerDetailPage'
 import ShoutOutSubmittedPage from '@/pages/planner/ShoutOutSubmittedPage'
-import Account from '@/pages/profile/Account'
-import DriverReviewPage from './pages/review/DriverReviewPage'
-import TripReviewedPage from './pages/review/TripReviewedPage'
-import SupportGoal from './pages/community/goals/SupportGoal'
-import Donated from './pages/community/goals/Donated'
-import About from '@/pages/profile/About'
-import UserProfile from '@/pages/profile/UserProfile'
-import Purchase from '@/pages/profile/credits/Purchase'
-import ConfirmDeposit from '@/pages/profile/credits/ReturnAfterDeposit'
-import DelegationOverview from '@/pages/profile/delegation/DelegationOverview'
+import AccountPage from '@/pages/profile/AccountPage'
+import DriverReviewPage from './pages/trips/DriverReviewPage'
+import TripReviewedPage from './pages/trips/TripReviewedPage'
+import SupportGoalPage from './pages/community/goals/SupportGoalPage'
+import DonatedPage from './pages/community/goals/DonatedPage'
+import AboutPage from '@/pages/profile/AboutPage'
+import UserProfilePage from '@/pages/profile/UserProfilePage'
+import PurchasePage from '@/pages/profile/credits/PurchasePage'
+import WaitForDepositConfirmationPage from '@/pages/profile/credits/WaitForDepositConfirmationPage'
+import DelegationOverviewPage from '@/pages/profile/delegation/DelegationOverviewPage'
 import AddDelegationPage from '@/pages/profile/delegation/AddDelegationPage'
-import DelegationNew from '@/pages/profile/delegation/NewDelegationPage'
+import NewDelegationPage from '@/pages/profile/delegation/NewDelegationPage'
 import * as uiStore from '@/store/ui'
 import LogoutPage from '@/pages/home/LogoutPage'
 import SessionExpiredPage from '@/pages/SessionExpiredPage'
@@ -85,7 +85,7 @@ const router = new Router({
     },
     {
       path: '/credits',
-      component: Credits,
+      component: CreditsPage,
       name: 'credits',
     },
     {
@@ -95,7 +95,7 @@ const router = new Router({
     },
     {
       path: '/profile/delegate',
-      component: DelegationOverview,
+      component: DelegationOverviewPage,
     },
     {
       path: '/profile/delegate/add',
@@ -103,7 +103,7 @@ const router = new Router({
     },
     {
       path: '/profile/delegate/new',
-      component: DelegationNew,
+      component: NewDelegationPage,
     },
     {
       path: '/search',
@@ -128,13 +128,13 @@ const router = new Router({
     },
     {
       path: '/supportGoal/:id',
-      component: SupportGoal,
+      component: SupportGoalPage,
       name: 'supportGoal',
       props: true,
     },
     {
       path: '/donated/:charityId;:charityName',
-      component: Donated,
+      component: DonatedPage,
       name: 'donated',
       props: true,
     },
@@ -145,12 +145,12 @@ const router = new Router({
     },
     {
       path: '/planSubmitted',
-      component: RidePlanSubmitted,
+      component: RidePlanSubmittedPage,
       name: 'planSubmitted',
     },
     {
       path: '/tripPlanSubmitted',
-      component: TripPlanSubmitted,
+      component: TripPlanSubmittedPage,
       name: 'tripPlanSubmitted',
     },
     {
@@ -205,7 +205,7 @@ const router = new Router({
     },
     {
       path: '/tripNotMade/:id',
-      component: TripNotMade,
+      component: TripNotMadePage,
       name: 'tripNotMade',
       props: true,
     },
@@ -242,7 +242,7 @@ const router = new Router({
     },
     {
       path: '/onboardingComplete',
-      component: OnboardingComplete,
+      component: OnboardingCompletedPage,
       name: 'onboardingComplete',
     },
     {
@@ -280,7 +280,7 @@ const router = new Router({
     },
     {
       path: '/account',
-      component: Account,
+      component: AccountPage,
       name: 'account',
     },
     {
@@ -308,24 +308,24 @@ const router = new Router({
     },
     {
       path: '/about',
-      component: About,
+      component: AboutPage,
       name: 'about',
     },
     {
       path: '/userProfilePage/:profileId',
-      component: UserProfile,
+      component: UserProfilePage,
       name: 'userProfile',
       props: true,
     },
     {
       path: '/addCredits',
-      component: Purchase,
+      component: PurchasePage,
       name: 'purchaseCredits',
     },
     {
-      path: '/returnAfterDeposit',
-      component: ConfirmDeposit,
-      name: 'confirmDeposit',
+      path: '/wait-for-deposit-confirmation',
+      component: WaitForDepositConfirmationPage,
+      name: 'waitForDepositConfirmation',
     },
   ],
 })

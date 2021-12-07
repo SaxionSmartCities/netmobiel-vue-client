@@ -134,7 +134,7 @@ import DateMenuSelector from '@/components/common/DateMenuSelector'
 import SearchLocation from '@/components/search/SearchLocation'
 
 export default {
-  name: 'Account',
+  name: 'AccountPage',
   components: { SearchLocation, DateMenuSelector, ContentPane },
   data() {
     return {

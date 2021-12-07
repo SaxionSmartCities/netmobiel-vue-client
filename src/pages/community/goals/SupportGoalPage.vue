@@ -79,7 +79,7 @@ import * as chsStore from '@/store/charity-service'
 import * as psStore from '@/store/profile-service'
 
 export default {
-  name: 'SupportGoal',
+  name: 'SupportGoalPage',
   components: { ContentPane },
   props: {
     id: { type: String, required: true },

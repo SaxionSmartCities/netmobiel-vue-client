@@ -66,7 +66,7 @@ const MIN_AMOUNT = 10,
   MAX_AMOUNT = 1000
 
 export default {
-  name: 'Purchase',
+  name: 'PurchasePage',
   components: {
     ContentPane,
   },
@@ -94,7 +94,7 @@ export default {
       const deposit = {
         description: `${this.creditAmount} credits inkopen voor NetMobiel`,
         amountCredits: this.creditAmount,
-        returnUrl: new URL('returnAfterDeposit', location.href),
+        returnUrl: new URL('wait-for-deposit-confirmation', location.href),
       }
       crsStore.actions.buyCredits(deposit).then(data => {
         // follow payment URL in current window

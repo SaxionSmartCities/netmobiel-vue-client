@@ -85,7 +85,7 @@ const euroFormatter = new Intl.NumberFormat('nl-NL', {
 })
 
 export default {
-  name: 'Credits',
+  name: 'CreditsPage',
   components: {
     ContentPane,
     CreditHistoryLine,

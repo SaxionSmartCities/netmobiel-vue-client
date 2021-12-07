@@ -48,7 +48,7 @@ import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 
 export default {
-  name: 'DelegationOverview',
+  name: 'DelegationOverviewPage',
   components: { ContentPane, UserList },
   computed: {
     accounts() {
