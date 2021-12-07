@@ -174,7 +174,7 @@ export default {
         result.push({ label: 'Afstand', value: `${this.rideDistance} km` })
       }
       if (this.travellerName) {
-        result.push({ label: 'Reiziger', value: this.travellerName })
+        result.push({ label: 'Passagier', value: this.travellerName })
       }
       return result
     },

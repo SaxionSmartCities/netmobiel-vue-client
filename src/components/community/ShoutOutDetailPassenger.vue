@@ -43,7 +43,7 @@
         <v-col class="mt-2">
           <h3>Aangeboden ritten</h3>
         </v-col>
-        <v-col v-if="!itineraries">
+        <v-col v-if="!itineraries.length">
           <em>Er zijn nog geen ritten aangeboden.</em>
         </v-col>
         <v-col v-else class="py-3">
@@ -89,13 +89,8 @@ export default {
   },
   computed: {
     itineraries() {
-      // A filtered list of itineraries (removing cancelled offers). Passenger itineraries comprise a single leg.
-      if (this.shoutOut?.itineraries) {
-        return this.shoutOut.itineraries.filter(
-          i => i.legs[0].state !== 'CANCELLEDX'
-        )
-      }
-      return []
+      // List all itineraries, including the cancelled ones.
+      return this.shoutOut?.itineraries || []
     },
     selectedOffer() {
       if (
@@ -126,8 +121,7 @@ export default {
       return (
         this.shoutOutIsClosed ||
         !this.selectedOffer ||
-        this.selectedOffer.legs.find(leg => leg.state === 'CANCELLED') !==
-          undefined
+        this.selectedOffer.legs.find(leg => leg.state === 'CANCELLED')
       )
     },
   },

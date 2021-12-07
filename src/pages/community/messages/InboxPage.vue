@@ -21,7 +21,7 @@
           <v-list-item-avatar size="60">
             <external-user-image
               :managed-identity="user(cvs.recentMessage).managedIdentity"
-              :image-size="55"
+              :image-size="56"
               :avatar-size="60"
             />
           </v-list-item-avatar>

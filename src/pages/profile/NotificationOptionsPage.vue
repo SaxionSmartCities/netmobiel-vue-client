@@ -75,8 +75,8 @@ export default {
       notificationSettings: [],
       selectedMode: null,
       profileOptions: [
-        { title: 'Reiziger', value: constants.PROFILE_ROLE_PASSENGER },
-        { title: 'Reiziger + Chauffeur', value: constants.PROFILE_ROLE_BOTH },
+        { title: 'Passagier', value: constants.PROFILE_ROLE_PASSENGER },
+        { title: 'Passagier + Chauffeur', value: constants.PROFILE_ROLE_BOTH },
         { title: 'Chauffeur', value: constants.PROFILE_ROLE_DRIVER },
       ],
       dialog: {

@@ -15,7 +15,7 @@
         <external-user-image v-else :managed-identity="travellerIdentity" />
       </v-col>
       <v-col>
-        <p class="font-weight-regular header mb-0">Reiziger</p>
+        <p class="font-weight-regular header mb-0">Passagier</p>
         <p class="font-weight-light subtitle-1 mb-0">
           {{ travellerName }}
         </p>
