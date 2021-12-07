@@ -1,86 +1,85 @@
 <template>
   <content-pane>
-    <v-row align="center">
-      <v-col cols="3" class="px-0 mr-2">
+    <v-row dense align="center">
+      <v-col cols="3" class="mr-2">
         <round-user-image
-          :image-size="92"
-          :avatar-size="100"
+          :image-size="86"
+          :avatar-size="80"
           :profile-image="profileImage"
         />
       </v-col>
       <v-col>
-        <h1>
+        <h3>
           {{ timeOfDayGreeting }},
           {{ fullName }}
-        </h1>
+        </h3>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col class="px-1 pt-0">
+    <v-row dense>
+      <v-col>
         <span>
           Welkom bij Netmobiel, dé mobiliteitsapp van de Achterhoek en
           omstreken.
         </span>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col class="px-1">
+    <v-row dense>
+      <v-col>
         <v-btn large rounded block outlined color="primary" to="/howTo">
           Hoe werkt het?
         </v-btn>
       </v-col>
     </v-row>
-    <v-row v-if="updateMessages.length > 0">
-      <v-col class="px-1">
-        <v-row>
+    <v-row v-if="updateMessages.length > 0" dense>
+      <v-col>
+        <v-row dense>
           <v-col>
             <h4 class="netmobiel">Updates ({{ updateMessages.length }})</h4>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col class="pt-0">
+        <v-row dense>
+          <v-col>
             <update-card :update-message="updateMessages[0]"></update-card>
           </v-col>
         </v-row>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col v-if="!isDrivingPassenger" class="px-1 pb-0">
+    <v-row dense>
+      <v-col v-if="!isDrivingPassenger">
         <h4 class="netmobiel">Jouw ritten</h4>
       </v-col>
-      <v-col v-else class="px-1 pb-0">
+      <v-col v-else>
         <h4 class="netmobiel">Jouw autoritten</h4>
       </v-col>
     </v-row>
-    <v-row v-if="isDriverOnly || isDrivingPassenger" class="py-0">
-      <v-col v-if="rides.length === 0" class="py-0 px-1">
+    <v-row v-if="isDriverOnly || isDrivingPassenger" dense>
+      <v-col v-if="rides.length === 0">
         <span class="font-italic">
           Je hebt nog geen autoritten gepland.
         </span>
       </v-col>
-      <v-col v-else class="pt-0">
+      <v-col v-else>
         <v-row v-for="ride in rides" :key="ride.id" xs12>
-          <v-col class="px-1 py-0">
-            <ride-card class="my-2" :ride="ride" @rideSelected="onRideSelected">
-            </ride-card>
+          <v-col>
+            <ride-card :ride="ride" @rideSelected="onRideSelected" />
           </v-col>
         </v-row>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col v-if="isDrivingPassenger" class="px-1 pb-0">
+    <v-row dense>
+      <v-col v-if="isDrivingPassenger">
         <h4 class="netmobiel">Jouw ritten</h4>
       </v-col>
     </v-row>
-    <v-row v-if="isPassengerOnly || isDrivingPassenger" class="py-0">
-      <v-col v-if="trips.length === 0" class="py-0 px-1">
+    <v-row v-if="isPassengerOnly || isDrivingPassenger" dense>
+      <v-col v-if="trips.length === 0">
         <span class="font-italic">
           Je hebt nog geen ritten gepland.
         </span>
       </v-col>
-      <v-col v-else class="pt-0">
-        <v-row v-for="trip in trips" :key="trip.id" xs12>
-          <v-col class="px-1 py-0">
+      <v-col v-else>
+        <v-row v-for="trip in trips" :key="trip.id" xs12 dense>
+          <v-col>
             <travel-card
               :trip-id="trip.id"
               :itinerary="trip.itinerary"
@@ -92,7 +91,7 @@
       </v-col>
     </v-row>
     <v-row v-if="rides.length === 0 && trips.length === 0">
-      <v-col class="px-1">
+      <v-col>
         <v-btn
           large
           rounded

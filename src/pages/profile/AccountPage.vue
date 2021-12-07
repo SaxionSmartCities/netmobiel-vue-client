@@ -1,129 +1,125 @@
 <template>
-  <content-pane>
-    <v-form ref="form" v-model="valid">
-      <content-pane>
-        <v-row>
-          <v-col class="px-0">
-            <span class="headline">Account</span>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col class="pa-0">
-            <span
-              class="text-uppercase caption font-weight-bold text-color-primary"
-            >
-              persoonlijk
-            </span>
-            <v-divider></v-divider>
-            <v-row vertical-align-center>
-              <v-col>
-                <v-text-field
-                  v-model="user.firstName"
-                  hide-details="auto"
-                  validate-on-blur
-                  outlined
-                  label="Voornaam"
-                  :rules="[rules.required]"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field
-                  v-model="user.lastName"
-                  hide-details="auto"
-                  validate-on-blur
-                  outlined
-                  label="Achternaam"
-                  :rules="[rules.required]"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <date-menu-selector
-                  :value="user.dateOfBirth"
-                  label="Geboortedatum"
-                  :outlined="true"
-                  @date-selected="onDateSelected"
-                ></date-menu-selector>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col class="pa-0">
-            <span
-              class="text-uppercase caption font-weight-bold text-color-primary"
-            >
-              adres
-            </span>
-            <v-divider></v-divider>
-            <v-row vertical-align-center>
-              <v-col>
-                <search-location
-                  :address="user.address"
-                  label="Woonadres"
-                  :outlined="true"
-                  field="home"
-                  :favorable="false"
-                  @search-completed="onSearchCompleted"
-                ></search-location>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col class="pa-0">
-            <span
-              class="text-uppercase caption font-weight-bold text-color-primary"
-            >
-              contactgegevens
-            </span>
-            <v-divider></v-divider>
-            <v-row vertical-align-center>
-              <v-col>
-                <v-text-field
-                  v-model="user.email"
-                  hide-details="auto"
-                  validate-on-blur
-                  outlined
-                  readonly
-                  hint="Emailadres kan niet gewijzigd worden"
-                  label="E-mailadres"
-                  :rules="[rules.required, rules.email]"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <v-text-field
-                  v-model="user.phoneNumber"
-                  hide-details="true"
-                  outlined
-                  label="Telefoonnummer"
-                  validate-on-blur
-                  :rules="[rules.phone]"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col xs6 class="mx-2">
-            <v-btn block rounded outlined color="primary" @click="onCancel()">
-              Annuleren
-            </v-btn>
-          </v-col>
-          <v-col xs6 class="mx-2">
-            <v-btn block rounded depressed color="button" @click="onSave()">
-              Opslaan
-            </v-btn>
-          </v-col>
-        </v-row>
-      </content-pane>
-    </v-form>
-  </content-pane>
+  <v-form ref="form" v-model="valid" class="full-height">
+    <content-pane>
+      <v-row dense>
+        <v-col><h1>Account</h1></v-col>
+      </v-row>
+      <v-row dense>
+        <v-col>
+          <span
+            class="text-uppercase caption font-weight-bold text-color-primary"
+          >
+            Persoonlijk
+          </span>
+          <v-divider></v-divider>
+          <v-row vertical-align-center>
+            <v-col>
+              <v-text-field
+                v-model="user.firstName"
+                hide-details="auto"
+                validate-on-blur
+                outlined
+                label="Voornaam"
+                :rules="[rules.required]"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="user.lastName"
+                hide-details="auto"
+                validate-on-blur
+                outlined
+                label="Achternaam"
+                :rules="[rules.required]"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <date-menu-selector
+                :value="user.dateOfBirth"
+                label="Geboortedatum"
+                :outlined="true"
+                @date-selected="onDateSelected"
+              ></date-menu-selector>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row dense>
+        <v-col>
+          <span
+            class="text-uppercase caption font-weight-bold text-color-primary"
+          >
+            Adres
+          </span>
+          <v-divider></v-divider>
+          <v-row vertical-align-center>
+            <v-col>
+              <search-location
+                :address="user.address"
+                label="Woonadres"
+                :outlined="true"
+                field="home"
+                :favorable="false"
+                @search-completed="onSearchCompleted"
+              ></search-location>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row dense>
+        <v-col>
+          <span
+            class="text-uppercase caption font-weight-bold text-color-primary"
+          >
+            Contactgegevens
+          </span>
+          <v-divider></v-divider>
+          <v-row vertical-align-center>
+            <v-col>
+              <v-text-field
+                v-model="user.email"
+                hide-details="auto"
+                validate-on-blur
+                outlined
+                readonly
+                hint="Emailadres kan niet gewijzigd worden"
+                label="E-mailadres"
+                :rules="[rules.required, rules.email]"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="user.phoneNumber"
+                hide-details="true"
+                outlined
+                label="Telefoonnummer"
+                validate-on-blur
+                :rules="[rules.phone]"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col xs6 class="mx-2">
+          <v-btn block rounded outlined color="primary" @click="onCancel()">
+            Annuleren
+          </v-btn>
+        </v-col>
+        <v-col xs6 class="mx-2">
+          <v-btn block rounded depressed color="button" @click="onSave()">
+            Opslaan
+          </v-btn>
+        </v-col>
+      </v-row>
+    </content-pane>
+  </v-form>
 </template>
 
 <script>

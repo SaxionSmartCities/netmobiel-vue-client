@@ -1,7 +1,7 @@
 <template>
   <content-pane>
-    <v-row>
-      <v-col class="px-1 pt-0">
+    <v-row dense>
+      <v-col>
         In Netmobiel werken kennisinstellingen, technologiebedrijven, bewoners
         en overheden samen aan een mobiliteitsoplossing voor de Achterhoek in de
         de vorm van een app. Het is een innovatieproject dat gesubsidieerd wordt
@@ -11,8 +11,8 @@
         informatie.
       </v-col>
     </v-row>
-    <v-row>
-      <v-col class="px-1 pt-0">
+    <v-row dense>
+      <v-col>
         De software voor de Netmobiel app is ontwikkeld door het
         <a href="https://www.saxion.nl/onderzoek/smart-industry/smart-cities">
           Lectoraat Smart Cities</a

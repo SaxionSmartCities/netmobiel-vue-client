@@ -1,25 +1,25 @@
 <template>
   <content-pane>
-    <v-row align="center">
-      <v-col class="px-0">
+    <v-row dense>
+      <v-col>
         <h3>Credits</h3>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row dense>
       <v-divider />
     </v-row>
-    <v-row align="center">
-      <v-col class="px-0 body-1 shrink">
+    <v-row>
+      <v-col class="body-1 shrink">
         <strong>Saldo</strong>
       </v-col>
       <v-col class="body-2">{{ creditAmount }} credits</v-col>
       <v-col class="body-2">({{ euroAmount }})</v-col>
     </v-row>
-    <v-row>
+    <v-row dense>
       <v-divider />
     </v-row>
-    <v-row align="center">
-      <v-col class="px-0">
+    <v-row>
+      <v-col>
         <v-btn
           rounded
           outlined
@@ -29,7 +29,7 @@
           Doel steunen
         </v-btn>
       </v-col>
-      <v-col class="px-0">
+      <v-col>
         <v-btn
           rounded
           block
@@ -42,8 +42,8 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row align="center">
-      <v-col class="px-0">
+    <v-row>
+      <v-col>
         <v-btn
           large
           rounded
@@ -56,8 +56,8 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row align="center">
-      <v-col class="px-0">
+    <v-row dense>
+      <v-col>
         <h3 class="text-uppercase caption text-color-primary">overzicht</h3>
       </v-col>
     </v-row>
