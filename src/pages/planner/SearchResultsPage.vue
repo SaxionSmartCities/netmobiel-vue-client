@@ -1,7 +1,7 @@
 <template>
-  <content-pane>
+  <content-pane scrollable>
     <template v-slot:header>
-      <v-row>
+      <v-row class="shrink">
         <v-col class="py-0">
           <v-divider />
           <div

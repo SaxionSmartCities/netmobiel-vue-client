@@ -22,7 +22,7 @@
               is daarnaast verantwoordelijk voor de uitbetalingen. Denk hierbij
               aan de vergoeding die je kunt krijgen als je een rit aanbiedt. Ook
               stelt Vereniging Netmobiel bepaalde gedragsregels op om het reizen
-              met Netmobiel voor zowel reiziger als passagier veilig en
+              met Netmobiel voor zowel chauffeur als passagier veilig en
               comfortabel te houden. In dat kader is het verplicht om (gratis)
               lid te worden van Vereniging Netmobiel, voordat je gebruik kunt
               maken van de Netmobiel-app.

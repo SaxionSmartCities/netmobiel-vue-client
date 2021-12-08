@@ -1,23 +1,17 @@
 <template>
-  <content-pane :clearpadding="true" class="pa-0">
-    <v-row class="pt-2 flex-column">
+  <content-pane>
+    <v-row dense>
       <v-col>
-        <v-row class="mb-3">
-          <v-col class="shrink pa-0 pr-3">
+        <v-row dense>
+          <v-col class="shrink d-flex flex-column align-center">
             <round-user-image
               :image-size="92"
               :avatar-size="100"
               :profile-image="profileImage"
             ></round-user-image>
-            <img class="d-flex flex-column align-center" />
-            <div class="d-flex flex-row justify-center">
-              <a
-                class="caption bewerk"
-                @click="showUploadFile = !showUploadFile"
-              >
-                Bewerk
-              </a>
-            </div>
+            <a class="caption bewerk" @click="showUploadFile = !showUploadFile">
+              Bewerk
+            </a>
             <!--UPLOAD-->
             <div v-if="showUploadFile" class="text-center">
               <label for="file-input" class="custom-file-upload caption">
@@ -31,48 +25,56 @@
               </label>
             </div>
           </v-col>
-          <v-col class="flex-column">
-            <v-row>
-              <div
-                class="d-flex grow align-self-center flex-column user-text"
-                @click="navTo('account')"
-              >
-                <span class="shrink">{{ fullName }}</span>
-                <span class="caption text--gray">
-                  {{ userAddress }}
-                </span>
-              </div>
-              <v-icon large @click="navTo('account')">
-                chevron_right
-              </v-icon>
+          <v-col>
+            <v-row dense class="profile-item" @click="navTo('account')">
+              <v-col class="d-flex flex-row flex-nowrap">
+                <v-row dense>
+                  <v-col class="d-flex flex-column">
+                    <span class="shrink">{{ fullName }}</span>
+                    <span class="caption text--gray">
+                      {{ userAddress }}
+                    </span>
+                  </v-col>
+                  <v-col class="shrink">
+                    <v-icon large>
+                      chevron_right
+                    </v-icon>
+                  </v-col>
+                </v-row>
+              </v-col>
             </v-row>
-            <v-row class="mt-5">
-              <v-col class="pa-0 shrink">
-                <div>
-                  <v-btn
-                    v-if="creditsEnabled"
-                    rounded
-                    depressed
-                    small
-                    class="long"
-                    color="button"
-                    @click="navTo('credits')"
-                  >
-                    Beheer credits
-                  </v-btn>
-                  <div class="py-1"></div>
-                  <v-btn
-                    rounded
-                    depressed
-                    outlined
-                    small
-                    class="long"
-                    color="primary"
-                    @click="navReview"
-                  >
-                    Bekijk beoordelingen
-                  </v-btn>
-                </div>
+            <v-row dense>
+              <v-col>
+                <v-row dense>
+                  <v-col>
+                    <v-btn
+                      v-if="creditsEnabled"
+                      rounded
+                      depressed
+                      small
+                      class="long"
+                      color="button"
+                      @click="navTo('credits')"
+                    >
+                      Beheer credits
+                    </v-btn>
+                  </v-col>
+                </v-row>
+                <v-row dense>
+                  <v-col>
+                    <v-btn
+                      rounded
+                      depressed
+                      outlined
+                      small
+                      class="long"
+                      color="primary"
+                      @click="navReview"
+                    >
+                      Bekijk beoordelingen
+                    </v-btn>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-col>
@@ -87,19 +89,25 @@
     <v-row
       v-for="item in items"
       :key="item.name"
-      class="pa-0 ml-0 mr-1"
+      dense
       align-content="center"
+      class="profile-item"
       :class="{ 'no-route': !item.routeName }"
       @click="!item.routeName || $router.push({ name: item.routeName })"
     >
-      <v-col class="pa-0">
-        <v-row dense class="py-3">
-          <v-icon class="pl-1">{{ item.icon }}</v-icon>
-          <span class="pl-4 body-1 font-weight-light align-self-center">
-            {{ item.name }}
-          </span>
-          <v-spacer></v-spacer>
-          <v-icon>chevron_right</v-icon>
+      <v-col>
+        <v-row dense>
+          <v-col class="shrink">
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-col>
+          <v-col>
+            <span class="body-1 font-weight-light align-self-center">
+              {{ item.name }}
+            </span>
+          </v-col>
+          <v-col class="shrink">
+            <v-icon>chevron_right</v-icon>
+          </v-col>
         </v-row>
         <v-row dense>
           <v-col class="py-0">
@@ -110,7 +118,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-card outlined class="mt-2" @click="logOut">
+        <v-card outlined @click="logOut">
           <v-row>
             <v-col class="grow pl-6">
               Uitloggen
@@ -233,15 +241,11 @@ export default {
 #file-input {
   display: none;
 }
-.user-text {
-  flex: 0 1 0;
-}
-
 .theme--light.v-icon {
   color: $color-green;
 }
 .v-rating .v-icon {
-  padding: 0px;
+  padding: 0;
 }
 .no-route {
   color: $color-light-grey;
@@ -259,5 +263,8 @@ export default {
 }
 .long {
   width: 200px;
+}
+.profile-item {
+  cursor: pointer;
 }
 </style>

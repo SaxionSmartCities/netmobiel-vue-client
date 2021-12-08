@@ -1,7 +1,7 @@
 <template>
   <content-pane>
-    <v-row align="center">
-      <v-col class="px-0">
+    <v-row dense>
+      <v-col>
         <h3>Credits inkopen</h3>
       </v-col>
     </v-row>
@@ -23,7 +23,7 @@
         Eén credit kost {{ CREDIT_IN_EUROCENTS }} eurocent.
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-col>
         Hoeveel credits wilt U inkopen?
       </v-col>
@@ -38,8 +38,8 @@
         />
       </v-col>
     </v-row>
-    <v-row align="center">
-      <v-col class="px-0">
+    <v-row>
+      <v-col>
         <v-btn
           large
           rounded
@@ -66,7 +66,7 @@ const MIN_AMOUNT = 10,
   MAX_AMOUNT = 1000
 
 export default {
-  name: 'Purchase',
+  name: 'PurchasePage',
   components: {
     ContentPane,
   },
@@ -94,7 +94,7 @@ export default {
       const deposit = {
         description: `${this.creditAmount} credits inkopen voor NetMobiel`,
         amountCredits: this.creditAmount,
-        returnUrl: new URL('returnAfterDeposit', location.href),
+        returnUrl: new URL('wait-for-deposit-confirmation', location.href),
       }
       crsStore.actions.buyCredits(deposit).then(data => {
         // follow payment URL in current window

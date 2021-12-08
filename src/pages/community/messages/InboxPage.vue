@@ -2,6 +2,7 @@
   <content-pane :clearpadding="true">
     <template v-slot:header>
       <tab-bar
+        class="shrink"
         :selected-tab-model="selectedTab"
         @tabChange="selectedTab = $event"
       >
@@ -21,7 +22,7 @@
           <v-list-item-avatar size="60">
             <external-user-image
               :managed-identity="user(cvs.recentMessage).managedIdentity"
-              :image-size="55"
+              :image-size="56"
               :avatar-size="60"
             />
           </v-list-item-avatar>

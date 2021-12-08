@@ -42,7 +42,7 @@ import * as uiStore from '@/store/ui'
 import * as isStore from '@/store/itinerary-service'
 
 export default {
-  name: 'TripNotMade',
+  name: 'TripNotMadePage',
   components: {
     ContentPane,
   },

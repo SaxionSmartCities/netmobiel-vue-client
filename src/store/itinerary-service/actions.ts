@@ -177,9 +177,10 @@ function cancelTripPlan(
   const params: any = {
     reason: cancelReason ? cancelReason : undefined,
   }
+  const delegatorId = context.rootState.ps.user.delegatorId
   return axios
     .delete(URL, {
-      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
       params,
     })
     .then(response => {
@@ -445,11 +446,10 @@ function confirmTrip(context: ActionContext, payload: any) {
  * @param id the trip plan to fetch (should be a shout-out)
  */
 function fetchShoutOut(context: ActionContext, { id }: any) {
-  const delegatorId = context.rootState.ps.user.delegatorId
   const URL = `${PLANNER_BASE_URL}/shout-outs/${id}`
   axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
+      headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
     .then(response => {
       if (response.status == 200) {

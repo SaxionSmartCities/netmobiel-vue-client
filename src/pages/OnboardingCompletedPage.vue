@@ -29,7 +29,7 @@ import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
 
 export default {
-  name: 'OnboardingComplete',
+  name: 'OnboardingCompletedPage',
   data() {
     return {}
   },
