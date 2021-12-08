@@ -20,7 +20,7 @@
           </v-row>
         </template>
       </v-col>
-      <v-col v-else>
+      <v-col v-else class="my-2">
         <v-progress-circular
           indeterminate
           color="primary"
@@ -28,10 +28,7 @@
         <span class="ml-2">Berichten ophalen...</span>
       </v-col>
     </v-row>
-    <template
-      v-if="savedChatMeta && savedChatMeta.recipientManagedIdentity"
-      v-slot:footer
-    >
+    <template v-if="showChatBox" v-slot:footer>
       <v-row dense class="px-4 pb-1 align-content-end">
         <v-col class="pl-0">
           <v-textarea
@@ -109,6 +106,11 @@ export default {
     },
     recipientName() {
       return `${this.recipientProfile?.firstName} ${this.recipientProfile?.lastName}`.trim()
+    },
+    showChatBox() {
+      return (
+        this.savedChatMeta?.recipientManagedIdentity && this.savedConversationId
+      )
     },
   },
   watch: {
