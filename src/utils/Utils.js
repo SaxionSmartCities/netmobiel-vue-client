@@ -120,6 +120,27 @@ function findClosestIndexOf(needle, haystack) {
   }, 0)
 }
 
+/**
+ * Decodes a JWT token.
+ * @see https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript-without-using-a-library
+ * @param token The encoded JWT token
+ * @return Object with the token attributes
+ */
+function decodeJwt(token) {
+  // The structure of a JWT is <Header>.<Payload>.Signature
+  const base64Url = token.split('.')[1]
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split('')
+      .map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      })
+      .join('')
+  )
+  return JSON.parse(jsonPayload)
+}
+
 export {
   upperCaseFirst,
   generateHeaders,
@@ -131,4 +152,5 @@ export {
   geoLocationToPlace,
   getCreatedObjectIdFromResponse,
   findClosestIndexOf,
+  decodeJwt,
 }

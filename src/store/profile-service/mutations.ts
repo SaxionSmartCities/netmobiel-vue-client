@@ -1,5 +1,3 @@
-// @ts-ignore
-import VueJwtDecode from 'vue-jwt-decode'
 import { ModuleBuilder } from 'vuex-typex'
 import {
   ComplimentType,
@@ -12,10 +10,11 @@ import {
   RidePlanOptions,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
+import { decodeJwt } from '@/utils/Utils'
 
 function setUserToken(state: ProfileState, token: string) {
   state.user.accessToken = token
-  let decodedObject = VueJwtDecode.decode(token)
+  const decodedObject = decodeJwt(token)
   state.user.managedIdentity = decodedObject['sub']
   state.user.givenName = decodedObject['given_name']
   state.user.familyName = decodedObject['family_name']
