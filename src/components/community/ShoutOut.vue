@@ -5,14 +5,9 @@
     :class="{ 'travel-offer': hasOffer }"
     @click="onShoutOutSelected"
   >
-    <v-row class="mb-2">
+    <v-row v-if="!isUserTraveller" class="mb-2">
       <v-col class="shrink">
-        <v-img
-          v-if="isUserTraveller"
-          class="shout-out-image"
-          :src="myProfileImage"
-        />
-        <external-user-image v-else :managed-identity="travellerIdentity" />
+        <external-user-image :managed-identity="travellerIdentity" />
       </v-col>
       <v-col>
         <p class="font-weight-regular header mb-0">Passagier</p>
