@@ -86,9 +86,7 @@ export default {
     travelDate() {
       const { departureTime } = this.trip?.itinerary
       if (departureTime) {
-        return moment(departureTime)
-          .locale('nl')
-          .format('dddd DD MMMM')
+        return moment(departureTime).locale('nl').format('dddd DD MMMM')
       }
       return 'Onbekend'
     },

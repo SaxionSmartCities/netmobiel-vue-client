@@ -1,6 +1,6 @@
 <template>
   <content-pane :clearpadding="true">
-    <template v-slot:header>
+    <template #header>
       <v-container class="py-1">
         <span class="text-subtitle-2">{{ conversation.topic }}</span>
         <v-divider class="mt-1" />
@@ -28,7 +28,7 @@
         <span class="ml-2">Berichten ophalen...</span>
       </v-col>
     </v-row>
-    <template v-if="showChatBox" v-slot:footer>
+    <template v-if="showChatBox" #footer>
       <v-row dense class="px-4 pb-1 align-content-end">
         <v-col class="pl-0">
           <v-textarea
@@ -72,6 +72,24 @@ export default {
     ContentPane,
     MessageCard,
   },
+  beforeRouteEnter(to, from, next) {
+    // The restore is called after the mount!
+    // console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
+    next((vm) =>
+      restoreDataBeforeRouteEnter(vm, {
+        savedConversationId: (value) => value,
+        savedChatMeta: (value) => value,
+      })
+    )
+  },
+  beforeRouteLeave(to, from, next) {
+    // console.log(`beforeRouteLeave: ${from.name} --> ${to.name}`)
+    saveDataBeforeRouteLeave(this, {
+      savedConversationId: (value) => value,
+      savedChatMeta: (model) => model,
+    })
+    next()
+  },
   props: {
     conversationId: {
       type: String,
@@ -114,6 +132,7 @@ export default {
     },
   },
   watch: {
+    // eslint-disable-next-line no-unused-vars
     savedConversationId(newValue, oldValue) {
       // console.log(`savedConversationId: ${oldValue} --> ${newValue}`)
       if (newValue) {
@@ -123,6 +142,7 @@ export default {
           .then(() => (this.isFetchingMessages = false))
       }
     },
+    // eslint-disable-next-line no-unused-vars
     savedChatMeta(newValue, oldValue) {
       // console.log(
       //   `savedChatMeta: ${oldValue} --> Sender ${newValue?.senderContext} Recipient ${newValue?.recipientContext} ${newValue?.recipientManagedIdentity}`
@@ -133,7 +153,7 @@ export default {
           .fetchConversationByContext({
             conversationContext: newValue.senderContext,
           })
-          .then(c => {
+          .then((c) => {
             if (c?.conversationRef) {
               this.savedConversationId = c.conversationRef
             } else {
@@ -145,36 +165,19 @@ export default {
           })
       }
     },
+    // eslint-disable-next-line no-unused-vars
     recipientManagedIdentity(newValue, oldValue) {
       if (newValue) {
         psStore.actions
           .fetchPublicProfile({
             profileId: newValue,
           })
-          .then(profile => {
+          .then((profile) => {
             this.recipientProfile = profile
           })
           .catch()
       }
     },
-  },
-  beforeRouteEnter(to, from, next) {
-    // The restore is called after the mount!
-    // console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
-    next(vm =>
-      restoreDataBeforeRouteEnter(vm, {
-        savedConversationId: value => value,
-        savedChatMeta: value => value,
-      })
-    )
-  },
-  beforeRouteLeave(to, from, next) {
-    // console.log(`beforeRouteLeave: ${from.name} --> ${to.name}`)
-    saveDataBeforeRouteLeave(this, {
-      savedConversationId: value => value,
-      savedChatMeta: model => model,
-    })
-    next()
   },
   created() {
     uiStore.mutations.showBackButton()
@@ -215,7 +218,7 @@ export default {
     },
     myEnvelope(msg) {
       return msg.envelopes.find(
-        env => env.recipient.managedIdentity === this.profile.id
+        (env) => env.recipient.managedIdentity === this.profile.id
       )
     },
     getMyContext(msg) {
@@ -246,12 +249,13 @@ export default {
             recipientContext: msg.context,
             recipientManagedIdentity: msg.sender.managedIdentity,
           }
-          this.recipientManagedIdentity = this.savedChatMeta.recipientManagedIdentity
+          this.recipientManagedIdentity =
+            this.savedChatMeta.recipientManagedIdentity
         }
       } else {
         const ctx = this.getMyContext(msg)
         if (ctx.includes('booking')) {
-          const rideId = this.conversation.contexts.find(c =>
+          const rideId = this.conversation.contexts.find((c) =>
             c.includes('ride')
           )
           if (rideId) {
@@ -275,7 +279,8 @@ export default {
             constants.CONVERSATION_OWNER_ROLE.DRIVER
           ) {
             const rideId =
-              this.conversation.contexts.find(c => c.includes('ride')) || 'none'
+              this.conversation.contexts.find((c) => c.includes('ride')) ||
+              'none'
             this.$router.push({
               name: 'shoutOutDriver',
               params: { shoutOutId: ctx, rideId: rideId },
@@ -322,7 +327,7 @@ export default {
             this.scrollToBottomMessageContainer(true)
           })
         })
-        .catch(function(error) {
+        .catch(function (error) {
           // eslint-disable-next-line
           console.log(error)
           uiStore.actions.queueErrorNotification(

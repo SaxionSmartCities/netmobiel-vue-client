@@ -43,9 +43,7 @@ export default {
   },
   methods: {
     formatDate(date) {
-      return moment(date)
-        .locale('nl')
-        .calendar()
+      return moment(date).locale('nl').calendar()
     },
   },
 }

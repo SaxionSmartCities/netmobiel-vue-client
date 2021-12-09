@@ -34,14 +34,8 @@ export default {
   props: { donations: { type: Array, required: true } },
   methods: {
     formatDateTime(dateTime, format) {
-      if (!format)
-        return moment(dateTime)
-          .locale('nl')
-          .calendar()
-      else
-        return moment(dateTime)
-          .local('nl')
-          .format(format)
+      if (!format) return moment(dateTime).locale('nl').calendar()
+      else return moment(dateTime).local('nl').format(format)
     },
     formatName(donation) {
       let name = ''

@@ -1,18 +1,14 @@
 <template>
   <content-pane>
-    <template v-slot:header>
+    <template #header>
       <v-row
         v-if="ride.state === 'CANCELLED'"
         class="cancelled-banner text-center py-1"
         dense
         no-gutters
       >
-        <v-col v-if="isRideInThePast">
-          Deze rit was geannuleerd
-        </v-col>
-        <v-col v-else>
-          Deze rit is geannuleerd
-        </v-col>
+        <v-col v-if="isRideInThePast"> Deze rit was geannuleerd </v-col>
+        <v-col v-else> Deze rit is geannuleerd </v-col>
       </v-row>
     </template>
     <v-row>
@@ -167,7 +163,7 @@ export default {
     activeBookings() {
       return this.ride?.bookings
         ? this.ride.bookings.filter(
-            booking => booking.state.toUpperCase() !== 'CANCELLED'
+            (booking) => booking.state.toUpperCase() !== 'CANCELLED'
           )
         : []
     },
@@ -259,11 +255,7 @@ export default {
   },
   methods: {
     formatTime(t) {
-      return t
-        ? moment(t)
-            .locale('nl')
-            .calendar()
-        : '- - : - -'
+      return t ? moment(t).locale('nl').calendar() : '- - : - -'
     },
     onLegSelected(leg) {
       this.selectedLeg = leg
@@ -288,7 +280,8 @@ export default {
     contactPassenger() {
       // We do not know the conversation yet
       const booking = this.selectedBooking
-      const passengerContext = booking.passengerTripRef || passengerTripPlanRef
+      const passengerContext =
+        booking.passengerTripRef || booking.passengerTripPlanRef
       this.$router.push({
         name: `conversation`,
         params: {

@@ -98,12 +98,9 @@ import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ShoutOutTravelProposalEditor from '@/components/community/ShoutOutTravelProposalEditor'
 import {
-  generateShoutOutDetailSteps,
   generateItineraryDetailSteps,
+  generateShoutOutDetailSteps,
 } from '@/utils/itinerary_steps.js'
-import * as isStore from '@/store/itinerary-service'
-import * as gsStore from '@/store/geocoder-service'
-import { geoPlaceToCriteria } from '@/utils/Utils'
 
 export default {
   name: 'ShoutOutTravelProposal',
@@ -164,8 +161,8 @@ export default {
         steps = generateItineraryDetailSteps(this.offer.itineraries[0])
         // Add the passenger to the rideshare legs for the GUI
         steps
-          .filter(leg => leg.traverseMode === 'RIDESHARE')
-          .forEach(leg => (leg.passenger = { ...this.shoutOut.traveller }))
+          .filter((leg) => leg.traverseMode === 'RIDESHARE')
+          .forEach((leg) => (leg.passenger = { ...this.shoutOut.traveller }))
       } else if (this.shoutOut?.planRef) {
         steps = generateShoutOutDetailSteps(this.shoutOut, undefined)
       } else {

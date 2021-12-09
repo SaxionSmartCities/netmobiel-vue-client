@@ -69,6 +69,20 @@ export default {
     ContentPane,
     SearchCriteria,
   },
+  beforeRouteEnter(to, from, next) {
+    // console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
+    const keepWhenComingFrom = [
+      'searchLocation',
+      'searchOptions',
+      'searchResults',
+    ]
+    // Clear the search location when navigating from a different page than the location lookup page of one of the subpages
+    if (!keepWhenComingFrom.includes(from?.name)) {
+      gsStore.mutations.clearAllGeoLocationPicked()
+      isStore.mutations.setSearchCriteria({})
+    }
+    next()
+  },
   computed: {
     searchCriteria() {
       return isStore.getters.getSearchCriteria
@@ -103,20 +117,6 @@ export default {
       }
     }
     isStore.mutations.setSearchCriteria(newCriteria)
-  },
-  beforeRouteEnter(to, from, next) {
-    // console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
-    const keepWhenComingFrom = [
-      'searchLocation',
-      'searchOptions',
-      'searchResults',
-    ]
-    // Clear the search location when navigating from a different page than the location lookup page of one of the subpages
-    if (!keepWhenComingFrom.includes(from?.name)) {
-      gsStore.mutations.clearAllGeoLocationPicked()
-      isStore.mutations.setSearchCriteria({})
-    }
-    next()
   },
   methods: {
     onLocationFieldSelected(newField) {

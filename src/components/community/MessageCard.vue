@@ -84,9 +84,7 @@ export default {
   },
   computed: {
     timeStamp() {
-      return moment(this.message.createdTime)
-        .locale('nl')
-        .calendar()
+      return moment(this.message.createdTime).locale('nl').calendar()
     },
     isMessageSendByMe() {
       return this.sendByMe

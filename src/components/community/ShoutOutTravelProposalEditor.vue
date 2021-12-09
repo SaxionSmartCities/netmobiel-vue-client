@@ -2,7 +2,7 @@
   <v-row class="bg-light-green pt-0">
     <v-col cols="3">
       <v-dialog v-model="showTimePicker" persistent>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-text-field
             class="bg-white"
             dense
@@ -70,7 +70,7 @@ export default {
     // The time prop should be a moment object.
     time: { type: Object, required: false, default: () => null },
     location: { type: Object, required: false, default: () => null },
-    allowedMinutes: { type: Function, default: m => m % 5 === 0 },
+    allowedMinutes: { type: Function, default: (m) => m % 5 === 0 },
     isArrival: { type: Boolean, default: false },
     isEnabled: { type: Boolean, default: true },
   },
@@ -99,6 +99,7 @@ export default {
      * Update the time displayed whenever the input time changes.
      * This does not interfere with the value set by the time editor.
      */
+    // eslint-disable-next-line no-unused-vars
     time(newValue, oldValue) {
       this.pickedTime = this.time.format('HH:mm')
     },

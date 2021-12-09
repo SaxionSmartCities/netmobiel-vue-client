@@ -1,15 +1,13 @@
 <template>
   <content-pane>
-    <template v-slot:header>
+    <template #header>
       <v-row
         v-if="shoutOutIsClosed"
         class="cancelled-banner text-center py-1"
         dense
         no-gutters
       >
-        <v-col>
-          Deze oproep is gesloten
-        </v-col>
+        <v-col> Deze oproep is gesloten </v-col>
       </v-row>
       <v-row
         v-else-if="isShoutOutInThePast"
@@ -17,9 +15,7 @@
         dense
         no-gutters
       >
-        <v-col>
-          Deze oproep is vervallen
-        </v-col>
+        <v-col> Deze oproep is vervallen </v-col>
       </v-row>
     </template>
     <v-row>
@@ -39,9 +35,7 @@
         </v-row>
         <v-row dense class="d-flex flex-column">
           <v-col>
-            <h1 v-if="isProposedRideView">
-              Oproep voorstel
-            </h1>
+            <h1 v-if="isProposedRideView">Oproep voorstel</h1>
             <h1 v-else>Oproep invulling</h1>
           </v-col>
           <v-col><v-divider /></v-col>
@@ -110,6 +104,14 @@ export default {
     ShoutOutTravelProposal,
     RouteMap,
   },
+  beforeRouteEnter(to, from, next) {
+    // console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
+    // Clear the search location when navigating from a different page than the location lookup page
+    if (from?.name !== 'searchLocation') {
+      gsStore.mutations.clearAllGeoLocationPicked()
+    }
+    next()
+  },
   props: {
     // The urn of the shout-out
     shoutOutId: { type: String, required: true },
@@ -151,7 +153,7 @@ export default {
     },
     itinerarySummaryItems() {
       let result = []
-      let travelTime, durationSecs, distanceMeters
+      let travelTime
       // Do NOT check an observed object for truthiness, there is always an observer property!
       if (this.proposedRide?.rideRef) {
         travelTime = this.proposedRide?.departureTime
@@ -194,7 +196,7 @@ export default {
         distance = this.proposedRide.distance
       } else if (this.itinerary) {
         distance = this.itinerary.legs
-          .map(leg => leg.distance)
+          .map((leg) => leg.distance)
           .reduce((sum, d) => sum + d)
       }
       return distance ? Math.round(distance / 1000) : distance
@@ -248,6 +250,7 @@ export default {
     },
   },
   watch: {
+    // eslint-disable-next-line no-unused-vars
     shoutOut(newValue, oldValue) {
       // console.log(
       //   `shoutOut: old = ${oldValue?.planRef}, new = ${newValue?.planRef}`
@@ -259,14 +262,6 @@ export default {
         this.fetchShoutOutPlan()
       }
     },
-  },
-  beforeRouteEnter(to, from, next) {
-    // console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
-    // Clear the search location when navigating from a different page than the location lookup page
-    if (from?.name !== 'searchLocation') {
-      gsStore.mutations.clearAllGeoLocationPicked()
-    }
-    next()
   },
   // beforeRouteLeave(to, from, next) {
   //   // console.log(`beforeRouteLeave: ${from.name} --> ${to.name}`)

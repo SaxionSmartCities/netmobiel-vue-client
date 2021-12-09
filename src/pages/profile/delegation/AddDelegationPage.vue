@@ -72,10 +72,10 @@ export default {
   computed: {
     searchResults() {
       const delegations = psStore.getters.getDelegations
-      return psStore.getters.getSearchResults.map(r => {
+      return psStore.getters.getSearchResults.map((r) => {
         return {
           ...r,
-          managed: !!delegations.find(d => d.delegator.id === r.id),
+          managed: !!delegations.find((d) => d.delegator.id === r.id),
         }
       })
     },
@@ -84,7 +84,7 @@ export default {
     },
   },
   watch: {
-    search: throttle(function(val) {
+    search: throttle(function (val) {
       if (val != null && val.length > 3) {
         this.showResults = true
         psStore.actions.fetchProfiles({ keyword: val })

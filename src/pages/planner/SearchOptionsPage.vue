@@ -11,7 +11,7 @@
           <v-col>
             <search-options
               v-model="searchPreferences"
-              @onSearchOptionsSave="saveSearchOptions"
+              @onSearchOptionsSave="onSearchOptionsSave"
             />
           </v-col>
         </v-row>
@@ -46,9 +46,9 @@ export default {
     }
   },
   methods: {
-    saveSearchOptions() {
+    onSearchOptionsSave(options) {
       psStore.actions
-        .storeSearchPreferences(this.searchPreferences)
+        .storeSearchPreferences(options)
         .then(() => this.$router.go(-1))
     },
   },

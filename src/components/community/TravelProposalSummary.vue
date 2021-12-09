@@ -60,7 +60,7 @@ export default {
       return this.leg ? this.leg.driverName : 'Chauffeur'
     },
     leg() {
-      return this.itinerary.legs.find(l => l.agencyId === 'NB:RS')
+      return this.itinerary.legs.find((l) => l.agencyId === 'NB:RS')
     },
     displayOverlay() {
       return this.cancelled

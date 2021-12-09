@@ -16,7 +16,6 @@
   </v-row>
 </template>
 <script>
-import moment from 'moment'
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
 import * as gsStore from '@/store/geocoder-service'

@@ -16,7 +16,7 @@ function setGeoLocationPicked(state: GeoCoderState, payload: PickedLocation) {
 function swapLocations(state: GeoCoderState, payload: any) {
   const fieldA = 'to'
   const fieldB = 'from'
-  let tmp = state.geocoder.pickedLocations.get(fieldA)
+  const tmp = state.geocoder.pickedLocations.get(fieldA)
   state.geocoder.pickedLocations.set(
     fieldA,
     state.geocoder.pickedLocations.get(fieldB)

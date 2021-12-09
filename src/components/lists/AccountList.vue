@@ -1,6 +1,6 @@
 <template>
   <generic-list :items="accounts" :empty-list-label="emptyListLabel">
-    <template v-slot:list-item="{ item: account }">
+    <template #list-item="{ item: account }">
       <v-row dense align="center">
         <v-col class="shrink pr-3">
           <round-user-image

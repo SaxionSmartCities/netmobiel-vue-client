@@ -7,9 +7,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <span>
-          De sessie is niet meer geldig. Meld je opnieuw aan.
-        </span>
+        <span> De sessie is niet meer geldig. Meld je opnieuw aan. </span>
       </v-col>
     </v-row>
     <v-row>
@@ -17,9 +15,7 @@
         <v-progress-circular indeterminate class="rotate"></v-progress-circular>
       </v-col>
       <v-col class="align-center">
-        <span>
-          Je wordt binnen enkele seconden doorgestuurd...
-        </span>
+        <span> Je wordt binnen enkele seconden doorgestuurd... </span>
       </v-col>
     </v-row>
   </content-pane>
@@ -27,7 +23,6 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-import * as uiStore from '@/store/ui'
 
 const DELAY_KEYCLOAK_LOGIN = 2000
 

@@ -106,7 +106,7 @@ export default {
     }
   },
   methods: {
-    onModeChange: throttle(function(option) {
+    onModeChange: throttle(function (option) {
       this.selectedMode = option.value
       let profile = { ...psStore.getters.getProfile }
       profile.userRole = option.value

@@ -7,8 +7,10 @@ import constants from '@/constants/constants'
 type ActionContext = BareActionContext<UiState, RootState>
 
 function addUpdate(context: ActionContext, update: UiUpdateMessage): void {
-  let updates = context.state.updateMessages
-  let found = updates!.find(u => JSON.stringify(u) === JSON.stringify(update))
+  const updates = context.state.updateMessages
+  const found = updates!.find(
+    (u) => JSON.stringify(u) === JSON.stringify(update)
+  )
   if (found === undefined) {
     mutations.pushUpdate(update)
   }
@@ -33,7 +35,7 @@ function queueNotification(context: ActionContext, payload: UiNotification) {
   if (context.state.notificationQueue!.length == 1) {
     // Explicitly show notification so we can hide and show between transitions.
     mutations.showNotificationBar()
-    let currentNotification = context.state.notificationQueue![0]
+    const currentNotification = context.state.notificationQueue![0]
     if (currentNotification.timeout > 0) {
       setTimeout(() => {
         actions.finishNotification()
@@ -52,7 +54,7 @@ function finishNotification(context: ActionContext) {
     // transitions to work properly.
     setTimeout(() => {
       mutations.showNotificationBar()
-      let currentNotification = context.state.notificationQueue![0]
+      const currentNotification = context.state.notificationQueue![0]
       if (currentNotification.timeout > 0) {
         setTimeout(() => {
           actions.finishNotification()

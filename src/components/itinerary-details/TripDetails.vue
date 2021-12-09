@@ -86,7 +86,7 @@ export default {
           })
         }
         const found = legs
-          ? legs.find(l => l.confirmed !== undefined)
+          ? legs.find((l) => l.confirmed !== undefined)
           : undefined
         if (found) {
           found.confirmed

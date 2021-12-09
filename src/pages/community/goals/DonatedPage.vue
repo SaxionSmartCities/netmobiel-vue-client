@@ -4,9 +4,7 @@
       <v-col class="donated-col">
         <div class="d-flex flex-row">
           <div class="full-height align-self-center">
-            <h3>
-              Gedoneerd 🎉
-            </h3>
+            <h3>Gedoneerd 🎉</h3>
           </div>
         </div>
         <div class="mt-6">
@@ -46,7 +44,7 @@
 
 <script>
 import ContentPane from '../../../components/common/ContentPane'
-import * as chsStore from '@/store/charity-service'
+
 export default {
   name: 'DonatedPage',
   components: { ContentPane },

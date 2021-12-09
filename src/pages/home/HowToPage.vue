@@ -1,23 +1,19 @@
 <template>
   <content-pane>
-    <template v-slot:header>
+    <template #header>
       <tab-bar
         v-if="showTabs"
         class="shrink"
         :selected-tab-model="selectedTab"
         @tabChange="selectedTab = $event"
       >
-        <template v-slot:firstTab>
+        <template #firstTab>
           <v-icon color="white">commute</v-icon>
-          <span>
-            Passagier
-          </span>
+          <span> Passagier </span>
         </template>
-        <template v-slot:secondTab>
+        <template #secondTab>
           <v-icon color="white">directions_car</v-icon>
-          <span>
-            Chauffeur
-          </span>
+          <span> Chauffeur </span>
         </template>
       </tab-bar>
     </template>

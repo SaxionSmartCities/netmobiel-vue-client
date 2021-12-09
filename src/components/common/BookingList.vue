@@ -34,12 +34,12 @@ export default {
   computed: {
     activeBookings() {
       return this.bookingList.filter(
-        booking => booking.state.toUpperCase() !== 'CANCELLED'
+        (booking) => booking.state.toUpperCase() !== 'CANCELLED'
       )
     },
     confirmedBookings() {
       return this.bookingList.filter(
-        booking => booking.state.toUpperCase() === 'CONFIRMED'
+        (booking) => booking.state.toUpperCase() === 'CONFIRMED'
       )
     },
     label() {

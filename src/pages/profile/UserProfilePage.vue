@@ -19,9 +19,7 @@
       </v-col>
     </v-row>
     <v-row v-if="reviews && reviews.length === 0">
-      <v-col>
-        Nog geen beoordelingen ontvangen.
-      </v-col>
+      <v-col> Nog geen beoordelingen ontvangen. </v-col>
     </v-row>
     <v-row v-else>
       <v-col>
@@ -39,7 +37,6 @@
 <script>
 import ContentPane from '@/components/common/ContentPane'
 import PublicProfileInfo from '@/components/profile/PublicProfileInfo'
-import config from '@/config/config'
 import Compliments from '@/components/profile/Compliments'
 import ReviewItem from '@/components/profile/ReviewItem'
 import HighlightedInfo from '@/components/profile/HighlightedInfo'
@@ -111,12 +108,12 @@ export default {
   watch: {
     reviews(rvs) {
       this.profileImages = []
-      rvs.forEach(review => {
+      rvs.forEach((review) => {
         psStore.actions
           .fetchPublicProfile({
             profileId: review.sender.id,
           })
-          .then(res => {
+          .then((res) => {
             this.profileImages.push(res.image)
           })
       })

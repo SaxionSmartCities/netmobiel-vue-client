@@ -1,13 +1,13 @@
 <template>
   <content-pane>
-    <template v-slot:header>
+    <template #header>
       <tab-bar
         v-if="isDrivingPassenger"
         class="shrink"
         :selected-tab-model="selectedTab"
         @tabChange="selectedTab = $event"
       >
-        <template v-slot:firstTab>
+        <template #firstTab>
           <!-- Community shout-outs are directed to (potential) drivers -->
           <!-- The selection is made by the backend based on the geo locations of traveller and driver -->
           <span>
@@ -15,7 +15,7 @@
             <sup>{{ communityShoutOuts.length }}</sup>
           </span>
         </template>
-        <template v-slot:secondTab>
+        <template #secondTab>
           <!-- My shout-outs are my own calls to the community -->
           <span>
             Mijn oproepen
@@ -76,6 +76,14 @@ import { coordinatesToGeoLocation } from '@/utils/Utils'
 export default {
   name: 'ShoutOutOverview',
   components: { TabBar, ShoutOutList, ContentPane },
+  beforeRouteEnter: beforeRouteEnter({
+    selectedTab: (number) => number || 0,
+    baseLocation: (value) => value,
+  }),
+  beforeRouteLeave: beforeRouteLeave({
+    selectedTab: (number) => number || 0,
+    baseLocation: (value) => value,
+  }),
   data() {
     return {
       selectedTab: 0,
@@ -129,10 +137,12 @@ export default {
     },
   },
   watch: {
+    // eslint-disable-next-line no-unused-vars
     baseLocation(newValue, oldValue) {
       // console.log(`baseLocation: ${oldValue} --> ${newValue}`)
       this.fetchShoutOuts()
     },
+    // eslint-disable-next-line no-unused-vars
     selectedTab(newValue, oldValue) {
       this.profile.actualRole =
         newValue === 1
@@ -144,14 +154,6 @@ export default {
   created() {
     uiStore.mutations.showBackButton()
   },
-  beforeRouteEnter: beforeRouteEnter({
-    selectedTab: number => number || 0,
-    baseLocation: value => value,
-  }),
-  beforeRouteLeave: beforeRouteLeave({
-    selectedTab: number => number || 0,
-    baseLocation: value => value,
-  }),
   mounted() {
     this.selectedTab =
       this.profile.actualRole === constants.PROFILE_ROLE_PASSENGER ? 1 : 0
@@ -200,11 +202,7 @@ export default {
       }
     },
     formatDate(date) {
-      return date
-        ? moment(date)
-            .locale('nl')
-            .format('dddd D MMMM')
-        : ''
+      return date ? moment(date).locale('nl').format('dddd D MMMM') : ''
     },
   },
 }

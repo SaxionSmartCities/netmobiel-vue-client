@@ -16,7 +16,7 @@
  */
 export function mightHaveFcmToken() {
   return (
-    window.hasOwnProperty('NetmobielAppRequest') &&
+    Object.prototype.hasOwnProperty.call(window, 'NetmobielAppRequest') &&
     !!NetmobielAppRequest.postMessage
   )
 }
@@ -38,7 +38,7 @@ export function requestFcmToken() {
  * 'NetmobielFcmToken' on the window object.
  * @param token the current fcm token.
  */
-window.setNetmobielFcmToken = function(token) {
+window.setNetmobielFcmToken = function (token) {
   const fcmEvent = new CustomEvent('NetmobielFcmToken', {
     detail: {
       fcmToken: token,
@@ -55,7 +55,7 @@ window.setNetmobielFcmToken = function(token) {
  * @param titleEnc the message title (might be null), URI encoded.
  * @param bodyEnc the message text, URI encoded.
  */
-window.dispatchNetmobielPushMessage = function(msgId, titleEnc, bodyEnc) {
+window.dispatchNetmobielPushMessage = function (msgId, titleEnc, bodyEnc) {
   const event = new CustomEvent('NetmobielPushMessage', {
     detail: {
       msgId,

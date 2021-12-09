@@ -14,7 +14,10 @@
           <new-delegation v-model="registrationRequest" />
         </v-col>
         <v-col v-if="currStep === 2">
-          <delegation-options v-model="registrationRequest" />
+          <delegation-options
+            v-model="registrationRequest"
+            @update-options="onUpdateOptions"
+          />
         </v-col>
         <v-col v-if="currStep === 3">
           <delegation-comms-settings v-model="registrationRequest" />
@@ -55,8 +58,17 @@ export default {
     return {
       maxSteps: 4,
       currStep: 1,
+      //FIXME: not tested, needs rework
       registrationRequest: {
-        extraTransferTime: false,
+        user: {
+          firstName: '',
+          lastName: '',
+          email: '',
+          phoneNumber: '',
+        },
+        options: {
+          extraTransferTime: false,
+        },
         consent: {},
       },
     }
@@ -65,8 +77,11 @@ export default {
     nextStep() {
       this.currStep++
     },
-    prevStep: function() {
+    prevStep: function () {
       this.currStep--
+    },
+    onUpdateOptions(options) {
+      this.registrationRequest.options = { ...options }
     },
   },
 }

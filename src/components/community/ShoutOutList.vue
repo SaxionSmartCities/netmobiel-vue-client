@@ -50,11 +50,7 @@ export default {
       this.$emit('shoutOutSelected', selected)
     },
     formatDate(date) {
-      return date
-        ? moment(date)
-            .locale('nl')
-            .format('dddd D MMMM')
-        : ''
+      return date ? moment(date).locale('nl').format('dddd D MMMM') : ''
     },
   },
 }

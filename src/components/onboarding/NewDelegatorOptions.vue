@@ -3,7 +3,7 @@
     <v-col dense>
       <v-row>
         <v-col class="pb-0">
-          Heeft <em>{{ value.firstName }}</em> bagage mee op reis?
+          Heeft <em>{{ user.firstName }}</em> bagage mee op reis?
         </v-col>
       </v-row>
       <v-row>
@@ -13,8 +13,8 @@
               v-model="luggage"
               class="pa-0"
               @onChanged="
-                newLugagge => {
-                  luggage = newLugagge
+                (newLuggage) => {
+                  luggage = newLuggage
                 }
               "
             />
@@ -22,13 +22,11 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col>
-          Wat moet de chauffeur weten?
-        </v-col>
+        <v-col> Wat moet de chauffeur weten? </v-col>
       </v-row>
       <v-row>
         <v-col class="options ma-2">
-          <v-row v-for="(option, index) in options" :key="index">
+          <v-row v-for="(option, index) in userOptions" :key="index">
             <v-col class="d-flex align-center py-0">
               <span>{{ option.title }}</span>
             </v-col>
@@ -46,13 +44,13 @@
       </v-row>
       <v-row>
         <v-col>
-          Kan <em>{{ value.firstName }}</em> bij aankomst vervoerder direct
+          Kan <em>{{ user.firstName }}</em> bij aankomst vervoerder direct
           instappen?
         </v-col>
       </v-row>
       <v-row>
         <v-col class="options ma-2">
-          <v-radio-group v-model="value.extraTransferTime">
+          <v-radio-group v-model="options.extraTransferTime">
             <v-radio label="Ja" value="false" />
             <v-radio
               label="Nee (de chauffeur houdt rekening met extra instaptijd."
@@ -80,8 +78,10 @@ export default {
   },
   data() {
     return {
+      user: this.value.user,
+      options: this.value.options,
       luggageOptions: [],
-      options: [
+      userOptions: [
         { title: 'Slechthorend', value: false },
         { title: 'Verminderd gezichtsvermogen', value: false },
         { title: 'Moeite met instappen', value: false },
@@ -94,19 +94,19 @@ export default {
         return {
           title: 'Bagage',
           options: luggageTypes,
-          selected: this.luggageOptions.map(o => luggageTypes[o]),
+          selected: this.luggageOptions.map((o) => luggageTypes[o]),
         }
       },
       set(selection) {
-        this.luggageOptions = selection.selected.map(option => option.type)
+        this.luggageOptions = selection.selected.map((option) => option.type)
       },
     },
     luggageSelected: {
       get() {
-        return this.luggageOptions.map(option => luggageTypes[option])
+        return this.luggageOptions.map((option) => luggageTypes[option])
       },
       set(selection) {
-        this.luggageOptions = selection.map(x => x.type)
+        this.luggageOptions = selection.map((x) => x.type)
       },
     },
   },

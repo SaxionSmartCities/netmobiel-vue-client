@@ -17,9 +17,7 @@
           <booking-list :booking-list="item.value" />
         </v-col>
         <v-col v-else class="text-capitalize pl-3">
-          <template>
-            {{ item.value }}
-          </template>
+          {{ item.value }}
         </v-col>
       </v-row>
     </v-col>

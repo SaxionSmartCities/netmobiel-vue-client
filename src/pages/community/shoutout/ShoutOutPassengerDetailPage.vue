@@ -1,15 +1,13 @@
 <template>
   <content-pane>
-    <template v-slot:header>
+    <template #header>
       <v-row
         v-if="shoutOutIsClosed"
         class="cancelled-banner text-center py-1"
         dense
         no-gutters
       >
-        <v-col>
-          Deze oproep is gesloten
-        </v-col>
+        <v-col> Deze oproep is gesloten </v-col>
       </v-row>
       <v-row
         v-else-if="isShoutOutInThePast"
@@ -17,9 +15,7 @@
         dense
         no-gutters
       >
-        <v-col>
-          Deze oproep is vervallen
-        </v-col>
+        <v-col> Deze oproep is vervallen </v-col>
       </v-row>
     </template>
     <v-row>
@@ -138,7 +134,6 @@ export default {
           value: formatDateTimeLongNoYear(this.shoutOut?.travelTime),
         })
       }
-      let durationSecs
       if (this.itinerary?.duration) {
         result.push({
           label: 'Reisduur',
@@ -147,7 +142,7 @@ export default {
       }
       if (this.itinerary?.legs) {
         const distanceMeters = this.itinerary.legs
-          .map(leg => leg.distance)
+          .map((leg) => leg.distance)
           .reduce((sum, d) => sum + d)
         if (distanceMeters) {
           result.push({

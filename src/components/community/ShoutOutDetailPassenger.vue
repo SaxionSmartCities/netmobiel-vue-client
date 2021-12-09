@@ -121,7 +121,7 @@ export default {
       return (
         this.shoutOutIsClosed ||
         !this.selectedOffer ||
-        this.selectedOffer.legs.find(leg => leg.state === 'CANCELLED')
+        this.selectedOffer.legs.find((leg) => leg.state === 'CANCELLED')
       )
     },
   },

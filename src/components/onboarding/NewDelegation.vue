@@ -4,7 +4,7 @@
       <v-row>
         <v-col>
           <v-text-field
-            v-model="value.firstName"
+            v-model="user.firstName"
             required
             hide-details
             outlined
@@ -15,7 +15,7 @@
       <v-row>
         <v-col>
           <v-text-field
-            v-model="value.lastName"
+            v-model="user.lastName"
             required
             hide-details
             outlined
@@ -26,7 +26,7 @@
       <v-row>
         <v-col>
           <v-text-field
-            v-model="value.phoneNumber"
+            v-model="user.phoneNumber"
             required
             hide-details
             outlined
@@ -37,7 +37,7 @@
       <v-row>
         <v-col>
           <v-text-field
-            v-model="value.email"
+            v-model="user.email"
             required
             hide-details
             outlined
@@ -47,7 +47,7 @@
       </v-row>
       <v-row no-gutters align="center">
         <v-col cols="1">
-          <v-checkbox v-model="value.consent.acceptedTerms"></v-checkbox>
+          <v-checkbox v-model="consent.acceptedTerms"></v-checkbox>
         </v-col>
         <v-col cols="11">
           Ik ga akkoord met de <a to="/">voorwaarden</a>, deelname aan het
@@ -79,8 +79,10 @@ export default {
       default: () => undefined,
     },
   },
-  data: function() {
+  data: function () {
     return {
+      user: this.value.user,
+      consent: this.value.consent,
       enableConsentCheck: false,
       showSubmitButton: true,
     }
@@ -88,8 +90,7 @@ export default {
   computed: {
     showConsentError() {
       return (
-        (!this.value.consent.acceptedTerms ||
-          !this.value.consent.olderThanSixteen) &&
+        (!this.consent.acceptedTerms || !this.consent.olderThanSixteen) &&
         this.enableConsentCheck
       )
     },

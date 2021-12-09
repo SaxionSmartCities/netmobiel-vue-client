@@ -24,10 +24,10 @@ export default {
   },
   computed: {
     selectedTab: {
-      get: function() {
+      get: function () {
         return this.selectedTabModel
       },
-      set: function(value) {
+      set: function (value) {
         this.$emit('tabChange', value)
       },
     },

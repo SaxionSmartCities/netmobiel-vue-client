@@ -12,7 +12,7 @@
       <v-row>
         <v-col>
           <search-location
-            :address="value.address"
+            :address="address"
             field="home"
             :favorable="false"
             :outlined="true"
@@ -60,6 +60,8 @@ export default {
   },
   data() {
     return {
+      // Address is a nested object, assure no ties with other objects.
+      address: JSON.parse(JSON.stringify(this.value)),
       valid: false,
       showSubmitButton: true,
     }
@@ -69,10 +71,11 @@ export default {
   },
   methods: {
     isValidAddress() {
-      return this.value.address.location?.coordinates?.length === 2
+      return this.address.location?.coordinates?.length === 2
     },
     submitForm() {
       if (this.valid) {
+        this.$emit('update-address', this.address)
         this.$emit('next-step')
       }
     },
@@ -81,9 +84,9 @@ export default {
     },
     onSearchCompleted(place) {
       if (place?.locality) {
-        this.value.address = { ...place }
+        this.address = { ...place }
       } else {
-        this.value.address = {}
+        this.address = {}
       }
       this.valid = this.isValidAddress()
     },

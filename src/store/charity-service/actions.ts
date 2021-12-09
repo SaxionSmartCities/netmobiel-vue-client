@@ -125,7 +125,7 @@ async function fetchTopDonors(context: ActionContext, id: string) {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
     if (resp.status === 200) {
-      let donors = resp.data.data.map((d: any) => ({
+      const donors = resp.data.data.map((d: any) => ({
         totalDonated: d.donatedCredits,
         user: {
           managedIdentity: d.managedIdentity,

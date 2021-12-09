@@ -2,7 +2,7 @@
   <v-row>
     <v-col>
       <div v-for="({ totalDonated, user }, index) in donors" :key="index">
-        <div class="d-flex flex-row  mb-3">
+        <div class="d-flex flex-row mb-3">
           <round-user-image
             :profile-image="user.image"
             :image-size="40"
@@ -10,7 +10,7 @@
           >
           </round-user-image>
           <div class="d-flex flex-column ml-4">
-            <span class="body-1 font-weight-medium ">
+            <span class="body-1 font-weight-medium">
               {{
                 user.isAnonymous ? '-' : user.firstName + ' ' + user.lastName
               }}

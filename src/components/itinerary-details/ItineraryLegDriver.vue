@@ -22,8 +22,6 @@
 
 <script>
 import DriverImage from '@/components/itinerary-details/DriverImage'
-import * as psStore from '@/store/profile-service'
-import * as csStore from '@/store/carpool-service'
 
 export default {
   name: 'ItineraryLegDriver',

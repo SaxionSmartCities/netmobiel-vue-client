@@ -162,7 +162,7 @@ export default {
       // )
       if (detail.body) {
         const textMessage = [detail.title || '', detail.body]
-          .filter(elem => elem)
+          .filter((elem) => elem)
           .join(': ')
         uiStore.actions.queueInfoNotification(textMessage)
       }

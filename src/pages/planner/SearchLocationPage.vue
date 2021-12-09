@@ -1,6 +1,6 @@
 <template>
   <content-pane>
-    <template v-slot:header>
+    <template #header>
       <v-text-field
         v-model="searchInput"
         autofocus
@@ -66,8 +66,6 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import LocationsList from '@/components/lists/LocationsList.vue'
 import AddFavoriteDialog from '@/components/search/AddFavoriteDialog.vue'
-// map category to Material icon name (needs more work...)
-// show at most 8 suitable suggestions
 import { throttle } from 'lodash'
 import {
   geoPlaceToAddressLabel,
@@ -79,8 +77,10 @@ import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 import * as gsStore from '@/store/geocoder-service'
 import constants from '@/constants/constants'
-const skipCategories = new Set(['intersection'])
-const maxSuggestions = 8
+// map category to Material icon name (needs more work...)
+// show at most 8 suitable suggestions
+// const skipCategories = new Set(['intersection'])
+// const maxSuggestions = 8
 
 export default {
   name: 'SearchLocationPage',
@@ -119,7 +119,7 @@ export default {
       return []
     },
     favorites() {
-      return psStore.getters.getProfile.favoriteLocations.map(place => {
+      return psStore.getters.getProfile.favoriteLocations.map((place) => {
         return {
           ...place,
           title: place.name,
@@ -130,7 +130,7 @@ export default {
       })
     },
     suggestions() {
-      return gsStore.getters.getGeocoderSuggestions.map(suggestion =>
+      return gsStore.getters.getGeocoderSuggestions.map((suggestion) =>
         this.createLocationFromSuggestion(suggestion)
       )
     },
@@ -139,7 +139,7 @@ export default {
     },
   },
   watch: {
-    searchInput: throttle(function(val) {
+    searchInput: throttle(function (val) {
       if (val != null) {
         const show = (this.showSuggestionsList = val.length > 3)
         if (show) {
@@ -168,7 +168,7 @@ export default {
       // It has an iconName, associated with the category of the location
       let loc = {
         ...geoSuggestionToPlace(sug),
-        favorite: !!this.favorites.find(fav => fav.ref === sug.id),
+        favorite: !!this.favorites.find((fav) => fav.ref === sug.id),
         titleParts: [],
         title: sug.title.replace(', Nederland', ''),
         subtitle: '',
@@ -256,7 +256,7 @@ export default {
       // Hide dialog
       this.selectedLocation = null
       // Check for duplicates
-      let duplicate = this.favorites.find(f => f.ref === place.ref)
+      let duplicate = this.favorites.find((f) => f.ref === place.ref)
       if (duplicate) {
         uiStore.actions.queueErrorNotification(
           'Favoriet bestaat al in uw profiel.'
@@ -270,7 +270,7 @@ export default {
       const profileId = psStore.getters.getProfile.id
       let placeId = favorite.id
       if (!placeId) {
-        placeId = this.favorites.find(f => f.ref === favorite.ref)?.id
+        placeId = this.favorites.find((f) => f.ref === favorite.ref)?.id
       }
       psStore.actions.deleteFavoriteLocation({ profileId, placeId })
     },

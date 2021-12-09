@@ -122,7 +122,7 @@ export default {
       } else if (this.shoutOut?.referenceItinerary) {
         // Assumption: Always a car/rideshare leg
         fare = this.shoutOut.referenceItinerary.legs
-          .map(leg => leg.fareInCredits)
+          .map((leg) => leg.fareInCredits)
           .reduce((sum, f) => sum + f)
       }
       // Return cost in credits
@@ -141,7 +141,7 @@ export default {
       if (!this.proposedRide?.distance && this.shoutOut?.referenceItinerary) {
         // Assumption: Always a car/rideshare leg
         distanceMeters = this.shoutOut.referenceItinerary.legs
-          .map(leg => leg.distance)
+          .map((leg) => leg.distance)
           .reduce((sum, d) => sum + d)
       }
       // Return distance in kilometers
@@ -168,8 +168,8 @@ export default {
         : 'Rit aanbieden'
     },
     offeredItineraries() {
-      return this.shoutOut?.itineraries?.filter(it => {
-        return !it.legs.find(leg => leg.state === 'CANCELLED')
+      return this.shoutOut?.itineraries?.filter((it) => {
+        return !it.legs.find((leg) => leg.state === 'CANCELLED')
       })
     },
     hasOffer() {
@@ -183,9 +183,9 @@ export default {
      * an offer from me. If so then attach the ride to the shout-out. Not so clean, but will do.
      */
     proposedRide() {
-      return this.proposedRides.find(ride => {
+      return this.proposedRides.find((ride) => {
         return !!ride.bookings.find(
-          b => b.passengerTripPlanRef === this.shoutOut?.planRef
+          (b) => b.passengerTripPlanRef === this.shoutOut?.planRef
         )
       })
     },

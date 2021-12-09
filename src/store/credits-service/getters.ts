@@ -5,13 +5,13 @@ import { RootState } from '@/store/Rootstate'
 export const buildGetters = (
   gsBuilder: ModuleBuilder<CreditsState, RootState>
 ) => {
-  const getUser = gsBuilder.read(state => {
+  const getUser = gsBuilder.read((state) => {
     return state.user
   }, 'getUser')
-  const getSettings = gsBuilder.read(state => {
+  const getSettings = gsBuilder.read((state) => {
     return state.settings
   }, 'getSettings')
-  const getStatements = gsBuilder.read(state => {
+  const getStatements = gsBuilder.read((state) => {
     return state.statements
   }, 'getStatements')
 

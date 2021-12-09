@@ -2,7 +2,7 @@
   <v-row dense>
     <v-col cols="5">
       <v-dialog v-model="showDatePicker" persistent>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-text-field
             v-model="date"
             label="Datum"
@@ -23,9 +23,7 @@
           locale="nl-NL"
           scrollable
         >
-          <v-btn text color="primary" @click="cancelDate">
-            Annuleren
-          </v-btn>
+          <v-btn text color="primary" @click="cancelDate"> Annuleren </v-btn>
           <v-btn
             text
             color="primary"
@@ -39,7 +37,7 @@
     </v-col>
     <v-col cols="6">
       <v-dialog v-model="showTimePicker" persistent>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-text-field
             v-model="time"
             :label="arriving ? 'Aankomst' : 'Vertrek'"
@@ -74,9 +72,7 @@
           />
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="cancelTime">
-              Annuleren
-            </v-btn>
+            <v-btn text color="primary" @click="cancelTime"> Annuleren </v-btn>
             <v-btn
               text
               color="primary"
@@ -116,7 +112,7 @@ export default {
     },
     allowedMinutes: {
       type: Function,
-      default: m => m % 5 === 0,
+      default: (m) => m % 5 === 0,
     },
   },
   data() {
@@ -140,9 +136,7 @@ export default {
         moment().startOf('day')
       )
       return this.futureOnly && sameDate
-        ? moment()
-            .add(1, 'minute')
-            .format(TIME_FORMAT)
+        ? moment().add(1, 'minute').format(TIME_FORMAT)
         : undefined
     },
     isTimeBeforeNow() {

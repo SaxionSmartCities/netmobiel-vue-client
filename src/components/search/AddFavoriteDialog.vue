@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="show" persistent>
+  <v-dialog v-model="dialog" persistent>
     <v-card>
       <v-card-title>Favoriet toevoegen</v-card-title>
       <v-card-text>
@@ -58,7 +58,6 @@
 </template>
 
 <script>
-import constants from '@/constants/constants.js'
 import { geoPlaceToAddressLabel } from '@/utils/Utils'
 
 export default {
@@ -70,7 +69,8 @@ export default {
   },
   data() {
     return {
-      rules: [v => v.length >= 3 || 'Minimaal 3 karakters'],
+      dialog: this.show,
+      rules: [(v) => v.length >= 3 || 'Minimaal 3 karakters'],
       name: this.initialName,
     }
   },

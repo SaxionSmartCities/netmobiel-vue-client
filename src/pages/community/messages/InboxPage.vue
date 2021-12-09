@@ -1,16 +1,16 @@
 <template>
   <content-pane :clearpadding="true">
-    <template v-slot:header>
+    <template #header>
       <tab-bar
         class="shrink"
         :selected-tab-model="selectedTab"
         @tabChange="selectedTab = $event"
       >
-        <template v-slot:firstTab>
+        <template #firstTab>
           <span>Recent</span>
         </template>
 
-        <template v-slot:secondTab>
+        <template #secondTab>
           <span>Archief</span>
         </template>
       </tab-bar>
@@ -101,7 +101,7 @@ export default {
       return this.selectedTab === 1
     },
   },
-  created: function() {
+  created: function () {
     uiStore.mutations.showBackButton()
     msStore.actions.fetchActualConversations()
     msStore.actions.fetchArchivedConversations()
@@ -139,16 +139,13 @@ export default {
         },
       })
     },
+    // eslint-disable-next-line no-unused-vars
     getNewMessageCount(conversation) {
       //TODO: Get the count from somewhere.
       return 0
     },
     timestamp(timestamp) {
-      return upperCaseFirst(
-        moment(timestamp)
-          .locale('nl')
-          .calendar()
-      )
+      return upperCaseFirst(moment(timestamp).locale('nl').calendar())
     },
   },
 }

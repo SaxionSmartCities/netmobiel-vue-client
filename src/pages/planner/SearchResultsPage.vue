@@ -1,6 +1,6 @@
 <template>
   <content-pane scrollable>
-    <template v-slot:header>
+    <template #header>
       <v-row class="shrink">
         <v-col class="py-0">
           <v-divider />
@@ -111,7 +111,6 @@ import SearchStatus from '@/components/search/SearchStatus.vue'
 import moment from 'moment'
 import * as uiStore from '@/store/ui'
 import * as isStore from '@/store/itinerary-service'
-import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'SearchResultsPage',
@@ -174,7 +173,7 @@ export default {
     },
     getAllDifferentDays() {
       let differentDays = []
-      this.sortedItineraries.forEach(it => {
+      this.sortedItineraries.forEach((it) => {
         const calendarDate = moment(it.arrivalTime).format('LL')
         if (!differentDays.includes(calendarDate)) {
           differentDays.push(calendarDate)
@@ -219,7 +218,7 @@ export default {
       })
     },
     getItinerariesForThatDay(sectionDay) {
-      return this.sortedItineraries.filter(it => {
+      return this.sortedItineraries.filter((it) => {
         const dateToCheck = moment(it.arrivalTime.valueOf())
         return (
           moment(sectionDay, 'LL').isSame(dateToCheck, 'day') &&
@@ -228,9 +227,7 @@ export default {
       })
     },
     formatToCategoryDate(date) {
-      return moment(date, 'LL')
-        .locale('NL')
-        .format('dddd DD MMMM')
+      return moment(date, 'LL').locale('NL').format('dddd DD MMMM')
     },
     onTripSelected(selectedTravelCard) {
       let selectedTrip = {
@@ -249,7 +246,7 @@ export default {
     createShoutOut() {
       isStore.actions
         .createShoutOutTripPlan(this.searchCriteria)
-        .then(shoutOutId => {
+        .then((shoutOutId) => {
           // console.log(`Created shout-out, urn: ${shoutOutId}`)
           if (shoutOutId) {
             this.$router.push({

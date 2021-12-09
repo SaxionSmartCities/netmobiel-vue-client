@@ -53,7 +53,7 @@ export default {
     },
   },
   methods: {
-    toNextPage: function() {
+    toNextPage: function () {
       this.$router.push({ name: this.forward })
     },
   },

@@ -2,9 +2,7 @@
   <content-pane :clearpadding="true">
     <v-row mb-3>
       <v-col ml-3>
-        <h1 class="netmobiel">
-          Goede Doelen
-        </h1>
+        <h1 class="netmobiel">Goede Doelen</h1>
         <v-divider class="mt-2"></v-divider>
       </v-col>
     </v-row>
@@ -21,9 +19,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <h4 class="title text-color-primary mb-2">
-          Populair in de buurt
-        </h4>
+        <h4 class="title text-color-primary mb-2">Populair in de buurt</h4>
         <template v-for="charity in charities">
           <charity-card
             :key="charity.id"
@@ -35,9 +31,7 @@
     </v-row>
     <v-row>
       <v-col class="charity-carousel-container">
-        <h4 class="title text-color-primary mb-2">
-          Eerder gedoneerd
-        </h4>
+        <h4 class="title text-color-primary mb-2">Eerder gedoneerd</h4>
         <v-carousel
           height="100%"
           hide-delimiter-background

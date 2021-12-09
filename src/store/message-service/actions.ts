@@ -35,14 +35,14 @@ function fetchConversations(
 
 function fetchActualConversations(context: ActionContext) {
   return fetchConversations(context, 'ACTUAL', null, 100)
-    .then(function(resp) {
+    .then(function (resp) {
       if (resp.status === 200) {
         mutations.setActualConversations(resp.data.data)
         return resp.data.data
       }
       return []
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -54,14 +54,14 @@ function fetchActualConversations(context: ActionContext) {
 
 function fetchArchivedConversations(context: ActionContext) {
   return fetchConversations(context, 'ARCHIVED', null, 100)
-    .then(function(resp) {
+    .then(function (resp) {
       if (resp.status === 200) {
         mutations.setArchivedConversations(resp.data.data)
         return resp.data.data
       }
       return []
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
       // Omit the message as the conversations are fetched in twins
@@ -83,12 +83,12 @@ function fetchConversation(context: ActionContext, { id }: any) {
         delegatorId
       ),
     })
-    .then(response => {
+    .then((response) => {
       if (response.status == 200) {
         mutations.setConversation(response.data)
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -102,7 +102,7 @@ function fetchConversationByContext(
   { conversationContext }: any
 ) {
   return fetchConversations(context, null, conversationContext, 1)
-    .then(function(resp) {
+    .then(function (resp) {
       if (resp.status === 200) {
         const pagedResultSet = resp.data
         if (pagedResultSet.totalCount == 0) {
@@ -121,7 +121,7 @@ function fetchConversationByContext(
         return conversation
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // TODO: Proper error handling.
       // eslint-disable-next-line
       console.log(error)
@@ -145,10 +145,10 @@ function fetchMessages(
         delegatorId
       ),
     })
-    .then(function(resp) {
+    .then(function (resp) {
       mutations.setMessages(resp.data.data)
     })
-    .catch(function(error) {
+    .catch(function (error) {
       mutations.setMessages([])
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van de meldingen.'
@@ -179,10 +179,10 @@ function fetchMessage(context: ActionContext, { id }: any) {
         delegatorId
       ),
     })
-    .then(function(resp) {
+    .then(function (resp) {
       return Promise.resolve(resp.data)
     })
-    .catch(function(error) {
+    .catch(function (error) {
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van het bericht.'
       )

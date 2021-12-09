@@ -81,9 +81,7 @@ export default {
     },
     time() {
       return this.leg.startTime
-        ? moment(this.leg.startTime)
-            .locale('nl')
-            .format('LT')
+        ? moment(this.leg.startTime).locale('nl').format('LT')
         : '- - : - -'
     },
     header() {

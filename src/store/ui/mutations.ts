@@ -42,7 +42,7 @@ function pushUpdate(state: UiState, payload: UiUpdateMessage) {
   state.updateMessages!.push(payload)
 }
 function removeUpdate(state: UiState, payload: UiUpdateMessage) {
-  let indexOf = state.updateMessages!.indexOf(payload)
+  const indexOf = state.updateMessages!.indexOf(payload)
   state.updateMessages!.splice(indexOf, 1)
 }
 export const buildMutations = (builder: ModuleBuilder<UiState, RootState>) => {

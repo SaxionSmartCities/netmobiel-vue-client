@@ -1,9 +1,7 @@
 <template>
   <v-dialog v-model="showDialog">
     <v-card>
-      <v-card-title class="headline">
-        Wijzig deze rit.
-      </v-card-title>
+      <v-card-title class="headline"> Wijzig deze rit. </v-card-title>
 
       <v-card-text>
         <p>

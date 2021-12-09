@@ -9,11 +9,8 @@ import { generateHeaders } from '@/utils/Utils'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
-const {
-  PROFILE_BASE_URL,
-  IMAGES_BASE_URL,
-  GRAVITEE_PROFILE_SERVICE_API_KEY,
-} = config
+const { PROFILE_BASE_URL, IMAGES_BASE_URL, GRAVITEE_PROFILE_SERVICE_API_KEY } =
+  config
 
 function createAbsoluteImageUrl(imageName: string | null | undefined): string {
   return imageName ? `${IMAGES_BASE_URL}/${imageName}` : ''
@@ -31,11 +28,11 @@ function createProfile(
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
-    .then(function() {
+    .then(function () {
       fetchProfile(context).catch(() => {})
       return Promise.resolve()
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
       const status = error.response.status
@@ -61,9 +58,9 @@ function fetchProfile(context: ActionContext) {
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
     })
-    .then(response => {
+    .then((response) => {
       if (response.status == 200 && response.data.profiles.length > 0) {
-        let profile = {
+        const profile = {
           ...context.state.user.profile,
           ...response.data.profiles[0],
           image: createAbsoluteImageUrl(response.data.profiles[0].image),
@@ -72,7 +69,7 @@ function fetchProfile(context: ActionContext) {
       }
       return Promise.resolve(response.status)
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       return Promise.reject(error.response.status)
@@ -83,7 +80,7 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
   if (!profileId) {
     return Promise.reject('Specify a profile id')
   }
-  let usr = getters.getPublicUsers.get(profileId)
+  const usr = getters.getPublicUsers.get(profileId)
   if (usr && usr.profile.id) {
     return Promise.resolve(usr.profile)
   }
@@ -93,9 +90,9 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
-    .then(response => {
+    .then((response) => {
       if (response.data.profiles.length > 0) {
-        let profile = {
+        const profile = {
           ...response.data.profiles[0],
           image: createAbsoluteImageUrl(response.data.profiles[0].image),
         }
@@ -104,7 +101,7 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
       }
       return undefined
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.warn(`Error fetching public profile - ${error.response.status} ${error.response.statusText}: ${error.response.data?.message}`)
       // Don't trouble the user with public profile that seem absent ot so
@@ -121,7 +118,7 @@ function fetchProfiles(context: ActionContext, { keyword }: any) {
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
-    .then(response => {
+    .then((response) => {
       if (response.status == 200) {
         const results = response.data.data.map((r: any) => {
           return {
@@ -132,7 +129,7 @@ function fetchProfiles(context: ActionContext, { keyword }: any) {
         mutations.setSearchResults(results)
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
     })
@@ -149,12 +146,12 @@ function fetchFavoriteLocations(context: ActionContext) {
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
     })
-    .then(response => {
+    .then((response) => {
       if (response.status == 200) {
         mutations.setFavoriteLocations(response.data.data)
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -172,13 +169,13 @@ function storeFavoriteLocation(
     .post(URL, place, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
-    .then(response => {
+    .then((response) => {
       fetchFavoriteLocations(context)
       if (response.status === 201) {
         uiStore.actions.queueInfoNotification(`Je favoriet is opgeslagen!`)
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(`Fout bij opslaan van favorieten`)
@@ -194,11 +191,11 @@ function deleteFavoriteLocation(
     .delete(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
-    .then(response => {
+    .then((response) => {
       fetchFavoriteLocations(context)
       uiStore.actions.queueInfoNotification(`Favoriet verwijderd`)
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -209,7 +206,7 @@ function deleteFavoriteLocation(
 
 function storeSearchPreferences(context: ActionContext, payload: any) {
   // Convert payload to a profile object.
-  let profile = {
+  const profile = {
     ...context.state.user.profile,
     searchPreferences: { ...payload },
   }
@@ -218,7 +215,7 @@ function storeSearchPreferences(context: ActionContext, payload: any) {
 
 function storeRidePreferences(context: ActionContext, payload: any) {
   // Convert payload to a profile object.
-  let profile = {
+  const profile = {
     ...context.state.user.profile,
     ridePlanOptions: { ...payload },
   }
@@ -226,7 +223,7 @@ function storeRidePreferences(context: ActionContext, payload: any) {
 }
 
 function storeFcmToken(context: ActionContext, payload: { fcmToken: string }) {
-  let profile = { ...context.state.user.profile }
+  const profile = { ...context.state.user.profile }
   context.state.deviceFcmToken = payload.fcmToken
   if (profile.id && payload.fcmToken && payload.fcmToken !== profile.fcmToken) {
     return updateProfile(context, profile)
@@ -244,9 +241,9 @@ function updateProfile(context: ActionContext, profile: Profile) {
     .put(URL, profile, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
-    .then(response => {
+    .then((response) => {
       if (response.status == 200 && response.data.profiles.length > 0) {
-        let profile = {
+        const profile = {
           ...context.state.user.profile,
           ...response.data.profiles[0],
           image: createAbsoluteImageUrl(response.data.profiles[0].image),
@@ -254,7 +251,7 @@ function updateProfile(context: ActionContext, profile: Profile) {
         mutations.setProfile(profile)
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
     })
@@ -270,13 +267,13 @@ function updateProfileImage(context: ActionContext, { id, image }: any) {
         headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
       }
     )
-    .then(response => {
+    .then((response) => {
       if (response.status === 200) {
         const imgSrc = `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
         mutations.setProfileImage(imgSrc)
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
     })
@@ -288,7 +285,7 @@ function updateProfileImage(context: ActionContext, { id, image }: any) {
  * @returns {Array<Object>} returns Array of compliments in the response.data
  */
 function fetchUserCompliments(context: ActionContext, { profileId }: any) {
-  let usr = getters.getPublicUsers.get(profileId)
+  const usr = getters.getPublicUsers.get(profileId)
   if (usr && usr.compliments) {
     return Promise.resolve(usr.compliments)
   }
@@ -298,7 +295,7 @@ function fetchUserCompliments(context: ActionContext, { profileId }: any) {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
       params: { receiverId: profileId },
     })
-    .then(response => {
+    .then((response) => {
       // @ts-ignore
       mutations.addPublicCompliments({
         profileId,
@@ -306,7 +303,7 @@ function fetchUserCompliments(context: ActionContext, { profileId }: any) {
       })
       return response.data.compliments
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueInfoNotification(
@@ -325,7 +322,7 @@ function fetchComplimentTypes(context: ActionContext) {
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
-    .then(response => {
+    .then((response) => {
       mutations.setComplimentTypes(response.data.complimentTypes)
     })
 }
@@ -351,10 +348,10 @@ function addUserCompliments(
         headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
       }
     )
-    .then(response => {
+    .then((response) => {
       mutations.clearPublicCompliments(receiver.id)
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -368,7 +365,7 @@ function addUserCompliments(
  * @returns {Array<Object>} Returns an Array of reviews in the response.data.reviews
  */
 function fetchUserReviews(context: ActionContext, { profileId }: any) {
-  let usr = getters.getPublicUsers.get(profileId)
+  const usr = getters.getPublicUsers.get(profileId)
   if (usr && usr.reviews) {
     return Promise.resolve(usr.reviews)
   }
@@ -378,7 +375,7 @@ function fetchUserReviews(context: ActionContext, { profileId }: any) {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
       params: { receiverId: profileId },
     })
-    .then(response => {
+    .then((response) => {
       // @ts-ignore
       mutations.addPublicReviews({
         profileId,
@@ -409,11 +406,11 @@ function addUserReview(
         headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
       }
     )
-    .then(response => {
+    .then((response) => {
       uiStore.actions.queueInfoNotification(`Je beoordeling is opgeslagen!`)
       mutations.clearPublicReviews(receiver.id)
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(`Fout bij opslaan van beoordeling`)
@@ -439,7 +436,7 @@ function storeDelegation(
         headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
       }
     )
-    .then(response => {
+    .then((response) => {
       if (response.status === 201) {
         uiStore.actions.queueInfoNotification(`Je machtiging is opgeslagen!`)
         mutations.setSearchStatus('SUCCESS')
@@ -447,7 +444,7 @@ function storeDelegation(
         mutations.setSearchStatus('FAILED')
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -466,13 +463,13 @@ function deleteDelegation(
     .delete(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
-    .then(response => {
+    .then((response) => {
       if (response.status === 204) {
         uiStore.actions.queueInfoNotification(`Je machtiging is verwijderd!`)
         fetchDelegations(context, { delegateId })
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueInfoNotification(
@@ -487,7 +484,7 @@ function fetchDelegations(context: ActionContext, { delegateId }: any) {
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
     })
-    .then(response => {
+    .then((response) => {
       // Turn relative image URLs into absolute URLs.
       response.data.data.map((d: any) => {
         if (d.delegate?.image) {
@@ -507,7 +504,7 @@ function fetchDelegations(context: ActionContext, { delegateId }: any) {
       response.data.data.splice(0, 0, own_delegation)
       mutations.setDelegations(response.data.data)
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueInfoNotification(

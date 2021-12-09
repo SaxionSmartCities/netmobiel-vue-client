@@ -19,10 +19,10 @@ function fetchByLicensePlate(context: ActionContext, payload: string): void {
     .get(URL, {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
     })
-    .then(function(resp) {
+    .then(function (resp) {
       mutations.setCarSearchResult(resp.data)
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueInfoNotification(
@@ -37,12 +37,12 @@ function fetchCars(context: ActionContext) {
     .get(URL, {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
     })
-    .then(function(resp) {
+    .then(function (resp) {
       if (resp.status == 200) {
         mutations.setAvailableCars(resp.data)
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueInfoNotification(
@@ -57,10 +57,10 @@ function submitCar(context: ActionContext, payload: Car) {
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
     })
-    .then(function(resp) {
+    .then(function (resp) {
       fetchCars(context)
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
       if (!!error.response && error.response.status == 409) {
@@ -77,10 +77,10 @@ function fetchCar(context: ActionContext, payload: any) {
     .get(URL, {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
     })
-    .then(resp => {
+    .then((resp) => {
       mutations.setSelectedCar(resp.data)
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       mutations.setSelectedCar({})
@@ -93,13 +93,13 @@ function removeCar(context: ActionContext, payload: Car) {
     .delete(URL, {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
     })
-    .then(function(resp) {
+    .then(function (resp) {
       fetchCars(context)
       // eslint-disable-next-line
       console.log(resp)
       fetchCars(context)
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
       if (!!error.response && error.response.status == 403) {
@@ -147,13 +147,13 @@ function submitRide(context: ActionContext, payload: any) {
     .post(URL, request, {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
     })
-    .then(function(res) {
+    .then(function (res) {
       if (res.status == 201) {
         uiStore.actions.queueInfoNotification('Uw rit is opgeslagen.')
       }
       fetchRides(context, { offset: 0, maxResults: 10 })
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -173,12 +173,12 @@ function updateRide(context: ActionContext, payload: any) {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       params: params,
     })
-    .then(function(resp) {
+    .then(function (resp) {
       // eslint-disable-next-line
       uiStore.actions.queueInfoNotification('Uw rit is gewijzigd.')
       fetchRide(context, { id: ride.rideRef })
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -204,7 +204,7 @@ function fetchRides(
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       params: params,
     })
-    .then(function(resp) {
+    .then(function (resp) {
       if (pastRides) {
         offset === 0
           ? mutations.savePastRides(resp.data.data)
@@ -217,7 +217,7 @@ function fetchRides(
         mutations.setPlannedRidesCount(resp.data.totalCount)
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -233,10 +233,10 @@ function fetchRide(context: ActionContext, payload: any) {
     .get(URL, {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
     })
-    .then(resp => {
+    .then((resp) => {
       mutations.setSelectedRide(resp.data)
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification('Fout bij het ophalen van uw rit.')
@@ -251,7 +251,7 @@ function confirmRide(context: ActionContext, payload: any) {
   }
   axios
     .put(URL, data, config)
-    .then(function(resp) {
+    .then(function (resp) {
       if (resp.status == 204) {
         // Ride is confirmed
         uiStore.actions.queueInfoNotification('Uw rit is bevestigd.')
@@ -262,7 +262,7 @@ function confirmRide(context: ActionContext, payload: any) {
         )
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -282,7 +282,7 @@ function deleteRide(context: ActionContext, payload: any) {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       params: params,
     })
-    .then(function(resp) {
+    .then(function (resp) {
       if (resp.status == 204) {
         //Delete trip from store!
         mutations.deleteRides(payload.id)
@@ -292,7 +292,7 @@ function deleteRide(context: ActionContext, payload: any) {
         )
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -303,7 +303,7 @@ function deleteRide(context: ActionContext, payload: any) {
 
 function fetchUser(context: ActionContext, { userRef }: UserRef) {
   const URL = `${RIDESHARE_BASE_URL}/users/${userRef}`
-  let usr = getters.getUsers.get(userRef)
+  const usr = getters.getUsers.get(userRef)
   if (usr) {
     return Promise.resolve(usr)
   }
@@ -311,11 +311,11 @@ function fetchUser(context: ActionContext, { userRef }: UserRef) {
     .get(URL, {
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
     })
-    .then(function(resp) {
+    .then(function (resp) {
       mutations.addUser({ userRef, ...resp.data })
       return resp.data
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // TODO: Proper error handling.
       // eslint-disable-next-line
       console.log(error)
@@ -349,10 +349,10 @@ function fetchRideProposals(
       headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
       params: params,
     })
-    .then(function(resp) {
+    .then(function (resp) {
       mutations.setProposedRides(resp.data.data)
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // eslint-disable-next-line
         console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -362,8 +362,8 @@ function fetchRideProposals(
 }
 
 function fetchRidesFromConversations(context: ActionContext, payload: any) {
-  let rideFetches = []
-  for (let conversation of payload) {
+  const rideFetches = []
+  for (const conversation of payload) {
     const URL = `${RIDESHARE_BASE_URL}/rides/${conversation.context}`
     rideFetches.push(
       axios.get(URL, {
@@ -371,9 +371,9 @@ function fetchRidesFromConversations(context: ActionContext, payload: any) {
       })
     )
   }
-  Promise.all(rideFetches).then(values => {
-    let rides = []
-    for (let resp of values) {
+  Promise.all(rideFetches).then((values) => {
+    const rides = []
+    for (const resp of values) {
       rides.push(resp.data)
     }
     mutations.setInboxRides(rides)

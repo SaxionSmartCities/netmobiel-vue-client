@@ -11,13 +11,13 @@ Vue.config.productionTip = false
 
 function addStaticTokenInterceptor() {
   axios.interceptors.request.use(
-    config => {
+    (config) => {
       if (Vue.prototype.$keycloak.authenticated) {
         config.headers.Authorization = `Bearer ${Vue.prototype.$keycloak.token}`
       }
       return config
     },
-    error => {
+    (error) => {
       return Promise.reject(error)
     }
   )
@@ -25,8 +25,8 @@ function addStaticTokenInterceptor() {
 
 function addStaticResponseInterceptor() {
   axios.interceptors.response.use(
-    response => response,
-    error => {
+    (response) => response,
+    (error) => {
       if (error.response.status === 401) {
         // eslint-disable-next-line
         console.warn(
@@ -35,7 +35,7 @@ function addStaticResponseInterceptor() {
           }`
         )
         // Redirect to the session expired. Ignore errors saying that others also redirected to that same page.
-        router.push('/session-expired').catch(error => {
+        router.push('/session-expired').catch((error) => {
           if (error.name !== 'NavigationDuplicated') {
             throw error
           }
@@ -67,11 +67,11 @@ Vue.use(VueKeyCloak, {
     // We don't care about an SSO logout anyway.
     checkLoginIframe: false,
   },
-  onAuthRefreshError: function(e: any) {
+  onAuthRefreshError: function (e: any) {
     // eslint-disable-next-line
     // console.error(e)
   },
-  onReady: function() {
+  onReady: function () {
     addStaticTokenInterceptor()
     addStaticResponseInterceptor()
     /* eslint-disable no-new */
@@ -79,14 +79,14 @@ Vue.use(VueKeyCloak, {
       store,
       router,
       vuetify,
-      render: h => h(App),
+      render: (h) => h(App),
     }).$mount('#app')
   },
-  onInitSuccess: function() {
+  onInitSuccess: function () {
     // eslint-disable-next-line
     // console.log('Initialization of Keycloak was successfully')
   },
-  onInitError: function(err: Error, e: any) {
+  onInitError: function (err: Error, e: any) {
     // Does not work yet :(
     // eslint-disable-next-line
     // console.error(err)

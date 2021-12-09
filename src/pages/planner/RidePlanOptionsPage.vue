@@ -4,9 +4,7 @@
       <v-col>
         <v-row dense>
           <v-col>
-            <h1>
-              Ritvoorkeuren
-            </h1>
+            <h1>Ritvoorkeuren</h1>
           </v-col>
         </v-row>
         <v-row no-gutters>
@@ -53,7 +51,7 @@
               <search-options-icon-expansion-panel
                 v-model="luggage"
                 @onChanged="
-                  newLuggage => {
+                  (newLuggage) => {
                     luggage = newLuggage
                   }
                 "
@@ -218,14 +216,14 @@ export default {
           title: 'Bagage',
           options: luggageTypes,
           selected: this.ridePlanOptions.luggageOptions
-            .map(o => luggageTypes[o])
+            .map((o) => luggageTypes[o])
             // filter away the non-existing types
-            .filter(lt => lt),
+            .filter((lt) => lt),
         }
       },
       set(selection) {
         this.ridePlanOptions.luggageOptions = selection.selected.map(
-          option => option.type
+          (option) => option.type
         )
       },
     },

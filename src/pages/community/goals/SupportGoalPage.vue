@@ -18,7 +18,7 @@
         <h2 class="netmobiel">
           {{ charity ? charity.name : '' }}
         </h2>
-        <span class=" overline">{{ charity ? charity.placec : '' }}</span>
+        <span class="overline">{{ charity ? charity.placec : '' }}</span>
       </v-col>
     </v-row>
     <v-row class="flex-column">
@@ -76,7 +76,6 @@
 import ContentPane from '@/components/common/ContentPane'
 import * as uiStore from '@/store/ui'
 import * as chsStore from '@/store/charity-service'
-import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'SupportGoalPage',
@@ -90,7 +89,7 @@ export default {
       donationMessage: '',
       isAnonymous: false,
       rules: {
-        positive: value => value > 0 || '',
+        positive: (value) => value > 0 || '',
       },
     }
   },

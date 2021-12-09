@@ -40,7 +40,7 @@ export default {
     },
   },
   methods: {
-    popMessage: function() {
+    popMessage: function () {
       uiStore.mutations.shiftUpdateMessage()
     },
   },

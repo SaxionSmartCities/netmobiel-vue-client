@@ -40,9 +40,7 @@
     </v-col>
     <v-dialog v-model="warningDialog">
       <v-card class="py-1 px-3">
-        <v-card-title class="headline">
-          Verwijder rit met aanbod
-        </v-card-title>
+        <v-card-title class="headline"> Verwijder rit met aanbod </v-card-title>
         <v-card-text>
           <v-row class="d-flex flex-column">
             <v-col class="py-0">
