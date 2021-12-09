@@ -1,13 +1,13 @@
 <template>
   <content-pane id="scroll">
-    <template v-slot:header>
+    <template #header>
       <tab-bar
         v-if="isDrivingPassenger"
         class="shrink"
         :selected-tab-model="selectedTab"
         @tabChange="selectedTab = $event"
       >
-        <template v-slot:firstTab>
+        <template #firstTab>
           <v-icon color="white">directions_car</v-icon>
           <span>
             Chauffeur
@@ -19,7 +19,7 @@
           </span>
         </template>
 
-        <template v-slot:secondTab>
+        <template #secondTab>
           <v-icon color="white">commute</v-icon>
           <span>
             Passagier
@@ -35,7 +35,7 @@
         v-if="isPassengerView && getCancelledTrips.length > 0"
         :trips="getCancelledTrips"
       >
-        <template v-slot:card="{ trip }">
+        <template #card="{ trip }">
           <travel-card
             :trip-id="trip.id"
             :itinerary="trip.itinerary"
@@ -61,7 +61,7 @@
           </v-col>
           <v-col v-else class="py-0">
             <grouped-card-list :items="getPastTrips">
-              <template v-slot:card="{ item: trip }">
+              <template #card="{ item: trip }">
                 <travel-card
                   :trip-id="trip.id"
                   :trip-state="trip.state"
@@ -81,7 +81,7 @@
           </v-col>
           <v-col v-else class="py-0">
             <grouped-card-list :items="getPlannedTrips">
-              <template v-slot:card="{ item: trip }">
+              <template #card="{ item: trip }">
                 <travel-card
                   :trip-id="trip.id"
                   :trip-state="trip.state"
@@ -115,7 +115,7 @@
           </v-col>
           <v-col v-else class="py-0">
             <grouped-card-list :items="getPastRides" type="ride">
-              <template v-slot:card="{ item: ride, index }">
+              <template #card="{ item: ride, index }">
                 <ride-card
                   class="trip-card"
                   :index="index"
@@ -136,7 +136,7 @@
           </v-col>
           <v-col v-else class="py-0">
             <grouped-card-list :items="getPlannedRides" type="ride">
-              <template v-slot:card="{ item: ride, index }">
+              <template #card="{ item: ride, index }">
                 <ride-card
                   class="trip-card"
                   :index="index"
@@ -178,6 +178,19 @@ export default {
     TravelCard,
     RideCard,
   },
+  beforeRouteEnter: beforeRouteEnter({
+    selectedTab: (number) => {
+      // console.log(`BeforeRouteEnter selectedTab: ${number}`)
+      return number || 0
+    },
+    tripsSearchTime: (searchtime) => searchtime || 'Future',
+    ridesSearchTime: (searchtime) => searchtime || 'Future',
+  }),
+  beforeRouteLeave: beforeRouteLeave({
+    selectedTab: (number) => number || 0,
+    tripsSearchTime: (searchtime) => searchtime,
+    ridesSearchTime: (searchtime) => searchtime,
+  }),
   data() {
     return {
       selectedTab: 0,
@@ -256,6 +269,7 @@ export default {
         }
       }
     },
+    // eslint-disable-next-line no-unused-vars
     selectedTab(newValue, oldValue) {
       this.profile.actualRole =
         newValue === 1
@@ -264,19 +278,6 @@ export default {
       psStore.actions.updateProfile(this.profile)
     },
   },
-  beforeRouteEnter: beforeRouteEnter({
-    selectedTab: number => {
-      // console.log(`BeforeRouteEnter selectedTab: ${number}`)
-      return number || 0
-    },
-    tripsSearchTime: searchtime => searchtime || 'Future',
-    ridesSearchTime: searchtime => searchtime || 'Future',
-  }),
-  beforeRouteLeave: beforeRouteLeave({
-    selectedTab: number => number || 0,
-    tripsSearchTime: searchtime => searchtime,
-    ridesSearchTime: searchtime => searchtime,
-  }),
   mounted() {
     this.selectedTab =
       this.profile.actualRole === constants.PROFILE_ROLE_PASSENGER ? 1 : 0
@@ -302,7 +303,7 @@ export default {
     needsReview(trip) {
       //TODO: Base this on the status for the trip.
       if (trip?.legs) {
-        return trip.legs.find(l => l.traverseMode === 'RIDESHARE')
+        return trip.legs.find((l) => l.traverseMode === 'RIDESHARE')
       }
       return false
     },

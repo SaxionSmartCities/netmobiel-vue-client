@@ -51,9 +51,7 @@ export default {
       return dateString.charAt(0).toUpperCase() + dateString.substring(1)
     },
     formatTime() {
-      return moment(this.statement.transactionTime)
-        .locale('nl')
-        .format('HH:mm')
+      return moment(this.statement.transactionTime).locale('nl').format('HH:mm')
     },
     transactionColor() {
       return this.statement.type === 'CREDIT' ? 'text-green' : 'text-red'

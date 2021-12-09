@@ -1,5 +1,5 @@
 <template>
-  <content-pane :clearpadding="true">
+  <content-pane>
     <v-row>
       <v-col>
         <community-button

@@ -19,7 +19,7 @@ export function restoreDataBeforeRouteEnter(vm, model) {
 }
 
 export function beforeRouteLeave(saving) {
-  return function(_to, _from, next) {
+  return function (_to, _from, next) {
     saveDataBeforeRouteLeave(this, saving)
     next()
   }
@@ -27,8 +27,8 @@ export function beforeRouteLeave(saving) {
 
 //restore component models from history state after navigating back to the page
 export function beforeRouteEnter(restoring) {
-  return function(_to, _from, next) {
+  return function (_to, _from, next) {
     // NO access to this. Use the next callback the restore the attribute values.
-    next(vm => restoreDataBeforeRouteEnter(vm, restoring))
+    next((vm) => restoreDataBeforeRouteEnter(vm, restoring))
   }
 }

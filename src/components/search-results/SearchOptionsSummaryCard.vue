@@ -72,11 +72,13 @@ export default {
       return this.getSearchPreferences?.allowedTravelModes.includes('RIDESHARE')
     },
     luggageOptions() {
-      return this.getSearchPreferences.luggageOptions.map(x => luggageTypes[x])
+      return this.getSearchPreferences.luggageOptions.map(
+        (x) => luggageTypes[x]
+      )
     },
     allowedTravelModes() {
       return this.getSearchPreferences.allowedTravelModes.map(
-        x => travelModes[x]
+        (x) => travelModes[x]
       )
     },
   },

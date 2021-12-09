@@ -4,9 +4,7 @@
       <v-col>
         <h1>Rit heeft niet plaatsgevonden</h1>
       </v-col>
-      <v-col>
-        Wat is de reden dat de rit niet heeft plaatsgevonden?
-      </v-col>
+      <v-col> Wat is de reden dat de rit niet heeft plaatsgevonden? </v-col>
       <v-col>
         <v-radio-group v-model="tripNotMadeReason" class="mt-1" column>
           <v-radio

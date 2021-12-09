@@ -95,7 +95,7 @@ export default {
   components: {
     ContentPane,
   },
-  data: function() {
+  data: function () {
     return {
       searchLicensePlate: '',
     }
@@ -117,14 +117,14 @@ export default {
   mounted() {
     csStore.mutations.clearCarSearchResult()
   },
-  created: function() {
+  created: function () {
     uiStore.mutations.showBackButton()
   },
   methods: {
     addCar(car) {
       const cars = csStore.getters.getAvailableCars
 
-      let storedCar = cars.find(c => c.licensePlate === car.licensePlate)
+      let storedCar = cars.find((c) => c.licensePlate === car.licensePlate)
       if (storedCar) {
         uiStore.actions.queueErrorNotification(
           'Auto is al opgeslagen aan uw profiel.'

@@ -24,7 +24,7 @@ export default {
     currentRating: { type: Number, default: 0 },
     leg: {
       type: Object,
-      default: function() {
+      default: function () {
         return {
           mode: undefined,
         }

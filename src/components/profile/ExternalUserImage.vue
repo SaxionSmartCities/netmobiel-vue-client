@@ -47,7 +47,7 @@ export default {
       if (this.managedIdentity && !this.isSystemUser) {
         psStore.actions
           .fetchPublicProfile({ profileId: this.managedIdentity })
-          .then(profile => {
+          .then((profile) => {
             this.publicProfile = profile
           })
           .catch()

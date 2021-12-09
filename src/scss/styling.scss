@@ -102,11 +102,11 @@ h3 {
 
 //HACK: Upgrading vuetity has a different max-width.
 // We are reverting this here.
-.container.fill-height > .row {
-  max-width: 100% !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
+//.container.fill-height > .row {
+//  max-width: 100% !important;
+//  margin-left: auto !important;
+//  margin-right: auto !important;/
+//}
 .cancelled-banner {
   font-weight: bold;
   color: $color-alertRed;

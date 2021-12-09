@@ -8,10 +8,10 @@
       </v-row>
       <v-row>
         <v-col>
-          <round-user-image
-            :profile-image="profileImage"
+          <external-user-image
+            :managed-identity="review.sender.id"
             :image-size="32"
-            :avatar-size="37"
+            :avatar-size="38"
           />
           <span class="ml-3">
             {{ review.sender.firstName + ' ' + review.sender.lastName }}
@@ -31,21 +31,18 @@
 </template>
 
 <script>
-import RoundUserImage from '@/components/common/RoundUserImage'
 import moment from 'moment'
+import ExternalUserImage from '@/components/profile/ExternalUserImage'
 
 export default {
   name: 'ReviewItem',
-  components: { RoundUserImage },
+  components: { ExternalUserImage },
   props: {
     review: { type: Object, required: true },
-    profileImage: { type: String, required: false, default: '' },
   },
   methods: {
     formatDate(date) {
-      return moment(date)
-        .locale('nl')
-        .calendar()
+      return moment(date).locale('nl').calendar()
     },
   },
 }

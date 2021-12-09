@@ -74,7 +74,7 @@ export function generateRideItineraryDetailSteps(ride) {
 function generateBookingDictionary(bookings) {
   let dict = []
   for (let i = 0; i < bookings.length; i++) {
-    let map = bookings[i].legs.map(l => {
+    let map = bookings[i].legs.map((l) => {
       let dictItem = { ...bookings[i].passenger }
       dictItem.legRef = l.legRef
       return dictItem
@@ -88,7 +88,7 @@ function setPassenger(leg, bookingDict) {
   // TODO: Check why modality is not provided
   if (leg) {
     leg.mode = travelModes.CAR.mode
-    let passenger = bookingDict.find(b => b.legRef === leg.legRef)
+    let passenger = bookingDict.find((b) => b.legRef === leg.legRef)
     if (passenger) {
       leg.passenger = passenger
       leg.mode = travelModes.RIDESHARE.mode
@@ -109,13 +109,9 @@ export function generateShoutOutDetailSteps(shoutOut, ride, veryDetailed) {
 function generateCommunityShoutOutDetailSteps(shoutout) {
   const departure = shoutout.useAsArrivalTime
     ? null
-    : moment(shoutout.travelTime)
-        .toDate()
-        .getTime()
+    : moment(shoutout.travelTime).toDate().getTime()
   const arrival = shoutout.useAsArrivalTime
-    ? moment(shoutout.travelTime)
-        .toDate()
-        .getTime()
+    ? moment(shoutout.travelTime).toDate().getTime()
     : null
   const fromLabel = shoutout.from ? shoutout.from.label : ''
   const toLabel = shoutout.to ? shoutout.to.label : ''
@@ -144,6 +140,7 @@ function generateCommunityShoutOutDetailSteps(shoutout) {
  * @return {*[]} a list of steps
  */
 function generateShoutOutRideOfferDetailSteps(ride, veryDetailed) {
+  // eslint-disable-next-line no-unused-vars
   const { fromPlace, toPlace, car, bookings, legs } = ride
   // If the legs are available too, then booking.legs[].legRef points to the
   // leg with passenger.
@@ -153,20 +150,12 @@ function generateShoutOutRideOfferDetailSteps(ride, veryDetailed) {
   // A detailed ride has all car information.
   // A listed ride has only cat brand and model.
   const steps = []
-  const booking = bookings?.find(b => b.state.toUpperCase() === 'PROPOSED')
+  const booking = bookings?.find((b) => b.state.toUpperCase() === 'PROPOSED')
   if (booking) {
-    let departureTime = moment(ride.departureTime)
-      .toDate()
-      .getTime()
-    let arrivalTime = moment(ride.arrivalTime)
-      .toDate()
-      .getTime()
-    let pickupTime = moment(booking.departureTime)
-      .toDate()
-      .getTime()
-    let dropOffTime = moment(booking.arrivalTime)
-      .toDate()
-      .getTime()
+    let departureTime = moment(ride.departureTime).toDate().getTime()
+    let arrivalTime = moment(ride.arrivalTime).toDate().getTime()
+    let pickupTime = moment(booking.departureTime).toDate().getTime()
+    let dropOffTime = moment(booking.arrivalTime).toDate().getTime()
     // Check whether the driver has to ride a part to pickup the passenger
     // If so, he departs before he does a pickup
     if (ride.departureTime !== booking.departureTime) {

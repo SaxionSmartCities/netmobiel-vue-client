@@ -60,9 +60,7 @@
             <v-col v-if="duration" class="pt-1">
               Reistijd: {{ Math.round(duration / 60) }} minuten
             </v-col>
-            <v-col v-else class="pt-1">
-              Reistijd: onbekend
-            </v-col>
+            <v-col v-else class="pt-1"> Reistijd: onbekend </v-col>
             <v-col
               v-if="cost"
               class="pt-1 text-primary font-weight-bold text-right"
@@ -165,14 +163,8 @@ export default {
       })
     },
     formatDateTime(dateTime, format) {
-      if (!format)
-        return moment(dateTime)
-          .locale('nl')
-          .calendar()
-      else
-        return moment(dateTime)
-          .local('nl')
-          .format(format)
+      if (!format) return moment(dateTime).locale('nl').calendar()
+      else return moment(dateTime).local('nl').format(format)
     },
     // Function to pre-determine the divions of column per leg
     calculateLegDivison() {
@@ -182,7 +174,7 @@ export default {
       }
       // Calculate total travel time
       this.totalTime = this.legs
-        .map(leg => leg.duration)
+        .map((leg) => leg.duration)
         .reduce((a, b) => a + b)
 
       // Calculate ratio for each leg and map it on a 1-12 scale (based on grid system)

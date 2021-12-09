@@ -17,20 +17,19 @@
 
 <script>
 import AgeCard from '@/components/onboarding/AgeCard.vue'
-import InterestsCard from '@/components/onboarding/InterestsCard.vue'
 
 export default {
   components: {
     AgeCard,
     // InterestsCard,
   },
-  data: function() {
+  data: function () {
     return {
       step: 0,
     }
   },
   watch: {
-    step: function() {
+    step: function () {
       if (this.step >= 1) {
         this.$router.push('/onboardingComplete')
       }

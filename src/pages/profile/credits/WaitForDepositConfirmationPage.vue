@@ -29,7 +29,7 @@ export default {
   components: {
     ContentPane,
   },
-  data: function() {
+  data: function () {
     return {
       progress: '',
     }

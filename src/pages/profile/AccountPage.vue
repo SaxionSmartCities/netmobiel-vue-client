@@ -11,8 +11,7 @@
           >
             Persoonlijk
           </span>
-          <v-divider></v-divider>
-          <v-row vertical-align-center>
+          <v-row>
             <v-col>
               <v-text-field
                 v-model="user.firstName"
@@ -55,8 +54,7 @@
           >
             Adres
           </span>
-          <v-divider></v-divider>
-          <v-row vertical-align-center>
+          <v-row>
             <v-col>
               <search-location
                 :address="user.address"
@@ -77,8 +75,7 @@
           >
             Contactgegevens
           </span>
-          <v-divider></v-divider>
-          <v-row vertical-align-center>
+          <v-row>
             <v-col>
               <v-text-field
                 v-model="user.email"
@@ -140,14 +137,14 @@ export default {
       selectedProperty: null,
       valid: false,
       rules: {
-        required: value => !!value || 'Veld is verplicht',
-        email: value =>
+        required: (value) => !!value || 'Veld is verplicht',
+        email: (value) =>
           !!value?.match(
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
           ) ||
           !value ||
           'Ongeldig email adres',
-        phone: value =>
+        phone: (value) =>
           !!value?.match(
             /(^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0-9\-\s]{10}$)/
           ) ||

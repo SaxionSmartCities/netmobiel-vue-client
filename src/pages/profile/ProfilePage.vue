@@ -36,9 +36,7 @@
                     </span>
                   </v-col>
                   <v-col class="shrink">
-                    <v-icon large>
-                      chevron_right
-                    </v-icon>
+                    <v-icon large> chevron_right </v-icon>
                   </v-col>
                 </v-row>
               </v-col>
@@ -81,53 +79,43 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-row dense>
-      <v-col class="pa-0">
-        <v-divider></v-divider>
-      </v-col>
-    </v-row>
-    <v-row
-      v-for="item in items"
-      :key="item.name"
-      dense
-      align-content="center"
-      class="profile-item"
-      :class="{ 'no-route': !item.routeName }"
-      @click="!item.routeName || $router.push({ name: item.routeName })"
-    >
+    <v-row>
       <v-col>
-        <v-row dense>
-          <v-col class="shrink">
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-col>
-          <v-col>
-            <span class="body-1 font-weight-light align-self-center">
-              {{ item.name }}
-            </span>
-          </v-col>
-          <v-col class="shrink">
-            <v-icon>chevron_right</v-icon>
-          </v-col>
-        </v-row>
-        <v-row dense>
-          <v-col class="py-0">
-            <v-divider></v-divider>
-          </v-col>
-        </v-row>
+        <v-list>
+          <template v-for="(item, index) in items">
+            <v-divider
+              v-show="index !== 0"
+              :key="'divider-' + index"
+            ></v-divider>
+            <v-list-item
+              :key="index"
+              dense
+              class="profile-item"
+              @click="!item.routeName || $router.push({ name: item.routeName })"
+            >
+              <v-list-item-icon>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content
+                class="body-1 font-weight-light"
+                :class="{ 'no-route': !item.routeName }"
+              >
+                {{ item.name }}</v-list-item-content
+              >
+              <v-list-item-icon>
+                <v-icon>chevron_right</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </template>
+        </v-list>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <v-card outlined @click="logOut">
-          <v-row>
-            <v-col class="grow pl-6">
-              Uitloggen
-            </v-col>
-            <v-col class="shrink pr-5">
-              <v-icon>exit_to_app</v-icon>
-            </v-col>
-          </v-row>
-        </v-card>
+        <v-btn large rounded block outlined color="primary" @click="logOut">
+          Afmelden
+          <v-icon right> logout </v-icon>
+        </v-btn>
       </v-col>
     </v-row>
   </content-pane>
@@ -202,7 +190,7 @@ export default {
     navTo(name) {
       this.$router.push({ name: name })
     },
-    logOut: function() {
+    logOut: function () {
       this.$router.push({ name: 'logout' })
     },
     readFile(event) {
@@ -214,7 +202,7 @@ export default {
         fileReader.addEventListener('loadend', async () => {
           this.isUploadingFile = false
           const imageString = fileReader.result
-          scaleImageDown(imageString, 200).then(resizedImage => {
+          scaleImageDown(imageString, 200).then((resizedImage) => {
             const profile = { ...psStore.getters.getProfile }
             psStore.actions.updateProfileImage({
               id: profile.id,

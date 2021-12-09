@@ -1,28 +1,28 @@
 <template>
-  <content-pane :clearpadding="true">
-    <template v-slot:header>
+  <content-pane>
+    <template #header>
       <tab-bar
         class="shrink"
         :selected-tab-model="selectedTab"
         @tabChange="selectedTab = $event"
       >
-        <template v-slot:firstTab>
+        <template #firstTab>
           <span>Recent</span>
         </template>
 
-        <template v-slot:secondTab>
+        <template #secondTab>
           <span>Archief</span>
         </template>
       </tab-bar>
     </template>
     <v-list three-line avatar class="pt-0 conversation-list">
-      <template v-for="cvs in conversations">
-        <v-divider :key="cvs.id + '-divider'" />
+      <template v-for="(cvs, index) in conversations">
+        <v-divider v-show="index !== 0" :key="cvs.id + '-divider'" />
         <v-list-item :key="cvs.id" class="pa-0" @click="showConversation(cvs)">
           <v-list-item-avatar size="60">
             <external-user-image
               :managed-identity="user(cvs.recentMessage).managedIdentity"
-              :image-size="56"
+              :image-size="54"
               :avatar-size="60"
             />
           </v-list-item-avatar>
@@ -101,7 +101,7 @@ export default {
       return this.selectedTab === 1
     },
   },
-  created: function() {
+  created: function () {
     uiStore.mutations.showBackButton()
     msStore.actions.fetchActualConversations()
     msStore.actions.fetchArchivedConversations()
@@ -139,16 +139,13 @@ export default {
         },
       })
     },
+    // eslint-disable-next-line no-unused-vars
     getNewMessageCount(conversation) {
       //TODO: Get the count from somewhere.
       return 0
     },
     timestamp(timestamp) {
-      return upperCaseFirst(
-        moment(timestamp)
-          .locale('nl')
-          .calendar()
-      )
+      return upperCaseFirst(moment(timestamp).locale('nl').calendar())
     },
   },
 }

@@ -4,7 +4,7 @@
     :empty-list-label="emptyListLabel"
     :key-name="'ref'"
   >
-    <template v-slot:list-item="{ item: location }">
+    <template #list-item="{ item: location }">
       <v-row no-gutters>
         <v-col
           class="shrink category align-center pa-2 ml-1"
@@ -56,7 +56,6 @@
 
 <script>
 import GenericList from '@/components/lists/GenericList'
-import constants from '@/constants/constants.js'
 
 /**
  * The LocationsList shows a list of elements, comprising of the following elements:

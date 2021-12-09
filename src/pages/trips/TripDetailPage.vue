@@ -1,18 +1,14 @@
 <template>
   <content-pane>
-    <template v-slot:header>
+    <template #header>
       <v-row
         v-if="selectedTrip && selectedTrip.state === 'CANCELLED'"
-        class="cancelled-banner text-center py-1"
+        class="cancelled-banner text-center shrink"
         dense
         no-gutters
       >
-        <v-col v-if="isDepartureInThePast">
-          Deze rit was geannuleerd
-        </v-col>
-        <v-col v-else>
-          Deze rit is geannuleerd
-        </v-col>
+        <v-col v-if="isDepartureInThePast"> Deze rit was geannuleerd </v-col>
+        <v-col v-else> Deze rit is geannuleerd </v-col>
       </v-row>
     </template>
     <v-row>
@@ -70,9 +66,7 @@
     </v-row>
     <v-dialog v-model="warningDialog">
       <v-card>
-        <v-card-title class="headline">
-          Rit Verwijderen
-        </v-card-title>
+        <v-card-title class="headline"> Rit Verwijderen </v-card-title>
         <v-card-text>
           <v-row class="d-flex flex-column">
             <v-col v-if="drivers && drivers.length > 0" class="py-1">
@@ -175,7 +169,7 @@ export default {
     },
     containsRideshareLeg() {
       return !!this.selectedTrip?.itinerary?.legs.find(
-        leg => leg.traverseMode === 'RIDESHARE'
+        (leg) => leg.traverseMode === 'RIDESHARE'
       )
     },
     isChatEnabled() {
@@ -183,8 +177,8 @@ export default {
     },
     drivers() {
       return this.selectedTrip?.itinerary?.legs
-        .filter(leg => leg.traverseMode === 'RIDESHARE')
-        .map(leg => {
+        .filter((leg) => leg.traverseMode === 'RIDESHARE')
+        .map((leg) => {
           const decodedUrn = UrnHelper.decodeUrn(leg.driverId)
           return {
             name: leg.driverName,
@@ -213,7 +207,7 @@ export default {
       const state = this.selectedTrip.state
       const legs = this.selectedTrip.itinerary?.legs
       // I can confirm or deny my leg, in both cases the validating is done
-      const validatedMyLeg = legs?.find(l => l.confirmed !== undefined)
+      const validatedMyLeg = legs?.find((l) => l.confirmed !== undefined)
       switch (state) {
         case 'SCHEDULED':
           options.push({
@@ -279,11 +273,7 @@ export default {
   },
   methods: {
     formatTime(t) {
-      return t
-        ? moment(t)
-            .locale('nl')
-            .calendar()
-        : '- - : - -'
+      return t ? moment(t).locale('nl').calendar() : '- - : - -'
     },
     onShowMap() {
       this.showMap = true
@@ -308,6 +298,7 @@ export default {
       isStore.mutations.setSearchCriteria({ from, to })
       this.$router.push('/search')
     },
+    // eslint-disable-next-line no-unused-vars
     onTripReview(trip) {
       this.$router.push({
         name: 'tripConfirmPage',

@@ -20,7 +20,7 @@ function isPhonetic(s: string) {
   const memes: string[] = s
     .substring(s.indexOf('(') + 1, s.indexOf(')'))
     .split(' ')
-    .filter(elem => elem.length <= 4)
+    .filter((elem) => elem.length <= 4)
   return memes.length > 1
 }
 
@@ -50,7 +50,7 @@ async function fetchGeocoderSuggestions(
     })
     let suggestions: GeoCoderSuggestion[] = resp.data.data
     if (hidePhoneticMatches) {
-      suggestions = suggestions.filter(s => !isPhonetic(s.title))
+      suggestions = suggestions.filter((s) => !isPhonetic(s.title))
     }
     mutations.setGeocoderSuggestions(suggestions)
   } catch (problem) {

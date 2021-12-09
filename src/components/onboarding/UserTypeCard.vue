@@ -2,7 +2,7 @@
   <v-card class="rounded-border">
     <v-card-title>Hoe ga je Netmobiel gebruiken?</v-card-title>
     <v-card-text class="py-0">
-      <v-radio-group v-model="value.userRole" :mandatory="false">
+      <v-radio-group v-model="userRole" :mandatory="false">
         <v-radio
           label="Passagier - Meerijden of via het OV"
           :value="passengerRole"
@@ -32,7 +32,7 @@
             rounded
             depressed
             color="button"
-            :disabled="!value.userRole"
+            :disabled="!userRole"
             @click="submitForm()"
           >
             Aanmaken
@@ -46,11 +46,11 @@
 <script>
 import constants from '@/constants/constants'
 export default {
-  name: 'HomeTownCard',
+  name: 'UserTypeCard',
   props: {
     value: {
-      type: Object,
-      default: () => undefined,
+      type: String,
+      default: '',
     },
   },
   data() {
@@ -60,6 +60,7 @@ export default {
       driverRole: Object.freeze(constants.PROFILE_ROLE_DRIVER),
       bothRole: Object.freeze(constants.PROFILE_ROLE_BOTH),
       showSubmitButton: true,
+      userRole: this.value,
     }
   },
   created() {
@@ -71,6 +72,7 @@ export default {
   },
   methods: {
     submitForm() {
+      this.$emit('update-role', this.userRole)
       this.$emit('next-step')
     },
     back() {

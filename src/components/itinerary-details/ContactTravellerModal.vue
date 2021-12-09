@@ -13,9 +13,7 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary-btn" text @click="showMe = false">
-          close
-        </v-btn>
+        <v-btn color="primary-btn" text @click="showMe = false"> close </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

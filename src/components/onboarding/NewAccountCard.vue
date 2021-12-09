@@ -4,9 +4,7 @@
     <v-card-text class="py-0">
       <v-form ref="form" v-model="valid">
         <v-row>
-          <v-col>
-            Je registreert je met de volgende gegevens:
-          </v-col>
+          <v-col> Je registreert je met de volgende gegevens: </v-col>
         </v-row>
         <v-row no-gutters>
           <v-col class="col-11 offset-1">
@@ -21,7 +19,7 @@
         <v-row no-gutters align="center">
           <v-col cols="1">
             <v-checkbox
-              v-model="value.consent.safetyGuidelines"
+              v-model="consent.safetyGuidelines"
               :rules="[rules.required]"
             ></v-checkbox>
           </v-col>
@@ -33,7 +31,7 @@
         <v-row no-gutters align="center">
           <v-col cols="1">
             <v-checkbox
-              v-model="value.consent.olderThanSixteen"
+              v-model="consent.olderThanSixteen"
               :rules="[rules.required]"
             ></v-checkbox>
           </v-col>
@@ -92,12 +90,13 @@ export default {
   },
   data() {
     return {
+      consent: { ...this.value },
       enableConsentCheck: false,
       showSubmitButton: true,
       valid: false,
       rules: {
-        required: value => !!value || '',
-        email: value =>
+        required: (value) => !!value || '',
+        email: (value) =>
           !!value.match(
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
           ) || 'Ongeldig email adres',
@@ -115,6 +114,7 @@ export default {
       this.enableConsentCheck = true
       this.validate()
       if (this.valid) {
+        this.$emit('update-consent', this.consent)
         this.$emit('next-step')
       }
     },

@@ -1,26 +1,26 @@
 <template>
   <v-row>
-    <v-col class="py-0">
+    <v-col>
       <v-row v-if="options.length === 0">
-        <v-col class="py-0">
+        <v-col>
           <v-divider></v-divider>
           <em>Geen wijzigingen mogelijk op dit moment.</em>
         </v-col>
       </v-row>
-      <v-row v-for="(option, index) in options" :key="index" dense>
-        <v-col class="py-0">
+      <v-row v-for="(option, index) in options" :key="index">
+        <v-col>
           <v-divider></v-divider>
-          <v-row @click="option.callback">
+          <v-row class="mt-1" @click="option.callback">
             <v-col cols="1">
               <v-icon>{{ option.icon }}</v-icon>
             </v-col>
-            <v-col class="pl-5">
+            <v-col>
               {{ option.label }}
             </v-col>
           </v-row>
         </v-col>
       </v-row>
-      <v-row dense>
+      <v-row>
         <v-col><v-divider></v-divider></v-col>
       </v-row>
     </v-col>

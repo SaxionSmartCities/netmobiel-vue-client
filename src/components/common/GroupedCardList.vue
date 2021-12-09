@@ -57,7 +57,7 @@ export default {
     },
     getAllDifferentDays(trips) {
       let differentDays = []
-      trips.forEach(trip => {
+      trips.forEach((trip) => {
         const calendarDate = moment(trip.itinerary.arrivalTime).format('LL')
         if (!differentDays.includes(calendarDate)) {
           differentDays.push(calendarDate)
@@ -66,7 +66,7 @@ export default {
       return differentDays
     },
     getItinerariesForThatDay(trips, sectionDay) {
-      return trips.filter(trip => {
+      return trips.filter((trip) => {
         const dateToCheck = moment(trip.itinerary.arrivalTime.valueOf())
         return (
           moment(sectionDay, 'LL').isSame(dateToCheck, 'day') &&
@@ -80,7 +80,7 @@ export default {
     },
     getAllDifferentDaysForRides(rides) {
       let differentDays = []
-      rides.forEach(ride => {
+      rides.forEach((ride) => {
         const calendarDate = moment(ride.departureTime).format('LL')
         if (!differentDays.includes(calendarDate)) {
           differentDays.push(calendarDate)
@@ -89,7 +89,7 @@ export default {
       return differentDays
     },
     getRidesByDay(rides, sectionDay) {
-      return rides.filter(ride => {
+      return rides.filter((ride) => {
         const dateToCheck = moment(ride.departureTime.valueOf())
         return (
           moment(sectionDay, 'LL').isSame(dateToCheck, 'day') &&
@@ -98,9 +98,7 @@ export default {
       })
     },
     formatToCategoryDate(date) {
-      return moment(date, 'LL')
-        .locale('NL')
-        .format('dddd DD MMMM')
+      return moment(date, 'LL').locale('NL').format('dddd DD MMMM')
     },
   },
 }

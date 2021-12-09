@@ -2,7 +2,7 @@
   <v-row>
     <v-col>
       <v-row>
-        <v-col class="py-0">
+        <v-col>
           <h4 class="netmobiel">{{ label }}</h4>
         </v-col>
       </v-row>

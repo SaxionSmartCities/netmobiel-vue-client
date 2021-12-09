@@ -5,31 +5,35 @@
         <v-row>
           <v-col v-if="step === 0">
             <new-account-card
-              v-model="profile"
+              v-model="profile.consent"
               @prev-step="step--"
               @next-step="step++"
               @cancel="onCancel()"
+              @update-consent="onUpdateConsent"
             />
           </v-col>
           <v-col v-if="step === 1">
             <new-account-terms
-              v-model="profile"
+              v-model="profile.consent"
               @prev-step="step--"
               @next-step="step++"
+              @update-consent="onUpdateConsent"
             />
           </v-col>
           <v-col v-if="step === 2">
             <home-town-card
-              v-model="profile"
+              v-model="profile.address"
               @prev-step="step--"
               @next-step="step++"
+              @update-address="onUpdateAddress"
             />
           </v-col>
           <v-col v-if="step === 3">
             <user-type-card
-              v-model="profile"
+              v-model="profile.userRole"
               @prev-step="step--"
               @next-step="step++"
+              @update-role="onUpdateRole"
             />
           </v-col>
         </v-row>
@@ -41,15 +45,11 @@
             <v-row no-gutters>
               <v-alert :value="status === 200" type="success">
                 <p>Profiel aangemaakt!</p>
-                <p>
-                  We sturen U over enkele seconden naar het beginscherm.
-                </p>
+                <p>We sturen U over enkele seconden naar het beginscherm.</p>
               </v-alert>
               <v-alert :value="status === 409" type="warning">
                 <p>Profiel bestaat al!</p>
-                <p>
-                  We sturen U over enkele seconden naar het beginscherm.
-                </p>
+                <p>We sturen U over enkele seconden naar het beginscherm.</p>
               </v-alert>
             </v-row>
           </v-card-text>
@@ -87,7 +87,7 @@ export default {
     HomeTownCard,
     UserTypeCard,
   },
-  data: function() {
+  data: function () {
     return {
       dryRun: false,
       step: 0,
@@ -110,7 +110,7 @@ export default {
     },
   },
   watch: {
-    step: function() {
+    step: function () {
       if (this.step < 0) {
         this.$router.push('/')
       }
@@ -134,8 +134,20 @@ export default {
       // Got to the logout page, logout from keycloak is handled over there
       this.$router.push({ name: 'logout' })
     },
-    submitForm: function() {
+    onUpdateConsent(consent) {
+      this.profile.consent = { ...consent }
+    },
+    onUpdateAddress(address) {
+      // Address is a nested object, assure no ties with other objects.
+      this.profile.address = JSON.parse(JSON.stringify(address))
+    },
+    onUpdateRole(role) {
+      this.profile.userRole = role
+    },
+    submitForm: function () {
       if (this.dryRun) {
+        // eslint-disable-next-line
+        console.log(JSON.stringify(this.profile))
         this.gotoLandingPage()
       } else {
         this.profile.id = this.user.managedIdentity
@@ -148,11 +160,12 @@ export default {
             this.status = 200
             this.gotoLandingPage()
           })
-          .catch(status => {
+          .catch((status) => {
             if (status === 409 /* Conflict */) {
               this.status = 409
               // Meaning: Profile does already exist. Continue to the landing page
-              psStore.actions.fetchProfile().catch(status => {})
+              // eslint-disable-next-line no-unused-vars
+              psStore.actions.fetchProfile().catch((status) => {})
               this.gotoLandingPage()
             } else {
               // What can we do?

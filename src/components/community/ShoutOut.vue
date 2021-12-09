@@ -1,7 +1,7 @@
 <template>
   <v-card
     outlined
-    class="shout-out-container"
+    class="pa-2"
     :class="{ 'travel-offer': hasOffer }"
     @click="onShoutOutSelected"
   >
@@ -24,17 +24,17 @@
         <h4>Jouw aanboden rit:</h4>
       </v-col>
     </v-row>
-    <v-row
-      v-for="(leg, index) in generateSteps()"
-      :key="index"
-      class="mx-1 py-0"
-    >
-      <itinerary-leg
-        :leg="leg"
-        :showicon="!!proposedRide"
-        :showdottedline="!proposedRide"
-        :step="index"
-      />
+    <v-row dense>
+      <v-col>
+        <itinerary-leg
+          v-for="(leg, index) in generateSteps"
+          :key="index"
+          :leg="leg"
+          :showicon="!!proposedRide"
+          :showdottedline="!proposedRide"
+          :step="index"
+        />
+      </v-col>
     </v-row>
     <v-row v-if="hasOffer && isUserTraveller">
       <v-col class="">
@@ -122,7 +122,7 @@ export default {
       } else if (this.shoutOut?.referenceItinerary) {
         // Assumption: Always a car/rideshare leg
         fare = this.shoutOut.referenceItinerary.legs
-          .map(leg => leg.fareInCredits)
+          .map((leg) => leg.fareInCredits)
           .reduce((sum, f) => sum + f)
       }
       // Return cost in credits
@@ -141,7 +141,7 @@ export default {
       if (!this.proposedRide?.distance && this.shoutOut?.referenceItinerary) {
         // Assumption: Always a car/rideshare leg
         distanceMeters = this.shoutOut.referenceItinerary.legs
-          .map(leg => leg.distance)
+          .map((leg) => leg.distance)
           .reduce((sum, d) => sum + d)
       }
       // Return distance in kilometers
@@ -168,8 +168,8 @@ export default {
         : 'Rit aanbieden'
     },
     offeredItineraries() {
-      return this.shoutOut?.itineraries?.filter(it => {
-        return !it.legs.find(leg => leg.state === 'CANCELLED')
+      return this.shoutOut?.itineraries?.filter((it) => {
+        return !it.legs.find((leg) => leg.state === 'CANCELLED')
       })
     },
     hasOffer() {
@@ -183,17 +183,17 @@ export default {
      * an offer from me. If so then attach the ride to the shout-out. Not so clean, but will do.
      */
     proposedRide() {
-      return this.proposedRides.find(ride => {
+      return this.proposedRides.find((ride) => {
         return !!ride.bookings.find(
-          b => b.passengerTripPlanRef === this.shoutOut?.planRef
+          (b) => b.passengerTripPlanRef === this.shoutOut?.planRef
         )
       })
     },
-  },
-  methods: {
     generateSteps() {
       return generateShoutOutDetailSteps(this.shoutOut, this.proposedRide)
     },
+  },
+  methods: {
     onShoutOutSelected() {
       this.$emit('shoutOutSelected', {
         shoutOut: this.shoutOut,
@@ -210,18 +210,5 @@ export default {
 }
 .travel-offer {
   border: 1px solid $color-primary;
-}
-
-.shout-out-container {
-  padding: 5px 15px;
-
-  .shout-out-image {
-    padding-right: 0;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 2px solid white;
-    box-shadow: 0 0 0 1px $color-light-grey;
-  }
 }
 </style>

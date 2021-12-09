@@ -6,9 +6,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
-        Bedankt voor jouw bevestiging!
-      </v-col>
+      <v-col> Bedankt voor jouw bevestiging! </v-col>
     </v-row>
     <v-row>
       <v-col>
@@ -29,7 +27,7 @@
               class="compliment-chip body-2"
               :class="{
                 'compliment-chip-active':
-                  compliments.findIndex(c => c === compliment) !== -1,
+                  compliments.findIndex((c) => c === compliment) !== -1,
               }"
               :value="compliment"
               @click="addCompliment(compliment)"
@@ -109,7 +107,7 @@ export default {
       return psStore.getters.getComplimentTypes
     },
     leg() {
-      return this.trip?.itinerary.legs.find(l => !!l.driverId)
+      return this.trip?.itinerary.legs.find((l) => !!l.driverId)
     },
     driverManagedIdentity() {
       const driverId = this.leg?.driverId
@@ -135,7 +133,7 @@ export default {
       return constants.COMPLIMENT_MAPPING[c]
     },
     addCompliment(compliment) {
-      const index = this.compliments.findIndex(c => c === compliment)
+      const index = this.compliments.findIndex((c) => c === compliment)
       if (
         this.compliments.length < constants.maxComplimentsAllowed &&
         index === -1

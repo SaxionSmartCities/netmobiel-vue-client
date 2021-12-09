@@ -93,7 +93,8 @@ export default {
   data() {
     return {
       bottom: false,
-      scrollHandler: event => {
+      // eslint-disable-next-line no-unused-vars
+      scrollHandler: (event) => {
         this.bottom = isBottomVisible()
       },
     }

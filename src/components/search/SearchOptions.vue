@@ -13,7 +13,7 @@
                 </v-row>
                 <v-row no-gutters>
                   <v-col class="text-end pr-5">
-                    {{ value.numPassengers }}
+                    {{ options.numPassengers }}
                   </v-col>
                 </v-row>
               </v-expansion-panel-header>
@@ -21,7 +21,7 @@
                 <v-row dense>
                   <v-col>
                     <v-slider
-                      v-model="value.numPassengers"
+                      v-model="options.numPassengers"
                       thumb-color="thumb-grey"
                       thumb-label
                       ticks="always"
@@ -39,7 +39,7 @@
               v-model="luggage"
               class="pa-0"
               @onChanged="
-                newLugagge => {
+                (newLugagge) => {
                   luggage = newLugagge
                 }
               "
@@ -53,7 +53,7 @@
                 </v-row>
                 <v-row no-gutters>
                   <v-col class="text-end pr-3">
-                    <v-icon v-if="value.needsAssistance">check</v-icon>
+                    <v-icon v-if="options.needsAssistance">check</v-icon>
                     <v-icon v-else color="red">close</v-icon>
                   </v-col>
                 </v-row>
@@ -74,7 +74,7 @@
                   </v-col>
                   <v-col class="shrink">
                     <v-switch
-                      v-model="value.needsAssistance"
+                      v-model="options.needsAssistance"
                       class="switch-overwrite"
                       color="green"
                     >
@@ -92,11 +92,11 @@
                 </v-row>
                 <v-row no-gutters>
                   <v-col class="text-end pr-3">
-                    <v-icon v-if="value.allowFirstLegRideshare">check</v-icon>
+                    <v-icon v-if="options.allowFirstLegRideshare">check</v-icon>
                     <v-icon v-else color="red">close</v-icon>
                   </v-col>
                   <v-col class="text-end shrink pr-3">
-                    <v-icon v-if="value.allowLastLegRideshare">check</v-icon>
+                    <v-icon v-if="options.allowLastLegRideshare">check</v-icon>
                     <v-icon v-else color="red">close</v-icon>
                   </v-col>
                 </v-row>
@@ -125,7 +125,7 @@
                   </v-col>
                   <v-col class="shrink">
                     <v-switch
-                      v-model="value.allowFirstLegRideshare"
+                      v-model="options.allowFirstLegRideshare"
                       class="switch-overwrite"
                       color="green"
                     >
@@ -138,7 +138,7 @@
                   </v-col>
                   <v-col class="my-0">
                     <v-switch
-                      v-model="value.allowLastLegRideshare"
+                      v-model="options.allowLastLegRideshare"
                       class="switch-overwrite"
                       color="green"
                     >
@@ -150,7 +150,7 @@
             <search-options-icon-expansion-panel
               v-model="travel"
               @onChanged="
-                newTravel => {
+                (newTravel) => {
                   travel = newTravel
                 }
               "
@@ -205,7 +205,6 @@ import SearchOptionsIconExpansionPanel from './SearchOptionsIconExpansionPanel.v
 import travelModes from '@/constants/travel-modes.js'
 import luggageTypes from '@/constants/luggage-types.js'
 import { findClosestIndexOf } from '@/utils/Utils'
-import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'SearchOptions',
@@ -220,6 +219,7 @@ export default {
   },
   data() {
     return {
+      options: { ...this.value },
       maxNrOfPersons: 8,
       showOverstapAlert: true,
       walkDistanceOptions: [250, 500, 1000, 2000, 4000, 8000],
@@ -242,16 +242,16 @@ export default {
         return {
           title: 'Vervoersmiddelen',
           options: Object.keys(travelModes)
-            .map(x => travelModes[x])
-            .filter(x => !!x && x.visible), // Filter only visible travel modes.
-          selected: this.value.allowedTravelModes
-            .map(mode => travelModes[mode])
-            .filter(x => !!x), // Filter out the undefined travel modes.
+            .map((x) => travelModes[x])
+            .filter((x) => !!x && x.visible), // Filter only visible travel modes.
+          selected: this.options.allowedTravelModes
+            .map((mode) => travelModes[mode])
+            .filter((x) => !!x), // Filter out the undefined travel modes.
         }
       },
       set(selection) {
-        this.value.allowedTravelModes = selection.selected.map(
-          mode => mode.mode
+        this.options.allowedTravelModes = selection.selected.map(
+          (mode) => mode.mode
         )
       },
     },
@@ -260,21 +260,21 @@ export default {
         return {
           title: 'Bagage',
           options: luggageTypes,
-          selected: this.value.luggageOptions.map(o => luggageTypes[o]),
+          selected: this.options.luggageOptions.map((o) => luggageTypes[o]),
         }
       },
       set(selection) {
-        this.value.luggageOptions = selection.selected.map(
-          option => option.type
+        this.options.luggageOptions = selection.selected.map(
+          (option) => option.type
         )
       },
     },
     luggageSelected: {
       get() {
-        return this.value.luggageOptions.map(option => luggageTypes[option])
+        return this.options.luggageOptions.map((option) => luggageTypes[option])
       },
       set(selection) {
-        this.value.luggageOptions = selection.map(x => x.type)
+        this.options.luggageOptions = selection.map((x) => x.type)
       },
     },
   },
@@ -287,8 +287,8 @@ export default {
   },
   methods: {
     save() {
-      this.value.maxWalkDistance = this.walkDistance
-      this.$emit('onSearchOptionsSave')
+      this.options.maxWalkDistance = this.walkDistance
+      this.$emit('onSearchOptionsSave', this.options)
     },
   },
 }

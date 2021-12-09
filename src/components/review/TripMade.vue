@@ -5,8 +5,8 @@
         <v-col cols="3">
           <external-user-image
             :managed-identity="driverManagedIdentity"
-            :image-size="60"
-            :avatar-size="66"
+            :image-size="54"
+            :avatar-size="60"
           />
         </v-col>
         <v-col>
@@ -36,7 +36,7 @@
                   class="compliment-chip body-2"
                   :class="{
                     'compliment-chip-active':
-                      compliments.findIndex(c => c === compliment) !== -1,
+                      compliments.findIndex((c) => c === compliment) !== -1,
                   }"
                   :value="compliment"
                   @click="addCompliment(compliment)"
@@ -131,7 +131,7 @@ export default {
   },
   methods: {
     addCompliment(compliment) {
-      const index = this.compliments.findIndex(c => c === compliment)
+      const index = this.compliments.findIndex((c) => c === compliment)
       if (
         this.compliments.length < constants.maxComplimentsAllowed &&
         index === -1

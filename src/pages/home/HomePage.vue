@@ -54,9 +54,7 @@
     </v-row>
     <v-row v-if="isDriverOnly || isDrivingPassenger" dense>
       <v-col v-if="rides.length === 0">
-        <span class="font-italic">
-          Je hebt nog geen autoritten gepland.
-        </span>
+        <span class="font-italic"> Je hebt nog geen autoritten gepland. </span>
       </v-col>
       <v-col v-else>
         <v-row v-for="ride in rides" :key="ride.id" xs12>
@@ -73,9 +71,7 @@
     </v-row>
     <v-row v-if="isPassengerOnly || isDrivingPassenger" dense>
       <v-col v-if="trips.length === 0">
-        <span class="font-italic">
-          Je hebt nog geen ritten gepland.
-        </span>
+        <span class="font-italic"> Je hebt nog geen ritten gepland. </span>
       </v-col>
       <v-col v-else>
         <v-row v-for="trip in trips" :key="trip.id" xs12 dense>
@@ -130,7 +126,6 @@ import RoundUserImage from '@/components/common/RoundUserImage'
 import moment from 'moment'
 import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
-import * as chsStore from '@/store/charity-service'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
@@ -156,12 +151,12 @@ export default {
     },
     rides() {
       return csStore.getters.getRides
-        .filter(ride => ride.state !== 'CANCELLED')
+        .filter((ride) => ride.state !== 'CANCELLED')
         .slice(0, 2)
     },
     trips() {
       return isStore.getters.getPlannedTrips
-        .filter(trip => trip.state !== 'CANCELLED')
+        .filter((trip) => trip.state !== 'CANCELLED')
         .slice(0, 2)
     },
     timeOfDayGreeting() {
