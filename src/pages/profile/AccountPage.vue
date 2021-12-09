@@ -11,8 +11,7 @@
           >
             Persoonlijk
           </span>
-          <v-divider></v-divider>
-          <v-row vertical-align-center>
+          <v-row>
             <v-col>
               <v-text-field
                 v-model="user.firstName"
@@ -55,8 +54,7 @@
           >
             Adres
           </span>
-          <v-divider></v-divider>
-          <v-row vertical-align-center>
+          <v-row>
             <v-col>
               <search-location
                 :address="user.address"
@@ -77,8 +75,7 @@
           >
             Contactgegevens
           </span>
-          <v-divider></v-divider>
-          <v-row vertical-align-center>
+          <v-row>
             <v-col>
               <v-text-field
                 v-model="user.email"

@@ -1,5 +1,5 @@
 <template>
-  <content-pane :clearpadding="true">
+  <content-pane>
     <template #header>
       <v-container class="py-1">
         <span class="text-subtitle-2">{{ conversation.topic }}</span>

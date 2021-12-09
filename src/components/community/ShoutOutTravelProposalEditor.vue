@@ -1,5 +1,5 @@
 <template>
-  <v-row class="bg-light-green pt-0">
+  <v-row class="bg-light-green">
     <v-col cols="3">
       <v-dialog v-model="showTimePicker" persistent>
         <template #activator="{ on }">

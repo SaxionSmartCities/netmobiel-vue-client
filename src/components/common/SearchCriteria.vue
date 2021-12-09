@@ -1,13 +1,13 @@
 <template>
   <v-row dense class="d-flex flex-column">
-    <v-col dense>
+    <v-col>
       <from-to-fields
         v-model="localCriteria"
         @fieldSelected="onFieldSelected"
         @swapLocations="onSwapLocations"
       />
     </v-col>
-    <v-col class="py-0">
+    <v-col>
       <date-time-selector
         v-model="localTravelTime"
         @dateTimeChanged="onDateTimeChanged"

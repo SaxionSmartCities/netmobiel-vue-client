@@ -6,7 +6,6 @@
       :class="{
         'container-non-scrollable': !scrollable,
         'container-scrollable': scrollable,
-        'no-padding': clearpadding,
       }"
     >
       <slot></slot>
@@ -23,11 +22,6 @@ export default {
       required: false,
       default: true,
     },
-    clearpadding: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
 }
 </script>
@@ -39,10 +33,5 @@ export default {
 
 .container-scrollable {
   overflow: auto;
-}
-
-.no-padding {
-  padding-top: 0;
-  padding-bottom: 0;
 }
 </style>

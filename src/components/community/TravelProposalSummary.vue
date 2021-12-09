@@ -1,45 +1,44 @@
 <template>
-  <v-container fluid pa-0>
-    <v-card
-      fluid
-      outlined
-      :class="{ 'selected-offer': selected }"
-      @click="$emit('travel-proposal-selected', index)"
-    >
-      <v-overlay
-        :color="overlayColor"
-        :value="displayOverlay"
-        :absolute="true"
-        opacity="0.08"
-        z-index="99"
-      />
-      <v-row>
-        <v-col class="shrink ml-2 mr-0 pr-0">
-          <driver-image
-            :avatar-size="60"
-            :image-size="56"
-            :leg="leg"
-            :class="{ 'selected-offer': selected }"
-          />
-        </v-col>
-        <v-col :class="{ 'text-decoration-line-through': cancelled }">
-          <p class="font-weight-regular header mb-0">
-            {{ driverName }}
-          </p>
-          <p class="font-weight-light subtitle-1 mb-0">
-            <span>Vertrek: </span>
-            <span class="text-capitalize">
-              {{ formatDateTime(itinerary.departureTime) }}
-            </span>
-            <span> - Aankomst: </span>
-            <span class="text-capitalize">
-              {{ formatDateTime(itinerary.arrivalTime) }}
-            </span>
-          </p>
-        </v-col>
-      </v-row>
-    </v-card>
-  </v-container>
+  <v-card
+    fluid
+    outlined
+    class="pa-1"
+    :class="{ 'selected-offer': selected }"
+    @click="$emit('travel-proposal-selected', index)"
+  >
+    <v-overlay
+      :color="overlayColor"
+      :value="displayOverlay"
+      :absolute="true"
+      opacity="0.08"
+      z-index="99"
+    />
+    <v-row>
+      <v-col class="shrink">
+        <driver-image
+          :avatar-size="60"
+          :image-size="56"
+          :leg="leg"
+          :class="{ 'selected-offer': selected }"
+        />
+      </v-col>
+      <v-col :class="{ 'text-decoration-line-through': cancelled }">
+        <p class="subtitle-1 mb-0">
+          {{ driverName }}
+        </p>
+        <p class="caption mb-0">
+          <span>Vertrek: </span>
+          <span class="text-capitalize">
+            {{ formatDateTime(itinerary.departureTime) }}
+          </span>
+          <span> - Aankomst: </span>
+          <span class="text-capitalize">
+            {{ formatDateTime(itinerary.arrivalTime) }}
+          </span>
+        </p>
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>

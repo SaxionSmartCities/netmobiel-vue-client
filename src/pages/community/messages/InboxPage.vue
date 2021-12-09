@@ -1,5 +1,5 @@
 <template>
-  <content-pane :clearpadding="true">
+  <content-pane>
     <template #header>
       <tab-bar
         class="shrink"
@@ -16,13 +16,13 @@
       </tab-bar>
     </template>
     <v-list three-line avatar class="pt-0 conversation-list">
-      <template v-for="cvs in conversations">
-        <v-divider :key="cvs.id + '-divider'" />
+      <template v-for="(cvs, index) in conversations">
+        <v-divider v-show="index !== 0" :key="cvs.id + '-divider'" />
         <v-list-item :key="cvs.id" class="pa-0" @click="showConversation(cvs)">
           <v-list-item-avatar size="60">
             <external-user-image
               :managed-identity="user(cvs.recentMessage).managedIdentity"
-              :image-size="56"
+              :image-size="54"
               :avatar-size="60"
             />
           </v-list-item-avatar>

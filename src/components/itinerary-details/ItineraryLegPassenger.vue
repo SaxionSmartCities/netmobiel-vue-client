@@ -3,8 +3,8 @@
     <v-col>
       <external-user-image
         :managed-identity="passenger.managedIdentity"
-        :image-size="60"
-        :avatar-size="66"
+        :image-size="54"
+        :avatar-size="60"
       />
       <br />
       <b>{{ passenger.givenName }} {{ passenger.familyName }}</b> rijdt mee.

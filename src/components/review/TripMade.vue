@@ -5,8 +5,8 @@
         <v-col cols="3">
           <external-user-image
             :managed-identity="driverManagedIdentity"
-            :image-size="60"
-            :avatar-size="66"
+            :image-size="54"
+            :avatar-size="60"
           />
         </v-col>
         <v-col>

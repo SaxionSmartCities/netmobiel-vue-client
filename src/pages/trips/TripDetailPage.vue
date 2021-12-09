@@ -3,7 +3,7 @@
     <template #header>
       <v-row
         v-if="selectedTrip && selectedTrip.state === 'CANCELLED'"
-        class="cancelled-banner text-center py-1"
+        class="cancelled-banner text-center shrink"
         dense
         no-gutters
       >

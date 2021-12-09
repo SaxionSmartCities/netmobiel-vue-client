@@ -1,7 +1,7 @@
 <template>
   <v-card
     outlined
-    class="shout-out-container"
+    class="pa-2"
     :class="{ 'travel-offer': hasOffer }"
     @click="onShoutOutSelected"
   >
@@ -24,17 +24,17 @@
         <h4>Jouw aanboden rit:</h4>
       </v-col>
     </v-row>
-    <v-row
-      v-for="(leg, index) in generateSteps()"
-      :key="index"
-      class="mx-1 py-0"
-    >
-      <itinerary-leg
-        :leg="leg"
-        :showicon="!!proposedRide"
-        :showdottedline="!proposedRide"
-        :step="index"
-      />
+    <v-row dense>
+      <v-col>
+        <itinerary-leg
+          v-for="(leg, index) in generateSteps"
+          :key="index"
+          :leg="leg"
+          :showicon="!!proposedRide"
+          :showdottedline="!proposedRide"
+          :step="index"
+        />
+      </v-col>
     </v-row>
     <v-row v-if="hasOffer && isUserTraveller">
       <v-col class="">
@@ -189,11 +189,11 @@ export default {
         )
       })
     },
-  },
-  methods: {
     generateSteps() {
       return generateShoutOutDetailSteps(this.shoutOut, this.proposedRide)
     },
+  },
+  methods: {
     onShoutOutSelected() {
       this.$emit('shoutOutSelected', {
         shoutOut: this.shoutOut,
@@ -210,18 +210,5 @@ export default {
 }
 .travel-offer {
   border: 1px solid $color-primary;
-}
-
-.shout-out-container {
-  padding: 5px 15px;
-
-  .shout-out-image {
-    padding-right: 0;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 2px solid white;
-    box-shadow: 0 0 0 1px $color-light-grey;
-  }
 }
 </style>

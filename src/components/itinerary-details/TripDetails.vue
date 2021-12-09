@@ -1,8 +1,8 @@
 <template>
-  <v-row dense no-gutters>
+  <v-row dense>
     <v-col>
-      <v-row v-if="selectedLegs && shouldShowMap" class="pa-0">
-        <v-col class="pa-0">
+      <v-row v-if="selectedLegs && shouldShowMap">
+        <v-col>
           <route-map
             ref="mapComp"
             :legs="selectedLegs"
@@ -16,18 +16,16 @@
       <v-row dense class="d-flex flex-column">
         <v-col><h1>Ritdetails</h1></v-col>
         <v-col><v-divider /></v-col>
-        <v-col class="py-0">
+        <v-col>
           <itinerary-summary-list :items="items" />
         </v-col>
         <v-col><v-divider /></v-col>
-        <v-col class="py-4">
+        <v-col>
           <v-row class="flex-column">
-            <v-col
-              v-for="(leg, index) in generateSteps"
-              :key="index"
-              class="py-0"
-            >
+            <v-col>
               <itinerary-leg
+                v-for="(leg, index) in generateSteps"
+                :key="index"
                 :is-map-active="selectedLegsIndex === index"
                 :step="index"
                 :leg="leg"

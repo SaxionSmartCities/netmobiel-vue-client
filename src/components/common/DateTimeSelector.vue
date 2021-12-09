@@ -10,7 +10,9 @@
             readonly
             prepend-icon="event"
             hide-details
-            class="my-0 py-0"
+            background-color="white"
+            outlined
+            dense
             v-on="on"
           >
           </v-text-field>
@@ -35,7 +37,7 @@
         </v-date-picker>
       </v-dialog>
     </v-col>
-    <v-col cols="6">
+    <v-col offset="1" cols="5">
       <v-dialog v-model="showTimePicker" persistent>
         <template #activator="{ on }">
           <v-text-field
@@ -45,7 +47,9 @@
             prepend-icon="access_time"
             readonly
             hide-details
-            class="my-0 py-0"
+            background-color="white"
+            outlined
+            dense
             v-on="on"
           >
           </v-text-field>

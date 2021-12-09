@@ -1,8 +1,8 @@
 <template>
   <v-row dense no-gutters>
     <v-col>
-      <v-row v-if="selectedLegs && shouldShowMap" class="pa-0">
-        <v-col class="pa-0">
+      <v-row v-if="selectedLegs && shouldShowMap">
+        <v-col>
           <route-map
             ref="mapComp"
             :legs="selectedLegs"

@@ -68,7 +68,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <h6 class="text-color-primary text-uppercase mt-3 mb-2">Donateurs</h6>
+        <h6 class="text-color-primary text-uppercase my-3 mb-2">Donateurs</h6>
         <v-divider />
         <donation-list v-if="donations" :donations="donations"></donation-list>
       </v-col>

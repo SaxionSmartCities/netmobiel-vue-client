@@ -10,7 +10,7 @@
                   <h1>Waar rijd je heen?</h1>
                 </v-col>
               </v-row>
-              <v-row dense>
+              <v-row>
                 <v-col>
                   <search-criteria
                     v-model="searchCriteria"
@@ -19,7 +19,7 @@
                   />
                 </v-col>
               </v-row>
-              <v-row dense>
+              <v-row>
                 <v-col>
                   <recurrence-editor
                     v-model="recurrence"
@@ -37,7 +37,7 @@
                     <v-col cols="1">
                       <v-icon>directions_car</v-icon>
                     </v-col>
-                    <v-col v-if="!selectedCar" class="pl-3">
+                    <v-col v-if="!selectedCar">
                       <router-link to="cars">
                         <span :class="[{ 'color-alert-red': warnMissingCar }]"
                           >Voer je auto in</span
@@ -75,7 +75,7 @@
               <v-row>
                 <v-col
                   transition="slide-x-transition"
-                  class="text-center body-2"
+                  class="text-center body-2 clickable-item"
                   @click="toRidePlanOptions()"
                 >
                   <v-icon>settings</v-icon>
@@ -221,3 +221,8 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.clickable-item {
+  cursor: pointer;
+}
+</style>

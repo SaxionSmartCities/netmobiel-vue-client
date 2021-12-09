@@ -2,29 +2,29 @@
   <content-pane scrollable>
     <template #header>
       <v-row class="shrink">
-        <v-col class="py-0">
+        <v-col>
           <v-divider />
           <div
             v-if="localTripId !== -1 && tripId"
-            class="px-4 py-2 d-flex flex-row align-center edit-container"
+            class="d-flex flex-row justify-center edit-container"
           >
             <v-icon small color="button">warning</v-icon>
-            <span class="caption ml-3 secondary-color">
-              LET OP! U bent aan het wijzigen.</span
+            <span class="secondary-color">
+              Let op! U bent aan het wijzigen.</span
             >
           </div>
         </v-col>
       </v-row>
     </template>
-    <v-row class="d-flex flex-column search-header px-3">
-      <v-col class="py-0">
+    <v-row dense class="d-flex flex-column search-header">
+      <v-col>
         <search-criteria
           v-model="searchCriteria"
           @locationFieldSelected="onLocationFieldSelected"
           @criteriaChanged="onCriteriaChanged"
         />
       </v-col>
-      <v-col class="py-0">
+      <v-col>
         <v-expansion-panels>
           <v-expansion-panel>
             <v-expansion-panel-header class="search-header pl-0">
@@ -68,9 +68,9 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col mt-3>
-            <v-row class="flex-column">
-              <v-col class="py-0">
+          <v-col>
+            <v-row dense class="flex-column">
+              <v-col>
                 <a href="#" @click="createShoutOut()">
                   <v-row>
                     <v-col class="col-2 ml-2">
@@ -82,7 +82,7 @@
                   </v-row>
                 </a>
               </v-col>
-              <v-col class="py-0">
+              <v-col>
                 <a href="tel:0900-9874">
                   <v-row>
                     <v-col class="col-2 ml-2">
@@ -269,15 +269,6 @@ export default {
 </script>
 
 <style lang="scss">
-.no-padding .v-expansion-panel__header {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.date-day-styling {
-  color: $color-primary;
-}
-
 a {
   text-decoration: none;
   color: #2e8997;

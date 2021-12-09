@@ -1,21 +1,22 @@
 <template>
   <v-row>
     <v-col>
-      <v-row v-for="(leg, index) in legs" :key="index" class="mx-3">
-        <itinerary-leg
-          :leg="leg"
-          :showicon="showicon"
-          :showdottedline="showdottedline"
-        />
+      <v-row v-for="(leg, index) in legs" :key="index" no-gutters>
+        <v-col>
+          <itinerary-leg
+            :leg="leg"
+            :showicon="showicon"
+            :showdottedline="showdottedline"
+          />
+        </v-col>
       </v-row>
-      <v-row>
-        <v-col class="pt-0">
+      <v-row dense>
+        <v-col>
           <v-btn
             large
             rounded
             outlined
             block
-            mb-4
             depressed
             color="primary"
             @click="onShowMap"
@@ -46,19 +47,16 @@
         <v-col v-if="!itineraries.length">
           <em>Er zijn nog geen ritten aangeboden.</em>
         </v-col>
-        <v-col v-else class="py-3">
-          <v-row
+        <v-col v-else>
+          <travel-proposal-summary
             v-for="(offer, index) in itineraries"
             :key="index"
-            class="dense px-2 pt-0 pb-1"
-          >
-            <travel-proposal-summary
-              :index="index"
-              :itinerary="offer"
-              :selected="index === selectedOfferIndex"
-              @travel-proposal-selected="onTravelProposalSelected"
-            />
-          </v-row>
+            :index="index"
+            :itinerary="offer"
+            :selected="index === selectedOfferIndex"
+            class="my-2"
+            @travel-proposal-selected="onTravelProposalSelected"
+          />
         </v-col>
       </v-row>
     </v-col>

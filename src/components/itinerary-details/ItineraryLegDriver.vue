@@ -3,8 +3,8 @@
     <v-col>
       <driver-image
         v-if="leg.driverId"
-        :image-size="60"
-        :avatar-size="66"
+        :image-size="54"
+        :avatar-size="60"
         :leg="leg"
       />
       <br />

@@ -1,29 +1,35 @@
 <template>
   <content-pane>
     <template #header>
-      <v-text-field
-        v-model="searchInput"
-        autofocus
-        clearable
-        outlined
-        placeholder="Zoek..."
-        prepend-inner-icon="search"
-        outline
-        single-line
-        hide-details
-        @click:clear="clearSearchInput"
-      >
-      </v-text-field>
+      <v-row class="shrink">
+        <v-col>
+          <v-text-field
+            v-model="searchInput"
+            autofocus
+            clearable
+            outlined
+            placeholder="Zoek..."
+            prepend-inner-icon="search"
+            outline
+            single-line
+            hide-details
+            @click:clear="clearSearchInput"
+          >
+          </v-text-field>
+        </v-col>
+      </v-row>
     </template>
     <v-row v-if="showSuggestionsList" class="align-self-start">
-      <locations-list
-        :locations="suggestions"
-        empty-list-label="Geen resultaten gevonden"
-        show-highlighted-text
-        @onItemClicked="completeSearch"
-        @onFavoriteClicked="promptFavorite"
-        @onUnFavoriteClicked="removeFavorite"
-      />
+      <v-col>
+        <locations-list
+          :locations="suggestions"
+          empty-list-label="Geen resultaten gevonden"
+          show-highlighted-text
+          @onItemClicked="completeSearch"
+          @onFavoriteClicked="promptFavorite"
+          @onUnFavoriteClicked="removeFavorite"
+        />
+      </v-col>
     </v-row>
     <v-row
       v-if="!showSuggestionsList"
@@ -33,23 +39,27 @@
       <!--      <v-col v-if="homeAddress.length > 0">-->
       <!--        <h4 class="netmobiel">Thuis</h4>-->
       <!--      </v-col>-->
-      <locations-list
-        :locations="homeAddress"
-        :show-highlighted-text="false"
-        :show-favorite-icon="false"
-        empty-list-label="Geef je thuisadres op in je profiel"
-        @onItemClicked="completeSearch($event)"
-      />
+      <v-col>
+        <locations-list
+          :locations="homeAddress"
+          :show-highlighted-text="false"
+          :show-favorite-icon="false"
+          empty-list-label="Geef je thuisadres op in je profiel"
+          @onItemClicked="completeSearch($event)"
+        />
+      </v-col>
       <v-col class="mt-2">
         <h4 class="netmobiel">Mijn favorieten</h4>
       </v-col>
-      <locations-list
-        :locations="favorites"
-        :show-highlighted-text="false"
-        empty-list-label="Geen favorieten opgeslagen"
-        @onItemClicked="completeSearch($event)"
-        @onUnFavoriteClicked="removeFavorite"
-      />
+      <v-col>
+        <locations-list
+          :locations="favorites"
+          :show-highlighted-text="false"
+          empty-list-label="Geen favorieten opgeslagen"
+          @onItemClicked="completeSearch($event)"
+          @onUnFavoriteClicked="removeFavorite"
+        />
+      </v-col>
     </v-row>
     <add-favorite-dialog
       v-if="selectedLocation"

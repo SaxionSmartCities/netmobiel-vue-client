@@ -5,8 +5,8 @@
         <v-col class="shrink pr-3">
           <round-user-image
             :profile-image="user.delegator.image"
-            :image-size="50"
-            :avatar-size="56"
+            :image-size="54"
+            :avatar-size="60"
           />
         </v-col>
         <v-col>

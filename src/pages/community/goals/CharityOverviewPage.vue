@@ -1,9 +1,8 @@
 <template>
-  <content-pane :clearpadding="true">
-    <v-row mb-3>
-      <v-col ml-3>
+  <content-pane>
+    <v-row>
+      <v-col>
         <h1 class="netmobiel">Goede Doelen</h1>
-        <v-divider class="mt-2"></v-divider>
       </v-col>
     </v-row>
     <v-row>

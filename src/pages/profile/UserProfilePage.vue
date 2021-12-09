@@ -1,19 +1,30 @@
 <template>
-  <content-pane class="pa-0">
-    <public-profile-info v-if="profile" :profile="profile" />
-    <highlighted-info
-      :rides-driven="ridesDriven"
-      :compliments-received="totalCompliments"
-      :credits-donated="creditsDonated"
-      class="mt-3"
-    />
-    <v-row class="mt-3">
+  <content-pane>
+    <v-row>
+      <v-col>
+        <public-profile-info v-if="profile" :profile="profile" />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <highlighted-info
+          :rides-driven="ridesDriven"
+          :compliments-received="totalCompliments"
+          :credits-donated="creditsDonated"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col>
         <h4 class="netmobiel">Complimenten</h4>
       </v-col>
     </v-row>
-    <compliments :compliments="refinedCompliments" />
-    <v-row class="mt-3">
+    <v-row>
+      <v-col>
+        <compliments :compliments="refinedCompliments" />
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col>
         <h4 class="netmobiel">Beoordelingen</h4>
       </v-col>
@@ -27,7 +38,6 @@
           v-for="(review, index) in reviews"
           :key="index"
           :review="review"
-          :profile-image="profileImages ? profileImages[index] : null"
         />
       </v-col>
     </v-row>
@@ -55,11 +65,6 @@ export default {
   },
   props: {
     profileId: { type: String, required: true },
-  },
-  data() {
-    return {
-      profileImages: [],
-    }
   },
   computed: {
     publicUser() {
@@ -105,20 +110,6 @@ export default {
       )
     },
   },
-  watch: {
-    reviews(rvs) {
-      this.profileImages = []
-      rvs.forEach((review) => {
-        psStore.actions
-          .fetchPublicProfile({
-            profileId: review.sender.id,
-          })
-          .then((res) => {
-            this.profileImages.push(res.image)
-          })
-      })
-    },
-  },
   mounted() {
     psStore.actions.fetchPublicProfile({
       profileId: this.profileId,
@@ -136,9 +127,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.reviews-container {
-  max-height: 750px;
-  overflow: auto;
-}
-</style>
+<style lang="scss" scoped></style>

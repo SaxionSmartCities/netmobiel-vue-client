@@ -32,16 +32,16 @@
           <v-divider></v-divider>
           <template v-for="(option, index) in notificationSettings[section]">
             <v-row :key="option.title" justify="space-between">
-              <v-col class="shrink d-flex align-center pr-0">
+              <v-col class="shrink">
                 <v-icon @click="onInfoClick(option)">info_outline</v-icon>
               </v-col>
-              <v-col class="d-flex align-center">
+              <v-col>
                 <span class="body-1 font-weight-light">{{ option.title }}</span>
               </v-col>
-              <v-col class="shrink d-flex align-center">
+              <v-col class="shrink d-flex flex-column">
                 <v-switch
                   v-model="option.value"
-                  class="switch-overwrite"
+                  class="switch-padding"
                   hide-details
                   inset
                   @change="onOptionChange"
@@ -146,10 +146,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.switch-overwrite {
-  &.v-input--selection-controls {
-    margin-top: 0px;
-  }
+.switch-padding {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-top: 0;
 }
 .v-input__control {
   height: 32px !important;

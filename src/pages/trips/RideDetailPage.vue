@@ -3,7 +3,7 @@
     <template #header>
       <v-row
         v-if="ride.state === 'CANCELLED'"
-        class="cancelled-banner text-center py-1"
+        class="cancelled-banner text-center shrink"
         dense
         no-gutters
       >
@@ -12,26 +12,27 @@
       </v-row>
     </template>
     <v-row>
-      <v-col class="py-0">
-        <ride-details
-          :ride="ride"
-          :show-map="showMap"
-          class="mb-4"
-          @closeMap="onCloseMap"
+      <v-col>
+        <ride-details :ride="ride" :show-map="showMap" @closeMap="onCloseMap" />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <itinerary-leg
+          v-for="(leg, index) in generateSteps"
+          :key="index"
+          :leg="leg"
+          :step="index"
         />
       </v-col>
     </v-row>
-    <v-row v-for="(leg, index) in generateSteps" :key="index" class="mx-3 py-0">
-      <itinerary-leg :leg="leg" :step="index" />
-    </v-row>
-    <v-row>
-      <v-col class="pt-0">
+    <v-row dense>
+      <v-col>
         <v-btn
           large
           rounded
           outlined
           block
-          mb-4
           depressed
           color="primary"
           @click="onShowMap"
@@ -41,7 +42,7 @@
       </v-col>
     </v-row>
     <v-row v-if="bookings && bookings.length > 0">
-      <v-col class="mx-1">
+      <v-col>
         <v-btn
           large
           rounded
@@ -60,26 +61,23 @@
       <v-col class="mt-2">
         <h3>Boekingen</h3>
       </v-col>
-      <v-col v-if="!bookings">
+      <v-col v-if="!bookings.length">
         <em>Er zijn nog geen boekingen geweest.</em>
       </v-col>
-      <v-col v-else class="py-3">
-        <v-row
+      <v-col v-else>
+        <booking-summary
           v-for="(booking, index) in bookings"
           :key="index"
-          class="dense px-2 pt-0 pb-1"
-        >
-          <booking-summary
-            :index="index"
-            :booking="booking"
-            :selected="index === selectedBookingIndex"
-            @booking-selected="onBookingSelected"
-          />
-        </v-row>
+          :index="index"
+          :booking="booking"
+          :selected="index === selectedBookingIndex"
+          class="my-2"
+          @booking-selected="onBookingSelected"
+        />
       </v-col>
     </v-row>
-    <v-row v-if="rideOptions.length > 0" class="mb-0">
-      <v-col class="pb-0">
+    <v-row v-if="rideOptions.length > 0">
+      <v-col>
         <h3>Wijzigen</h3>
       </v-col>
     </v-row>

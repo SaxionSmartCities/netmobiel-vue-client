@@ -25,7 +25,7 @@
       </tab-bar>
     </template>
     <v-row v-if="isDriverView">
-      <v-col class="py-0">
+      <v-col>
         <v-row>
           <v-col>
             <h3>Community oproepen</h3>
@@ -49,7 +49,7 @@
       </v-col>
     </v-row>
     <v-row v-if="isPassengerView">
-      <v-col class="py-0">
+      <v-col>
         <shout-out-list
           :shout-outs="myShoutOuts"
           no-items-label="Je hebt op dit moment geen opgeslagen oproepen."

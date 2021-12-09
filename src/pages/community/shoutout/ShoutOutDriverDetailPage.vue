@@ -3,7 +3,7 @@
     <template #header>
       <v-row
         v-if="shoutOutIsClosed"
-        class="cancelled-banner text-center py-1"
+        class="cancelled-banner text-center shrink"
         dense
         no-gutters
       >
@@ -11,7 +11,7 @@
       </v-row>
       <v-row
         v-else-if="isShoutOutInThePast"
-        class="cancelled-banner text-center py-1"
+        class="cancelled-banner text-center shrink"
         dense
         no-gutters
       >
@@ -19,9 +19,9 @@
       </v-row>
     </template>
     <v-row>
-      <v-col class="py-0">
-        <v-row v-if="selectedLegs && shouldShowMap" class="pa-0">
-          <v-col class="pa-0">
+      <v-col>
+        <v-row v-if="selectedLegs && shouldShowMap">
+          <v-col>
             <route-map
               ref="mapComp"
               :legs="selectedLegs"
@@ -38,13 +38,12 @@
             <h1 v-if="isProposedRideView">Oproep voorstel</h1>
             <h1 v-else>Oproep invulling</h1>
           </v-col>
-          <v-col><v-divider /></v-col>
-          <v-col class="py-0">
+          <v-col>
             <itinerary-summary-list :items="itinerarySummaryItems" />
           </v-col>
           <v-col><v-divider /></v-col>
           <v-col>
-            <v-row dense class="d-flex flex-column">
+            <v-row class="d-flex flex-column">
               <v-col v-if="isProposedRideView">
                 <shout-out-detail-driver
                   :ride="proposedRide"
