@@ -61,7 +61,7 @@
       <v-col class="mt-2">
         <h3>Boekingen</h3>
       </v-col>
-      <v-col v-if="!bookings.length">
+      <v-col v-if="!(bookings && bookings.length > 0)">
         <em>Er zijn nog geen boekingen geweest.</em>
       </v-col>
       <v-col v-else>
