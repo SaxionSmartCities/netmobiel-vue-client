@@ -175,6 +175,10 @@ function setSearchResults(state: ProfileState, results: PublicProfile[]) {
   state.search.results = results
 }
 
+function setDeviceFcmToken(state: ProfileState, fcmToken: string) {
+  state.deviceFcmToken = fcmToken
+}
+
 export const buildMutations = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -203,5 +207,6 @@ export const buildMutations = (
     setSearchKeyword: psBuilder.commit(setSearchKeyword),
     setSearchResults: psBuilder.commit(setSearchResults),
     setSearchStatus: psBuilder.commit(setSearchStatus),
+    setDeviceFcmToken: psBuilder.commit(setDeviceFcmToken),
   }
 }

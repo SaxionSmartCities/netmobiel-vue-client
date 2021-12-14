@@ -21,9 +21,7 @@ function createProfile(
   payload: Profile
 ): Promise<void> {
   const URL = `${PROFILE_BASE_URL}/profiles`
-  if (context.state.deviceFcmToken) {
-    payload.fcmToken = context.state.deviceFcmToken
-  }
+  payload.fcmToken = context.state.deviceFcmToken
   return axios
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
@@ -222,10 +220,10 @@ function storeRidePreferences(context: ActionContext, payload: any) {
   return updateProfile(context, profile)
 }
 
-function storeFcmToken(context: ActionContext, payload: { fcmToken: string }) {
+function storeFcmToken(context: ActionContext) {
   const profile = { ...context.state.user.profile }
-  context.state.deviceFcmToken = payload.fcmToken
-  if (profile.id && payload.fcmToken && payload.fcmToken !== profile.fcmToken) {
+  if (context.state.deviceFcmToken !== profile.fcmToken) {
+    profile.fcmToken = context.state.deviceFcmToken
     return updateProfile(context, profile)
   } else {
     return Promise.resolve()
@@ -234,9 +232,6 @@ function storeFcmToken(context: ActionContext, payload: { fcmToken: string }) {
 
 function updateProfile(context: ActionContext, profile: Profile) {
   const URL = `${PROFILE_BASE_URL}/profiles/${profile.id}`
-  if (context.state.deviceFcmToken) {
-    profile.fcmToken = context.state.deviceFcmToken
-  }
   return axios
     .put(URL, profile, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),

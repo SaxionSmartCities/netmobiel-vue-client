@@ -41,6 +41,10 @@ export const buildGetters = (
     return state.search.results
   }, 'getSearchResults')
 
+  const getDeviceFcmToken = psBuilder.read((state: ProfileState) => {
+    return state.deviceFcmToken
+  }, 'getDeviceFcmToken')
+
   return {
     get getUser() {
       return getUser()
@@ -68,6 +72,9 @@ export const buildGetters = (
     },
     get getSearchStatus() {
       return getSearchStatus()
+    },
+    get getDeviceFcmToken() {
+      return getDeviceFcmToken()
     },
   }
 }
