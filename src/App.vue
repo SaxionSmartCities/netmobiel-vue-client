@@ -190,7 +190,7 @@ export default {
     onFcmTokenReceived(evt) {
       // Store the FCM token in the store, because at registration time, there is no profile yet
       const fcmToken = evt.detail?.fcmToken
-      console.log(`FCM received: ${this.fcmToken}`)
+      // console.log(`FCM received: ${this.fcmToken}`)
       psStore.mutations.setDeviceFcmToken(fcmToken)
     },
     onProfileImageClick() {
