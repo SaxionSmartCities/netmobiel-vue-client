@@ -98,7 +98,7 @@ export default {
       return this.fromNotification
         ? isStore.getters.getSelectedTrip
         : isStore.getters.getPastTrips.find(
-            trip => trip.tripRef === this.tripContext
+            (trip) => trip.tripRef === this.tripContext
           )
     },
     tripDepartureDate() {
@@ -160,7 +160,7 @@ export default {
       const receiver = {
         id: this.driverManagedIdentity,
       }
-      rate.compliments.map(compliment =>
+      rate.compliments.map((compliment) =>
         psStore.actions.addUserCompliment({
           sender,
           receiver,

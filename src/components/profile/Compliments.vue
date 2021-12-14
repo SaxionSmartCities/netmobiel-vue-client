@@ -1,8 +1,6 @@
 <template>
   <v-row>
-    <v-col v-if="noCompliments">
-      Nog geen complimenten ontvangen.
-    </v-col>
+    <v-col v-if="noCompliments"> Nog geen complimenten ontvangen. </v-col>
     <v-col v-else>
       <div class="compliments-container">
         <div
@@ -35,7 +33,7 @@ export default {
     },
     filteredCompliments() {
       return Object.entries(this.compliments)
-        .filter(([key, value]) => value > 0)
+        .filter(([, value]) => value > 0)
         .reduce((previous, [ckey, cvalue]) => {
           previous[ckey] = cvalue
           return previous

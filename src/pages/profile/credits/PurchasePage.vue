@@ -24,9 +24,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
-        Hoeveel credits wilt U inkopen?
-      </v-col>
+      <v-col> Hoeveel credits wilt U inkopen? </v-col>
       <v-col>
         <v-text-field
           v-model.number="creditAmount"
@@ -70,7 +68,7 @@ export default {
   components: {
     ContentPane,
   },
-  data: function() {
+  data: function () {
     return {
       creditAmount: MIN_AMOUNT,
       bankSimulated: config.BANK_SIMULATED || false,
@@ -96,7 +94,7 @@ export default {
         amountCredits: this.creditAmount,
         returnUrl: new URL('wait-for-deposit-confirmation', location.href),
       }
-      crsStore.actions.buyCredits(deposit).then(data => {
+      crsStore.actions.buyCredits(deposit).then((data) => {
         // follow payment URL in current window
         location = data.paymentUrl
       })

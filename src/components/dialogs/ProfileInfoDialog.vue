@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="value.isVisible">
+  <v-dialog v-model="dialogActive">
     <v-card>
       <v-card-title>
         {{ value.title }}
@@ -23,9 +23,14 @@ export default {
   props: {
     value: { type: Object, default: () => undefined },
   },
+  data() {
+    return {
+      dialogActive: false,
+    }
+  },
   methods: {
     done() {
-      this.value.isVisible = false
+      this.dialogActive = false
     },
   },
 }

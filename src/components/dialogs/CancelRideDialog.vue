@@ -1,8 +1,6 @@
 <template>
   <v-card class="py-1 px-3">
-    <v-card-title class="headline">
-      Rit Verwijderen
-    </v-card-title>
+    <v-card-title class="headline"> Rit Verwijderen </v-card-title>
     <v-card-text>
       <v-row class="d-flex flex-column">
         <v-col v-if="numBookings > 0" class="py-0">
@@ -101,14 +99,14 @@ export default {
       return !this.ride?.bookings
         ? []
         : this.ride.bookings.filter(
-            booking => booking.state.toUpperCase() === 'CONFIRMED'
+            (booking) => booking.state.toUpperCase() === 'CONFIRMED'
           )
     },
     activeBookings() {
       return !this.ride?.bookings
         ? []
         : this.ride.bookings.filter(
-            booking => booking.state.toUpperCase() !== 'CANCELLED'
+            (booking) => booking.state.toUpperCase() !== 'CANCELLED'
           )
     },
     numBookings() {

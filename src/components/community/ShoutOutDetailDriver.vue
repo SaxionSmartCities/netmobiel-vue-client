@@ -1,26 +1,29 @@
 <template>
   <v-row dense>
-    <v-col class="pa-0">
+    <v-col>
       <v-row>
-        <v-col class="pt-0 pb-4">
+        <v-col>
           <h4>Jouw aanboden rit:</h4>
         </v-col>
       </v-row>
-      <v-row
-        v-for="(leg, index) in generateSteps"
-        :key="index"
-        class="mx-1 py-0"
-      >
-        <itinerary-leg :leg="leg" :showicon="true" :showdottedline="false" />
+      <v-row dense>
+        <v-col>
+          <itinerary-leg
+            v-for="(leg, index) in generateSteps"
+            :key="index"
+            :leg="leg"
+            :showicon="true"
+            :showdottedline="false"
+          />
+        </v-col>
       </v-row>
-      <v-row>
-        <v-col class="pt-0">
+      <v-row dense>
+        <v-col>
           <v-btn
             large
             rounded
             outlined
             block
-            mb-4
             depressed
             color="primary"
             @click="onShowMap"
@@ -30,7 +33,7 @@
         </v-col>
       </v-row>
       <v-row class="d-flex flex-column">
-        <v-col class="pt-3 pb-0">
+        <v-col>
           <h3>Wijzigen</h3>
         </v-col>
         <v-col>
@@ -40,9 +43,7 @@
     </v-col>
     <v-dialog v-model="warningDialog">
       <v-card class="py-1 px-3">
-        <v-card-title class="headline">
-          Verwijder rit met aanbod
-        </v-card-title>
+        <v-card-title class="headline"> Verwijder rit met aanbod </v-card-title>
         <v-card-text>
           <v-row class="d-flex flex-column">
             <v-col class="py-0">

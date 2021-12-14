@@ -1,96 +1,92 @@
 <template>
-  <v-row>
-    <v-col>
-      <v-row v-if="shoutOut && shoutOut.planRef">
-        <v-col class="pt-0">
-          <shout-out-travel-proposal-editor
-            :time="departureTime"
-            :location="departureLocation"
-            :is-arrival="false"
-            :is-enabled="canOffer"
-            @updateTravelTime="onUpdateTravelTime"
-            @locationUpdate="onDepartureLocationUpdate"
-            @locationReset="onDepartureLocationReset"
-          />
-        </v-col>
-      </v-row>
-      <v-row v-if="generateSteps.length === 0">
-        <v-col>
-          <em>Helaas, er is geen route gevonden!</em>
-        </v-col>
-      </v-row>
-      <v-row
-        v-for="(leg, index) in generateSteps"
-        :key="index"
-        class="mx-1 py-0"
-      >
+  <v-container>
+    <v-row v-if="shoutOut && shoutOut.planRef">
+      <v-col>
+        <shout-out-travel-proposal-editor
+          :time="departureTime"
+          :location="departureLocation"
+          :is-arrival="false"
+          :is-enabled="canOffer"
+          @updateTravelTime="onUpdateTravelTime"
+          @locationUpdate="onDepartureLocationUpdate"
+          @locationReset="onDepartureLocationReset"
+        />
+      </v-col>
+    </v-row>
+    <v-row v-if="generateSteps.length === 0">
+      <v-col>
+        <em>Helaas, er is geen route gevonden!</em>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <itinerary-leg
+          v-for="(leg, index) in generateSteps"
+          :key="index"
           :leg="leg"
           :showicon="false"
           :showdottedline="true"
           :step="index"
         />
-      </v-row>
-      <v-row v-if="shoutOut && shoutOut.planRef">
-        <v-col class="pt-0">
-          <shout-out-travel-proposal-editor
-            :time="arrivalTime"
-            :location="arrivalLocation"
-            :is-arrival="true"
-            :is-enabled="canOffer"
-            @updateTravelTime="onUpdateTravelTime"
-            @locationUpdate="onArrivalLocationUpdate"
-            @locationReset="onArrivalLocationReset"
-          />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col class="pt-0">
-          <v-btn
-            large
-            rounded
-            outlined
-            block
-            mb-4
-            depressed
-            color="primary"
-            @click="onShowMap"
-          >
-            Bekijk op de kaart
-          </v-btn>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col class="pt-3 pb-0">
-          <v-btn
-            large
-            rounded
-            block
-            mb-4
-            depressed
-            color="button"
-            :disabled="generateSteps.length === 0 || !offer"
-            @click="onConfirmTravelOffer"
-          >
-            Aanbod bevestigen
-          </v-btn>
-        </v-col>
-        <v-col>
-          <v-btn
-            large
-            rounded
-            block
-            depressed
-            outlined
-            color="primary"
-            @click="onCancelProposal"
-          >
-            Annuleren
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-col>
-  </v-row>
+      </v-col>
+    </v-row>
+    <v-row v-if="shoutOut && shoutOut.planRef">
+      <v-col>
+        <shout-out-travel-proposal-editor
+          :time="arrivalTime"
+          :location="arrivalLocation"
+          :is-arrival="true"
+          :is-enabled="canOffer"
+          @updateTravelTime="onUpdateTravelTime"
+          @locationUpdate="onArrivalLocationUpdate"
+          @locationReset="onArrivalLocationReset"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn
+          large
+          rounded
+          outlined
+          block
+          depressed
+          color="primary"
+          @click="onShowMap"
+        >
+          Bekijk op de kaart
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn
+          large
+          rounded
+          block
+          depressed
+          color="button"
+          :disabled="generateSteps.length === 0 || !offer"
+          @click="onConfirmTravelOffer"
+        >
+          Aanbod bevestigen
+        </v-btn>
+      </v-col>
+      <v-col>
+        <v-btn
+          large
+          rounded
+          block
+          depressed
+          outlined
+          color="primary"
+          @click="onCancelProposal"
+        >
+          Annuleren
+        </v-btn>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -98,12 +94,9 @@ import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ShoutOutTravelProposalEditor from '@/components/community/ShoutOutTravelProposalEditor'
 import {
-  generateShoutOutDetailSteps,
   generateItineraryDetailSteps,
+  generateShoutOutDetailSteps,
 } from '@/utils/itinerary_steps.js'
-import * as isStore from '@/store/itinerary-service'
-import * as gsStore from '@/store/geocoder-service'
-import { geoPlaceToCriteria } from '@/utils/Utils'
 
 export default {
   name: 'ShoutOutTravelProposal',
@@ -164,8 +157,8 @@ export default {
         steps = generateItineraryDetailSteps(this.offer.itineraries[0])
         // Add the passenger to the rideshare legs for the GUI
         steps
-          .filter(leg => leg.traverseMode === 'RIDESHARE')
-          .forEach(leg => (leg.passenger = { ...this.shoutOut.traveller }))
+          .filter((leg) => leg.traverseMode === 'RIDESHARE')
+          .forEach((leg) => (leg.passenger = { ...this.shoutOut.traveller }))
       } else if (this.shoutOut?.planRef) {
         steps = generateShoutOutDetailSteps(this.shoutOut, undefined)
       } else {

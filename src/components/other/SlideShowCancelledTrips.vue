@@ -9,9 +9,7 @@
         <v-icon v-if="showCards" class="alert-red">
           keyboard_arrow_down
         </v-icon>
-        <v-icon v-else class="alert-red">
-          keyboard_arrow_left
-        </v-icon>
+        <v-icon v-else class="alert-red"> keyboard_arrow_left </v-icon>
       </div>
       <div v-if="showCards" class="carousel-container">
         <v-carousel

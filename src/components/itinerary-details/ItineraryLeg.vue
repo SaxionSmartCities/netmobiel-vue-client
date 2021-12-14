@@ -9,7 +9,7 @@
           <div class="open-dot" />
         </v-col>
         <v-col>
-          <v-row class="pl-2">
+          <v-row no-gutters class="pl-2">
             <v-col class="header py-0">
               {{ header }}
             </v-col>
@@ -81,9 +81,7 @@ export default {
     },
     time() {
       return this.leg.startTime
-        ? moment(this.leg.startTime)
-            .locale('nl')
-            .format('LT')
+        ? moment(this.leg.startTime).locale('nl').format('LT')
         : '- - : - -'
     },
     header() {

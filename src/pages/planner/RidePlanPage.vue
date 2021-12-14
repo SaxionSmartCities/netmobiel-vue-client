@@ -10,7 +10,7 @@
                   <h1>Waar rijd je heen?</h1>
                 </v-col>
               </v-row>
-              <v-row dense>
+              <v-row>
                 <v-col>
                   <search-criteria
                     v-model="searchCriteria"
@@ -19,7 +19,7 @@
                   />
                 </v-col>
               </v-row>
-              <v-row dense>
+              <v-row>
                 <v-col>
                   <recurrence-editor
                     v-model="recurrence"
@@ -37,7 +37,7 @@
                     <v-col cols="1">
                       <v-icon>directions_car</v-icon>
                     </v-col>
-                    <v-col v-if="!selectedCar" class="pl-3">
+                    <v-col v-if="!selectedCar">
                       <router-link to="cars">
                         <span :class="[{ 'color-alert-red': warnMissingCar }]"
                           >Voer je auto in</span
@@ -75,7 +75,7 @@
               <v-row>
                 <v-col
                   transition="slide-x-transition"
-                  class="text-center body-2"
+                  class="text-center body-2 clickable-item"
                   @click="toRidePlanOptions()"
                 >
                   <v-icon>settings</v-icon>
@@ -102,7 +102,6 @@ import * as psStore from '@/store/profile-service'
 import * as gsStore from '@/store/geocoder-service'
 import * as isStore from '@/store/itinerary-service'
 import {
-  beforeRouteEnter,
   beforeRouteLeave,
   restoreDataBeforeRouteEnter,
 } from '@/utils/navigation'
@@ -114,6 +113,29 @@ export default {
     SearchCriteria,
     RecurrenceEditor,
   },
+  beforeRouteEnter(to, from, next) {
+    // console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
+    const keepWhenComingFrom = [
+      'searchLocation',
+      'CarsPage',
+      'planOptions',
+      'rideDetailPage',
+    ]
+    // Clear the search location when navigating from a different page than the location lookup page of one of the subpages
+    if (!keepWhenComingFrom.includes(from?.name)) {
+      // console.log(`Clear Search Criteria`)
+      gsStore.mutations.clearAllGeoLocationPicked()
+      isStore.mutations.setSearchCriteria({})
+    }
+    next((vm) =>
+      restoreDataBeforeRouteEnter(vm, {
+        recurrence: (value) => value,
+      })
+    )
+  },
+  beforeRouteLeave: beforeRouteLeave({
+    recurrence: (model) => model && { ...model },
+  }),
   data() {
     return {
       recurrence: undefined,
@@ -130,7 +152,7 @@ export default {
     selectedCar() {
       const selectedCarRef = this.ridePlanOptions?.selectedCarRef
       const cars = csStore.getters.getAvailableCars
-      return cars.find(car => car.carRef === selectedCarRef)
+      return cars.find((car) => car.carRef === selectedCarRef)
     },
     disabledRideAddition() {
       const { from, to, travelTime } = this.searchCriteria
@@ -162,32 +184,6 @@ export default {
     }
     isStore.mutations.setSearchCriteria(newCriteria)
   },
-  beforeRouteEnter(to, from, next) {
-    // console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
-    const keepWhenComingFrom = [
-      'searchLocation',
-      'CarsPage',
-      'planOptions',
-      'rideDetailPage',
-    ]
-    // Clear the search location when navigating from a different page than the location lookup page of one of the subpages
-    if (!keepWhenComingFrom.includes(from?.name)) {
-      // console.log(`Clear Search Criteria`)
-      gsStore.mutations.clearAllGeoLocationPicked()
-      isStore.mutations.setSearchCriteria({})
-    }
-    next(vm =>
-      restoreDataBeforeRouteEnter(vm, {
-        recurrence: value => value,
-      })
-    )
-  },
-  // beforeRouteEnter: beforeRouteEnter({
-  //   recurrence: json => json,
-  // }),
-  beforeRouteLeave: beforeRouteLeave({
-    recurrence: model => model && { ...model },
-  }),
   methods: {
     toRidePlanOptions() {
       this.$router.push('/planOptions')
@@ -225,3 +221,8 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.clickable-item {
+  cursor: pointer;
+}
+</style>

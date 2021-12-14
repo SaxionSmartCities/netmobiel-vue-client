@@ -13,7 +13,9 @@ import { Moment } from 'moment'
 
 function safeConcatTrips(current: Trip[], additions: Trip[]) {
   return current.concat(
-    additions.filter(trip => !current.some(existing => existing.id === trip.id))
+    additions.filter(
+      (trip) => !current.some((existing) => existing.id === trip.id)
+    )
   )
 }
 function setSearchCriteria(state: ItineraryState, payload: SearchCriteria) {

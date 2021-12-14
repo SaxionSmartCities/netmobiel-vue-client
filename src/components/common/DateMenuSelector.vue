@@ -9,7 +9,7 @@
       min-width="auto"
       :nudge-right="40"
     >
-      <template v-slot:activator="{ on }">
+      <template #activator="{ on }">
         <v-text-field
           :value="displayDate"
           hide-details
@@ -63,7 +63,7 @@ export default {
       default: false,
     },
   },
-  data: function() {
+  data: function () {
     return {
       dateInternal: null,
       menu: false,
@@ -72,9 +72,7 @@ export default {
   computed: {
     displayDate() {
       if (this.value) {
-        return moment(this.value)
-          .locale('nl')
-          .format('D MMMM YYYY')
+        return moment(this.value).locale('nl').format('D MMMM YYYY')
       }
       return undefined
     },
@@ -93,9 +91,7 @@ export default {
   methods: {
     titleDate(val) {
       if (val) {
-        return moment(val)
-          .locale('nl')
-          .format('D MMM YYYY')
+        return moment(val).locale('nl').format('D MMM YYYY')
       }
       return ''
     },

@@ -87,7 +87,7 @@ export class ProfileState {
     results: [],
   }
   // The FCM token received from the current device
-  deviceFcmToken: string = ''
+  deviceFcmToken: string | null = null
 }
 export const emptyPublicUser: ExternalUser = {
   profile: {

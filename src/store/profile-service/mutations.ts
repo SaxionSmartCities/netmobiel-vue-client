@@ -1,5 +1,3 @@
-// @ts-ignore
-import VueJwtDecode from 'vue-jwt-decode'
 import { ModuleBuilder } from 'vuex-typex'
 import {
   ComplimentType,
@@ -12,10 +10,11 @@ import {
   RidePlanOptions,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
+import { decodeJwt } from '@/utils/Utils'
 
 function setUserToken(state: ProfileState, token: string) {
   state.user.accessToken = token
-  let decodedObject = VueJwtDecode.decode(token)
+  const decodedObject = decodeJwt(token)
   state.user.managedIdentity = decodedObject['sub']
   state.user.givenName = decodedObject['given_name']
   state.user.familyName = decodedObject['family_name']
@@ -37,7 +36,7 @@ function setProfileImage(state: ProfileState, payload: string) {
 }
 
 function setNotificationOptionsValue(state: ProfileState, payload: any) {
-  state.user.notificationOptions.filter(function(item) {
+  state.user.notificationOptions.filter(function (item) {
     if (item.name === payload.key) {
       item.value = payload.value
       return item
@@ -46,7 +45,7 @@ function setNotificationOptionsValue(state: ProfileState, payload: any) {
 }
 
 function setTripOptionsValue(state: ProfileState, payload: any) {
-  state.user.tripOptions.filter(function(item) {
+  state.user.tripOptions.filter(function (item) {
     if (item.name === payload.key) {
       item.value = payload.value
       return
@@ -55,7 +54,7 @@ function setTripOptionsValue(state: ProfileState, payload: any) {
 }
 
 function setReviewOptionsValue(state: ProfileState, payload: any) {
-  state.user.reviews.filter(function(item) {
+  state.user.reviews.filter(function (item) {
     if (item.name === payload.key) {
       item.value = payload.value
       return item
@@ -68,7 +67,7 @@ function setRidePlanOptions(state: ProfileState, payload: RidePlanOptions) {
 }
 
 function setPrivacySecurityValue(state: ProfileState, payload: any) {
-  state.user.privacySecurity.filter(function(item) {
+  state.user.privacySecurity.filter(function (item) {
     if (item.name === payload.key) {
       item.value = payload.value
       return item
@@ -94,7 +93,7 @@ function getOrCreatePublicUser(state: ProfileState, profileId: string) {
 
 function addPublicProfile(state: ProfileState, profile: PublicProfile) {
   if (profile.id !== null) {
-    let usr = getOrCreatePublicUser(state, profile.id)
+    const usr = getOrCreatePublicUser(state, profile.id)
     usr.profile = profile
     // Brute force reactivity, is this really needed?
     state.publicUsers = new Map(state.publicUsers)
@@ -102,7 +101,7 @@ function addPublicProfile(state: ProfileState, profile: PublicProfile) {
 }
 
 function clearPublicProfile(state: ProfileState, profileId: string) {
-  let usr = getOrCreatePublicUser(state, profileId)
+  const usr = getOrCreatePublicUser(state, profileId)
   usr.profile = Object.assign({}, emptyPublicUser.profile)
   // Brute force reactivity, is this really needed?
   state.publicUsers = new Map(state.publicUsers)
@@ -110,7 +109,7 @@ function clearPublicProfile(state: ProfileState, profileId: string) {
 
 function addPublicCompliments(state: ProfileState, payload: any) {
   if (payload && payload.profileId) {
-    let usr = getOrCreatePublicUser(state, payload.profileId)
+    const usr = getOrCreatePublicUser(state, payload.profileId)
     usr.compliments = payload.compliments
   }
   // Brute force reactivity, is this really needed?
@@ -118,7 +117,7 @@ function addPublicCompliments(state: ProfileState, payload: any) {
 }
 
 function clearPublicCompliments(state: ProfileState, profileId: string) {
-  let usr = getOrCreatePublicUser(state, profileId)
+  const usr = getOrCreatePublicUser(state, profileId)
   usr.compliments = []
   // Brute force reactivity, is this really needed?
   state.publicUsers = new Map(state.publicUsers)
@@ -126,7 +125,7 @@ function clearPublicCompliments(state: ProfileState, profileId: string) {
 
 function addPublicReviews(state: ProfileState, payload: any) {
   if (payload && payload.profileId) {
-    let usr = getOrCreatePublicUser(state, payload.profileId)
+    const usr = getOrCreatePublicUser(state, payload.profileId)
     usr.reviews = payload.reviews
   }
   // Brute force reactivity, is this really needed?
@@ -134,7 +133,7 @@ function addPublicReviews(state: ProfileState, payload: any) {
 }
 
 function clearPublicReviews(state: ProfileState, profileId: string) {
-  let usr = getOrCreatePublicUser(state, profileId)
+  const usr = getOrCreatePublicUser(state, profileId)
   usr.reviews = []
   // Brute force reactivity, is this really needed?
   state.publicUsers = new Map(state.publicUsers)
@@ -176,6 +175,10 @@ function setSearchResults(state: ProfileState, results: PublicProfile[]) {
   state.search.results = results
 }
 
+function setDeviceFcmToken(state: ProfileState, fcmToken: string) {
+  state.deviceFcmToken = fcmToken
+}
+
 export const buildMutations = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -204,5 +207,6 @@ export const buildMutations = (
     setSearchKeyword: psBuilder.commit(setSearchKeyword),
     setSearchResults: psBuilder.commit(setSearchResults),
     setSearchStatus: psBuilder.commit(setSearchStatus),
+    setDeviceFcmToken: psBuilder.commit(setDeviceFcmToken),
   }
 }

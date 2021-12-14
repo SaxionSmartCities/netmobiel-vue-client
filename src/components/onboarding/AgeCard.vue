@@ -4,7 +4,7 @@
     <v-card-text class="py-0">
       <v-row no-gutters>
         <v-col>
-          <span class="text-uppercase text-color-primary ">
+          <span class="text-uppercase text-color-primary">
             Wat is je geboortedatum?
           </span>
         </v-col>
@@ -44,7 +44,7 @@ import DateMenuSelector from '@/components/common/DateMenuSelector'
 export default {
   name: 'AgeCard',
   components: { DateMenuSelector },
-  data: function() {
+  data: function () {
     return {
       dateOfBirth: null,
       menu: false,

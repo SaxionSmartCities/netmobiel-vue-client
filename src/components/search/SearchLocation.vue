@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="showDialog" min-width="300px">
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <v-text-field
         :value="addressLine"
         clearable
@@ -103,7 +103,7 @@ export default {
       return addr?.locality ? geoPlaceToAddressLabel(addr, true) : ''
     },
     suggestions() {
-      return gsStore.getters.getGeocoderSuggestions.map(suggestion =>
+      return gsStore.getters.getGeocoderSuggestions.map((suggestion) =>
         this.createLocationFromSuggestion(suggestion)
       )
     },
@@ -117,7 +117,7 @@ export default {
         this.showSuggestionsList = true
       }
     },
-    searchInput: throttle(function(val) {
+    searchInput: throttle(function (val) {
       if (val != null) {
         const show = (this.showSuggestionsList = val.length > 3)
         if (show) {

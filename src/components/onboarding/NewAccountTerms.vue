@@ -42,7 +42,7 @@
         <v-row no-gutters>
           <v-col cols="1">
             <v-checkbox
-              v-model="value.consent.acceptedTerms"
+              v-model="consent.acceptedTerms"
               :rules="[rules.required]"
             ></v-checkbox>
           </v-col>
@@ -100,9 +100,10 @@ export default {
   },
   data() {
     return {
+      consent: { ...this.value },
       valid: false,
       rules: {
-        required: value => !!value || '',
+        required: (value) => !!value || '',
       },
     }
   },
@@ -111,6 +112,7 @@ export default {
       // Only show consent error after the user has clicked on submit.
       this.validate()
       if (this.valid) {
+        this.$emit('update-consent', this.consent)
         this.$emit('next-step')
       }
     },

@@ -38,7 +38,6 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import ShoutOut from '@/components/community/ShoutOut'
-import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 
 export default {

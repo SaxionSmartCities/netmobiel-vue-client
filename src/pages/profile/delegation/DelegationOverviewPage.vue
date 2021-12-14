@@ -58,7 +58,7 @@ export default {
       return psStore.getters.getDelegatorId
     },
     delegator() {
-      const d = this.accounts.find(a => a.delegator.id === this.delegatorId)
+      const d = this.accounts.find((a) => a.delegator.id === this.delegatorId)
       return d.delegator
     },
   },

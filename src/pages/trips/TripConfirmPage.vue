@@ -7,17 +7,18 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-card outlined class="px-4 py-2">
-          <v-row class="flex-column">
-            <v-col class="pb-5">
-              <h5>Datum: {{ travelDate }}</h5>
+        <v-card outlined class="px-1">
+          <v-row class="d-flex flex-column">
+            <v-col>
+              <h4 class="netmobiel">{{ travelDate }}</h4>
             </v-col>
-            <v-col
-              v-for="(leg, index) in generateSteps"
-              :key="index"
-              class="py-0"
-            >
-              <itinerary-leg :step="index" :leg="leg" />
+            <v-col>
+              <itinerary-leg
+                v-for="(leg, index) in generateSteps"
+                :key="index"
+                :step="index"
+                :leg="leg"
+              />
             </v-col>
           </v-row>
         </v-card>
@@ -40,7 +41,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col class="pt-0">
+      <v-col>
         <v-btn
           large
           block
@@ -84,11 +85,9 @@ export default {
       return isStore.getters.getSelectedTrip
     },
     travelDate() {
-      const { departureTime } = this.trip?.itinerary
+      const departureTime = this.trip?.itinerary?.departureTime
       if (departureTime) {
-        return moment(departureTime)
-          .locale('nl')
-          .format('dddd DD MMMM')
+        return moment(departureTime).locale('nl').format('dddd DD MMMM')
       }
       return 'Onbekend'
     },
@@ -98,6 +97,11 @@ export default {
   },
   created() {
     uiStore.mutations.showBackButton()
+  },
+  mounted() {
+    if (this.id) {
+      isStore.actions.fetchTrip({ id: this.id })
+    }
   },
   methods: {
     confirm() {
@@ -116,3 +120,9 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+h4.netmobiel {
+  text-transform: uppercase;
+  color: $color-primary;
+}
+</style>

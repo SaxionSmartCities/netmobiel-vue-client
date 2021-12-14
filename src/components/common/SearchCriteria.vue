@@ -1,13 +1,13 @@
 <template>
   <v-row dense class="d-flex flex-column">
-    <v-col dense>
+    <v-col>
       <from-to-fields
         v-model="localCriteria"
         @fieldSelected="onFieldSelected"
         @swapLocations="onSwapLocations"
       />
     </v-col>
-    <v-col class="py-0">
+    <v-col>
       <date-time-selector
         v-model="localTravelTime"
         @dateTimeChanged="onDateTimeChanged"
@@ -16,7 +16,6 @@
   </v-row>
 </template>
 <script>
-import moment from 'moment'
 import FromToFields from '@/components/common/FromToFields.vue'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
 import * as gsStore from '@/store/geocoder-service'

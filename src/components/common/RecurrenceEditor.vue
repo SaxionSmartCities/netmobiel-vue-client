@@ -48,7 +48,7 @@
               :close-on-content-click="false"
               transition="scale-transition"
             >
-              <template v-slot:activator="{ on }">
+              <template #activator="{ on }">
                 <v-text-field
                   v-model="horizon"
                   prepend-icon="event"

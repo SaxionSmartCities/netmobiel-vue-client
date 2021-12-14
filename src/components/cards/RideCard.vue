@@ -91,12 +91,12 @@ export default {
     },
     proposedBookingCount() {
       return this.ride.bookings.filter(
-        b => b.state.toUpperCase() === 'PROPOSED'
+        (b) => b.state.toUpperCase() === 'PROPOSED'
       ).length
     },
     confirmedBookingCount() {
       return this.ride.bookings.filter(
-        b => b.state.toUpperCase() === 'CONFIRMED'
+        (b) => b.state.toUpperCase() === 'CONFIRMED'
       ).length
     },
     singleBooking() {
@@ -114,14 +114,8 @@ export default {
   },
   methods: {
     formatDateTime(dateTime, format) {
-      if (!format)
-        return moment(dateTime)
-          .locale('nl')
-          .calendar()
-      else
-        return moment(dateTime)
-          .local('nl')
-          .format(format)
+      if (!format) return moment(dateTime).locale('nl').calendar()
+      else return moment(dateTime).local('nl').format(format)
     },
     formatDuration() {
       const seconds = this.ride.estimatedDrivingTime,
@@ -138,9 +132,7 @@ export default {
       if (daysOfWeekMask === 0x1f && interval === 1) {
         return 'elke werkdag'
       }
-      const weekday = moment(this.ride.departureTime)
-          .locale('nl')
-          .format('dd'),
+      const weekday = moment(this.ride.departureTime).locale('nl').format('dd'),
         weekly = interval === 1 ? 'wekelijks' : `elke ${interval} weken`
       return `${weekly} op ${weekday}`
     },

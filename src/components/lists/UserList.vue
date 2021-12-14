@@ -1,12 +1,12 @@
 <template>
   <generic-list :items="users" :empty-list-label="emptyListLabel">
-    <template v-slot:list-item="{ item: user }">
+    <template #list-item="{ item: user }">
       <v-row dense align="center">
         <v-col class="shrink pr-3">
           <round-user-image
             :profile-image="user.delegator.image"
-            :image-size="50"
-            :avatar-size="56"
+            :image-size="54"
+            :avatar-size="60"
           />
         </v-col>
         <v-col>
@@ -37,13 +37,11 @@
         <v-col
           v-if="
             selectedId === user.delegator.id ||
-              (!selectedId && user.delegate === user.delegator)
+            (!selectedId && user.delegate === user.delegator)
           "
           class="shrink"
         >
-          <v-icon large class="secondary-color">
-            check
-          </v-icon>
+          <v-icon large class="secondary-color"> check </v-icon>
         </v-col>
         <v-col v-else class="shrink">
           <v-icon large @click="switchAccount(user.delegator.id)">

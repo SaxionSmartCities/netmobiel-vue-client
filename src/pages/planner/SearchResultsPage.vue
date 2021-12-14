@@ -1,30 +1,30 @@
 <template>
   <content-pane scrollable>
-    <template v-slot:header>
+    <template #header>
       <v-row class="shrink">
-        <v-col class="py-0">
+        <v-col>
           <v-divider />
           <div
             v-if="localTripId !== -1 && tripId"
-            class="px-4 py-2 d-flex flex-row align-center edit-container"
+            class="d-flex flex-row justify-center edit-container"
           >
             <v-icon small color="button">warning</v-icon>
-            <span class="caption ml-3 secondary-color">
-              LET OP! U bent aan het wijzigen.</span
+            <span class="secondary-color">
+              Let op! U bent aan het wijzigen.</span
             >
           </div>
         </v-col>
       </v-row>
     </template>
-    <v-row class="d-flex flex-column search-header px-3">
-      <v-col class="py-0">
+    <v-row dense class="d-flex flex-column search-header">
+      <v-col>
         <search-criteria
           v-model="searchCriteria"
           @locationFieldSelected="onLocationFieldSelected"
           @criteriaChanged="onCriteriaChanged"
         />
       </v-col>
-      <v-col class="py-0">
+      <v-col>
         <v-expansion-panels>
           <v-expansion-panel>
             <v-expansion-panel-header class="search-header pl-0">
@@ -68,9 +68,9 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col mt-3>
-            <v-row class="flex-column">
-              <v-col class="py-0">
+          <v-col>
+            <v-row dense class="flex-column">
+              <v-col>
                 <a href="#" @click="createShoutOut()">
                   <v-row>
                     <v-col class="col-2 ml-2">
@@ -82,7 +82,7 @@
                   </v-row>
                 </a>
               </v-col>
-              <v-col class="py-0">
+              <v-col>
                 <a href="tel:0900-9874">
                   <v-row>
                     <v-col class="col-2 ml-2">
@@ -111,7 +111,6 @@ import SearchStatus from '@/components/search/SearchStatus.vue'
 import moment from 'moment'
 import * as uiStore from '@/store/ui'
 import * as isStore from '@/store/itinerary-service'
-import * as psStore from '@/store/profile-service'
 
 export default {
   name: 'SearchResultsPage',
@@ -174,7 +173,7 @@ export default {
     },
     getAllDifferentDays() {
       let differentDays = []
-      this.sortedItineraries.forEach(it => {
+      this.sortedItineraries.forEach((it) => {
         const calendarDate = moment(it.arrivalTime).format('LL')
         if (!differentDays.includes(calendarDate)) {
           differentDays.push(calendarDate)
@@ -219,7 +218,7 @@ export default {
       })
     },
     getItinerariesForThatDay(sectionDay) {
-      return this.sortedItineraries.filter(it => {
+      return this.sortedItineraries.filter((it) => {
         const dateToCheck = moment(it.arrivalTime.valueOf())
         return (
           moment(sectionDay, 'LL').isSame(dateToCheck, 'day') &&
@@ -228,9 +227,7 @@ export default {
       })
     },
     formatToCategoryDate(date) {
-      return moment(date, 'LL')
-        .locale('NL')
-        .format('dddd DD MMMM')
+      return moment(date, 'LL').locale('NL').format('dddd DD MMMM')
     },
     onTripSelected(selectedTravelCard) {
       let selectedTrip = {
@@ -249,7 +246,7 @@ export default {
     createShoutOut() {
       isStore.actions
         .createShoutOutTripPlan(this.searchCriteria)
-        .then(shoutOutId => {
+        .then((shoutOutId) => {
           // console.log(`Created shout-out, urn: ${shoutOutId}`)
           if (shoutOutId) {
             this.$router.push({
@@ -272,15 +269,6 @@ export default {
 </script>
 
 <style lang="scss">
-.no-padding .v-expansion-panel__header {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.date-day-styling {
-  color: $color-primary;
-}
-
 a {
   text-decoration: none;
   color: #2e8997;

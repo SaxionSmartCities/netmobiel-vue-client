@@ -79,7 +79,7 @@ export default {
       // A filtered list of itineraries (removing cancelled offers). Passenger itineraries comprise of a single leg.
       if (this.shoutOut?.itineraries) {
         return this.shoutOut.itineraries.filter(
-          i => i.legs[0].state !== 'CANCELLED'
+          (i) => i.legs[0].state !== 'CANCELLED'
         )
       }
       return []

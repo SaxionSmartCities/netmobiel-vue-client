@@ -1,8 +1,8 @@
 <template>
   <v-row dense no-gutters>
     <v-col>
-      <v-row v-if="selectedLegs && shouldShowMap" class="pa-0">
-        <v-col class="pa-0">
+      <v-row v-if="selectedLegs && shouldShowMap">
+        <v-col>
           <route-map
             ref="mapComp"
             :legs="selectedLegs"
@@ -46,12 +46,12 @@ export default {
   computed: {
     activeBookings() {
       return this.ride.bookings?.filter(
-        booking => booking.state.toUpperCase() !== 'CANCELLED'
+        (booking) => booking.state.toUpperCase() !== 'CANCELLED'
       )
     },
     confirmedBookings() {
       return this.ride.bookings?.filter(
-        booking => booking.state.toUpperCase() === 'CONFIRMED'
+        (booking) => booking.state.toUpperCase() === 'CONFIRMED'
       )
     },
     bookingLabel() {
@@ -68,6 +68,7 @@ export default {
       if (!this.ride.rideRef) {
         return result
       }
+      // eslint-disable-next-line no-unused-vars
       const { departureTime, duration, bookings, car, recurrence } = this.ride
       result.push({
         label: 'Datum',

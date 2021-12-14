@@ -58,11 +58,11 @@ function searchTripPlan(
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
       params: params,
     })
-    .then(response => {
+    .then((response) => {
       mutations.setPlanningResults(response.data)
       mutations.setPlanningStatus({ status: 'SUCCESS' })
     })
-    .catch(error => {
+    .catch((error) => {
       mutations.setPlanningStatus({ status: 'FAILED' })
       uiStore.actions.queueErrorNotification(
         error.response ? error.response.data.message : 'Network failure'
@@ -74,7 +74,7 @@ function createShoutOutTripPlan(
   context: ActionContext,
   { from, to, travelTime, preferences }: any
 ) {
-  let payload = {
+  const payload = {
     from,
     to,
     nrSeats: preferences.numPassengers,
@@ -91,20 +91,20 @@ function createShoutOutTripPlan(
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
-    .then(response => {
+    .then((response) => {
       let shoutOutId
       if (response.status == 201) {
-        let message = 'Oproep naar de community is geplaatst'
+        const message = 'Oproep naar de community is geplaatst'
         uiStore.actions.queueInfoNotification(message)
         const id = getCreatedObjectIdFromResponse(response)
         shoutOutId = id ? `urn:nb:pn:tripplan:${id}` : undefined
       } else {
-        let message = response.data.message
+        const message = response.data.message
         uiStore.actions.queueErrorNotification(message)
       }
       return shoutOutId
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -120,12 +120,12 @@ function fetchTripPlan(context: ActionContext, { id }: any) {
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
     })
-    .then(response => {
+    .then((response) => {
       if (response.status == 200) {
         mutations.setSelectedTripPlan(response.data)
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification('Fout bij het ophalen van de rit.')
@@ -149,7 +149,7 @@ function fetchMyShoutOutTripPlans(
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
       params: params,
     })
-    .then(response => {
+    .then((response) => {
       if (response.status === 200) {
         mutations.setMyShoutOutsTotalCount(response.data.totalCount)
         if (maxResults !== 0) {
@@ -162,7 +162,7 @@ function fetchMyShoutOutTripPlans(
         }
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
     })
@@ -183,14 +183,14 @@ function cancelTripPlan(
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
       params,
     })
-    .then(response => {
+    .then((response) => {
       if (response.status == 204) {
         uiStore.actions.queueInfoNotification('Je oproep is verwijderd')
       } else {
         uiStore.actions.queueErrorNotification(response.data.message)
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -222,9 +222,9 @@ function createTrip(context: ActionContext, itinerary: Itinerary) {
     .post(URL, tripRequest, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
     })
-    .then(response => {
+    .then((response) => {
       if (response.status == 201) {
-        let message = 'Uw rit is bevestigd!'
+        const message = 'Uw rit is bevestigd!'
         uiStore.actions.queueInfoNotification(message)
         mutations.setBookingStatus({ status: 'SUCCESS' })
       } else {
@@ -232,7 +232,7 @@ function createTrip(context: ActionContext, itinerary: Itinerary) {
         mutations.setBookingStatus({ status: 'FAILED' })
       }
     })
-    .catch(error => {
+    .catch((error) => {
       mutations.setBookingStatus({ status: 'FAILED' })
       // eslint-disable-next-line
       console.log(error)
@@ -266,7 +266,7 @@ function fetchTrips(
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
       params: params,
     })
-    .then(response => {
+    .then((response) => {
       if (response.status === 200) {
         if (pastTrips) {
           offset === 0
@@ -281,7 +281,7 @@ function fetchTrips(
         }
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -299,10 +299,10 @@ function fetchCancelledTrips(context: ActionContext) {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
       params: params,
     })
-    .then(response => {
+    .then((response) => {
       mutations.setCancelledTrips(response.data.data)
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -319,13 +319,13 @@ function fetchTrip(context: ActionContext, payload: any) {
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
     })
-    .then(response => {
+    .then((response) => {
       if (response.status == 200) {
         mutations.setSelectedTrip(response.data)
       }
       return response.data
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification('Fout bij het ophalen van de rit.')
@@ -343,7 +343,7 @@ function deleteTrip(context: ActionContext, payload: any) {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
       params: params,
     })
-    .then(response => {
+    .then((response) => {
       if (response.status === 204) {
         //Succesful response, trip is deleted.
         if (payload.displayWarning) {
@@ -358,7 +358,7 @@ function deleteTrip(context: ActionContext, payload: any) {
         uiStore.actions.queueErrorNotification(response.data.message)
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -384,7 +384,7 @@ function rejectTrip(context: ActionContext, payload: any) {
     acknowledge: false,
   })
   promise
-    .then(resp => {
+    .then((resp) => {
       if (resp.status == 204) {
         // Ride is confirmed
         uiStore.actions.queueInfoNotification('Uw rit is bevestigd.')
@@ -395,7 +395,7 @@ function rejectTrip(context: ActionContext, payload: any) {
         )
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -412,7 +412,7 @@ function confirmTrip(context: ActionContext, payload: any) {
     acknowledge: true,
   })
   promise
-    .then(function(resp) {
+    .then(function (resp) {
       if (resp.status == 204) {
         // Ride is confirmed
         uiStore.actions.queueInfoNotification('Uw rit is bevestigd.')
@@ -423,7 +423,7 @@ function confirmTrip(context: ActionContext, payload: any) {
         )
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
       if (error.response.status === 400) {
@@ -451,12 +451,12 @@ function fetchShoutOut(context: ActionContext, { id }: any) {
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
-    .then(response => {
+    .then((response) => {
       if (response.status == 200) {
         mutations.setSelectedShoutOut(response.data)
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -491,13 +491,13 @@ function fetchShoutOuts(
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
       params: params,
     })
-    .then(response => {
+    .then((response) => {
       if (response.status === 200) {
         mutations.setShoutOutsTotalCount(response.data.totalCount)
         mutations.setShoutOuts(response.data.data)
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
@@ -530,11 +530,11 @@ function planShoutOutSolution(
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
       params: params,
     })
-    .then(response => {
+    .then((response) => {
       mutations.setPlanningStatus({ status: 'SUCCESS' })
       mutations.setPlanningResults(response.data)
     })
-    .catch(error => {
+    .catch((error) => {
       mutations.setPlanningStatus({ status: 'FAILED' })
       uiStore.actions.queueErrorNotification(
         error.response ? error.response.data.message : 'Network failure'
@@ -546,22 +546,22 @@ function addShoutOutTravelOffer(
   context: ActionContext,
   { shoutOutPlanId, planRef, vehicleRef, driverRef }: any
 ) {
-  let payload = { planRef, vehicleRef, driverRef }
+  const payload = { planRef, vehicleRef, driverRef }
   const URL = `${PLANNER_BASE_URL}/shout-outs/${shoutOutPlanId}`
   return axios
     .post(URL, payload, {
       headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY),
     })
-    .then(response => {
+    .then((response) => {
       if (response.status == 202) {
-        let message =
+        const message =
           'Je aanbod is verstuurd en de passagier op de hoogte gebracht.'
         uiStore.actions.queueInfoNotification(message)
       } else {
         uiStore.actions.queueErrorNotification(response.data.message)
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(

@@ -1,13 +1,13 @@
 <template>
   <v-row>
-    <v-col class="py-0">
+    <v-col>
       <v-row v-if="shoutOuts.length === 0">
         <v-col>
           <em>{{ noItemsLabel }}</em>
         </v-col>
       </v-row>
       <v-row v-for="group in Object.keys(groupedShoutOuts)" v-else :key="group">
-        <v-col class="py-0">
+        <v-col>
           <grouped-shout-outs
             :label="formatDate(group)"
             :shout-outs="groupedShoutOuts[group]"
@@ -50,11 +50,7 @@ export default {
       this.$emit('shoutOutSelected', selected)
     },
     formatDate(date) {
-      return date
-        ? moment(date)
-            .locale('nl')
-            .format('dddd D MMMM')
-        : ''
+      return date ? moment(date).locale('nl').format('dddd D MMMM') : ''
     },
   },
 }

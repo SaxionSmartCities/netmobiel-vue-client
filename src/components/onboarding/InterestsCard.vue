@@ -51,7 +51,7 @@ import interests from '@/constants/interests.js'
 import * as psStore from '@/store/profile-service'
 
 export default {
-  data: function() {
+  data: function () {
     return {
       date: new Date().toISOString().substr(0, 10),
       menu: false,
@@ -59,10 +59,10 @@ export default {
     }
   },
   computed: {
-    displayDate: function() {
+    displayDate: function () {
       return moment(this.date).format('DD-MM-YYYY')
     },
-    interestsList: function() {
+    interestsList: function () {
       return interests
     },
   },
@@ -72,10 +72,10 @@ export default {
     },
   },
   methods: {
-    prevStep: function() {
+    prevStep: function () {
       this.$emit('prev-step')
     },
-    nextStep: function() {
+    nextStep: function () {
       let profile = { ...psStore.getters.getProfile }
       profile.interests = this.selectedInterests
       psStore.actions.updateProfile(profile)

@@ -15,8 +15,8 @@ export default {
   components: { ExternalUserImage },
   props: {
     leg: { type: Object, required: true },
-    imageSize: { type: Number, default: 70, required: false },
-    avatarSize: { type: Number, default: 78, required: false },
+    imageSize: { type: Number, default: 54, required: false },
+    avatarSize: { type: Number, default: 60, required: false },
   },
   computed: {
     driverManagedIdentity() {

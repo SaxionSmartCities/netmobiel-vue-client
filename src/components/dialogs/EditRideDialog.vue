@@ -1,8 +1,6 @@
 <template>
   <v-card class="pa-3">
-    <v-card-title class="headline">
-      Rit Wijzigen
-    </v-card-title>
+    <v-card-title class="headline"> Rit Wijzigen </v-card-title>
     <v-card-text v-if="showWarning">
       <v-row class="d-flex flex-column">
         <v-col>
@@ -91,7 +89,6 @@
 import moment from 'moment'
 import DateTimeSelector from '@/components/common/DateTimeSelector.vue'
 import RecurrenceEditor from '@/components/common/RecurrenceEditor.vue'
-import * as csStore from '@/store/carpool-service'
 
 export default {
   name: 'EditRideDialog',

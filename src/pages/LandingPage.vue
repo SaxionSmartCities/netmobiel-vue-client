@@ -61,11 +61,11 @@ export default {
       // Here we check what we need to do when no profile is present
       psStore.actions
         .fetchProfile()
-        .then(status => {
+        .then(() => {
           // If yes, then proceed to the home page
           this.continueNavigation()
         })
-        .catch(status => {
+        .catch((status) => {
           // If no then go to the registration page
           this.progressVisible = false
           this.buttonsVisible = true
@@ -84,21 +84,21 @@ export default {
     }
   },
   methods: {
-    continueNavigation: function() {
+    continueNavigation: function () {
       let conversationId
       if (this.$route.query.msgId) {
         // eslint-disable-next-line
         // console.log(`Got an initial message: '${this.$route.query.msgId}'`)
         msStore.actions
           .fetchMessage({ id: this.$route.query.msgId })
-          .then(msg => {
+          .then((msg) => {
             // Now goto the relevant (i.e., my) conversation. Find whether
             // that should be the sender's conversation or the recipient
             if (msg.sender?.managedIdentity === this.profile.id) {
               conversationId = msg.senderConversationRef
             } else {
               conversationId = msg.envelopes.find(
-                env => env.recipient.managedIdentity === this.profile.id
+                (env) => env.recipient.managedIdentity === this.profile.id
               )?.conversationRef
             }
             if (conversationId) {
@@ -115,7 +115,7 @@ export default {
         this.$router.push({ path: '/home' })
       }
     },
-    startRegistration: function() {
+    startRegistration: function () {
       this.$router.push({ name: 'registerUser' })
     },
     loginAtKeycloak() {

@@ -36,9 +36,7 @@
         class="map-fullscreen"
         @click="mapSize = 'small'"
       >
-        <v-icon>
-          fullscreen_exit
-        </v-icon>
+        <v-icon> fullscreen_exit </v-icon>
       </v-btn>
       <v-btn fab small class="map-close" @click="$emit('closeMap')">
         <v-icon>close</v-icon>
@@ -83,16 +81,16 @@ export default {
   },
   computed: {
     mapSize: {
-      get: function() {
+      get: function () {
         return this.mapSizeProp
       },
-      set: function(value) {
+      set: function (value) {
         this.$emit('sizeChanged', { size: value })
       },
     },
   },
   watch: {
-    mapSizeProp: function(newValue) {
+    mapSizeProp: function (newValue) {
       this.setMapSize(newValue)
     },
   },
@@ -114,13 +112,13 @@ export default {
       )
     },
     drawRoute(map, legs, dashedLines) {
-      const geoLegs = legs.map(leg =>
+      const geoLegs = legs.map((leg) =>
         polyline.toGeoJSON(leg.legGeometry.points)
       )
       let features = []
       let beginPoints = []
       let endPoints = []
-      geoLegs.forEach(leg => {
+      geoLegs.forEach((leg) => {
         features.push({
           type: 'Feature',
           geometry: leg,
@@ -214,7 +212,7 @@ export default {
     findBoundingBox(geoLegs) {
       const firstGeoLeg = geoLegs[0]
       const lastGeoLeg = geoLegs[geoLegs.length - 1]
-      const nw = [...geoLegs[0].coordinates[0]]
+      const nw = [...firstGeoLeg.coordinates[0]]
       const se = [...lastGeoLeg.coordinates[lastGeoLeg.coordinates.length - 1]]
       const minReducer = (previous, current) =>
         current < previous ? current : previous
@@ -222,20 +220,20 @@ export default {
         current > previous ? current : previous
 
       nw[1] = geoLegs
-        .flatMap(leg => leg.coordinates)
-        .map(coord => coord[1])
+        .flatMap((leg) => leg.coordinates)
+        .map((coord) => coord[1])
         .reduce(maxReducer, nw[1])
       nw[0] = geoLegs
-        .flatMap(leg => leg.coordinates)
-        .map(coord => coord[0])
+        .flatMap((leg) => leg.coordinates)
+        .map((coord) => coord[0])
         .reduce(minReducer, nw[0])
       se[1] = geoLegs
-        .flatMap(leg => leg.coordinates)
-        .map(coord => coord[1])
+        .flatMap((leg) => leg.coordinates)
+        .map((coord) => coord[1])
         .reduce(minReducer, nw[1])
       se[0] = geoLegs
-        .flatMap(leg => leg.coordinates)
-        .map(coord => coord[0])
+        .flatMap((leg) => leg.coordinates)
+        .map((coord) => coord[0])
         .reduce(maxReducer, nw[0])
       return [nw, se]
     },
