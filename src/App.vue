@@ -117,6 +117,9 @@ export default {
     myProfile() {
       return psStore.getters.getProfile
     },
+    deviceFcmToken() {
+      return psStore.getters.getDeviceFcmToken
+    },
     isBackButtonVisible() {
       return uiStore.getters.isBackButtonVisible
     },
@@ -125,6 +128,12 @@ export default {
     },
   },
   watch: {
+    deviceFcmToken() {
+      // Only update if profile is (already) available
+      if (this.myProfile?.id) {
+        psStore.actions.storeFcmToken()
+      }
+    },
     myProfile(newProfile) {
       if (!this.isProfileComplete(newProfile)) {
         let update = constants.COMPLETE_PROFILE_UPDATE
@@ -140,11 +149,22 @@ export default {
     // The initial message, if any, is passed by a query parameter to the url
     window.addEventListener('NetmobielPushMessage', this.onPushMessageReceived)
     if (this.$keycloak.authenticated) {
+      psStore.mutations.setUserToken(this.$keycloak.token)
       window.addEventListener('NetmobielFcmToken', this.onFcmTokenReceived)
+      // The FCM token is received before or after receiving the profile (if any), and also when still registering
+      // The FCM token will be stored in the following situations:
+      // 1. When receiving the updated FCM token
+      // 2. When receiving the profile
+      // 3. When creating the profile
+      // If no FCM token is received the token value stays null and that value is stored in the profile.
+      // console.log(`Request FCM token`)
       NetmobielApp.requestFcmToken()
       // Only fetch profile of authenticated user
-      psStore.actions.fetchProfile().catch(() => {})
-      psStore.mutations.setUserToken(this.$keycloak.token)
+      // After fetching, update the FCM token, if any.
+      psStore.actions
+        .fetchProfile()
+        .then(() => psStore.actions.storeFcmToken())
+        .catch(() => {})
     }
   },
   beforeDestroy() {
@@ -168,9 +188,10 @@ export default {
       }
     },
     onFcmTokenReceived(evt) {
+      // Store the FCM token in the store, because at registration time, there is no profile yet
       const fcmToken = evt.detail?.fcmToken
-      // console.log(`FCM received: ${fcmToken}`)
-      psStore.actions.storeFcmToken({ fcmToken })
+      console.log(`FCM received: ${this.fcmToken}`)
+      psStore.mutations.setDeviceFcmToken(fcmToken)
     },
     onProfileImageClick() {
       // TODO: Only navigate to delegate if role is delegate (route to profile otherwise)
