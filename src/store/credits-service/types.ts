@@ -50,4 +50,5 @@ export interface Statement {
     | 'RESERVATION'
     | 'RELEASE'
   readonly type: 'DEBIT' | 'CREDIT'
+  readonly rollback: boolean
 }
