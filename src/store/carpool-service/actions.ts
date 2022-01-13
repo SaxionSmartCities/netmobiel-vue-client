@@ -243,8 +243,58 @@ function fetchRide(context: ActionContext, payload: any) {
     })
 }
 
-function confirmRide(context: ActionContext, payload: any) {
-  const URL = `${RIDESHARE_BASE_URL}/rides/${payload.id}/confirm/true`
+function confirmBookedRide(context: ActionContext, payload: any) {
+  const URL = `${RIDESHARE_BASE_URL}/bookings/${payload.id}/confirm/true`
+  const data = {}
+  const config = {
+    headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+  }
+  return axios
+    .put(URL, data, config)
+    .then(function (resp) {
+      if (resp.status == 204) {
+        // Ride is confirmed
+        uiStore.actions.queueInfoNotification(
+          'Je hebt de rit van je passagier bevestigd.'
+        )
+      }
+    })
+    .catch(function (error) {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het bevestigen van de rit.'
+      )
+    })
+}
+
+function rejectBookedRide(context: ActionContext, payload: any) {
+  const URL = `${RIDESHARE_BASE_URL}/bookings/${payload.id}/confirm/false?reason=${payload.reasonCode}`
+  const data = {}
+  const config = {
+    headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+  }
+  return axios
+    .put(URL, data, config)
+    .then(function (resp) {
+      if (resp.status == 204) {
+        // Ride is confirmed
+        uiStore.actions.queueInfoNotification(
+          'Je hebt je passagier niet meegenomen.'
+        )
+      }
+    })
+    .catch(function (error) {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het bevestigen van de rit.'
+      )
+    })
+}
+
+function unconfirmBookedRide(context: ActionContext, payload: any) {
+  const URL = `${RIDESHARE_BASE_URL}/bookings/${payload.id}/unconfirm`
   const data = {}
   const config = {
     headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
@@ -253,21 +303,23 @@ function confirmRide(context: ActionContext, payload: any) {
     .put(URL, data, config)
     .then(function (resp) {
       if (resp.status == 204) {
-        // Ride is confirmed
-        uiStore.actions.queueInfoNotification('Uw rit is bevestigd.')
-        fetchRide(context, { id: payload.id })
-      } else {
-        uiStore.actions.queueErrorNotification(
-          'Fout bij het bevestigen van uw rit.'
+        uiStore.actions.queueInfoNotification(
+          'U kunt uw rit nu opnieuw bevestigen.'
         )
       }
     })
     .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueErrorNotification(
-        'Fout bij het bevestigen van uw rit.'
-      )
+      if (error.response.status === 403) {
+        uiStore.actions.queueErrorNotification(
+          'De rit is reeds afgewezen. Vraag de passagier om de bevestiging ongedaan te maken.'
+        )
+      } else {
+        uiStore.actions.queueErrorNotification(
+          'Fout bij het ongedaan maken van de bevestiging van de rit.'
+        )
+      }
     })
 }
 
@@ -389,12 +441,16 @@ export const buildActions = (
     submitCar: csBuilder.dispatch(submitCar),
     fetchCar: csBuilder.dispatch(fetchCar),
     removeCar: csBuilder.dispatch(removeCar),
-    submitRide: csBuilder.dispatch(submitRide),
-    updateRide: csBuilder.dispatch(updateRide),
+
     fetchRides: csBuilder.dispatch(fetchRides),
     fetchRide: csBuilder.dispatch(fetchRide),
-    confirmRide: csBuilder.dispatch(confirmRide),
+    submitRide: csBuilder.dispatch(submitRide),
+    updateRide: csBuilder.dispatch(updateRide),
     deleteRide: csBuilder.dispatch(deleteRide),
+    confirmBookedRide: csBuilder.dispatch(confirmBookedRide),
+    rejectBookedRide: csBuilder.dispatch(rejectBookedRide),
+    unconfirmBookedRide: csBuilder.dispatch(unconfirmBookedRide),
+
     fetchUser: csBuilder.dispatch(fetchUser),
     fetchRideProposals: csBuilder.dispatch(fetchRideProposals),
     fetchRidesFromConversations: csBuilder.dispatch(

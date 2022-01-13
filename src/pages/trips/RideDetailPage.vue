@@ -168,6 +168,11 @@ export default {
     numBookings() {
       return this.activeBookings.length
     },
+    confirmedBooking() {
+      return this.ride?.bookings?.find(
+        (b) => b.state.toUpperCase() === 'CONFIRMED'
+      )
+    },
     ride() {
       return csStore.getters.getSelectedRide
     },
@@ -226,6 +231,13 @@ export default {
           })
           break
         case 'COMPLETED':
+          if (this.selectedBooking?.state.toUpperCase() === 'CONFIRMED') {
+            options.push({
+              icon: 'fa-undo',
+              label: 'Herzie mijn bevesting',
+              callback: this.onRideUndoReview,
+            })
+          }
           options.push({
             icon: 'fa-redo',
             label: 'Plan deze rit opnieuw',
@@ -259,7 +271,17 @@ export default {
       this.selectedLeg = leg
     },
     onRideReview() {
-      csStore.actions.confirmRide({ id: this.rideId })
+      this.$router.push({
+        name: 'rideConfirmPage',
+        params: { rideId: this.rideId },
+      })
+    },
+    onRideUndoReview() {
+      this.$router.push({
+        name: 'rideUnconfirmPage',
+        params: { rideId: this.rideId },
+      })
+      // csStore.actions.unconfirmBookedRide({ id: this.rideId })
     },
     onRideCancel() {
       this.showDeleteRideModal = true

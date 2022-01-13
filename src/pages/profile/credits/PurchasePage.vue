@@ -5,17 +5,16 @@
         <h3>Credits inkopen</h3>
       </v-col>
     </v-row>
-    <v-row>
-      <v-divider />
-    </v-row>
     <v-row v-if="bankSimulated">
-      <v-alert type="warning">
-        In de huidige testfase van de Netmobiel-app hoef je nog niet écht te
-        betalen voor credits. Wel heb je de fictieve credits nodig om ritten te
-        boeken. Het aankoopproces dat je straks doorloopt is slechts een
-        simulatie en het kost je helemaal niks! Spreek onderling met de
-        chauffeur een eventuele vergoeding af.
-      </v-alert>
+      <v-col>
+        <v-alert type="warning">
+          In de huidige testfase van de Netmobiel-app hoef je nog niet écht te
+          betalen voor credits. Wel heb je de fictieve credits nodig om ritten
+          te boeken. Het aankoopproces dat je straks doorloopt is slechts een
+          simulatie en het kost je helemaal niks! Spreek onderling met de
+          chauffeur een eventuele vergoeding af.
+        </v-alert>
+      </v-col>
     </v-row>
     <v-row>
       <v-col>

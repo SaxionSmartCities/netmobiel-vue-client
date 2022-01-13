@@ -30,6 +30,7 @@
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
 import { formatDateTimeLongNoYear } from '@/utils/datetime.js'
 import RouteMap from '@/components/itinerary-details/RouteMap'
+import constants from '@/constants/constants'
 
 export default {
   name: 'RideDetails',
@@ -92,6 +93,27 @@ export default {
         label: 'Boekingen',
         value: bookingLabel,
       })
+      const booking = this.confirmedBookings[0]
+      if (booking) {
+        if (booking.fareInCredits !== undefined) {
+          result.push({
+            label: 'Opbrengst',
+            value: `${booking.fareInCredits} credits`,
+          })
+        }
+        if (booking.confirmed !== undefined) {
+          const value = booking.confirmed
+            ? 'Passagier heeft meegereden'
+            : 'Passagier heeft niet meegereden'
+          result.push({ label: 'Bevestiging', value: value })
+        }
+        if (booking.paymentState) {
+          result.push({
+            label: 'Betaling',
+            value: constants.PAYMENT_STATE[booking.paymentState],
+          })
+        }
+      }
       if (recurrence) {
         result.push({
           label: 'Herhalen',

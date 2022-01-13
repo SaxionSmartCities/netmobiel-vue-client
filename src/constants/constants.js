@@ -62,18 +62,36 @@ export default {
   PROFILE_ROLE_DRIVER: 'driver',
   PROFILE_ROLE_PASSENGER: 'passenger',
   PROFILE_ROLE_BOTH: 'both',
-  TRIP_NOT_MADE_REASONS: [
+  PASSENGER_TRIP_NOT_MADE_REASONS: [
     {
-      title: 'De rit was niet meer nodig',
-      value: 'unnecessary',
+      title: 'Reis was niet meer nodig',
+      value: 'TRIP_NOT_NEEDED',
     },
     {
       title: 'Ander vervoer gevonden',
-      value: 'otherTransport',
+      value: 'FOUND_OTHER_TRANSPORT',
     },
     {
-      title: 'De chauffeur kwam niet opdagen.',
-      value: '',
+      title: 'Chauffeur kwam niet opdagen',
+      value: 'NO_SHOW',
+    },
+  ],
+  DRIVER_TRIP_NOT_MADE_REASONS: [
+    {
+      title: 'Passagier had rit niet meer nodig',
+      value: 'TRIP_NOT_NEEDED',
+    },
+    {
+      title: 'Passagier had ander vervoer gevonden',
+      value: 'FOUND_OTHER_TRANSPORT',
+    },
+    {
+      title: 'Passagier kwam niet opdagen',
+      value: 'NO_SHOW',
+    },
+    {
+      title: 'Ik heb helemaal niet gereden',
+      value: 'NO_TRIP',
     },
   ],
   // Geographic center of the Netherlands (near Lunteren)
@@ -93,5 +111,15 @@ export default {
     DRIVER: 'DRIVER',
     DELEGATE: 'DELEGATE',
     DELEGATOR: 'DELEGATOR',
+  },
+  PAYMENT_STATE: {
+    RESERVED: 'Gereserveerd',
+    CANCELLED: 'Geannuleerd',
+    PAID: 'Betaald',
+  },
+  TRISTATE: {
+    TRUE: 'Ja',
+    FALSE: 'Nee',
+    UNDECIDED: 'Onbeslist',
   },
 }

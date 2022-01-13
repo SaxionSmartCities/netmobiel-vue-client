@@ -1,3 +1,5 @@
+import constants from '@/constants/constants'
+
 function upperCaseFirst(input) {
   return input.charAt(0).toUpperCase() + input.slice(1)
 }
@@ -141,6 +143,10 @@ function decodeJwt(token) {
   return JSON.parse(jsonPayload)
 }
 
+function triStateLogicText(value) {
+  const sym = value ? 'TRUE' : value === false ? 'FALSE' : 'UNDECIDED'
+  return constants.TRISTATE[sym]
+}
 export {
   upperCaseFirst,
   generateHeaders,
@@ -153,4 +159,5 @@ export {
   getCreatedObjectIdFromResponse,
   findClosestIndexOf,
   decodeJwt,
+  triStateLogicText,
 }

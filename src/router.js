@@ -32,13 +32,11 @@ import TripCancelledPage from './pages/trips/TripCancelledPage'
 import TripDetailPage from './pages/trips/TripDetailPage'
 import TripConfirmPage from './pages/trips/TripConfirmPage'
 import TripConfirmedPage from './pages/trips/TripConfirmedPage'
-import TripNotMadePage from './pages/trips/TripNotMadePage'
 import ShoutOutOverviewPage from '@/pages/community/shoutout/ShoutOutOverviewPage'
 import ShoutOutDriverDetailPage from '@/pages/community/shoutout/ShoutOutDriverDetailPage'
 import ShoutOutPassengerDetailPage from '@/pages/community/shoutout/ShoutOutPassengerDetailPage'
 import ShoutOutSubmittedPage from '@/pages/planner/ShoutOutSubmittedPage'
 import AccountPage from '@/pages/profile/AccountPage'
-import DriverReviewPage from './pages/trips/DriverReviewPage'
 import TripReviewedPage from './pages/trips/TripReviewedPage'
 import SupportGoalPage from './pages/community/goals/SupportGoalPage'
 import DonatedPage from './pages/community/goals/DonatedPage'
@@ -52,6 +50,12 @@ import NewDelegationPage from '@/pages/profile/delegation/NewDelegationPage'
 import * as uiStore from '@/store/ui'
 import LogoutPage from '@/pages/home/LogoutPage'
 import SessionExpiredPage from '@/pages/SessionExpiredPage'
+import TripUnconfirmPage from '@/pages/trips/TripUnconfirmPage'
+import RideConfirmPage from '@/pages/trips/RideConfirmPage'
+import RideConfirmedPage from '@/pages/trips/RideConfirmedPage'
+import TripRejectedPage from '@/pages/trips/TripRejectedPage'
+import RideRejectedPage from '@/pages/trips/RideRejectedPage'
+import RideUnconfirmPage from '@/pages/trips/RideUnconfirmPage'
 
 Vue.use(Router)
 
@@ -198,21 +202,63 @@ const router = new Router({
       props: true,
     },
     {
-      path: '/tripConfirmPage/:id',
+      path: '/tripConfirmPage/:tripId',
       component: TripConfirmPage,
       name: 'tripConfirmPage',
       props: true,
     },
     {
-      path: '/tripNotMade/:id',
-      component: TripNotMadePage,
-      name: 'tripNotMade',
+      path: '/tripConfirmed/:tripId',
+      component: TripConfirmedPage,
+      name: 'tripConfirmedPage',
+      props: true,
+    },
+    {
+      path: '/tripRejected/:tripId',
+      component: TripRejectedPage,
+      name: 'tripRejectedPage',
+      props: true,
+    },
+    {
+      path: '/tripReviewed/:otherRole',
+      component: TripReviewedPage,
+      name: 'tripReviewedPage',
+      props: true,
+    },
+    {
+      path: '/tripUnconfirmPage/:tripId',
+      component: TripUnconfirmPage,
+      name: 'tripUnconfirmPage',
       props: true,
     },
     {
       path: '/rideDetailPage/:rideId',
       component: RideDetailPage,
       name: 'rideDetailPage',
+      props: true,
+    },
+    {
+      path: '/rideConfirm/:rideId',
+      name: 'rideConfirmPage',
+      component: RideConfirmPage,
+      props: true,
+    },
+    {
+      path: '/rideConfirmed/:rideId',
+      component: RideConfirmedPage,
+      name: 'rideConfirmedPage',
+      props: true,
+    },
+    {
+      path: '/rideRejected/:rideId',
+      component: RideRejectedPage,
+      name: 'rideRejectedPage',
+      props: true,
+    },
+    {
+      path: '/rideUnconfirmPage/:rideId',
+      component: RideUnconfirmPage,
+      name: 'rideUnconfirmPage',
       props: true,
     },
     {
@@ -282,23 +328,6 @@ const router = new Router({
       path: '/account',
       component: AccountPage,
       name: 'account',
-    },
-    {
-      path: '/reviewDriver/:tripContext',
-      name: 'reviewDriver',
-      component: DriverReviewPage,
-      props: true,
-    },
-    {
-      path: '/tripReviewed',
-      component: TripReviewedPage,
-      name: 'tripReviewedPage',
-    },
-    {
-      path: '/tripConfirmed/:tripId?',
-      component: TripConfirmedPage,
-      name: 'tripConfirmedPage',
-      props: true,
     },
     {
       path: '/shoutOutSubmittedPage/:shoutOutId',

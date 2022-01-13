@@ -25,13 +25,53 @@ export interface Car {
   type?: string
   model?: string
 }
+
+export interface Location {
+  label?: string
+  latitude: number
+  longitude: number
+}
+
 export interface Ride {
-  rideRef?: string
-  departureTime?: string
+  ableToAssist?: boolean
   arrivalTime?: string
   arrivalTimePinned?: boolean
   bookings?: Booking[]
+  cancelReason?: string | null
+  car?: Car
+  carRef?: string
+  carthesianBearing?: number
+  carthesianDistance?: number
+  confirmed?: boolean
+  confirmationReason?: string
+  departureTime?: string
+  distance?: number
+  driver?: RideshareUser
+  driverRef?: string
+  duration?: number
+  fromPlace?: Location
+  id?: number
+  legs?: Leg[]
+  maxDetourMeters?: number
+  maxDetourSeconds?: number
+  nrSeatsAvailable?: number
+  rideRef?: string
+  state?: string
+  toPlace?: Location
 }
+
+export interface Leg {
+  distance: number
+  duration: number
+  endTime: string
+  startTime: string
+  state: string
+  from: string
+  to: string
+  legGeometry?: string
+  legRef?: string
+}
+
 export interface CarSearchResult {}
 
 export interface CarSearch {
@@ -58,4 +98,9 @@ export interface Booking {
   arrivalTime?: string
   passenger?: RideshareUser
   passengerRef?: string
+  state?: string
+  confirmed?: boolean
+  confirmationReason: string
+  confirmedByPassenger?: boolean
+  confirmationReasonByPassenger: string
 }

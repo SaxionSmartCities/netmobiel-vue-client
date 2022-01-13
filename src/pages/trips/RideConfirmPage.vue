@@ -2,14 +2,16 @@
   <content-pane>
     <v-row>
       <v-col>
-        <h1>Heb je meegereden?</h1>
+        <h1>Heb je je passagier meegenomen?</h1>
       </v-col>
     </v-row>
     <v-row v-if="lastAnswer !== undefined">
       <v-col>
         <p>
           Huidige antwoord: {{ logicText(lastAnswer) }}
-          {{ lastAnswer === false && lastReason ? ' - ' + lastReason : '' }}
+          {{
+            lastAnswer === false && lastReasonText ? ' - ' + lastReasonText : ''
+          }}
         </p>
       </v-col>
     </v-row>
@@ -70,19 +72,23 @@
 import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
-import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
+import { generateRideItineraryDetailSteps } from '@/utils/itinerary_steps.js'
 import * as uiStore from '@/store/ui'
-import * as isStore from '@/store/itinerary-service'
+import * as csStore from '@/store/carpool-service'
 import { triStateLogicText } from '@/utils/Utils'
+import constants from '@/constants/constants'
 
 export default {
-  name: 'TripConfirmPage',
+  name: 'RideConfirmPage',
   components: {
     ContentPane,
     ItineraryLeg,
   },
   props: {
-    tripId: { type: String, required: true },
+    rideId: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -90,11 +96,11 @@ export default {
     }
   },
   computed: {
-    trip() {
-      return isStore.getters.getSelectedTrip
+    ride() {
+      return csStore.getters.getSelectedRide
     },
     travelDate() {
-      const departureTime = this.trip?.itinerary?.departureTime
+      const departureTime = this.ride?.departureTime
       if (departureTime) {
         return moment(departureTime).locale('nl').format('dddd DD MMMM')
       }
@@ -102,26 +108,34 @@ export default {
     },
     generateSteps() {
       let steps = []
-      if (this.trip?.tripRef) {
-        steps = generateItineraryDetailSteps(this.trip?.itinerary)
+      if (this.ride?.rideRef) {
+        steps = generateRideItineraryDetailSteps(this.ride)
       }
       return steps
     },
-    bookedLeg() {
-      return this.trip?.itinerary?.legs.find((lg) => lg.bookingId)
+    confirmedBooking() {
+      return this.ride?.bookings?.find(
+        (b) => b.state.toUpperCase() === 'CONFIRMED'
+      )
     },
     lastAnswer() {
-      return this.bookedLeg?.confirmed
+      return this.ride?.confirmed
     },
-    lastReason() {
-      return this.bookedLeg?.confirmationReason
+    lastReasonText() {
+      let text
+      if (this.ride?.confirmationReason) {
+        text = constants.DRIVER_TRIP_NOT_MADE_REASONS.find(
+          (reason) => reason.value === this.ride?.confirmationReason
+        )?.title
+      }
+      return text
     },
   },
   created() {
     uiStore.mutations.showBackButton()
   },
   mounted() {
-    isStore.actions.fetchTrip({ id: this.tripId })
+    csStore.actions.fetchRide({ id: this.rideId })
   },
   methods: {
     logicText(value) {
@@ -130,15 +144,15 @@ export default {
     confirm() {
       this.processing = true
       this.$router.push({
-        name: 'tripConfirmedPage',
-        params: { tripId: this.tripId },
+        name: 'rideConfirmedPage',
+        params: { rideId: this.rideId },
       })
     },
     reject() {
       this.processing = true
       this.$router.push({
-        name: 'tripRejectedPage',
-        params: { tripId: this.tripId },
+        name: 'rideRejectedPage',
+        params: { rideId: this.rideId },
       })
     },
   },

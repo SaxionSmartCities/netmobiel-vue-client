@@ -45,6 +45,7 @@ import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import RouteMap from '@/components/itinerary-details/RouteMap.vue'
 import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
 import { formatDateTimeLongNoYear } from '@/utils/datetime.js'
+import constants from '@/constants/constants'
 
 export default {
   name: 'TripDetails',
@@ -77,22 +78,22 @@ export default {
           const reisduur = `${Math.round(duration / 60)} minuten`
           result.push({ label: 'Reisduur', value: reisduur })
         }
-        if (legs?.[0].fareInCredits) {
+        let rsLeg = legs.find((lg) => lg.traverseMode === 'RIDESHARE')
+        if (rsLeg) {
           result.push({
             label: 'Kosten',
-            value: `${legs[0].fareInCredits} credits`,
+            value: `${rsLeg.fareInCredits} credits`,
           })
-        }
-        const found = legs
-          ? legs.find((l) => l.confirmed !== undefined)
-          : undefined
-        if (found) {
-          found.confirmed
-            ? result.push({ label: 'Bevestigd', value: 'Ik heb meegereden' })
-            : result.push({
-                label: 'Bevestigd',
-                value: 'Ik heb niet meegereden',
-              })
+          if (rsLeg.confirmed !== undefined) {
+            const value = rsLeg.confirmed
+              ? 'Ik heb meegereden'
+              : 'Ik heb niet meegereden'
+            result.push({ label: 'Bevestiging', value: value })
+          }
+          result.push({
+            label: 'Betaling',
+            value: constants.PAYMENT_STATE[rsLeg.paymentState],
+          })
         }
       }
       return result

@@ -2,17 +2,15 @@
   <content-pane>
     <v-row>
       <v-col>
-        <h1>Rit bevestigd! 🎉</h1>
+        <h1>Rit beoordeling</h1>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col> Bedankt voor jouw bevestiging! </v-col>
     </v-row>
     <v-row>
       <v-col>
         <span class="body-2">
-          Hoe heb jij deze rit ervaren? Geef jouw mening en laat
-          <strong>{{ driverName }}</strong> weten wat jij er van vond.
+          Je gaat deze rit bevestigen. Hoe heb jij de rit ervaren? Geef je
+          mening en laat
+          <strong>{{ passengerName }}</strong> weten wat jij er van vond.
         </span>
       </v-col>
     </v-row>
@@ -83,15 +81,14 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import constants from '@/constants/constants'
 import * as psStore from '@/store/profile-service'
-import * as isStore from '@/store/itinerary-service'
-import * as UrnHelper from '@/utils/UrnHelper'
 import * as uiStore from '@/store/ui'
+import * as csStore from '@/store/carpool-service'
 
 export default {
-  name: 'TripConfirmedPage',
+  name: 'RideConfirmedPage',
   components: { ContentPane },
   props: {
-    tripId: { type: String, required: true, default: '' },
+    rideId: { type: String, required: true, default: '' },
   },
   data() {
     return {
@@ -101,74 +98,80 @@ export default {
     }
   },
   computed: {
-    trip() {
-      return isStore.getters.getSelectedTrip
+    ride() {
+      return csStore.getters.getSelectedRide
     },
-    driverName() {
-      return this.leg?.driverName || 'Onbekende chauffeur'
+    confirmedBooking() {
+      return this.ride?.bookings?.find(
+        (b) => b.state.toUpperCase() === 'CONFIRMED'
+      )
     },
-    availableCompliments() {
-      return psStore.getters.getComplimentTypes
+    passengerManagedIdentity() {
+      return this.confirmedBooking?.passenger?.managedIdentity
     },
-    leg() {
-      return this.trip?.itinerary.legs.find((l) => !!l.driverId)
-    },
-    driverManagedIdentity() {
-      const driverId = this.leg?.driverId
-      if (driverId && UrnHelper.isUrn(driverId)) {
-        const decodedUrn = UrnHelper.decodeUrn(driverId)
-        if (decodedUrn.service === UrnHelper.NETMOBIEL_SERVICE.KEYCLOAK) {
-          return decodedUrn.id
-        }
-      }
-      return undefined
-    },
-    driver() {
-      return this.driverManagedIdentity
-        ? psStore.getters.getPublicUsers.get(this.driverManagedIdentity)
+    passenger() {
+      return this.passengerManagedIdentity
+        ? psStore.getters.getPublicUsers.get(this.passengerManagedIdentity)
         : undefined
     },
+    passengerName() {
+      return (
+        [
+          this.passenger?.profile.firstName || '',
+          this.passenger?.profile.lastName || '',
+        ]
+          .join(' ')
+          .trim() || 'Onbekende passagier'
+      )
+    },
+    availableCompliments() {
+      const driverTypes = psStore.getters.getComplimentTypes
+      // Remove the compliment types that are driver-only
+      return driverTypes.filter((ct) => ct !== 'NICE_CAR')
+    },
     myComplimentSet() {
-      return this.driver?.compliments?.find(
-        (c) => c.context === this.trip?.tripRef
+      return this.passenger?.compliments?.find(
+        (c) => c.context === this.ride?.rideRef
       )
     },
     myReview() {
-      return this.driver?.reviews?.find((r) => r.context === this.trip?.tripRef)
+      return this.passenger?.reviews?.find(
+        (r) => r.context === this.ride?.rideRef
+      )
     },
   },
   watch: {
-    driverManagedIdentity() {
+    passengerManagedIdentity() {
       this.fetchData()
     },
     myComplimentSet(newValue) {
       this.compliments = newValue?.compliments || []
     },
     myReview(newValue) {
-      this.reviewMessage = newValue.review || ''
+      this.reviewMessage = newValue?.review || ''
     },
   },
   created() {
+    // Once the trip is confirmed, it becomes less mutable. No back possible then.
+    // That is why the next page (review complete) has no back button.
     uiStore.mutations.showBackButton()
   },
   mounted() {
     psStore.actions.fetchComplimentTypes()
-    isStore.actions.fetchTrip({ id: this.tripId })
+    csStore.actions.fetchRide({ id: this.rideId })
     this.fetchData()
   },
   methods: {
     fetchData() {
-      if (this.driverManagedIdentity) {
+      if (this.passengerManagedIdentity) {
         psStore.actions.fetchPublicProfile({
-          profileId: this.driverManagedIdentity,
+          profileId: this.passengerManagedIdentity,
         })
-        console.log(`Fetch compliments`)
         psStore.actions.fetchUserCompliments({
-          receiverId: this.driverManagedIdentity,
+          receiverId: this.passengerManagedIdentity,
         })
-        console.log(`Fetch reviews`)
         psStore.actions.fetchUserReviews({
-          receiverId: this.driverManagedIdentity,
+          receiverId: this.passengerManagedIdentity,
         })
       }
     },
@@ -200,37 +203,39 @@ export default {
       }
     },
     submitReview() {
-      isStore.actions.confirmTrip({ id: this.tripId })
+      csStore.actions.confirmBookedRide({
+        id: this.confirmedBooking.bookingRef,
+      })
       const receiver = {
-        id: this.driverManagedIdentity,
+        id: this.passengerManagedIdentity,
       }
       psStore.actions.addUserCompliments({
         receiver,
-        context: this.trip.tripRef,
+        context: this.ride.rideRef,
         compliments: this.compliments,
       })
       if (this.reviewMessage) {
         psStore.actions.addUserReview({
           receiver,
-          context: this.trip.tripRef,
+          context: this.ride.rideRef,
           review: this.reviewMessage,
         })
       }
       this.$router.push({
         name: 'tripReviewedPage',
-        params: { otherRole: 'driver' },
+        params: { otherRole: 'passenger' },
       })
     },
     removeReview() {
       if (this.myReview?.id) {
         psStore.actions.removeUserReview({
-          receiverId: this.driverManagedIdentity,
+          receiverId: this.passengerManagedIdentity,
           reviewId: this.myReview.id,
         })
       }
       if (this.myComplimentSet?.id) {
         psStore.actions.removeUserCompliments({
-          receiverId: this.driverManagedIdentity,
+          receiverId: this.passengerManagedIdentity,
           complimentId: this.myComplimentSet.id,
         })
       }

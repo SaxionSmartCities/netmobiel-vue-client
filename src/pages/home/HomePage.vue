@@ -247,9 +247,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-h4.netmobiel {
-  text-transform: uppercase;
-  color: $color-primary;
-}
-</style>
+<style lang="scss"></style>

@@ -276,24 +276,24 @@ function updateProfileImage(context: ActionContext, { id, image }: any) {
 
 /**
  * @param context: calling context
- * @param profileId: the user his managed Identity (keycloak)
+ * @param receiverId: the managed identity of the user receiving the compliments
  * @returns {Array<Object>} returns Array of compliments in the response.data
  */
-function fetchUserCompliments(context: ActionContext, { profileId }: any) {
-  const usr = getters.getPublicUsers.get(profileId)
-  if (usr && usr.compliments) {
+function fetchUserCompliments(context: ActionContext, { receiverId }: any) {
+  const usr = getters.getPublicUsers.get(receiverId)
+  if (usr && usr.compliments.length > 0) {
     return Promise.resolve(usr.compliments)
   }
   const URL = `${PROFILE_BASE_URL}/compliments`
   return axios
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
-      params: { receiverId: profileId },
+      params: { receiverId: receiverId },
     })
     .then((response) => {
       // @ts-ignore
       mutations.addPublicCompliments({
-        profileId,
+        profileId: receiverId,
         compliments: response.data.compliments,
       })
       return response.data.compliments
@@ -325,7 +325,7 @@ function fetchComplimentTypes(context: ActionContext) {
 /**
  * Adds a compliment to the user in the profile-service
  * @param actionContext
- * @param receiver: {id, firstName, lastName}
+ * @param receiver: {id} the profile id of the receiver.
  * @param context: the context of the compliment
  * @param compliments: enum [ SAME_INTERESTS, ON_TIME, TALKS_EASILY, SOCIABLE, NEATLY, NICE_CAR ]
  * @returns {Object} Returns the compliment object in the response.data
@@ -356,24 +356,56 @@ function addUserCompliments(
 }
 
 /**
+ * Removes a review of a user in the profile-service
+ * @param actionContext: the calling context
+ * @param receiverId: the id of the receiver
+ * @param id: the id of the review
+ * @returns {Object} Returns the review object in the response.data
+ */
+function removeUserCompliments(
+  actionContext: ActionContext,
+  { receiverId, complimentId }: any
+) {
+  const URL = `${PROFILE_BASE_URL}/compliments/${complimentId}`
+  axios
+    .delete(URL, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+    })
+    .then((response) => {
+      // Also no message when saving...
+      // uiStore.actions.queueInfoNotification(`Je complimenten zijn verwijderd!`)
+      mutations.clearPublicCompliments(receiverId)
+    })
+    .catch((error) => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij verwijderen van complimenten`
+      )
+    })
+}
+
+/**
  * Fetches the reviews of a user based on the profileId
+ * @param context: the calling context.
+ * @param receiverId: the managed identity of the user receiving the compliments
  * @returns {Array<Object>} Returns an Array of reviews in the response.data.reviews
  */
-function fetchUserReviews(context: ActionContext, { profileId }: any) {
-  const usr = getters.getPublicUsers.get(profileId)
-  if (usr && usr.reviews) {
+function fetchUserReviews(context: ActionContext, { receiverId }: any) {
+  const usr = getters.getPublicUsers.get(receiverId)
+  if (usr && usr.reviews.length > 0) {
     return Promise.resolve(usr.reviews)
   }
   const URL = `${PROFILE_BASE_URL}/reviews`
   axios
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
-      params: { receiverId: profileId },
+      params: { receiverId: receiverId },
     })
     .then((response) => {
       // @ts-ignore
       mutations.addPublicReviews({
-        profileId,
+        profileId: receiverId,
         reviews: response.data.reviews,
       })
       return response.data.reviews
@@ -402,13 +434,41 @@ function addUserReview(
       }
     )
     .then((response) => {
-      uiStore.actions.queueInfoNotification(`Je beoordeling is opgeslagen!`)
       mutations.clearPublicReviews(receiver.id)
     })
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(`Fout bij opslaan van beoordeling`)
+    })
+}
+
+/**
+ * Removes a review of a user in the profile-service
+ * @param actionContext: the calling context
+ * @param receiverId: the id of the receiver
+ * @param id: the id of the review
+ * @returns {Object} Returns the review object in the response.data
+ */
+function removeUserReview(
+  actionContext: ActionContext,
+  { receiverId, reviewId }: any
+) {
+  const URL = `${PROFILE_BASE_URL}/reviews/${reviewId}`
+  axios
+    .delete(URL, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+    })
+    .then((response) => {
+      uiStore.actions.queueInfoNotification(`Je beoordeling is verwijderd!`)
+      mutations.clearPublicReviews(receiverId)
+    })
+    .catch((error) => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij verwijderen van beoordeling`
+      )
     })
 }
 
@@ -541,9 +601,11 @@ export const buildActions = (
     fetchComplimentTypes: psBuilder.dispatch(fetchComplimentTypes),
     fetchUserCompliments: psBuilder.dispatch(fetchUserCompliments),
     addUserCompliments: psBuilder.dispatch(addUserCompliments),
+    removeUserCompliments: psBuilder.dispatch(removeUserCompliments),
 
     fetchUserReviews: psBuilder.dispatch(fetchUserReviews),
     addUserReview: psBuilder.dispatch(addUserReview),
+    removeUserReview: psBuilder.dispatch(removeUserReview),
 
     fetchDelegations: psBuilder.dispatch(fetchDelegations),
     storeDelegation: psBuilder.dispatch(storeDelegation),
