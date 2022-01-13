@@ -5,12 +5,30 @@
         <h1>Heb je meegereden?</h1>
       </v-col>
     </v-row>
-    <v-row v-if="lastAnswer !== undefined">
-      <v-col>
-        <p>
-          Huidige antwoord: {{ logicText(lastAnswer) }}
-          {{ lastAnswer === false && lastReason ? ' - ' + lastReason : '' }}
-        </p>
+    <v-row dense class="body-2">
+      <v-col v-if="bookedLeg">
+        <v-row dense>
+          <v-col cols="6">Je laatste antwoord: </v-col>
+          <v-col cols="6">{{ confirmationText(bookedLeg.confirmed) }}</v-col>
+        </v-row>
+        <v-row v-if="bookedLeg.confirmed === false" dense>
+          <v-col cols="6">Reden: </v-col>
+          <v-col cols="6">{{
+            passengerReasonText(bookedLeg.confirmationReason)
+          }}</v-col>
+        </v-row>
+        <v-row dense>
+          <v-col cols="6">Volgens je chauffeur: </v-col>
+          <v-col cols="6">{{
+            confirmationText(bookedLeg.confirmedByProvider)
+          }}</v-col>
+        </v-row>
+        <v-row v-if="bookedLeg.confirmedByProvider === false" dense>
+          <v-col cols="6">Omdat:</v-col>
+          <v-col cols="6">{{
+            passengerReasonText(bookedLeg.confirmationReasonByProvider)
+          }}</v-col>
+        </v-row>
       </v-col>
     </v-row>
     <v-row>
@@ -74,6 +92,7 @@ import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
 import * as uiStore from '@/store/ui'
 import * as isStore from '@/store/itinerary-service'
 import { triStateLogicText } from '@/utils/Utils'
+import constants from '@/constants/constants'
 
 export default {
   name: 'TripConfirmPage',
@@ -110,12 +129,6 @@ export default {
     bookedLeg() {
       return this.trip?.itinerary?.legs.find((lg) => lg.bookingId)
     },
-    lastAnswer() {
-      return this.bookedLeg?.confirmed
-    },
-    lastReason() {
-      return this.bookedLeg?.confirmationReason
-    },
   },
   created() {
     uiStore.mutations.showBackButton()
@@ -124,8 +137,18 @@ export default {
     isStore.actions.fetchTrip({ id: this.tripId })
   },
   methods: {
-    logicText(value) {
+    confirmationText(value) {
       return triStateLogicText(value)
+    },
+    passengerReasonText(reasonCode) {
+      return constants.PASSENGER_TRIP_NOT_MADE_REASONS.find(
+        (r) => r.value === reasonCode
+      )?.title
+    },
+    providerReasonText(reasonCode) {
+      return constants.DRIVER_TRIP_NOT_MADE_REASONS.find(
+        (r) => r.value === reasonCode
+      )?.title
     },
     confirm() {
       this.processing = true

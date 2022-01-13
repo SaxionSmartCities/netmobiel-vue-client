@@ -46,6 +46,7 @@ import RouteMap from '@/components/itinerary-details/RouteMap.vue'
 import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
 import { formatDateTimeLongNoYear } from '@/utils/datetime.js'
 import constants from '@/constants/constants'
+import { triStateLogicText } from '@/utils/Utils'
 
 export default {
   name: 'TripDetails',
@@ -84,11 +85,13 @@ export default {
             label: 'Kosten',
             value: `${rsLeg.fareInCredits} credits`,
           })
-          if (rsLeg.confirmed !== undefined) {
-            const value = rsLeg.confirmed
-              ? 'Ik heb meegereden'
-              : 'Ik heb niet meegereden'
-            result.push({ label: 'Bevestiging', value: value })
+          if (rsLeg.state === 'VALIDATING' || rsLeg.state === 'COMPLETED') {
+            const cv = this.confirmationText(rsLeg.confirmed)
+            result.push({ label: 'Meegereden', value: cv })
+            if (rsLeg.confirmed === false) {
+              const reason = this.passengerReasonText(rsLeg.confirmationReason)
+              result.push({ label: 'Reden', value: reason })
+            }
           }
           result.push({
             label: 'Betaling',
@@ -113,6 +116,14 @@ export default {
     },
   },
   methods: {
+    confirmationText(value) {
+      return triStateLogicText(value)
+    },
+    passengerReasonText(reasonCode) {
+      return constants.PASSENGER_TRIP_NOT_MADE_REASONS.find(
+        (r) => r.value === reasonCode
+      )?.title
+    },
     onMapSizeChanged({ size }) {
       this.mapSize = size
     },

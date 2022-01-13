@@ -9,41 +9,41 @@
       <v-col>
         <span class="body-2">
           Wil je de rit met
-          <strong>{{ legToConfirm.driverName }}</strong> opnieuw beoordelen?
+          <strong>{{ driverName }}</strong> opnieuw beoordelen?
         </span>
       </v-col>
     </v-row>
     <v-row dense class="body-2">
       <v-col v-if="legToConfirm">
         <v-row dense>
-          <v-col cols="8">Heb je meegereden?</v-col>
-          <v-col cols="4">{{ confirmationText(legToConfirm.confirmed) }}</v-col>
+          <v-col cols="6">Heb je meegereden?</v-col>
+          <v-col cols="6">{{ confirmationText(legToConfirm.confirmed) }}</v-col>
         </v-row>
         <v-row v-if="legToConfirm.confirmed === false" dense>
-          <v-col cols="8">Want?</v-col>
-          <v-col cols="4">{{
+          <v-col cols="6">Omdat:</v-col>
+          <v-col cols="6">{{
             passengerReasonText(legToConfirm.confirmationReason)
           }}</v-col>
         </v-row>
         <v-row dense>
-          <v-col cols="8">Heeft de chauffeur je meegenomen?</v-col>
-          <v-col cols="4">{{
+          <v-col cols="6">Volgens de chauffeur:</v-col>
+          <v-col cols="6">{{
             confirmationText(legToConfirm.confirmedByProvider)
           }}</v-col>
         </v-row>
         <v-row v-if="legToConfirm.confirmedByProvider === false" dense>
-          <v-col cols="8">Want?</v-col>
-          <v-col cols="4">{{
+          <v-col cols="6">Omdat:</v-col>
+          <v-col cols="6">{{
             providerReasonText(legToConfirm.confirmationReasonByProvider)
           }}</v-col>
         </v-row>
         <v-row dense>
-          <v-col cols="8">Ritprijs (credits):</v-col>
-          <v-col cols="4">{{ legToConfirm.fareInCredits }}</v-col>
+          <v-col cols="6">Ritprijs (credits):</v-col>
+          <v-col cols="6">{{ legToConfirm.fareInCredits }}</v-col>
         </v-row>
         <v-row dense>
-          <v-col cols="8">Status betaling:</v-col>
-          <v-col cols="4">{{
+          <v-col cols="6">Status betaling:</v-col>
+          <v-col cols="6">{{
             paymentStateText(legToConfirm.paymentState)
           }}</v-col>
         </v-row>
@@ -68,7 +68,7 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row v-if="legToConfirm.paymentState === 'CANCELLED'">
+    <v-row v-if="legToConfirm && legToConfirm.paymentState === 'CANCELLED'">
       <v-col>
         <v-btn
           large
@@ -83,12 +83,17 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row v-else>
+    <v-row v-else-if="legToConfirm && legToConfirm.paymentState === 'PAID'">
       <v-col>
         <v-alert type="warning">
           Helaas, de betaling van deze rit is al doorgevoerd en kan alleen
           worden herzien door je chauffeur.
         </v-alert>
+      </v-col>
+    </v-row>
+    <v-row v-else-if="legToConfirm">
+      <v-col>
+        <v-alert type="info">Deze rit moet nog bevestigd worden.</v-alert>
       </v-col>
     </v-row>
   </content-pane>
@@ -102,6 +107,7 @@ import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
 import * as uiStore from '@/store/ui'
 import * as isStore from '@/store/itinerary-service'
 import constants from '@/constants/constants'
+import { triStateLogicText } from '@/utils/Utils'
 
 export default {
   name: 'TripUnconfirmPage',
@@ -129,23 +135,24 @@ export default {
       return 'Onbekend'
     },
     generateSteps() {
-      return generateItineraryDetailSteps(this.trip.itinerary)
+      return generateItineraryDetailSteps(this.trip?.itinerary)
     },
     legToConfirm() {
       return this.trip?.itinerary?.legs.find((lg) => lg.confirmationRequested)
+    },
+    driverName() {
+      return this.legToConfirm?.driverName
     },
   },
   created() {
     uiStore.mutations.showBackButton()
   },
   mounted() {
-    if (this.id) {
-      isStore.actions.fetchTrip({ id: this.tripId })
-    }
+    isStore.actions.fetchTrip({ id: this.tripId })
   },
   methods: {
     confirmationText(value) {
-      return value ? 'Ja' : value === false ? 'Nee' : 'Onbeslist'
+      return triStateLogicText(value)
     },
     passengerReasonText(reasonCode) {
       return constants.PASSENGER_TRIP_NOT_MADE_REASONS.find(

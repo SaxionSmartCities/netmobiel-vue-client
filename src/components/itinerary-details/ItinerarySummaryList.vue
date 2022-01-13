@@ -3,7 +3,7 @@
   <v-row no-gutters class="d-flex flex-column">
     <v-col v-for="(item, index) of items" :key="index">
       <v-row no-gutters>
-        <v-col cols="3" class="bold">{{ item.label }}</v-col>
+        <v-col cols="4" class="bold">{{ item.label }}</v-col>
         <v-col
           v-if="item.renderingComponent === 'RecurrenceViewer'"
           class="pl-3"

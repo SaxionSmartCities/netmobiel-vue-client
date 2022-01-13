@@ -31,6 +31,7 @@ import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummar
 import { formatDateTimeLongNoYear } from '@/utils/datetime.js'
 import RouteMap from '@/components/itinerary-details/RouteMap'
 import constants from '@/constants/constants'
+import { triStateLogicText } from '@/utils/Utils'
 
 export default {
   name: 'RideDetails',
@@ -101,11 +102,16 @@ export default {
             value: `${booking.fareInCredits} credits`,
           })
         }
-        if (booking.confirmed !== undefined) {
-          const value = booking.confirmed
-            ? 'Passagier heeft meegereden'
-            : 'Passagier heeft niet meegereden'
-          result.push({ label: 'Bevestiging', value: value })
+        if (
+          this.ride?.state === 'VALIDATING' ||
+          this.ride?.state === 'COMPLETED'
+        ) {
+          const cv = this.confirmationText(booking.confirmed)
+          result.push({ label: 'Bevestiging', value: cv })
+          if (booking.confirmed === false) {
+            const reason = this.providerReasonText(booking.confirmationReason)
+            result.push({ label: 'Reden', value: reason })
+          }
         }
         if (booking.paymentState) {
           result.push({
@@ -131,6 +137,14 @@ export default {
     },
   },
   methods: {
+    confirmationText(value) {
+      return triStateLogicText(value)
+    },
+    providerReasonText(reasonCode) {
+      return constants.DRIVER_TRIP_NOT_MADE_REASONS.find(
+        (r) => r.value === reasonCode
+      )?.title
+    },
     onMapSizeChanged({ size }) {
       this.mapSize = size
     },

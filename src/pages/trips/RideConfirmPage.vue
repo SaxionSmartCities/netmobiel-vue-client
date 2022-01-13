@@ -2,17 +2,35 @@
   <content-pane>
     <v-row>
       <v-col>
-        <h1>Heb je je passagier meegenomen?</h1>
+        <h1>Reed je passagier mee?</h1>
       </v-col>
     </v-row>
-    <v-row v-if="lastAnswer !== undefined">
-      <v-col>
-        <p>
-          Huidige antwoord: {{ logicText(lastAnswer) }}
-          {{
-            lastAnswer === false && lastReasonText ? ' - ' + lastReasonText : ''
-          }}
-        </p>
+    <v-row dense class="body-2">
+      <v-col v-if="confirmedBooking">
+        <v-row dense>
+          <v-col cols="6">Je laatste antwoord: </v-col>
+          <v-col cols="6">{{
+            confirmationText(confirmedBooking.confirmed)
+          }}</v-col>
+        </v-row>
+        <v-row v-if="confirmedBooking.confirmed === false" dense>
+          <v-col cols="6">Reden: </v-col>
+          <v-col cols="6">{{
+            passengerReasonText(confirmedBooking.confirmationReason)
+          }}</v-col>
+        </v-row>
+        <v-row dense>
+          <v-col cols="6">Volgens je passagier: </v-col>
+          <v-col cols="6">{{
+            confirmationText(confirmedBooking.confirmedByPassenger)
+          }}</v-col>
+        </v-row>
+        <v-row v-if="confirmedBooking.confirmedByPassenger === false" dense>
+          <v-col cols="6">Omdat:</v-col>
+          <v-col cols="6">{{
+            passengerReasonText(confirmedBooking.confirmationReasonByPassenger)
+          }}</v-col>
+        </v-row>
       </v-col>
     </v-row>
     <v-row>
@@ -118,18 +136,6 @@ export default {
         (b) => b.state.toUpperCase() === 'CONFIRMED'
       )
     },
-    lastAnswer() {
-      return this.ride?.confirmed
-    },
-    lastReasonText() {
-      let text
-      if (this.ride?.confirmationReason) {
-        text = constants.DRIVER_TRIP_NOT_MADE_REASONS.find(
-          (reason) => reason.value === this.ride?.confirmationReason
-        )?.title
-      }
-      return text
-    },
   },
   created() {
     uiStore.mutations.showBackButton()
@@ -138,8 +144,18 @@ export default {
     csStore.actions.fetchRide({ id: this.rideId })
   },
   methods: {
-    logicText(value) {
+    confirmationText(value) {
       return triStateLogicText(value)
+    },
+    passengerReasonText(reasonCode) {
+      return constants.PASSENGER_TRIP_NOT_MADE_REASONS.find(
+        (r) => r.value === reasonCode
+      )?.title
+    },
+    providerReasonText(reasonCode) {
+      return constants.DRIVER_TRIP_NOT_MADE_REASONS.find(
+        (r) => r.value === reasonCode
+      )?.title
     },
     confirm() {
       this.processing = true

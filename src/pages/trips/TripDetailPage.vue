@@ -21,6 +21,15 @@
         />
       </v-col>
     </v-row>
+    <v-row v-if="isDisputed" dense>
+      <v-col>
+        <v-alert type="warning">
+          Je chauffeur heeft aangegeven dat je wel hebt meegereden. Klopt dat?
+          Vraag eventueel opheldering bij de chauffeur door een berichtje te
+          sturen.
+        </v-alert>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col class="pt-0">
         <v-btn
@@ -200,12 +209,18 @@ export default {
       return trip
     },
     legToConfirm() {
-      return this.trip?.itinerary.legs.find(
+      return this.trip?.itinerary?.legs.find(
         (lg) => lg.confirmationRequested || lg.confirmationByProviderRequested
       )
     },
     requiresConfirmation() {
       return !!this.legToConfirm
+    },
+    isDisputed() {
+      return (
+        this.legToConfirm?.confirmed === false &&
+        this.legToConfirm?.confirmedByProvider === true
+      )
     },
     tripOptions() {
       let options = []

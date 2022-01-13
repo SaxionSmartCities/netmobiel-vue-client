@@ -16,36 +16,36 @@
     <v-row dense class="body-2">
       <v-col v-if="confirmedBooking">
         <v-row dense>
-          <v-col cols="8">Heb je je passagier meegenomen?</v-col>
-          <v-col cols="4">{{
+          <v-col cols="6">Reed je passagier mee?</v-col>
+          <v-col cols="6">{{
             confirmationText(confirmedBooking.confirmed)
           }}</v-col>
         </v-row>
         <v-row v-if="confirmedBooking.confirmed === false" dense>
-          <v-col cols="8">Want?</v-col>
-          <v-col cols="4">{{
+          <v-col cols="6">Omdat:</v-col>
+          <v-col cols="6">{{
             passengerReasonText(confirmedBooking.confirmationReason)
           }}</v-col>
         </v-row>
         <v-row dense>
-          <v-col cols="8">Reed de passagier mee?</v-col>
-          <v-col cols="4">{{
+          <v-col cols="6">Volgens de passagier:</v-col>
+          <v-col cols="6">{{
             confirmationText(confirmedBooking.confirmedByPassenger)
           }}</v-col>
         </v-row>
         <v-row v-if="confirmedBooking.confirmedByPassenger === false" dense>
-          <v-col cols="8">Want?</v-col>
-          <v-col cols="4">{{
+          <v-col cols="6">Omdat:</v-col>
+          <v-col cols="6">{{
             passengerReasonText(confirmedBooking.confirmationReasonByPassenger)
           }}</v-col>
         </v-row>
         <v-row dense>
-          <v-col cols="8">Ritprijs (credits):</v-col>
-          <v-col cols="4">{{ confirmedBooking.fareInCredits }}</v-col>
+          <v-col cols="6">Ritprijs (credits):</v-col>
+          <v-col cols="6">{{ confirmedBooking.fareInCredits }}</v-col>
         </v-row>
         <v-row dense>
-          <v-col cols="8">Status betaling:</v-col>
-          <v-col cols="4">{{
+          <v-col cols="6">Status betaling:</v-col>
+          <v-col cols="6">{{
             paymentStateText(confirmedBooking.paymentState)
           }}</v-col>
         </v-row>
@@ -70,7 +70,7 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row v-if="confirmedBooking.paymentState === 'PAID'">
+    <v-row v-if="confirmedBooking && confirmedBooking.paymentState === 'PAID'">
       <v-col>
         <v-btn
           large
@@ -85,12 +85,21 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row v-else>
+    <v-row
+      v-else-if="
+        confirmedBooking && confirmedBooking.paymentState === 'CANCELLED'
+      "
+    >
       <v-col>
         <v-alert type="warning">
           Helaas, de betaling van deze rit is geannuleerd en kan alleen worden
           herzien door je passagier.
         </v-alert>
+      </v-col>
+    </v-row>
+    <v-row v-else-if="confirmedBooking">
+      <v-col>
+        <v-alert type="info">Deze rit moet nog bevestigd worden.</v-alert>
       </v-col>
     </v-row>
   </content-pane>
@@ -131,7 +140,7 @@ export default {
       return 'Onbekend'
     },
     passenger() {
-      return this.confirmedBooking.passenger
+      return this.confirmedBooking?.passenger
     },
     passengerName() {
       return (
