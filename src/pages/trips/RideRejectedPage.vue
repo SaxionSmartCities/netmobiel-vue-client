@@ -2,9 +2,9 @@
   <content-pane>
     <v-row class="flex-column">
       <v-col>
-        <h1>Rit heeft niet plaatsgevonden</h1>
+        <h1>De passagier is niet meegegaan</h1>
       </v-col>
-      <v-col> Wat is de reden dat de rit niet heeft plaatsgevonden? </v-col>
+      <v-col> Wat is de reden? </v-col>
       <v-col>
         <v-radio-group v-model="tripNotMadeReason" class="mt-1" column>
           <v-radio
@@ -37,28 +37,62 @@
 import constants from '@/constants/constants'
 import ContentPane from '@/components/common/ContentPane.vue'
 import * as uiStore from '@/store/ui'
-import * as isStore from '@/store/itinerary-service'
+import * as csStore from '@/store/carpool-service'
 
 export default {
-  name: 'TripNotMadePage',
+  name: 'RideRejectedPage',
   components: {
     ContentPane,
   },
   props: {
-    id: { type: String, required: true },
+    rideId: { type: String, required: true },
   },
   data() {
     return {
-      tripNotMadeReasons: constants.TRIP_NOT_MADE_REASONS,
+      tripNotMadeReasons: constants.DRIVER_TRIP_NOT_MADE_REASONS,
       tripNotMadeReason: null,
     }
+  },
+  computed: {
+    ride() {
+      return csStore.getters.getSelectedRide
+    },
+    confirmedBooking() {
+      return this.ride?.bookings?.find(
+        (b) => b.state.toUpperCase() === 'CONFIRMED'
+      )
+    },
+    lastReason() {
+      let reason
+      if (this.ride?.confirmationReason) {
+        reason = constants.DRIVER_TRIP_NOT_MADE_REASONS.find(
+          (rs) => rs.value === this.ride?.confirmationReason
+        )
+      }
+      return reason
+    },
+  },
+  watch: {
+    ride() {
+      this.tripNotMadeReason = this.ride.confirmationReason
+    },
   },
   created() {
     uiStore.mutations.showBackButton()
   },
+  mounted() {
+    csStore.actions.fetchRide({ id: this.rideId })
+  },
   methods: {
     tripNotMade() {
-      isStore.actions.rejectTrip({ id: this.id })
+      csStore.actions.rejectBookedRide({
+        id: this.confirmedBooking.bookingRef,
+        reasonCode: this.tripNotMadeReason,
+      })
+      this.$router.push({
+        name: 'tripReviewedPage',
+        params: { otherRole: 'passenger' },
+      })
     },
   },
 }

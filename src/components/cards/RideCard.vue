@@ -19,6 +19,9 @@
               class="d-flex justify-space-between subtitle-1 font-weight-bold"
             >
               <span>Vertrek</span>
+              <v-icon v-if="problemDetected" color="orange"
+                >report_problem</v-icon
+              >
               <span
                 v-if="confirmedBookingCount > 0 || proposedBookingCount === 0"
                 class="booking-count"
@@ -110,6 +113,20 @@ export default {
     },
     needsReview() {
       return this.ride.state === 'VALIDATING'
+    },
+    confirmedBooking() {
+      return this.ride?.bookings?.find(
+        (b) => b.state.toUpperCase() === 'CONFIRMED'
+      )
+    },
+    isDisputed() {
+      return (
+        this.confirmedBooking?.confirmed === true &&
+        this.confirmedBooking?.confirmedByPassenger === false
+      )
+    },
+    problemDetected() {
+      return this.needsReview && this.isDisputed
     },
   },
   methods: {

@@ -16,6 +16,18 @@
         <ride-details :ride="ride" :show-map="showMap" @closeMap="onCloseMap" />
       </v-col>
     </v-row>
+    <v-row v-if="isDisputed" dense>
+      <v-col>
+        <v-alert type="warning">
+          Je passagier reed naar eigen zeggen niet mee:
+          <i>{{
+            passengerReasonText(confirmedBooking.confirmationReasonByPassenger)
+          }}</i
+          >. Klopt dat? Vraag eventueel opheldering bij de passagier door een
+          berichtje te sturen.
+        </v-alert>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col>
         <itinerary-leg
@@ -119,6 +131,7 @@ import * as gsStore from '@/store/geocoder-service'
 import { geoLocationToPlace } from '@/utils/Utils'
 import CancelRideDialog from '@/components/dialogs/CancelRideDialog'
 import BookingSummary from '@/components/itinerary-details/RideBookingSummary'
+import constants from '@/constants/constants'
 
 export default {
   name: 'RideDetailPage',
@@ -167,6 +180,17 @@ export default {
     },
     numBookings() {
       return this.activeBookings.length
+    },
+    confirmedBooking() {
+      return this.ride?.bookings?.find(
+        (b) => b.state.toUpperCase() === 'CONFIRMED'
+      )
+    },
+    isDisputed() {
+      return (
+        this.confirmedBooking?.confirmed === true &&
+        this.confirmedBooking?.confirmedByPassenger === false
+      )
     },
     ride() {
       return csStore.getters.getSelectedRide
@@ -226,6 +250,13 @@ export default {
           })
           break
         case 'COMPLETED':
+          if (this.selectedBooking?.state.toUpperCase() === 'CONFIRMED') {
+            options.push({
+              icon: 'fa-undo',
+              label: 'Herzie mijn bevesting',
+              callback: this.onRideUndoReview,
+            })
+          }
           options.push({
             icon: 'fa-redo',
             label: 'Plan deze rit opnieuw',
@@ -252,6 +283,11 @@ export default {
     csStore.actions.fetchRide({ id: this.rideId })
   },
   methods: {
+    passengerReasonText(reasonCode) {
+      return constants.PASSENGER_TRIP_NOT_MADE_REASONS.find(
+        (r) => r.value === reasonCode
+      )?.title
+    },
     formatTime(t) {
       return t ? moment(t).locale('nl').calendar() : '- - : - -'
     },
@@ -259,7 +295,17 @@ export default {
       this.selectedLeg = leg
     },
     onRideReview() {
-      csStore.actions.confirmRide({ id: this.rideId })
+      this.$router.push({
+        name: 'rideConfirmPage',
+        params: { rideId: this.rideId },
+      })
+    },
+    onRideUndoReview() {
+      this.$router.push({
+        name: 'rideUnconfirmPage',
+        params: { rideId: this.rideId },
+      })
+      // csStore.actions.unconfirmBookedRide({ id: this.rideId })
     },
     onRideCancel() {
       this.showDeleteRideModal = true

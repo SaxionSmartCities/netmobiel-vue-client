@@ -115,10 +115,10 @@ export default {
       profileId: this.profileId,
     })
     psStore.actions.fetchUserCompliments({
-      profileId: this.profileId,
+      receiverIdId: this.profileId,
     })
     psStore.actions.fetchUserReviews({
-      profileId: this.profileId,
+      receiverId: this.profileId,
     })
   },
   created() {

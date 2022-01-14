@@ -131,6 +131,7 @@ import config from '@/config/config'
 const CREDITS_ENABLED = config.CREDITS_ENABLED
 
 export default {
+  name: 'ProfilePage',
   components: {
     ContentPane,
     RoundUserImage,

@@ -2,7 +2,7 @@
   <content-pane>
     <template #header>
       <v-row
-        v-if="selectedTrip && selectedTrip.state === 'CANCELLED'"
+        v-if="trip && trip.state === 'CANCELLED'"
         class="cancelled-banner text-center shrink"
         dense
         no-gutters
@@ -14,11 +14,20 @@
     <v-row>
       <v-col class="py-0">
         <trip-details
-          v-if="selectedTrip"
-          :trip="selectedTrip"
+          v-if="trip"
+          :trip="trip"
           :show-map="showMap"
           @closeMap="onCloseMap"
         />
+      </v-col>
+    </v-row>
+    <v-row v-if="isDisputed" dense>
+      <v-col>
+        <v-alert type="warning">
+          Je chauffeur heeft aangegeven dat je wel hebt meegereden. Klopt dat?
+          Vraag eventueel opheldering bij de chauffeur door een berichtje te
+          sturen.
+        </v-alert>
       </v-col>
     </v-row>
     <v-row>
@@ -157,8 +166,8 @@ export default {
   computed: {
     isDepartureInThePast() {
       return (
-        this.selectedTrip?.itinerary.departureTime &&
-        moment(this.selectedTrip.itinerary.departureTime).isBefore(moment())
+        this.trip?.itinerary.departureTime &&
+        moment(this.trip.itinerary.departureTime).isBefore(moment())
       )
     },
     profile() {
@@ -168,7 +177,7 @@ export default {
       return this.rideshareDriver !== null
     },
     containsRideshareLeg() {
-      return !!this.selectedTrip?.itinerary?.legs.find(
+      return !!this.trip?.itinerary?.legs.find(
         (leg) => leg.traverseMode === 'RIDESHARE'
       )
     },
@@ -176,7 +185,7 @@ export default {
       return this.hasRideShareDriver
     },
     drivers() {
-      return this.selectedTrip?.itinerary?.legs
+      return this.trip?.itinerary?.legs
         .filter((leg) => leg.traverseMode === 'RIDESHARE')
         .map((leg) => {
           const decodedUrn = UrnHelper.decodeUrn(leg.driverId)
@@ -191,7 +200,7 @@ export default {
       // Assume there is only one rideshare driver in the trip.
       return this.drivers?.length > 0 ? this.drivers[0] : null
     },
-    selectedTrip() {
+    trip() {
       let trip = isStore.getters.getSelectedTrip
       if (trip) {
         //FIXME Questionable construction. Now we have trip.legs and trip.itinerary.legs at the same time.
@@ -199,15 +208,26 @@ export default {
       }
       return trip
     },
+    legToConfirm() {
+      return this.trip?.itinerary?.legs.find(
+        (lg) => lg.confirmationRequested || lg.confirmationByProviderRequested
+      )
+    },
+    requiresConfirmation() {
+      return !!this.legToConfirm
+    },
+    isDisputed() {
+      return (
+        this.legToConfirm?.confirmed === false &&
+        this.legToConfirm?.confirmedByProvider === true
+      )
+    },
     tripOptions() {
       let options = []
-      if (!this.selectedTrip) {
+      if (!this.trip) {
         return options
       }
-      const state = this.selectedTrip.state
-      const legs = this.selectedTrip.itinerary?.legs
-      // I can confirm or deny my leg, in both cases the validating is done
-      const validatedMyLeg = legs?.find((l) => l.confirmed !== undefined)
+      const state = this.trip.state
       switch (state) {
         case 'SCHEDULED':
           options.push({
@@ -222,13 +242,11 @@ export default {
           })
           break
         case 'VALIDATING':
-          if (validatedMyLeg === undefined) {
-            options.push({
-              icon: 'fa-check-circle',
-              label: 'Bevestig deze rit',
-              callback: this.onTripReview,
-            })
-          }
+          options.push({
+            icon: 'fa-check-circle',
+            label: 'Bevestig deze rit',
+            callback: this.onTripReview,
+          })
           options.push({
             icon: 'fa-redo',
             label: 'Plan deze rit opnieuw',
@@ -236,6 +254,13 @@ export default {
           })
           break
         case 'COMPLETED':
+          if (this.requiresConfirmation) {
+            options.push({
+              icon: 'fa-undo',
+              label: 'Herzie mijn bevesting',
+              callback: this.onTripUndoReview,
+            })
+          }
           options.push({
             icon: 'fa-redo',
             label: 'Plan deze rit opnieuw',
@@ -267,9 +292,7 @@ export default {
     uiStore.mutations.showBackButton()
   },
   mounted() {
-    if (this.tripId) {
-      isStore.actions.fetchTrip({ id: this.tripId })
-    }
+    isStore.actions.fetchTrip({ id: this.tripId })
   },
   methods: {
     formatTime(t) {
@@ -286,7 +309,7 @@ export default {
         name: `conversation`,
         params: {
           chatMeta: {
-            senderContext: this.selectedTrip.tripRef,
+            senderContext: this.trip.tripRef,
             recipientContext: this.rideshareDriver.context,
             recipientManagedIdentity: this.rideshareDriver.managedIdentity,
           },
@@ -294,7 +317,7 @@ export default {
       })
     },
     onTripReplan() {
-      const { from, to } = this.selectedTrip
+      const { from, to } = this.trip
       isStore.mutations.setSearchCriteria({ from, to })
       this.$router.push('/search')
     },
@@ -302,7 +325,14 @@ export default {
     onTripReview(trip) {
       this.$router.push({
         name: 'tripConfirmPage',
-        params: { id: this.selectedTrip.id.toString() },
+        params: { tripId: this.tripId },
+      })
+    },
+    // eslint-disable-next-line no-unused-vars
+    onTripUndoReview(trip) {
+      this.$router.push({
+        name: 'tripUnconfirmPage',
+        params: { tripId: this.tripId },
       })
     },
     cancelDialog() {
@@ -315,14 +345,14 @@ export default {
       this.warningDialog = false
       isStore.actions
         .deleteTrip({
-          tripId: this.selectedTrip.id,
+          tripId: this.tripId,
           cancelReason: this.cancelReason,
           displayWarning: true,
         })
         .then(() => this.$router.push('/tripCancelledPage'))
     },
     onTripEdit() {
-      const { from, to, itinerary, arrivalTimeIsPinned } = this.selectedTrip
+      const { from, to, itinerary, arrivalTimeIsPinned } = this.trip
       const { searchPreferences } = this.profile
       const travelTime = arrivalTimeIsPinned
         ? moment(itinerary.arrivalTime)
@@ -350,7 +380,7 @@ export default {
       isStore.actions.searchTripPlan(searchCriteria)
       this.$router.push({
         name: 'searchResults',
-        params: { tripId: String(this.selectedTrip.id) },
+        params: { tripId: String(this.trip.id) },
       })
     },
   },

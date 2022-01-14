@@ -27,6 +27,9 @@
               class="d-flex justify-space-between subtitle-1 font-weight-bold"
             >
               <span>Vertrek</span>
+              <v-icon v-if="problemDetected" color="orange"
+                >report_problem</v-icon
+              >
               <span class="pr-1">Aankomst</span>
             </v-col>
           </v-row>
@@ -150,6 +153,20 @@ export default {
     },
     needsReview() {
       return this.tripState === 'VALIDATING'
+    },
+    legToConfirm() {
+      return this.itinerary?.legs.find(
+        (lg) => lg.confirmationRequested || lg.confirmationByProviderRequested
+      )
+    },
+    isDisputed() {
+      return (
+        this.legToConfirm?.confirmed === false &&
+        this.legToConfirm?.confirmedByProvider === true
+      )
+    },
+    problemDetected() {
+      return this.needsReview && this.isDisputed
     },
   },
   mounted() {

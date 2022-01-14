@@ -221,8 +221,4 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
-.clickable-item {
-  cursor: pointer;
-}
-</style>
+<style lang="scss" scoped></style>

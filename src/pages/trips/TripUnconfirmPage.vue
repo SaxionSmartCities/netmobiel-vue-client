@@ -1,32 +1,50 @@
 <template>
   <content-pane>
-    <v-row>
+    <v-row dense>
       <v-col>
-        <h1>Heb je meegereden?</h1>
+        <h1>Ritbevestiging herzien?</h1>
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col>
+        <span class="body-2">
+          Wil je de rit met
+          <strong>{{ driverName }}</strong> opnieuw beoordelen?
+        </span>
       </v-col>
     </v-row>
     <v-row dense class="body-2">
-      <v-col v-if="bookedLeg">
+      <v-col v-if="legToConfirm">
         <v-row dense>
-          <v-col cols="6">Je laatste antwoord: </v-col>
-          <v-col cols="6">{{ confirmationText(bookedLeg.confirmed) }}</v-col>
+          <v-col cols="6">Heb je meegereden?</v-col>
+          <v-col cols="6">{{ confirmationText(legToConfirm.confirmed) }}</v-col>
         </v-row>
-        <v-row v-if="bookedLeg.confirmed === false" dense>
-          <v-col cols="6">Reden: </v-col>
-          <v-col cols="6">{{
-            passengerReasonText(bookedLeg.confirmationReason)
-          }}</v-col>
-        </v-row>
-        <v-row dense>
-          <v-col cols="6">Volgens je chauffeur: </v-col>
-          <v-col cols="6">{{
-            confirmationText(bookedLeg.confirmedByProvider)
-          }}</v-col>
-        </v-row>
-        <v-row v-if="bookedLeg.confirmedByProvider === false" dense>
+        <v-row v-if="legToConfirm.confirmed === false" dense>
           <v-col cols="6">Omdat:</v-col>
           <v-col cols="6">{{
-            passengerReasonText(bookedLeg.confirmationReasonByProvider)
+            passengerReasonText(legToConfirm.confirmationReason)
+          }}</v-col>
+        </v-row>
+        <v-row dense>
+          <v-col cols="6">Volgens de chauffeur:</v-col>
+          <v-col cols="6">{{
+            confirmationText(legToConfirm.confirmedByProvider)
+          }}</v-col>
+        </v-row>
+        <v-row v-if="legToConfirm.confirmedByProvider === false" dense>
+          <v-col cols="6">Omdat:</v-col>
+          <v-col cols="6">{{
+            providerReasonText(legToConfirm.confirmationReasonByProvider)
+          }}</v-col>
+        </v-row>
+        <v-row dense>
+          <v-col cols="6">Ritprijs (credits):</v-col>
+          <v-col cols="6">{{ legToConfirm.fareInCredits }}</v-col>
+        </v-row>
+        <v-row dense>
+          <v-col cols="6">Status betaling:</v-col>
+          <v-col cols="6">{{
+            paymentStateText(legToConfirm.paymentState)
           }}</v-col>
         </v-row>
       </v-col>
@@ -50,7 +68,7 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="legToConfirm && legToConfirm.paymentState === 'CANCELLED'">
       <v-col>
         <v-btn
           large
@@ -59,26 +77,23 @@
           depressed
           color="button"
           :disabled="processing"
-          @click="confirm"
+          @click="unconfirm"
         >
-          Ja
+          Herzien
         </v-btn>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-else-if="legToConfirm && legToConfirm.paymentState === 'PAID'">
       <v-col>
-        <v-btn
-          large
-          rounded
-          outlined
-          block
-          depressed
-          color="primary"
-          :disabled="processing"
-          @click="reject"
-        >
-          Nee
-        </v-btn>
+        <v-alert type="warning">
+          Helaas, de betaling van deze rit is al doorgevoerd en kan alleen
+          worden herzien door je chauffeur.
+        </v-alert>
+      </v-col>
+    </v-row>
+    <v-row v-else-if="legToConfirm">
+      <v-col>
+        <v-alert type="info">Deze rit moet nog bevestigd worden.</v-alert>
       </v-col>
     </v-row>
   </content-pane>
@@ -91,11 +106,11 @@ import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
 import * as uiStore from '@/store/ui'
 import * as isStore from '@/store/itinerary-service'
-import { triStateLogicText } from '@/utils/Utils'
 import constants from '@/constants/constants'
+import { triStateLogicText } from '@/utils/Utils'
 
 export default {
-  name: 'TripConfirmPage',
+  name: 'TripUnconfirmPage',
   components: {
     ContentPane,
     ItineraryLeg,
@@ -120,14 +135,13 @@ export default {
       return 'Onbekend'
     },
     generateSteps() {
-      let steps = []
-      if (this.trip?.tripRef) {
-        steps = generateItineraryDetailSteps(this.trip?.itinerary)
-      }
-      return steps
+      return generateItineraryDetailSteps(this.trip?.itinerary)
     },
-    bookedLeg() {
-      return this.trip?.itinerary?.legs.find((lg) => lg.bookingId)
+    legToConfirm() {
+      return this.trip?.itinerary?.legs.find((lg) => lg.confirmationRequested)
+    },
+    driverName() {
+      return this.legToConfirm?.driverName
     },
   },
   created() {
@@ -150,18 +164,21 @@ export default {
         (r) => r.value === reasonCode
       )?.title
     },
-    confirm() {
-      this.processing = true
-      this.$router.push({
-        name: 'tripConfirmedPage',
-        params: { tripId: this.tripId },
-      })
+    paymentStateText(value) {
+      return value ? constants.PAYMENT_STATE[value] : '-'
     },
-    reject() {
+    unconfirm() {
       this.processing = true
-      this.$router.push({
-        name: 'tripRejectedPage',
-        params: { tripId: this.tripId },
+      isStore.actions.unconfirmTrip({ id: this.tripId }).then(() => {
+        // Add a delay in order to wait for backend to finish asynchronous process
+        return setTimeout(
+          () =>
+            this.$router.push({
+              name: 'tripDetailPage',
+              params: { tripId: this.tripId },
+            }),
+          250
+        )
       })
     },
   },
