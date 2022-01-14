@@ -108,9 +108,21 @@ export interface ExternalUser {
   reviews: Review[] | []
 }
 
+export interface UserRef {
+  id: string
+  firstName?: string | null
+  lastName?: string | null
+}
+
 export interface Compliment {
-  sender: any
-  receiver: any
+  // Not required when submitting a review
+  id?: number
+  sender?: UserRef
+  receiver: UserRef
+  context: string
+  // Read-only
+  published?: string
+  compliments: ComplimentType[]
 }
 
 export interface ComplimentType {
@@ -118,8 +130,14 @@ export interface ComplimentType {
 }
 
 export interface Review {
-  sender: any
-  receiver: any
+  // Not required when submitting a review
+  id?: number
+  sender?: UserRef
+  receiver: UserRef
+  context: string
+  review: string
+  // Read-only
+  published?: string
 }
 
 export interface User {

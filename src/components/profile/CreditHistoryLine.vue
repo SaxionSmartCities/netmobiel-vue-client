@@ -5,7 +5,7 @@
         {{ formatDate }}
       </v-col>
       <v-col class="body-2 align-self-end shrink text-kind">
-        {{ transactionKind }}
+        {{ transactionKind }} {{ rollbackText }}
       </v-col>
     </v-row>
     <v-row dense>
@@ -58,6 +58,9 @@ export default {
     },
     transactionKind() {
       return kinds[this.statement.transactionType]
+    },
+    rollbackText() {
+      return this.statement.rollback ? '(herstel)' : ''
     },
   },
 }

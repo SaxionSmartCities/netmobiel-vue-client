@@ -367,32 +367,19 @@ function deleteTrip(context: ActionContext, payload: any) {
     })
 }
 
-function putTripConfirmation({ id, delegatorId, acknowledge }: any) {
-  const URL = `${PLANNER_BASE_URL}/trips/${id}/confirm/${acknowledge}`
+function confirmTrip(context: ActionContext, payload: any) {
+  const delegatorId = context.rootState.ps.user.delegatorId
+  const URL = `${PLANNER_BASE_URL}/trips/${payload.id}/confirm/true`
   const data = {}
   const config = {
     headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
   }
-  return axios.put(URL, data, config)
-}
-
-function rejectTrip(context: ActionContext, payload: any) {
-  const delegatorId = context.rootState.ps.user.delegatorId
-  const promise = putTripConfirmation({
-    id: payload.id,
-    delegatorId: delegatorId,
-    acknowledge: false,
-  })
-  promise
-    .then((resp) => {
+  return axios
+    .put(URL, data, config)
+    .then(function (resp) {
       if (resp.status == 204) {
         // Ride is confirmed
         uiStore.actions.queueInfoNotification('Uw rit is bevestigd.')
-        fetchTrip(context, { id: payload.id })
-      } else {
-        uiStore.actions.queueErrorNotification(
-          'Fout bij het bevestigen van uw rit.'
-        )
       }
     })
     .catch(function (error) {
@@ -404,38 +391,64 @@ function rejectTrip(context: ActionContext, payload: any) {
     })
 }
 
-function confirmTrip(context: ActionContext, payload: any) {
+function rejectTrip(context: ActionContext, payload: any) {
   const delegatorId = context.rootState.ps.user.delegatorId
-  const promise = putTripConfirmation({
-    id: payload.id,
-    delegatorId: delegatorId,
-    acknowledge: true,
-  })
-  promise
+  const URL = `${PLANNER_BASE_URL}/trips/${payload.id}/confirm/false?reason=${payload.reasonCode}`
+  const data = {}
+  const config = {
+    headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
+  }
+  return axios
+    .put(URL, data, config)
+    .then((resp) => {
+      if (resp.status == 204) {
+        // Ride is confirmed
+        uiStore.actions.queueInfoNotification('U hebt uw rit afgewezen.')
+      }
+    })
+    .catch(function (error) {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het afwijzen van uw rit.'
+      )
+    })
+}
+
+function unconfirmTrip(context: ActionContext, payload: any) {
+  const delegatorId = context.rootState.ps.user.delegatorId
+  const URL = `${PLANNER_BASE_URL}/trips/${payload.id}/unconfirm`
+  const config = {
+    headers: generateHeaders(GRAVITEE_PLANNER_SERVICE_API_KEY, delegatorId),
+  }
+  return axios
+    .put(URL, {}, config)
     .then(function (resp) {
       if (resp.status == 204) {
         // Ride is confirmed
-        uiStore.actions.queueInfoNotification('Uw rit is bevestigd.')
-        fetchTrip(context, { id: payload.id })
-      } else {
-        uiStore.actions.queueErrorNotification(
-          'Fout bij het bevestigen van uw rit.'
+        uiStore.actions.queueInfoNotification(
+          'U kunt uw rit nu opnieuw bevestigen.'
         )
       }
     })
     .catch(function (error) {
       // eslint-disable-next-line
       console.log(error)
-      if (error.response.status === 400) {
-        uiStore.actions.queueErrorNotification('Deze rit is al bevestigd.')
+      if (error.response.status === 403) {
+        uiStore.actions.queueErrorNotification(
+          'De rit is reeds afgerekend. Vraag de chauffeur om de bevestiging ongedaan te maken.'
+        )
+      } else if (error.response.status == 402) {
+        uiStore.actions.queueErrorNotification(
+          'U heeft onvoldoende credits om deze rit opnieuw te reserveren'
+        )
       } else {
         uiStore.actions.queueErrorNotification(
-          'Fout bij het bevestigen van uw rit.'
+          'Fout bij het ongedaan maken van de bevestiging van uw rit.'
         )
       }
     })
 }
-
 // ============  SHOUT-OUT MANAGEMENT  ================
 // driver calls!
 
@@ -587,8 +600,9 @@ export const buildActions = (
     fetchCancelledTrips: isBuilder.dispatch(fetchCancelledTrips),
     fetchTrip: isBuilder.dispatch(fetchTrip),
     deleteTrip: isBuilder.dispatch(deleteTrip),
-    rejectTrip: isBuilder.dispatch(rejectTrip),
     confirmTrip: isBuilder.dispatch(confirmTrip),
+    rejectTrip: isBuilder.dispatch(rejectTrip),
+    unconfirmTrip: isBuilder.dispatch(unconfirmTrip),
 
     // Shout-out handling for drivers
     fetchShoutOuts: isBuilder.dispatch(fetchShoutOuts),

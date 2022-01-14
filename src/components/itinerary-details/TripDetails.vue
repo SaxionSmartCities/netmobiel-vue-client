@@ -45,6 +45,8 @@ import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import RouteMap from '@/components/itinerary-details/RouteMap.vue'
 import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
 import { formatDateTimeLongNoYear } from '@/utils/datetime.js'
+import constants from '@/constants/constants'
+import { triStateLogicText } from '@/utils/Utils'
 
 export default {
   name: 'TripDetails',
@@ -77,22 +79,24 @@ export default {
           const reisduur = `${Math.round(duration / 60)} minuten`
           result.push({ label: 'Reisduur', value: reisduur })
         }
-        if (legs?.[0].fareInCredits) {
+        let rsLeg = legs.find((lg) => lg.traverseMode === 'RIDESHARE')
+        if (rsLeg) {
           result.push({
             label: 'Kosten',
-            value: `${legs[0].fareInCredits} credits`,
+            value: `${rsLeg.fareInCredits} credits`,
           })
-        }
-        const found = legs
-          ? legs.find((l) => l.confirmed !== undefined)
-          : undefined
-        if (found) {
-          found.confirmed
-            ? result.push({ label: 'Bevestigd', value: 'Ik heb meegereden' })
-            : result.push({
-                label: 'Bevestigd',
-                value: 'Ik heb niet meegereden',
-              })
+          if (rsLeg.state === 'VALIDATING' || rsLeg.state === 'COMPLETED') {
+            const cv = this.confirmationText(rsLeg.confirmed)
+            result.push({ label: 'Meegereden', value: cv })
+            if (rsLeg.confirmed === false) {
+              const reason = this.passengerReasonText(rsLeg.confirmationReason)
+              result.push({ label: 'Reden', value: reason })
+            }
+          }
+          result.push({
+            label: 'Betaling',
+            value: constants.PAYMENT_STATE[rsLeg.paymentState],
+          })
         }
       }
       return result
@@ -112,6 +116,14 @@ export default {
     },
   },
   methods: {
+    confirmationText(value) {
+      return triStateLogicText(value)
+    },
+    passengerReasonText(reasonCode) {
+      return constants.PASSENGER_TRIP_NOT_MADE_REASONS.find(
+        (r) => r.value === reasonCode
+      )?.title
+    },
     onMapSizeChanged({ size }) {
       this.mapSize = size
     },

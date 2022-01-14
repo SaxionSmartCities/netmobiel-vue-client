@@ -2,31 +2,33 @@
   <content-pane>
     <v-row>
       <v-col>
-        <h1>Heb je meegereden?</h1>
+        <h1>Reed je passagier mee?</h1>
       </v-col>
     </v-row>
     <v-row dense class="body-2">
-      <v-col v-if="bookedLeg">
+      <v-col v-if="confirmedBooking">
         <v-row dense>
           <v-col cols="6">Je laatste antwoord: </v-col>
-          <v-col cols="6">{{ confirmationText(bookedLeg.confirmed) }}</v-col>
+          <v-col cols="6">{{
+            confirmationText(confirmedBooking.confirmed)
+          }}</v-col>
         </v-row>
-        <v-row v-if="bookedLeg.confirmed === false" dense>
+        <v-row v-if="confirmedBooking.confirmed === false" dense>
           <v-col cols="6">Reden: </v-col>
           <v-col cols="6">{{
-            passengerReasonText(bookedLeg.confirmationReason)
+            passengerReasonText(confirmedBooking.confirmationReason)
           }}</v-col>
         </v-row>
         <v-row dense>
-          <v-col cols="6">Volgens je chauffeur: </v-col>
+          <v-col cols="6">Volgens je passagier: </v-col>
           <v-col cols="6">{{
-            confirmationText(bookedLeg.confirmedByProvider)
+            confirmationText(confirmedBooking.confirmedByPassenger)
           }}</v-col>
         </v-row>
-        <v-row v-if="bookedLeg.confirmedByProvider === false" dense>
+        <v-row v-if="confirmedBooking.confirmedByPassenger === false" dense>
           <v-col cols="6">Omdat:</v-col>
           <v-col cols="6">{{
-            passengerReasonText(bookedLeg.confirmationReasonByProvider)
+            passengerReasonText(confirmedBooking.confirmationReasonByPassenger)
           }}</v-col>
         </v-row>
       </v-col>
@@ -88,20 +90,23 @@
 import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane.vue'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
-import { generateItineraryDetailSteps } from '@/utils/itinerary_steps.js'
+import { generateRideItineraryDetailSteps } from '@/utils/itinerary_steps.js'
 import * as uiStore from '@/store/ui'
-import * as isStore from '@/store/itinerary-service'
+import * as csStore from '@/store/carpool-service'
 import { triStateLogicText } from '@/utils/Utils'
 import constants from '@/constants/constants'
 
 export default {
-  name: 'TripConfirmPage',
+  name: 'RideConfirmPage',
   components: {
     ContentPane,
     ItineraryLeg,
   },
   props: {
-    tripId: { type: String, required: true },
+    rideId: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -109,11 +114,11 @@ export default {
     }
   },
   computed: {
-    trip() {
-      return isStore.getters.getSelectedTrip
+    ride() {
+      return csStore.getters.getSelectedRide
     },
     travelDate() {
-      const departureTime = this.trip?.itinerary?.departureTime
+      const departureTime = this.ride?.departureTime
       if (departureTime) {
         return moment(departureTime).locale('nl').format('dddd DD MMMM')
       }
@@ -121,20 +126,22 @@ export default {
     },
     generateSteps() {
       let steps = []
-      if (this.trip?.tripRef) {
-        steps = generateItineraryDetailSteps(this.trip?.itinerary)
+      if (this.ride?.rideRef) {
+        steps = generateRideItineraryDetailSteps(this.ride)
       }
       return steps
     },
-    bookedLeg() {
-      return this.trip?.itinerary?.legs.find((lg) => lg.bookingId)
+    confirmedBooking() {
+      return this.ride?.bookings?.find(
+        (b) => b.state.toUpperCase() === 'CONFIRMED'
+      )
     },
   },
   created() {
     uiStore.mutations.showBackButton()
   },
   mounted() {
-    isStore.actions.fetchTrip({ id: this.tripId })
+    csStore.actions.fetchRide({ id: this.rideId })
   },
   methods: {
     confirmationText(value) {
@@ -153,15 +160,15 @@ export default {
     confirm() {
       this.processing = true
       this.$router.push({
-        name: 'tripConfirmedPage',
-        params: { tripId: this.tripId },
+        name: 'rideConfirmedPage',
+        params: { rideId: this.rideId },
       })
     },
     reject() {
       this.processing = true
       this.$router.push({
-        name: 'tripRejectedPage',
-        params: { tripId: this.tripId },
+        name: 'rideRejectedPage',
+        params: { rideId: this.rideId },
       })
     },
   },

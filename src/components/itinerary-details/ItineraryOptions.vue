@@ -10,7 +10,7 @@
       <v-row v-for="(option, index) in options" :key="index">
         <v-col>
           <v-divider></v-divider>
-          <v-row class="mt-1" @click="option.callback">
+          <v-row class="mt-1 clickable-item" @click="option.callback">
             <v-col cols="1">
               <v-icon>{{ option.icon }}</v-icon>
             </v-col>

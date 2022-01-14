@@ -131,3 +131,10 @@ h3 {
 .smaller-font-size {
   font-size: smaller !important;
 }
+h4.netmobiel {
+  text-transform: uppercase;
+  color: $color-primary;
+}
+.clickable-item {
+  cursor: pointer;
+}

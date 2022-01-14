@@ -2,7 +2,7 @@
   <div class="d-flex flex-column full-height">
     <slot name="header"></slot>
     <v-container
-      class="justify-center align-content-start"
+      class="justify-center align-content-start full-height"
       :class="{
         'container-non-scrollable': !scrollable,
         'container-scrollable': scrollable,
