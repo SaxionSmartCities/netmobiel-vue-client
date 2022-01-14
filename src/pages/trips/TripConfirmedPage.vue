@@ -162,11 +162,9 @@ export default {
         psStore.actions.fetchPublicProfile({
           profileId: this.driverManagedIdentity,
         })
-        console.log(`Fetch compliments`)
         psStore.actions.fetchUserCompliments({
           receiverId: this.driverManagedIdentity,
         })
-        console.log(`Fetch reviews`)
         psStore.actions.fetchUserReviews({
           receiverId: this.driverManagedIdentity,
         })
