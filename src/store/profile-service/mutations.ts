@@ -8,6 +8,7 @@ import {
   ProfileState,
   PublicProfile,
   RidePlanOptions,
+  SurveyInteraction,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { decodeJwt } from '@/utils/Utils'
@@ -179,6 +180,13 @@ function setDeviceFcmToken(state: ProfileState, fcmToken: string) {
   state.deviceFcmToken = fcmToken
 }
 
+function setSurveyInteraction(
+  state: ProfileState,
+  payload: SurveyInteraction | null
+) {
+  state.user.surveyInteraction = payload
+}
+
 export const buildMutations = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -208,5 +216,6 @@ export const buildMutations = (
     setSearchResults: psBuilder.commit(setSearchResults),
     setSearchStatus: psBuilder.commit(setSearchStatus),
     setDeviceFcmToken: psBuilder.commit(setDeviceFcmToken),
+    setSurveyInteraction: psBuilder.commit(setSurveyInteraction),
   }
 }

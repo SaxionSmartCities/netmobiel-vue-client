@@ -43,7 +43,15 @@ function pushUpdate(state: UiState, payload: UiUpdateMessage) {
 }
 function removeUpdate(state: UiState, payload: UiUpdateMessage) {
   const indexOf = state.updateMessages!.indexOf(payload)
-  state.updateMessages!.splice(indexOf, 1)
+  if (indexOf > -1) {
+    state.updateMessages!.splice(indexOf, 1)
+  }
+}
+function removeUpdateById(state: UiState, id: string) {
+  const indexOf = state.updateMessages!.findIndex((msg) => msg.id === id)
+  if (indexOf > -1) {
+    state.updateMessages!.splice(indexOf, 1)
+  }
 }
 export const buildMutations = (builder: ModuleBuilder<UiState, RootState>) => {
   return {
@@ -63,5 +71,6 @@ export const buildMutations = (builder: ModuleBuilder<UiState, RootState>) => {
     shiftUpdateMessage: builder.commit(shiftUpdateMessage),
     pushUpdate: builder.commit(pushUpdate),
     removeUpdate: builder.commit(removeUpdate),
+    removeUpdateById: builder.commit(removeUpdateById),
   }
 }
