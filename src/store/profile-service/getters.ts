@@ -45,6 +45,10 @@ export const buildGetters = (
     return state.deviceFcmToken
   }, 'getDeviceFcmToken')
 
+  const getSurveyInteraction = psBuilder.read((state: ProfileState) => {
+    return state.user.surveyInteraction
+  }, 'getSurveyInteraction')
+
   return {
     get getUser() {
       return getUser()
@@ -75,6 +79,9 @@ export const buildGetters = (
     },
     get getDeviceFcmToken() {
       return getDeviceFcmToken()
+    },
+    get getSurveyInteraction() {
+      return getSurveyInteraction()
     },
   }
 }

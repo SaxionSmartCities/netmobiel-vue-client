@@ -126,6 +126,9 @@ export default {
     isProfileManaged() {
       return !!psStore.getters.getProfile?.id
     },
+    surveyInteraction() {
+      return psStore.getters.getSurveyInteraction
+    },
   },
   watch: {
     deviceFcmToken() {
@@ -138,6 +141,23 @@ export default {
       if (!this.isProfileComplete(newProfile)) {
         let update = constants.COMPLETE_PROFILE_UPDATE
         uiStore.actions.addUpdate(update)
+      }
+    },
+    surveyInteraction(newSurvey, oldSurvey) {
+      if (newSurvey?.survey) {
+        // Make a deep copy
+        let updateMsg = JSON.parse(
+          JSON.stringify(constants.COMPLETE_SURVEY_UPDATE)
+        )
+        updateMsg.id = newSurvey.survey.surveyId
+        updateMsg.link.href = newSurvey.survey.providerUrl
+        updateMsg.link.notification = () =>
+          psStore.actions.markSurveyRedirection(newSurvey.survey.surveyId)
+        uiStore.mutations.pushUpdate(updateMsg)
+      }
+      if (oldSurvey?.survey) {
+        // console.log(`Old survey ${oldSurvey.survey.surveyId} is now gone`)
+        uiStore.mutations.removeUpdateById(oldSurvey?.survey.surveyId)
       }
     },
     // Log all route changes
@@ -165,6 +185,8 @@ export default {
         .fetchProfile()
         .then(() => psStore.actions.storeFcmToken())
         .catch(() => {})
+      psStore.mutations.setSurveyInteraction(null)
+      psStore.actions.fetchSurvey()
     }
   },
   beforeDestroy() {

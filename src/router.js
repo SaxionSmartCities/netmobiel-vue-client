@@ -56,6 +56,7 @@ import RideConfirmedPage from '@/pages/trips/RideConfirmedPage'
 import TripRejectedPage from '@/pages/trips/TripRejectedPage'
 import RideRejectedPage from '@/pages/trips/RideRejectedPage'
 import RideUnconfirmPage from '@/pages/trips/RideUnconfirmPage'
+import SurveyCompletedPage from '@/pages/profile/SurveyCompletedPage'
 
 Vue.use(Router)
 
@@ -355,6 +356,12 @@ const router = new Router({
       path: '/wait-for-deposit-confirmation',
       component: WaitForDepositConfirmationPage,
       name: 'waitForDepositConfirmation',
+    },
+    {
+      path: '/survey-completed/:surveyId?',
+      component: SurveyCompletedPage,
+      name: 'surveyCompleted',
+      props: true,
     },
   ],
 })

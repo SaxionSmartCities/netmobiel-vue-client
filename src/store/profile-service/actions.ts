@@ -579,6 +579,61 @@ function switchProfile(context: ActionContext, { delegatorId }: any) {
   fetchProfile(context)
 }
 
+// ==========  SURVEY  =============
+function fetchSurvey(context: ActionContext) {
+  const delegatorId = context.rootState.ps.user.delegatorId
+  const URL = `${PROFILE_BASE_URL}/survey-interactions`
+  return axios
+    .get(URL, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        if (response.data.length > 0) {
+          mutations.setSurveyInteraction(response.data[0])
+        } else {
+          mutations.setSurveyInteraction(null)
+        }
+      }
+    })
+    .catch((error) => {
+      // eslint-disable-next-line
+      console.log(error)
+    })
+}
+
+function markSurveyRedirection(context: ActionContext, surveyId: string) {
+  const delegatorId = context.rootState.ps.user.delegatorId
+  const URL = `${PROFILE_BASE_URL}/survey-interactions/${surveyId}/on-redirect`
+  return axios
+    .put(URL, null, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
+    })
+    .then((response) => {
+      // Should be 204
+    })
+    .catch((error) => {
+      // eslint-disable-next-line
+      console.log(error)
+    })
+}
+
+function markSurveySubmitted(context: ActionContext, surveyId: string) {
+  const delegatorId = context.rootState.ps.user.delegatorId
+  const URL = `${PROFILE_BASE_URL}/survey-interactions/${surveyId}/on-submit`
+  return axios
+    .put(URL, null, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
+    })
+    .then((response) => {
+      // Should be 204
+    })
+    .catch((error) => {
+      // eslint-disable-next-line
+      console.log(error)
+    })
+}
+
 export const buildActions = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -611,5 +666,9 @@ export const buildActions = (
     storeDelegation: psBuilder.dispatch(storeDelegation),
     deleteDelegation: psBuilder.dispatch(deleteDelegation),
     switchProfile: psBuilder.dispatch(switchProfile),
+
+    fetchSurvey: psBuilder.dispatch(fetchSurvey),
+    markSurveyRedirection: psBuilder.dispatch(markSurveyRedirection),
+    markSurveySubmitted: psBuilder.dispatch(markSurveySubmitted),
   }
 }

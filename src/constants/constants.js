@@ -38,7 +38,19 @@ export default {
       'Maak jouw profiel compleet en verdien een gratis rit met Netmobiel!',
     link: {
       label: 'Profiel compleet maken',
+      // interne link
       to: '/onboardingPage',
+    },
+  },
+  COMPLETE_SURVEY_UPDATE: {
+    title: 'Verdien met een enquête!',
+    content: 'Vul de enquête in om credits te verdienen!',
+    link: {
+      label: 'Start enquête',
+      // externe link
+      href: '',
+      // callback function
+      notification: undefined,
     },
   },
   DEFAULT_PROFILE_SEARCH_PREFERENCES: {
