@@ -80,6 +80,7 @@ export class ProfileState {
       creditAmount: 0,
       creditHistory: [],
     },
+    surveyInteraction: null,
   }
   search: ProfileSearch = {
     keyword: '',
@@ -160,6 +161,7 @@ export interface User {
   delegatorId: string | null
   delegateProfile: Profile | null
   delegations: Delegation[]
+  surveyInteraction: SurveyInteraction | null
 }
 
 export interface PublicProfile {
@@ -268,4 +270,20 @@ export interface Delegation {
   revocationTime: string
   submissionTime: string
   transferCode: string
+}
+
+export interface Survey {
+  surveyId: string
+  displayName: string
+  providerUrl: string
+  rewardCredits: number
+}
+
+export interface SurveyInteraction {
+  survey: Survey
+  invitationTime: string
+  invitationCount: number
+  redirectTime?: string
+  redirectCount: number
+  submitTime?: string
 }

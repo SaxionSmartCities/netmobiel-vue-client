@@ -24,6 +24,9 @@ export interface UiNotification {
 }
 
 export interface UiUpdateMessage {
+  // Optional ID of the message
+  // Otherwise the object itself is used as ID
+  id?: string
   title: string
   content: string
   link: UiUpdateMessageLink
@@ -31,5 +34,10 @@ export interface UiUpdateMessage {
 
 export interface UiUpdateMessageLink {
   label: string
-  to: string
+  // Internal link
+  to?: string
+  // external link
+  href?: string
+  // notification callback
+  notification?: () => Promise<void>
 }
