@@ -1,7 +1,8 @@
 <template>
   <content-pane>
     <v-row dense>
-      <v-col> Welkom terug bij Netmobiel. </v-col>
+      <!-- Never visible in ordinary case -->
+      <v-col> Verwerken van de gegevens... </v-col>
     </v-row>
   </content-pane>
 </template>
