@@ -57,7 +57,6 @@ export default {
         callback = link.notification
       }
       callback().then(() => {
-        console.log(`Redirect app`)
         window.location.href = link.href
         return null
       })

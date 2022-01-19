@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     surveySubmitted(surveyId) {
-      console.log(`Mark ${surveyId} as completed`)
+      // console.log(`Mark ${surveyId} as completed`)
       psStore.actions
         .markSurveySubmitted(surveyId)
         .then(psStore.actions.fetchSurvey)

@@ -156,7 +156,7 @@ export default {
         uiStore.mutations.pushUpdate(updateMsg)
       }
       if (oldSurvey?.survey) {
-        console.log(`Old survey ${oldSurvey.survey.surveyId} is now gone`)
+        // console.log(`Old survey ${oldSurvey.survey.surveyId} is now gone`)
         uiStore.mutations.removeUpdateById(oldSurvey?.survey.surveyId)
       }
     },
