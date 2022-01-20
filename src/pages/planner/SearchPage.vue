@@ -75,6 +75,7 @@ export default {
       'searchLocation',
       'searchOptions',
       'searchResults',
+      'tripPlanSubmitted',
     ]
     // Clear the search location when navigating from a different page than the location lookup page of one of the subpages
     if (!keepWhenComingFrom.includes(from?.name)) {
