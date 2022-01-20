@@ -18,7 +18,7 @@
           rounded
           depressed
           class="my-3 button"
-          @click="swapLocations()"
+          @click="onPlanReturnTrip()"
         >
           Plan direct je terugrit
         </v-btn>
@@ -29,7 +29,7 @@
           depressed
           outlined
           color="primary"
-          to="/plan"
+          @click="onPlanNewTrip()"
         >
           Plan een nieuwe rit
         </v-btn>
@@ -41,6 +41,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import * as gsStore from '@/store/geocoder-service'
+import * as isStore from '@/store/itinerary-service'
 
 export default {
   name: 'TripPlanSubmittedPage',
@@ -49,8 +50,15 @@ export default {
     return {}
   },
   methods: {
-    swapLocations() {
+    onPlanReturnTrip() {
       gsStore.mutations.swapLocations()
+      // Criteria are not erased by 'search', because this page is whitelisted
+      this.$router.push('/search')
+    },
+    onPlanNewTrip() {
+      // Clear the previous criteria, otherwise old info remains there (because of whitelisting)
+      gsStore.mutations.clearAllGeoLocationPicked()
+      isStore.mutations.setSearchCriteria({})
       this.$router.push('/search')
     },
   },
