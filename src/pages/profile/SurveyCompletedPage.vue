@@ -25,8 +25,10 @@ export default {
   },
   watch: {
     surveyInteraction(newSurvey) {
-      if (newSurvey?.survey) {
-        this.surveySubmitted(newSurvey.survey.surveyId)
+      // When the survey is submitted and updated, this watcher will be called again
+      // Make sure the submit is called only once.
+      if (newSurvey?.urn && !newSurvey?.submitTime) {
+        this.surveySubmitted(newSurvey.urn)
       }
     },
   },
@@ -40,7 +42,8 @@ export default {
       // console.log(`Mark ${surveyId} as completed`)
       psStore.actions
         .markSurveySubmitted(surveyId)
-        .then(psStore.actions.fetchSurvey)
+        // Refresh the survey
+        .then(() => psStore.actions.fetchSurvey(surveyId))
         .then(() => {
           this.$router.push({ name: 'home' })
         })

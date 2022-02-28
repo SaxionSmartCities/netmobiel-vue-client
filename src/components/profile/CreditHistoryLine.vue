@@ -26,6 +26,7 @@ const kinds = {
   DEPOSIT: 'storting',
   WITHDRAWAL: 'opname',
   PAYMENT: 'betaling',
+  REFUND: 'terugbetaling',
   RESERVATION: 'reservering',
   RELEASE: 'vrijgave',
 }

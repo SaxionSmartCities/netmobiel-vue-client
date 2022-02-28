@@ -144,20 +144,25 @@ export default {
       }
     },
     surveyInteraction(newSurvey, oldSurvey) {
-      if (newSurvey?.survey) {
+      if (newSurvey?.survey && !newSurvey?.submitTime) {
+        // console.log(
+        //   `New survey ${newSurvey.urn} ${newSurvey.survey.surveyId} is detected`
+        // )
         // Make a deep copy
         let updateMsg = JSON.parse(
           JSON.stringify(constants.COMPLETE_SURVEY_UPDATE)
         )
-        updateMsg.id = newSurvey.survey.surveyId
-        updateMsg.link.href = newSurvey.survey.providerUrl
+        updateMsg.id = newSurvey.urn
+        updateMsg.link.href = newSurvey.surveyUrl
         updateMsg.link.notification = () =>
-          psStore.actions.markSurveyRedirection(newSurvey.survey.surveyId)
+          psStore.actions.markSurveyRedirection(newSurvey.urn)
         uiStore.mutations.pushUpdate(updateMsg)
       }
       if (oldSurvey?.survey) {
-        // console.log(`Old survey ${oldSurvey.survey.surveyId} is now gone`)
-        uiStore.mutations.removeUpdateById(oldSurvey?.survey.surveyId)
+        // console.log(
+        //   `Old survey ${oldSurvey.urn} ${oldSurvey.survey.surveyId} is now gone`
+        // )
+        uiStore.mutations.removeUpdateById(oldSurvey.urn)
       }
     },
     // Log all route changes
@@ -186,7 +191,7 @@ export default {
         .then(() => psStore.actions.storeFcmToken())
         .catch(() => {})
       psStore.mutations.setSurveyInteraction(null)
-      psStore.actions.fetchSurvey()
+      psStore.actions.createSurveyInvitation()
     }
   },
   beforeDestroy() {
