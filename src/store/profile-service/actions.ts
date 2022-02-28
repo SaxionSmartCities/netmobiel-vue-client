@@ -5,7 +5,7 @@ import { Profile, ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { getters, mutations } from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
-import { generateHeaders } from '@/utils/Utils'
+import { generateHeaders, getCreatedObjectIdFromResponse } from '@/utils/Utils'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -580,20 +580,69 @@ function switchProfile(context: ActionContext, { delegatorId }: any) {
 }
 
 // ==========  SURVEY  =============
-function fetchSurvey(context: ActionContext) {
+/**
+ * Attempt to create an active survey. The backend will take care to issue at most one
+ * active survey. The method needs to called now and then (once in a session is
+ * often enough). On a 201 the actual object must be fetched. On a 204 there is
+ * no active survey.
+ * @param context
+ */
+function createSurveyInvitation(context: ActionContext) {
   const delegatorId = context.rootState.ps.user.delegatorId
   const URL = `${PROFILE_BASE_URL}/survey-interactions`
+  return axios
+    .post(URL, null, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
+    })
+    .then((response) => {
+      if (response.status === 201) {
+        const id = getCreatedObjectIdFromResponse(response)
+        return fetchSurvey(context, id)
+      } else {
+        return Promise.resolve()
+      }
+    })
+    .catch((error) => {
+      // eslint-disable-next-line
+      console.log(error)
+    })
+}
+
+function fetchSurvey(context: ActionContext, id: string) {
+  const delegatorId = context.rootState.ps.user.delegatorId
+  const URL = `${PROFILE_BASE_URL}/survey-interactions/${id}`
   return axios
     .get(URL, {
       headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
     })
     .then((response) => {
       if (response.status === 200) {
-        if (response.data.length > 0) {
-          mutations.setSurveyInteraction(response.data[0])
-        } else {
-          mutations.setSurveyInteraction(null)
-        }
+        mutations.setSurveyInteraction(response.data)
+      } else {
+        mutations.setSurveyInteraction(null)
+      }
+    })
+    .catch((error) => {
+      // eslint-disable-next-line
+      console.log(error)
+    })
+}
+
+function fetchSurveyByProviderId(
+  context: ActionContext,
+  surveyProviderId: string
+) {
+  const delegatorId = context.rootState.ps.user.delegatorId
+  const URL = `${PROFILE_BASE_URL}/survey-interactions?surveyId=${surveyProviderId}`
+  return axios
+    .get(URL, {
+      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
+    })
+    .then((response) => {
+      if (response.status === 200 && response.data.count >= 1) {
+        return response.data.data[0]
+      } else {
+        return null
       }
     })
     .catch((error) => {
@@ -667,6 +716,7 @@ export const buildActions = (
     deleteDelegation: psBuilder.dispatch(deleteDelegation),
     switchProfile: psBuilder.dispatch(switchProfile),
 
+    createSurveyInvitation: psBuilder.dispatch(createSurveyInvitation),
     fetchSurvey: psBuilder.dispatch(fetchSurvey),
     markSurveyRedirection: psBuilder.dispatch(markSurveyRedirection),
     markSurveySubmitted: psBuilder.dispatch(markSurveySubmitted),

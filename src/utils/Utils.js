@@ -99,7 +99,10 @@ function getCreatedObjectIdFromResponse(response) {
   // if the response has status 201, the location header defines the api url to
   // fetch the object. Extract the object id.
   const loc = response.headers?.location
-  return loc ? loc.substring(loc.lastIndexOf('/') + 1) : undefined
+  // If the location contains a '/', then it is a url, otherwise assume urn
+  // In case of an url return the last part of the url
+  const isUrl = loc && loc.indexOf('/') !== -1
+  return isUrl ? loc.substring(loc.lastIndexOf('/') + 1) : loc
 }
 
 /**

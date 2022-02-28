@@ -275,15 +275,22 @@ export interface Delegation {
 export interface Survey {
   surveyId: string
   displayName: string
-  providerUrl: string
-  rewardCredits: number
+  incentiveCode?: string
+  startTime?: string
+  endTime?: string
+  takeDelayHours?: number
+  takeIntervalHours?: number
 }
 
 export interface SurveyInteraction {
   survey: Survey
+  expirationTime?: string
   invitationTime: string
   invitationCount: number
   redirectTime?: string
   redirectCount: number
   submitTime?: string
+  surveyUrl: string
+  urn: string
+  owner?: UserRef
 }
