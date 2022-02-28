@@ -4,10 +4,9 @@ import { Charity, CharityState } from './types'
 import { mutations } from '@/store/charity-service/index'
 import axios from 'axios'
 import moment from 'moment'
-import util from '@/utils/Utils'
+import { generateHeaders } from '@/utils/Utils'
 import config from '@/config/config'
 import * as uiStore from '@/store/ui'
-import { generateHeaders } from '@/utils/Utils'
 
 type ActionContext = BareActionContext<CharityState, RootState>
 
@@ -121,7 +120,7 @@ async function fetchDonationsForCharity(context: ActionContext, id: string) {
   }
 }
 
-async function fetchTopDonors(context: ActionContext, id: string) {
+async function fetchTopDonors(context: ActionContext) {
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/users/generosity`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
@@ -144,9 +143,9 @@ async function fetchTopDonors(context: ActionContext, id: string) {
   }
 }
 
-async function fetchWithdrawals(context: ActionContext, payload: any = {}) {
+async function fetchWithdrawals(context: ActionContext) {
   try {
-    const resp = await axios.get(`${BASE_URL}/banker/withdrawal-requests`, {
+    const resp = await axios.get(`${BANKER_BASE_URL}/withdrawal-requests`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
     const withdrawals = resp.data.data
@@ -159,15 +158,14 @@ async function fetchWithdrawals(context: ActionContext, payload: any = {}) {
   }
 }
 
-async function fetchPaymentBatches(context: ActionContext, payload: any = {}) {
+async function fetchPaymentBatches(context: ActionContext) {
   try {
-    const since = moment()
-      .subtract(1, 'months')
-      .format()
+    const since = moment().subtract(1, 'months').format()
     const until = moment().format()
     const params = { since, until }
-    const resp = await axios.get(`${BASE_URL}/banker/payment-batches`, {
+    const resp = await axios.get(`${BANKER_BASE_URL}/payment-batches`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      params: params,
     })
     const batches = resp.data.data
     console.log(batches)
