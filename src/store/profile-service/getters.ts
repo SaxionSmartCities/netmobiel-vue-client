@@ -83,5 +83,17 @@ export const buildGetters = (
     get getSurveyInteraction() {
       return getSurveyInteraction()
     },
+    get canActAsDelegate() {
+      return (
+        this.getUser.roles.includes('delegate') ||
+        this.getUser.roles.includes('admin')
+      )
+    },
+    get canActAsTreasurer() {
+      return (
+        this.getUser.roles.includes('treasurer') ||
+        this.getUser.roles.includes('admin')
+      )
+    },
   }
 }

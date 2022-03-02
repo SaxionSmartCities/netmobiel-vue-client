@@ -21,6 +21,7 @@ function setUserToken(state: ProfileState, token: string) {
   state.user.familyName = decodedObject['family_name']
   state.user.email = decodedObject['email']
   state.user.fullName = decodedObject['name']
+  state.user.roles = decodedObject['realm_access']?.roles
 }
 
 function deleteAccessToken(state: ProfileState) {
