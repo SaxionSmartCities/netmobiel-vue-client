@@ -145,14 +145,14 @@ async function fetchTopDonors(context: ActionContext) {
 
 async function fetchWithdrawals(context: ActionContext) {
   try {
-    const resp = await axios.get(`${BANKER_BASE_URL}/withdrawal-requests`, {
+    const resp = await axios.get(`${BANKER_BASE_URL}/withdrawals`, {
       headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
     })
     const withdrawals = resp.data.data
-    console.log(withdrawals)
+    // console.log(withdrawals)
     mutations.setWithdrawals(withdrawals)
   } catch (problem) {
-    uiStore.actions.queueErrorNotification(
+    await uiStore.actions.queueErrorNotification(
       'Fout bij het ophalen van de uitbetalingen.'
     )
   }
@@ -168,10 +168,9 @@ async function fetchPaymentBatches(context: ActionContext) {
       params: params,
     })
     const batches = resp.data.data
-    console.log(batches)
-    // mutations.setCharities(charities)
+    // console.log(batches)
   } catch (problem) {
-    uiStore.actions.queueErrorNotification(
+    await uiStore.actions.queueErrorNotification(
       'Fout bij het ophalen van de uitbetalingen.'
     )
   }
