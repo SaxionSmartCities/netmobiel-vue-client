@@ -1,25 +1,19 @@
 <template>
   <content-pane>
-    <template v-slot:header>
+    <template #header>
       <tab-bar
         :num-tabs="numTabs"
         :selected-tab-model="selectedTab"
         @tabChange="selectedTab = $event"
       >
-        <template v-slot:firstTab>
-          <span>
-            Doelen
-          </span>
+        <template #firstTab>
+          <span>Doelen</span>
         </template>
-        <template v-slot:secondTab>
-          <span>
-            Uitbetalingen
-          </span>
+        <template #secondTab>
+          <span>Uitbetalingen</span>
         </template>
-        <template v-slot:thirdTab>
-          <span>
-            Incentives
-          </span>
+        <template #thirdTab>
+          <span>Incentives</span>
         </template>
       </tab-bar>
     </template>
