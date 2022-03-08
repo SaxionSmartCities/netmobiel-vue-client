@@ -315,13 +315,13 @@ header {
   font-weight: bold;
 }
 
-.v-snack {
-  position: absolute;
-  top: -52px;
+.v-application .v-snack {
+  bottom: 52px;
+  z-index: 5;
 }
 
 .bottom-nav {
-  z-index: 100 !important;
+  z-index: 5;
 }
 
 //HACK: Styling of the notification close button. Some should fix this.
