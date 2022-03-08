@@ -60,12 +60,12 @@ function geoPlaceToAddressLabel(place, includeLabel) {
   return line
 }
 
-function geoPlaceToCriteria(place) {
+function geoPlaceToCriteria(place, includeLabel = true) {
   if (!place?.location?.coordinates) {
     return undefined
   }
   return {
-    label: geoPlaceToAddressLabel(place, true),
+    label: geoPlaceToAddressLabel(place, includeLabel),
     latitude: place.location.coordinates[1],
     longitude: place.location.coordinates[0],
   }
@@ -87,10 +87,12 @@ function coordinatesToGeoLocation(location) {
 
 function geoLocationToPlace(location) {
   const place = {}
-  place.label = location.label
-  place.location = {
-    coordinates: [location.longitude, location.latitude],
-    type: 'Point',
+  if (location) {
+    place.label = location.label
+    place.location = {
+      coordinates: [location.longitude, location.latitude],
+      type: 'Point',
+    }
   }
   return place
 }
