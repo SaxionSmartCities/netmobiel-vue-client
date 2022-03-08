@@ -40,6 +40,7 @@
               <date-menu-selector
                 :value="user.dateOfBirth"
                 label="Geboortedatum"
+                :max="'today'"
                 :outlined="true"
                 @date-selected="onDateSelected"
               ></date-menu-selector>

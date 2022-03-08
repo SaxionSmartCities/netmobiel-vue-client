@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="netmobiel-date-picker">
     <v-menu
       ref="menu"
       v-model="menu"
@@ -11,24 +11,26 @@
     >
       <template #activator="{ on }">
         <v-text-field
-          :value="displayDate"
-          hide-details
+          v-model="displayDate"
+          hide-details="auto"
           :prepend-icon="prependIcon"
           clearable
           readonly
           :outlined="outlined"
           :label="label"
+          :rules="validationRules"
+          @click:clear="save"
           v-on="on"
         >
         </v-text-field>
       </template>
       <!-- The header date does not change with the selection, so no title -->
       <v-date-picker
-        ref="picker"
         v-model="dateInternal"
+        :active-picker.sync="activePicker"
         :title-date-format="titleDate"
-        :max="todayIsoDate"
-        min="1900-01-01"
+        :max="maxDate"
+        :min="minDate"
         locale="nl-NL"
         no-title
         @change="save"
@@ -45,7 +47,7 @@ export default {
     value: {
       type: String,
       required: false,
-      default: null,
+      default: undefined,
     },
     label: {
       type: String,
@@ -62,29 +64,78 @@ export default {
       required: false,
       default: false,
     },
+    max: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    min: {
+      type: String,
+      required: false,
+      default: '1920-01-01',
+    },
+    startWithYear: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    required: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data: function () {
     return {
       dateInternal: null,
       menu: false,
+      activePicker: null,
+      rules: {
+        required: (value) => !!value || 'Verplicht veld',
+      },
     }
   },
   computed: {
-    displayDate() {
-      if (this.value) {
-        return moment(this.value).locale('nl').format('D MMMM YYYY')
+    validationRules() {
+      let rules = []
+      if (this.required) {
+        rules.push(this.rules.required)
       }
-      return undefined
+      return rules
+    },
+    maxDate() {
+      return this.max === 'today' ? this.todayIsoDate : this.max ? this.max : ''
+    },
+    minDate() {
+      return this.min === 'today' ? this.todayIsoDate : this.min ? this.min : ''
+    },
+    displayDate: {
+      get() {
+        if (this.dateInternal) {
+          return moment(this.dateInternal).locale('nl').format('D MMMM YYYY')
+        }
+        return undefined
+      },
+      set(value) {
+        if (!value) {
+          // The clear button is pressed, clear input
+          this.dateInternal = value
+        }
+      },
     },
     todayIsoDate() {
       return moment().format('YYYY-MM-DD')
     },
   },
   watch: {
+    value() {
+      this.dateInternal = this.value
+    },
     menu(val) {
       if (val) {
-        this.dateInternal = this.value
-        this.$nextTick(() => (this.$refs.picker.activePicker = 'YEAR'))
+        if (this.startWithYear) {
+          setTimeout(() => (this.activePicker = 'YEAR'))
+        }
       }
     },
   },
@@ -103,7 +154,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 // To remove the small year header:
 //.v-picker__title__btn.v-date-picker-title__year {
 //  display: none;

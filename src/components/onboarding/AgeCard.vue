@@ -15,6 +15,7 @@
             :value="dateOfBirth"
             label="Geboortedatum"
             :outlined="true"
+            :max="'today'"
             @date-selected="onUpdateDate"
           ></date-menu-selector>
         </v-col>
