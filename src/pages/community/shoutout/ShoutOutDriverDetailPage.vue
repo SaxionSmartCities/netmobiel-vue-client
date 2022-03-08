@@ -276,7 +276,7 @@ export default {
         id: this.rideId,
       })
     } else {
-      const { selectedCarRef } = this.profile?.ridePlanOptions
+      const selectedCarRef = this.profile?.ridePlanOptions?.selectedCarRef
       if (selectedCarRef) {
         csStore.actions.fetchCar({ id: selectedCarRef })
       }

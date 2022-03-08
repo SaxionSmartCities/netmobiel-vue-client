@@ -6,6 +6,7 @@
         <v-icon color="white">arrow_back</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
+      <span class="version">{{ commithash }}</span>
       <!-- Show only when a profile has been created and the profile id (managed identity) is defined -->
       <v-btn v-if="isProfileManaged" icon @click="onProfileImageClick">
         <round-user-image
@@ -79,12 +80,14 @@ import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as NetmobielApp from '@/utils/NetmobielApp'
+import hash from 'raw-loader!@/assets/current.hash'
 
 export default {
   name: 'App',
   components: { RoundUserImage },
   data: () => ({
     offsetTop: 0,
+    commithash: hash,
   }),
   computed: {
     profileImage() {
@@ -279,6 +282,7 @@ export default {
 .homepage #content {
   margin-top: 30vmin;
   border-radius: $border-radius $border-radius 0 0;
+  transition: all 250ms linear;
   -webkit-transition: all 250ms linear;
   -moz-transition: all 250ms linear;
   -o-transition: all 250ms linear;
@@ -311,13 +315,13 @@ header {
   font-weight: bold;
 }
 
-.v-snack {
-  position: absolute;
-  top: -52px;
+.v-application .v-snack {
+  bottom: 52px;
+  z-index: 5;
 }
 
 .bottom-nav {
-  z-index: 100 !important;
+  z-index: 5;
 }
 
 //HACK: Styling of the notification close button. Some should fix this.

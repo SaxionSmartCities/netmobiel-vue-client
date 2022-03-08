@@ -1,4 +1,5 @@
 export class CharityState {
+  withdrawals: Withdrawal[] = []
   charities: Charity[] = []
   charitySearchResults: Charity[] = []
   charity: Charity | null = null
@@ -6,16 +7,11 @@ export class CharityState {
   previouslyDonatedCharities: Charity[] = []
   topDonors: Donor[] = []
 }
-export enum STORE_STATE_OPTIONS {
-  PREVIOUS,
-  INIT,
-  SEARCH,
-}
 
 export interface Charity {
   id: string
+  urn: string
   name: string
-  reference: string
   description: string
   goalAmount: number
   donatedAmount: number
@@ -27,6 +23,8 @@ export interface Charity {
   imageUrl: string
   campaignStartTime: Date
   campaignEndTime: Date
+  donorCount?: number
+  account?: Account
 }
 
 export interface Donation {
@@ -36,7 +34,8 @@ export interface Donation {
     lastName: string
   } | null
   donorRef: string | null
-  charityId: string
+  charity?: Charity
+  charityRef: string
   credits: number
   message: string
   isAnonymous: boolean
@@ -45,9 +44,40 @@ export interface Donation {
 
 export interface Donor {
   totalDonated: number
-  user: {
-    managedIdentity: string
-    firstName: string
-    lastName: string
-  }
+  user: User
+}
+
+export interface User {
+  managedIdentity: string
+  firstName: string
+  lastName: string
+}
+
+export interface Withdrawal {
+  account: Account
+  accountRef: string
+  amountCredits: number
+  amountEurocents: number
+  createdBy: User
+  creationTime: string
+  description: string
+  iban: string
+  ibanHolder: string
+  id: number
+  modificationTime: string
+  modifiedBy: User
+  orderReference: string
+  paymentBatchRef: string
+  reason: string
+  status: string
+}
+
+export interface Account {
+  credits: number
+  iban: string
+  ibanHolder: string
+  id: number
+  name: string
+  ncan: string
+  purpose: string
 }
