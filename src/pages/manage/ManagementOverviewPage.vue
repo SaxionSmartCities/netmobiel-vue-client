@@ -26,18 +26,6 @@
           class="elevation-1"
         ></v-data-table>
       </v-col>
-      <v-col>
-        <v-btn
-          rounded
-          color="button"
-          depressed
-          outlined
-          block
-          @click="$router.push({ name: 'manage/charity' })"
-        >
-          Registreer goed doel
-        </v-btn>
-      </v-col>
     </v-row>
     <v-row v-else-if="selectedTab === 1" class="d-flex flex-column">
       <v-col>
@@ -130,11 +118,6 @@ export default {
     chsStore.actions.fetchCharities()
     chsStore.actions.fetchWithdrawals()
     chsStore.actions.fetchPaymentBatches()
-  },
-  methods: {
-    registreerDoel() {
-      console.log('NOT YET IMPLEMENTED')
-    },
   },
 }
 </script>

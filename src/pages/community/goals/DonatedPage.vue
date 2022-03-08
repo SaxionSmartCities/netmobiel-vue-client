@@ -58,7 +58,7 @@ export default {
     },
     showAllDonations() {
       this.$router.push({
-        name: 'charityDetails',
+        name: 'charityDetailPage',
         params: { id: this.charityId },
       })
     },

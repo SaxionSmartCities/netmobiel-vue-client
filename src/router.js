@@ -8,7 +8,6 @@ import ItineraryDetailPage from './pages/planner/ItineraryDetailPage.vue'
 import LandingPage from './pages/LandingPage.vue'
 import HomePage from './pages/home/HomePage.vue'
 import HowToPage from './pages/home/HowToPage.vue'
-import CharityNewPage from './pages/manage/CharityNewPage.vue'
 import ManagementOverviewPage from './pages/manage/ManagementOverviewPage.vue'
 import ModeSelectionPage from './pages/planner/ModeSelectionPage.vue'
 import NotificationOptionsPage from './pages/profile/NotificationOptionsPage.vue'
@@ -29,7 +28,7 @@ import RidePlanSubmittedPage from './pages/planner/RidePlanSubmittedPage.vue'
 import TripPlanSubmittedPage from './pages/planner/TripPlanSubmittedPage.vue'
 import TripsOverviewPage from './pages/trips/TripsOverviewPage.vue'
 import CharityOverviewPage from './pages/community/goals/CharityOverviewPage'
-import CharityDetailPage from './pages/community/goals/CharityDetailsPage'
+import CharityDetailPage from './pages/community/goals/CharityDetailPage'
 import TripCancelledPage from './pages/trips/TripCancelledPage'
 import TripDetailPage from './pages/trips/TripDetailPage'
 import TripConfirmPage from './pages/trips/TripConfirmPage'
@@ -59,6 +58,8 @@ import TripRejectedPage from '@/pages/trips/TripRejectedPage'
 import RideRejectedPage from '@/pages/trips/RideRejectedPage'
 import RideUnconfirmPage from '@/pages/trips/RideUnconfirmPage'
 import SurveyCompletedPage from '@/pages/profile/SurveyCompletedPage'
+import CharityAdminPage from '@/pages/community/goals/CharityAdminPage'
+import CharityAdminPage from '@/pages/community/goals/CharityAdminPage'
 
 Vue.use(Router)
 
@@ -88,10 +89,15 @@ const router = new Router({
     {
       path: '/manage/charity',
       name: 'manage/charity',
-      component: CharityNewPage,
+      component: CharityAdminPage,
     },
     {
-      path: '/createUser',
+      path: '/logout',
+      name: 'logout',
+      component: LogoutPage,
+    },
+    {
+      path: '/register-user',
       component: RegistrationPage,
       name: 'registerUser',
     },
@@ -133,9 +139,15 @@ const router = new Router({
       name: 'charityOverviewPage',
     },
     {
-      path: '/charityDetailsPage/:id',
+      path: '/charityDetailPage/:id',
       component: CharityDetailPage,
-      name: 'charityDetails',
+      name: 'charityDetailPage',
+      props: true,
+    },
+    {
+      path: '/charityAdminPage/:charityId?',
+      component: CharityAdminPage,
+      name: 'charityAdminPage',
       props: true,
     },
     {
@@ -369,6 +381,11 @@ const router = new Router({
       component: SurveyCompletedPage,
       name: 'surveyCompleted',
       props: true,
+    },
+    {
+      path: '/manage',
+      name: 'manage',
+      component: ManagementOverviewPage,
     },
   ],
 })

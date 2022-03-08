@@ -8,16 +8,10 @@ export class CharityState {
   topDonors: Donor[] = []
 }
 
-export enum STORE_STATE_OPTIONS {
-  PREVIOUS,
-  INIT,
-  SEARCH,
-}
-
 export interface Charity {
   id: string
+  urn: string
   name: string
-  reference: string
   description: string
   goalAmount: number
   donatedAmount: number
@@ -29,6 +23,8 @@ export interface Charity {
   imageUrl: string
   campaignStartTime: Date
   campaignEndTime: Date
+  donorCount?: number
+  account?: Account
 }
 
 export interface Donation {
@@ -38,7 +34,8 @@ export interface Donation {
     lastName: string
   } | null
   donorRef: string | null
-  charityId: string
+  charity?: Charity
+  charityRef: string
   credits: number
   message: string
   isAnonymous: boolean
@@ -82,4 +79,5 @@ export interface Account {
   id: number
   name: string
   ncan: string
+  purpose: string
 }
