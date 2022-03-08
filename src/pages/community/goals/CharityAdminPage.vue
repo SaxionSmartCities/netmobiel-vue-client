@@ -217,7 +217,6 @@ import * as chsStore from '@/store/charity-service'
 import * as uiStore from '@/store/ui'
 import SearchLocation from '@/components/search/SearchLocation'
 import DateMenuSelector from '@/components/common/DateMenuSelector'
-// import { scaleImageDown } from '@/utils/image_scaling'
 import moment from 'moment'
 import { geoLocationToPlace, geoPlaceToCriteria } from '@/utils/Utils'
 import * as gsStore from '@/store/geocoder-service'
@@ -364,11 +363,9 @@ export default {
         const fileReader = new FileReader()
         fileReader.onload = () => {
           this.isUploadingFile = true
-          console.log(`Start upload`)
         }
         fileReader.onloadend = async () => {
           this.isUploadingFile = false
-          console.log(`End upload`)
           const imageString = fileReader.result
           scaleImageDown(imageString, 200).then((resizedImage) => {
             this.image = resizedImage
