@@ -20,6 +20,7 @@
 import constants from '@/constants/constants'
 
 export default {
+  // eslint-disable-next-line vue/multi-word-component-names
   name: 'Compliments',
   props: {
     compliments: { type: Object, required: true },

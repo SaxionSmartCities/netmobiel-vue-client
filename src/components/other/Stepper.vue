@@ -22,6 +22,7 @@
 
 <script>
 export default {
+  // eslint-disable-next-line vue/multi-word-component-names
   name: 'Stepper',
   props: {
     value: { type: Number, required: false, default: 0 },
