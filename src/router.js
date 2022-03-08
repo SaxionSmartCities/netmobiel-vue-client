@@ -81,16 +81,6 @@ const router = new Router({
       component: HomePage,
     },
     {
-      path: '/manage',
-      name: 'manage',
-      component: ManagementOverviewPage,
-    },
-    {
-      path: '/manage/charity',
-      name: 'manage/charity',
-      component: CharityAdminPage,
-    },
-    {
       path: '/logout',
       name: 'logout',
       component: LogoutPage,
