@@ -7,13 +7,13 @@
         @tabChange="selectedTab = $event"
       >
         <template #firstTab>
-          <span>Doelen</span>
+          <span> Doelen </span>
         </template>
         <template #secondTab>
-          <span>Uitbetalingen</span>
+          <span> Uitbetalingen </span>
         </template>
         <template #thirdTab>
-          <span>Incentives</span>
+          <span> Incentives </span>
         </template>
       </tab-bar>
     </template>
