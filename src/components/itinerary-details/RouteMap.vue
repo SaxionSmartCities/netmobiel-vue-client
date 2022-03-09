@@ -46,9 +46,12 @@
 </template>
 
 <script>
-import { MglMap, MglMarker } from 'vue-mapbox'
+import { MglMap, MglMarker } from 'v-mapbox'
 import config from '@/config/config'
 import constants from '@/constants/constants'
+import 'mapbox-gl/dist/mapbox-gl.css'
+import 'v-mapbox/dist/v-mapbox.css'
+import Mapbox from 'mapbox-gl'
 
 const polyline = require('@mapbox/polyline')
 const MAP_STYLE = 'mapbox://styles/mapbox/streets-v11'
@@ -96,6 +99,7 @@ export default {
   },
   created() {
     this.isLoading = true
+    this.mapbox = Mapbox
   },
   methods: {
     onMoveEnd() {
