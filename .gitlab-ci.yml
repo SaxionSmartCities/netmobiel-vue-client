@@ -43,7 +43,7 @@ build site acceptance:
   script:
     - apk update && apk add git
     - hash=`git describe --always`
-    - echo $hash > src/assets/current.hash
+    - echo "VUE_APP_GIT_HASH=$hash" >> .env
     - echo "VUE_APP_YBUG_ID=$VUE_APP_YBUG_ID" >> .env
     - npm run build
   artifacts:
@@ -76,7 +76,7 @@ build site production:
   script:
     - apk update && apk add git
     - hash=`git describe --always`
-    - echo $hash > src/assets/current.hash
+    - echo "VUE_APP_GIT_HASH=$hash" >> .env
     - echo "VUE_APP_YBUG_ID=$VUE_APP_YBUG_ID" >> .env
     - npm run build
   artifacts:
