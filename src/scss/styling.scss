@@ -138,3 +138,11 @@ h4.netmobiel {
 .clickable-item {
   cursor: pointer;
 }
+// Hide the link to improve the map, we do not want to jump away from the page
+.mapboxgl-ctrl-attrib-inner a.mapbox-improve-map {
+  display: none !important;
+}
+// Prevent clickable links on the map not controlled by us
+.mapboxgl-ctrl-attrib-inner a, a.mapboxgl-ctrl-logo {
+  pointer-events: none;
+}

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosRequestHeaders } from 'axios'
 import config from '@/config/config'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { getters, mutations } from '@/store/credits-service'
@@ -15,7 +15,9 @@ const { BANKER_BASE_URL, GRAVITEE_BANKER_SERVICE_API_KEY } = config
 async function fetchSettings(context: ActionContext) {
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/settings`, {
-      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     mutations.setBankerSettings(resp.data)
   } catch (problem) {
@@ -28,7 +30,9 @@ async function fetchSettings(context: ActionContext) {
 async function fetchUser(context: ActionContext) {
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/users/me`, {
-      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     mutations.setBankerUser(resp.data)
   } catch (problem) {
@@ -45,7 +49,9 @@ async function fetchStatements(context: ActionContext, payload: PageSelection) {
     const resp = await axios.get(
       `${BANKER_BASE_URL}/users/me/statements?offset=${offset}&maxResults=${maxResults}`,
       {
-        headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
       }
     )
     return resp.data
@@ -84,7 +90,9 @@ async function buyCredits(context: ActionContext, payload: Deposit) {
       `${BANKER_BASE_URL}/users/me/deposits`,
       payload,
       {
-        headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
       }
     )
     return resp.data
@@ -101,7 +109,9 @@ async function getDepositStatus(context: ActionContext, payload: OrderId) {
       `${BANKER_BASE_URL}/deposit-events`,
       payload,
       {
-        headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
       }
     )
     return resp.data

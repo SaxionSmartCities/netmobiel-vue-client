@@ -1,8 +1,2 @@
-Sass should be limited to version 1.32 due to the excessive amount of deprecation warnings on vuetify.
-Vuetify should first upgrade their scss files to conform to Sass Dart 2.0.
-
-Vuetify 2.4 has breaking changes for Netmobiel, see release notes at https://github.com/vuetifyjs/vuetify/releases
-
-Axios 0.21.4 --> 0.22 has a breaking change in the way the headers are defined.
-
-Node versie moet minimaal 14.17 zijn (o.i.d.), wordt  opgelegd door eslint.
+The eslint tooling requires a node version >= 14.17 (or something).
+The vue-mapbox requires node version >= 16.4.

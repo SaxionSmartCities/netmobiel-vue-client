@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosRequestHeaders } from 'axios'
 import config from '@/config/config'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { GeoCoderRequest, GeoCoderState, GeoCoderSuggestion } from './types'
@@ -46,7 +46,9 @@ async function fetchGeocoderSuggestions(
         center: `${theCenter.latitude},${theCenter.longitude}`,
         maxResults: maxResults || 20,
       },
-      headers: generateHeaders(GRAVITEE_GEOCODE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_GEOCODE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     let suggestions: GeoCoderSuggestion[] = resp.data.data
     if (hidePhoneticMatches) {

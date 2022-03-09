@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios'
+import axios, { AxiosRequestHeaders, AxiosResponse } from 'axios'
 import config from '@/config/config'
 import { Conversation, MessageState } from './types'
 import { RootState } from '@/store/Rootstate'
@@ -29,7 +29,7 @@ function fetchConversations(
     headers: generateHeaders(
       GRAVITEE_COMMUNICATOR_SERVICE_API_KEY,
       delegatorId
-    ),
+    ) as AxiosRequestHeaders,
   })
 }
 
@@ -81,7 +81,7 @@ function fetchConversation(context: ActionContext, { id }: any) {
       headers: generateHeaders(
         GRAVITEE_COMMUNICATOR_SERVICE_API_KEY,
         delegatorId
-      ),
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       if (response.status == 200) {
@@ -143,7 +143,7 @@ function fetchMessages(
       headers: generateHeaders(
         GRAVITEE_COMMUNICATOR_SERVICE_API_KEY,
         delegatorId
-      ),
+      ) as AxiosRequestHeaders,
     })
     .then(function (resp) {
       mutations.setMessages(resp.data.data)
@@ -165,7 +165,7 @@ function sendMessage(context: ActionContext, payload: any) {
     headers: generateHeaders(
       GRAVITEE_COMMUNICATOR_SERVICE_API_KEY,
       delegatorId
-    ),
+    ) as AxiosRequestHeaders,
   })
 }
 
@@ -177,7 +177,7 @@ function fetchMessage(context: ActionContext, { id }: any) {
       headers: generateHeaders(
         GRAVITEE_COMMUNICATOR_SERVICE_API_KEY,
         delegatorId
-      ),
+      ) as AxiosRequestHeaders,
     })
     .then(function (resp) {
       return Promise.resolve(resp.data)

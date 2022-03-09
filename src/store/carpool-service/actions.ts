@@ -3,7 +3,7 @@ import { RootState } from '@/store/Rootstate'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { actions, getters, mutations } from '@/store/carpool-service/index'
 import * as uiStore from '@/store/ui'
-import axios from 'axios'
+import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
 import config from '@/config/config'
 import { generateHeaders } from '@/utils/Utils'
 
@@ -17,7 +17,9 @@ function fetchByLicensePlate(context: ActionContext, payload: string): void {
   const URL = `${RIDESHARE_BASE_URL}/carLicenses?country=NL&plate=${plate}`
   axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_RIDESHARE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then(function (resp) {
       mutations.setCarSearchResult(resp.data)
@@ -35,7 +37,9 @@ function fetchCars(context: ActionContext) {
   const URL = `${RIDESHARE_BASE_URL}/cars`
   axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_RIDESHARE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then(function (resp) {
       if (resp.status == 200) {
@@ -55,7 +59,9 @@ function submitCar(context: ActionContext, payload: Car) {
   const URL = `${RIDESHARE_BASE_URL}/cars`
   axios
     .post(URL, payload, {
-      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_RIDESHARE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then(function (resp) {
       fetchCars(context)
@@ -75,7 +81,9 @@ function fetchCar(context: ActionContext, payload: any) {
   const URL = `${RIDESHARE_BASE_URL}/cars/${payload.id}`
   return axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_RIDESHARE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then((resp) => {
       mutations.setSelectedCar(resp.data)
@@ -91,7 +99,9 @@ function removeCar(context: ActionContext, payload: Car) {
   const URL = `${RIDESHARE_BASE_URL}/cars/${payload.id}`
   axios
     .delete(URL, {
-      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_RIDESHARE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then(function (resp) {
       fetchCars(context)
@@ -145,7 +155,9 @@ function submitRide(context: ActionContext, payload: any) {
   const URL = `${RIDESHARE_BASE_URL}/rides`
   axios
     .post(URL, request, {
-      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_RIDESHARE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then(function (res) {
       if (res.status == 201) {
@@ -170,7 +182,9 @@ function updateRide(context: ActionContext, payload: any) {
 
   return axios
     .put(URL, ride, {
-      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_RIDESHARE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
       params: params,
     })
     .then(function (resp) {
@@ -201,7 +215,9 @@ function fetchRides(
 
   axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_RIDESHARE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
       params: params,
     })
     .then(function (resp) {
@@ -231,7 +247,9 @@ function fetchRide(context: ActionContext, payload: any) {
   const URL = `${RIDESHARE_BASE_URL}/rides/${rideId}`
   return axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_RIDESHARE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then((resp) => {
       mutations.setSelectedRide(resp.data)
@@ -247,7 +265,9 @@ function confirmBookedRide(context: ActionContext, payload: any) {
   const URL = `${RIDESHARE_BASE_URL}/bookings/${payload.id}/confirm/true`
   const data = {}
   const config = {
-    headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+    headers: generateHeaders(
+      GRAVITEE_RIDESHARE_SERVICE_API_KEY
+    ) as AxiosRequestHeaders,
   }
   return axios
     .put(URL, data, config)
@@ -272,7 +292,9 @@ function rejectBookedRide(context: ActionContext, payload: any) {
   const URL = `${RIDESHARE_BASE_URL}/bookings/${payload.id}/confirm/false?reason=${payload.reasonCode}`
   const data = {}
   const config = {
-    headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+    headers: generateHeaders(
+      GRAVITEE_RIDESHARE_SERVICE_API_KEY
+    ) as AxiosRequestHeaders,
   }
   return axios
     .put(URL, data, config)
@@ -297,7 +319,9 @@ function unconfirmBookedRide(context: ActionContext, payload: any) {
   const URL = `${RIDESHARE_BASE_URL}/bookings/${payload.id}/unconfirm`
   const data = {}
   const config = {
-    headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+    headers: generateHeaders(
+      GRAVITEE_RIDESHARE_SERVICE_API_KEY
+    ) as AxiosRequestHeaders,
   }
   axios
     .put(URL, data, config)
@@ -331,7 +355,9 @@ function deleteRide(context: ActionContext, payload: any) {
   }
   return axios
     .delete(URL, {
-      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_RIDESHARE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
       params: params,
     })
     .then(function (resp) {
@@ -361,7 +387,9 @@ function fetchUser(context: ActionContext, { userRef }: UserRef) {
   }
   return axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_RIDESHARE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then(function (resp) {
       mutations.addUser({ userRef, ...resp.data })
@@ -398,7 +426,9 @@ function fetchRideProposals(
   params.sortDir = sortDir
   axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_RIDESHARE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
       params: params,
     })
     .then(function (resp) {
@@ -419,7 +449,9 @@ function fetchRidesFromConversations(context: ActionContext, payload: any) {
     const URL = `${RIDESHARE_BASE_URL}/rides/${conversation.context}`
     rideFetches.push(
       axios.get(URL, {
-        headers: generateHeaders(GRAVITEE_RIDESHARE_SERVICE_API_KEY),
+        headers: generateHeaders(
+          GRAVITEE_RIDESHARE_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
       })
     )
   }

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import vuetify from './plugins/vuetify'
+import VueCompositionAPI from '@vue/composition-api'
 
 import App from './App.vue'
 import axios from 'axios'
@@ -13,7 +14,9 @@ function addStaticTokenInterceptor() {
   axios.interceptors.request.use(
     (config) => {
       if (Vue.prototype.$keycloak.authenticated) {
-        config.headers.Authorization = `Bearer ${Vue.prototype.$keycloak.token}`
+        config.headers = {
+          Authorization: `Bearer ${Vue.prototype.$keycloak.token}`,
+        }
       }
       return config
     },
@@ -50,7 +53,7 @@ function addStaticResponseInterceptor() {
     }
   )
 }
-
+Vue.use(VueCompositionAPI)
 Vue.use(VueKeyCloak, {
   config: {
     authRealm: 'netmobiel',
