@@ -2,7 +2,7 @@ import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { RootState } from '@/store/Rootstate'
 import { Charity, CharityState, Donation } from './types'
 import { mutations } from '@/store/charity-service/index'
-import axios from 'axios'
+import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
 import moment from 'moment'
 import { generateHeaders } from '@/utils/Utils'
 import config from '@/config/config'
@@ -22,7 +22,9 @@ function createAbsoluteImageUrl(imagePath: string | null | undefined): string {
 async function fetchCharities(context: ActionContext, payload: any = {}) {
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/charities`, {
-      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     const charities = resp.data.data
     charities.forEach((c: Charity) => {
@@ -39,7 +41,9 @@ async function fetchCharities(context: ActionContext, payload: any = {}) {
 async function fetchCharity(context: ActionContext, id: string) {
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/charities/${id}`, {
-      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     const charity = resp.data
     charity.imageUrl = createAbsoluteImageUrl(charity.imageUrl)
@@ -54,7 +58,9 @@ async function fetchCharity(context: ActionContext, id: string) {
 async function createCharity(context: ActionContext, payload: Charity) {
   try {
     const resp = await axios.post(`${BANKER_BASE_URL}/charities`, payload, {
-      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     // Expect a 201
     if (resp.status !== 201) {
@@ -74,7 +80,9 @@ async function updateCharity(context: ActionContext, charity: Charity) {
   const URL = `${BANKER_BASE_URL}/charities/${charity.id}`
   try {
     const resp = await axios.put(URL, charity, {
-      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     // Expect a 204
     if (resp.status !== 204) {
@@ -97,7 +105,9 @@ async function updateCharityImage(context: ActionContext, { id, image }: any) {
       URL,
       { image },
       {
-        headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
       }
     )
     // Expect the image path
@@ -119,7 +129,9 @@ async function removeCharityImage(context: ActionContext, id: string) {
   const URL = `${BANKER_BASE_URL}/charities/${id}/image`
   try {
     const resp = await axios.delete(URL, {
-      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     if (resp.status !== 204) {
       // eslint-disable-next-line
@@ -141,7 +153,9 @@ async function updateCharityAccount(
   const URL = `${BANKER_BASE_URL}/charities/${id}/account`
   try {
     const resp = await axios.put(URL, account, {
-      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     // Expect the image path
     // Ignore the returned url. We will fetch the charity object later on.
@@ -174,7 +188,9 @@ async function donate(
       `${BANKER_BASE_URL}/charities/${id}/donations`,
       donation,
       {
-        headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
       }
     )
     // Expect a Created status
@@ -194,7 +210,9 @@ async function fetchPreviouslyDonatedCharities(context: ActionContext) {
     const resp = await axios.get(
       `${BANKER_BASE_URL}/users/me/recent-donations`,
       {
-        headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
         params: {
           maxResults: 5,
         },
@@ -219,7 +237,9 @@ async function fetchDonationsForCharity(context: ActionContext, id: string) {
     const resp = await axios.get(
       `${BANKER_BASE_URL}/charities/${id}/donations`,
       {
-        headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
       }
     )
     const charities = resp.data
@@ -245,7 +265,9 @@ async function fetchDonationsForCharity(context: ActionContext, id: string) {
 async function fetchTopDonors(context: ActionContext) {
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/users/generosity`, {
-      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     if (resp.status === 200) {
       const donors = resp.data.data.map((d: any) => ({
@@ -270,7 +292,9 @@ async function fetchTopDonors(context: ActionContext) {
 async function fetchWithdrawals(context: ActionContext) {
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/withdrawals`, {
-      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     const withdrawals = resp.data.data
     // eslint-disable-next-line
@@ -289,7 +313,9 @@ async function fetchPaymentBatches(context: ActionContext) {
     const until = moment().format()
     const params = { since, until }
     const resp = await axios.get(`${BANKER_BASE_URL}/payment-batches`, {
-      headers: generateHeaders(GRAVITEE_BANKER_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
       params: params,
     })
     const batches = resp.data.data

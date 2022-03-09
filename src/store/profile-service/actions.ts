@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosRequestHeaders } from 'axios'
 import config from '@/config/config'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { Profile, ProfileState } from '@/store/profile-service/types'
@@ -24,7 +24,9 @@ function createProfile(
   payload.fcmToken = context.state.deviceFcmToken
   return axios
     .post(URL, payload, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then(function () {
       fetchProfile(context).catch(() => {})
@@ -54,7 +56,10 @@ function fetchProfile(context: ActionContext) {
   const URL = `${PROFILE_BASE_URL}/profiles/me`
   return axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       if (response.status == 200 && response.data.profiles.length > 0) {
@@ -86,7 +91,9 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
   const URL = `${PROFILE_BASE_URL}/profiles/${profileId}?public=true`
   return axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       if (response.data.profiles.length > 0) {
@@ -114,7 +121,9 @@ function fetchProfiles(context: ActionContext, { keyword }: any) {
   const URL = `${PROFILE_BASE_URL}/profiles?text=${keyword}`
   axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       if (response.status == 200) {
@@ -142,7 +151,10 @@ function fetchFavoriteLocations(context: ActionContext) {
   }
   axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       if (response.status == 200) {
@@ -165,7 +177,9 @@ function storeFavoriteLocation(
   const URL = `${PROFILE_BASE_URL}/profiles/${profileId}/places`
   return axios
     .post(URL, place, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       fetchFavoriteLocations(context)
@@ -187,7 +201,9 @@ function deleteFavoriteLocation(
   const URL = `${PROFILE_BASE_URL}/profiles/${profileId}/places/${placeId}`
   return axios
     .delete(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       fetchFavoriteLocations(context)
@@ -234,7 +250,9 @@ function updateProfile(context: ActionContext, profile: Profile) {
   const URL = `${PROFILE_BASE_URL}/profiles/${profile.id}`
   return axios
     .put(URL, profile, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       if (response.status == 200 && response.data.profiles.length > 0) {
@@ -259,7 +277,9 @@ function updateProfileImage(context: ActionContext, { id, image }: any) {
       URL,
       { image },
       {
-        headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+        headers: generateHeaders(
+          GRAVITEE_PROFILE_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
       }
     )
     .then((response) => {
@@ -287,7 +307,9 @@ function fetchUserCompliments(context: ActionContext, { receiverId }: any) {
   const URL = `${PROFILE_BASE_URL}/compliments`
   return axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
       params: { receiverId: receiverId },
     })
     .then((response) => {
@@ -315,7 +337,9 @@ function fetchComplimentTypes(context: ActionContext) {
   const URL = `${PROFILE_BASE_URL}/compliments/types`
   axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       mutations.setComplimentTypes(response.data.complimentTypes)
@@ -340,7 +364,9 @@ function addUserCompliments(
       URL,
       { receiver, context, compliments },
       {
-        headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+        headers: generateHeaders(
+          GRAVITEE_PROFILE_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
       }
     )
     .then((response) => {
@@ -369,7 +395,9 @@ function removeUserCompliments(
   const URL = `${PROFILE_BASE_URL}/compliments/${complimentId}`
   axios
     .delete(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       // Also no message when saving...
@@ -399,7 +427,9 @@ function fetchUserReviews(context: ActionContext, { receiverId }: any) {
   const URL = `${PROFILE_BASE_URL}/reviews`
   axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
       params: { receiverId: receiverId },
     })
     .then((response) => {
@@ -430,7 +460,9 @@ function addUserReview(
       URL,
       { receiver, context, review },
       {
-        headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+        headers: generateHeaders(
+          GRAVITEE_PROFILE_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
       }
     )
     .then((response) => {
@@ -457,7 +489,9 @@ function removeUserReview(
   const URL = `${PROFILE_BASE_URL}/reviews/${reviewId}`
   axios
     .delete(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       uiStore.actions.queueInfoNotification(`Je beoordeling is verwijderd!`)
@@ -488,7 +522,9 @@ function storeDelegation(
       URL,
       { delegateRef: delegateId, delegatorRef: delegatorId },
       {
-        headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+        headers: generateHeaders(
+          GRAVITEE_PROFILE_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
       }
     )
     .then((response) => {
@@ -516,7 +552,9 @@ function deleteDelegation(
   const URL = `${PROFILE_BASE_URL}/delegations/${delegationId}`
   return axios
     .delete(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       if (response.status === 204) {
@@ -537,7 +575,9 @@ function fetchDelegations(context: ActionContext, { delegateId }: any) {
   const URL = `${PROFILE_BASE_URL}/delegations?delegate=${delegateId}`
   return axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       // Turn relative image URLs into absolute URLs.
@@ -592,7 +632,10 @@ function createSurveyInvitation(context: ActionContext) {
   const URL = `${PROFILE_BASE_URL}/survey-interactions`
   return axios
     .post(URL, null, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       if (response.status === 201) {
@@ -613,7 +656,10 @@ function fetchSurvey(context: ActionContext, id: string) {
   const URL = `${PROFILE_BASE_URL}/survey-interactions/${id}`
   return axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       if (response.status === 200) {
@@ -636,7 +682,10 @@ function fetchSurveyByProviderId(
   const URL = `${PROFILE_BASE_URL}/survey-interactions?surveyId=${surveyProviderId}`
   return axios
     .get(URL, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       if (response.status === 200 && response.data.count >= 1) {
@@ -656,7 +705,10 @@ function markSurveyRedirection(context: ActionContext, surveyId: string) {
   const URL = `${PROFILE_BASE_URL}/survey-interactions/${surveyId}/on-redirect`
   return axios
     .put(URL, null, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       // Should be 204
@@ -672,7 +724,10 @@ function markSurveySubmitted(context: ActionContext, surveyId: string) {
   const URL = `${PROFILE_BASE_URL}/survey-interactions/${surveyId}/on-submit`
   return axios
     .put(URL, null, {
-      headers: generateHeaders(GRAVITEE_PROFILE_SERVICE_API_KEY, delegatorId),
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
+      ) as AxiosRequestHeaders,
     })
     .then((response) => {
       // Should be 204
