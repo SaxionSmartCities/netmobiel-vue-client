@@ -14,9 +14,7 @@ function addStaticTokenInterceptor() {
   axios.interceptors.request.use(
     (config) => {
       if (Vue.prototype.$keycloak.authenticated) {
-        config.headers = {
-          Authorization: `Bearer ${Vue.prototype.$keycloak.token}`,
-        }
+        config.headers!.Authorization = `Bearer ${Vue.prototype.$keycloak.token}`
       }
       return config
     },
