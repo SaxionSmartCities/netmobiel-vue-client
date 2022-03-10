@@ -85,7 +85,7 @@
 import ContentPane from '@/components/common/ContentPane'
 import GoalProgressBar from '@/components/community/charity/GoalProgressBar'
 import * as uiStore from '@/store/ui'
-import * as chsStore from '@/store/charity-service'
+import * as bsStore from '@/store/banker-service'
 import DonationList from '@/components/community/charity/DonationList'
 import moment from 'moment'
 import defaultCharityImage from '@/assets/achterhoek_background.jpg'
@@ -97,7 +97,7 @@ export default {
   },
   computed: {
     charity() {
-      return chsStore.getters.getSelectedCharity
+      return bsStore.getters.getSelectedCharity
     },
     charityImage() {
       return this.charity?.imageUrl
@@ -105,7 +105,7 @@ export default {
         : defaultCharityImage
     },
     donations() {
-      return chsStore.getters.getSelectedCharityDonations
+      return bsStore.getters.getSelectedCharityDonations
     },
     charityName() {
       return this.charity?.name || ''
@@ -125,8 +125,8 @@ export default {
   },
   created() {
     uiStore.mutations.showBackButton()
-    chsStore.actions.fetchCharity(this.id)
-    chsStore.actions.fetchDonationsForCharity(this.id)
+    bsStore.actions.fetchCharity(this.id)
+    bsStore.actions.fetchDonationsForCharity(this.id)
   },
   methods: {
     supportCharity() {

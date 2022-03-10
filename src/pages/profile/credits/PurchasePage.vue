@@ -55,7 +55,7 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-import * as crsStore from '@/store/credits-service'
+import * as bsStore from '@/store/banker-service'
 import * as uiStore from '@/store/ui'
 import config from '@/config/config'
 
@@ -84,7 +84,7 @@ export default {
     this.MIN_AMOUNT = MIN_AMOUNT
     this.MAX_AMOUNT = MAX_AMOUNT
     this.CREDIT_IN_EUROCENTS =
-      crsStore.getters.getBankerSettings?.exchangeRate ?? 0
+      bsStore.getters.getBankerSettings?.exchangeRate ?? 0
   },
   methods: {
     startMoneyTransfer() {
@@ -93,7 +93,7 @@ export default {
         amountCredits: this.creditAmount,
         returnUrl: new URL('wait-for-deposit-confirmation', location.href),
       }
-      crsStore.actions.buyCredits(deposit).then((data) => {
+      bsStore.actions.buyCredits(deposit).then((data) => {
         // follow payment URL in current window
         location = data.paymentUrl
       })

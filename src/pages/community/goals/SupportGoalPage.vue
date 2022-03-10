@@ -75,7 +75,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane'
 import * as uiStore from '@/store/ui'
-import * as chsStore from '@/store/charity-service'
+import * as bsStore from '@/store/banker-service'
 
 export default {
   name: 'SupportGoalPage',
@@ -95,7 +95,7 @@ export default {
   },
   computed: {
     charity() {
-      return chsStore.getters.getSelectedCharity
+      return bsStore.getters.getSelectedCharity
     },
   },
   created() {
@@ -103,7 +103,7 @@ export default {
   },
   methods: {
     donate() {
-      chsStore.actions.donate({
+      bsStore.actions.donate({
         id: this.id,
         amount: this.donationAmount,
         message: this.donationMessage,

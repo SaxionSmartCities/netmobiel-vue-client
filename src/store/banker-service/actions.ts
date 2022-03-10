@@ -1,14 +1,16 @@
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { RootState } from '@/store/Rootstate'
-import { Charity, CharityState, Donation } from './types'
-import { mutations } from '@/store/charity-service/index'
-import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
+import { Charity, BankerState, Deposit, OrderId } from './types'
+import axios, { AxiosRequestHeaders } from 'axios'
 import moment from 'moment'
 import { generateHeaders } from '@/utils/Utils'
 import config from '@/config/config'
 import * as uiStore from '@/store/ui'
+import { PageSelection } from '@/store/types'
+import { getters } from '@/store/banker-service'
+import { mutations } from '@/store/banker-service/index'
 
-type ActionContext = BareActionContext<CharityState, RootState>
+type ActionContext = BareActionContext<BankerState, RootState>
 
 const { BANKER_BASE_URL, IMAGES_BASE_URL, GRAVITEE_BANKER_SERVICE_API_KEY } =
   config
@@ -328,8 +330,137 @@ async function fetchPaymentBatches(context: ActionContext) {
   }
 }
 
+async function fetchSettings(context: ActionContext) {
+  try {
+    const resp = await axios.get(`${BANKER_BASE_URL}/settings`, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    mutations.setBankerSettings(resp.data)
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de bankier instellingen.'
+    )
+  }
+}
+
+async function fetchUser(context: ActionContext) {
+  try {
+    const resp = await axios.get(`${BANKER_BASE_URL}/users/me`, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    mutations.setBankerUser(resp.data)
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de rekeninghouder.'
+    )
+  }
+}
+
+async function fetchStatements(context: ActionContext, payload: PageSelection) {
+  const offset = payload?.offset ?? 0,
+    maxResults = payload?.maxResults ?? 10
+  try {
+    const resp = await axios.get(`${BANKER_BASE_URL}/users/me/statements`, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+      params: {
+        offset,
+        maxResults,
+      },
+    })
+    return resp.data
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de boekingen voor de rekeninghouder.'
+    )
+  }
+}
+
+async function fetchFirstStatements(
+  context: ActionContext,
+  maxResults: number
+) {
+  mutations.setAccountStatements(
+    await fetchStatements(context, { offset: 0, maxResults })
+  )
+}
+
+async function fetchMoreStatements(context: ActionContext, maxResults: number) {
+  const statementsPage = getters.getAccountStatements
+  if (statementsPage && statementsPage.count < statementsPage.totalCount) {
+    mutations.mergeAcountStatements(
+      await fetchStatements(context, {
+        offset: statementsPage.count,
+        maxResults,
+      })
+    )
+  }
+}
+
+// this shouldn't be a Vuex store action, because it doesn't use state from the store
+async function buyCredits(context: ActionContext, payload: Deposit) {
+  try {
+    const resp = await axios.post(
+      `${BANKER_BASE_URL}/users/me/deposits`,
+      payload,
+      {
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+      }
+    )
+    return resp.data
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de payment URL voor de inkoop van credits.'
+    )
+  }
+}
+
+async function getDepositStatus(context: ActionContext, payload: OrderId) {
+  try {
+    const resp = await axios.post(
+      `${BANKER_BASE_URL}/deposit-events`,
+      payload,
+      {
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+      }
+    )
+    return resp.data
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de storting status.'
+    )
+  }
+}
+
+async function fetchSystemAccounts(context: ActionContext) {
+  try {
+    const resp = await axios.get(`${BANKER_BASE_URL}/accounts`, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+      params: {
+        purpose: 'SYSTEM',
+      },
+    })
+    return resp.data
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de boekingen voor de rekeninghouder.'
+    )
+  }
+}
+
 export const buildActions = (
-  chsBuilder: ModuleBuilder<CharityState, RootState>
+  chsBuilder: ModuleBuilder<BankerState, RootState>
 ) => {
   return {
     // Charities
@@ -350,5 +481,13 @@ export const buildActions = (
     // Withdrawals & Payment batches
     fetchWithdrawals: chsBuilder.dispatch(fetchWithdrawals),
     fetchPaymentBatches: chsBuilder.dispatch(fetchPaymentBatches),
+
+    buyCredits: chsBuilder.dispatch(buyCredits),
+    getDepositStatus: chsBuilder.dispatch(getDepositStatus),
+    fetchBankerUser: chsBuilder.dispatch(fetchUser),
+    fetchBankerSettings: chsBuilder.dispatch(fetchSettings),
+    fetchFirstAccountStatements: chsBuilder.dispatch(fetchFirstStatements),
+    fetchMoreAccountStatements: chsBuilder.dispatch(fetchMoreStatements),
+    fetchSystemAccounts: chsBuilder.dispatch(fetchSystemAccounts),
   }
 }

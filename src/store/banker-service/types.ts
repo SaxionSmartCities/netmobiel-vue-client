@@ -1,4 +1,6 @@
-export class CharityState {
+import { Page } from '@/store/types'
+
+export class BankerState {
   withdrawals: Withdrawal[] = []
   charities: Charity[] = []
   charitySearchResults: Charity[] = []
@@ -6,6 +8,10 @@ export class CharityState {
   charityDonations: Donation[] = []
   previouslyDonatedCharities: Charity[] = []
   topDonors: Donor[] = []
+  settings: Settings | null = null
+  user: User | null = null
+  statements: Page<Statement> | null = null
+  accounts: Page<Account> | null = null
 }
 
 export interface Charity {
@@ -48,9 +54,9 @@ export interface Donor {
 }
 
 export interface User {
-  managedIdentity: string
-  firstName: string
-  lastName: string
+  readonly managedIdentity: string
+  readonly firstName: string
+  readonly lastName: string
 }
 
 export interface Withdrawal {
@@ -80,4 +86,47 @@ export interface Account {
   name: string
   ncan: string
   purpose: string
+}
+export interface Deposit {
+  description: string
+  amountCredits: number
+  returnUrl: string
+}
+
+export interface OrderId {
+  readonly order_id: string
+  readonly project_id: string
+}
+
+export interface User {
+  readonly credits: number
+  readonly email: string
+  readonly familyName: string
+  readonly givenName: string
+  readonly id: number
+  readonly managedIdentity: string
+}
+
+export interface Settings {
+  readonly exchangeRate: number
+}
+
+export interface Statement {
+  readonly accountingTime: string
+  readonly accountName: string
+  readonly amount: number
+  readonly context: string
+  readonly counterparty: string
+  readonly description: string
+  readonly id: string
+  readonly ncan: string
+  readonly transactionTime: string
+  readonly transactionType:
+    | 'DEPOSIT'
+    | 'WITHDRAWAL'
+    | 'PAYMENT'
+    | 'RESERVATION'
+    | 'RELEASE'
+  readonly type: 'DEBIT' | 'CREDIT'
+  readonly rollback: boolean
 }

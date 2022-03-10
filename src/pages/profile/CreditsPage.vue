@@ -76,7 +76,7 @@ import CreditHistoryLine from '@/components/profile/CreditHistoryLine.vue'
 import constants from '@/constants/constants'
 import { isBottomVisible } from '@/utils/scroll'
 import * as uiStore from '@/store/ui'
-import * as crsStore from '@/store/credits-service'
+import * as bsStore from '@/store/banker-service'
 
 const { fetchBankerStatementsMaxResults } = constants
 const euroFormatter = new Intl.NumberFormat('nl-NL', {
@@ -101,13 +101,13 @@ export default {
   },
   computed: {
     creditAmount() {
-      return crsStore.getters.getBankerUser?.personalAccount?.credits
+      return bsStore.getters.getBankerUser?.personalAccount?.credits
     },
     creditHistory() {
-      return crsStore.getters.getAccountStatements?.data
+      return bsStore.getters.getAccountStatements?.data
     },
     exchangeRate() {
-      return crsStore.getters.getBankerSettings?.exchangeRate
+      return bsStore.getters.getBankerSettings?.exchangeRate
     },
     euroAmount() {
       return euroFormatter.format((this.creditAmount * this.exchangeRate) / 100)
@@ -117,7 +117,7 @@ export default {
     bottom(bottom) {
       if (bottom) {
         // fetch more statements when window bottom is visible
-        crsStore.actions.fetchMoreAccountStatements(
+        bsStore.actions.fetchMoreAccountStatements(
           fetchBankerStatementsMaxResults
         )
       }
@@ -125,12 +125,10 @@ export default {
   },
   created() {
     uiStore.mutations.showBackButton()
-    crsStore.actions.fetchBankerUser()
-    crsStore.actions.fetchBankerSettings()
+    bsStore.actions.fetchBankerUser()
+    bsStore.actions.fetchBankerSettings()
     // fetch first page with statements
-    crsStore.actions.fetchFirstAccountStatements(
-      fetchBankerStatementsMaxResults
-    )
+    bsStore.actions.fetchFirstAccountStatements(fetchBankerStatementsMaxResults)
   },
   mounted() {
     window.addEventListener('scroll', this.scrollHandler)
