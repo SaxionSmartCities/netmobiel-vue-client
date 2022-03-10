@@ -6,11 +6,11 @@
         <v-col v-if="numBookings > 0" class="py-0">
           <p v-if="confirmedBookings.length === 0">
             Deze rit bevat een aanbod aan een passagier, meld met een
-            persoonlijke boodschap waarom u uw aanbod intrekt.
+            persoonlijke boodschap waarom je het aanbod intrekt.
           </p>
           <p v-else>
-            Uw rit heeft een bevestigde boeking van een passagier, meld met een
-            persoonlijke boodschap waarom u uw rit annuleert.
+            Je rit heeft een bevestigde boeking van een passagier, meld met een
+            persoonlijke boodschap waarom je de rit annuleert.
           </p>
           <v-textarea
             v-model="cancelReason"
@@ -24,8 +24,8 @@
         <!-- A recurrent ride with a booking is never treated as regular recurrent ride -->
         <v-col v-else-if="isRecurrentRide" class="py-0">
           <p>
-            U gaat een rit verwijderen die ingevoerd is als reeks. Welk deel van
-            de reeks wilt u verwijderen?
+            Je gaat een rit verwijderen die ingevoerd is als reeks. Welk deel
+            van de reeks wil je verwijderen?
           </p>
           <v-radio-group v-model="rideScopeRadio">
             <v-radio label="Alleen deze rit" value="this" />
@@ -36,7 +36,7 @@
           </v-radio-group>
         </v-col>
         <v-col v-else class="py-0">
-          Weet u zeker dat u deze rit wil annuleren?
+          Weet je zeker dat je deze rit wilt annuleren?
         </v-col>
       </v-row>
       <v-row class="d-flex flex-column py-2">

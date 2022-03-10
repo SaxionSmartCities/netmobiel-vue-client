@@ -42,7 +42,7 @@ function createProfile(
       } else if (status === 451) {
         errorMsg = 'Ga akkoord  met de gevraagde voorwaarden.'
       } else if (status === 409) {
-        errorMsg = 'U bent al geregistreerd bij Netmobiel.'
+        errorMsg = 'Je bent al geregistreerd bij Netmobiel.'
       } else {
         errorMsg = error.response.data.message || error.response.data
       }

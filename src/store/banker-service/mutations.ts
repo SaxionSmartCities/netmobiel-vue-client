@@ -64,7 +64,7 @@ function mergeStatements(state: BankerState, statements: Page<Statement>) {
   }
 }
 function setSystemAccounts(state: BankerState, accounts: Page<Account>) {
-  state.accounts = accounts
+  state.systemAccounts = accounts
 }
 
 export const buildMutations = (

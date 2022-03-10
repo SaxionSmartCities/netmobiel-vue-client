@@ -328,7 +328,7 @@ function unconfirmBookedRide(context: ActionContext, payload: any) {
     .then(function (resp) {
       if (resp.status == 204) {
         uiStore.actions.queueInfoNotification(
-          'U kunt uw rit nu opnieuw bevestigen.'
+          'Je kunt je rit nu opnieuw bevestigen.'
         )
       }
     })

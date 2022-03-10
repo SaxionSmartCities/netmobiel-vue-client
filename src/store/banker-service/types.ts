@@ -11,7 +11,7 @@ export class BankerState {
   settings: Settings | null = null
   user: User | null = null
   statements: Page<Statement> | null = null
-  accounts: Page<Account> | null = null
+  systemAccounts: Page<Account> | null = null
 }
 
 export interface Charity {

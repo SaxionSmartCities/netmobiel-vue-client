@@ -10,7 +10,7 @@
           >
             <v-icon small color="button">warning</v-icon>
             <span class="secondary-color">
-              Let op! U bent aan het wijzigen.</span
+              Let op! Je bent aan het wijzigen.</span
             >
           </div>
         </v-col>

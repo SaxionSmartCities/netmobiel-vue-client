@@ -45,11 +45,11 @@
             <v-row no-gutters>
               <v-alert :value="status === 200" type="success">
                 <p>Profiel aangemaakt!</p>
-                <p>We sturen U over enkele seconden naar het beginscherm.</p>
+                <p>We sturen je over enkele seconden naar het beginscherm.</p>
               </v-alert>
               <v-alert :value="status === 409" type="warning">
                 <p>Profiel bestaat al!</p>
-                <p>We sturen U over enkele seconden naar het beginscherm.</p>
+                <p>We sturen je over enkele seconden naar het beginscherm.</p>
               </v-alert>
             </v-row>
           </v-card-text>

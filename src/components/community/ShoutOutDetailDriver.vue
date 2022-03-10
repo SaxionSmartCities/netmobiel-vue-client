@@ -48,8 +48,8 @@
           <v-row class="d-flex flex-column">
             <v-col class="py-0">
               <p class="mb-1">
-                Weet u zeker dat u uw aanbod wilt intrekken? Geef in een
-                persoonlijke boodschap aan waarom u uw aanbod intrekt.
+                Weet je zeker dat je het aanbod wilt intrekken? Geef in een
+                persoonlijke boodschap aan waarom je het aanbod intrekt.
               </p>
             </v-col>
             <v-col class="py-0">

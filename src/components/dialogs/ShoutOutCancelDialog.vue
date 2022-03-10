@@ -4,17 +4,17 @@
     <v-card-text>
       <v-row class="d-flex flex-column">
         <v-col v-if="numberOfOffers === 0" class="py-1">
-          Weet u zeker dat u deze oproep wilt annuleren? Dit kan niet ongedaan
+          Weet je zeker dat je deze oproep wilt annuleren? Dit kan niet ongedaan
           gemaakt worden.
         </v-col>
         <v-col v-else class="py-1">
-          U hebt op dit moment
+          Je hebt op dit moment
           {{
             numberOfOffers === 1
               ? 'een aanbod'
               : numberOfOffers + ' aanbiedingen'
           }}
-          op uw oproep. Geef in een persoonlijk bericht aan waarom u uw oproep
+          op je oproep. Geef in een persoonlijk bericht aan waarom je de oproep
           verwijdert. Het verwijderen kan niet ongedaan worden gemaakt.
         </v-col>
         <v-col class="py-0">
