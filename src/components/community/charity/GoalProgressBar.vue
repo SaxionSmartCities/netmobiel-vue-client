@@ -1,5 +1,5 @@
 <template>
-  <v-row no-gutters>
+  <v-row no-gutters class="flex-column">
     <v-col class="text-center font-weight-bold">
       <v-progress-circular
         :rotate="-90"
