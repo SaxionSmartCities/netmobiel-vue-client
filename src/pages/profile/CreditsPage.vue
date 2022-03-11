@@ -18,7 +18,7 @@
       }}</v-col>
     </v-row>
     <v-row v-if="user && user.premiumAccount" class="body-2">
-      <v-col cols="5"> Premie saldo </v-col>
+      <v-col cols="5"> Premiesaldo </v-col>
       <v-col cols="4" class="text-right"
         >{{ user.premiumAccount.credits }} credits</v-col
       >
@@ -27,7 +27,7 @@
       }}</v-col>
     </v-row>
     <v-row v-if="premiumAccount" class="body-2">
-      <v-col cols="5"> Premieuitgifte saldo </v-col>
+      <v-col cols="5"> Saldo premieuitgifte </v-col>
       <v-col cols="4" class="text-right"
         >{{ premiumAccount.credits }} credits</v-col
       >
