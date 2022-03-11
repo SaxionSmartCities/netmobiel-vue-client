@@ -9,8 +9,8 @@
         </div>
         <div class="mt-6">
           <span>
-            Jouw credits zijn gedoneerd, dankjewel!
-            <em>{{ charityName }}</em> is automatisch op de hoogte gebracht.
+            Jouw credits zijn gedoneerd, namens
+            <em>{{ charityName }}</em> bedankt!
           </span>
         </div>
 

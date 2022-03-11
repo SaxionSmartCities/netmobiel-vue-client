@@ -3,15 +3,67 @@ import { Page } from '@/store/types'
 export class BankerState {
   withdrawals: Withdrawal[] = []
   charities: Charity[] = []
+  popularCharities: Charity[] = []
   charitySearchResults: Charity[] = []
   charity: Charity | null = null
   charityDonations: Donation[] = []
   previouslyDonatedCharities: Charity[] = []
-  topDonors: Donor[] = []
+  topDonors: User[] = []
   settings: Settings | null = null
   user: User | null = null
   statements: Page<Statement> | null = null
-  systemAccounts: Page<Account> | null = null
+  systemAccounts: Page<Account> = {
+    offset: 0,
+    count: 0,
+    totalCount: 0,
+    data: [],
+  }
+}
+
+export interface Location {
+  label?: string
+  latitude: number
+  longitude: number
+}
+
+export interface User {
+  // Only optionally present when user record is fetched
+  readonly email?: string
+  readonly familyName: string
+  readonly givenName: string
+  readonly id: number
+  readonly managedIdentity: string
+  // Only defined when the user record is fetched
+  readonly personalAccount?: Account
+  // Only defined when the user record is fetched
+  readonly premiumAccount?: Account
+  // Only present in the results of the user generosity report
+  readonly donatedCredits?: number
+}
+
+export interface Settings {
+  readonly exchangeRate: number
+}
+
+export interface Statement {
+  readonly accountingTime: string
+  readonly accountName: string
+  readonly amount: number
+  readonly context: string
+  readonly counterparty: string
+  readonly description: string
+  readonly id: string
+  readonly ncan: string
+  readonly transactionTime: string
+  readonly transactionType:
+    | 'DEPOSIT'
+    | 'WITHDRAWAL'
+    | 'PAYMENT'
+    | 'REFUND'
+    | 'RESERVATION'
+    | 'RELEASE'
+  readonly type: 'DEBIT' | 'CREDIT'
+  readonly rollback: boolean
 }
 
 export interface Charity {
@@ -21,42 +73,25 @@ export interface Charity {
   description: string
   goalAmount: number
   donatedAmount: number
-  location: {
-    label: string
-    latitude: string
-    longitude: string
-  }
-  imageUrl: string
+  location?: Location
+  imageUrl?: string
   campaignStartTime: Date
-  campaignEndTime: Date
+  campaignEndTime?: Date
+  // Only visible in the charity popularity report
   donorCount?: number
+  // Only visible for privileged users having a role on the charity (or admin and treasurer)
   account?: Account
 }
 
 export interface Donation {
-  donor: {
-    id: string
-    firstName: string
-    lastName: string
-  } | null
-  donorRef: string | null
+  amount: number
+  anonymous: boolean
   charity?: Charity
   charityRef: string
-  credits: number
-  message: string
-  isAnonymous: boolean
-  published: Date
-}
-
-export interface Donor {
-  totalDonated: number
-  user: User
-}
-
-export interface User {
-  readonly managedIdentity: string
-  readonly firstName: string
-  readonly lastName: string
+  description: string
+  donationTime: Date
+  donor?: User
+  donorRef: string | null
 }
 
 export interface Withdrawal {
@@ -85,9 +120,11 @@ export interface Account {
   id: number
   name: string
   ncan: string
-  purpose: string
+  purpose: 'SYSTEM' | 'CURRENT' | 'PREMIUM'
 }
 export interface Deposit {
+  // Account id is set only for deposits on a system account
+  accountId?: string
   description: string
   amountCredits: number
   returnUrl: string
@@ -96,37 +133,4 @@ export interface Deposit {
 export interface OrderId {
   readonly order_id: string
   readonly project_id: string
-}
-
-export interface User {
-  readonly credits: number
-  readonly email: string
-  readonly familyName: string
-  readonly givenName: string
-  readonly id: number
-  readonly managedIdentity: string
-}
-
-export interface Settings {
-  readonly exchangeRate: number
-}
-
-export interface Statement {
-  readonly accountingTime: string
-  readonly accountName: string
-  readonly amount: number
-  readonly context: string
-  readonly counterparty: string
-  readonly description: string
-  readonly id: string
-  readonly ncan: string
-  readonly transactionTime: string
-  readonly transactionType:
-    | 'DEPOSIT'
-    | 'WITHDRAWAL'
-    | 'PAYMENT'
-    | 'RESERVATION'
-    | 'RELEASE'
-  readonly type: 'DEBIT' | 'CREDIT'
-  readonly rollback: boolean
 }

@@ -4,7 +4,6 @@ import {
   Charity,
   BankerState,
   Donation,
-  Donor,
   Settings,
   Statement,
   User,
@@ -15,6 +14,10 @@ import { Page } from '@/store/types'
 
 function setCharities(state: BankerState, payload: Charity[]) {
   state.charities = payload
+}
+
+function setPopularCharities(state: BankerState, payload: Charity[]) {
+  state.popularCharities = payload
 }
 
 function setCharitySearchResults(state: BankerState, payload: Charity[]) {
@@ -28,7 +31,7 @@ function setCharity(state: BankerState, payload: Charity) {
 function setCharityDonations(state: BankerState, donations: Donation[]) {
   state.charityDonations = donations
 }
-function setTopDonors(state: BankerState, donors: Donor[]) {
+function setTopDonors(state: BankerState, donors: User[]) {
   state.topDonors = donors
 }
 
@@ -73,6 +76,7 @@ export const buildMutations = (
   return {
     setWithdrawals: bsBuilder.commit(setWithdrawals),
     setCharities: bsBuilder.commit(setCharities),
+    setPopularCharities: bsBuilder.commit(setPopularCharities),
     setCharity: bsBuilder.commit(setCharity),
     setCharitySearchResults: bsBuilder.commit(setCharitySearchResults),
     setCharityDonations: bsBuilder.commit(setCharityDonations),
@@ -84,5 +88,6 @@ export const buildMutations = (
     setBankerSettings: bsBuilder.commit(setSettings),
     setAccountStatements: bsBuilder.commit(setStatements),
     mergeAcountStatements: bsBuilder.commit(mergeStatements),
+    setSystemAccounts: bsBuilder.commit(setSystemAccounts),
   }
 }

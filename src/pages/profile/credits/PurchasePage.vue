@@ -18,12 +18,12 @@
     </v-row>
     <v-row>
       <v-col>
-        U kunt Netmobiel credits inkopen via iDEAL.<br />
+        Je kunt Netmobiel credits inkopen via iDEAL.<br />
         Eén credit kost {{ CREDIT_IN_EUROCENTS }} eurocent.
       </v-col>
     </v-row>
     <v-row>
-      <v-col> Hoeveel credits wilt U inkopen? </v-col>
+      <v-col> Hoeveel credits wil je inkopen? </v-col>
       <v-col>
         <v-text-field
           v-model.number="creditAmount"
@@ -33,6 +33,15 @@
           :max="MAX_AMOUNT"
           type="number"
         />
+      </v-col>
+    </v-row>
+    <v-row v-if="canActAsTreasurer && premiumAccount">
+      <v-col> Welke rekening wil je aanvullen met credits? </v-col>
+      <v-col class="">
+        <v-radio-group v-model="account">
+          <v-radio label="Persoonlijk" value="personal" />
+          <v-radio label="Premierekening" :value="premiumAccountNcan" />
+        </v-radio-group>
       </v-col>
     </v-row>
     <v-row>
@@ -58,9 +67,10 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import * as bsStore from '@/store/banker-service'
 import * as uiStore from '@/store/ui'
 import config from '@/config/config'
+import * as psStore from '@/store/profile-service'
 
-const MIN_AMOUNT = 10,
-  MAX_AMOUNT = 1000
+const MIN_AMOUNT = 10
+const MAX_AMOUNT = 1000
 
 export default {
   name: 'PurchasePage',
@@ -71,9 +81,22 @@ export default {
     return {
       creditAmount: MIN_AMOUNT,
       bankSimulated: config.BANK_SIMULATED || false,
+      account: 'personal',
     }
   },
   computed: {
+    premiumAccountNcan() {
+      // Name of the system account for distributing premiums
+      return 'premiums'
+    },
+    premiumAccount() {
+      return bsStore.getters.getSystemAccounts?.data.find(
+        (acc) => acc.ncan === this.premiumAccountNcan
+      )
+    },
+    canActAsTreasurer() {
+      return psStore.getters.canActAsTreasurer
+    },
     isValidAmount() {
       const { creditAmount } = this
       return creditAmount >= MIN_AMOUNT && creditAmount <= MAX_AMOUNT
@@ -85,6 +108,9 @@ export default {
     this.MAX_AMOUNT = MAX_AMOUNT
     this.CREDIT_IN_EUROCENTS =
       bsStore.getters.getBankerSettings?.exchangeRate ?? 0
+    if (this.canActAsTreasurer) {
+      bsStore.actions.fetchSystemAccounts()
+    }
   },
   methods: {
     startMoneyTransfer() {
@@ -93,10 +119,20 @@ export default {
         amountCredits: this.creditAmount,
         returnUrl: new URL('wait-for-deposit-confirmation', location.href),
       }
-      bsStore.actions.buyCredits(deposit).then((data) => {
-        // follow payment URL in current window
-        location = data.paymentUrl
-      })
+      if (this.account === this.premiumAccountNcan) {
+        // Deposit to a system account, use the privileged call
+        deposit.accountId = this.premiumAccount.id
+        bsStore.actions.depositCredits(deposit).then((data) => {
+          // follow payment URL in current window
+          location = data.paymentUrl
+        })
+      } else {
+        // Credits go to the user's personal account
+        bsStore.actions.depositCreditsToMyAccount(deposit).then((data) => {
+          // follow payment URL in current window
+          location = data.paymentUrl
+        })
+      }
     },
   },
 }

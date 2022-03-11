@@ -1,5 +1,5 @@
 export default {
-  fetchBankerStatementsMaxResults: 10,
+  fetchBankerStatementsMaxResults: 20,
   fetchTripsMaxResults: 20,
   fetchPastTripsMaxResults: 20,
   fetchPastRidesMaxResults: 20,

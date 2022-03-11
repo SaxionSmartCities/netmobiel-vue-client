@@ -3,13 +3,19 @@
     <v-row align="center" justify="center">
       <v-col>
         <v-img
-          src="@/assets/achterhoek_background.jpg"
-          lazy-src="https://picsum.photos/id/11/100/60"
-          aspect-ratio="1"
+          :src="charityImage"
           class="goal-jumbo-image"
           max-width="500"
-          max-height="300"
+          max-height="500"
         >
+          <template #placeholder>
+            <v-row class="fill-height ma-0" align="center" justify="center">
+              <v-progress-circular
+                indeterminate
+                color="grey lighten-5"
+              ></v-progress-circular>
+            </v-row>
+          </template>
         </v-img>
       </v-col>
     </v-row>
@@ -18,7 +24,9 @@
         <h2 class="netmobiel">
           {{ charity ? charity.name : '' }}
         </h2>
-        <span class="overline">{{ charity ? charity.placec : '' }}</span>
+        <span class="overline">{{
+          charity ? charity.location.label : ''
+        }}</span>
       </v-col>
     </v-row>
     <v-row class="flex-column">
@@ -76,6 +84,7 @@
 import ContentPane from '@/components/common/ContentPane'
 import * as uiStore from '@/store/ui'
 import * as bsStore from '@/store/banker-service'
+import defaultCharityImage from '@/assets/achterhoek_background.jpg'
 
 export default {
   name: 'SupportGoalPage',
@@ -94,6 +103,11 @@ export default {
     }
   },
   computed: {
+    charityImage() {
+      return this.charity?.imageUrl
+        ? this.charity?.imageUrl
+        : defaultCharityImage
+    },
     charity() {
       return bsStore.getters.getSelectedCharity
     },
@@ -104,10 +118,10 @@ export default {
   methods: {
     donate() {
       bsStore.actions.donate({
-        id: this.id,
+        charityRef: this.id,
         amount: this.donationAmount,
-        message: this.donationMessage,
-        isAnonymous: this.isAnonymous,
+        description: this.donationMessage,
+        anonymous: this.isAnonymous,
       })
       this.$router.push({
         name: 'donated',

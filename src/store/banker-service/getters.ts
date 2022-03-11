@@ -9,6 +9,10 @@ export const buildGetters = (
     return state.charities
   }, 'getCharities')
 
+  const getPopularCharities = bsBuilder.read((state) => {
+    return state.popularCharities
+  }, 'getPopularCharities')
+
   const getCharitySearchResults = bsBuilder.read((state) => {
     return state.charitySearchResults
   }, 'getCharitySearchResults')
@@ -36,18 +40,25 @@ export const buildGetters = (
   const getUser = bsBuilder.read((state) => {
     return state.user
   }, 'getUser')
+
   const getSettings = bsBuilder.read((state) => {
     return state.settings
   }, 'getSettings')
+
   const getStatements = bsBuilder.read((state) => {
     return state.statements
   }, 'getStatements')
+
   const getSystemAccounts = bsBuilder.read((state) => {
     return state.systemAccounts
   }, 'getSystemAccounts')
+
   return {
     get getCharities() {
       return getCharities()
+    },
+    get getPopularCharities() {
+      return getPopularCharities()
     },
     get getCharitySearchResults() {
       return getCharitySearchResults()
