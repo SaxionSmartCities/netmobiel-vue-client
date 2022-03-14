@@ -257,7 +257,7 @@ function createTrip(context: ActionContext, itinerary: Itinerary) {
       console.log(error)
       if (error.response.status == 402) {
         uiStore.actions.queueErrorNotification(
-          'U heeft onvoldoende credits voor deze rit'
+          'Je hebt onvoldoende credits voor deze rit'
         )
       } else {
         uiStore.actions.queueErrorNotification(
@@ -440,7 +440,7 @@ function rejectTrip(context: ActionContext, payload: any) {
     .then((resp) => {
       if (resp.status == 204) {
         // Ride is confirmed
-        uiStore.actions.queueInfoNotification('U hebt uw rit afgewezen.')
+        uiStore.actions.queueInfoNotification('Je hebt je rit afgewezen.')
       }
     })
     .catch(function (error) {
@@ -467,7 +467,7 @@ function unconfirmTrip(context: ActionContext, payload: any) {
       if (resp.status == 204) {
         // Ride is confirmed
         uiStore.actions.queueInfoNotification(
-          'U kunt uw rit nu opnieuw bevestigen.'
+          'Je kunt je rit nu opnieuw bevestigen.'
         )
       }
     })
@@ -480,7 +480,7 @@ function unconfirmTrip(context: ActionContext, payload: any) {
         )
       } else if (error.response.status == 402) {
         uiStore.actions.queueErrorNotification(
-          'U heeft onvoldoende credits om deze rit opnieuw te reserveren'
+          'Je hebt onvoldoende credits om deze rit opnieuw te reserveren'
         )
       } else {
         uiStore.actions.queueErrorNotification(

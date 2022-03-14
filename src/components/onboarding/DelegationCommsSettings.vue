@@ -3,7 +3,7 @@
     <v-col dense>
       <v-row>
         <v-col class="pb-0">
-          Hier kunt u de communicatievoorkeuren aangeven voor
+          Hier kun je de communicatievoorkeuren aangeven voor
           <em>{{ value.firstName }}</em>
           .
         </v-col>

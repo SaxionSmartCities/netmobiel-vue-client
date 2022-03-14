@@ -73,7 +73,14 @@
     </v-row>
     <v-row>
       <v-col>
-        <h6 class="text-color-primary text-uppercase my-3 mb-2">Donateurs</h6>
+        <h4 class="netmobiel my-2">Top donateurs</h4>
+        <v-divider />
+        <top-donor-list :donors="topDonors"></top-donor-list>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <h4 class="netmobiel my-2">Donaties</h4>
         <v-divider />
         <donation-list v-if="donations" :donations="donations"></donation-list>
       </v-col>
@@ -85,19 +92,20 @@
 import ContentPane from '@/components/common/ContentPane'
 import GoalProgressBar from '@/components/community/charity/GoalProgressBar'
 import * as uiStore from '@/store/ui'
-import * as chsStore from '@/store/charity-service'
+import * as bsStore from '@/store/banker-service'
 import DonationList from '@/components/community/charity/DonationList'
 import moment from 'moment'
 import defaultCharityImage from '@/assets/achterhoek_background.jpg'
+import TopDonorList from '@/components/community/charity/TopDonorList'
 export default {
   name: 'CharityDetailPage',
-  components: { DonationList, ContentPane, GoalProgressBar },
+  components: { DonationList, ContentPane, GoalProgressBar, TopDonorList },
   props: {
     id: { type: String, required: true },
   },
   computed: {
     charity() {
-      return chsStore.getters.getSelectedCharity
+      return bsStore.getters.getSelectedCharity
     },
     charityImage() {
       return this.charity?.imageUrl
@@ -105,7 +113,7 @@ export default {
         : defaultCharityImage
     },
     donations() {
-      return chsStore.getters.getSelectedCharityDonations
+      return bsStore.getters.getSelectedCharityDonations
     },
     charityName() {
       return this.charity?.name || ''
@@ -114,7 +122,9 @@ export default {
       return this.charity?.location?.label || ''
     },
     totalDonors() {
-      return this.donations?.length || 0
+      return this.popularCharities.length > 0
+        ? this.popularCharities[0].donorCount
+        : 0
     },
     donatedAmount() {
       return this.charity?.donatedAmount || 0
@@ -122,11 +132,23 @@ export default {
     goalAmount() {
       return this.charity?.goalAmount || 1
     },
+    popularCharities() {
+      return bsStore.getters.getPopularCharities
+    },
+    topDonors() {
+      return bsStore.getters.getTopDonors
+    },
   },
   created() {
     uiStore.mutations.showBackButton()
-    chsStore.actions.fetchCharity(this.id)
-    chsStore.actions.fetchDonationsForCharity(this.id)
+    bsStore.actions.fetchCharity(this.id)
+    bsStore.mutations.setPopularCharities([])
+    bsStore.actions.fetchPopularCharities({ charity: this.id })
+    bsStore.actions.fetchDonationsForCharity({
+      charityId: this.id,
+      maxResults: 50,
+    })
+    bsStore.actions.fetchTopDonors({ charity: this.id, maxResults: 3 })
   },
   methods: {
     supportCharity() {

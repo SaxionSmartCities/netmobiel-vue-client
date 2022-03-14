@@ -33,7 +33,7 @@
         <v-card-text>
           <v-row class="d-flex flex-column">
             <v-col class="py-1">
-              Weet u zeker dat u de {{ carToDelete.brand }}
+              Weet je zeker dat je de {{ carToDelete.brand }}
               {{ carToDelete.model }} met nummerplaat
               {{ carToDelete.licensePlate }} wilt verwijderen?
             </v-col>

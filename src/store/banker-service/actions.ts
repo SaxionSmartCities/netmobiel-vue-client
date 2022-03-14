@@ -1,14 +1,16 @@
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { RootState } from '@/store/Rootstate'
-import { Charity, CharityState, Donation } from './types'
-import { mutations } from '@/store/charity-service/index'
-import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
+import { Charity, BankerState, Deposit, OrderId, Donation } from './types'
+import axios, { AxiosRequestHeaders } from 'axios'
 import moment from 'moment'
 import { generateHeaders } from '@/utils/Utils'
 import config from '@/config/config'
 import * as uiStore from '@/store/ui'
+import { PageSelection } from '@/store/types'
+import { getters } from '@/store/banker-service'
+import { mutations } from '@/store/banker-service/index'
 
-type ActionContext = BareActionContext<CharityState, RootState>
+type ActionContext = BareActionContext<BankerState, RootState>
 
 const { BANKER_BASE_URL, IMAGES_BASE_URL, GRAVITEE_BANKER_SERVICE_API_KEY } =
   config
@@ -174,18 +176,32 @@ async function updateCharityAccount(
 
 // ===========  DONATIONS  ================
 
-async function donate(
-  context: ActionContext,
-  { id, amount, message, isAnonymous }: any
-) {
+async function fetchPopularCharities(context: ActionContext, payload: any) {
   try {
-    const donation = {
-      amount,
-      description: message,
-      anonymous: isAnonymous,
+    const resp = await axios.get(`${BANKER_BASE_URL}/charities/popularity`, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+      params: {
+        charity: payload?.charity,
+        offset: payload?.offset,
+        maxResults: payload?.maxResults,
+      },
+    })
+    if (resp.status === 200) {
+      mutations.setPopularCharities(resp.data.data)
     }
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de populariteit van goede doelen.'
+    )
+  }
+}
+
+async function donate(context: ActionContext, donation: Donation) {
+  try {
     const resp = await axios.post(
-      `${BANKER_BASE_URL}/charities/${id}/donations`,
+      `${BANKER_BASE_URL}/charities/${donation.charityRef}/donations`,
       donation,
       {
         headers: generateHeaders(
@@ -223,66 +239,209 @@ async function fetchPreviouslyDonatedCharities(context: ActionContext) {
     charities.forEach((c: Charity) => {
       c.imageUrl = createAbsoluteImageUrl(c.imageUrl)
     })
-
     mutations.setPreviouslyDonatedCharities(charities)
   } catch (problem) {
     await uiStore.actions.queueErrorNotification(
-      'Fout bij het ophalen van recent gedoneerd.'
+      'Fout bij het ophalen van recent gedoneerde goede doelen.'
     )
   }
 }
 
-async function fetchDonationsForCharity(context: ActionContext, id: string) {
+async function fetchDonationsForCharity(context: ActionContext, payload: any) {
   try {
     const resp = await axios.get(
-      `${BANKER_BASE_URL}/charities/${id}/donations`,
+      `${BANKER_BASE_URL}/charities/${payload.charityId}/donations`,
+      {
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+        params: {
+          offset: payload.offset,
+          maxResults: payload.maxResults,
+          user: payload.userId,
+        },
+      }
+    )
+    mutations.setCharityDonations(resp.data.data)
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de donaties voor het goede doel.'
+    )
+  }
+}
+
+async function fetchTopDonors(context: ActionContext, payload: any) {
+  try {
+    const resp = await axios.get(`${BANKER_BASE_URL}/users/generosity`, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+      params: {
+        charity: payload?.charity,
+        offset: payload?.offset,
+        maxResults: payload?.maxResults,
+      },
+    })
+    if (resp.status === 200) {
+      mutations.setTopDonors(resp.data.data)
+    }
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van top donateurs.'
+    )
+  }
+}
+
+async function fetchSettings(context: ActionContext) {
+  try {
+    const resp = await axios.get(`${BANKER_BASE_URL}/settings`, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    mutations.setBankerSettings(resp.data)
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de bankier instellingen.'
+    )
+  }
+}
+
+async function fetchUser(context: ActionContext) {
+  try {
+    const resp = await axios.get(`${BANKER_BASE_URL}/users/me`, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    mutations.setBankerUser(resp.data)
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de rekeninghouder.'
+    )
+  }
+}
+
+async function fetchStatements(context: ActionContext, payload: PageSelection) {
+  const offset = payload?.offset ?? 0,
+    maxResults = payload?.maxResults ?? 10
+  try {
+    const resp = await axios.get(`${BANKER_BASE_URL}/users/me/statements`, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+      params: {
+        offset,
+        maxResults,
+      },
+    })
+    return resp.data
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de boekingen voor de rekeninghouder.'
+    )
+  }
+}
+
+async function fetchFirstStatements(
+  context: ActionContext,
+  maxResults: number
+) {
+  mutations.setAccountStatements(
+    await fetchStatements(context, { offset: 0, maxResults })
+  )
+}
+
+async function fetchMoreStatements(context: ActionContext, maxResults: number) {
+  const statementsPage = getters.getAccountStatements
+  if (statementsPage && statementsPage.count < statementsPage.totalCount) {
+    mutations.mergeAcountStatements(
+      await fetchStatements(context, {
+        offset: statementsPage.count,
+        maxResults,
+      })
+    )
+  }
+}
+
+async function depositCreditsToMyAccount(
+  context: ActionContext,
+  payload: Deposit
+) {
+  try {
+    const resp = await axios.post(
+      `${BANKER_BASE_URL}/users/me/deposits`,
+      payload,
       {
         headers: generateHeaders(
           GRAVITEE_BANKER_SERVICE_API_KEY
         ) as AxiosRequestHeaders,
       }
     )
-    const charities = resp.data
-    const donations = charities.data.map((d: any) => ({
-      donor: {
-        id: d.donor?.managedIdentity,
-        firstName: d.donor?.givenName,
-        lastName: d.donor?.familyName,
-      },
-      credits: d.amount,
-      message: d.description,
-      isAnonymous: d.anonymous,
-      published: d.donationTime,
-    }))
-    mutations.setCharityDonations(donations)
+    // Returns the url to redirect to for doing the actual deposit
+    return resp.data
   } catch (problem) {
     await uiStore.actions.queueErrorNotification(
-      'Fout bij het ophalen van het goede doel.'
+      'Fout bij het ophalen van de payment URL voor de inkoop van credits.'
     )
   }
 }
 
-async function fetchTopDonors(context: ActionContext) {
+async function getDepositStatus(context: ActionContext, payload: OrderId) {
   try {
-    const resp = await axios.get(`${BANKER_BASE_URL}/users/generosity`, {
+    const resp = await axios.post(
+      `${BANKER_BASE_URL}/deposit-events`,
+      payload,
+      {
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+      }
+    )
+    return resp.data
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de storting status.'
+    )
+  }
+}
+
+// ===========  ACCOUNTS   ================
+
+async function fetchSystemAccounts(context: ActionContext) {
+  try {
+    const resp = await axios.get(`${BANKER_BASE_URL}/accounts`, {
       headers: generateHeaders(
         GRAVITEE_BANKER_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
+      params: {
+        purpose: 'SYSTEM',
+      },
     })
-    if (resp.status === 200) {
-      const donors = resp.data.data.map((d: any) => ({
-        totalDonated: d.donatedCredits,
-        user: {
-          managedIdentity: d.managedIdentity,
-          firstName: d.givenName,
-          lastName: d.familyName,
-        },
-      }))
-      mutations.setTopDonors(donors)
-    }
+    mutations.setSystemAccounts(resp.data)
   } catch (problem) {
     await uiStore.actions.queueErrorNotification(
-      'Fout bij het ophalen van top donateurs.'
+      'Fout bij het ophalen van de systeemrekening.'
+    )
+  }
+}
+
+async function depositCredits(context: ActionContext, payload: Deposit) {
+  try {
+    const resp = await axios.post(
+      `${BANKER_BASE_URL}/accounts/${payload.accountId}/deposits`,
+      payload,
+      {
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+      }
+    )
+    // Returns the url to redirect to for doing the actual deposit
+    return resp.data
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de payment URL voor de inkoop van account credits.'
     )
   }
 }
@@ -329,26 +488,43 @@ async function fetchPaymentBatches(context: ActionContext) {
 }
 
 export const buildActions = (
-  chsBuilder: ModuleBuilder<CharityState, RootState>
+  bsBuilder: ModuleBuilder<BankerState, RootState>
 ) => {
   return {
     // Charities
-    fetchCharities: chsBuilder.dispatch(fetchCharities),
-    fetchCharity: chsBuilder.dispatch(fetchCharity),
-    createCharity: chsBuilder.dispatch(createCharity),
-    updateCharity: chsBuilder.dispatch(updateCharity),
-    updateCharityImage: chsBuilder.dispatch(updateCharityImage),
-    removeCharityImage: chsBuilder.dispatch(removeCharityImage),
-    updateCharityAccount: chsBuilder.dispatch(updateCharityAccount),
+    fetchCharities: bsBuilder.dispatch(fetchCharities),
+    fetchCharity: bsBuilder.dispatch(fetchCharity),
+    createCharity: bsBuilder.dispatch(createCharity),
+    updateCharity: bsBuilder.dispatch(updateCharity),
+    updateCharityImage: bsBuilder.dispatch(updateCharityImage),
+    removeCharityImage: bsBuilder.dispatch(removeCharityImage),
+    updateCharityAccount: bsBuilder.dispatch(updateCharityAccount),
+
     // Donations
-    donate: chsBuilder.dispatch(donate),
-    fetchDonationsForCharity: chsBuilder.dispatch(fetchDonationsForCharity),
-    fetchTopDonors: chsBuilder.dispatch(fetchTopDonors),
-    fetchPreviouslyDonatedCharities: chsBuilder.dispatch(
+    donate: bsBuilder.dispatch(donate),
+    fetchDonationsForCharity: bsBuilder.dispatch(fetchDonationsForCharity),
+    fetchTopDonors: bsBuilder.dispatch(fetchTopDonors),
+    fetchPopularCharities: bsBuilder.dispatch(fetchPopularCharities),
+
+    // Users
+    depositCreditsToMyAccount: bsBuilder.dispatch(depositCreditsToMyAccount),
+    fetchBankerUser: bsBuilder.dispatch(fetchUser),
+    fetchBankerSettings: bsBuilder.dispatch(fetchSettings),
+    fetchFirstAccountStatements: bsBuilder.dispatch(fetchFirstStatements),
+    fetchMoreAccountStatements: bsBuilder.dispatch(fetchMoreStatements),
+    fetchPreviouslyDonatedCharities: bsBuilder.dispatch(
       fetchPreviouslyDonatedCharities
     ),
+
+    // Accounts
+    fetchSystemAccounts: bsBuilder.dispatch(fetchSystemAccounts),
+    depositCredits: bsBuilder.dispatch(depositCredits),
+
+    // Check deposits
+    getDepositStatus: bsBuilder.dispatch(getDepositStatus),
+
     // Withdrawals & Payment batches
-    fetchWithdrawals: chsBuilder.dispatch(fetchWithdrawals),
-    fetchPaymentBatches: chsBuilder.dispatch(fetchPaymentBatches),
+    fetchWithdrawals: bsBuilder.dispatch(fetchWithdrawals),
+    fetchPaymentBatches: bsBuilder.dispatch(fetchPaymentBatches),
   }
 }

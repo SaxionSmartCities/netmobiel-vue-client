@@ -15,7 +15,7 @@ export default {
   name: 'ExternalUserImage',
   components: { RoundUserImage },
   props: {
-    managedIdentity: { type: String, required: true },
+    managedIdentity: { type: String, required: false, default: undefined },
     imageSize: { type: Number, default: 70, required: false },
     avatarSize: { type: Number, default: 78, required: false },
   },

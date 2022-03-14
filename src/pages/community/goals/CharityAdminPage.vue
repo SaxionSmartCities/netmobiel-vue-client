@@ -213,7 +213,7 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-import * as chsStore from '@/store/charity-service'
+import * as bsStore from '@/store/banker-service'
 import * as uiStore from '@/store/ui'
 import SearchLocation from '@/components/search/SearchLocation'
 import DateMenuSelector from '@/components/common/DateMenuSelector'
@@ -262,7 +262,7 @@ export default {
   },
   computed: {
     selectedCharity() {
-      return chsStore.getters.getSelectedCharity
+      return bsStore.getters.getSelectedCharity
     },
     charityImage() {
       return this.image
@@ -290,7 +290,7 @@ export default {
       place: undefined,
     })
     if (this.charityId) {
-      chsStore.actions.fetchCharity(this.charityId)
+      bsStore.actions.fetchCharity(this.charityId)
     }
   },
   methods: {
@@ -300,7 +300,7 @@ export default {
       if (!this.charity.id) {
         // Charity does not exist yet, create a new charity
         // Once created reload this same page to add the image etc.
-        chsStore.actions.createCharity(this.charity).then((location) => {
+        bsStore.actions.createCharity(this.charity).then((location) => {
           this.$router.push({
             name: 'charityAdminPage',
             param: location,
@@ -308,21 +308,21 @@ export default {
         })
       } else {
         // Update the charity: Charity details, image (if updated), financial details
-        const updatePromise = chsStore.actions.updateCharity(this.charity)
+        const updatePromise = bsStore.actions.updateCharity(this.charity)
         let updateImagePromise
         if (this.image === null) {
-          updateImagePromise = chsStore.actions.removeCharityImage(
+          updateImagePromise = bsStore.actions.removeCharityImage(
             this.charity.urn
           )
         } else if (this.image !== undefined) {
-          updateImagePromise = chsStore.actions.updateCharityImage({
+          updateImagePromise = bsStore.actions.updateCharityImage({
             id: this.charity.urn,
             image: this.image,
           })
         } else {
           updateImagePromise = Promise.resolve()
         }
-        const updateAccountPromise = chsStore.actions.updateCharityAccount({
+        const updateAccountPromise = bsStore.actions.updateCharityAccount({
           id: this.charity.urn,
           account: this.charity.account,
         })

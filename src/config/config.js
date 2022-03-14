@@ -18,5 +18,5 @@ export default {
   CREDITS_ENABLED: process.env.VUE_APP_CREDITS_ENABLED === 'true',
   BANK_SIMULATED: process.env.VUE_APP_BANK_SIMULATED === 'true',
   GIT_HASH: process.env.VUE_APP_GIT_HASH,
-  SHOW_GIT_HASH: process.env.VUE_APP_SHOW_GIT_HASH === 'true',
+  BUILD_TIME: process.env.VUE_APP_BUILD_TIME,
 }

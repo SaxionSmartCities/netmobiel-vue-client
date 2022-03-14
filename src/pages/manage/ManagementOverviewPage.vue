@@ -67,7 +67,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane'
 import TabBar from '@/components/common/TabBar'
-import * as chsStore from '@/store/charity-service'
+import * as bsStore from '@/store/banker-service'
 
 export default {
   name: 'ManagementOverviewPage',
@@ -108,16 +108,16 @@ export default {
   },
   computed: {
     charities() {
-      return chsStore.getters.getCharities
+      return bsStore.getters.getCharities
     },
     withdrawals() {
-      return chsStore.getters.getWithdrawals
+      return bsStore.getters.getWithdrawals
     },
   },
   mounted() {
-    chsStore.actions.fetchCharities()
-    chsStore.actions.fetchWithdrawals()
-    chsStore.actions.fetchPaymentBatches()
+    bsStore.actions.fetchCharities()
+    bsStore.actions.fetchWithdrawals()
+    bsStore.actions.fetchPaymentBatches()
   },
 }
 </script>

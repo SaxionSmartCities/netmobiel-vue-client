@@ -82,7 +82,7 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
-import * as chsStore from '@/store/charity-service'
+import * as bsStore from '@/store/banker-service'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import CharityCard from '@/components/community/charity/CharityCard'
@@ -93,13 +93,13 @@ export default {
   components: { TopDonorList, CharityCard, ContentPane },
   computed: {
     charities() {
-      return chsStore.getters.getCharities
+      return bsStore.getters.getCharities
     },
     previouslyDonatedCharities() {
-      return chsStore.getters.getPreviouslyDonatedCharities
+      return bsStore.getters.getPreviouslyDonatedCharities
     },
     topDonors() {
-      return chsStore.getters.getTopDonors
+      return bsStore.getters.getTopDonors
     },
     canAdminCharities() {
       return psStore.getters.canActAsTreasurer
@@ -107,9 +107,9 @@ export default {
   },
   created() {
     uiStore.mutations.showBackButton()
-    chsStore.actions.fetchCharities()
-    chsStore.actions.fetchPreviouslyDonatedCharities()
-    chsStore.actions.fetchTopDonors()
+    bsStore.actions.fetchCharities()
+    bsStore.actions.fetchPreviouslyDonatedCharities()
+    bsStore.actions.fetchTopDonors()
   },
   methods: {
     onCharityLookup(charityId) {

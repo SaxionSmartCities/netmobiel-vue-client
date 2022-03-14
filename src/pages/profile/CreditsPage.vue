@@ -1,21 +1,41 @@
 <template>
-  <content-pane>
-    <v-row dense>
+  <content-pane scrollable>
+    <v-row>
       <v-col>
         <h3>Credits</h3>
       </v-col>
     </v-row>
-    <v-row dense>
+    <v-row>
       <v-divider />
     </v-row>
-    <v-row>
-      <v-col class="body-1 shrink">
-        <strong>Saldo</strong>
-      </v-col>
-      <v-col class="body-2">{{ creditAmount }} credits</v-col>
-      <v-col class="body-2">({{ euroAmount }})</v-col>
+    <v-row v-if="user && user.personalAccount" class="body-2">
+      <v-col cols="5"> Vrij saldo </v-col>
+      <v-col cols="4" class="text-right"
+        >{{ user.personalAccount.credits }} credits</v-col
+      >
+      <v-col cols="3" class="text-right">{{
+        amountInEuro(user.personalAccount.credits)
+      }}</v-col>
     </v-row>
-    <v-row dense>
+    <v-row v-if="user && user.premiumAccount" class="body-2">
+      <v-col cols="5"> Premiesaldo </v-col>
+      <v-col cols="4" class="text-right"
+        >{{ user.premiumAccount.credits }} credits</v-col
+      >
+      <v-col cols="3" class="text-right">{{
+        amountInEuro(user.premiumAccount.credits)
+      }}</v-col>
+    </v-row>
+    <v-row v-if="premiumAccount" class="body-2">
+      <v-col cols="5"> Saldo premieuitgifte </v-col>
+      <v-col cols="4" class="text-right"
+        >{{ premiumAccount.credits }} credits</v-col
+      >
+      <v-col cols="3" class="text-right">{{
+        amountInEuro(premiumAccount.credits)
+      }}</v-col>
+    </v-row>
+    <v-row>
       <v-divider />
     </v-row>
     <v-row>
@@ -56,17 +76,23 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row dense>
-      <v-col>
-        <h3 class="text-uppercase caption text-color-primary">overzicht</h3>
-      </v-col>
-    </v-row>
     <v-row>
       <v-divider />
     </v-row>
-    <v-row v-for="(statement, index) in creditHistory" :key="index">
-      <credit-history-line :statement="statement"></credit-history-line>
-    </v-row>
+
+    <grouped-card-list
+      :items="creditHistory"
+      :get-date="(t) => t.transactionTime"
+    >
+      <template #card="{ item, index }">
+        <credit-history-line
+          :index="index"
+          :statement="item"
+          :user="user"
+          :account="account"
+        ></credit-history-line>
+      </template>
+    </grouped-card-list>
   </content-pane>
 </template>
 
@@ -76,7 +102,9 @@ import CreditHistoryLine from '@/components/profile/CreditHistoryLine.vue'
 import constants from '@/constants/constants'
 import { isBottomVisible } from '@/utils/scroll'
 import * as uiStore from '@/store/ui'
-import * as crsStore from '@/store/credits-service'
+import * as bsStore from '@/store/banker-service'
+import * as psStore from '@/store/profile-service'
+import GroupedCardList from '@/components/common/GroupedCardList'
 
 const { fetchBankerStatementsMaxResults } = constants
 const euroFormatter = new Intl.NumberFormat('nl-NL', {
@@ -89,6 +117,7 @@ export default {
   components: {
     ContentPane,
     CreditHistoryLine,
+    GroupedCardList,
   },
   data() {
     return {
@@ -100,24 +129,39 @@ export default {
     }
   },
   computed: {
+    user() {
+      return bsStore.getters.getBankerUser
+    },
+    account() {
+      return this.user?.personalAccount
+    },
     creditAmount() {
-      return crsStore.getters.getBankerUser?.personalAccount?.credits
+      return this.user?.personalAccount?.credits ?? 0
     },
     creditHistory() {
-      return crsStore.getters.getAccountStatements?.data
+      return bsStore.getters.getAccountStatements?.data ?? []
     },
     exchangeRate() {
-      return crsStore.getters.getBankerSettings?.exchangeRate
+      return bsStore.getters.getBankerSettings?.exchangeRate ?? 0
     },
-    euroAmount() {
-      return euroFormatter.format((this.creditAmount * this.exchangeRate) / 100)
+    premiumAccountNcan() {
+      // Name of the system account for distributing premiums
+      return 'premiums'
+    },
+    premiumAccount() {
+      return bsStore.getters.getSystemAccounts?.data.find(
+        (acc) => acc.ncan === this.premiumAccountNcan
+      )
+    },
+    canActAsTreasurer() {
+      return psStore.getters.canActAsTreasurer
     },
   },
   watch: {
     bottom(bottom) {
       if (bottom) {
         // fetch more statements when window bottom is visible
-        crsStore.actions.fetchMoreAccountStatements(
+        bsStore.actions.fetchMoreAccountStatements(
           fetchBankerStatementsMaxResults
         )
       }
@@ -125,18 +169,24 @@ export default {
   },
   created() {
     uiStore.mutations.showBackButton()
-    crsStore.actions.fetchBankerUser()
-    crsStore.actions.fetchBankerSettings()
+    bsStore.actions.fetchBankerUser()
+    bsStore.actions.fetchBankerSettings()
     // fetch first page with statements
-    crsStore.actions.fetchFirstAccountStatements(
-      fetchBankerStatementsMaxResults
-    )
+    bsStore.actions.fetchFirstAccountStatements(fetchBankerStatementsMaxResults)
+    if (this.canActAsTreasurer) {
+      bsStore.actions.fetchSystemAccounts()
+    }
   },
   mounted() {
     window.addEventListener('scroll', this.scrollHandler)
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.scrollHandler)
+  },
+  methods: {
+    amountInEuro(amount) {
+      return euroFormatter.format(((amount || 0) * this.exchangeRate) / 100)
+    },
   },
 }
 </script>

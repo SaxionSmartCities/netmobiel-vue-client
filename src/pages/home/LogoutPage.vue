@@ -18,7 +18,7 @@
         <v-progress-circular indeterminate class="rotate"></v-progress-circular>
       </v-col>
       <v-col class="align-center">
-        <span> U wordt nu afgemeld... </span>
+        <span> Je wordt nu afgemeld... </span>
       </v-col>
     </v-row>
   </content-pane>

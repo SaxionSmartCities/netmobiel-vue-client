@@ -5,8 +5,8 @@
       <v-row class="d-flex flex-column">
         <v-col>
           <p>
-            Let op! U gaat een rit wijzigen die ingevoerd is als reeks. Wat wilt
-            u wijzigen?
+            Let op! Je gaat een rit wijzigen die ingevoerd is als reeks. Wat wil
+            je wijzigen?
           </p>
           <v-radio-group v-model="rideScopeRadio">
             <v-radio label="Alleen deze rit" value="this" />

@@ -19,9 +19,10 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
-import * as crsStore from '@/store/credits-service'
+import * as bsStore from '@/store/banker-service'
 import * as uiStore from '@/store/ui'
 
+// The return url from EMS pay, contains the project_id and the order_id
 const loc = new URL(location.href)
 
 export default {
@@ -38,8 +39,9 @@ export default {
     const timer = setInterval(() => {
       this.progress = this.progress + '.'
     }, 50)
+    // Callback url with query parameters
     const params = loc.searchParams
-    crsStore.actions
+    bsStore.actions
       .getDepositStatus({
         project_id: params.get('project_id'),
         order_id: params.get('order_id'),

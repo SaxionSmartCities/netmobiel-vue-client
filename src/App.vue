@@ -6,7 +6,6 @@
         <v-icon color="white">arrow_back</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <span v-if="showHash" class="version">{{ commitHash }}</span>
       <!-- Show only when a profile has been created and the profile id (managed identity) is defined -->
       <v-btn v-if="isProfileManaged" icon @click="onProfileImageClick">
         <round-user-image
@@ -80,19 +79,14 @@ import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as NetmobielApp from '@/utils/NetmobielApp'
-import config from '@/config/config'
 
 export default {
   name: 'App',
   components: { RoundUserImage },
   data: () => ({
     offsetTop: 0,
-    commitHash: config.GIT_HASH,
   }),
   computed: {
-    showHash() {
-      return process.env.NODE_ENV !== 'production'
-    },
     profileImage() {
       return this.myProfile?.image
     },
@@ -269,12 +263,6 @@ export default {
   // Vuetify applies automatically the padding for header and footer
   height: 100vh;
 }
-.version {
-  font-style: italic;
-  font-size: 0.6em;
-  color: $color-white;
-}
-
 .homepage {
   background-image: url('assets/achterhoek_background.jpg');
   background-size: contain;
