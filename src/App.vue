@@ -31,7 +31,7 @@
         <v-col class="grow">
           {{ notificationQueue[0].message }}
         </v-col>
-        <v-col class="shrink">
+        <v-col class="shrink align-self-center">
           <v-icon
             v-if="notificationQueue[0].timeout === 0"
             right

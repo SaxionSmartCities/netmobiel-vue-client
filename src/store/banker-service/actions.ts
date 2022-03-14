@@ -1,6 +1,6 @@
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { RootState } from '@/store/Rootstate'
-import { Charity, BankerState, Deposit, OrderId, Donation } from './types'
+import { BankerState, Charity, Deposit, Donation, PaymentEvent } from './types'
 import axios, { AxiosRequestHeaders } from 'axios'
 import moment from 'moment'
 import { generateHeaders } from '@/utils/Utils'
@@ -387,7 +387,7 @@ async function depositCreditsToMyAccount(
   }
 }
 
-async function getDepositStatus(context: ActionContext, payload: OrderId) {
+async function getDepositStatus(context: ActionContext, payload: PaymentEvent) {
   try {
     const resp = await axios.post(
       `${BANKER_BASE_URL}/deposit-events`,
@@ -399,9 +399,10 @@ async function getDepositStatus(context: ActionContext, payload: OrderId) {
       }
     )
     return resp.data
+    // return Promise.resolve({ status: 'Active' })
   } catch (problem) {
     await uiStore.actions.queueErrorNotification(
-      'Fout bij het ophalen van de storting status.'
+      'Fout bij het ophalen van de status van de storting.'
     )
   }
 }
