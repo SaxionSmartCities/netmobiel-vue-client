@@ -44,7 +44,7 @@ build site acceptance:
     - apk update && apk add git
     - hash=`git describe --always`
     - echo "VUE_APP_GIT_HASH=$hash" >> .env
-    - echo "VUE_APP_BUILD_TIME=`date --rfc-3339=seconds`" >> .env
+    - echo "VUE_APP_BUILD_TIME=`date -Iseconds`" >> .env
     - echo "VUE_APP_YBUG_ID=$VUE_APP_YBUG_ID" >> .env
     - npm run build
   artifacts:
@@ -78,7 +78,7 @@ build site production:
     - apk update && apk add git
     - hash=`git describe --always`
     - echo "VUE_APP_GIT_HASH=$hash" >> .env
-    - echo "VUE_APP_BUILD_TIME=`date --rfc-3339=seconds`" >> .env
+    - echo "VUE_APP_BUILD_TIME=`date -Iseconds`" >> .env
     - echo "VUE_APP_YBUG_ID=$VUE_APP_YBUG_ID" >> .env
     - npm run build
   artifacts:
