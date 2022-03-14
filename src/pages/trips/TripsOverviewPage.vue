@@ -60,7 +60,10 @@
             <em>Je hebt nog geen ritten gemaakt.</em>
           </v-col>
           <v-col v-else class="py-0">
-            <grouped-card-list :items="getPastTrips">
+            <grouped-card-list
+              :items="getPastTrips"
+              :get-date="(t) => t.itinerary.arrivalTime"
+            >
               <template #card="{ item: trip }">
                 <travel-card
                   :trip-id="trip.id"
@@ -80,7 +83,10 @@
             plannen.
           </v-col>
           <v-col v-else class="py-0">
-            <grouped-card-list :items="getPlannedTrips">
+            <grouped-card-list
+              :items="getPlannedTrips"
+              :get-date="(t) => t.itinerary.arrivalTime"
+            >
               <template #card="{ item: trip }">
                 <travel-card
                   :trip-id="trip.id"
@@ -114,7 +120,10 @@
             </span>
           </v-col>
           <v-col v-else class="py-0">
-            <grouped-card-list :items="getPastRides" type="ride">
+            <grouped-card-list
+              :items="getPastRides"
+              :get-date="(r) => r.departureTime"
+            >
               <template #card="{ item: ride, index }">
                 <ride-card
                   class="trip-card"
@@ -135,7 +144,10 @@
             </span>
           </v-col>
           <v-col v-else class="py-0">
-            <grouped-card-list :items="getPlannedRides" type="ride">
+            <grouped-card-list
+              :items="getPlannedRides"
+              :get-date="(r) => r.departureTime"
+            >
               <template #card="{ item: ride, index }">
                 <ride-card
                   class="trip-card"
