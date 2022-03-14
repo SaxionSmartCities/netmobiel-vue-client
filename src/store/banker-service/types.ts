@@ -46,14 +46,14 @@ export interface Settings {
 }
 
 export interface Statement {
+  readonly account: Account
   readonly accountingTime: string
-  readonly accountName: string
   readonly amount: number
   readonly context: string
-  readonly counterparty: string
+  readonly counterparty: Account
   readonly description: string
   readonly id: string
-  readonly ncan: string
+  readonly rollback: boolean
   readonly transactionTime: string
   readonly transactionType:
     | 'DEPOSIT'
@@ -63,7 +63,6 @@ export interface Statement {
     | 'RESERVATION'
     | 'RELEASE'
   readonly type: 'DEBIT' | 'CREDIT'
-  readonly rollback: boolean
 }
 
 export interface Charity {
