@@ -76,17 +76,23 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row dense>
-      <v-col>
-        <h3 class="text-uppercase caption text-color-primary">overzicht</h3>
-      </v-col>
-    </v-row>
     <v-row>
       <v-divider />
     </v-row>
-    <v-row v-for="(statement, index) in creditHistory" :key="index">
-      <credit-history-line :statement="statement"></credit-history-line>
-    </v-row>
+
+    <grouped-card-list
+      :items="creditHistory"
+      :get-date="(t) => t.transactionTime"
+    >
+      <template #card="{ item, index }">
+        <credit-history-line
+          :index="index"
+          :statement="item"
+          :user="user"
+          :account="account"
+        ></credit-history-line>
+      </template>
+    </grouped-card-list>
   </content-pane>
 </template>
 
@@ -98,6 +104,7 @@ import { isBottomVisible } from '@/utils/scroll'
 import * as uiStore from '@/store/ui'
 import * as bsStore from '@/store/banker-service'
 import * as psStore from '@/store/profile-service'
+import GroupedCardList from '@/components/common/GroupedCardList'
 
 const { fetchBankerStatementsMaxResults } = constants
 const euroFormatter = new Intl.NumberFormat('nl-NL', {
@@ -110,6 +117,7 @@ export default {
   components: {
     ContentPane,
     CreditHistoryLine,
+    GroupedCardList,
   },
   data() {
     return {
@@ -124,11 +132,14 @@ export default {
     user() {
       return bsStore.getters.getBankerUser
     },
+    account() {
+      return this.user?.personalAccount
+    },
     creditAmount() {
       return this.user?.personalAccount?.credits ?? 0
     },
     creditHistory() {
-      return bsStore.getters.getAccountStatements?.data
+      return bsStore.getters.getAccountStatements?.data ?? []
     },
     exchangeRate() {
       return bsStore.getters.getBankerSettings?.exchangeRate ?? 0

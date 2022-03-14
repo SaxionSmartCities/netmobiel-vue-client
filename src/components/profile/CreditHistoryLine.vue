@@ -1,23 +1,20 @@
 <template>
-  <v-col>
-    <v-row dense>
-      <v-col class="body-2 font-weight-medium">
-        {{ formatDate }}
-      </v-col>
-      <v-col class="body-2 align-self-end shrink text-kind">
-        {{ transactionKind }} {{ rollbackText }}
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col class="body-2 align-self-start text-gray shrink">
-        {{ formatTime }}
-      </v-col>
-      <v-col class="body-2">{{ description }}</v-col>
-      <v-col class="body-2 align-self-end shrink" :class="transactionColor">
-        {{ amountFormat }}
-      </v-col>
-    </v-row>
-  </v-col>
+  <v-row>
+    <v-col class="body-2 text-left text-gray shrink">
+      {{ formatTime }}
+    </v-col>
+    <v-col class="body-2">
+      <div>
+        <span class="font-weight-bold">{{ counterparty }}</span>
+        {{ accountType }}
+      </div>
+      <div>{{ description }}</div>
+    </v-col>
+    <v-col class="body-2 align-self-start shrink text-right">
+      <div class="font-italic">{{ transactionKind }} {{ rollbackText }}</div>
+      <div :class="transactionColor">{{ amountFormat }}</div>
+    </v-col>
+  </v-row>
 </template>
 <script>
 import moment from 'moment'
@@ -35,6 +32,10 @@ export default {
   name: 'CreditHistoryLine',
   props: {
     statement: { type: Object, required: true },
+    // The banker user listing the statements
+    user: { type: Object, required: true },
+    // The account this list is about
+    account: { type: Object, required: true },
   },
   computed: {
     amountFormat() {
@@ -44,6 +45,18 @@ export default {
     },
     description() {
       return this.statement.description
+    },
+    accountType() {
+      let type
+      if (this.counterpartyIsMyPremiumAccount) {
+        type = 'premie'
+      } else if (this.counterpartyIsMyPersonalAccount) {
+        type = 'courant'
+      }
+      return type ? ` (${type})` : ''
+    },
+    counterparty() {
+      return this.statement.counterparty.name
     },
     formatDate() {
       let dateString = moment(this.statement.transactionTime)
@@ -62,6 +75,18 @@ export default {
     },
     rollbackText() {
       return this.statement.rollback ? '(herstel)' : ''
+    },
+    counterpartyIsMyPremiumAccount() {
+      return this.statement.counterparty.id === this.user.premiumAccount.id
+    },
+    counterpartyIsMyPersonalAccount() {
+      return this.statement.counterparty.id === this.user.personalAccount.id
+    },
+    counterpartyIsMe() {
+      return (
+        this.counterpartyIsMyPersonalAccount ||
+        this.counterpartyIsMyPremiumAccount
+      )
     },
   },
 }
