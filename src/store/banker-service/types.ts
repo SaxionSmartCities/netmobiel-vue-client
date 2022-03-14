@@ -129,7 +129,7 @@ export interface Deposit {
   returnUrl: string
 }
 
-export interface OrderId {
+export interface PaymentEvent {
   readonly order_id: string
   readonly project_id: string
 }
