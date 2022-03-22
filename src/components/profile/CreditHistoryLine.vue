@@ -58,12 +58,6 @@ export default {
     counterparty() {
       return this.statement.counterparty.name
     },
-    formatDate() {
-      let dateString = moment(this.statement.transactionTime)
-        .locale('nl')
-        .format('dddd D MMMM YYYY')
-      return dateString.charAt(0).toUpperCase() + dateString.substring(1)
-    },
     formatTime() {
       return moment(this.statement.transactionTime).locale('nl').format('HH:mm')
     },
@@ -91,12 +85,12 @@ export default {
   },
 }
 </script>
-<style>
+<style lang="scss">
 .text-gray {
   color: gray;
 }
 .text-green {
-  color: #2e8997;
+  color: $color-green;
 }
 .text-red {
   color: #d0021b;

@@ -54,9 +54,8 @@
           rounded
           block
           outlined
-          disabled
           color="primary"
-          @click="$router.push('/addCredits')"
+          @click="$router.push('/rewardOverviewPage')"
         >
           Beloningen
         </v-btn>

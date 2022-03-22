@@ -387,6 +387,24 @@ async function depositCreditsToMyAccount(
   }
 }
 
+async function fetchUserRewards(context: ActionContext) {
+  try {
+    const resp = await axios.get(`${BANKER_BASE_URL}/users/me/rewards`, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+      params: {
+        maxResults: 20,
+      },
+    })
+    mutations.setRewards(resp.data)
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de beloningen.'
+    )
+  }
+}
+
 async function getDepositStatus(context: ActionContext, payload: PaymentEvent) {
   try {
     const resp = await axios.post(
@@ -516,6 +534,7 @@ export const buildActions = (
     fetchPreviouslyDonatedCharities: bsBuilder.dispatch(
       fetchPreviouslyDonatedCharities
     ),
+    fetchUserRewards: bsBuilder.dispatch(fetchUserRewards),
 
     // Accounts
     fetchSystemAccounts: bsBuilder.dispatch(fetchSystemAccounts),

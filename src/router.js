@@ -59,6 +59,7 @@ import RideRejectedPage from '@/pages/trips/RideRejectedPage'
 import RideUnconfirmPage from '@/pages/trips/RideUnconfirmPage'
 import SurveyCompletedPage from '@/pages/profile/SurveyCompletedPage'
 import CharityAdminPage from '@/pages/community/goals/CharityAdminPage'
+import RewardOverviewPage from '@/pages/profile/RewardOverviewPage'
 
 Vue.use(Router)
 
@@ -150,6 +151,11 @@ const router = new Router({
       component: DonatedPage,
       name: 'donated',
       props: true,
+    },
+    {
+      path: '/rewardOverviewPage',
+      component: RewardOverviewPage,
+      name: 'rewardOverviewPage',
     },
     {
       path: '/planOptions',

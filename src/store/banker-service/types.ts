@@ -18,6 +18,7 @@ export class BankerState {
     totalCount: 0,
     data: [],
   }
+  rewards: Page<Reward> | null = null
 }
 
 export interface Location {
@@ -132,4 +133,30 @@ export interface Deposit {
 export interface PaymentEvent {
   readonly order_id: string
   readonly project_id: string
+}
+
+export interface Incentive {
+  readonly amount: number
+  readonly category: string
+  readonly code: string
+  readonly descriptionTime?: string
+  readonly disableTime?: Date
+  readonly id: number
+  readonly maxAmount?: number
+  readonly redemption: boolean
+  readonly relative: boolean
+  readonly urn: string
+}
+
+export interface Reward {
+  readonly amount: number
+  readonly cancelTime: Date
+  readonly factContext: string
+  readonly id: number
+  readonly incentive: Incentive
+  readonly paidOut: boolean
+  readonly recipient: User
+  readonly rewardTime: Date
+  readonly transactionRef: string
+  readonly urn: string
 }
