@@ -53,6 +53,10 @@ export const buildGetters = (
     return state.systemAccounts
   }, 'getSystemAccounts')
 
+  const getRewards = bsBuilder.read((state) => {
+    return state.rewards
+  }, 'getRewards')
+
   return {
     get getCharities() {
       return getCharities()
@@ -89,6 +93,9 @@ export const buildGetters = (
     },
     get getSystemAccounts() {
       return getSystemAccounts()
+    },
+    get getRewards() {
+      return getRewards()
     },
   }
 }

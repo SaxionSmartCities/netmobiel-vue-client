@@ -1,9 +1,10 @@
 import { ModuleBuilder } from 'vuex-typex'
 import {
   Account,
-  Charity,
   BankerState,
+  Charity,
   Donation,
+  Reward,
   Settings,
   Statement,
   User,
@@ -70,6 +71,10 @@ function setSystemAccounts(state: BankerState, accounts: Page<Account>) {
   state.systemAccounts = accounts
 }
 
+function setRewards(state: BankerState, rewards: Page<Reward>) {
+  state.rewards = rewards
+}
+
 export const buildMutations = (
   bsBuilder: ModuleBuilder<BankerState, RootState>
 ) => {
@@ -89,5 +94,6 @@ export const buildMutations = (
     setAccountStatements: bsBuilder.commit(setStatements),
     mergeAcountStatements: bsBuilder.commit(mergeStatements),
     setSystemAccounts: bsBuilder.commit(setSystemAccounts),
+    setRewards: bsBuilder.commit(setRewards),
   }
 }

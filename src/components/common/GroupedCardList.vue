@@ -3,13 +3,15 @@
     <v-col>
       <section v-for="date in getDistinctDays" :key="date" class="px-0 pb-2">
         <h4 class="netmobiel pb-1">{{ formatToCategoryDate(date) }}</h4>
-        <v-col
+        <v-row
           v-for="(item, index) in getItemsForThatDay(date)"
           :key="index"
-          class="pa-0"
+          dense
         >
-          <slot name="card" :item="item" :index="index"> </slot>
-        </v-col>
+          <v-col>
+            <slot name="card" :item="item" :index="index"> </slot>
+          </v-col>
+        </v-row>
       </section>
     </v-col>
   </v-row>
