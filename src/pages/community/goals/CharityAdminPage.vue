@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" class="full-height">
+  <v-form ref="form" v-model="valid" lazy-validation class="full-height">
     <content-pane>
       <v-row>
         <v-col>
@@ -164,10 +164,15 @@
                 v-model="charity.account.iban"
                 class="bg-white"
                 label="IBAN rekening"
-                :rules="[rules.required]"
+                :rules="[rules.required, rules.iban]"
+                validate-on-blur
                 outlined
                 dense
                 hide-details="auto"
+                spellcheck="false"
+                @change="
+                  charity.account.iban = formatIBAN(charity.account.iban)
+                "
               >
               </v-text-field>
             </v-col>
@@ -179,6 +184,7 @@
                 class="bg-white"
                 label="Naam rekeninghouder"
                 :rules="[rules.required]"
+                validate-on-blur
                 outlined
                 dense
                 hide-details="auto"
@@ -222,6 +228,7 @@ import { geoLocationToPlace, geoPlaceToCriteria } from '@/utils/Utils'
 import * as gsStore from '@/store/geocoder-service'
 import { scaleImageDown } from '@/utils/image_scaling'
 import defaultCharityImage from '@/assets/achterhoek_background.jpg'
+import * as ibantools from 'ibantools'
 
 export default {
   name: 'CharityAdminPage',
@@ -235,6 +242,7 @@ export default {
   },
   data() {
     return {
+      valid: true,
       isUploadingFile: false,
       imageFile: null,
       // If set to null then clear the image
@@ -257,6 +265,8 @@ export default {
       place: null,
       rules: {
         required: (value) => !!value || 'Verplicht veld',
+        iban: (value) =>
+          this.isValidIBAN(value) || 'Ongeldig IBAN rekeningnummer',
       },
     }
   },
@@ -273,11 +283,22 @@ export default {
     },
   },
   watch: {
+    // The router change from new charity to editing the current one does not recreate the component
+    // You really need to watch the change of the input property
+    charityId() {
+      // When input changes then fetch charity again
+      if (this.charityId) {
+        bsStore.actions.fetchCharity(this.charityId)
+      }
+    },
     // Whenever the input changes update the form fields
     selectedCharity() {
       // Deep copy input
       if (this.selectedCharity?.id) {
         this.charity = JSON.parse(JSON.stringify(this.selectedCharity))
+        if (this.charity.account?.iban) {
+          this.charity.account.iban = this.formatIBAN(this.charity.account.iban)
+        }
         this.place = geoLocationToPlace(this.charity.location)
       }
     },
@@ -292,19 +313,33 @@ export default {
     if (this.charityId) {
       bsStore.actions.fetchCharity(this.charityId)
     }
+    // this.this.$refs.form.resetValidation()
   },
   methods: {
+    isValidIBAN(input) {
+      if (!input) {
+        return false
+      }
+      const iban = ibantools.electronicFormatIBAN(input)
+      return ibantools.isValidIBAN(iban)
+    },
     save() {
+      if (!this.validate()) {
+        return
+      }
       // Synchronize name of the account and the name of the charity
       this.charity.account.name = this.charity.name
-      if (!this.charity.id) {
+      if (!this.charityId) {
         // Charity does not exist yet, create a new charity
         // Once created reload this same page to add the image etc.
         bsStore.actions.createCharity(this.charity).then((location) => {
-          this.$router.push({
-            name: 'charityAdminPage',
-            param: location,
-          })
+          if (location) {
+            // Success, fetch the new charity and start editing
+            this.$router.push({
+              name: 'editCharity',
+              params: { charityId: location },
+            })
+          }
         })
       } else {
         // Update the charity: Charity details, image (if updated), financial details
@@ -320,7 +355,7 @@ export default {
             image: this.image,
           })
         } else {
-          updateImagePromise = Promise.resolve()
+          updateImagePromise = Promise.resolve(true)
         }
         const updateAccountPromise = bsStore.actions.updateCharityAccount({
           id: this.charity.urn,
@@ -330,10 +365,12 @@ export default {
           updatePromise,
           updateImagePromise,
           updateAccountPromise,
-        ]).then(() => {
-          this.$router.push({
-            name: 'charityOverviewPage',
-          })
+        ]).then((results) => {
+          if (!results.includes(false)) {
+            this.$router.push({
+              name: 'charityOverviewPage',
+            })
+          }
         })
       }
     },
@@ -341,7 +378,7 @@ export default {
       this.$router.go(-1)
     },
     validate() {
-      this.$refs.form.validate()
+      return this.$refs.form.validate()
     },
     onSearchAddressCompleted(place) {
       this.charity.location = geoPlaceToCriteria(place)
@@ -374,6 +411,9 @@ export default {
         // fileReader.readAsDataURL(event.target.files[0])
         fileReader.readAsDataURL(file)
       }
+    },
+    formatIBAN(input) {
+      return ibantools.friendlyFormatIBAN(input.trim())
     },
   },
 }

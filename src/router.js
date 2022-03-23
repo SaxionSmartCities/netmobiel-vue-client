@@ -135,10 +135,16 @@ const router = new Router({
       props: true,
     },
     {
-      path: '/charityAdminPage/:charityId?',
+      path: '/editCharity/:charityId',
       component: CharityAdminPage,
-      name: 'charityAdminPage',
+      name: 'editCharity',
       props: true,
+    },
+    {
+      path: '/createCharity',
+      component: CharityAdminPage,
+      name: 'createCharity',
+      props: false,
     },
     {
       path: '/supportGoal/:id',
