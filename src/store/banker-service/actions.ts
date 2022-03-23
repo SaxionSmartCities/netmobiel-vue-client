@@ -27,6 +27,7 @@ async function fetchCharities(context: ActionContext, payload: any = {}) {
       headers: generateHeaders(
         GRAVITEE_BANKER_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
+      params: payload,
     })
     const charities = resp.data.data
     charities.forEach((c: Charity) => {
@@ -69,7 +70,7 @@ async function createCharity(context: ActionContext, payload: Charity) {
       // eslint-disable-next-line
       console.warn(`createCharity: Unexpected status ${resp.status}`)
     } else {
-      return
+      return resp.headers.location
     }
   } catch (problem) {
     await uiStore.actions.queueErrorNotification(
@@ -91,12 +92,14 @@ async function updateCharity(context: ActionContext, charity: Charity) {
       // eslint-disable-next-line
       console.warn(`updateCharity: Unexpected status ${resp.status}`)
     }
+    return true
   } catch (error) {
     // eslint-disable-next-line
     console.log(error)
     await uiStore.actions.queueErrorNotification(
       'Fout bij het opslaan van het goede doel.'
     )
+    return false
   }
 }
 
@@ -118,12 +121,14 @@ async function updateCharityImage(context: ActionContext, { id, image }: any) {
       // eslint-disable-next-line
       console.warn(`updateCharityImage: Unexpected status ${resp.status}`)
     }
+    return true
   } catch (error) {
     // eslint-disable-next-line
     console.log(error)
     await uiStore.actions.queueErrorNotification(
       'Fout bij het opslaan van de afbeelding van het goede doel.'
     )
+    return false
   }
 }
 
@@ -165,12 +170,14 @@ async function updateCharityAccount(
       // eslint-disable-next-line
       console.warn(`updateCharityAccount: Unexpected status ${resp.status}`)
     }
+    return true
   } catch (error) {
     // eslint-disable-next-line
     console.log(error)
     await uiStore.actions.queueErrorNotification(
       'Fout bij het opslaan van de financiële gegevens het goede doel.'
     )
+    return false
   }
 }
 

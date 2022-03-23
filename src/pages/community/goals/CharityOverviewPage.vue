@@ -16,7 +16,7 @@
           outlined
           @click="newCharity"
         >
-          Nieuw doel
+          Doel Toevoegen
         </v-btn>
       </v-col>
     </v-row>
@@ -34,11 +34,16 @@
     <v-row>
       <v-col>
         <h4 class="title text-color-primary mb-2">Overzicht</h4>
+        <v-switch
+          v-model="showClosedToo"
+          label="Ook niet-actuele doelen"
+        ></v-switch>
         <template v-for="charity in charities">
           <charity-card
             :key="charity.id"
             :charity="charity"
             :can-admin="canAdminCharities"
+            class="my-2"
             @lookupCharity="onCharityLookup"
             @adminCharity="onCharityAdmin"
           />
@@ -91,6 +96,11 @@ import TopDonorList from '@/components/community/charity/TopDonorList'
 export default {
   name: 'CharityOverviewPage',
   components: { TopDonorList, CharityCard, ContentPane },
+  data() {
+    return {
+      showClosedToo: false,
+    }
+  },
   computed: {
     charities() {
       return bsStore.getters.getCharities
@@ -105,13 +115,23 @@ export default {
       return psStore.getters.canActAsTreasurer
     },
   },
+  watch: {
+    showClosedToo() {
+      this.fetchCharities()
+    },
+  },
   created() {
     uiStore.mutations.showBackButton()
-    bsStore.actions.fetchCharities()
+    this.fetchCharities()
     bsStore.actions.fetchPreviouslyDonatedCharities()
     bsStore.actions.fetchTopDonors()
   },
   methods: {
+    fetchCharities() {
+      bsStore.actions.fetchCharities({
+        closedToo: this.showClosedToo,
+      })
+    },
     onCharityLookup(charityId) {
       this.$router.push({
         name: 'charityDetailPage',
@@ -120,13 +140,13 @@ export default {
     },
     onCharityAdmin(charityId) {
       this.$router.push({
-        name: 'charityAdminPage',
+        name: 'editCharity',
         params: { charityId: charityId },
       })
     },
     newCharity() {
       this.$router.push({
-        name: 'charityAdminPage',
+        name: 'createCharity',
       })
     },
   },

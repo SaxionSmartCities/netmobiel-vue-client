@@ -45,7 +45,7 @@
         outlined
         @click="$emit('lookupCharity', charity.urn)"
       >
-        Bekijk dit doel
+        Bekijken
       </v-btn>
       <v-btn
         v-if="canAdmin"
@@ -57,7 +57,7 @@
         outlined
         @click="$emit('adminCharity', charity.urn)"
       >
-        Beheren
+        Wijzigen
       </v-btn>
     </v-card-actions>
   </v-card>
