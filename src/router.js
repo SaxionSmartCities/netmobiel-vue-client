@@ -59,7 +59,7 @@ import RideRejectedPage from '@/pages/trips/RideRejectedPage'
 import RideUnconfirmPage from '@/pages/trips/RideUnconfirmPage'
 import SurveyCompletedPage from '@/pages/profile/SurveyCompletedPage'
 import CharityAdminPage from '@/pages/community/goals/CharityAdminPage'
-import RewardOverviewPage from '@/pages/profile/RewardOverviewPage'
+import RewardOverviewPage from '@/pages/profile/credits/RewardOverviewPage'
 
 Vue.use(Router)
 
