@@ -1,6 +1,13 @@
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { RootState } from '@/store/Rootstate'
-import { BankerState, Charity, Deposit, Donation, PaymentEvent } from './types'
+import {
+  Account,
+  BankerState,
+  Charity,
+  Deposit,
+  Donation,
+  PaymentEvent,
+} from './types'
 import axios, { AxiosRequestHeaders } from 'axios'
 import moment from 'moment'
 import { generateHeaders } from '@/utils/Utils'
@@ -164,7 +171,6 @@ async function updateCharityAccount(
         GRAVITEE_BANKER_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
     })
-    // Expect the image path
     // Ignore the returned url. We will fetch the charity object later on.
     if (resp.status !== 204) {
       // eslint-disable-next-line
@@ -175,7 +181,7 @@ async function updateCharityAccount(
     // eslint-disable-next-line
     console.log(error)
     await uiStore.actions.queueErrorNotification(
-      'Fout bij het opslaan van de financiële gegevens het goede doel.'
+      'Fout bij het opslaan van de financiële gegevens van het goede doel.'
     )
     return false
   }
@@ -412,6 +418,30 @@ async function fetchUserRewards(context: ActionContext) {
   }
 }
 
+async function updatePersonalAccount(context: ActionContext, account: Account) {
+  const URL = `${BANKER_BASE_URL}/users/me/account`
+  try {
+    const resp = await axios.put(URL, account, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    // Ignore the returned url. We will fetch the charity object later on.
+    if (resp.status !== 204) {
+      // eslint-disable-next-line
+      console.warn(`updatePersonalAccount: Unexpected status ${resp.status}`)
+    }
+    return true
+  } catch (error) {
+    // eslint-disable-next-line
+    console.log(error)
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het opslaan van de financiële gegevens.'
+    )
+    return false
+  }
+}
+
 async function getDepositStatus(context: ActionContext, payload: PaymentEvent) {
   try {
     const resp = await axios.post(
@@ -542,6 +572,7 @@ export const buildActions = (
       fetchPreviouslyDonatedCharities
     ),
     fetchUserRewards: bsBuilder.dispatch(fetchUserRewards),
+    updatePersonalAccount: bsBuilder.dispatch(updatePersonalAccount),
 
     // Accounts
     fetchSystemAccounts: bsBuilder.dispatch(fetchSystemAccounts),

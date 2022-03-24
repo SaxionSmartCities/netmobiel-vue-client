@@ -42,7 +42,7 @@
                 label="Geboortedatum"
                 :max="'today'"
                 :outlined="true"
-                start-with-year="true"
+                :start-with-year="true"
                 @date-selected="onDateSelected"
               ></date-menu-selector>
             </v-col>
@@ -105,6 +105,52 @@
           </v-row>
         </v-col>
       </v-row>
+      <v-row dense>
+        <v-col>
+          <div
+            class="text-uppercase caption font-weight-bold text-color-primary"
+          >
+            Financiële gegevens
+          </div>
+          <div class="caption">
+            De financiële gegevens zijn alleen nodig bij opnames.
+          </div>
+          <v-row class="pt-2">
+            <v-col>
+              <v-text-field
+                v-model="personalAccount.iban"
+                class="bg-white"
+                label="IBAN rekening"
+                :rules="[rules.iban]"
+                validate-on-blur
+                outlined
+                dense
+                hide-details="auto"
+                spellcheck="false"
+                @change="
+                  personalAccount.iban = formatIBAN(personalAccount.iban)
+                "
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="personalAccount.ibanHolder"
+                class="bg-white"
+                label="Naam rekeninghouder"
+                :rules="[rules.requiredIfIban]"
+                validate-on-blur
+                outlined
+                dense
+                hide-details="auto"
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col xs6 class="mx-2">
           <v-btn block rounded outlined color="primary" @click="onCancel()">
@@ -127,6 +173,8 @@ import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import DateMenuSelector from '@/components/common/DateMenuSelector'
 import SearchLocation from '@/components/search/SearchLocation'
+import * as ibantools from 'ibantools'
+import * as bsStore from '@/store/banker-service'
 
 export default {
   name: 'AccountPage',
@@ -136,10 +184,16 @@ export default {
       user: {
         address: {},
       },
+      personalAccount: {
+        iban: undefined,
+        ibanHolder: undefined,
+      },
       selectedProperty: null,
       valid: false,
       rules: {
         required: (value) => !!value || 'Veld is verplicht',
+        requiredIfIban: (value) =>
+          !!value || !this.personalAccount.iban || 'Veld is verplicht',
         email: (value) =>
           !!value?.match(
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -152,13 +206,29 @@ export default {
           ) ||
           !value ||
           'Ongeldig nummer',
+        iban: (value) =>
+          this.isValidIBAN(value) || 'Ongeldig IBAN rekeningnummer',
       },
     }
+  },
+  computed: {
+    bankerUser() {
+      return bsStore.getters.getBankerUser
+    },
+  },
+  watch: {
+    bankerUser() {
+      this.personalAccount = JSON.parse(
+        JSON.stringify(this.bankerUser.personalAccount)
+      )
+    },
   },
   created() {
     uiStore.mutations.showBackButton()
   },
   mounted() {
+    // Fetch me from the banker service
+    bsStore.actions.fetchBankerUser()
     // Shallow copy
     this.user = { ...psStore.getters.getProfile }
     if (this.user?.address) {
@@ -167,6 +237,9 @@ export default {
     }
   },
   methods: {
+    validate() {
+      return this.$refs.form.validate()
+    },
     onDateSelected(date) {
       this.user.dateOfBirth = date
     },
@@ -179,9 +252,34 @@ export default {
       this.$router.push({ name: 'profile' })
     },
     onSave() {
-      psStore.actions
-        .updateProfile(this.user)
-        .then(() => this.$router.push({ name: 'profile' }))
+      if (!this.validate()) {
+        return
+      }
+      this.personalAccount.name = `${this.user.firstName} ${this.user.lastName}`
+      const updateAccountPromise = bsStore.actions.updatePersonalAccount(
+        this.personalAccount
+      )
+      const updateProfilePromise = psStore.actions.updateProfile(this.user)
+      Promise.all([updateProfilePromise, updateAccountPromise]).then(
+        (results) => {
+          // The profile update returns undefined
+          if (!results.includes(false)) {
+            this.$router.push({
+              name: 'profile',
+            })
+          }
+        }
+      )
+    },
+    isValidIBAN(input) {
+      if (!input) {
+        return true
+      }
+      const iban = ibantools.electronicFormatIBAN(input)
+      return ibantools.isValidIBAN(iban)
+    },
+    formatIBAN(input) {
+      return ibantools.friendlyFormatIBAN(input.trim())
     },
   },
 }
