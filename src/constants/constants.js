@@ -134,4 +134,41 @@ export default {
     FALSE: 'Nee',
     UNDECIDED: 'Onbeslist',
   },
+  PAYMENT_STATUS: [
+    {
+      status: 'REQUESTED',
+      iconName: 'watch_later',
+      label: 'In aanvraag',
+      iconColor: 'info',
+      iconClass: 'material-icons-outlined',
+    },
+    {
+      status: 'ACTIVE',
+      iconName: 'supervisor_account',
+      label: 'In behandeling',
+      iconColor: 'info',
+      iconClass: 'material-icons-outlined',
+    },
+    {
+      status: 'COMPLETED',
+      iconName: 'check',
+      label: 'Afgerond',
+      iconColor: 'success',
+      iconClass: '',
+    },
+    {
+      status: 'CANCELLED',
+      iconName: 'close',
+      label: 'Afgewezen',
+      iconColor: 'error',
+      iconClass: '',
+    },
+    {
+      status: 'EXPIRED',
+      iconName: 'assignment_late',
+      label: 'Verlopen',
+      iconColor: 'error',
+      iconClass: 'material-icons-outlined',
+    },
+  ],
 }
