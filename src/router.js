@@ -60,6 +60,8 @@ import RideUnconfirmPage from '@/pages/trips/RideUnconfirmPage'
 import SurveyCompletedPage from '@/pages/profile/SurveyCompletedPage'
 import CharityAdminPage from '@/pages/community/goals/CharityAdminPage'
 import RewardOverviewPage from '@/pages/profile/credits/RewardOverviewPage'
+import WithdrawalOverviewPage from '@/pages/profile/credits/WithdrawalOverviewPage'
+import WithdrawalPage from '@/pages/profile/credits/WithdrawalPage'
 
 Vue.use(Router)
 
@@ -157,11 +159,6 @@ const router = new Router({
       component: DonatedPage,
       name: 'donated',
       props: true,
-    },
-    {
-      path: '/rewardOverviewPage',
-      component: RewardOverviewPage,
-      name: 'rewardOverviewPage',
     },
     {
       path: '/planOptions',
@@ -366,6 +363,21 @@ const router = new Router({
       component: UserProfilePage,
       name: 'userProfile',
       props: true,
+    },
+    {
+      path: '/rewardOverviewPage',
+      component: RewardOverviewPage,
+      name: 'rewardOverviewPage',
+    },
+    {
+      path: '/withdrawalOverviewPage',
+      component: WithdrawalOverviewPage,
+      name: 'withdrawalOverviewPage',
+    },
+    {
+      path: '/newWithdrawal',
+      component: WithdrawalPage,
+      name: 'newWithdrawal',
     },
     {
       path: '/addCredits',

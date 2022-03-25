@@ -43,7 +43,7 @@ function setPreviouslyDonatedCharities(
   state.previouslyDonatedCharities = charities
 }
 
-function setWithdrawals(state: BankerState, withdrawals: Withdrawal[]) {
+function setWithdrawals(state: BankerState, withdrawals: Page<Withdrawal>) {
   state.withdrawals = withdrawals
 }
 

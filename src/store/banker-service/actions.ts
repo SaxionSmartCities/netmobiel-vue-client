@@ -7,6 +7,7 @@ import {
   Deposit,
   Donation,
   PaymentEvent,
+  Withdrawal,
 } from './types'
 import axios, { AxiosRequestHeaders } from 'axios'
 import moment from 'moment'
@@ -400,6 +401,33 @@ async function depositCreditsToMyAccount(
   }
 }
 
+async function withdrawCreditsFromMyAccount(
+  context: ActionContext,
+  payload: Withdrawal
+) {
+  try {
+    const resp = await axios.post(
+      `${BANKER_BASE_URL}/users/me/withdrawals`,
+      payload,
+      {
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+      }
+    )
+    if (resp.status !== 201) {
+      // eslint-disable-next-line
+      console.warn(`withdrawCreditsFromMyAccount: Unexpected status ${resp.status}`)
+    }
+    return true
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het plaatsen van een verzoek om credits in te wisselen.'
+    )
+    return false
+  }
+}
+
 async function fetchUserRewards(context: ActionContext) {
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/users/me/rewards`, {
@@ -502,7 +530,70 @@ async function depositCredits(context: ActionContext, payload: Deposit) {
   }
 }
 
+async function withdrawCredits(context: ActionContext, payload: Withdrawal) {
+  try {
+    const resp = await axios.post(
+      `${BANKER_BASE_URL}/accounts/${payload.accountId}/deposits`,
+      payload,
+      {
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+      }
+    )
+    if (resp.status !== 201) {
+      // eslint-disable-next-line
+      console.warn(`withdrawCredits: Unexpected status ${resp.status}`)
+    }
+    return true
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het plaatsen van een verzoek om credits in te wisselen.'
+    )
+    return false
+  }
+}
+
 // ===========  WITHDRAWAL & PAYMENT BATCH  ================
+
+async function fetchUserWithdrawals(context: ActionContext) {
+  try {
+    const resp = await axios.get(`${BANKER_BASE_URL}/users/me/withdrawals`, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    const withdrawals = resp.data
+    mutations.setWithdrawals(withdrawals)
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de opnames.'
+    )
+  }
+}
+
+async function cancelUserWithdrawal(context: ActionContext, wrid: string) {
+  try {
+    const resp = await axios.delete(
+      `${BANKER_BASE_URL}/users/me/withdrawals/${wrid}`,
+      {
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+      }
+    )
+    if (resp.status !== 204) {
+      // eslint-disable-next-line
+      console.warn(`cancelUserWithdrawal: Unexpected status ${resp.status}`)
+    }
+    return true
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het annuleren van de opname.'
+    )
+    return false
+  }
+}
 
 async function fetchWithdrawals(context: ActionContext) {
   try {
@@ -511,7 +602,7 @@ async function fetchWithdrawals(context: ActionContext) {
         GRAVITEE_BANKER_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
     })
-    const withdrawals = resp.data.data
+    const withdrawals = resp.data
     // eslint-disable-next-line
     console.log(withdrawals)
     mutations.setWithdrawals(withdrawals)
@@ -564,6 +655,11 @@ export const buildActions = (
 
     // Users
     depositCreditsToMyAccount: bsBuilder.dispatch(depositCreditsToMyAccount),
+    withdrawCreditsFromMyAccount: bsBuilder.dispatch(
+      withdrawCreditsFromMyAccount
+    ),
+    fetchUserWithdrawals: bsBuilder.dispatch(fetchUserWithdrawals),
+    cancelUserWithdrawal: bsBuilder.dispatch(cancelUserWithdrawal),
     fetchBankerUser: bsBuilder.dispatch(fetchUser),
     fetchBankerSettings: bsBuilder.dispatch(fetchSettings),
     fetchFirstAccountStatements: bsBuilder.dispatch(fetchFirstStatements),
@@ -577,6 +673,7 @@ export const buildActions = (
     // Accounts
     fetchSystemAccounts: bsBuilder.dispatch(fetchSystemAccounts),
     depositCredits: bsBuilder.dispatch(depositCredits),
+    withdrawCredits: bsBuilder.dispatch(withdrawCredits),
 
     // Check deposits
     getDepositStatus: bsBuilder.dispatch(getDepositStatus),
