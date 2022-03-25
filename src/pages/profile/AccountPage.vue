@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" v-model="valid" class="full-height">
+  <v-form ref="form" v-model="valid" lazy-validation class="full-height">
     <content-pane>
       <v-row dense>
         <v-col><h1>Account</h1></v-col>
@@ -14,7 +14,7 @@
           <v-row>
             <v-col>
               <v-text-field
-                v-model="user.firstName"
+                v-model.trim="user.firstName"
                 hide-details="auto"
                 validate-on-blur
                 outlined
@@ -26,7 +26,7 @@
           <v-row>
             <v-col>
               <v-text-field
-                v-model="user.lastName"
+                v-model.trim="user.lastName"
                 hide-details="auto"
                 validate-on-blur
                 outlined
@@ -80,7 +80,7 @@
           <v-row>
             <v-col>
               <v-text-field
-                v-model="user.email"
+                v-model.trim="user.email"
                 hide-details="auto"
                 validate-on-blur
                 outlined
@@ -94,8 +94,8 @@
           <v-row>
             <v-col>
               <v-text-field
-                v-model="user.phoneNumber"
-                hide-details="true"
+                v-model.trim="user.phoneNumber"
+                hide-details="auto"
                 outlined
                 label="Telefoonnummer"
                 validate-on-blur
@@ -118,7 +118,7 @@
           <v-row class="pt-2">
             <v-col>
               <v-text-field
-                v-model="personalAccount.iban"
+                v-model.trim="personalAccount.iban"
                 class="bg-white"
                 label="IBAN rekening"
                 :rules="[rules.iban]"
@@ -137,7 +137,7 @@
           <v-row>
             <v-col>
               <v-text-field
-                v-model="personalAccount.ibanHolder"
+                v-model.trim="personalAccount.ibanHolder"
                 class="bg-white"
                 label="Naam rekeninghouder"
                 :rules="[rules.requiredIfIban]"
@@ -158,6 +158,10 @@
           </v-btn>
         </v-col>
         <v-col xs6 class="mx-2">
+          <!-- Decision: Always enabling button to prevent a disabled button with a (visible) valid form. -->
+          <!-- Example: IBAN is validated only after blur (to prevent errors during typing). -->
+          <!--          Only after moving to the next field the field is validated and the save button -->
+          <!--          would get enabled. -->
           <v-btn block rounded depressed color="button" @click="onSave()">
             Opslaan
           </v-btn>
@@ -221,6 +225,9 @@ export default {
       this.personalAccount = JSON.parse(
         JSON.stringify(this.bankerUser.personalAccount)
       )
+      if (this.personalAccount.iban) {
+        this.personalAccount.iban = this.formatIBAN(this.personalAccount.iban)
+      }
     },
   },
   created() {
