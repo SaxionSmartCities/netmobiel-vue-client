@@ -31,7 +31,12 @@
       </v-row>
       <v-row no-gutters justify="space-between" class="mx-auto">
         <v-col class="px-0 pb-0">
-          <span class="caption">Nog {{ creditsRemaining }} credits</span>
+          <span v-if="creditsRemaining >= 0" class="caption"
+            >Nog {{ creditsRemaining }} credits</span
+          >
+          <span v-else class="caption"
+            >Al {{ -1 * creditsRemaining }} credits extra!</span
+          >
         </v-col>
       </v-row>
     </v-card-text>

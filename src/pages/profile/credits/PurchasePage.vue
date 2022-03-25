@@ -1,65 +1,70 @@
 <template>
-  <content-pane>
-    <v-row dense>
-      <v-col>
-        <h3>Credits inkopen</h3>
-      </v-col>
-    </v-row>
-    <v-row v-if="bankSimulated">
-      <v-col>
-        <v-alert type="warning">
-          In de huidige testfase van de Netmobiel-app hoef je nog niet écht te
-          betalen voor credits. Wel heb je de fictieve credits nodig om ritten
-          te boeken. Het aankoopproces dat je straks doorloopt is slechts een
-          simulatie en het kost je helemaal niks! Spreek onderling met de
-          chauffeur een eventuele vergoeding af.
-        </v-alert>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        Je kunt Netmobiel credits inkopen via iDEAL.<br />
-        Eén credit kost {{ CREDIT_IN_EUROCENTS }} eurocent.
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col> Hoeveel credits wil je inkopen? </v-col>
-      <v-col>
-        <v-text-field
-          v-model.number="creditAmount"
-          class="border-radius-input"
-          single-line
-          :min="MIN_AMOUNT"
-          :max="MAX_AMOUNT"
-          type="number"
-        />
-      </v-col>
-    </v-row>
-    <v-row v-if="canActAsTreasurer && premiumAccount">
-      <v-col> Welke rekening wil je aanvullen met credits? </v-col>
-      <v-col class="">
-        <v-radio-group v-model="account">
-          <v-radio label="Persoonlijk" value="personal" />
-          <v-radio label="Premierekening" :value="premiumAccountNcan" />
-        </v-radio-group>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-btn
-          large
-          rounded
-          block
-          depressed
-          :disable="!isValidAmount"
-          color="button"
-          @click="startMoneyTransfer()"
-        >
-          Betaal met iDEAL
-        </v-btn>
-      </v-col>
-    </v-row>
-  </content-pane>
+  <v-form ref="form" v-model="valid" class="full-height">
+    <content-pane>
+      <v-row dense>
+        <v-col>
+          <h1>Credits inkopen</h1>
+        </v-col>
+      </v-row>
+      <v-row v-if="bankSimulated">
+        <v-col>
+          <v-alert type="warning">
+            In de huidige testfase van de Netmobiel-app hoef je nog niet écht te
+            betalen voor credits. Wel heb je de fictieve credits nodig om ritten
+            te boeken. Het aankoopproces dat je straks doorloopt is slechts een
+            simulatie en het kost je helemaal niks! Spreek onderling met de
+            chauffeur een eventuele vergoeding af.
+          </v-alert>
+        </v-col>
+      </v-row>
+      <v-row dense>
+        <v-col>
+          Je kunt Netmobiel credits inkopen via iDEAL.<br />
+          Eén credit kost {{ exchangeRate }} eurocent.
+        </v-col>
+      </v-row>
+      <v-row dense>
+        <v-col> Hoeveel credits wil je inkopen? </v-col>
+        <v-col>
+          <v-text-field
+            v-model.number="creditAmount"
+            class="border-radius-input"
+            single-line
+            :rules="[rules.required, rules.minAmount, rules.maxAmount]"
+            type="number"
+          />
+        </v-col>
+      </v-row>
+      <v-row
+        v-if="canActAsTreasurer && premiumAccount"
+        dense
+        class="align-center"
+      >
+        <v-col> Welke rekening wil je aanvullen met credits? </v-col>
+        <v-col class="">
+          <v-radio-group v-model="account">
+            <v-radio label="Persoonlijk" value="personal" />
+            <v-radio label="Premierekening" :value="premiumAccountNcan" />
+          </v-radio-group>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-btn
+            large
+            rounded
+            block
+            depressed
+            :disabled="!valid"
+            color="button"
+            @click="startMoneyTransfer()"
+          >
+            Betaal met iDEAL
+          </v-btn>
+        </v-col>
+      </v-row>
+    </content-pane>
+  </v-form>
 </template>
 
 <script>
@@ -79,9 +84,15 @@ export default {
   },
   data: function () {
     return {
+      valid: false,
       creditAmount: MIN_AMOUNT,
       bankSimulated: config.BANK_SIMULATED || false,
       account: 'personal',
+      rules: {
+        required: (value) => !!value || 'Veld is verplicht',
+        minAmount: (value) => value >= MIN_AMOUNT || `Minimaal ${MIN_AMOUNT}`,
+        maxAmount: (value) => value <= MAX_AMOUNT || `Maximaal ${MAX_AMOUNT}`,
+      },
     }
   },
   computed: {
@@ -97,17 +108,12 @@ export default {
     canActAsTreasurer() {
       return psStore.getters.canActAsTreasurer
     },
-    isValidAmount() {
-      const { creditAmount } = this
-      return creditAmount >= MIN_AMOUNT && creditAmount <= MAX_AMOUNT
+    exchangeRate() {
+      return bsStore.getters.getBankerSettings?.exchangeRate ?? 0
     },
   },
   created() {
     uiStore.mutations.showBackButton()
-    this.MIN_AMOUNT = MIN_AMOUNT
-    this.MAX_AMOUNT = MAX_AMOUNT
-    this.CREDIT_IN_EUROCENTS =
-      bsStore.getters.getBankerSettings?.exchangeRate ?? 0
     if (this.canActAsTreasurer) {
       bsStore.actions.fetchSystemAccounts()
     }

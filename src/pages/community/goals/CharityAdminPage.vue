@@ -208,6 +208,10 @@
           </v-btn>
         </v-col>
         <v-col>
+          <!-- Decision: Always enabling button to prevent a disabled button with a (visible) valid form. -->
+          <!-- Example: IBAN is validated only after blur (to prevent errors during typing). -->
+          <!--          Only after moving to the next field the field is validated and the save button -->
+          <!--          would get enabled. -->
           <v-btn rounded color="button" depressed block @click="save()">
             Opslaan
           </v-btn>

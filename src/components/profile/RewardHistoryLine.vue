@@ -44,12 +44,12 @@ export default {
     name() {
       return this.reward.recipient
         ? `${this.reward.recipient.givenName} ${this.reward.recipient.familyName}`
-        : 'Jaap Reitsma'
+        : ''
     },
   },
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .text-gray {
   color: gray;
 }

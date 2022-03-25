@@ -2,7 +2,7 @@
   <content-pane scrollable>
     <v-row>
       <v-col>
-        <h3>Credits</h3>
+        <h1>Credits</h1>
       </v-col>
     </v-row>
     <v-row>
@@ -58,6 +58,19 @@
           @click="$router.push('/rewardOverviewPage')"
         >
           Beloningen
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn
+          rounded
+          block
+          outlined
+          color="primary"
+          @click="$router.push('/withdrawalOverviewPage')"
+        >
+          Opnames
         </v-btn>
       </v-col>
     </v-row>

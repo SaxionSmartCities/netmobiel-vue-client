@@ -2,7 +2,7 @@
   <content-pane>
     <v-row>
       <v-col>
-        <h1 class="netmobiel">Beloningen</h1>
+        <h1>Beloningen</h1>
       </v-col>
     </v-row>
     <v-row v-if="rewardHistory && rewardHistory.length === 0">

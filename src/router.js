@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import CommunityOverviewPage from './pages/community/CommunityOverviewPage.vue'
-import CreditsPage from './pages/profile/CreditsPage.vue'
+import CreditsPage from './pages/profile/credits/CreditsPage.vue'
 import InboxPage from './pages/community/messages/InboxPage.vue'
 import ConversationPage from './pages/community/messages/ConversationPage.vue'
 import ItineraryDetailPage from './pages/planner/ItineraryDetailPage.vue'
@@ -59,7 +59,9 @@ import RideRejectedPage from '@/pages/trips/RideRejectedPage'
 import RideUnconfirmPage from '@/pages/trips/RideUnconfirmPage'
 import SurveyCompletedPage from '@/pages/profile/SurveyCompletedPage'
 import CharityAdminPage from '@/pages/community/goals/CharityAdminPage'
-import RewardOverviewPage from '@/pages/profile/RewardOverviewPage'
+import RewardOverviewPage from '@/pages/profile/credits/RewardOverviewPage'
+import WithdrawalOverviewPage from '@/pages/profile/credits/WithdrawalOverviewPage'
+import WithdrawalPage from '@/pages/profile/credits/WithdrawalPage'
 
 Vue.use(Router)
 
@@ -157,11 +159,6 @@ const router = new Router({
       component: DonatedPage,
       name: 'donated',
       props: true,
-    },
-    {
-      path: '/rewardOverviewPage',
-      component: RewardOverviewPage,
-      name: 'rewardOverviewPage',
     },
     {
       path: '/planOptions',
@@ -366,6 +363,21 @@ const router = new Router({
       component: UserProfilePage,
       name: 'userProfile',
       props: true,
+    },
+    {
+      path: '/rewardOverviewPage',
+      component: RewardOverviewPage,
+      name: 'rewardOverviewPage',
+    },
+    {
+      path: '/withdrawalOverviewPage',
+      component: WithdrawalOverviewPage,
+      name: 'withdrawalOverviewPage',
+    },
+    {
+      path: '/newWithdrawal',
+      component: WithdrawalPage,
+      name: 'newWithdrawal',
     },
     {
       path: '/addCredits',

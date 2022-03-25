@@ -1,7 +1,7 @@
 import { Page } from '@/store/types'
 
 export class BankerState {
-  withdrawals: Withdrawal[] = []
+  withdrawals: Page<Withdrawal> | null = null
   charities: Charity[] = []
   popularCharities: Charity[] = []
   charitySearchResults: Charity[] = []
@@ -95,22 +95,30 @@ export interface Donation {
 }
 
 export interface Withdrawal {
-  account: Account
-  accountRef: string
+  // Account id is set only for deposits on a system account
+  accountId?: string
+  readonly account: Account
+  readonly accountRef: string
   amountCredits: number
-  amountEurocents: number
-  createdBy: User
-  creationTime: string
+  readonly amountEurocents: number
+  readonly createdBy: User
+  readonly creationTime: string
   description: string
-  iban: string
-  ibanHolder: string
-  id: number
-  modificationTime: string
-  modifiedBy: User
-  orderReference: string
-  paymentBatchRef: string
-  reason: string
-  status: string
+  readonly iban: string
+  readonly ibanHolder: string
+  readonly id: number
+  readonly modificationTime: string
+  readonly modifiedBy: User
+  readonly orderReference: string
+  readonly paymentBatchRef: string
+  readonly reason: string
+  readonly status:
+    | 'REQUESTED'
+    | 'ACTIVE'
+    | 'COMPLETED'
+    | 'EXPIRED'
+    | 'CANCELLED'
+    | undefined
 }
 
 export interface Account {
