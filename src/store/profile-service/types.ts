@@ -182,7 +182,6 @@ export interface Profile extends PublicProfile {
   dateOfBirth: string | null
   email: string | null
   fcmToken: string | null
-  image: string | null
   phoneNumber: string | null
   searchPreferences: SearchPreferences | null
   ridePlanOptions: RidePlanOptions | null

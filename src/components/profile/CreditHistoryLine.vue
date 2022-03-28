@@ -71,10 +71,10 @@ export default {
       return this.statement.rollback ? '(herstel)' : ''
     },
     counterpartyIsMyPremiumAccount() {
-      return this.statement.counterparty.id === this.user.premiumAccount.id
+      return this.statement.counterparty.id === this.user.premiumAccount?.id
     },
     counterpartyIsMyPersonalAccount() {
-      return this.statement.counterparty.id === this.user.personalAccount.id
+      return this.statement.counterparty.id === this.user.personalAccount?.id
     },
     counterpartyIsMe() {
       return (

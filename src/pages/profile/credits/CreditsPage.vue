@@ -93,6 +93,7 @@
     </v-row>
 
     <grouped-card-list
+      v-if="user"
       :items="creditHistory"
       :get-date="(t) => t.transactionTime"
     >
@@ -170,6 +171,11 @@ export default {
     },
   },
   watch: {
+    user() {
+      if (this.canActAsTreasurer) {
+        bsStore.actions.fetchSystemAccounts()
+      }
+    },
     bottom(bottom) {
       if (bottom) {
         // fetch more statements when window bottom is visible
@@ -185,9 +191,6 @@ export default {
     bsStore.actions.fetchBankerSettings()
     // fetch first page with statements
     bsStore.actions.fetchFirstAccountStatements(fetchBankerStatementsMaxResults)
-    if (this.canActAsTreasurer) {
-      bsStore.actions.fetchSystemAccounts()
-    }
   },
   mounted() {
     window.addEventListener('scroll', this.scrollHandler)
