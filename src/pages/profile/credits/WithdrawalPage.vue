@@ -50,9 +50,24 @@
           </v-radio-group>
         </v-col>
       </v-row>
-      <v-row v-if="checkIbanPresent(account) === true" dense>
-        <v-col class="text-body-2"
-          >{{ friendlyIBAN }} t.n.v. {{ effectiveAccount.ibanHolder }}
+      <v-row dense>
+        <v-col class="text-body-2">
+          <span v-if="checkIbanPresent(account) === true">
+            {{ friendlyIBAN }} t.n.v. {{ effectiveAccount.ibanHolder }}
+          </span>
+          <div v-else class="red--text">
+            <span class="mr-4">Rekeninggegevens ontbreken.</span>
+            <v-btn
+              :to="getAccountPage"
+              large
+              rounded
+              depressed
+              outlined
+              color="primary"
+            >
+              Aanvullen
+            </v-btn>
+          </div>
         </v-col>
       </v-row>
       <v-row>
@@ -75,7 +90,7 @@
             rounded
             block
             depressed
-            :disabled="!valid"
+            :disabled="!valid || checkIbanPresent(account) !== true"
             color="button"
             @click="createWithdrawalRequest()"
           >
@@ -112,13 +127,27 @@ export default {
       description: 'Omwisselen van Netmobiel credits',
       rules: {
         required: (value) => !!value || 'Veld is verplicht',
-        minAmount: (value) => value >= MIN_AMOUNT || `Minimaal ${MIN_AMOUNT}`,
-        maxAmount: (value) => value <= MAX_AMOUNT || `Maximaal ${MAX_AMOUNT}`,
+        minAmount: (value) =>
+          value >= this.modifiedMinAmount ||
+          `Minimaal ${this.modifiedMinAmount}`,
+        maxAmount: (value) =>
+          value <= this.modifiedMaxAmount ||
+          `Maximaal ${this.modifiedMaxAmount}`,
         ibanPresent: (v) => this.checkIbanPresent(v),
       },
     }
   },
   computed: {
+    // You cannot withdraw more than available in your account
+    // and also not more than the maximum we have defined.
+    modifiedMaxAmount() {
+      return Math.min(this.effectiveAccount?.credits ?? MAX_AMOUNT, MAX_AMOUNT)
+    },
+    // There is a minumum amount, but it is allowed to withdraw the rest of your
+    // account if the total amount in the account is less than the MIN_AMOUNT
+    modifiedMinAmount() {
+      return Math.min(this.effectiveAccount?.credits ?? MIN_AMOUNT, MIN_AMOUNT)
+    },
     bankerUser() {
       return bsStore.getters.getBankerUser
     },
@@ -148,6 +177,10 @@ export default {
     },
     friendlyIBAN() {
       return ibantools.friendlyFormatIBAN(this.effectiveAccount.iban)
+    },
+    getAccountPage() {
+      // TODO Add page for editing system account
+      return '/account'
     },
   },
   created() {

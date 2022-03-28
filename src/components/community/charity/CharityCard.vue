@@ -22,7 +22,7 @@
         <v-col class="pt-0">
           <span
             class="progressbar-text text-color-primary caption"
-            :style="{ left: progress - 3 + '%' }"
+            :style="{ left: progressLeftOffsetRelative + '%' }"
           >
             {{ progress || 0 }}%
           </span>
@@ -92,6 +92,10 @@ export default {
       return Math.ceil(
         (this.charity.donatedAmount / this.charity.goalAmount) * 100
       )
+    },
+    progressLeftOffsetRelative() {
+      // Just leave some room for the text
+      return Math.min(90, this.progress)
     },
   },
   methods: {},

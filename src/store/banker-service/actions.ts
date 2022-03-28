@@ -9,7 +9,7 @@ import {
   PaymentEvent,
   Withdrawal,
 } from './types'
-import axios, { AxiosRequestHeaders } from 'axios'
+import axios, { AxiosRequestHeaders, AxiosError } from 'axios'
 import moment from 'moment'
 import { generateHeaders } from '@/utils/Utils'
 import config from '@/config/config'
@@ -420,10 +420,15 @@ async function withdrawCreditsFromMyAccount(
       console.warn(`withdrawCreditsFromMyAccount: Unexpected status ${resp.status}`)
     }
     return true
-  } catch (problem) {
-    await uiStore.actions.queueErrorNotification(
-      'Fout bij het plaatsen van een verzoek om credits in te wisselen.'
-    )
+  } catch (problem: unknown) {
+    let msg = 'Fout bij het plaatsen van een verzoek om credits in te wisselen.'
+    const error = problem as Error | AxiosError
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 402) {
+        msg = 'Je hebt onvoldoende saldo voor dit aantal credits'
+      }
+    }
+    await uiStore.actions.queueErrorNotification(msg)
     return false
   }
 }
@@ -547,9 +552,14 @@ async function withdrawCredits(context: ActionContext, payload: Withdrawal) {
     }
     return true
   } catch (problem) {
-    await uiStore.actions.queueErrorNotification(
-      'Fout bij het plaatsen van een verzoek om credits in te wisselen.'
-    )
+    let msg = 'Fout bij het plaatsen van een verzoek om credits in te wisselen.'
+    const error = problem as Error | AxiosError
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 402) {
+        msg = 'Je hebt onvoldoende saldo voor dit aantal credits'
+      }
+    }
+    await uiStore.actions.queueErrorNotification(msg)
     return false
   }
 }
