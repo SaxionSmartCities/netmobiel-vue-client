@@ -127,13 +127,27 @@ export default {
       description: 'Omwisselen van Netmobiel credits',
       rules: {
         required: (value) => !!value || 'Veld is verplicht',
-        minAmount: (value) => value >= MIN_AMOUNT || `Minimaal ${MIN_AMOUNT}`,
-        maxAmount: (value) => value <= MAX_AMOUNT || `Maximaal ${MAX_AMOUNT}`,
+        minAmount: (value) =>
+          value >= this.modifiedMinAmount ||
+          `Minimaal ${this.modifiedMinAmount}`,
+        maxAmount: (value) =>
+          value <= this.modifiedMaxAmount ||
+          `Maximaal ${this.modifiedMaxAmount}`,
         ibanPresent: (v) => this.checkIbanPresent(v),
       },
     }
   },
   computed: {
+    // You cannot withdraw more than available in your account
+    // and also not more than the maximum we have defined.
+    modifiedMaxAmount() {
+      return Math.min(this.effectiveAccount?.credits ?? MAX_AMOUNT, MAX_AMOUNT)
+    },
+    // There is a minumum amount, but it is allowed to withdraw the rest of your
+    // account if the total amount in the account is less than the MIN_AMOUNT
+    modifiedMinAmount() {
+      return Math.min(this.effectiveAccount?.credits ?? MIN_AMOUNT, MIN_AMOUNT)
+    },
     bankerUser() {
       return bsStore.getters.getBankerUser
     },
