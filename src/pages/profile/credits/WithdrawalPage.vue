@@ -50,9 +50,24 @@
           </v-radio-group>
         </v-col>
       </v-row>
-      <v-row v-if="checkIbanPresent(account) === true" dense>
-        <v-col class="text-body-2"
-          >{{ friendlyIBAN }} t.n.v. {{ effectiveAccount.ibanHolder }}
+      <v-row dense>
+        <v-col class="text-body-2">
+          <span v-if="checkIbanPresent(account) === true">
+            {{ friendlyIBAN }} t.n.v. {{ effectiveAccount.ibanHolder }}
+          </span>
+          <div v-else class="red--text">
+            <span class="mr-4">Rekeninggegevens ontbreken.</span>
+            <v-btn
+              :to="getAccountPage"
+              large
+              rounded
+              depressed
+              outlined
+              color="primary"
+            >
+              Aanvullen
+            </v-btn>
+          </div>
         </v-col>
       </v-row>
       <v-row>
@@ -75,7 +90,7 @@
             rounded
             block
             depressed
-            :disabled="!valid"
+            :disabled="!valid || checkIbanPresent(account) !== true"
             color="button"
             @click="createWithdrawalRequest()"
           >
@@ -148,6 +163,10 @@ export default {
     },
     friendlyIBAN() {
       return ibantools.friendlyFormatIBAN(this.effectiveAccount.iban)
+    },
+    getAccountPage() {
+      // TODO Add page for editing system account
+      return '/account'
     },
   },
   created() {
