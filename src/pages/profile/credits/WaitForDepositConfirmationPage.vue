@@ -10,7 +10,7 @@
     </v-row>
     <v-row class="d-flex flex-row justify-center">
       <v-col class="shrink">
-        <v-progress-circular indeterminate class="rotate"></v-progress-circular>
+        <v-progress-circular indeterminate color="button"></v-progress-circular>
       </v-col>
     </v-row>
     <v-row>
@@ -101,8 +101,4 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
-.rotate {
-  color: $color-orange;
-}
-</style>
+<style lang="scss" scoped></style>

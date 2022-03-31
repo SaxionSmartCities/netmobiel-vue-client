@@ -7,7 +7,7 @@
     </v-row>
     <v-row v-if="progressVisible" class="d-flex flex-row justify-center">
       <v-col class="shrink">
-        <v-progress-circular indeterminate class="rotate"></v-progress-circular>
+        <v-progress-circular indeterminate color="button"></v-progress-circular>
       </v-col>
     </v-row>
     <v-row v-if="buttonsVisible">
@@ -146,8 +146,5 @@ export default {
 // by setting the buttons on a relatively fixed position
 .image-container {
   min-height: 40vh;
-}
-.rotate {
-  color: $color-orange;
 }
 </style>

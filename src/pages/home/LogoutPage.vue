@@ -15,7 +15,7 @@
     </v-row>
     <v-row>
       <v-col class="shrink">
-        <v-progress-circular indeterminate class="rotate"></v-progress-circular>
+        <v-progress-circular indeterminate color="button"></v-progress-circular>
       </v-col>
       <v-col class="align-center">
         <span> Je wordt nu afgemeld... </span>
@@ -47,4 +47,4 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped></style>

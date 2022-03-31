@@ -21,10 +21,7 @@
         </template>
       </v-col>
       <v-col v-else class="my-2">
-        <v-progress-circular
-          indeterminate
-          color="primary"
-        ></v-progress-circular>
+        <v-progress-circular indeterminate color="button"></v-progress-circular>
         <span class="ml-2">Berichten ophalen...</span>
       </v-col>
     </v-row>
