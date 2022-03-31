@@ -49,23 +49,27 @@ function geoPlaceToAddressLabel(place, includeLabel) {
     let shn = [place.street, place.houseNumber ? place.houseNumber : '']
     line += `${shn.filter((piece) => piece).join(' ')}, `
   }
-  line += place.locality
-  if (place.countryCode === 'NLD') {
-    if (place.stateCode) {
-      line += ` (${place.stateCode})`
+  if (place.locality) {
+    line += place.locality
+  }
+  if (place.countryCode) {
+    if (place.countryCode === 'NLD') {
+      if (place.stateCode) {
+        line += ` (${place.stateCode})`
+      }
+    } else {
+      line += ` (${place.countryCode})`
     }
-  } else {
-    line += ` (${place.countryCode})`
   }
   return line
 }
 
-function geoPlaceToCriteria(place) {
+function geoPlaceToCriteria(place, includeLabel = true) {
   if (!place?.location?.coordinates) {
     return undefined
   }
   return {
-    label: geoPlaceToAddressLabel(place, true),
+    label: geoPlaceToAddressLabel(place, includeLabel),
     latitude: place.location.coordinates[1],
     longitude: place.location.coordinates[0],
   }
@@ -87,10 +91,12 @@ function coordinatesToGeoLocation(location) {
 
 function geoLocationToPlace(location) {
   const place = {}
-  place.label = location.label
-  place.location = {
-    coordinates: [location.longitude, location.latitude],
-    type: 'Point',
+  if (location) {
+    place.label = location.label
+    place.location = {
+      coordinates: [location.longitude, location.latitude],
+      type: 'Point',
+    }
   }
   return place
 }
@@ -99,7 +105,10 @@ function getCreatedObjectIdFromResponse(response) {
   // if the response has status 201, the location header defines the api url to
   // fetch the object. Extract the object id.
   const loc = response.headers?.location
-  return loc ? loc.substring(loc.lastIndexOf('/') + 1) : undefined
+  // If the location contains a '/', then it is a url, otherwise assume urn
+  // In case of an url return the last part of the url
+  const isUrl = loc && loc.indexOf('/') !== -1
+  return isUrl ? loc.substring(loc.lastIndexOf('/') + 1) : loc
 }
 
 /**

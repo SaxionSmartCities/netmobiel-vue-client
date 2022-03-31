@@ -4,13 +4,12 @@ import Vuex, { Store } from 'vuex'
 import { RootState, storeBuilder } from './Rootstate'
 
 import './ui'
-import './charity-service'
+import './banker-service'
 import './carpool-service'
 import './profile-service'
 import './message-service'
 import './geocoder-service'
 import './itinerary-service'
-import './credits-service'
 
 /**
  * Now using both the normal vuex store than can be accessed through this.$store...

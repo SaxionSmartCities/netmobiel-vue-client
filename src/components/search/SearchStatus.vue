@@ -3,7 +3,7 @@
     <v-col class="box-widget background-white" shrink>
       <v-row>
         <v-col cols="3" xs-3 mt-2>
-          <v-progress-circular indeterminate class="rotate">
+          <v-progress-circular indeterminate color="button">
           </v-progress-circular>
         </v-col>
         <v-col>
@@ -20,8 +20,4 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.rotate {
-  color: #ff8500;
-}
-</style>
+<style scoped lang="scss"></style>

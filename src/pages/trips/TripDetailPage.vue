@@ -80,8 +80,8 @@
           <v-row class="d-flex flex-column">
             <v-col v-if="drivers && drivers.length > 0" class="py-1">
               <p>
-                U rijdt mee met iemand, geef in een persoonlijke boodschap aan
-                waarom u uw rit annuleert.
+                Je zou met iemand meerijden, geef in een persoonlijke boodschap
+                aan waarom je de rit annuleert.
               </p>
               <v-textarea
                 v-model="cancelReason"
@@ -93,7 +93,7 @@
               ></v-textarea>
             </v-col>
             <v-col v-else class="py-1">
-              Weet u zeker dat u deze rit wil annuleren?
+              Weet je zeker dat je deze rit wilt annuleren?
             </v-col>
           </v-row>
           <v-row class="d-flex flex-column py-2">

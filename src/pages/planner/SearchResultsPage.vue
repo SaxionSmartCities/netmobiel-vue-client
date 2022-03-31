@@ -10,7 +10,7 @@
           >
             <v-icon small color="button">warning</v-icon>
             <span class="secondary-color">
-              Let op! U bent aan het wijzigen.</span
+              Let op! Je bent aan het wijzigen.</span
             >
           </div>
         </v-col>
@@ -90,6 +90,9 @@
                     </v-col>
                     <v-col>
                       <span>Bel de ZOOV regiotaxi</span>
+                      <!-- Voor het reserveren van uw rit belt u naar ZOOV Op Maat via 0900-9874 (€ 0,10 per minuut).
+                      ZOOV Op Maat is bereikbaar van 6.00 uur 's ochtends tot 1.00 uur 's nachts. -->
+                      <!-- Vermeldt in het gesprek dat je met Netmobiel reist. -->
                     </v-col>
                   </v-row>
                 </a>

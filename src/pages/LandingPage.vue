@@ -7,7 +7,7 @@
     </v-row>
     <v-row v-if="progressVisible" class="d-flex flex-row justify-center">
       <v-col class="shrink">
-        <v-progress-circular indeterminate class="rotate"></v-progress-circular>
+        <v-progress-circular indeterminate color="button"></v-progress-circular>
       </v-col>
     </v-row>
     <v-row v-if="buttonsVisible">
@@ -21,6 +21,11 @@
           Registreren
         </v-btn>
       </v-col>
+      <v-col cols="12" class="text-center">
+        <span class="caption white--text"
+          >Versie: {{ config.GIT_HASH }} ({{ config.BUILD_TIME }})</span
+        >
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -29,6 +34,7 @@
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as msStore from '@/store/message-service'
+import config from '@/config/config'
 
 export default {
   data() {
@@ -40,6 +46,9 @@ export default {
   computed: {
     profile() {
       return psStore.getters.getProfile
+    },
+    config() {
+      return config
     },
   },
   beforeCreate() {
@@ -137,8 +146,5 @@ export default {
 // by setting the buttons on a relatively fixed position
 .image-container {
   min-height: 40vh;
-}
-.rotate {
-  color: $color-orange;
 }
 </style>

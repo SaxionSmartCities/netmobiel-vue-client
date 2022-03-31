@@ -62,8 +62,8 @@
                 <v-row no-gutters>
                   <v-col>
                     <v-alert type="warning" color="orange">
-                      Indien u hulp nodig heeft bij het instappen dan kunt u dit
-                      hier aangeven. Er wordt dan een verzoek verstuurd naar de
+                      Indien je hulp nodig hebt bij het instappen dan kun je dit
+                      hier aangeven. Er wordt dan een verzoek verstuurd naar
                       chauffeur om hier rekening mee te houden.
                     </v-alert>
                   </v-col>
@@ -110,9 +110,9 @@
                       color="orange"
                     >
                       Let op: Als overstappen aan het begin en/of aan het einde
-                      van uw rit wordt uitgeschakeld is het alleen mogelijk om u
-                      te matchen met een gehele rit met het openbaar vervoer of
-                      een directe rit. In veel gevallen zal dit niet mogelijk
+                      van uw rit wordt uitgeschakeld is het alleen mogelijk om
+                      je te matchen met een gehele rit met het openbaar vervoer
+                      of een directe rit. In veel gevallen zal dit niet mogelijk
                       zijn. Het uitzetten van deze optie zal resulteren in
                       snellere zoekresultaten maar ook in een sterk verminderd
                       aantal ritopties.

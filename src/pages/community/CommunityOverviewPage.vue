@@ -6,7 +6,7 @@
           class="mx-auto"
           forward="inbox"
           icon="fa-comments"
-          naam="Berichten"
+          name="Berichten"
         ></community-button>
       </v-col>
       <v-col>
@@ -14,8 +14,8 @@
           class="mx-auto"
           icon="fa-map"
           forward="shoutOuts"
-          naam="Oproepen"
-          :aantal-berichten="shoutOutCount"
+          name="Oproepen"
+          :counter="shoutOutCount"
         ></community-button>
       </v-col>
     </v-row>
@@ -24,17 +24,54 @@
         <community-button
           class="mx-auto"
           icon="fa-gift"
-          naam="Beloningen"
-          :disabled="true"
+          name="Beloningen"
+          forward="rewardOverviewPage"
         ></community-button>
       </v-col>
       <v-col>
         <community-button
           class="mx-auto"
           icon="fa-bullseye"
-          naam="Goede Doelen"
+          name="Goede Doelen"
           :disabled="!creditsEnabled"
           forward="charityOverviewPage"
+        ></community-button>
+      </v-col>
+    </v-row>
+    <v-row v-if="canActAsTreasurer">
+      <v-col>
+        <community-button
+          class="mx-auto"
+          icon="fa-cog"
+          name="Management"
+          forward="managementOverviewPage"
+        ></community-button>
+      </v-col>
+      <v-col>
+        <community-button
+          class="mx-auto"
+          icon="fa-euro-sign"
+          name="Uitbetalingen"
+          forward="paymentBatchOverviewPage"
+          :counter="withdrawalsRequestedCount"
+        ></community-button>
+      </v-col>
+    </v-row>
+    <v-row v-if="canActAsTreasurer">
+      <v-col>
+        <community-button
+          class="mx-auto"
+          icon="fa-cog"
+          name="Systeeminstellingen"
+          forward="systemSettingsPage"
+        ></community-button>
+      </v-col>
+      <v-col v-if="false">
+        <community-button
+          class="mx-auto"
+          icon="fa-gifts"
+          name="Premiebeheer"
+          forward="premiumCreditsPage"
         ></community-button>
       </v-col>
     </v-row>
@@ -48,6 +85,7 @@ import constants from '@/constants/constants'
 import config from '@/config/config'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
+import * as bsStore from '@/store/banker-service'
 import { coordinatesToGeoLocation } from '@/utils/Utils'
 
 const CREDITS_ENABLED = config.CREDITS_ENABLED
@@ -64,6 +102,7 @@ export default {
   data() {
     return {
       creditsEnabled: CREDITS_ENABLED || false,
+      withdrawalsRequestedCount: 0,
     }
   },
   computed: {
@@ -94,6 +133,9 @@ export default {
       }
       return count
     },
+    canActAsTreasurer() {
+      return psStore.getters.canActAsTreasurer
+    },
   },
   mounted() {
     if (this.isPassenger) {
@@ -107,6 +149,12 @@ export default {
         ? coordinatesToGeoLocation(address.location)
         : undefined
       isStore.actions.fetchShoutOuts({ location, maxResults: 0 })
+    }
+    if (this.canActAsTreasurer) {
+      // Get the count of pending withdrawal requests
+      bsStore.actions.fetchWithdrawalsRequestedCount().then((count) => {
+        this.withdrawalsRequestedCount = count
+      })
     }
   },
 }

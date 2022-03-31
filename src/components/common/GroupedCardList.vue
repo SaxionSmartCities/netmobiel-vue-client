@@ -1,41 +1,17 @@
 <template>
   <v-row v-if="items">
-    <v-col v-if="type === 'trip'" class="py-0">
-      <section
-        v-for="date in getAllDifferentDays(sortedTrips())"
-        :key="date"
-        class="px-0"
-      >
+    <v-col>
+      <section v-for="date in getDistinctDays" :key="date" class="px-0 pb-2">
         <h4 class="netmobiel pb-1">{{ formatToCategoryDate(date) }}</h4>
-        <v-col
-          v-for="(item, index) in getItinerariesForThatDay(sortedTrips(), date)"
+        <v-row
+          v-for="(item, index) in getItemsForThatDay(date)"
           :key="index"
-          class="pa-0"
+          dense
         >
-          <slot name="card" :item="item" :index="index"> </slot>
-        </v-col>
-        <v-col class="py-1">
-          <!-- Trailing col for bottom spacing group -->
-        </v-col>
-      </section>
-    </v-col>
-    <v-col v-else-if="type === 'ride'" class="py-0">
-      <section
-        v-for="date in getAllDifferentDaysForRides(sortedRides())"
-        :key="date"
-        class="px-0"
-      >
-        <h4 class="netmobiel pb-1">{{ formatToCategoryDate(date) }}</h4>
-        <v-col
-          v-for="(item, index) in getRidesByDay(sortedRides(), date)"
-          :key="index"
-          class="pa-0"
-        >
-          <slot name="card" :item="item" :index="index"> </slot>
-        </v-col>
-        <v-col class="py-1">
-          <!-- Trailing col for bottom spacing group -->
-        </v-col>
+          <v-col>
+            <slot name="card" :item="item" :index="index"> </slot>
+          </v-col>
+        </v-row>
       </section>
     </v-col>
   </v-row>
@@ -48,49 +24,25 @@ export default {
   name: 'GroupedCardList',
   props: {
     items: { type: Array, required: true },
-    type: { type: String, required: false, default: 'trip' },
+    getDate: { type: Function, required: true },
+  },
+  computed: {
+    getDistinctDays() {
+      let distinctDays = []
+      this.items.forEach((item) => {
+        const date = this.getDate(item)
+        const calendarDate = moment(date).format('LL')
+        if (!distinctDays.includes(calendarDate)) {
+          distinctDays.push(calendarDate)
+        }
+      })
+      return distinctDays
+    },
   },
   methods: {
-    sortedTrips() {
-      const list = Object.assign([], this.items)
-      return list
-    },
-    getAllDifferentDays(trips) {
-      let differentDays = []
-      trips.forEach((trip) => {
-        const calendarDate = moment(trip.itinerary.arrivalTime).format('LL')
-        if (!differentDays.includes(calendarDate)) {
-          differentDays.push(calendarDate)
-        }
-      })
-      return differentDays
-    },
-    getItinerariesForThatDay(trips, sectionDay) {
-      return trips.filter((trip) => {
-        const dateToCheck = moment(trip.itinerary.arrivalTime.valueOf())
-        return (
-          moment(sectionDay, 'LL').isSame(dateToCheck, 'day') &&
-          moment(sectionDay, 'LL').isSame(dateToCheck, 'month')
-        )
-      })
-    },
-    sortedRides() {
-      const list = Object.assign([], this.items)
-      return list
-    },
-    getAllDifferentDaysForRides(rides) {
-      let differentDays = []
-      rides.forEach((ride) => {
-        const calendarDate = moment(ride.departureTime).format('LL')
-        if (!differentDays.includes(calendarDate)) {
-          differentDays.push(calendarDate)
-        }
-      })
-      return differentDays
-    },
-    getRidesByDay(rides, sectionDay) {
-      return rides.filter((ride) => {
-        const dateToCheck = moment(ride.departureTime.valueOf())
+    getItemsForThatDay(sectionDay) {
+      return this.items.filter((item) => {
+        const dateToCheck = moment(this.getDate(item).valueOf())
         return (
           moment(sectionDay, 'LL').isSame(dateToCheck, 'day') &&
           moment(sectionDay, 'LL').isSame(dateToCheck, 'month')

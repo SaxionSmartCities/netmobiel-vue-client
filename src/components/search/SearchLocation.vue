@@ -2,10 +2,11 @@
   <v-dialog v-model="showDialog" min-width="300px">
     <template #activator="{ on, attrs }">
       <v-text-field
-        :value="addressLine"
+        v-model="addressLine"
         clearable
         :outlined="outlined"
         :label="label"
+        :rules="validationRules"
         hide-details="auto"
         readonly
         v-bind="attrs"
@@ -80,9 +81,15 @@ export default {
       default: false,
     },
     address: {
+      // Actually a Place
       type: Object,
       default: () => {},
       required: false,
+    },
+    required: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -93,14 +100,31 @@ export default {
       showSuggestionsList: false,
       showEmptyListLabel: false,
       selectedLocation: null,
+      rules: {
+        required: (value) => !!value || 'Verplicht veld',
+      },
     }
   },
   computed: {
-    addressLine() {
-      const addr = this.addressInternal?.locality
-        ? this.addressInternal
-        : this.address
-      return addr?.locality ? geoPlaceToAddressLabel(addr, true) : ''
+    validationRules() {
+      let rules = []
+      if (this.required) {
+        rules.push(this.rules.required)
+      }
+      return rules
+    },
+    addressLine: {
+      get() {
+        return this.addressInternal?.label
+          ? this.addressInternal.label
+          : geoPlaceToAddressLabel(this.addressInternal, true)
+      },
+      set(value) {
+        // TODO Check whether to use this computed setter or the clear event
+        if (!value) {
+          this.addressInternal = {}
+        }
+      },
     },
     suggestions() {
       return gsStore.getters.getGeocoderSuggestions.map((suggestion) =>
@@ -109,6 +133,19 @@ export default {
     },
   },
   watch: {
+    address() {
+      if (this.address) {
+        // Make a copy of the input
+        this.addressInternal = JSON.parse(JSON.stringify(this.address))
+        if (this.addressInternal.label) {
+          gsStore.mutations.setGeoLocationPicked({
+            query: this.addressInternal.label,
+            field: this.field,
+            place: this.addressInternal,
+          })
+        }
+      }
+    },
     showDialog(newValue) {
       if (newValue) {
         this.searchInput = gsStore.getters.getPickedLocations.get(

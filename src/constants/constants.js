@@ -1,5 +1,5 @@
 export default {
-  fetchBankerStatementsMaxResults: 10,
+  fetchBankerStatementsMaxResults: 20,
   fetchTripsMaxResults: 20,
   fetchPastTripsMaxResults: 20,
   fetchPastRidesMaxResults: 20,
@@ -134,4 +134,46 @@ export default {
     FALSE: 'Nee',
     UNDECIDED: 'Onbeslist',
   },
+  PAYMENT_STATUS: [
+    {
+      final: false,
+      status: 'REQUESTED',
+      iconName: 'watch_later',
+      label: 'In aanvraag',
+      iconColor: 'info',
+      iconClass: 'material-icons-outlined',
+    },
+    {
+      final: false,
+      status: 'ACTIVE',
+      iconName: 'supervisor_account',
+      label: 'In behandeling',
+      iconColor: 'warning',
+      iconClass: 'material-icons-outlined',
+    },
+    {
+      final: true,
+      status: 'COMPLETED',
+      iconName: 'check',
+      label: 'Afgerond',
+      iconColor: 'success',
+      iconClass: '',
+    },
+    {
+      final: true,
+      status: 'CANCELLED',
+      iconName: 'close',
+      label: 'Afgewezen',
+      iconColor: 'error',
+      iconClass: '',
+    },
+    {
+      final: true,
+      status: 'EXPIRED',
+      iconName: 'assignment_late',
+      label: 'Verlopen',
+      iconColor: 'error',
+      iconClass: 'material-icons-outlined',
+    },
+  ],
 }

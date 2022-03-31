@@ -136,8 +136,8 @@
                   <v-row no-gutters>
                     <v-col>
                       <v-alert type="warning" color="orange">
-                        Indien u de passagier hulp kunt bieden bij het in- en
-                        uitstappen, dan kunt u dit hier aangeven.
+                        Indien je de passagier hulp kunt bieden bij het in- en
+                        uitstappen, dan kun je dat hier aangeven.
                       </v-alert>
                     </v-col>
                   </v-row>

@@ -62,7 +62,7 @@
             type="error"
             color="red"
           >
-            U moet akkoord gaan met de voorwaarden om verder te gaan.
+            Je moet akkoord gaan met de voorwaarden om verder te gaan.
           </v-alert>
         </v-col>
       </v-row>

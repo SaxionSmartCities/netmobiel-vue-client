@@ -17,4 +17,6 @@ export default {
   MAPBOX_TOKEN: process.env.VUE_APP_MAPBOX_TOKEN,
   CREDITS_ENABLED: process.env.VUE_APP_CREDITS_ENABLED === 'true',
   BANK_SIMULATED: process.env.VUE_APP_BANK_SIMULATED === 'true',
+  GIT_HASH: process.env.VUE_APP_GIT_HASH,
+  BUILD_TIME: process.env.VUE_APP_BUILD_TIME,
 }

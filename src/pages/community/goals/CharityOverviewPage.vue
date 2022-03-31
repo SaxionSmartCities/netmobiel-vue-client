@@ -5,25 +5,47 @@
         <h1 class="netmobiel">Goede Doelen</h1>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col class="">
-        <v-text-field
-          dense
+    <v-row v-if="canAdminCharities">
+      <v-col>
+        <v-btn
+          color="primary"
+          class="font-weight-bold"
+          small
+          rounded
+          depressed
           outlined
-          label="Zoeken"
-          hide-details
-          prepend-inner-icon="search"
-        ></v-text-field>
+          @click="newCharity"
+        >
+          Doel Toevoegen
+        </v-btn>
       </v-col>
     </v-row>
+    <!--    <v-row>-->
+    <!--      <v-col class="">-->
+    <!--        <v-text-field-->
+    <!--          dense-->
+    <!--          outlined-->
+    <!--          label="Zoeken"-->
+    <!--          hide-details-->
+    <!--          prepend-inner-icon="search"-->
+    <!--        ></v-text-field>-->
+    <!--      </v-col>-->
+    <!--    </v-row>-->
     <v-row>
       <v-col>
-        <h4 class="title text-color-primary mb-2">Populair in de buurt</h4>
+        <h4 class="title text-color-primary mb-2">Overzicht</h4>
+        <v-switch
+          v-model="showClosedToo"
+          label="Ook niet-actuele doelen"
+        ></v-switch>
         <template v-for="charity in charities">
           <charity-card
             :key="charity.id"
             :charity="charity"
-            @lookupCharity="onCharityCardClick"
+            :can-admin="canAdminCharities"
+            class="my-2"
+            @lookupCharity="onCharityLookup"
+            @adminCharity="onCharityAdmin"
           />
         </template>
       </v-col>
@@ -46,7 +68,7 @@
                 :key="charity.id"
                 class="charity-card"
                 :charity="charity"
-                @lookupCharity="onCharityCardClick"
+                @lookupCharity="onCharityLookup"
               />
             </div>
           </v-carousel-item>
@@ -65,34 +87,67 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
-import * as chsStore from '@/store/charity-service'
+import * as bsStore from '@/store/banker-service'
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 import CharityCard from '@/components/community/charity/CharityCard'
 import TopDonorList from '@/components/community/charity/TopDonorList'
 
 export default {
   name: 'CharityOverviewPage',
   components: { TopDonorList, CharityCard, ContentPane },
+  data() {
+    return {
+      showClosedToo: false,
+    }
+  },
   computed: {
     charities() {
-      return chsStore.getters.getCharities
+      return bsStore.getters.getCharities
     },
     previouslyDonatedCharities() {
-      return chsStore.getters.getPreviouslyDonatedCharities
+      return bsStore.getters.getPreviouslyDonatedCharities
     },
     topDonors() {
-      return chsStore.getters.getTopDonors
+      return bsStore.getters.getTopDonors
+    },
+    canAdminCharities() {
+      return psStore.getters.canActAsTreasurer
+    },
+  },
+  watch: {
+    showClosedToo() {
+      this.fetchCharities()
     },
   },
   created() {
     uiStore.mutations.showBackButton()
-    chsStore.actions.fetchCharities()
-    chsStore.actions.fetchPreviouslyDonatedCharities()
-    chsStore.actions.fetchTopDonors()
+    this.fetchCharities()
+    bsStore.actions.fetchPreviouslyDonatedCharities()
+    bsStore.actions.fetchTopDonors()
   },
   methods: {
-    onCharityCardClick(val) {
-      this.$router.push({ name: 'charityDetails', params: { id: val } })
+    fetchCharities() {
+      bsStore.actions.fetchCharities({
+        closedToo: this.showClosedToo,
+      })
+    },
+    onCharityLookup(charityId) {
+      this.$router.push({
+        name: 'charityDetailPage',
+        params: { id: charityId },
+      })
+    },
+    onCharityAdmin(charityId) {
+      this.$router.push({
+        name: 'editCharity',
+        params: { charityId: charityId },
+      })
+    },
+    newCharity() {
+      this.$router.push({
+        name: 'createCharity',
+      })
     },
   },
 }

@@ -16,15 +16,13 @@ export class ProfileState {
   }
   user: User = {
     accessToken: null,
-    // Attributes from the token
+    // Attributes from (or derived from) the token
     managedIdentity: null,
     givenName: '',
     familyName: '',
     fullName: '',
     email: '',
-    rating: 2,
-    maxRating: 3,
-
+    roles: [],
     // Profile as stored in profile service.
     profile: {
       id: null,
@@ -56,6 +54,8 @@ export class ProfileState {
       interests: [],
       favoriteLocations: [],
     },
+    rating: 2,
+    maxRating: 3,
     delegatorId: null,
     delegateProfile: null,
     delegations: [],
@@ -144,12 +144,13 @@ export interface Review {
 export interface User {
   // Access token
   accessToken: string | null
-
   managedIdentity: string | null
   givenName: string
   familyName: string
   fullName: string
   email: string
+  roles: string[]
+  // other
   rating: number
   maxRating: number
   privacySecurity: NameValue[]
@@ -181,7 +182,6 @@ export interface Profile extends PublicProfile {
   dateOfBirth: string | null
   email: string | null
   fcmToken: string | null
-  image: string | null
   phoneNumber: string | null
   searchPreferences: SearchPreferences | null
   ridePlanOptions: RidePlanOptions | null
@@ -275,15 +275,22 @@ export interface Delegation {
 export interface Survey {
   surveyId: string
   displayName: string
-  providerUrl: string
-  rewardCredits: number
+  incentiveCode?: string
+  startTime?: string
+  endTime?: string
+  takeDelayHours?: number
+  takeIntervalHours?: number
 }
 
 export interface SurveyInteraction {
   survey: Survey
+  expirationTime?: string
   invitationTime: string
   invitationCount: number
   redirectTime?: string
   redirectCount: number
   submitTime?: string
+  surveyUrl: string
+  urn: string
+  owner?: UserRef
 }

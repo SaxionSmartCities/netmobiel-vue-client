@@ -57,10 +57,13 @@
         </v-row>
         <v-row v-if="tripsSearchTime === 'Past'">
           <v-col v-if="getPastTrips.length === 0" align="center">
-            <em>U heeft nog geen ritten gemaakt.</em>
+            <em>Je hebt nog geen ritten gemaakt.</em>
           </v-col>
           <v-col v-else class="py-0">
-            <grouped-card-list :items="getPastTrips">
+            <grouped-card-list
+              :items="getPastTrips"
+              :get-date="(t) => t.itinerary.arrivalTime"
+            >
               <template #card="{ item: trip }">
                 <travel-card
                   :trip-id="trip.id"
@@ -76,11 +79,14 @@
         </v-row>
         <v-row v-if="tripsSearchTime === 'Future'">
           <v-col v-if="getPlannedTrips.length === 0">
-            U heeft geen bewaarde ritten. Ga naar de planner om uw rit te
+            Je hebt geen bewaarde ritten. Ga naar de planner om een rit te
             plannen.
           </v-col>
           <v-col v-else class="py-0">
-            <grouped-card-list :items="getPlannedTrips">
+            <grouped-card-list
+              :items="getPlannedTrips"
+              :get-date="(t) => t.itinerary.arrivalTime"
+            >
               <template #card="{ item: trip }">
                 <travel-card
                   :trip-id="trip.id"
@@ -109,12 +115,15 @@
         <v-row v-if="ridesSearchTime === 'Past'">
           <v-col v-if="getPastRides.length === 0">
             <span>
-              U heeft nog geen ritten gereden. Ga naar de planner om een nieuwe
+              Je hebt nog geen ritten gereden. Ga naar de planner om een nieuwe
               rit te plannen.
             </span>
           </v-col>
           <v-col v-else class="py-0">
-            <grouped-card-list :items="getPastRides" type="ride">
+            <grouped-card-list
+              :items="getPastRides"
+              :get-date="(r) => r.departureTime"
+            >
               <template #card="{ item: ride, index }">
                 <ride-card
                   class="trip-card"
@@ -130,12 +139,15 @@
         <v-row v-if="ridesSearchTime === 'Future'">
           <v-col v-if="getPlannedRides.length === 0" class="py-1">
             <span>
-              U heeft nog geen ritten gepland. Ga naar de planner om een nieuwe
+              Je hebt nog geen ritten gepland. Ga naar de planner om een nieuwe
               rit te plannen.
             </span>
           </v-col>
           <v-col v-else class="py-0">
-            <grouped-card-list :items="getPlannedRides" type="ride">
+            <grouped-card-list
+              :items="getPlannedRides"
+              :get-date="(r) => r.departureTime"
+            >
               <template #card="{ item: ride, index }">
                 <ride-card
                   class="trip-card"
