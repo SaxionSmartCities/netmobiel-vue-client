@@ -164,7 +164,7 @@
                 v-model="charity.account.iban"
                 class="bg-white"
                 label="IBAN rekening"
-                :rules="[rules.required, rules.iban]"
+                :rules="[rules.iban]"
                 validate-on-blur
                 outlined
                 dense
@@ -183,11 +183,12 @@
                 v-model="charity.account.ibanHolder"
                 class="bg-white"
                 label="Naam rekeninghouder"
-                :rules="[rules.required]"
+                :rules="[rules.requiredIfIban]"
                 validate-on-blur
                 outlined
                 dense
                 hide-details="auto"
+                spellcheck="false"
               >
               </v-text-field>
             </v-col>
@@ -271,6 +272,8 @@ export default {
         required: (value) => !!value || 'Verplicht veld',
         iban: (value) =>
           this.isValidIBAN(value) || 'Ongeldig IBAN rekeningnummer',
+        requiredIfIban: (value) =>
+          !!value || !this.charity.account.iban || 'Verplicht veld',
       },
     }
   },
@@ -322,7 +325,8 @@ export default {
   methods: {
     isValidIBAN(input) {
       if (!input) {
-        return false
+        // No IBAN is also a valid IBAN
+        return true
       }
       const iban = ibantools.electronicFormatIBAN(input)
       return ibantools.isValidIBAN(iban)
@@ -417,7 +421,7 @@ export default {
       }
     },
     formatIBAN(input) {
-      return ibantools.friendlyFormatIBAN(input.trim())
+      return input ? ibantools.friendlyFormatIBAN(input.trim()) : null
     },
   },
 }

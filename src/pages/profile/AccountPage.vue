@@ -280,6 +280,7 @@ export default {
     },
     isValidIBAN(input) {
       if (!input) {
+        // No IBAN is also a valid IBAN
         return true
       }
       const iban = ibantools.electronicFormatIBAN(input)
