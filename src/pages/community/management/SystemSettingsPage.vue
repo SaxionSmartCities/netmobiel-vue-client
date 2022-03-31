@@ -80,7 +80,7 @@ import * as bsStore from '@/store/banker-service'
 const BANKING_RESERVE_NCAN = 'banking-reserve'
 
 export default {
-  name: 'AccountPage',
+  name: 'SystemSettingsPage',
   components: { ContentPane },
   data() {
     return {
