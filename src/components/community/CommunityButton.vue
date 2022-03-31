@@ -4,20 +4,21 @@
       <v-col>
         <v-card-text>
           <v-row no-gutters>
-            <v-col align="center">
+            <v-col class="text-center">
               <v-badge
-                overlap
+                offset-x="1"
+                offset-y="6"
                 color="red"
-                :value="aantalBerichten"
-                :content="aantalBerichten"
+                :value="counter !== 0"
+                :content="counter"
               >
                 <v-icon>{{ icon }}</v-icon>
               </v-badge>
             </v-col>
           </v-row>
           <v-row no-gutters>
-            <v-col align="center">
-              <div>{{ naam }}</div>
+            <v-col class="text-center">
+              <div>{{ name }}</div>
             </v-col>
           </v-row>
         </v-card-text>
@@ -29,16 +30,17 @@
 <script>
 export default {
   props: {
-    aantalBerichten: {
+    counter: {
       type: Number,
       default: 0,
       required: false,
     },
     icon: {
       type: String,
+      default: null,
       required: true,
     },
-    naam: {
+    name: {
       type: String,
       required: true,
     },
@@ -49,12 +51,15 @@ export default {
     },
     disabled: {
       type: Boolean,
+      required: false,
       default: false,
     },
   },
   methods: {
     toNextPage: function () {
-      this.$router.push({ name: this.forward })
+      if (this.forward) {
+        this.$router.push({ name: this.forward })
+      }
     },
   },
 }
