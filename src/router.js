@@ -65,6 +65,7 @@ import WithdrawalPage from '@/pages/profile/credits/WithdrawalPage'
 import PaymentBatchOverviewPage from '@/pages/community/management/PaymentBatchOverviewPage'
 import PaymentBatchPage from '@/pages/community/management/PaymentBatchPage'
 import SystemSettingsPage from '@/pages/community/management/SystemSettingsPage'
+import PremiumCreditsPage from '@/pages/community/management/PremiumCreditsPage'
 
 Vue.use(Router)
 
@@ -418,6 +419,11 @@ const router = new Router({
       path: '/system-settings',
       name: 'systemSettingsPage',
       component: SystemSettingsPage,
+    },
+    {
+      path: '/premium-credits',
+      name: 'premiumCreditsPage',
+      component: PremiumCreditsPage,
     },
   ],
 })

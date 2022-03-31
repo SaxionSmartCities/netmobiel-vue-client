@@ -66,6 +66,14 @@
           forward="systemSettingsPage"
         ></community-button>
       </v-col>
+      <v-col v-if="false">
+        <community-button
+          class="mx-auto"
+          icon="fa-gifts"
+          name="Premiebeheer"
+          forward="premiumCreditsPage"
+        ></community-button>
+      </v-col>
     </v-row>
   </content-pane>
 </template>
