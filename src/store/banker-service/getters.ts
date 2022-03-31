@@ -37,6 +37,14 @@ export const buildGetters = (
     return state.withdrawals
   }, 'getWithdrawals')
 
+  const getPaymentBatches = bsBuilder.read((state) => {
+    return state.paymentBatches
+  }, 'getPaymentBatches')
+
+  const getPaymentBatch = bsBuilder.read((state) => {
+    return state.paymentBatch
+  }, 'getPaymentBatch')
+
   const getUser = bsBuilder.read((state) => {
     return state.user
   }, 'getUser')
@@ -81,6 +89,12 @@ export const buildGetters = (
     },
     get getWithdrawals() {
       return getWithdrawals()
+    },
+    get getPaymentBatches() {
+      return getPaymentBatches()
+    },
+    get getPaymentBatch() {
+      return getPaymentBatch()
     },
     get getBankerUser() {
       return getUser()

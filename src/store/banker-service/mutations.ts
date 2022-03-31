@@ -4,6 +4,7 @@ import {
   BankerState,
   Charity,
   Donation,
+  PaymentBatch,
   Reward,
   Settings,
   Statement,
@@ -47,6 +48,17 @@ function setWithdrawals(state: BankerState, withdrawals: Page<Withdrawal>) {
   state.withdrawals = withdrawals
 }
 
+function setPaymentBatches(
+  state: BankerState,
+  paymentBatches: Page<PaymentBatch>
+) {
+  state.paymentBatches = paymentBatches
+}
+
+function setPaymentBatch(state: BankerState, payload: PaymentBatch) {
+  state.paymentBatch = payload
+}
+
 function setUser(state: BankerState, user: User) {
   state.user = user
 }
@@ -80,6 +92,8 @@ export const buildMutations = (
 ) => {
   return {
     setWithdrawals: bsBuilder.commit(setWithdrawals),
+    setPaymentBatches: bsBuilder.commit(setPaymentBatches),
+    setPaymentBatch: bsBuilder.commit(setPaymentBatch),
     setCharities: bsBuilder.commit(setCharities),
     setPopularCharities: bsBuilder.commit(setPopularCharities),
     setCharity: bsBuilder.commit(setCharity),

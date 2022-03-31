@@ -56,7 +56,7 @@
             {{ friendlyIBAN }} t.n.v. {{ effectiveAccount.ibanHolder }}
           </span>
           <div v-else class="red--text">
-            <span class="mr-4">Rekeninggegevens ontbreken.</span>
+            <span class="mr-4">Rekeninggegevens zijn onvolledig.</span>
             <v-btn
               :to="getAccountPage"
               large
