@@ -62,6 +62,10 @@ import CharityAdminPage from '@/pages/community/goals/CharityAdminPage'
 import RewardOverviewPage from '@/pages/profile/credits/RewardOverviewPage'
 import WithdrawalOverviewPage from '@/pages/profile/credits/WithdrawalOverviewPage'
 import WithdrawalPage from '@/pages/profile/credits/WithdrawalPage'
+import PaymentBatchOverviewPage from '@/pages/community/management/PaymentBatchOverviewPage'
+import PaymentBatchPage from '@/pages/community/management/PaymentBatchPage'
+import SystemSettingsPage from '@/pages/community/management/SystemSettingsPage'
+import PremiumCreditsPage from '@/pages/community/management/PremiumCreditsPage'
 
 Vue.use(Router)
 
@@ -397,8 +401,29 @@ const router = new Router({
     },
     {
       path: '/manage',
-      name: 'manage',
+      name: 'managementOverviewPage',
       component: ManagementOverviewPage,
+    },
+    {
+      path: '/payments',
+      name: 'paymentBatchOverviewPage',
+      component: PaymentBatchOverviewPage,
+    },
+    {
+      path: '/edit-payments/:batchId',
+      name: 'editPaymentBatchPage',
+      component: PaymentBatchPage,
+      props: true,
+    },
+    {
+      path: '/system-settings',
+      name: 'systemSettingsPage',
+      component: SystemSettingsPage,
+    },
+    {
+      path: '/premium-credits',
+      name: 'premiumCreditsPage',
+      component: PremiumCreditsPage,
     },
   ],
 })

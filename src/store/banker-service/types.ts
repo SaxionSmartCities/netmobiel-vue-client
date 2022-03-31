@@ -1,6 +1,8 @@
 import { Page } from '@/store/types'
 
 export class BankerState {
+  paymentBatches: Page<PaymentBatch> | null = null
+  paymentBatch: PaymentBatch | null = null
   withdrawals: Page<Withdrawal> | null = null
   charities: Charity[] = []
   popularCharities: Charity[] = []
@@ -97,21 +99,21 @@ export interface Donation {
 export interface Withdrawal {
   // Account id is set only for deposits on a system account
   accountId?: string
-  readonly account: Account
-  readonly accountRef: string
-  amountCredits: number
-  readonly amountEurocents: number
-  readonly createdBy: User
-  readonly creationTime: string
-  description: string
-  readonly iban: string
-  readonly ibanHolder: string
+  readonly account?: Account
+  readonly accountRef?: string
+  amountCredits?: number
+  readonly amountEurocents?: number
+  readonly createdBy?: User
+  readonly creationTime?: string
+  description?: string
+  readonly iban?: string
+  readonly ibanHolder?: string
   readonly id: number
-  readonly modificationTime: string
-  readonly modifiedBy: User
-  readonly orderReference: string
-  readonly paymentBatchRef: string
-  readonly reason: string
+  readonly modificationTime?: string
+  readonly modifiedBy?: User
+  readonly orderReference?: string
+  readonly paymentBatchRef?: string
+  readonly reason?: string
   readonly status:
     | 'REQUESTED'
     | 'ACTIVE'
@@ -167,4 +169,33 @@ export interface Reward {
   readonly rewardTime: Date
   readonly transactionRef: string
   readonly urn: string
+}
+
+export interface PaymentBatch {
+  // Number of withdrawal requests in the batch
+  readonly nrRequests?: number
+  readonly amountRequestedEurocents?: number
+  readonly amountSettledEurocents?: number
+  readonly createdBy?: User
+  readonly creationTime?: string
+  readonly id: number
+  readonly modificationTime?: string
+  readonly modifiedBy?: User
+  readonly orderReference?: string
+  // The reference the originator of the payment.
+  readonly originatorAccountRef?: string
+  // The (copied) originator IBAN. Copied as it might change over time, but not for this batch
+  readonly originatorIban?: string
+  // The (copied) originator IBAN holder.
+  readonly originatorIbanHolder?: string
+  readonly reason?: string
+  // In practice only the following aer used: ACTIVE, COMPLETED, CANCELLED
+  readonly status?:
+    | 'REQUESTED'
+    | 'ACTIVE'
+    | 'COMPLETED'
+    | 'EXPIRED'
+    | 'CANCELLED'
+    | undefined
+  readonly withdrawalRequests: Withdrawal[]
 }

@@ -6,6 +6,7 @@ import {
   Charity,
   Deposit,
   Donation,
+  PaymentBatch,
   PaymentEvent,
   Withdrawal,
 } from './types'
@@ -172,7 +173,6 @@ async function updateCharityAccount(
         GRAVITEE_BANKER_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
     })
-    // Ignore the returned url. We will fetch the charity object later on.
     if (resp.status !== 204) {
       // eslint-disable-next-line
       console.warn(`updateCharityAccount: Unexpected status ${resp.status}`)
@@ -459,7 +459,6 @@ async function updatePersonalAccount(context: ActionContext, account: Account) {
         GRAVITEE_BANKER_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
     })
-    // Ignore the returned url. We will fetch the charity object later on.
     if (resp.status !== 204) {
       // eslint-disable-next-line
       console.warn(`updatePersonalAccount: Unexpected status ${resp.status}`)
@@ -564,6 +563,29 @@ async function withdrawCredits(context: ActionContext, payload: Withdrawal) {
   }
 }
 
+async function updateAccount(context: ActionContext, account: Account) {
+  const URL = `${BANKER_BASE_URL}/accounts/${account.id}`
+  try {
+    const resp = await axios.put(URL, account, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    if (resp.status !== 204) {
+      // eslint-disable-next-line
+      console.warn(`updateAccount: Unexpected status ${resp.status}`)
+    }
+    return true
+  } catch (error) {
+    // eslint-disable-next-line
+    console.log(error)
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het opslaan van de financiële gegevens.'
+    )
+    return false
+  }
+}
+
 // ===========  WITHDRAWAL & PAYMENT BATCH  ================
 
 async function fetchUserWithdrawals(context: ActionContext) {
@@ -605,17 +627,45 @@ async function cancelUserWithdrawal(context: ActionContext, wrid: string) {
   }
 }
 
-async function fetchWithdrawals(context: ActionContext) {
+async function fetchWithdrawalsPage(context: ActionContext, params: any) {
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/withdrawals`, {
       headers: generateHeaders(
         GRAVITEE_BANKER_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
+      params: { ...params },
     })
-    const withdrawals = resp.data
-    // eslint-disable-next-line
-    console.log(withdrawals)
-    mutations.setWithdrawals(withdrawals)
+    return resp.data
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de uitbetalingen.'
+    )
+    return null
+  }
+}
+
+async function fetchWithdrawalsRequestedCount(context: ActionContext) {
+  const page = await fetchWithdrawalsPage(context, {
+    status: 'REQUESTED',
+    maxResults: 0,
+  })
+  return page?.totalCount
+}
+
+async function fetchWithdrawals(context: ActionContext, params: any) {
+  const withdrawals = await fetchWithdrawalsPage(context, params)
+  mutations.setWithdrawals(withdrawals)
+}
+
+async function fetchPaymentBatches(context: ActionContext, params: any) {
+  try {
+    const resp = await axios.get(`${BANKER_BASE_URL}/payment-batches`, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+      params: { ...params },
+    })
+    mutations.setPaymentBatches(resp.data)
   } catch (problem) {
     await uiStore.actions.queueErrorNotification(
       'Fout bij het ophalen van de uitbetalingen.'
@@ -623,24 +673,108 @@ async function fetchWithdrawals(context: ActionContext) {
   }
 }
 
-async function fetchPaymentBatches(context: ActionContext) {
+async function fetchPaymentBatchByFormat(context: ActionContext, payload: any) {
   try {
-    const since = moment().subtract(1, 'months').format()
-    const until = moment().format()
-    const params = { since, until }
-    const resp = await axios.get(`${BANKER_BASE_URL}/payment-batches`, {
+    const resp = await axios.get(
+      `${BANKER_BASE_URL}/payment-batches/${payload.batchId}`,
+      {
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+        params: { format: payload.format },
+      }
+    )
+    return resp.data
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de uitbetalingsbatch.'
+    )
+    return null
+  }
+}
+
+async function createPaymentBatch(context: ActionContext) {
+  try {
+    const resp = await axios.post(`${BANKER_BASE_URL}/payment-batches`, null, {
       headers: generateHeaders(
         GRAVITEE_BANKER_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
-      params: params,
     })
-    const batches = resp.data.data
-    // eslint-disable-next-line
-    console.log(batches)
+    // Expect a 201
+    if (resp.status !== 201) {
+      // eslint-disable-next-line
+      console.warn(`createPaymentBatch: Unexpected status ${resp.status}`)
+    } else {
+      return resp.headers.location
+    }
   } catch (problem) {
     await uiStore.actions.queueErrorNotification(
-      'Fout bij het ophalen van de uitbetalingen.'
+      'Fout bij het maken van een nieuwe uitbetalingsbatch.'
     )
+  }
+}
+
+async function fetchPaymentBatch(context: ActionContext, batchId: any) {
+  const batch = await fetchPaymentBatchByFormat(context, {
+    batchId,
+    format: 'JSON',
+  })
+  mutations.setPaymentBatch(batch)
+}
+
+async function downloadPaymentBatchFile(context: ActionContext, batchId: any) {
+  return await fetchPaymentBatchByFormat(context, {
+    batchId,
+    format: 'PAIN.001',
+  })
+}
+
+async function updatePaymentBatch(
+  context: ActionContext,
+  paymentBatch: PaymentBatch
+) {
+  try {
+    const resp = await axios.put(
+      `${BANKER_BASE_URL}/payment-batches/${paymentBatch.id}`,
+      paymentBatch,
+      {
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+      }
+    )
+    return resp.data
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de uitbetalingsbatch.'
+    )
+    return null
+  }
+}
+
+async function mailMePaymentBatchCreditTransferXML(
+  context: ActionContext,
+  paymentBatchId: String
+) {
+  try {
+    const resp = await axios.post(
+      `${BANKER_BASE_URL}/payment-batches/${paymentBatchId}/mail-pain`,
+      null,
+      {
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+        params: {
+          pendingOnly: true,
+        },
+      }
+    )
+    return true
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het mailen van de uitbetalingsbatch.'
+    )
+    return false
   }
 }
 
@@ -684,12 +818,23 @@ export const buildActions = (
     fetchSystemAccounts: bsBuilder.dispatch(fetchSystemAccounts),
     depositCredits: bsBuilder.dispatch(depositCredits),
     withdrawCredits: bsBuilder.dispatch(withdrawCredits),
+    updateAccount: bsBuilder.dispatch(updateAccount),
 
     // Check deposits
     getDepositStatus: bsBuilder.dispatch(getDepositStatus),
 
     // Withdrawals & Payment batches
+    fetchWithdrawalsRequestedCount: bsBuilder.dispatch(
+      fetchWithdrawalsRequestedCount
+    ),
     fetchWithdrawals: bsBuilder.dispatch(fetchWithdrawals),
     fetchPaymentBatches: bsBuilder.dispatch(fetchPaymentBatches),
+    fetchPaymentBatch: bsBuilder.dispatch(fetchPaymentBatch),
+    createPaymentBatch: bsBuilder.dispatch(createPaymentBatch),
+    downloadPaymentBatchFile: bsBuilder.dispatch(downloadPaymentBatchFile),
+    updatePaymentBatch: bsBuilder.dispatch(updatePaymentBatch),
+    mailMePaymentBatchCreditTransferXML: bsBuilder.dispatch(
+      mailMePaymentBatchCreditTransferXML
+    ),
   }
 }

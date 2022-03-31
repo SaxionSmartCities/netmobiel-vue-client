@@ -12,7 +12,7 @@
     </v-row>
     <v-row>
       <v-col class="shrink">
-        <v-progress-circular indeterminate class="rotate"></v-progress-circular>
+        <v-progress-circular indeterminate color="button"></v-progress-circular>
       </v-col>
       <v-col class="align-center">
         <span> Je wordt binnen enkele seconden doorgestuurd... </span>
@@ -49,8 +49,4 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.rotate {
-  color: #ff8500;
-}
-</style>
+<style scoped lang="scss"></style>

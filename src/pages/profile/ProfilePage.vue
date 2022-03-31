@@ -20,7 +20,7 @@
                 <v-progress-circular
                   v-if="isUploadingFile"
                   indeterminate
-                  color="primary"
+                  color="button"
                 ></v-progress-circular>
               </label>
             </div>

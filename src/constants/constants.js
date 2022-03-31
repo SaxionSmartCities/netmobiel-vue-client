@@ -136,6 +136,7 @@ export default {
   },
   PAYMENT_STATUS: [
     {
+      final: false,
       status: 'REQUESTED',
       iconName: 'watch_later',
       label: 'In aanvraag',
@@ -143,13 +144,15 @@ export default {
       iconClass: 'material-icons-outlined',
     },
     {
+      final: false,
       status: 'ACTIVE',
       iconName: 'supervisor_account',
       label: 'In behandeling',
-      iconColor: 'info',
+      iconColor: 'warning',
       iconClass: 'material-icons-outlined',
     },
     {
+      final: true,
       status: 'COMPLETED',
       iconName: 'check',
       label: 'Afgerond',
@@ -157,6 +160,7 @@ export default {
       iconClass: '',
     },
     {
+      final: true,
       status: 'CANCELLED',
       iconName: 'close',
       label: 'Afgewezen',
@@ -164,6 +168,7 @@ export default {
       iconClass: '',
     },
     {
+      final: true,
       status: 'EXPIRED',
       iconName: 'assignment_late',
       label: 'Verlopen',
