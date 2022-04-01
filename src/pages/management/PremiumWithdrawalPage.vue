@@ -145,7 +145,7 @@ export default {
       bsStore.actions.withdrawCredits(withdrawal).then((location) => {
         if (location) {
           this.$router.push({
-            name: 'premiumCreditsPage',
+            name: 'systemCreditsPage',
           })
         }
       })

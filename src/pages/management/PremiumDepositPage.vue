@@ -133,7 +133,7 @@ export default {
       bsStore.actions.depositCredits(deposit).then((location) => {
         if (location) {
           this.$router.push({
-            name: 'premiumCreditsPage',
+            name: 'systemCreditsPage',
           })
         }
       })
