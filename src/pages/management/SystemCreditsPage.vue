@@ -43,22 +43,22 @@
         <v-btn
           large
           rounded
-          depressed
-          color="button"
-          @click="$router.push('/premiumDepositPage')"
+          outlined
+          color="primary"
+          @click="$router.push('/premiumWithdrawalPage')"
         >
-          Verhogen
+          Verlagen
         </v-btn>
       </v-col>
       <v-col class="text-center">
         <v-btn
           large
           rounded
-          outlined
-          color="primary"
-          @click="$router.push('/premiumWithdrawalPage')"
+          depressed
+          color="button"
+          @click="$router.push('/premiumDepositPage')"
         >
-          Verlagen
+          Verhogen
         </v-btn>
       </v-col>
     </v-row>
