@@ -8,7 +8,6 @@ import ItineraryDetailPage from './pages/planner/ItineraryDetailPage.vue'
 import LandingPage from './pages/LandingPage.vue'
 import HomePage from './pages/home/HomePage.vue'
 import HowToPage from './pages/home/HowToPage.vue'
-import ManagementOverviewPage from './pages/manage/ManagementOverviewPage.vue'
 import ModeSelectionPage from './pages/planner/ModeSelectionPage.vue'
 import NotificationOptionsPage from './pages/profile/NotificationOptionsPage.vue'
 import OnboardingCompletedPage from './pages/OnboardingCompletedPage.vue'
@@ -62,10 +61,12 @@ import CharityAdminPage from '@/pages/community/goals/CharityAdminPage'
 import RewardOverviewPage from '@/pages/profile/credits/RewardOverviewPage'
 import WithdrawalOverviewPage from '@/pages/profile/credits/WithdrawalOverviewPage'
 import WithdrawalPage from '@/pages/profile/credits/WithdrawalPage'
-import PaymentBatchOverviewPage from '@/pages/community/management/PaymentBatchOverviewPage'
-import PaymentBatchPage from '@/pages/community/management/PaymentBatchPage'
-import SystemSettingsPage from '@/pages/community/management/SystemSettingsPage'
-import PremiumCreditsPage from '@/pages/community/management/PremiumCreditsPage'
+import PaymentBatchOverviewPage from '@/pages/management/PaymentBatchOverviewPage'
+import PaymentBatchPage from '@/pages/management/PaymentBatchPage'
+import SystemSettingsPage from '@/pages/management/SystemSettingsPage'
+import SystemCreditsPage from '@/pages/management/SystemCreditsPage'
+import PremiumWithdrawalPage from '@/pages/management/PremiumWithdrawalPage'
+import PremiumDepositPage from '@/pages/management/PremiumDepositPage'
 
 Vue.use(Router)
 
@@ -400,11 +401,6 @@ const router = new Router({
       props: true,
     },
     {
-      path: '/manage',
-      name: 'managementOverviewPage',
-      component: ManagementOverviewPage,
-    },
-    {
       path: '/payments',
       name: 'paymentBatchOverviewPage',
       component: PaymentBatchOverviewPage,
@@ -421,9 +417,19 @@ const router = new Router({
       component: SystemSettingsPage,
     },
     {
-      path: '/premium-credits',
-      name: 'premiumCreditsPage',
-      component: PremiumCreditsPage,
+      path: '/system-credits',
+      name: 'systemCreditsPage',
+      component: SystemCreditsPage,
+    },
+    {
+      path: '/premiumDepositPage',
+      name: 'premiumDepositPage',
+      component: PremiumDepositPage,
+    },
+    {
+      path: '/premiumWithdrawalPage',
+      name: 'premiumWithdrawalPage',
+      component: PremiumWithdrawalPage,
     },
   ],
 })

@@ -42,9 +42,9 @@
       <v-col>
         <community-button
           class="mx-auto"
-          icon="fa-cog"
-          name="Management"
-          forward="managementOverviewPage"
+          icon="fa-user-tie"
+          name="Financiën"
+          forward="systemCreditsPage"
         ></community-button>
       </v-col>
       <v-col>
@@ -64,14 +64,6 @@
           icon="fa-cog"
           name="Systeeminstellingen"
           forward="systemSettingsPage"
-        ></community-button>
-      </v-col>
-      <v-col v-if="false">
-        <community-button
-          class="mx-auto"
-          icon="fa-gifts"
-          name="Premiebeheer"
-          forward="premiumCreditsPage"
         ></community-button>
       </v-col>
     </v-row>

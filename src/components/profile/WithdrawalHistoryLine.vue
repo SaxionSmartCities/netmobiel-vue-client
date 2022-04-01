@@ -74,11 +74,7 @@
 <script>
 import moment from 'moment'
 import constants from '@/constants/constants'
-
-const euroFormatter = new Intl.NumberFormat('nl-NL', {
-  style: 'currency',
-  currency: 'EUR',
-})
+import { amountInEuro } from '@/utils/Utils'
 
 export default {
   name: 'WithdrawalHistoryLine',
@@ -108,7 +104,7 @@ export default {
       return this.withdrawal.redemption ? 'Verzilvering' : 'Gift'
     },
     amountInEuro() {
-      return euroFormatter.format(this.withdrawal.amountEurocents / 100)
+      return amountInEuro(this.withdrawal.amountEurocents)
     },
     iconInfo() {
       return this.withdrawal

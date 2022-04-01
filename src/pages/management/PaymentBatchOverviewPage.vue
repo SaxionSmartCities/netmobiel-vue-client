@@ -3,6 +3,10 @@
     <v-row>
       <v-col>
         <h1>Uitbetalingen</h1>
+        <div class="caption">
+          Uitbetalingen worden gedaan via internetbankieren. Door op de knop te
+          drukken worden de uitstaande opdrachten in een batchbestand verzameld.
+        </div>
       </v-col>
     </v-row>
     <v-row v-if="checkIbanPresent(bankingReserveAccount) === true">
@@ -136,11 +140,7 @@ import WithdrawalHistoryLine from '@/components/profile/WithdrawalHistoryLine'
 import moment from 'moment'
 import constants from '@/constants/constants'
 import * as ibantools from 'ibantools'
-
-const euroFormatter = new Intl.NumberFormat('nl-NL', {
-  style: 'currency',
-  currency: 'EUR',
-})
+import { amountInEuro } from '@/utils/Utils'
 
 export default {
   name: 'PaymentBatchOverviewPage',
@@ -185,8 +185,8 @@ export default {
     iconInfo(status) {
       return constants.PAYMENT_STATUS.find((s) => s.status === status)
     },
-    amountInEuro(amount) {
-      return euroFormatter.format(amount / 100)
+    amountInEuro(amountInEurocents) {
+      return amountInEuro(amountInEurocents)
     },
     onCancel(wr) {
       this.withdrawalToCancel = wr
