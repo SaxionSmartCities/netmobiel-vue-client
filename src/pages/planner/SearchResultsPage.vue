@@ -274,7 +274,7 @@ export default {
 <style lang="scss">
 a {
   text-decoration: none;
-  color: #2e8997;
+  color: $color-green;
   span {
     font-size: 1em;
   }
