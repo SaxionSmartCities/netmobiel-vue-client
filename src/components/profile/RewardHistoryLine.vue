@@ -16,8 +16,9 @@
     </v-col>
     <v-col class="body-2 text-right shrink text-no-wrap">
       <span class="text-green mr-2">{{ reward.amount }}</span>
-      <v-icon v-if="reward.paidOut" class="text-green">check</v-icon>
-      <v-icon v-else class="text-red">alarm</v-icon>
+      <v-icon v-if="reward.cancelTime" color="error">close</v-icon>
+      <v-icon v-else-if="reward.paidOut" color="success">check</v-icon>
+      <v-icon v-else color="warning">alarm</v-icon>
     </v-col>
   </v-row>
 </template>
