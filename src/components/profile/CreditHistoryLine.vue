@@ -97,9 +97,6 @@ export default {
   color: $color-green;
 }
 .text-red {
-  color: #d0021b;
-}
-.text-kind {
-  font-style: italic;
+  color: $color-alertRed;
 }
 </style>

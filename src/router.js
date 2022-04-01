@@ -67,6 +67,7 @@ import SystemSettingsPage from '@/pages/management/SystemSettingsPage'
 import SystemCreditsPage from '@/pages/management/SystemCreditsPage'
 import PremiumWithdrawalPage from '@/pages/management/PremiumWithdrawalPage'
 import PremiumDepositPage from '@/pages/management/PremiumDepositPage'
+import PrivacyPage from '@/pages/PrivacyPage'
 
 Vue.use(Router)
 
@@ -430,6 +431,11 @@ const router = new Router({
       path: '/premiumWithdrawalPage',
       name: 'premiumWithdrawalPage',
       component: PremiumWithdrawalPage,
+    },
+    {
+      path: '/external/privacy',
+      name: 'pricacyPage',
+      component: PrivacyPage,
     },
   ],
 })
