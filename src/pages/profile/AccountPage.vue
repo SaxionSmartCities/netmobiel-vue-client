@@ -287,7 +287,7 @@ export default {
       return ibantools.isValidIBAN(iban)
     },
     formatIBAN(input) {
-      return ibantools.friendlyFormatIBAN(input.trim())
+      return input ? ibantools.friendlyFormatIBAN(input.trim()) : null
     },
   },
 }
