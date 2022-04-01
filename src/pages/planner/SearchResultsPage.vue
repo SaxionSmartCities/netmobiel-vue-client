@@ -83,16 +83,13 @@
                 </a>
               </v-col>
               <v-col>
-                <a href="tel:0900-9874">
+                <a @click.stop="showZoovDialog = true">
                   <v-row>
                     <v-col class="col-2 ml-2">
                       <v-icon>phone_in_talk</v-icon>
                     </v-col>
                     <v-col>
                       <span>Bel de ZOOV regiotaxi</span>
-                      <!-- Voor het reserveren van uw rit belt u naar ZOOV Op Maat via 0900-9874 (€ 0,10 per minuut).
-                      ZOOV Op Maat is bereikbaar van 6.00 uur 's ochtends tot 1.00 uur 's nachts. -->
-                      <!-- Vermeldt in het gesprek dat je met Netmobiel reist. -->
                     </v-col>
                   </v-row>
                 </a>
@@ -102,6 +99,53 @@
         </v-row>
       </v-col>
     </v-row>
+    <v-dialog v-model="showZoovDialog" scrollable>
+      <v-card class="py-1 px-3">
+        <v-card-title class="headline background-primary text-white"
+          >ZOOV Regio-taxi</v-card-title
+        >
+        <v-card-text>
+          <p>
+            Heb je geen match gevonden in de app en werkte de oproep ook niet?
+            Dan kun je een rit met fikse korting regelen met ZOOV (het regionale
+            vervoerssysteem).
+          </p>
+          <p>
+            Je belt zelf met ZOOV. Om de korting te krijgen zeg je dat je met
+            Netmobiel reist. Jij betaalt dan automatisch de gebruikelijke 1
+            credit per kilometer. Binnen een paar weken worden de credits van je
+            tegoed afgehaald.
+          </p>
+          <p>
+            Voor het reserveren van je rit bel je ZOOV Op Maat via
+            <strong>0900-9874</strong>
+            (€0,10 per minuut). ZOOV Op Maat is bereikbaar van 6.00 uur 's
+            ochtends tot 1.00 uur ’s nachts.
+          </p>
+          <p>
+            Vergeet niet te zeggen dat je met Netmobiel reist als je belt met
+            ZOOV Op Maat!
+          </p>
+          <p>
+            Tot slot: Gebruik deze optie alleen als je geen andere geschikte
+            reisoptie aangeboden krijgt.
+          </p>
+        </v-card-text>
+        <v-card-actions class="justify-space-around">
+          <v-btn
+            large
+            rounded
+            outlined
+            depressed
+            color="primary"
+            min-width="9em"
+            @click="showZoovDialog = false"
+          >
+            OK
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </content-pane>
 </template>
 
@@ -132,6 +176,7 @@ export default {
   },
   data() {
     return {
+      showZoovDialog: false,
       selectedSortModusIndex: 0,
       sortModi: [
         { title: 'Snelste', value: 'fastest' },
@@ -259,9 +304,6 @@ export default {
           }
         })
     },
-    toDate(string) {
-      return moment(string)
-    },
     //TODO: Add sorting again.
     toggleSelectedSortModus() {
       this.selectedSortModusIndex =
@@ -271,7 +313,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 a {
   text-decoration: none;
   color: $color-green;
@@ -286,5 +328,8 @@ a {
 
 .edit-container {
   background-color: rgba($color-orange, 0.15);
+}
+.text-white {
+  color: $color_white;
 }
 </style>
