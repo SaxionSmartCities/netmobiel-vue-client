@@ -129,6 +129,11 @@ export default {
       return psStore.getters.canActAsTreasurer
     },
   },
+  watch: {
+    canActAsTreasurer() {
+      this.refreshWithdrawalCount()
+    },
+  },
   mounted() {
     if (this.isPassenger) {
       // Display the count of the user's own shout-outs.
@@ -142,12 +147,17 @@ export default {
         : undefined
       isStore.actions.fetchShoutOuts({ location, maxResults: 0 })
     }
-    if (this.canActAsTreasurer) {
-      // Get the count of pending withdrawal requests
-      bsStore.actions.fetchWithdrawalsRequestedCount().then((count) => {
-        this.withdrawalsRequestedCount = count
-      })
-    }
+    this.refreshWithdrawalCount()
+  },
+  methods: {
+    refreshWithdrawalCount() {
+      if (this.canActAsTreasurer) {
+        // Get the count of pending withdrawal requests
+        bsStore.actions.fetchWithdrawalsRequestedCount().then((count) => {
+          this.withdrawalsRequestedCount = count
+        })
+      }
+    },
   },
 }
 </script>
