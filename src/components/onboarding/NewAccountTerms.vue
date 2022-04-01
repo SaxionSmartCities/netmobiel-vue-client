@@ -36,6 +36,10 @@
                 target="_blank"
                 >privacyverklaring</a
               >.
+              <!--              <router-link to="/external/privacy"-->
+              <!--                >privacyverklaring</router-link-->
+              <!--              >-->
+              <!-- Bovenstaande truc met een iframe optie werkt niet omdat X-Frame-Options op sameorigin staat -->
             </p>
           </v-col>
         </v-row>

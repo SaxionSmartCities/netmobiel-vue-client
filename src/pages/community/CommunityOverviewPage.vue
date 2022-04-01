@@ -42,9 +42,9 @@
       <v-col>
         <community-button
           class="mx-auto"
-          icon="fa-cog"
-          name="Management"
-          forward="managementOverviewPage"
+          icon="fa-user-tie"
+          name="Financiën"
+          forward="systemCreditsPage"
         ></community-button>
       </v-col>
       <v-col>
@@ -64,14 +64,6 @@
           icon="fa-cog"
           name="Systeeminstellingen"
           forward="systemSettingsPage"
-        ></community-button>
-      </v-col>
-      <v-col v-if="false">
-        <community-button
-          class="mx-auto"
-          icon="fa-gifts"
-          name="Premiebeheer"
-          forward="premiumCreditsPage"
         ></community-button>
       </v-col>
     </v-row>
@@ -137,6 +129,11 @@ export default {
       return psStore.getters.canActAsTreasurer
     },
   },
+  watch: {
+    canActAsTreasurer() {
+      this.refreshWithdrawalCount()
+    },
+  },
   mounted() {
     if (this.isPassenger) {
       // Display the count of the user's own shout-outs.
@@ -150,12 +147,17 @@ export default {
         : undefined
       isStore.actions.fetchShoutOuts({ location, maxResults: 0 })
     }
-    if (this.canActAsTreasurer) {
-      // Get the count of pending withdrawal requests
-      bsStore.actions.fetchWithdrawalsRequestedCount().then((count) => {
-        this.withdrawalsRequestedCount = count
-      })
-    }
+    this.refreshWithdrawalCount()
+  },
+  methods: {
+    refreshWithdrawalCount() {
+      if (this.canActAsTreasurer) {
+        // Get the count of pending withdrawal requests
+        bsStore.actions.fetchWithdrawalsRequestedCount().then((count) => {
+          this.withdrawalsRequestedCount = count
+        })
+      }
+    },
   },
 }
 </script>

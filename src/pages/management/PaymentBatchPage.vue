@@ -158,11 +158,7 @@ import * as ibantools from 'ibantools'
 import moment from 'moment'
 import constants from '@/constants/constants'
 import WithdrawalHistoryLine from '@/components/profile/WithdrawalHistoryLine'
-
-const euroFormatter = new Intl.NumberFormat('nl-NL', {
-  style: 'currency',
-  currency: 'EUR',
-})
+import { amountInEuro } from '@/utils/Utils'
 
 export default {
   name: 'PaymentBatchPage',
@@ -216,9 +212,8 @@ export default {
     formatDateTime(dt) {
       return dt ? moment(dt).locale('nl').format('DD MMM YYYY HH:mm') : ''
     },
-    amountInEuro(amount) {
-      const value = typeof amount === 'number' ? amount : 0
-      return euroFormatter.format(value / 100)
+    amountInEuro(amountInEurocents) {
+      return amountInEuro(amountInEurocents)
     },
     friendlyIBAN(iban) {
       return iban ? ibantools.friendlyFormatIBAN(iban) : ''

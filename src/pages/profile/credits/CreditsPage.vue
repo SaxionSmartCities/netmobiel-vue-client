@@ -26,15 +26,6 @@
         amountInEuro(user.premiumAccount.credits)
       }}</v-col>
     </v-row>
-    <v-row v-if="premiumAccount" class="body-2">
-      <v-col cols="5"> Saldo premieuitgifte </v-col>
-      <v-col cols="4" class="text-right"
-        >{{ premiumAccount.credits }} credits</v-col
-      >
-      <v-col cols="3" class="text-right">{{
-        amountInEuro(premiumAccount.credits)
-      }}</v-col>
-    </v-row>
     <v-row>
       <v-divider />
     </v-row>
@@ -116,14 +107,10 @@ import constants from '@/constants/constants'
 import { isBottomVisible } from '@/utils/scroll'
 import * as uiStore from '@/store/ui'
 import * as bsStore from '@/store/banker-service'
-import * as psStore from '@/store/profile-service'
 import GroupedCardList from '@/components/common/GroupedCardList'
+import { creditAmountInEuro } from '@/utils/Utils'
 
 const { fetchBankerStatementsMaxResults } = constants
-const euroFormatter = new Intl.NumberFormat('nl-NL', {
-  style: 'currency',
-  currency: 'EUR',
-})
 
 export default {
   name: 'CreditsPage',
@@ -157,31 +144,12 @@ export default {
     exchangeRate() {
       return bsStore.getters.getBankerSettings?.exchangeRate ?? 0
     },
-    premiumAccountNcan() {
-      // Name of the system account for distributing premiums
-      return 'premiums'
-    },
-    premiumAccount() {
-      return bsStore.getters.getSystemAccounts?.data.find(
-        (acc) => acc.ncan === this.premiumAccountNcan
-      )
-    },
-    canActAsTreasurer() {
-      return psStore.getters.canActAsTreasurer
-    },
   },
   watch: {
-    user() {
-      if (this.canActAsTreasurer) {
-        bsStore.actions.fetchSystemAccounts()
-      }
-    },
     bottom(bottom) {
       if (bottom) {
         // fetch more statements when window bottom is visible
-        bsStore.actions.fetchMoreAccountStatements(
-          fetchBankerStatementsMaxResults
-        )
+        bsStore.actions.fetchMoreUserStatements(fetchBankerStatementsMaxResults)
       }
     },
   },
@@ -190,7 +158,7 @@ export default {
     bsStore.actions.fetchBankerUser()
     bsStore.actions.fetchBankerSettings()
     // fetch first page with statements
-    bsStore.actions.fetchFirstAccountStatements(fetchBankerStatementsMaxResults)
+    bsStore.actions.fetchFirstUserStatements(fetchBankerStatementsMaxResults)
   },
   mounted() {
     window.addEventListener('scroll', this.scrollHandler)
@@ -199,8 +167,8 @@ export default {
     window.removeEventListener('scroll', this.scrollHandler)
   },
   methods: {
-    amountInEuro(amount) {
-      return euroFormatter.format(((amount || 0) * this.exchangeRate) / 100)
+    amountInEuro(amountInCredits) {
+      return creditAmountInEuro(amountInCredits, this.exchangeRate)
     },
   },
 }

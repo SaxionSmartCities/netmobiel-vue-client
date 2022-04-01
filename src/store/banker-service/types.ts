@@ -97,7 +97,7 @@ export interface Donation {
 }
 
 export interface Withdrawal {
-  // Account id is set only for deposits on a system account
+  // Account id is set only for withdrawals from a system account
   accountId?: string
   readonly account?: Account
   readonly accountRef?: string
@@ -124,13 +124,14 @@ export interface Withdrawal {
 }
 
 export interface Account {
-  credits: number
-  iban: string
-  ibanHolder: string
-  id: number
-  name: string
-  ncan: string
-  purpose: 'SYSTEM' | 'CURRENT' | 'PREMIUM'
+  readonly credits?: number
+  readonly iban?: string
+  readonly ibanHolder?: string
+  readonly id: number
+  readonly name: string
+  readonly ncan?: string
+  readonly purpose?: 'SYSTEM' | 'CURRENT' | 'PREMIUM'
+  readonly type?: 'ASSET' | 'LIABILITY'
 }
 export interface Deposit {
   // Account id is set only for deposits on a system account

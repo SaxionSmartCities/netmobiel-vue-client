@@ -8,7 +8,7 @@
         <span class="font-weight-bold">{{ counterparty }}</span>
         {{ accountType }}
       </div>
-      <div>{{ description }}</div>
+      <div class="caption">{{ description }}</div>
     </v-col>
     <v-col class="body-2 align-self-start shrink text-right">
       <div class="font-italic">{{ transactionKind }} {{ rollbackText }}</div>
@@ -33,15 +33,19 @@ export default {
   props: {
     statement: { type: Object, required: true },
     // The banker user listing the statements
-    user: { type: Object, required: true },
+    user: { type: Object, required: false, default: undefined },
     // The account this list is about
     account: { type: Object, required: true },
   },
   computed: {
     amountFormat() {
-      return (
-        (this.statement.type === 'CREDIT' ? '+' : '-') + this.statement.amount
-      )
+      const sign =
+        (this.statement.type === 'CREDIT' &&
+          this.account.type === 'LIABILITY') ||
+        (this.statement.type === 'DEBIT' && this.account.type === 'ASSET')
+          ? '+'
+          : '-'
+      return `${sign}${this.statement.amount}`
     },
     description() {
       return this.statement.description
@@ -71,10 +75,10 @@ export default {
       return this.statement.rollback ? '(herstel)' : ''
     },
     counterpartyIsMyPremiumAccount() {
-      return this.statement.counterparty.id === this.user.premiumAccount?.id
+      return this.statement.counterparty.id === this.user?.premiumAccount?.id
     },
     counterpartyIsMyPersonalAccount() {
-      return this.statement.counterparty.id === this.user.personalAccount?.id
+      return this.statement.counterparty.id === this.user?.personalAccount?.id
     },
     counterpartyIsMe() {
       return (
@@ -93,9 +97,6 @@ export default {
   color: $color-green;
 }
 .text-red {
-  color: #d0021b;
-}
-.text-kind {
-  font-style: italic;
+  color: $color-alertRed;
 }
 </style>

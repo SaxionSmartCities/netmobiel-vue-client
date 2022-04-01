@@ -156,6 +156,20 @@ function triStateLogicText(value) {
   const sym = value ? 'TRUE' : value === false ? 'FALSE' : 'UNDECIDED'
   return constants.TRISTATE[sym]
 }
+
+const euroFormatter = new Intl.NumberFormat('nl-NL', {
+  style: 'currency',
+  currency: 'EUR',
+})
+
+function creditAmountInEuro(amountInCredits, exchangeRate) {
+  return amountInEuro((amountInCredits || 0) * exchangeRate)
+}
+
+function amountInEuro(amountInCents) {
+  return euroFormatter.format((amountInCents || 0) / 100)
+}
+
 export {
   upperCaseFirst,
   generateHeaders,
@@ -169,4 +183,6 @@ export {
   findClosestIndexOf,
   decodeJwt,
   triStateLogicText,
+  creditAmountInEuro,
+  amountInEuro,
 }

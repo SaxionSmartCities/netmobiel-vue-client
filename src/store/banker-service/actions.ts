@@ -10,8 +10,7 @@ import {
   PaymentEvent,
   Withdrawal,
 } from './types'
-import axios, { AxiosRequestHeaders, AxiosError } from 'axios'
-import moment from 'moment'
+import axios, { AxiosError, AxiosRequestHeaders } from 'axios'
 import { generateHeaders } from '@/utils/Utils'
 import config from '@/config/config'
 import * as uiStore from '@/store/ui'
@@ -336,7 +335,10 @@ async function fetchUser(context: ActionContext) {
   }
 }
 
-async function fetchStatements(context: ActionContext, payload: PageSelection) {
+async function fetchUserStatements(
+  context: ActionContext,
+  payload: PageSelection
+) {
   const offset = payload?.offset ?? 0,
     maxResults = payload?.maxResults ?? 10
   try {
@@ -357,20 +359,23 @@ async function fetchStatements(context: ActionContext, payload: PageSelection) {
   }
 }
 
-async function fetchFirstStatements(
+async function fetchFirstUserStatements(
   context: ActionContext,
   maxResults: number
 ) {
   mutations.setAccountStatements(
-    await fetchStatements(context, { offset: 0, maxResults })
+    await fetchUserStatements(context, { offset: 0, maxResults })
   )
 }
 
-async function fetchMoreStatements(context: ActionContext, maxResults: number) {
+async function fetchMoreUserStatements(
+  context: ActionContext,
+  maxResults: number
+) {
   const statementsPage = getters.getAccountStatements
   if (statementsPage && statementsPage.count < statementsPage.totalCount) {
     mutations.mergeAcountStatements(
-      await fetchStatements(context, {
+      await fetchUserStatements(context, {
         offset: statementsPage.count,
         maxResults,
       })
@@ -496,6 +501,45 @@ async function getDepositStatus(context: ActionContext, payload: PaymentEvent) {
 
 // ===========  ACCOUNTS   ================
 
+async function fetchStatements(context: ActionContext, payload: any = {}) {
+  const params = { ...payload }
+  delete params.accountId
+  try {
+    const resp = await axios.get(
+      `${BANKER_BASE_URL}/accounts/${payload.accountId}/statements`,
+      {
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+        params,
+      }
+    )
+    return resp.data
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de boekingen voor de rekeninghouder.'
+    )
+  }
+}
+
+async function fetchFirstStatements(context: ActionContext, payload: any) {
+  const firstSet = await fetchStatements(context, payload)
+  mutations.setAccountStatements(firstSet)
+}
+
+async function fetchMoreStatements(context: ActionContext, payload: any) {
+  const statementsPage = getters.getAccountStatements
+  if (statementsPage && statementsPage.count < statementsPage.totalCount) {
+    const nextSet = await fetchStatements(context, {
+      offset: statementsPage.count,
+      maxResults: payload.maxResults,
+    })
+    if (nextSet) {
+      mutations.mergeAcountStatements(nextSet)
+    }
+  }
+}
+
 async function fetchSystemAccounts(context: ActionContext) {
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/accounts`, {
@@ -525,19 +569,23 @@ async function depositCredits(context: ActionContext, payload: Deposit) {
         ) as AxiosRequestHeaders,
       }
     )
-    // Returns the url to redirect to for doing the actual deposit
-    return resp.data
+    if (resp.status !== 201) {
+      // eslint-disable-next-line
+      console.warn(`depositCredits: Unexpected status ${resp.status}`)
+    }
+    return resp.headers.location
   } catch (problem) {
     await uiStore.actions.queueErrorNotification(
-      'Fout bij het ophalen van de payment URL voor de inkoop van account credits.'
+      'Fout bij het ophogen van de credits.'
     )
+    return null
   }
 }
 
 async function withdrawCredits(context: ActionContext, payload: Withdrawal) {
   try {
     const resp = await axios.post(
-      `${BANKER_BASE_URL}/accounts/${payload.accountId}/deposits`,
+      `${BANKER_BASE_URL}/accounts/${payload.accountId}/withdrawals`,
       payload,
       {
         headers: generateHeaders(
@@ -549,17 +597,17 @@ async function withdrawCredits(context: ActionContext, payload: Withdrawal) {
       // eslint-disable-next-line
       console.warn(`withdrawCredits: Unexpected status ${resp.status}`)
     }
-    return true
+    return resp.headers.location
   } catch (problem) {
-    let msg = 'Fout bij het plaatsen van een verzoek om credits in te wisselen.'
+    let msg = 'Fout bij het verlagen van de credits.'
     const error = problem as Error | AxiosError
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 402) {
-        msg = 'Je hebt onvoldoende saldo voor dit aantal credits'
+        msg = 'Onvoldoende saldo voor dit aantal credits'
       }
     }
     await uiStore.actions.queueErrorNotification(msg)
-    return false
+    return null
   }
 }
 
@@ -806,8 +854,8 @@ export const buildActions = (
     cancelUserWithdrawal: bsBuilder.dispatch(cancelUserWithdrawal),
     fetchBankerUser: bsBuilder.dispatch(fetchUser),
     fetchBankerSettings: bsBuilder.dispatch(fetchSettings),
-    fetchFirstAccountStatements: bsBuilder.dispatch(fetchFirstStatements),
-    fetchMoreAccountStatements: bsBuilder.dispatch(fetchMoreStatements),
+    fetchFirstUserStatements: bsBuilder.dispatch(fetchFirstUserStatements),
+    fetchMoreUserStatements: bsBuilder.dispatch(fetchMoreUserStatements),
     fetchPreviouslyDonatedCharities: bsBuilder.dispatch(
       fetchPreviouslyDonatedCharities
     ),
@@ -815,6 +863,8 @@ export const buildActions = (
     updatePersonalAccount: bsBuilder.dispatch(updatePersonalAccount),
 
     // Accounts
+    fetchFirstStatements: bsBuilder.dispatch(fetchFirstStatements),
+    fetchMoreStatements: bsBuilder.dispatch(fetchMoreStatements),
     fetchSystemAccounts: bsBuilder.dispatch(fetchSystemAccounts),
     depositCredits: bsBuilder.dispatch(depositCredits),
     withdrawCredits: bsBuilder.dispatch(withdrawCredits),

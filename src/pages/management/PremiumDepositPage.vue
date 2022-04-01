@@ -3,28 +3,19 @@
     <content-pane>
       <v-row dense>
         <v-col>
-          <h1>Credits inkopen</h1>
-        </v-col>
-      </v-row>
-      <v-row v-if="bankSimulated">
-        <v-col>
-          <v-alert type="warning">
-            In de huidige testfase van de Netmobiel-app hoef je nog niet écht te
-            betalen voor credits. Wel heb je de fictieve credits nodig om ritten
-            te boeken. Het aankoopproces dat je straks doorloopt is slechts een
-            simulatie en het kost je helemaal niks! Spreek onderling met de
-            chauffeur een eventuele vergoeding af.
-          </v-alert>
+          <h1>Premiesaldo Verhogen</h1>
+          <div class="caption">
+            Door premie toe te voegen kun je beloningen uitbetalen aan de
+            deelnemers. Hou een evenredige dekking aan op de bankrekening van je
+            organisatie.
+          </div>
         </v-col>
       </v-row>
       <v-row dense>
-        <v-col>
-          Je kunt Netmobiel credits inkopen via iDEAL.<br />
-          Eén credit kost {{ exchangeRate }} eurocent.
-        </v-col>
+        <v-col> Eén credit kost {{ exchangeRate }} eurocent. </v-col>
       </v-row>
       <v-row dense class="align-center">
-        <v-col> Hoeveel credits wil je inkopen? </v-col>
+        <v-col> Hoeveel premie wil je toevoegen? </v-col>
         <v-col cols="3">
           <v-text-field
             v-model.number="creditAmount"
@@ -66,12 +57,11 @@
             large
             rounded
             depressed
-            :disabled="!valid"
             color="button"
-            min-width="9em"
-            @click="startMoneyTransfer()"
+            :disabled="!valid"
+            @click="addCredits()"
           >
-            Betalen
+            Verhogen
           </v-btn>
         </v-col>
       </v-row>
@@ -83,23 +73,22 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import * as bsStore from '@/store/banker-service'
 import * as uiStore from '@/store/ui'
-import config from '@/config/config'
 import { creditAmountInEuro } from '@/utils/Utils'
 
-const MIN_AMOUNT = 10
-const MAX_AMOUNT = 1000
+const MIN_AMOUNT = 1
+const MAX_AMOUNT = 50000
+const PREMIUM_ACCOUNT_NCAN = 'premiums'
 
 export default {
-  name: 'PurchasePage',
+  name: 'PremiumDepositPage',
   components: {
     ContentPane,
   },
   data: function () {
     return {
       valid: false,
-      description: 'Credits inkopen voor NetMobiel',
+      description: 'Ophogen saldo premieuitgifte',
       creditAmount: MIN_AMOUNT,
-      bankSimulated: config.BANK_SIMULATED || false,
       rules: {
         required: (value) => !!value || 'Veld is verplicht',
         minAmount: (value) => value >= MIN_AMOUNT || `Minimaal ${MIN_AMOUNT}`,
@@ -111,25 +100,42 @@ export default {
     exchangeRate() {
       return bsStore.getters.getBankerSettings?.exchangeRate ?? 0
     },
+    systemAccounts() {
+      return bsStore.getters.getSystemAccounts?.data ?? []
+    },
+    premiumsAccount() {
+      return this.systemAccounts.find(
+        (acc) => acc.ncan === PREMIUM_ACCOUNT_NCAN
+      )
+    },
   },
   created() {
     uiStore.mutations.showBackButton()
-    bsStore.actions.fetchBankerSettings()
+    bsStore.actions.fetchSystemAccounts()
   },
   methods: {
     amountInEuro(amountInCredits) {
       return creditAmountInEuro(amountInCredits, this.exchangeRate)
     },
-    startMoneyTransfer() {
+    validate() {
+      return this.$refs.form.validate()
+    },
+    addCredits() {
+      // Not really necessary
+      if (!this.validate()) {
+        return
+      }
       const deposit = {
         description: this.description,
         amountCredits: this.creditAmount,
-        returnUrl: new URL('wait-for-deposit-confirmation', location.href),
+        accountId: this.premiumsAccount.id,
       }
-      // Credits go to the user's personal account
-      bsStore.actions.depositCreditsToMyAccount(deposit).then((data) => {
-        // follow payment URL in current window
-        location = data.paymentUrl
+      bsStore.actions.depositCredits(deposit).then((location) => {
+        if (location) {
+          this.$router.push({
+            name: 'systemCreditsPage',
+          })
+        }
       })
     },
   },
