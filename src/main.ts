@@ -42,7 +42,8 @@ function addStaticResponseInterceptor() {
           }
         })
       } else if (error.response.status === 500) {
-        if (error.response?.data?.includes('ECONNREFUSED')) {
+        const data = error.response?.data
+        if (data && typeof data === 'string' && data.includes('ECONNREFUSED')) {
           // eslint-disable-next-line
           console.warn('Network issue detected')
         }
