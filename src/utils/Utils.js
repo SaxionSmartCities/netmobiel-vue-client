@@ -1,7 +1,13 @@
 import constants from '@/constants/constants'
+import * as PhoneNumber from 'awesome-phonenumber'
 
 function upperCaseFirst(input) {
   return input.charAt(0).toUpperCase() + input.slice(1)
+}
+
+function isAbsoluteUrl(url) {
+  const absoluteUrlRegEx = new RegExp('^(?:[a-z]+:)?//', 'i')
+  return absoluteUrlRegEx.test(url)
 }
 
 function generateHeaders(key, delegator) {
@@ -42,17 +48,17 @@ function geoSuggestionToPlace(suggestion) {
 
 function geoPlaceToAddressLabel(place, includeLabel) {
   let line = ''
-  if (place.label && includeLabel) {
+  if (place?.label && includeLabel) {
     line += `${place.label}, `
   }
-  if (place.street) {
+  if (place?.street) {
     let shn = [place.street, place.houseNumber ? place.houseNumber : '']
     line += `${shn.filter((piece) => piece).join(' ')}, `
   }
-  if (place.locality) {
+  if (place?.locality) {
     line += place.locality
   }
-  if (place.countryCode) {
+  if (place?.countryCode) {
     if (place.countryCode === 'NLD') {
       if (place.stateCode) {
         line += ` (${place.stateCode})`
@@ -65,22 +71,16 @@ function geoPlaceToAddressLabel(place, includeLabel) {
 }
 
 function geoPlaceToCriteria(place, includeLabel = true) {
-  if (!place?.location?.coordinates) {
-    return undefined
+  let criteria
+  if (place) {
+    criteria = coordinatesToGeoLocation(place.location)
+    criteria.label = geoPlaceToAddressLabel(place, includeLabel)
   }
-  return {
-    label: geoPlaceToAddressLabel(place, includeLabel),
-    latitude: place.location.coordinates[1],
-    longitude: place.location.coordinates[0],
-  }
-}
-function isAbsoluteUrl(url) {
-  const absoluteUrlRegEx = new RegExp('^(?:[a-z]+:)?//', 'i')
-  return absoluteUrlRegEx.test(url)
+  return criteria
 }
 
 function coordinatesToGeoLocation(location) {
-  if (!location?.coordinates) {
+  if (!location?.coordinates || location.coordinates.length !== 2) {
     return undefined
   }
   return {
@@ -90,12 +90,18 @@ function coordinatesToGeoLocation(location) {
 }
 
 function geoLocationToPlace(location) {
-  const place = {}
+  let place
   if (location) {
+    place = {}
     place.label = location.label
-    place.location = {
-      coordinates: [location.longitude, location.latitude],
-      type: 'Point',
+    if (
+      typeof location.longitude !== 'undefined' &&
+      typeof location.latitude !== 'undefined'
+    ) {
+      place.location = {
+        coordinates: [location.longitude, location.latitude],
+        type: 'Point',
+      }
     }
   }
   return place
@@ -170,6 +176,16 @@ function amountInEuro(amountInCents) {
   return euroFormatter.format((amountInCents || 0) / 100)
 }
 
+function isValidPhoneNumber(phoneString, countryCode) {
+  const pn = PhoneNumber(phoneString, countryCode)
+  return pn.isValid()
+}
+
+function formatPhoneNumber(phoneString, countryCode) {
+  const pn = PhoneNumber(phoneString, countryCode)
+  return pn.getNumber('national')
+}
+
 export {
   upperCaseFirst,
   generateHeaders,
@@ -185,4 +201,6 @@ export {
   triStateLogicText,
   creditAmountInEuro,
   amountInEuro,
+  isValidPhoneNumber,
+  formatPhoneNumber,
 }
