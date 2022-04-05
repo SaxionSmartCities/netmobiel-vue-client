@@ -118,14 +118,13 @@ export default {
   },
   methods: {
     selectAlternativeCar(car) {
-      const profile = psStore.getters.getProfile
-      psStore.actions.updateProfile({
-        ...profile,
-        ridePlanOptions: {
-          ...profile.ridePlanOptions,
-          selectedCarRef: car.carRef,
-        },
-      })
+      const ridePlanOptions = {
+        ...psStore.getters.getProfile.ridePlanOptions,
+        selectedCarRef: car.carRef,
+      }
+      psStore.actions
+        .storeMyRidePreferences(ridePlanOptions)
+        .then(() => psStore.actions.fetchMyProfile())
     },
     checkDeleteCar(car) {
       this.dialog = true

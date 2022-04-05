@@ -67,8 +67,10 @@ export default {
     nextStep() {
       let profile = { ...psStore.getters.getProfile }
       profile.dateOfBirth = this.dateOfBirth
-      psStore.actions.updateProfile(profile)
-      this.$emit('next-step')
+      psStore.actions
+        .updateMyProfile(profile)
+        .then(() => psStore.actions.fetchMyProfile())
+        .then(() => this.$emit('next-step'))
     },
     prevStep() {
       this.$emit('prev-step')

@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     isValidAddress() {
-      return this.address.location?.coordinates?.length === 2
+      return this.address?.location?.coordinates?.length === 2
     },
     submitForm() {
       if (this.valid) {
@@ -84,9 +84,9 @@ export default {
     },
     onSearchCompleted(place) {
       if (place?.locality) {
-        this.address = { ...place }
+        this.address = place
       } else {
-        this.address = {}
+        this.address = undefined
       }
       this.valid = this.isValidAddress()
     },

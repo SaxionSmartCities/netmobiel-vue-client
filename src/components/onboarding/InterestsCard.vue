@@ -78,8 +78,10 @@ export default {
     nextStep: function () {
       let profile = { ...psStore.getters.getProfile }
       profile.interests = this.selectedInterests
-      psStore.actions.updateProfile(profile)
-      this.$emit('next-step')
+      psStore.actions
+        .updateMyProfile(profile)
+        .then(() => psStore.actions.fetchMyProfile())
+        .then(() => this.$emit('next-step'))
     },
   },
 }

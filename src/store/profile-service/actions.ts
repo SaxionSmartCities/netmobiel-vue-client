@@ -5,7 +5,7 @@ import { Profile, ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { getters, mutations } from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
-import { generateHeaders, getCreatedObjectIdFromResponse } from '@/utils/Utils'
+import { generateHeaders } from '@/utils/Utils'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -29,7 +29,6 @@ function createProfile(
       ) as AxiosRequestHeaders,
     })
     .then(function () {
-      fetchProfile(context).catch(() => {})
       return Promise.resolve()
     })
     .catch(function (error) {
@@ -51,7 +50,7 @@ function createProfile(
     })
 }
 
-function fetchProfile(context: ActionContext) {
+function fetchMyProfile(context: ActionContext) {
   const delegatorId = context.state.user.delegatorId
   const URL = `${PROFILE_BASE_URL}/profiles/me`
   return axios
@@ -62,19 +61,20 @@ function fetchProfile(context: ActionContext) {
       ) as AxiosRequestHeaders,
     })
     .then((response) => {
-      if (response.status == 200 && response.data.profiles.length > 0) {
-        const profile = {
-          ...context.state.user.profile,
-          ...response.data.profiles[0],
-          image: createAbsoluteImageUrl(response.data.profiles[0].image),
-        }
-        mutations.setProfile(profile)
+      const profile = {
+        ...response.data,
+        image: createAbsoluteImageUrl(response.data.image),
       }
+      mutations.setProfile(profile)
       return Promise.resolve(response.status)
     })
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
+      // Cannot show error message, landin page will try to fetch profile
+      // uiStore.actions.queueErrorNotification(
+      //   `Fout bij het ophalen van het profiel`
+      // )
       return Promise.reject(error.response.status)
     })
 }
@@ -98,8 +98,8 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
     .then((response) => {
       if (response.data.profiles.length > 0) {
         const profile = {
-          ...response.data.profiles[0],
-          image: createAbsoluteImageUrl(response.data.profiles[0].image),
+          ...response.data,
+          image: createAbsoluteImageUrl(response.data.image),
         }
         mutations.addPublicProfile(profile)
         return profile
@@ -110,7 +110,7 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
       // eslint-disable-next-line
       console.warn(`Error fetching public profile - ${error.response.status} ${error.response.statusText}: ${error.response.data?.message}`)
       // Don't trouble the user with public profile that seem absent ot so
-      // uiStore.actions.queueInfoNotification(
+      // uiStore.actions.queueErrorNotification(
       //   `Fout bij het ophalen van het profiel`
       // )
       return undefined
@@ -139,17 +139,16 @@ function fetchProfiles(context: ActionContext, { keyword }: any) {
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij het zoeken naar profielen`
+      )
     })
 }
 
-function fetchFavoriteLocations(context: ActionContext) {
+function fetchMyFavoriteLocations(context: ActionContext) {
   const delegatorId = context.state.user.delegatorId
-  const profileId = context.state.user.profile.id
-  const URL = `${PROFILE_BASE_URL}/profiles/${profileId}/places`
-  if (profileId === null) {
-    return
-  }
-  axios
+  const URL = `${PROFILE_BASE_URL}/profiles/me/places`
+  return axios
     .get(URL, {
       headers: generateHeaders(
         GRAVITEE_PROFILE_SERVICE_API_KEY,
@@ -165,16 +164,13 @@ function fetchFavoriteLocations(context: ActionContext) {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
-        `Fout bij ophalen van de favorieten`
+        `Fout bij het ophalen van de favorieten`
       )
     })
 }
 
-function storeFavoriteLocation(
-  context: ActionContext,
-  { profileId, place }: any
-) {
-  const URL = `${PROFILE_BASE_URL}/profiles/${profileId}/places`
+function storeMyFavoriteLocation(context: ActionContext, { place }: any) {
+  const URL = `${PROFILE_BASE_URL}/profiles/me/places`
   return axios
     .post(URL, place, {
       headers: generateHeaders(
@@ -182,23 +178,19 @@ function storeFavoriteLocation(
       ) as AxiosRequestHeaders,
     })
     .then((response) => {
-      fetchFavoriteLocations(context)
       if (response.status === 201) {
-        uiStore.actions.queueInfoNotification(`Je favoriet is opgeslagen!`)
+        uiStore.actions.queueInfoNotification(`Favoriet is opgeslagen`)
       }
     })
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueErrorNotification(`Fout bij opslaan van favorieten`)
+      uiStore.actions.queueErrorNotification(`Fout bij opslaan van de favoriet`)
     })
 }
 
-function deleteFavoriteLocation(
-  context: ActionContext,
-  { profileId, placeId }: any
-) {
-  const URL = `${PROFILE_BASE_URL}/profiles/${profileId}/places/${placeId}`
+function deleteMyFavoriteLocation(context: ActionContext, { placeId }: any) {
+  const URL = `${PROFILE_BASE_URL}/profiles/me/places/${placeId}`
   return axios
     .delete(URL, {
       headers: generateHeaders(
@@ -206,48 +198,49 @@ function deleteFavoriteLocation(
       ) as AxiosRequestHeaders,
     })
     .then((response) => {
-      fetchFavoriteLocations(context)
-      uiStore.actions.queueInfoNotification(`Favoriet verwijderd`)
+      uiStore.actions.queueInfoNotification(`Favoriet is verwijderd`)
     })
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
-        `Fout bij het verwijderen van favoriet`
+        `Fout bij het verwijderen van de favoriet`
       )
     })
 }
 
-function storeSearchPreferences(context: ActionContext, payload: any) {
-  // Convert payload to a profile object.
+function storeMySearchPreferences(context: ActionContext, payload: any) {
+  // Insert payload into the profile object.
   const profile = {
     ...context.state.user.profile,
     searchPreferences: { ...payload },
   }
-  return updateProfile(context, profile)
+  return updateMyProfile(context, profile)
 }
 
-function storeRidePreferences(context: ActionContext, payload: any) {
-  // Convert payload to a profile object.
+function storeMyRidePreferences(context: ActionContext, payload: any) {
+  // Insert payload into the profile object.
   const profile = {
     ...context.state.user.profile,
     ridePlanOptions: { ...payload },
   }
-  return updateProfile(context, profile)
+  return updateMyProfile(context, profile)
 }
 
-function storeFcmToken(context: ActionContext) {
+function storeMyFcmToken(context: ActionContext) {
   const profile = { ...context.state.user.profile }
+  // Update only if different
   if (context.state.deviceFcmToken !== profile.fcmToken) {
+    // Insert payload into the profile object.
     profile.fcmToken = context.state.deviceFcmToken
-    return updateProfile(context, profile)
+    return updateMyProfile(context, profile)
   } else {
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 }
 
-function updateProfile(context: ActionContext, profile: Profile) {
-  const URL = `${PROFILE_BASE_URL}/profiles/${profile.id}`
+function updateMyProfile(context: ActionContext, profile: Profile) {
+  const URL = `${PROFILE_BASE_URL}/profiles/me`
   return axios
     .put(URL, profile, {
       headers: generateHeaders(
@@ -255,24 +248,25 @@ function updateProfile(context: ActionContext, profile: Profile) {
       ) as AxiosRequestHeaders,
     })
     .then((response) => {
-      if (response.status == 200 && response.data.profiles.length > 0) {
-        const profile = {
-          ...context.state.user.profile,
-          ...response.data.profiles[0],
-          image: createAbsoluteImageUrl(response.data.profiles[0].image),
-        }
-        mutations.setProfile(profile)
+      if (response.status !== 204) {
+        // eslint-disable-next-line
+        console.warn(`updateProfile: Unexpected response ${response.status}`)
       }
+      return true
     })
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij het opslaan van het profiel`
+      )
+      return false
     })
 }
 
-function updateProfileImage(context: ActionContext, { id, image }: any) {
-  const URL = `${PROFILE_BASE_URL}/profiles/${id}/image`
-  axios
+function updateMyProfileImage(context: ActionContext, { image }: any) {
+  const URL = `${PROFILE_BASE_URL}/profiles/me/image`
+  return axios
     .put(
       URL,
       { image },
@@ -283,14 +277,17 @@ function updateProfileImage(context: ActionContext, { id, image }: any) {
       }
     )
     .then((response) => {
-      if (response.status === 200) {
-        const imgSrc = `${IMAGES_BASE_URL}/${response.data.profiles[0].image}`
-        mutations.setProfileImage(imgSrc)
+      if (response.status !== 204) {
+        // eslint-disable-next-line
+        console.warn(`updateProfileImage: Unexpected response ${response.status}`)
       }
     })
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij het vervangen van de profielfoto`
+      )
     })
 }
 
@@ -316,14 +313,14 @@ function fetchUserCompliments(context: ActionContext, { receiverId }: any) {
       // @ts-ignore
       mutations.addPublicCompliments({
         profileId: receiverId,
-        compliments: response.data.compliments,
+        compliments: response.data.data,
       })
-      return response.data.compliments
+      return response.data.data
     })
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueInfoNotification(
+      uiStore.actions.queueErrorNotification(
         `Fout bij het ophalen van de complimenten`
       )
     })
@@ -335,7 +332,7 @@ function fetchUserCompliments(context: ActionContext, { receiverId }: any) {
  */
 function fetchComplimentTypes(context: ActionContext) {
   const URL = `${PROFILE_BASE_URL}/compliments/types`
-  axios
+  return axios
     .get(URL, {
       headers: generateHeaders(
         GRAVITEE_PROFILE_SERVICE_API_KEY
@@ -343,6 +340,13 @@ function fetchComplimentTypes(context: ActionContext) {
     })
     .then((response) => {
       mutations.setComplimentTypes(response.data.complimentTypes)
+    })
+    .catch((error) => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij het ophalen van de complimentdefinities`
+      )
     })
 }
 
@@ -352,14 +356,14 @@ function fetchComplimentTypes(context: ActionContext) {
  * @param receiver: {id} the profile id of the receiver.
  * @param context: the context of the compliment
  * @param compliments: enum [ SAME_INTERESTS, ON_TIME, TALKS_EASILY, SOCIABLE, NEATLY, NICE_CAR ]
- * @returns {Object} Returns the compliment object in the response.data
+ * @returns undefined
  */
 function addUserCompliments(
   actionContext: ActionContext,
   { receiver, context, compliments }: any
 ) {
   const URL = `${PROFILE_BASE_URL}/compliments`
-  axios
+  return axios
     .post(
       URL,
       { receiver, context, compliments },
@@ -376,7 +380,7 @@ function addUserCompliments(
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
-        `Fout bij versturen van complimenten`
+        `Fout bij het versturen van de complimenten`
       )
     })
 }
@@ -386,14 +390,14 @@ function addUserCompliments(
  * @param actionContext: the calling context
  * @param receiverId: the id of the receiver
  * @param id: the id of the review
- * @returns {Object} Returns the review object in the response.data
+ * @returns undefined
  */
 function removeUserCompliments(
   actionContext: ActionContext,
   { receiverId, complimentId }: any
 ) {
   const URL = `${PROFILE_BASE_URL}/compliments/${complimentId}`
-  axios
+  return axios
     .delete(URL, {
       headers: generateHeaders(
         GRAVITEE_PROFILE_SERVICE_API_KEY
@@ -408,7 +412,7 @@ function removeUserCompliments(
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
-        `Fout bij verwijderen van complimenten`
+        `Fout bij het verwijderen van de complimenten`
       )
     })
 }
@@ -425,7 +429,7 @@ function fetchUserReviews(context: ActionContext, { receiverId }: any) {
     return Promise.resolve(usr.reviews)
   }
   const URL = `${PROFILE_BASE_URL}/reviews`
-  axios
+  return axios
     .get(URL, {
       headers: generateHeaders(
         GRAVITEE_PROFILE_SERVICE_API_KEY
@@ -436,9 +440,16 @@ function fetchUserReviews(context: ActionContext, { receiverId }: any) {
       // @ts-ignore
       mutations.addPublicReviews({
         profileId: receiverId,
-        reviews: response.data.reviews,
+        reviews: response.data.data,
       })
-      return response.data.reviews
+      return response.data.data
+    })
+    .catch((error) => {
+      // eslint-disable-next-line
+      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij het ophalen van de beoordelingen`
+      )
     })
 }
 
@@ -448,14 +459,14 @@ function fetchUserReviews(context: ActionContext, { receiverId }: any) {
  * @param receiver: {id}
  * @param context: context of the review
  * @param review the review to add
- * @returns {Object} Returns the review object in the response.data
+ * @returns undefined
  */
 function addUserReview(
   actionContext: ActionContext,
   { receiver, context, review }: any
 ) {
   const URL = `${PROFILE_BASE_URL}/reviews`
-  axios
+  return axios
     .post(
       URL,
       { receiver, context, review },
@@ -471,7 +482,9 @@ function addUserReview(
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueErrorNotification(`Fout bij opslaan van beoordeling`)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij het opslaan van de beoordeling`
+      )
     })
 }
 
@@ -487,7 +500,7 @@ function removeUserReview(
   { receiverId, reviewId }: any
 ) {
   const URL = `${PROFILE_BASE_URL}/reviews/${reviewId}`
-  axios
+  return axios
     .delete(URL, {
       headers: generateHeaders(
         GRAVITEE_PROFILE_SERVICE_API_KEY
@@ -501,7 +514,7 @@ function removeUserReview(
       // eslint-disable-next-line
       console.log(error)
       uiStore.actions.queueErrorNotification(
-        `Fout bij verwijderen van beoordeling`
+        `Fout bij het verwijderen van de beoordeling`
       )
     })
 }
@@ -565,7 +578,7 @@ function deleteDelegation(
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueInfoNotification(
+      uiStore.actions.queueErrorNotification(
         `Fout bij het verwijderen van de machtiging`
       )
     })
@@ -602,7 +615,7 @@ function fetchDelegations(context: ActionContext, { delegateId }: any) {
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
-      uiStore.actions.queueInfoNotification(
+      uiStore.actions.queueErrorNotification(
         `Fout bij het ophalen van de machtigingen`
       )
     })
@@ -616,7 +629,7 @@ function switchProfile(context: ActionContext, { delegatorId }: any) {
     mutations.setDelegateProfile(profile)
   }
   mutations.setDelegatorId(delegatorId)
-  fetchProfile(context)
+  fetchMyProfile(context)
 }
 
 // ==========  SURVEY  =============
@@ -639,8 +652,7 @@ function createSurveyInvitation(context: ActionContext) {
     })
     .then((response) => {
       if (response.status === 201) {
-        const id = getCreatedObjectIdFromResponse(response)
-        return fetchSurvey(context, id)
+        return fetchSurvey(context, response.headers?.location)
       } else {
         return Promise.resolve()
       }
@@ -648,6 +660,9 @@ function createSurveyInvitation(context: ActionContext) {
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij het aanmaken van de registratie van de enquête`
+      )
     })
 }
 
@@ -671,6 +686,9 @@ function fetchSurvey(context: ActionContext, id: string) {
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij het opzoeken van de registratie van de enquête`
+      )
     })
 }
 
@@ -697,6 +715,9 @@ function fetchSurveyByProviderId(
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij het opzoeken van de enquête`
+      )
     })
 }
 
@@ -735,6 +756,9 @@ function markSurveySubmitted(context: ActionContext, surveyId: string) {
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
+      uiStore.actions.queueErrorNotification(
+        `Fout bij het registreren van de afronding van de enquête`
+      )
     })
 }
 
@@ -743,19 +767,19 @@ export const buildActions = (
 ) => {
   return {
     createProfile: psBuilder.dispatch(createProfile),
-    fetchProfile: psBuilder.dispatch(fetchProfile),
+    fetchMyProfile: psBuilder.dispatch(fetchMyProfile),
     fetchPublicProfile: psBuilder.dispatch(fetchPublicProfile),
     fetchProfiles: psBuilder.dispatch(fetchProfiles),
 
-    storeSearchPreferences: psBuilder.dispatch(storeSearchPreferences),
-    storeRidePreferences: psBuilder.dispatch(storeRidePreferences),
-    storeFcmToken: psBuilder.dispatch(storeFcmToken),
-    updateProfile: psBuilder.dispatch(updateProfile),
-    updateProfileImage: psBuilder.dispatch(updateProfileImage),
+    storeMySearchPreferences: psBuilder.dispatch(storeMySearchPreferences),
+    storeMyRidePreferences: psBuilder.dispatch(storeMyRidePreferences),
+    storeMyFcmToken: psBuilder.dispatch(storeMyFcmToken),
+    updateMyProfile: psBuilder.dispatch(updateMyProfile),
+    updateMyProfileImage: psBuilder.dispatch(updateMyProfileImage),
 
-    fetchFavoriteLocations: psBuilder.dispatch(fetchFavoriteLocations),
-    storeFavoriteLocation: psBuilder.dispatch(storeFavoriteLocation),
-    deleteFavoriteLocation: psBuilder.dispatch(deleteFavoriteLocation),
+    fetchMyFavoriteLocations: psBuilder.dispatch(fetchMyFavoriteLocations),
+    storeMyFavoriteLocation: psBuilder.dispatch(storeMyFavoriteLocation),
+    deleteMyFavoriteLocation: psBuilder.dispatch(deleteMyFavoriteLocation),
 
     fetchComplimentTypes: psBuilder.dispatch(fetchComplimentTypes),
     fetchUserCompliments: psBuilder.dispatch(fetchUserCompliments),

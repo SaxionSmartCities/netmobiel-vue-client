@@ -125,7 +125,9 @@ export default {
       ) {
         profile.ridePlanOptions = constants.DEFAULT_PROFILE_RIDE_PREFERENCES
       }
-      psStore.actions.updateProfile(profile)
+      psStore.actions
+        .updateMyProfile(profile)
+        .then(() => psStore.actions.fetchMyProfile())
     }),
     onInfoClick(option) {
       this.dialog.title = option.title
@@ -140,7 +142,9 @@ export default {
       }
       let profile = { ...psStore.getters.getProfile }
       profile.notificationOptions = notificationOptions
-      psStore.actions.updateProfile(profile)
+      psStore.actions
+        .updateMyProfile(profile)
+        .then(() => psStore.actions.fetchMyProfile())
     },
   },
 }

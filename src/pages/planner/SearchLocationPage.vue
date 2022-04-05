@@ -162,7 +162,7 @@ export default {
     uiStore.mutations.showBackButton()
   },
   mounted() {
-    psStore.actions.fetchFavoriteLocations()
+    psStore.actions.fetchMyFavoriteLocations()
     gsStore.mutations.setGeocoderSuggestions([])
     this.searchInput = gsStore.getters.getPickedLocations.get(
       this.$route.params.field
@@ -272,17 +272,19 @@ export default {
           'Favoriet bestaat al in uw profiel.'
         )
       } else {
-        const profileId = psStore.getters.getProfile.id
-        psStore.actions.storeFavoriteLocation({ profileId, place })
+        psStore.actions
+          .storeMyFavoriteLocation({ place })
+          .then(() => psStore.actions.fetchMyFavoriteLocations())
       }
     },
     removeFavorite(favorite) {
-      const profileId = psStore.getters.getProfile.id
       let placeId = favorite.id
       if (!placeId) {
         placeId = this.favorites.find((f) => f.ref === favorite.ref)?.id
       }
-      psStore.actions.deleteFavoriteLocation({ profileId, placeId })
+      psStore.actions
+        .deleteMyFavoriteLocation({ placeId })
+        .then(() => psStore.actions.fetchMyFavoriteLocations())
     },
     iconicCategory(category) {
       return (
