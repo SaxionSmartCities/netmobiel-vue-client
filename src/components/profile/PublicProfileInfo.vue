@@ -7,7 +7,7 @@
         :avatar-size="100"
       ></round-user-image>
     </v-col>
-    <v-col class="flex-column">
+    <v-col class="flex-column mt-2">
       <v-row>
         <div class="d-flex flex-column shrink">
           <span v-if="username"> {{ username }}</span>

@@ -1,12 +1,12 @@
 <template>
   <v-row no-gutters>
     <v-col dense>
-      <v-row>
+      <v-row dense>
         <v-col>
           <v-divider></v-divider>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row dense>
         <v-col>
           <external-user-image
             :managed-identity="review.sender.id"
@@ -21,7 +21,7 @@
           {{ formatDate(review.published) }}
         </v-col>
       </v-row>
-      <v-row>
+      <v-row dense>
         <v-col>
           {{ review.review }}
         </v-col>
