@@ -1,6 +1,9 @@
 <template>
   <content-pane>
     <v-row dense>
+      <v-col><h1>Over deze app</h1></v-col>
+    </v-row>
+    <v-row dense>
       <v-col>
         In Netmobiel werken kennisinstellingen, technologiebedrijven, bewoners
         en overheden samen aan een mobiliteitsoplossing voor de Achterhoek in de
