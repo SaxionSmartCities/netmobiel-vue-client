@@ -52,8 +52,8 @@ export class ProfileState {
         shoutouts: true,
       },
       interests: [],
-      favoriteLocations: [],
     },
+    favoriteLocations: [],
     rating: 2,
     maxRating: 3,
     delegatorId: null,
@@ -156,6 +156,7 @@ export interface User {
   privacySecurity: NameValue[]
   tripOptions: NameValue[]
   notificationOptions: NameValue[]
+  favoriteLocations: Place[]
   reviews: NameValue[]
   credits: Credits
   profile: Profile
@@ -186,7 +187,6 @@ export interface Profile extends PublicProfile {
   searchPreferences: SearchPreferences | null
   ridePlanOptions: RidePlanOptions | null
   notificationOptions: NotificationOptions
-  favoriteLocations: Place[]
   userRole: string | null
   actingRole: string | null
 }
