@@ -1,4 +1,4 @@
-import axios, { AxiosRequestHeaders } from 'axios'
+import axios, { AxiosError, AxiosRequestHeaders } from 'axios'
 import config from '@/config/config'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import { Profile, ProfileState } from '@/store/profile-service/types'
@@ -96,23 +96,26 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
       ) as AxiosRequestHeaders,
     })
     .then((response) => {
-      if (response.data.profiles.length > 0) {
-        const profile = {
-          ...response.data,
-          image: createAbsoluteImageUrl(response.data.image),
-        }
-        mutations.addPublicProfile(profile)
-        return profile
+      const profile = {
+        ...response.data,
+        image: createAbsoluteImageUrl(response.data.image),
       }
-      return undefined
+      mutations.addPublicProfile(profile)
+      return profile
     })
-    .catch((error) => {
-      // eslint-disable-next-line
-      console.warn(`Error fetching public profile - ${error.response.status} ${error.response.statusText}: ${error.response.data?.message}`)
-      // Don't trouble the user with public profile that seem absent ot so
-      // uiStore.actions.queueErrorNotification(
-      //   `Fout bij het ophalen van het profiel`
-      // )
+    .catch((problem) => {
+      const error = problem as Error | AxiosError
+      if (axios.isAxiosError(error)) {
+        // eslint-disable-next-line
+        console.warn(`Error fetching public profile - ${error.response?.status} ${error.response?.statusText}: ${error.response?.data?.message}`)
+        // Don't trouble the user with public profile that seem absent ot so
+        // uiStore.actions.queueErrorNotification(
+        //   `Fout bij het ophalen van het profiel`
+        // )
+      } else {
+        // eslint-disable-next-line
+        console.warn(`Error fetching public profile - ${error}`)
+      }
       return undefined
     })
 }
