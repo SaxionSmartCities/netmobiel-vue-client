@@ -138,7 +138,7 @@ function clearPublicReviews(state: ProfileState, profileId: string) {
 }
 
 function setFavoriteLocations(state: ProfileState, places: Place[]) {
-  state.user.profile.favoriteLocations = places
+  state.user.favoriteLocations = places
 }
 
 function setDelegations(state: ProfileState, delegations: Delegation[]) {
