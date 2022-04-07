@@ -8,7 +8,7 @@
               <v-col class="shrink">
                 <h4 class="netmobiel text-center">{{ item.title }}</h4>
               </v-col>
-              <v-col class="my-3" align="center">
+              <v-col class="mb-6" align="center">
                 <v-img
                   :src="require(`@/assets/${item.icon}`)"
                   max-height="150"
@@ -48,47 +48,10 @@ export default {
 </script>
 
 <style lang="scss">
-.carousel-container {
-  .v-carousel {
-    padding-bottom: 20px;
-    .v-window__container {
-      .v-window__prev,
-      .v-window__next {
-        margin: 0 !important;
-      }
-    }
-  }
-  .instruction {
-    height: 450px;
-    background-color: red;
-  }
-  .cards-container {
-    padding: 8px 0;
-    .trip-card {
-      border-color: $color-alertRed !important;
-      width: 90%;
-      margin: auto;
-      .v-card__actions {
-        padding: 0;
-        width: 16px;
-        i {
-          color: white;
-        }
-      }
-    }
-  }
-  .v-carousel__controls {
-    z-index: 4;
-    position: absolute;
-    padding-top: 20px !important;
-    .v-btn--icon.v-size--small {
-      height: 24px;
-      width: 24px;
-      svg {
-        width: 50%;
-        height: 50%;
-      }
-    }
+.v-window__container {
+  .v-window__prev,
+  .v-window__next {
+    margin: -16px 16px !important;
   }
 }
 </style>

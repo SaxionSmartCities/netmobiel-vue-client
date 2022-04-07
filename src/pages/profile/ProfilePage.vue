@@ -91,14 +91,14 @@
               :key="index"
               dense
               class="profile-item"
-              @click="!item.routeName || $router.push({ name: item.routeName })"
+              @click="navToItem(item)"
             >
               <v-list-item-icon>
                 <v-icon>{{ item.icon }}</v-icon>
               </v-list-item-icon>
               <v-list-item-content
                 class="body-1 font-weight-light"
-                :class="{ 'no-route': !item.routeName }"
+                :class="{ 'no-route': !(item.routeName || item.href) }"
               >
                 {{ item.name }}</v-list-item-content
               >
@@ -112,7 +112,14 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-btn large rounded block outlined color="primary" @click="logOut">
+        <v-btn
+          large
+          rounded
+          block
+          outlined
+          color="primary"
+          @click="navTo('logout')"
+        >
           Afmelden
           <v-icon right> logout </v-icon>
         </v-btn>
@@ -148,19 +155,23 @@ export default {
           name: 'Instellingen',
           routeName: 'notificationOptions',
         },
-        { icon: 'help_outline', name: 'Veelgestelde vragen', routeName: '' },
+        {
+          icon: 'help_outline',
+          name: 'Veelgestelde vragen',
+          href: 'https://www.netmobiel.eu/vragen/',
+        },
         {
           icon: 'lock',
           name: 'Privacy & beveiliging',
-          routeName: '',
+          href: 'https://www.netmobiel.eu/privacyverklaring-app/',
         },
         {
           icon: 'chrome_reader_mode',
           name: 'Gebruiksvoorwaarden',
-          routeName: '',
+          routeName: 'termsPage',
         },
-        { icon: 'error_outline', name: 'Over deze app', routeName: 'about' },
-        { icon: 'cancel', name: 'Verwijder mijn account', routeName: '' },
+        { icon: 'info', name: 'Over deze app', routeName: 'about' },
+        // { icon: 'cancel', name: 'Verwijder mijn account', routeName: '' },
       ],
     }
   },
@@ -191,8 +202,12 @@ export default {
     navTo(name) {
       this.$router.push({ name: name })
     },
-    logOut: function () {
-      this.$router.push({ name: 'logout' })
+    navToItem(item) {
+      if (item.routeName) {
+        this.$router.push({ name: item.routeName })
+      } else if (item.href) {
+        window.open(item.href, '_blank')
+      }
     },
     readFile(event) {
       if (event.target.files[0]) {
