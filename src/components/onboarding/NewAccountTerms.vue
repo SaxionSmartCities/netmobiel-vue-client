@@ -47,6 +47,7 @@
           <v-col cols="1">
             <v-checkbox
               v-model="consent.acceptedTerms"
+              :readonly="readOnly"
               :rules="[rules.required]"
             ></v-checkbox>
           </v-col>
@@ -76,7 +77,7 @@
             Terug
           </v-btn>
         </v-col>
-        <v-col xs6 class="mx-2">
+        <v-col v-if="!readOnly" xs6 class="mx-2">
           <v-btn
             block
             rounded
@@ -100,6 +101,11 @@ export default {
     value: {
       type: Object,
       default: () => undefined,
+    },
+    readOnly: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {

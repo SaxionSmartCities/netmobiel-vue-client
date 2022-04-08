@@ -10,14 +10,17 @@
         de vorm van een app. Het is een innovatieproject dat gesubsidieerd wordt
         wordt door de Stichting Innovatie Alliantie, de Provincie Gelderland en
         Achterhoek ambassadeurs. Kijk op
-        <a href="https://www.netmobiel.eu">onze website</a> voor meer
-        informatie.
+        <a href="https://www.netmobiel.eu" target="_blank">onze website</a> voor
+        meer informatie.
       </v-col>
     </v-row>
     <v-row dense>
       <v-col>
         De software voor de Netmobiel app is ontwikkeld door het
-        <a href="https://www.saxion.nl/onderzoek/smart-industry/smart-cities">
+        <a
+          href="https://www.saxion.nl/onderzoek/smart-industry/smart-cities"
+          target="_blank"
+        >
           Lectoraat Smart Cities</a
         >
         van de Saxion Hogeschool Enschede.
