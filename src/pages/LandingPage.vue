@@ -69,7 +69,7 @@ export default {
       // Token and Profile are also fetched in the main template (App.vue)
       // Here we check what we need to do when no profile is present
       psStore.actions
-        .fetchProfile()
+        .fetchMyProfile()
         .then(() => {
           // If yes, then proceed to the home page
           this.continueNavigation()

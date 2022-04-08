@@ -293,6 +293,10 @@ export default {
             name: 'tripDetailPage',
             params: { tripId: ctx },
           })
+        } else if (ctx.includes('reward')) {
+          this.$router.push({
+            name: 'rewardOverviewPage',
+          })
         } else {
           // eslint-disable-next-line
           console.warn(`No support for ${ctx}`)

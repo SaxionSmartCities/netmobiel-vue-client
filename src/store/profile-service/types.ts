@@ -8,7 +8,7 @@ export class ProfileState {
       image: null,
       firstName: null,
       lastName: null,
-      address: {},
+      address: null,
       interests: [],
     },
     compliments: [],
@@ -52,8 +52,8 @@ export class ProfileState {
         shoutouts: true,
       },
       interests: [],
-      favoriteLocations: [],
     },
+    favoriteLocations: [],
     rating: 2,
     maxRating: 3,
     delegatorId: null,
@@ -61,7 +61,7 @@ export class ProfileState {
     delegations: [],
     privacySecurity: [
       { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
-      { name: 'Deel reisdata met NetMobiel', value: false },
+      { name: 'Deel reisdata met Netmobiel', value: false },
       { name: 'Verberg mijn gegevens voor anderen', value: false },
     ],
     tripOptions: [{ name: 'Ik bied ritten aan', value: false }],
@@ -97,7 +97,7 @@ export const emptyPublicUser: ExternalUser = {
     image: null,
     firstName: null,
     lastName: null,
-    address: {},
+    address: null,
     interests: [],
   },
   compliments: [],
@@ -156,6 +156,7 @@ export interface User {
   privacySecurity: NameValue[]
   tripOptions: NameValue[]
   notificationOptions: NameValue[]
+  favoriteLocations: Place[]
   reviews: NameValue[]
   credits: Credits
   profile: Profile
@@ -186,7 +187,6 @@ export interface Profile extends PublicProfile {
   searchPreferences: SearchPreferences | null
   ridePlanOptions: RidePlanOptions | null
   notificationOptions: NotificationOptions
-  favoriteLocations: Place[]
   userRole: string | null
   actingRole: string | null
 }

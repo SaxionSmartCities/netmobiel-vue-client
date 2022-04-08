@@ -254,7 +254,8 @@ export default {
       this.ridePlanOptions.maxTimeDetour = this.detourTime
       this.ridePlanOptions.maxDistanceDetour = this.detourDistance * 1000
       psStore.actions
-        .storeRidePreferences(this.ridePlanOptions)
+        .storeMyRidePreferences(this.ridePlanOptions)
+        .then(() => psStore.actions.fetchMyProfile())
         .then(() => this.$router.go(-1))
     },
   },

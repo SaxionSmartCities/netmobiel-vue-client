@@ -64,6 +64,7 @@
                 :outlined="true"
                 field="home"
                 :favorable="false"
+                :required="true"
                 @search-completed="onSearchCompleted"
               ></search-location>
             </v-col>
@@ -179,6 +180,7 @@ import DateMenuSelector from '@/components/common/DateMenuSelector'
 import SearchLocation from '@/components/search/SearchLocation'
 import * as ibantools from 'ibantools'
 import * as bsStore from '@/store/banker-service'
+import { formatPhoneNumber, isValidPhoneNumber } from '@/utils/Utils'
 
 export default {
   name: 'AccountPage',
@@ -205,10 +207,8 @@ export default {
           !value ||
           'Ongeldig email adres',
         phone: (value) =>
-          !!value?.match(
-            /(^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0-9\-\s]{10}$)/
-          ) ||
           !value ||
+          isValidPhoneNumber(value, this.countryCode) ||
           'Ongeldig nummer',
         iban: (value) =>
           this.isValidIBAN(value) || 'Ongeldig IBAN rekeningnummer',
@@ -216,8 +216,14 @@ export default {
     }
   },
   computed: {
+    profile() {
+      return psStore.getters.getProfile
+    },
     bankerUser() {
       return bsStore.getters.getBankerUser
+    },
+    countryCode() {
+      return this.user?.address?.countryCode?.slice(0, 2) || 'NL'
     },
   },
   watch: {
@@ -229,19 +235,28 @@ export default {
         this.personalAccount.iban = this.formatIBAN(this.personalAccount.iban)
       }
     },
+    profile() {
+      // Shallow copy
+      this.user = { ...psStore.getters.getProfile }
+      if (this.user?.address) {
+        // Deep copy of address
+        this.user.address = JSON.parse(JSON.stringify(this.user.address))
+      }
+      if (this.user.phoneNumber) {
+        // const countryCode = this.user.address.countryCode?.slice(0, 2)
+        this.user.phoneNumber = formatPhoneNumber(
+          this.user.phoneNumber,
+          this.countryCode
+        )
+      }
+    },
   },
   created() {
     uiStore.mutations.showBackButton()
-  },
-  mounted() {
+    // Fetch fresh profile
+    psStore.actions.fetchMyProfile()
     // Fetch me from the banker service
     bsStore.actions.fetchBankerUser()
-    // Shallow copy
-    this.user = { ...psStore.getters.getProfile }
-    if (this.user?.address) {
-      // Deep copy of address
-      this.user.address = JSON.parse(JSON.stringify(this.user.address))
-    }
   },
   methods: {
     validate() {
@@ -251,7 +266,7 @@ export default {
       this.user.dateOfBirth = date
     },
     onSearchCompleted(place) {
-      this.user.address = { ...place }
+      this.user.address = place
       // home address is not mandatory (?)
       // this.valid = this.user.address.location?.coordinates?.length === 2
     },
@@ -262,19 +277,27 @@ export default {
       if (!this.validate()) {
         return
       }
+      // Update the name of the account
       this.personalAccount.name = `${this.user.firstName} ${this.user.lastName}`
       const updateAccountPromise = bsStore.actions.updatePersonalAccount(
         this.personalAccount
       )
-      const updateProfilePromise = psStore.actions.updateProfile(this.user)
+      const updateProfilePromise = psStore.actions.updateMyProfile(this.user)
       Promise.all([updateProfilePromise, updateAccountPromise]).then(
         (results) => {
-          // The profile update returns undefined
-          if (!results.includes(false)) {
-            this.$router.push({
-              name: 'profile',
+          psStore.actions
+            .fetchMyProfile()
+            .then(() => {
+              if (!results.includes(false)) {
+                this.$router.push({
+                  name: 'profile',
+                })
+              }
             })
-          }
+            .catch(() => {
+              psStore.actions.fetchMyProfile()
+              bsStore.actions.fetchBankerUser()
+            })
         }
       )
     },

@@ -125,10 +125,10 @@ export interface Withdrawal {
 
 export interface Account {
   readonly credits?: number
-  readonly iban?: string
-  readonly ibanHolder?: string
+  iban?: string
+  ibanHolder?: string
   readonly id: number
-  readonly name: string
+  name: string
   readonly ncan?: string
   readonly purpose?: 'SYSTEM' | 'CURRENT' | 'PREMIUM'
   readonly type?: 'ASSET' | 'LIABILITY'

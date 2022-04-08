@@ -33,7 +33,7 @@ export default {
     visible: true,
     mode: 'RIDESHARE',
     label: 'Meerijden',
-    icon: 'local_taxi',
+    icon: 'directions_car',
   },
   CAR: {
     visible: false,

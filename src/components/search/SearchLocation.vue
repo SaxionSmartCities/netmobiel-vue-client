@@ -83,7 +83,7 @@ export default {
     address: {
       // Actually a Place
       type: Object,
-      default: () => {},
+      default: () => undefined,
       required: false,
     },
     required: {
@@ -94,7 +94,7 @@ export default {
   },
   data() {
     return {
-      addressInternal: {},
+      addressInternal: undefined,
       showDialog: false,
       searchInput: '',
       showSuggestionsList: false,
@@ -122,7 +122,7 @@ export default {
       set(value) {
         // TODO Check whether to use this computed setter or the clear event
         if (!value) {
-          this.addressInternal = {}
+          this.addressInternal = undefined
         }
       },
     },
@@ -240,8 +240,8 @@ export default {
       this.$emit('search-completed', this.addressInternal)
     },
     clearField() {
-      this.addressInternal = {}
-      this.$emit('search-completed', undefined)
+      this.addressInternal = undefined
+      this.$emit('search-completed', this.addressInternal)
     },
     clearSearchInput() {
       this.searchInput = ''

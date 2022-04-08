@@ -33,10 +33,6 @@ function setProfile(state: ProfileState, payload: Profile) {
   state.user.profile = payload
 }
 
-function setProfileImage(state: ProfileState, payload: string) {
-  state.user.profile.image = payload
-}
-
 function setNotificationOptionsValue(state: ProfileState, payload: any) {
   state.user.notificationOptions.filter(function (item) {
     if (item.name === payload.key) {
@@ -142,7 +138,7 @@ function clearPublicReviews(state: ProfileState, profileId: string) {
 }
 
 function setFavoriteLocations(state: ProfileState, places: Place[]) {
-  state.user.profile.favoriteLocations = places
+  state.user.favoriteLocations = places
 }
 
 function setDelegations(state: ProfileState, delegations: Delegation[]) {
@@ -195,7 +191,6 @@ export const buildMutations = (
     setUserToken: psBuilder.commit(setUserToken),
     deleteAccessToken: psBuilder.commit(deleteAccessToken),
     setProfile: psBuilder.commit(setProfile),
-    setProfileImage: psBuilder.commit(setProfileImage),
     setNotificationOptionsValue: psBuilder.commit(setNotificationOptionsValue),
     setTripOptionsValue: psBuilder.commit(setTripOptionsValue),
     setReviewOptionsValue: psBuilder.commit(setReviewOptionsValue),

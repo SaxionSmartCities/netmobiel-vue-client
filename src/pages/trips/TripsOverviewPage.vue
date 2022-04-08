@@ -287,7 +287,9 @@ export default {
         newValue === 1
           ? constants.PROFILE_ROLE_PASSENGER
           : constants.PROFILE_ROLE_DRIVER
-      psStore.actions.updateProfile(this.profile)
+      psStore.actions
+        .updateMyProfile(this.profile)
+        .then(() => psStore.actions.fetchMyProfile())
     },
   },
   mounted() {

@@ -1,11 +1,7 @@
 <template>
   <content-pane>
-    <v-row>
-      <v-col>
-        <public-profile-info v-if="profile" :profile="profile" />
-      </v-col>
-    </v-row>
-    <v-row>
+    <public-profile-info v-if="profile" :profile="profile" />
+    <v-row dense>
       <v-col>
         <highlighted-info
           :rides-driven="ridesDriven"
@@ -14,7 +10,7 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row dense>
       <v-col>
         <h4 class="netmobiel">Complimenten</h4>
       </v-col>
@@ -29,10 +25,10 @@
         <h4 class="netmobiel">Beoordelingen</h4>
       </v-col>
     </v-row>
-    <v-row v-if="reviews && reviews.length === 0">
+    <v-row v-if="!reviews || reviews.length === 0" dense>
       <v-col> Nog geen beoordelingen ontvangen. </v-col>
     </v-row>
-    <v-row v-else>
+    <v-row v-else dense>
       <v-col>
         <review-item
           v-for="(review, index) in reviews"
@@ -115,7 +111,7 @@ export default {
       profileId: this.profileId,
     })
     psStore.actions.fetchUserCompliments({
-      receiverIdId: this.profileId,
+      receiverId: this.profileId,
     })
     psStore.actions.fetchUserReviews({
       receiverId: this.profileId,
