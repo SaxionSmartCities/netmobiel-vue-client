@@ -19,7 +19,7 @@
           :outlined="outlined"
           :label="label"
           :rules="validationRules"
-          @click:clear="save"
+          @click:clear="clear"
           v-on="on"
         >
         </v-text-field>
@@ -149,6 +149,10 @@ export default {
     save(date) {
       this.menu = false
       this.$emit('date-selected', date)
+    },
+    clear() {
+      this.menu = false
+      this.$emit('date-selected', null)
     },
   },
 }

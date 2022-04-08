@@ -115,7 +115,7 @@ export default {
   },
   computed: {
     homeAddress() {
-      const address = psStore.getters.getProfile.address
+      const address = psStore.getters.getProfile?.address
       if (address?.location?.coordinates) {
         return [
           {
@@ -129,7 +129,8 @@ export default {
       return []
     },
     favorites() {
-      return psStore.getters.getProfile.favoriteLocations.map((place) => {
+      const places = psStore.getters.getUser?.favoriteLocations ?? []
+      return places.map((place) => {
         return {
           ...place,
           title: place.name,
@@ -162,7 +163,7 @@ export default {
     uiStore.mutations.showBackButton()
   },
   mounted() {
-    psStore.actions.fetchFavoriteLocations()
+    psStore.actions.fetchMyFavoriteLocations()
     gsStore.mutations.setGeocoderSuggestions([])
     this.searchInput = gsStore.getters.getPickedLocations.get(
       this.$route.params.field
@@ -174,7 +175,7 @@ export default {
       // It has a title as suggested by the geo service.
       // It has a subtitle, something shown at the second line.
       // It has titleParts, a list of objects comprising a text and a highlight flag.
-      // It has a flag indicating whether the entry is a favorite (stored in the profile).
+      // It has a flag indicating whether the entry is a favorite (a favorite place).
       // It has an iconName, associated with the category of the location
       let loc = {
         ...geoSuggestionToPlace(sug),
@@ -272,17 +273,19 @@ export default {
           'Favoriet bestaat al in uw profiel.'
         )
       } else {
-        const profileId = psStore.getters.getProfile.id
-        psStore.actions.storeFavoriteLocation({ profileId, place })
+        psStore.actions
+          .storeMyFavoriteLocation({ place })
+          .then(() => psStore.actions.fetchMyFavoriteLocations())
       }
     },
     removeFavorite(favorite) {
-      const profileId = psStore.getters.getProfile.id
       let placeId = favorite.id
       if (!placeId) {
         placeId = this.favorites.find((f) => f.ref === favorite.ref)?.id
       }
-      psStore.actions.deleteFavoriteLocation({ profileId, placeId })
+      psStore.actions
+        .deleteMyFavoriteLocation({ placeId })
+        .then(() => psStore.actions.fetchMyFavoriteLocations())
     },
     iconicCategory(category) {
       return (

@@ -48,7 +48,8 @@ export default {
   methods: {
     onSearchOptionsSave(options) {
       psStore.actions
-        .storeSearchPreferences(options)
+        .storeMySearchPreferences(options)
+        .then(() => psStore.actions.fetchMyProfile())
         .then(() => this.$router.go(-1))
     },
   },

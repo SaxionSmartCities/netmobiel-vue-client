@@ -11,7 +11,10 @@
     <v-row v-if="user && user.personalAccount" class="body-2">
       <v-col cols="5"> Vrij saldo </v-col>
       <v-col cols="4" class="text-right"
-        >{{ user.personalAccount.credits }} credits</v-col
+        ><span :class="balanceColor(user.personalAccount.credits)">{{
+          user.personalAccount.credits
+        }}</span>
+        credits</v-col
       >
       <v-col cols="3" class="text-right">{{
         amountInEuro(user.personalAccount.credits)
@@ -20,7 +23,10 @@
     <v-row v-if="user && user.premiumAccount" class="body-2">
       <v-col cols="5"> Premiesaldo </v-col>
       <v-col cols="4" class="text-right"
-        >{{ user.premiumAccount.credits }} credits</v-col
+        ><span :class="balanceColor(user.premiumAccount.credits)">{{
+          user.premiumAccount.credits
+        }}</span>
+        credits</v-col
       >
       <v-col cols="3" class="text-right">{{
         amountInEuro(user.premiumAccount.credits)
@@ -170,7 +176,17 @@ export default {
     amountInEuro(amountInCredits) {
       return creditAmountInEuro(amountInCredits, this.exchangeRate)
     },
+    balanceColor(balance) {
+      return balance >= 0 ? 'text-green' : 'text-red'
+    },
   },
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.text-green {
+  color: $color-green;
+}
+.text-red {
+  color: $color-alertRed;
+}
+</style>

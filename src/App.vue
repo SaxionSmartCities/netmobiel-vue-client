@@ -134,7 +134,7 @@ export default {
     deviceFcmToken() {
       // Only update if profile is (already) available
       if (this.myProfile?.id) {
-        psStore.actions.storeFcmToken()
+        psStore.actions.storeMyFcmToken()
       }
     },
     myProfile(newProfile) {
@@ -187,8 +187,8 @@ export default {
       // Only fetch profile of authenticated user
       // After fetching, update the FCM token, if any.
       psStore.actions
-        .fetchProfile()
-        .then(() => psStore.actions.storeFcmToken())
+        .fetchMyProfile()
+        .then(() => psStore.actions.storeMyFcmToken())
         .catch(() => {})
       psStore.mutations.setSurveyInteraction(null)
       psStore.actions.createSurveyInvitation()

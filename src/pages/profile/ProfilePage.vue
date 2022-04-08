@@ -204,11 +204,11 @@ export default {
           this.isUploadingFile = false
           const imageString = fileReader.result
           scaleImageDown(imageString, 200).then((resizedImage) => {
-            const profile = { ...psStore.getters.getProfile }
-            psStore.actions.updateProfileImage({
-              id: profile.id,
-              image: resizedImage,
-            })
+            psStore.actions
+              .updateMyProfileImage({
+                image: resizedImage,
+              })
+              .then(() => psStore.actions.fetchMyProfile())
           })
         })
         fileReader.readAsDataURL(event.target.files[0])

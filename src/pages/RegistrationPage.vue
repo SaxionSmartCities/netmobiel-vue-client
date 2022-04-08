@@ -165,7 +165,7 @@ export default {
               this.status = 409
               // Meaning: Profile does already exist. Continue to the landing page
               // eslint-disable-next-line no-unused-vars
-              psStore.actions.fetchProfile().catch((status) => {})
+              psStore.actions.fetchMyProfile().catch((status) => {})
               this.gotoLandingPage()
             } else {
               // What can we do?
