@@ -158,12 +158,12 @@ export default {
         {
           icon: 'help_outline',
           name: 'Veelgestelde vragen',
-          href: 'https://www.netmobiel.eu/vragen/',
+          // href: 'https://www.netmobiel.eu/vragen/',
         },
         {
           icon: 'lock',
           name: 'Privacy & beveiliging',
-          href: 'https://www.netmobiel.eu/privacyverklaring-app/',
+          // href: 'https://www.netmobiel.eu/privacyverklaring-app/',
         },
         {
           icon: 'chrome_reader_mode',
