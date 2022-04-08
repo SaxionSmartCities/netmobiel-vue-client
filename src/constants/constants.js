@@ -116,7 +116,7 @@ export default {
   DEFAULT_GEOCODER_RADIUS: 150000,
   // The identity of the system as a fake managed identity
   SYSTEM_IDENTITY: 'SYSTEM',
-  SYSTEM_NAME: 'NetMobiel',
+  SYSTEM_NAME: 'Netmobiel',
   SYSTEM_AVATAR: 'SYSTEM_AVATAR',
   CONVERSATION_OWNER_ROLE: {
     PASSENGER: 'PASSENGER',

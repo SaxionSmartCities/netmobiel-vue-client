@@ -97,7 +97,7 @@ export default {
   data: function () {
     return {
       valid: false,
-      description: 'Credits inkopen voor NetMobiel',
+      description: 'Credits inkopen voor Netmobiel',
       creditAmount: MIN_AMOUNT,
       bankSimulated: config.BANK_SIMULATED || false,
       rules: {

@@ -61,7 +61,7 @@ export class ProfileState {
     delegations: [],
     privacySecurity: [
       { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
-      { name: 'Deel reisdata met NetMobiel', value: false },
+      { name: 'Deel reisdata met Netmobiel', value: false },
       { name: 'Verberg mijn gegevens voor anderen', value: false },
     ],
     tripOptions: [{ name: 'Ik bied ritten aan', value: false }],
