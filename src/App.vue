@@ -188,10 +188,12 @@ export default {
       // After fetching, update the FCM token, if any.
       psStore.actions
         .fetchMyProfile()
-        .then(() => psStore.actions.storeMyFcmToken())
+        .then(() => {
+          psStore.actions.storeMyFcmToken()
+          psStore.actions.createSurveyInvitation()
+        })
         .catch(() => {})
       psStore.mutations.setSurveyInteraction(null)
-      psStore.actions.createSurveyInvitation()
     }
   },
   beforeDestroy() {
