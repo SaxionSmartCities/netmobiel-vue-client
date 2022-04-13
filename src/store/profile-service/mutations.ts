@@ -9,6 +9,7 @@ import {
   PublicProfile,
   RidePlanOptions,
   SurveyInteraction,
+  Version,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { decodeJwt } from '@/utils/Utils'
@@ -184,6 +185,10 @@ function setSurveyInteraction(
   state.user.surveyInteraction = payload
 }
 
+function setVersion(state: ProfileState, version: Version) {
+  state.version = version
+}
+
 export const buildMutations = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -213,5 +218,6 @@ export const buildMutations = (
     setSearchStatus: psBuilder.commit(setSearchStatus),
     setDeviceFcmToken: psBuilder.commit(setDeviceFcmToken),
     setSurveyInteraction: psBuilder.commit(setSurveyInteraction),
+    setVersion: psBuilder.commit(setVersion),
   }
 }

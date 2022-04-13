@@ -49,6 +49,10 @@ export const buildGetters = (
     return state.user.surveyInteraction
   }, 'getSurveyInteraction')
 
+  const getVersion = psBuilder.read((state: ProfileState) => {
+    return state.version
+  }, 'getVersion')
+
   return {
     get getUser() {
       return getUser()
@@ -94,6 +98,9 @@ export const buildGetters = (
         this.getUser.roles.includes('treasurer') ||
         this.getUser.roles.includes('admin')
       )
+    },
+    get getVersion() {
+      return getVersion()
     },
   }
 }
