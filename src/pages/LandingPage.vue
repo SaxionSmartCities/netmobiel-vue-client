@@ -68,37 +68,38 @@ export default {
       // YbugHelper.show()
       // Token and Profile are also fetched in the main template (App.vue)
       // Here we check what we need to do when no profile is present
+      // Check first the connection with the server, then verify the existence of the profile.
       psStore.actions
-        .fetchMyProfile()
-        .then(() => {
-          // If yes, then proceed to the home page
-          this.continueNavigation()
-        })
+        .fetchVersion()
+        .then(() => psStore.actions.fetchMyProfileStatus())
+        .then(() => this.continueNavigation())
         .catch((status) => {
+          // Gateway/server trouble or not found
           // If no then go to the registration page
           this.progressVisible = false
           this.buttonsVisible = true
           if (status === 404) {
-            this.startRegistration()
+            return this.startRegistration()
           } else if (status >= 500) {
-            uiStore.actions.queueErrorNotification(
-              'Netmobiel server is niet beschikbaar of bereikbaar'
+            return uiStore.actions.queueErrorNotification(
+              'De Netmobiel server is momenteel niet beschikbaar,probeer het later opnieuw'
             )
           }
         })
     } else {
-      this.buttonsVisible = true
       // Not authenticated. User decides between 'login' and 'register'
       // YbugHelper.hide()
+      this.buttonsVisible = true
     }
   },
   methods: {
-    continueNavigation: function () {
+    continueNavigation() {
+      // Check whether we have an initial message to show (a query parameter added by the mobile app)
       let conversationId
       if (this.$route.query.msgId) {
         // eslint-disable-next-line
         // console.log(`Got an initial message: '${this.$route.query.msgId}'`)
-        msStore.actions
+        return msStore.actions
           .fetchMessage({ id: this.$route.query.msgId })
           .then((msg) => {
             // Now goto the relevant (i.e., my) conversation. Find whether
@@ -111,21 +112,22 @@ export default {
               )?.conversationRef
             }
             if (conversationId) {
-              this.$router.push({
+              return this.$router.push({
                 name: 'conversation',
                 params: { conversationId },
               })
+            } else {
+              this.$router.push({ path: '/home' })
             }
           })
           .catch(() => {})
-      }
-      if (!conversationId) {
+      } else {
         // Redirect to the home page
-        this.$router.push({ path: '/home' })
+        return this.$router.push({ path: '/home' })
       }
     },
-    startRegistration: function () {
-      this.$router.push({ name: 'registerUser' })
+    startRegistration() {
+      return this.$router.push({ name: 'registerUser' })
     },
     loginAtKeycloak() {
       return this.$keycloak.loginFn()

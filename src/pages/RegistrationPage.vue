@@ -43,7 +43,7 @@
           >
           <v-card-text>
             <v-row no-gutters>
-              <v-alert :value="status === 200" type="success">
+              <v-alert :value="status === 200" type="info">
                 <p>Profiel aangemaakt!</p>
                 <p>We sturen je over enkele seconden naar het beginscherm.</p>
               </v-alert>
@@ -78,7 +78,7 @@ import * as psStore from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
 
 // The delay after creation to show the success message
-const DELAY_AFTER_CREATION = 7000
+const DELAY_AFTER_CREATION = 4000
 
 export default {
   components: {
@@ -164,8 +164,6 @@ export default {
             if (status === 409 /* Conflict */) {
               this.status = 409
               // Meaning: Profile does already exist. Continue to the landing page
-              // eslint-disable-next-line no-unused-vars
-              psStore.actions.fetchMyProfile().catch((status) => {})
               this.gotoLandingPage()
             } else {
               // What can we do?
