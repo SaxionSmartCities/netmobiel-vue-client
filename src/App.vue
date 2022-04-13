@@ -133,14 +133,27 @@ export default {
   watch: {
     deviceFcmToken() {
       // Only update if profile is (already) available
+      // Otherwise save it once registered
+      // console.log(`FCM token is: ${this.deviceFcmToken}`)
       if (this.myProfile?.id) {
+        // Just in case the FCM token arrives after fetching the profile
         psStore.actions.storeMyFcmToken()
       }
     },
-    myProfile(newProfile) {
-      if (!this.isProfileComplete(newProfile)) {
-        let update = constants.COMPLETE_PROFILE_UPDATE
-        uiStore.actions.addUpdate(update)
+    myProfile(newProfile, oldProfile) {
+      // console.log(`Profile: ${oldProfile?.id} --> ${newProfile?.id}`)
+      if (newProfile?.id) {
+        if (oldProfile?.id !== newProfile.id) {
+          // A fresh profile has arrived
+          // The profile is present. By now the FCM token should also have arrived.
+          psStore.actions.storeMyFcmToken()
+          psStore.mutations.setSurveyInteraction(null)
+          psStore.actions.createSurveyInvitation()
+        }
+        if (!this.isProfileComplete(newProfile)) {
+          let update = constants.COMPLETE_PROFILE_UPDATE
+          uiStore.actions.addUpdate(update)
+        }
       }
     },
     surveyInteraction(newSurvey, oldSurvey) {
@@ -171,7 +184,7 @@ export default {
     // },
   },
   mounted() {
-    // The initial message, if any, is passed by a query parameter to the url
+    // The initial message, if any, is passed by a query parameter to the url of the landing page
     window.addEventListener('NetmobielPushMessage', this.onPushMessageReceived)
     if (this.$keycloak.authenticated) {
       psStore.mutations.setUserToken(this.$keycloak.token)
@@ -185,15 +198,13 @@ export default {
       // console.log(`Request FCM token`)
       NetmobielApp.requestFcmToken()
       // Only fetch profile of authenticated user
-      // After fetching, update the FCM token, if any.
+      // Fetch the profile, just in case the user is returning from an external page
+      // It will cause duplicate calls to profile/me/status and profile/me when immediately navigating to the home page
       psStore.actions
-        .fetchMyProfile()
-        .then(() => {
-          psStore.actions.storeMyFcmToken()
-          psStore.actions.createSurveyInvitation()
-        })
+        .fetchMyProfileStatus()
+        .then(() => psStore.actions.fetchMyProfile())
+        // Ignore the errors, they are resolved elsewhere.
         .catch(() => {})
-      psStore.mutations.setSurveyInteraction(null)
     }
   },
   beforeDestroy() {
