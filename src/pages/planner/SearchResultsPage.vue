@@ -43,8 +43,8 @@
       </v-col>
       <v-col v-else>
         <v-row justify="space-between">
-          <v-col v-if="!sortedItineraries" my-4>
-            Helaas, er zijn geen ritten gevonden!
+          <v-col v-if="sortedItineraries.length === 0" class="mt-4 text-center">
+            Helaas, er zijn geen ritten gevonden.
           </v-col>
           <v-col v-else>
             <section
