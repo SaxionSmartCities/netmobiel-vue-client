@@ -1,11 +1,17 @@
 <template>
   <v-dialog v-model="dialogActive" @click:outside="$emit('close')">
     <v-card>
-      <v-card-title>
-        {{ dialog.title }}
-      </v-card-title>
+      <v-card-title>Verwijzing naar website </v-card-title>
       <v-card-text>
-        {{ dialog.content }}
+        <p>
+          Vanwege een technisch probleem is het in deze versie nog niet mogelijk
+          om rechtstreeks door te klikken naar deze website. We willen je
+          vriendelijk vragen om onderstaande verwijzing te kopiëren en deze te
+          plakken in adresregel van je browser app.
+        </p>
+        <p>
+          <strong>{{ website }}</strong>
+        </p>
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
@@ -19,10 +25,10 @@
 </template>
 <script>
 export default {
-  name: 'ProfileInfoDialog',
+  name: 'ExternalLinkBlockedDialog',
   props: {
     showDialog: { type: Boolean, required: true },
-    dialog: { type: Object, required: true },
+    website: { type: String, required: true },
   },
   computed: {
     dialogActive() {

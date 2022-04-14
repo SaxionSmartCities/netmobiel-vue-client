@@ -146,7 +146,7 @@ h4.netmobiel {
 .mapboxgl-ctrl-attrib-inner a, a.mapboxgl-ctrl-logo {
   pointer-events: none;
 }
-// Disable all links intended for external browser
-a[target="_blank"] {
-  pointer-events: none;
-}
+// Remove all decoration from links  intended for external browser
+//a[target="_blank"] {
+//  pointer-events: none;
+//}

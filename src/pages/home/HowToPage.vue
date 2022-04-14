@@ -27,6 +27,11 @@
         <slide-show-how-to :items="itemsDriver" />
       </v-col>
     </v-row>
+    <external-link-blocked-dialog
+      :website="website"
+      :show-dialog="dialogIsVisible"
+      @close="dialogIsVisible = false"
+    />
   </content-pane>
 </template>
 
@@ -37,12 +42,14 @@ import TabBar from '@/components/common/TabBar'
 import constants from '../../constants/constants'
 import * as psStore from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
+import ExternalLinkBlockedDialog from '@/components/dialogs/ExternalLinkBlockedDialog'
 
 export default {
   components: {
     ContentPane,
     SlideShowHowTo,
     TabBar,
+    ExternalLinkBlockedDialog,
   },
   data() {
     return {
@@ -52,7 +59,7 @@ export default {
           icon: 'ht-credits.png',
           title: 'Schaf credits aan',
           description:
-            'Je betaalt voor je ritten met credits. Goed nieuws, je eerste paar ritten zijn op onze kosten.',
+            'Je betaalt voor je ritten met credits. Goed nieuws, je krijgt een aantal credits van ons cadeau.',
           action: {
             label: 'Koop credits',
             onclick: () => this.$router.push('/addCredits'),
@@ -77,8 +84,7 @@ export default {
         {
           icon: 'ht-booking.png',
           title: 'Leg je rit af',
-          description:
-            'Reis met de trein of bus en/of rij met een dorpsbewoner mee.',
+          description: 'Reis met de trein of bus en/of rij met iemand mee.',
         },
         {
           icon: 'ht-review.png',
@@ -92,7 +98,7 @@ export default {
           description: 'Bezoek onze website voor aanvullende informatie.',
           action: {
             label: 'Bezoek website',
-            onclick: () => window.open('https://www.netmobiel.eu/', '_blank'),
+            onclick: () => this.visitWebsite('https://www.netmobiel.eu/'),
           },
         },
       ],
@@ -101,7 +107,7 @@ export default {
           icon: 'ht-offer.png',
           title: 'Bied een rit aan',
           description:
-            'Heb je een reis gepland en nog een plekje in de auto? Bied je rit aan en help daarmee dorpsbewoners.',
+            'Heb je een reis gepland en nog een plekje in de auto? Bied je rit aan en help daarmee je streekgenoten.',
           action: {
             label: 'Rit aanbieden',
             onclick: () => this.$router.push('/plan'),
@@ -126,8 +132,9 @@ export default {
         {
           icon: 'ht-credits.png',
           title: 'Betaal je credits uit',
-          description:
-            'Je kan kiezen om je credits uit te keren in geld maar je kan ze ook doneren aan een goed doel.',
+          description: `Je kan kiezen om je credits uit te keren in geld maar je kan ze ook doneren aan een goed doel.
+            Als extra krijg je van je premietegoed 50% bonus tot 15 credits.
+            `,
           action: {
             label: 'Bekijk goede doelen',
             onclick: () => this.$router.push('/charityOverviewPage'),
@@ -139,10 +146,12 @@ export default {
           description: 'Bezoek onze website voor aanvullende informatie.',
           action: {
             label: 'Bezoek website',
-            onclick: () => window.open('https://www.netmobiel.eu/', '_blank'),
+            onclick: () => this.visitWebsite('https://www.netmobiel.eu/'),
           },
         },
       ],
+      dialogIsVisible: false,
+      website: '',
     }
   },
   computed: {
@@ -161,6 +170,16 @@ export default {
   },
   mounted() {
     uiStore.mutations.showBackButton()
+  },
+  methods: {
+    visitWebsite(url) {
+      if (constants.EXTERNAL_LINKS_ALLOWED) {
+        window.open(url, '_blank')
+      } else {
+        this.website = url
+        this.dialogIsVisible = true
+      }
+    },
   },
 }
 </script>

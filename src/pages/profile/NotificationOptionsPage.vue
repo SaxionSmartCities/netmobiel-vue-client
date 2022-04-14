@@ -20,7 +20,11 @@
       </v-col>
     </v-row>
     <v-row dense>
-      <profile-info-dialog :value="dialog" />
+      <profile-info-dialog
+        :show-dialog="dialogIsVisible"
+        :dialog="dialog"
+        @close="dialogIsVisible = false"
+      />
       <v-col>
         <div
           v-for="section in Object.keys(notificationSettings)"
@@ -41,6 +45,7 @@
               <v-col class="shrink d-flex flex-column">
                 <v-switch
                   v-model="option.value"
+                  :disabled="!option.supported"
                   class="switch-padding"
                   hide-details
                   inset
@@ -79,8 +84,9 @@ export default {
         { title: 'Passagier + Chauffeur', value: constants.PROFILE_ROLE_BOTH },
         { title: 'Chauffeur', value: constants.PROFILE_ROLE_DRIVER },
       ],
+      dialogIsVisible: false,
       dialog: {
-        isVisible: false,
+        title: '',
         content: '',
       },
     }
@@ -132,7 +138,7 @@ export default {
     onInfoClick(option) {
       this.dialog.title = option.title
       this.dialog.content = option.info
-      this.dialog.isVisible = true
+      this.dialogIsVisible = true
     },
     onOptionChange() {
       const { melding } = this.notificationSettings
