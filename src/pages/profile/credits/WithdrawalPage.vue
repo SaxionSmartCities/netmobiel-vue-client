@@ -8,11 +8,7 @@
       </v-row>
       <v-row v-if="bankSimulated">
         <v-col>
-          <v-alert type="warning">
-            In de huidige testfase van de Netmobiel-app kun je nog niet écht
-            credits opnemen. Het proces dat je straks doorloopt is identiek,
-            echter de 'pennningmeester' laat de credits gewoon verdwijnen.
-          </v-alert>
+          <v-alert type="warning"> Banksimulatie is actief. </v-alert>
         </v-col>
       </v-row>
       <v-row dense>

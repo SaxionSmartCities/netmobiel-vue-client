@@ -32,7 +32,11 @@ const driver = {
       info: 'Je ontvangt een melding na aanvang van je rit met het verzoek om een beoordeling achter te laten voor de chauffeur van de afgelegde rit.',
       value: true,
     },
-    { title: 'Deel mijn beoordelingen met anderen', value: true },
+    {
+      title: 'Deel mijn beoordelingen',
+      info: 'Deel je beoordelingen met anderen',
+      value: true,
+    },
   ],
 }
 const passenger = {
@@ -64,8 +68,16 @@ const passenger = {
     },
   ],
   beoordelingen: [
-    { title: 'Beoordeel je rit', value: true },
-    { title: 'Deel mijn beoordelingen met anderen', value: true },
+    {
+      title: 'Beoordeel je rit',
+      info: 'Deel complimenten uit aan je chauffeur',
+      value: true,
+    },
+    {
+      title: 'Deel mijn beoordelingen',
+      info: 'Deel je beoordelingen met andere passagiers',
+      value: true,
+    },
   ],
 }
 const both = { ...driver }
