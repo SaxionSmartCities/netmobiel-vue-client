@@ -48,7 +48,7 @@
               :shout-out="shoutOut"
               @travel-proposal-selected="onTravelOfferSelected"
               @travel-proposal-confirm="onTravelOfferConfirmed"
-              @show-map="onMapShow"
+              @show-map="showMap = true"
             />
           </v-col>
           <v-col>
@@ -254,11 +254,7 @@ export default {
     },
     onMapClose() {
       this.showMap = false
-      this.selectedLegsIndex = null
-    },
-    onMapShow() {
       this.mapSize = 'small'
-      this.showMap = true
     },
   },
 }

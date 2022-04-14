@@ -179,8 +179,9 @@ export default {
       showZoovDialog: false,
       selectedSortModusIndex: 0,
       sortModi: [
+        { title: 'Relevantie', value: 'score' },
         { title: 'Snelste', value: 'fastest' },
-        { title: 'Chronologisch', value: 'chronologically' },
+        { title: 'Vertrektijd', value: 'departure' },
       ],
     }
   },
@@ -208,14 +209,13 @@ export default {
     },
     sortedItineraries() {
       const list = Object.assign([], this.tripPlan?.itineraries)
-      if (this.selectedSortModus.value === 'fastest') {
-        list.sort((a, b) => {
-          return new Date(a.duration) - new Date(b.duration)
-        })
-      } else {
-        list.sort((a, b) => {
-          return new Date(a.departureTime) - new Date(b.departureTime)
-        })
+      if (this.selectedSortModus.value === 'score') {
+        // Lower score is worse performance
+        list.sort((a, b) => -(a.score - b.score))
+      } else if (this.selectedSortModus.value === 'fastest') {
+        list.sort((a, b) => a.duration - b.duration)
+      } else if (this.selectedSortModus.value === 'departure') {
+        list.sort((a, b) => a.departureTime.localeCompare(b.departureTime))
       }
       return list
     },

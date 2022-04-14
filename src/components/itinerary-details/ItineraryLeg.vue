@@ -20,7 +20,7 @@
             >
               <v-icon
                 :class="{ 'active-map': isMapActive }"
-                @click="$emit('legSelect', { leg, step })"
+                @click="$emit('leg-select', { leg, step })"
               >
                 map
               </v-icon>
