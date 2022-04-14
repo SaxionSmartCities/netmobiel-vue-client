@@ -1,7 +1,7 @@
 <template>
   <v-row dense no-gutters>
     <v-col>
-      <v-row v-if="selectedLegs && shouldShowMap">
+      <v-row v-if="selectedLegs && selectedLegs.length > 0 && shouldShowMap">
         <v-col>
           <route-map
             ref="mapComp"
@@ -149,7 +149,6 @@ export default {
       this.mapSize = size
     },
     onMapClose() {
-      this.selectedLegsIndex = null
       this.mapSize = 'small'
       this.$emit('closeMap')
     },
