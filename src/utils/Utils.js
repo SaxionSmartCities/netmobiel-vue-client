@@ -1,5 +1,6 @@
 import constants from '@/constants/constants'
 import * as PhoneNumber from 'awesome-phonenumber'
+import { runningInsideFlutterApp } from '@/utils/NetmobielApp'
 
 function upperCaseFirst(input) {
   return input.charAt(0).toUpperCase() + input.slice(1)
@@ -186,6 +187,10 @@ function formatPhoneNumber(phoneString, countryCode) {
   return pn.getNumber('national')
 }
 
+function allowExternalLinks() {
+  return !runningInsideFlutterApp()
+}
+
 export {
   upperCaseFirst,
   generateHeaders,
@@ -203,4 +208,5 @@ export {
   amountInEuro,
   isValidPhoneNumber,
   formatPhoneNumber,
+  allowExternalLinks,
 }

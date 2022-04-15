@@ -176,5 +176,4 @@ export default {
       iconClass: 'material-icons-outlined',
     },
   ],
-  EXTERNAL_LINKS_ALLOWED: false,
 }

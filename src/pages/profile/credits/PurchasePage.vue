@@ -87,8 +87,7 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import * as bsStore from '@/store/banker-service'
 import * as uiStore from '@/store/ui'
 import config from '@/config/config'
-import { creditAmountInEuro } from '@/utils/Utils'
-import constants from '@/constants/constants'
+import { allowExternalLinks, creditAmountInEuro } from '@/utils/Utils'
 
 const MIN_AMOUNT = 10
 const MAX_AMOUNT = 1000
@@ -104,7 +103,7 @@ export default {
       description: 'Credits inkopen voor Netmobiel',
       creditAmount: MIN_AMOUNT,
       bankSimulated: config.BANK_SIMULATED || false,
-      mobileBankingEnabled: constants.EXTERNAL_LINKS_ALLOWED || false,
+      mobileBankingEnabled: allowExternalLinks(),
       rules: {
         required: (value) => !!value || 'Veld is verplicht',
         minAmount: (value) => value >= MIN_AMOUNT || `Minimaal ${MIN_AMOUNT}`,

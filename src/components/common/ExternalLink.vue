@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import constants from '@/constants/constants'
+import { allowExternalLinks } from '@/utils/Utils'
 
 export default {
   name: 'ExternalLink',
@@ -19,7 +19,7 @@ export default {
   },
   data() {
     return {
-      enabled: constants.EXTERNAL_LINKS_ALLOWED,
+      enabled: allowExternalLinks(),
     }
   },
   computed: {

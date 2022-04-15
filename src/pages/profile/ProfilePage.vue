@@ -139,8 +139,8 @@ import RoundUserImage from '@/components/common/RoundUserImage'
 import { scaleImageDown } from '../../utils/image_scaling'
 import * as psStore from '@/store/profile-service'
 import config from '@/config/config'
-import constants from '@/constants/constants'
 import ExternalLinkBlockedDialog from '@/components/dialogs/ExternalLinkBlockedDialog'
+import { allowExternalLinks } from '@/utils/Utils'
 
 const CREDITS_ENABLED = config.CREDITS_ENABLED
 
@@ -216,7 +216,7 @@ export default {
       if (item.routeName) {
         this.$router.push({ name: item.routeName })
       } else if (item.href) {
-        if (constants.EXTERNAL_LINKS_ALLOWED) {
+        if (allowExternalLinks()) {
           window.open(item.href, '_blank')
         } else {
           this.website = item.href

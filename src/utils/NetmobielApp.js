@@ -68,3 +68,12 @@ window.dispatchNetmobielPushMessage = function (msgId, titleEnc, bodyEnc) {
   })
   window.dispatchEvent(event)
 }
+
+/**
+ * Detects whether the application is running inside the flutter app
+ * The FCM method is for old app version (pre jan 2022)
+ * @return {boolean}
+ */
+export function runningInsideFlutterApp() {
+  return !!localStorage.fcm || mightHaveFcmToken()
+}

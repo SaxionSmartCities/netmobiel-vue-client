@@ -189,7 +189,6 @@ export default {
     // Set the fcm token (for push notifications) in the local storage,
     // so we can retrieve it later to update the profile. Local storage is needed because
     // When a session expires or when returning from an external source no FCM token will be on the url
-    console.log(`Type fcm parameter: ${typeof this.$route.query.fcm}`)
     if (typeof this.$route.query.fcm === 'string') {
       if (this.$route.query.fcm) {
         localStorage.setItem('fcm', this.$route.query.fcm)

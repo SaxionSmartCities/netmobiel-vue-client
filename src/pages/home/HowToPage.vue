@@ -43,6 +43,7 @@ import constants from '../../constants/constants'
 import * as psStore from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
 import ExternalLinkBlockedDialog from '@/components/dialogs/ExternalLinkBlockedDialog'
+import { allowExternalLinks } from '@/utils/Utils'
 
 export default {
   components: {
@@ -173,7 +174,7 @@ export default {
   },
   methods: {
     visitWebsite(url) {
-      if (constants.EXTERNAL_LINKS_ALLOWED) {
+      if (allowExternalLinks()) {
         window.open(url, '_blank')
       } else {
         this.website = url
