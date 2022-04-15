@@ -174,7 +174,7 @@ function setSearchResults(state: ProfileState, results: PublicProfile[]) {
   state.search.results = results
 }
 
-function setDeviceFcmToken(state: ProfileState, fcmToken: string) {
+function setDeviceFcmToken(state: ProfileState, fcmToken: string | null) {
   state.deviceFcmToken = fcmToken
 }
 

@@ -186,6 +186,17 @@ export default {
   mounted() {
     // The initial message, if any, is passed by a query parameter to the url of the landing page
     window.addEventListener('NetmobielPushMessage', this.onPushMessageReceived)
+    // Set the fcm token (for push notifications) in the local storage,
+    // so we can retrieve it later to update the profile. Local storage is needed because
+    // When a session expires or when returning from an external source no FCM token will be on the url
+    console.log(`Type fcm parameter: ${typeof this.$route.query.fcm}`)
+    if (typeof this.$route.query.fcm === 'string') {
+      if (this.$route.query.fcm) {
+        localStorage.setItem('fcm', this.$route.query.fcm)
+      } else {
+        localStorage.removeItem('fcm')
+      }
+    }
     if (this.$keycloak.authenticated) {
       psStore.mutations.setUserToken(this.$keycloak.token)
       window.addEventListener('NetmobielFcmToken', this.onFcmTokenReceived)
@@ -196,7 +207,16 @@ export default {
       // 3. When creating the profile
       // If no FCM token is received the token value stays null and that value is stored in the profile.
       // console.log(`Request FCM token`)
-      NetmobielApp.requestFcmToken()
+      // Fetch the FCM token via message channel (since jan 2022 app)
+      if (!NetmobielApp.requestFcmToken()) {
+        // Message channel does not seem to be supported.
+        // Fetch the FCM token from the localstorage (app version mid 2021) - for backward compatibility
+        if (localStorage.fcm) {
+          psStore.mutations.setDeviceFcmToken(localStorage.fcm)
+        }
+      } else {
+        localStorage.removeItem('fcm')
+      }
       // Only fetch profile of authenticated user
       // Fetch the profile, just in case the user is returning from an external page
       // It will cause duplicate calls to profile/me/status and profile/me when immediately navigating to the home page
