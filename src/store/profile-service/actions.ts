@@ -21,7 +21,6 @@ function createProfile(
   payload: Profile
 ): Promise<void> {
   const URL = `${PROFILE_BASE_URL}/profiles`
-  payload.fcmToken = context.state.deviceFcmToken
   return axios
     .post(URL, payload, {
       headers: generateHeaders(
@@ -47,6 +46,24 @@ function createProfile(
       }
       uiStore.actions.queueErrorNotification(errorMsg)
       return Promise.reject(status)
+    })
+}
+
+function fetchMyProfileStatus(context: ActionContext) {
+  const delegatorId = context.state.user.delegatorId
+  const URL = `${PROFILE_BASE_URL}/profiles/me/status`
+  return axios
+    .get(URL, {
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
+      ) as AxiosRequestHeaders,
+    })
+    .then((response) => {
+      return response.status
+    })
+    .catch((error) => {
+      return Promise.reject(error.response.status)
     })
 }
 
@@ -231,15 +248,26 @@ function storeMyRidePreferences(context: ActionContext, payload: any) {
 }
 
 function storeMyFcmToken(context: ActionContext) {
-  const profile = { ...context.state.user.profile }
-  // Update only if different
-  if (context.state.deviceFcmToken !== profile.fcmToken) {
-    // Insert payload into the profile object.
-    profile.fcmToken = context.state.deviceFcmToken
-    return updateMyProfile(context, profile)
-  } else {
-    return Promise.resolve(true)
+  const URL = `${PROFILE_BASE_URL}/profiles/me/fcmToken`
+  const firebaseToken = {
+    token: context.state.deviceFcmToken,
   }
+  return axios
+    .put(URL, firebaseToken, {
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    .then((response) => {
+      if (response.status !== 204) {
+        // eslint-disable-next-line
+        console.warn(`storeMyFcmToken: Unexpected response ${response.status}`)
+      }
+    })
+    .catch((error) => {
+      // eslint-disable-next-line
+      console.log(error)
+    })
 }
 
 function updateMyProfile(context: ActionContext, profile: Profile) {
@@ -765,11 +793,31 @@ function markSurveySubmitted(context: ActionContext, surveyId: string) {
     })
 }
 
+function fetchVersion(context: ActionContext) {
+  const URL = `${PROFILE_BASE_URL}/version`
+  return axios
+    .get(URL, {
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    .then((response) => {
+      mutations.setVersion(response.data)
+      return response.status
+    })
+    .catch((error) => {
+      // eslint-disable-next-line
+      console.log(error)
+      return error.response.status
+    })
+}
+
 export const buildActions = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
   return {
     createProfile: psBuilder.dispatch(createProfile),
+    fetchMyProfileStatus: psBuilder.dispatch(fetchMyProfileStatus),
     fetchMyProfile: psBuilder.dispatch(fetchMyProfile),
     fetchPublicProfile: psBuilder.dispatch(fetchPublicProfile),
     fetchProfiles: psBuilder.dispatch(fetchProfiles),
@@ -802,5 +850,7 @@ export const buildActions = (
     fetchSurvey: psBuilder.dispatch(fetchSurvey),
     markSurveyRedirection: psBuilder.dispatch(markSurveyRedirection),
     markSurveySubmitted: psBuilder.dispatch(markSurveySubmitted),
+
+    fetchVersion: psBuilder.dispatch(fetchVersion),
   }
 }

@@ -22,20 +22,23 @@ export function mightHaveFcmToken() {
 }
 
 /**
- * Requests the app to send the FCM token. The token is passed through the
+ * Requests the app to send the FCM token. The token received through the
  * global setter function 'window.setNetmobielFcmToken'.
  * It is allowed to call this method multiple times, the call is idempotent.
+ * @return true if a token is to be expected within a second or so.
  */
 export function requestFcmToken() {
-  if (mightHaveFcmToken()) {
+  const waitForToken = mightHaveFcmToken()
+  if (waitForToken) {
     NetmobielAppRequest.postMessage('fcmToken')
   }
+  return waitForToken
 }
 
 /**
- * Setter for passing the FCM token to the web application inside the Flutter
- * App. The FCM token is dispatched as a Javascript custom event
- * 'NetmobielFcmToken' on the window object.
+ * Setter (called from the Flutter app) for passing the FCM token to the web
+ * application inside the Flutter App. The FCM token is dispatched as a
+ * Javascript custom event 'NetmobielFcmToken' on the window object.
  * @param token the current fcm token.
  */
 window.setNetmobielFcmToken = function (token) {
@@ -64,4 +67,13 @@ window.dispatchNetmobielPushMessage = function (msgId, titleEnc, bodyEnc) {
     },
   })
   window.dispatchEvent(event)
+}
+
+/**
+ * Detects whether the application is running inside the flutter app
+ * The FCM method is for old app version (pre jan 2022)
+ * @return {boolean}
+ */
+export function runningInsideFlutterApp() {
+  return !!localStorage.fcm || mightHaveFcmToken()
 }

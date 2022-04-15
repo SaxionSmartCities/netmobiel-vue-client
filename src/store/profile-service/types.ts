@@ -33,7 +33,6 @@ export class ProfileState {
         safetyGuidelines: false,
       },
       dateOfBirth: null,
-      fcmToken: null,
       firstName: null,
       lastName: null,
       image: null,
@@ -89,6 +88,7 @@ export class ProfileState {
   }
   // The FCM token received from the current device
   deviceFcmToken: string | null = null
+  version: Version | null = null
 }
 export const emptyPublicUser: ExternalUser = {
   profile: {
@@ -182,7 +182,6 @@ export interface Profile extends PublicProfile {
   // Format: ISO8601: yyyy-MM-dd
   dateOfBirth: string | null
   email: string | null
-  fcmToken: string | null
   phoneNumber: string | null
   searchPreferences: SearchPreferences | null
   ridePlanOptions: RidePlanOptions | null
@@ -293,4 +292,14 @@ export interface SurveyInteraction {
   surveyUrl: string
   urn: string
   owner?: UserRef
+}
+
+export interface Version {
+  readonly commitId: string
+  readonly buildTime: string
+  readonly buildVersion: string
+  // If the caller is not present, then we are not authenticated
+  readonly caller?: UserRef
+  // The effective caller is present only if different from real caller
+  readonly effectiveCaller?: UserRef
 }

@@ -133,14 +133,27 @@ export default {
   watch: {
     deviceFcmToken() {
       // Only update if profile is (already) available
+      // Otherwise save it once registered
+      // console.log(`FCM token is: ${this.deviceFcmToken}`)
       if (this.myProfile?.id) {
+        // Just in case the FCM token arrives after fetching the profile
         psStore.actions.storeMyFcmToken()
       }
     },
-    myProfile(newProfile) {
-      if (!this.isProfileComplete(newProfile)) {
-        let update = constants.COMPLETE_PROFILE_UPDATE
-        uiStore.actions.addUpdate(update)
+    myProfile(newProfile, oldProfile) {
+      // console.log(`Profile: ${oldProfile?.id} --> ${newProfile?.id}`)
+      if (newProfile?.id) {
+        if (oldProfile?.id !== newProfile.id) {
+          // A fresh profile has arrived
+          // The profile is present. By now the FCM token should also have arrived.
+          psStore.actions.storeMyFcmToken()
+          psStore.mutations.setSurveyInteraction(null)
+          psStore.actions.createSurveyInvitation()
+        }
+        if (!this.isProfileComplete(newProfile)) {
+          let update = constants.COMPLETE_PROFILE_UPDATE
+          uiStore.actions.addUpdate(update)
+        }
       }
     },
     surveyInteraction(newSurvey, oldSurvey) {
@@ -171,8 +184,18 @@ export default {
     // },
   },
   mounted() {
-    // The initial message, if any, is passed by a query parameter to the url
+    // The initial message, if any, is passed by a query parameter to the url of the landing page
     window.addEventListener('NetmobielPushMessage', this.onPushMessageReceived)
+    // Set the fcm token (for push notifications) in the local storage,
+    // so we can retrieve it later to update the profile. Local storage is needed because
+    // When a session expires or when returning from an external source no FCM token will be on the url
+    if (typeof this.$route.query.fcm === 'string') {
+      if (this.$route.query.fcm) {
+        localStorage.setItem('fcm', this.$route.query.fcm)
+      } else {
+        localStorage.removeItem('fcm')
+      }
+    }
     if (this.$keycloak.authenticated) {
       psStore.mutations.setUserToken(this.$keycloak.token)
       window.addEventListener('NetmobielFcmToken', this.onFcmTokenReceived)
@@ -183,17 +206,24 @@ export default {
       // 3. When creating the profile
       // If no FCM token is received the token value stays null and that value is stored in the profile.
       // console.log(`Request FCM token`)
-      NetmobielApp.requestFcmToken()
+      // Fetch the FCM token via message channel (since jan 2022 app)
+      if (!NetmobielApp.requestFcmToken()) {
+        // Message channel does not seem to be supported.
+        // Fetch the FCM token from the localstorage (app version mid 2021) - for backward compatibility
+        if (localStorage.fcm) {
+          psStore.mutations.setDeviceFcmToken(localStorage.fcm)
+        }
+      } else {
+        localStorage.removeItem('fcm')
+      }
       // Only fetch profile of authenticated user
-      // After fetching, update the FCM token, if any.
+      // Fetch the profile, just in case the user is returning from an external page
+      // It will cause duplicate calls to profile/me/status and profile/me when immediately navigating to the home page
       psStore.actions
-        .fetchMyProfile()
-        .then(() => {
-          psStore.actions.storeMyFcmToken()
-          psStore.actions.createSurveyInvitation()
-        })
+        .fetchMyProfileStatus()
+        .then(() => psStore.actions.fetchMyProfile())
+        // Ignore the errors, they are resolved elsewhere.
         .catch(() => {})
-      psStore.mutations.setSurveyInteraction(null)
     }
   },
   beforeDestroy() {

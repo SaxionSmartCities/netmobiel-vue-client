@@ -17,7 +17,7 @@
           v-if="trip"
           :trip="trip"
           :show-map="showMap"
-          @closeMap="onCloseMap"
+          @closeMap="showMap = false"
         />
       </v-col>
     </v-row>
@@ -40,7 +40,7 @@
           mb-4
           depressed
           color="primary"
-          @click="onShowMap"
+          @click="showMap = true"
         >
           Bekijk op de kaart
         </v-btn>
@@ -297,12 +297,6 @@ export default {
   methods: {
     formatTime(t) {
       return t ? moment(t).locale('nl').calendar() : '- - : - -'
-    },
-    onShowMap() {
-      this.showMap = true
-    },
-    onCloseMap() {
-      this.showMap = false
     },
     contactDriver() {
       this.$router.push({

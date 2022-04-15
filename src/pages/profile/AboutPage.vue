@@ -10,34 +10,60 @@
         de vorm van een app. Het is een innovatieproject dat gesubsidieerd wordt
         wordt door de Stichting Innovatie Alliantie, de Provincie Gelderland en
         Achterhoek ambassadeurs. Kijk op
-        <a href="https://www.netmobiel.eu" target="_blank">onze website</a> voor
-        meer informatie.
+        <external-link
+          href="https://www.netmobiel.eu"
+          @link-disabled="onBlockedLink"
+        >
+          <template #anchorBody><strong>onze website</strong></template>
+        </external-link>
+        voor meer informatie.
       </v-col>
     </v-row>
     <v-row dense>
       <v-col>
         De software voor de Netmobiel app is ontwikkeld door het
-        <a
+        <external-link
           href="https://www.saxion.nl/onderzoek/smart-industry/smart-cities"
-          target="_blank"
+          @link-disabled="onBlockedLink"
         >
-          Lectoraat Smart Cities</a
-        >
+          <template #anchorBody
+            ><strong>Lectoraat Smart Cities</strong></template
+          >
+        </external-link>
         van de Saxion Hogeschool Enschede.
       </v-col>
     </v-row>
+    <external-link-blocked-dialog
+      :website="website"
+      :show-dialog="dialogIsVisible"
+      @close="dialogIsVisible = false"
+    />
   </content-pane>
 </template>
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
 import * as uiStore from '@/store/ui'
+import ExternalLinkBlockedDialog from '@/components/dialogs/ExternalLinkBlockedDialog'
+import ExternalLink from '@/components/common/ExternalLink'
 
 export default {
   name: 'AboutPage',
-  components: { ContentPane },
+  components: { ExternalLink, ContentPane, ExternalLinkBlockedDialog },
+  data() {
+    return {
+      dialogIsVisible: false,
+      website: '',
+    }
+  },
   mounted() {
     uiStore.mutations.showBackButton()
+  },
+  methods: {
+    onBlockedLink(link) {
+      this.website = link
+      this.dialogIsVisible = true
+    },
   },
 }
 </script>

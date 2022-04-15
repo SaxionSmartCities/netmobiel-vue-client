@@ -31,15 +31,14 @@
               Nadere informatie over de verwerking van persoonsgegevens binnen
               project Netmobiel door Vereniging Netmobiel en Stichting Saxion is
               terug te vinden in de
-              <a
+              <external-link
                 href="https://www.netmobiel.eu/privacyverklaring-app/"
-                target="_blank"
-                >privacyverklaring</a
+                @link-disabled="onBlockedLink"
+              >
+                <template #anchorBody
+                  ><strong>privacyverklaring</strong></template
+                > </external-link
               >.
-              <!--              <router-link to="/external/privacy"-->
-              <!--                >privacyverklaring</router-link-->
-              <!--              >-->
-              <!-- Bovenstaande truc met een iframe optie werkt niet omdat X-Frame-Options op sameorigin staat -->
             </p>
           </v-col>
         </v-row>
@@ -53,17 +52,23 @@
           </v-col>
           <v-col cols="11">
             Ik ga hierbij akkoord met het
-            <a href="https://www.netmobiel.eu/reglement/" target="_blank">
-              reglement</a
+            <external-link
+              href="https://www.netmobiel.eu/reglement/"
+              @link-disabled="onBlockedLink"
             >
+              <template #anchorBody><strong>reglement</strong></template>
+            </external-link>
             van Vereniging Netmobiel en de ‘Code Goed Gedrag’ die gelden bij het
             gebruik van de Netmobiel-app. Ik verklaar daarnaast kennis te hebben
             genomen van de
-            <a
+            <external-link
               href="https://www.netmobiel.eu/privacyverklaring-app/"
-              target="_blank"
-              >privacyverklaring</a
+              @link-disabled="onBlockedLink"
             >
+              <template #anchorBody
+                ><strong>privacyverklaring</strong></template
+              >
+            </external-link>
             en geef toestemming voor de verwerking van mijn persoonsgegevens.
           </v-col>
         </v-row>
@@ -91,12 +96,21 @@
         </v-col>
       </v-row>
     </v-card-actions>
+    <external-link-blocked-dialog
+      :website="website"
+      :show-dialog="dialogIsVisible"
+      @close="dialogIsVisible = false"
+    />
   </v-card>
 </template>
 
 <script>
+import ExternalLink from '@/components/common/ExternalLink'
+import ExternalLinkBlockedDialog from '@/components/dialogs/ExternalLinkBlockedDialog'
+
 export default {
   name: 'NewAccountTerms',
+  components: { ExternalLink, ExternalLinkBlockedDialog },
   props: {
     value: {
       type: Object,
@@ -115,6 +129,8 @@ export default {
       rules: {
         required: (value) => !!value || '',
       },
+      dialogIsVisible: false,
+      website: '',
     }
   },
   methods: {
@@ -134,6 +150,10 @@ export default {
         const isValid = this.$refs.form.validate()
         this.$emit('onFormValid', isValid)
       })
+    },
+    onBlockedLink(link) {
+      this.website = link
+      this.dialogIsVisible = true
     },
   },
 }

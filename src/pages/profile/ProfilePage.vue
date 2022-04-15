@@ -125,6 +125,11 @@
         </v-btn>
       </v-col>
     </v-row>
+    <external-link-blocked-dialog
+      :website="website"
+      :show-dialog="dialogIsVisible"
+      @close="dialogIsVisible = false"
+    />
   </content-pane>
 </template>
 
@@ -134,6 +139,8 @@ import RoundUserImage from '@/components/common/RoundUserImage'
 import { scaleImageDown } from '../../utils/image_scaling'
 import * as psStore from '@/store/profile-service'
 import config from '@/config/config'
+import ExternalLinkBlockedDialog from '@/components/dialogs/ExternalLinkBlockedDialog'
+import { allowExternalLinks } from '@/utils/Utils'
 
 const CREDITS_ENABLED = config.CREDITS_ENABLED
 
@@ -142,6 +149,7 @@ export default {
   components: {
     ContentPane,
     RoundUserImage,
+    ExternalLinkBlockedDialog,
   },
   data() {
     return {
@@ -158,12 +166,12 @@ export default {
         {
           icon: 'help_outline',
           name: 'Veelgestelde vragen',
-          // href: 'https://www.netmobiel.eu/vragen/',
+          href: 'https://www.netmobiel.eu/vragen/',
         },
         {
           icon: 'lock',
           name: 'Privacy & beveiliging',
-          // href: 'https://www.netmobiel.eu/privacyverklaring-app/',
+          href: 'https://www.netmobiel.eu/privacyverklaring-app/',
         },
         {
           icon: 'chrome_reader_mode',
@@ -173,6 +181,8 @@ export default {
         { icon: 'info', name: 'Over deze app', routeName: 'about' },
         // { icon: 'cancel', name: 'Verwijder mijn account', routeName: '' },
       ],
+      dialogIsVisible: false,
+      website: '',
     }
   },
   computed: {
@@ -206,7 +216,12 @@ export default {
       if (item.routeName) {
         this.$router.push({ name: item.routeName })
       } else if (item.href) {
-        window.open(item.href, '_blank')
+        if (allowExternalLinks()) {
+          window.open(item.href, '_blank')
+        } else {
+          this.website = item.href
+          this.dialogIsVisible = true
+        }
       }
     },
     readFile(event) {

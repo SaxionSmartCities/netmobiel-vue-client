@@ -34,7 +34,7 @@
           mb-4
           depressed
           color="primary"
-          @click="showFullRouteOnMap()"
+          @click="showMap = true"
         >
           bekijk op de kaart
         </v-btn>
@@ -106,9 +106,6 @@ export default {
           }
         })
         .catch(() => {})
-    },
-    showFullRouteOnMap() {
-      this.showMap = true
     },
   },
 }

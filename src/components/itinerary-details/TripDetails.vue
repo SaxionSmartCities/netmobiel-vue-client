@@ -1,7 +1,7 @@
 <template>
   <v-row dense>
     <v-col>
-      <v-row v-if="selectedLegs && shouldShowMap">
+      <v-row v-if="selectedLegs && selectedLegs.length > 0 && shouldShowMap">
         <v-col>
           <route-map
             ref="mapComp"
@@ -29,7 +29,7 @@
                 :is-map-active="selectedLegsIndex === index"
                 :step="index"
                 :leg="leg"
-                @legSelect="onLegSelected"
+                @leg-select="onLegSelected"
               />
             </v-col>
           </v-row>
@@ -62,7 +62,7 @@ export default {
   data() {
     return {
       selectedLegsIndex: null,
-      showMapInternal: false,
+      showMapMasterSwitch: true,
       mapSize: 'small',
     }
   },
@@ -105,13 +105,25 @@ export default {
       return generateItineraryDetailSteps(this.trip.itinerary)
     },
     shouldShowMap() {
-      return this.showMapInternal || this.showMap
+      return this.showMapMasterSwitch && (this.showLegInMap || this.showMap)
+    },
+    showLegInMap() {
+      return this.selectedLegsIndex !== null
     },
     selectedLegs() {
-      if (this.selectedLegsIndex != null) {
+      if (this.selectedLegsIndex !== null) {
         return [this.trip.itinerary.legs[this.selectedLegsIndex]]
       } else {
         return this.trip?.itinerary?.legs
+      }
+    },
+  },
+  watch: {
+    // If the user presses the show map button, then show the full itinerary
+    showMap(newValue) {
+      if (newValue && this.showLegInMap) {
+        this.selectedLegsIndex = null
+        this.forceRerender()
       }
     },
   },
@@ -128,26 +140,26 @@ export default {
       this.mapSize = size
     },
     onMapClose() {
-      this.showMapInternal = false
       this.selectedLegsIndex = null
       this.mapSize = 'small'
       this.$emit('closeMap')
     },
     onLegSelected({ step }) {
-      if (this.selectedLegsIndex === step && this.showMapInternal) {
-        this.onMapClose()
+      if (this.selectedLegsIndex === step) {
+        // Keep map as is
       } else {
-        // this.selectedLegs = [leg]
         this.selectedLegsIndex = step
+        // Reset the flag ordering the display of the full route
+        this.$emit('closeMap')
         this.forceRerender()
       }
     },
     forceRerender() {
-      // Remove my-component from the DOM
-      this.showMapInternal = false
+      // Has the map a reload method? For now remove from DOM and add again
+      this.showMapMasterSwitch = false
       this.$nextTick(() => {
         // Add the component back in
-        this.showMapInternal = true
+        this.showMapMasterSwitch = true
       })
     },
   },

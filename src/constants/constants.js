@@ -106,14 +106,14 @@ export default {
       value: 'NO_TRIP',
     },
   ],
-  // Geographic center of the Netherlands (near Lunteren)
+  // Geographic center of the Netherlands (near Bunschoten-Spakenburg)
   GEOLOCATION_CENTER_NL: {
     label: 'Midden van Nederland',
-    latitude: 52.063045,
-    longitude: 5.349972,
+    latitude: 52.25,
+    longitude: 5.35,
   },
-  // Default radius in meter
-  DEFAULT_GEOCODER_RADIUS: 150000,
+  // Default radius in meter to fit the Netherlands
+  DEFAULT_GEOCODER_RADIUS: 175000,
   // The identity of the system as a fake managed identity
   SYSTEM_IDENTITY: 'SYSTEM',
   SYSTEM_NAME: 'Netmobiel',

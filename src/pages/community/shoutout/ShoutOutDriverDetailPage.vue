@@ -20,7 +20,7 @@
     </template>
     <v-row>
       <v-col>
-        <v-row v-if="selectedLegs && shouldShowMap">
+        <v-row v-if="selectedLegs && selectedLegs.length > 0 && shouldShowMap">
           <v-col>
             <route-map
               ref="mapComp"
@@ -47,7 +47,7 @@
               <v-col v-if="isProposedRideView">
                 <shout-out-detail-driver
                   :ride="proposedRide"
-                  @show-map-proposal="onMapShow"
+                  @show-map-proposal="showMap = true"
                 />
               </v-col>
               <v-col v-else>
@@ -57,7 +57,7 @@
                   :offer="travelOffer"
                   :search-criteria="searchCriteria"
                   :can-offer="canOffer"
-                  @show-map-proposal="onMapShow"
+                  @show-map-proposal="showMap = true"
                   @confirmTravelOffer="onConfirmTravelOffer"
                   @proposalCancel="onProposalCancel"
                   @updateTravelTime="onUpdateTravelTime"
@@ -349,19 +349,7 @@ export default {
     },
     onMapClose() {
       this.showMap = false
-    },
-    forceRerender() {
-      // Remove my-component from the DOM
-      this.showMap = false
-      this.$nextTick(() => {
-        // Add the component back in
-        this.showMap = true
-      })
-    },
-    onMapShow() {
-      this.showMap = true
       this.mapSize = 'small'
-      this.forceRerender()
     },
   },
 }

@@ -194,7 +194,20 @@ export default {
     },
   },
   mounted() {
-    this.fetchTripsAndRides()
+    // At least one main page where the profile is always refreshed
+    psStore.actions
+      .fetchMyProfile()
+      .then(() => this.fetchTripsAndRides())
+      .catch((status) => {
+        if (status === 404) {
+          // Should not happen
+        } else if (status >= 500) {
+          // Gateway/server trouble or not found
+          return uiStore.actions.queueErrorNotification(
+            'De Netmobiel server is momenteel niet beschikbaar,probeer het later opnieuw'
+          )
+        }
+      })
   },
   methods: {
     fetchTripsAndRides() {

@@ -8,12 +8,15 @@
       </v-row>
       <v-row v-if="bankSimulated">
         <v-col>
+          <v-alert type="warning"> Banksimulatie is actief. </v-alert>
+        </v-col>
+      </v-row>
+      <v-row v-if="!mobileBankingEnabled">
+        <v-col>
           <v-alert type="warning">
-            In de huidige testfase van de Netmobiel-app hoef je nog niet écht te
-            betalen voor credits. Wel heb je de fictieve credits nodig om ritten
-            te boeken. Het aankoopproces dat je straks doorloopt is slechts een
-            simulatie en het kost je helemaal niks! Spreek onderling met de
-            chauffeur een eventuele vergoeding af.
+            In deze versie is het helaas door een technisch probleem niet
+            mogelijk om met je eigen bankierapp af te rekenen. Kies in het iDEAL
+            scherm voor de niet-mobiele variant van betalen.
           </v-alert>
         </v-col>
       </v-row>
@@ -84,7 +87,7 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import * as bsStore from '@/store/banker-service'
 import * as uiStore from '@/store/ui'
 import config from '@/config/config'
-import { creditAmountInEuro } from '@/utils/Utils'
+import { allowExternalLinks, creditAmountInEuro } from '@/utils/Utils'
 
 const MIN_AMOUNT = 10
 const MAX_AMOUNT = 1000
@@ -100,6 +103,7 @@ export default {
       description: 'Credits inkopen voor Netmobiel',
       creditAmount: MIN_AMOUNT,
       bankSimulated: config.BANK_SIMULATED || false,
+      mobileBankingEnabled: allowExternalLinks(),
       rules: {
         required: (value) => !!value || 'Veld is verplicht',
         minAmount: (value) => value >= MIN_AMOUNT || `Minimaal ${MIN_AMOUNT}`,
