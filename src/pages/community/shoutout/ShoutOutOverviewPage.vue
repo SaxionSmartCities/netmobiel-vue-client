@@ -28,7 +28,7 @@
       <v-col>
         <v-row>
           <v-col>
-            <h3>Community oproepen</h3>
+            <h1>Community oproepen</h1>
             <p class="mt-2 mb-0">Gezochte ritten in de buurt van mijn:</p>
             <v-radio-group v-model="baseLocation" class="location" row>
               <v-radio
@@ -50,6 +50,7 @@
     </v-row>
     <v-row v-if="isPassengerView">
       <v-col>
+        <h1>Mijn oproepen</h1>
         <shout-out-list
           :shout-outs="myShoutOuts"
           no-items-label="Je hebt op dit moment geen opgeslagen oproepen."

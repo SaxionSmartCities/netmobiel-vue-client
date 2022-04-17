@@ -103,8 +103,7 @@ function createShoutOutTripPlan(
       if (response.status == 201) {
         const message = 'Oproep naar de community is geplaatst'
         uiStore.actions.queueInfoNotification(message)
-        const id = getCreatedObjectIdFromResponse(response)
-        shoutOutId = id ? `urn:nb:pn:tripplan:${id}` : undefined
+        shoutOutId = getCreatedObjectIdFromResponse(response)
       } else {
         const message = response.data.message
         uiStore.actions.queueErrorNotification(message)
