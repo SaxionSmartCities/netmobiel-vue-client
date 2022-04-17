@@ -2,7 +2,7 @@
   <v-app id="app">
     <!-- Header -->
     <v-app-bar v-if="isHeaderVisible" flat app color="primary">
-      <v-btn v-if="isBackButtonVisible" icon @click="goBack()">
+      <v-btn v-if="isBackButtonVisible" icon @click="$router.go(-1)">
         <v-icon color="white">arrow_back</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
@@ -53,7 +53,7 @@
         <span>Home</span>
         <v-icon>home</v-icon>
       </v-btn>
-      <v-btn text value="planner" @click="routeToMode()">
+      <v-btn text value="planner" :to="plannerRoute">
         <span>Planner</span>
         <v-icon>commute</v-icon>
       </v-btn>
@@ -128,6 +128,23 @@ export default {
     },
     surveyInteraction() {
       return psStore.getters.getSurveyInteraction
+    },
+    isPassengerOnly() {
+      return this.myProfile.userRole === constants.PROFILE_ROLE_PASSENGER
+    },
+    isDriverOnly() {
+      return this.myProfile.userRole === constants.PROFILE_ROLE_DRIVER
+    },
+    plannerRoute() {
+      let newRoute = ''
+      if (this.isPassengerOnly) {
+        newRoute = '/search'
+      } else if (this.isDriverOnly) {
+        newRoute = '/plan'
+      } else {
+        newRoute = '/modeSelection'
+      }
+      return newRoute
     },
   },
   watch: {
@@ -263,23 +280,6 @@ export default {
     },
     finishNotification() {
       uiStore.actions.finishNotification()
-    },
-    goBack() {
-      this.$router.go(-1)
-    },
-    routeToMode() {
-      let newRoute = ''
-      if (this.myProfile.userRole === constants.PROFILE_ROLE_PASSENGER) {
-        newRoute = '/search'
-      } else if (this.myProfile.userRole === constants.PROFILE_ROLE_DRIVER) {
-        newRoute = '/plan'
-      } else {
-        newRoute = '/modeSelection'
-      }
-      // We cannot route to the same page.
-      if (this.$router.currentRoute.path !== newRoute) {
-        this.$router.push(newRoute)
-      }
     },
     isProfileComplete(profile) {
       return !!profile.dateOfBirth
