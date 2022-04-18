@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane scrollable @low="onLowWater">
     <v-row>
       <v-col>
         <h1>Uitbetalingen</h1>
@@ -238,6 +238,9 @@ export default {
         : !account.ibanHolder
         ? 'Voeg naam rekeninghouder toe'
         : true
+    },
+    onLowWater() {
+      // console.log(`Add more content`)
     },
   },
 }

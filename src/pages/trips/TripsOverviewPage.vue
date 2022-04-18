@@ -1,5 +1,5 @@
 <template>
-  <content-pane id="scroll">
+  <content-pane scrollable @low="onLowWater">
     <template #header>
       <tab-bar
         v-if="isDrivingPassenger"
@@ -178,7 +178,6 @@ import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 import SlideShowCancelledTrips from '@/components/other/SlideShowCancelledTrips'
 import GroupedCardList from '@/components/common/GroupedCardList'
-import { isBottomVisible } from '@/utils/scroll'
 
 export default {
   name: 'TripsOverviewPage',
@@ -205,16 +204,13 @@ export default {
   }),
   data() {
     return {
-      selectedTab: 0,
       bottom: false,
+      selectedTab: 0,
       maxResults: constants.fetchTripsMaxResults,
       maxResultsPastRides: constants.fetchPastRidesMaxResults,
       maxResultsPastTrips: constants.fetchPastTripsMaxResults,
       tripsSearchTime: 'Future',
       ridesSearchTime: 'Future',
-      scrollHandler: () => {
-        this.bottom = isBottomVisible()
-      },
     }
   },
   computed: {
@@ -303,12 +299,6 @@ export default {
       this.fetchRides()
       this.fetchPastRides()
     }
-    // The logic does not seem to be right for cancelled trips, disable that slide show.
-    // isStore.actions.fetchCancelledTrips()
-    window.addEventListener('scroll', this.scrollHandler)
-  },
-  beforeDestroy() {
-    window.removeEventListener('scroll', this.scrollHandler)
   },
   methods: {
     parseDate(dateString) {
@@ -368,6 +358,9 @@ export default {
         name: 'rideDetailPage',
         params: { rideId: String(id) },
       })
+    },
+    onLowWater() {
+      // console.log(`Add more content`)
     },
   },
 }

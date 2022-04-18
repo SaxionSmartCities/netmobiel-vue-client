@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane scrollable @low="onLowWater">
     <v-row>
       <v-col>
         <h1>Opnames</h1>
@@ -116,6 +116,9 @@ export default {
     },
     closeCancelDialog() {
       this.showCancelDialog = false
+    },
+    onLowWater() {
+      // console.log(`Add more content`)
     },
   },
 }

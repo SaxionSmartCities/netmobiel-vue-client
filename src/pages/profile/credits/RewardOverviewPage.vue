@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane scrollable @low="onLowWater">
     <v-row>
       <v-col>
         <h1>Beloningen</h1>
@@ -46,6 +46,11 @@ export default {
     uiStore.mutations.showBackButton()
     bsStore.actions.fetchBankerUser()
     bsStore.actions.fetchUserRewards()
+  },
+  methods: {
+    onLowWater() {
+      // console.log(`Add more content`)
+    },
   },
 }
 </script>

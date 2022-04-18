@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane scrollable @low="onLowWater">
     <v-row>
       <v-col>
         <h1 class="netmobiel">Goede Doelen</h1>
@@ -148,6 +148,9 @@ export default {
       this.$router.push({
         name: 'createCharity',
       })
+    },
+    onLowWater() {
+      // console.log(`Add more content`)
     },
   },
 }

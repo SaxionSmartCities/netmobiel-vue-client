@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane scrollable @low="onLowWater">
     <template #header>
       <tab-bar
         v-if="isDrivingPassenger"
@@ -206,6 +206,9 @@ export default {
     },
     formatDate(date) {
       return date ? moment(date).locale('nl').format('dddd D MMMM') : ''
+    },
+    onLowWater() {
+      // console.log(`Add more content`)
     },
   },
 }

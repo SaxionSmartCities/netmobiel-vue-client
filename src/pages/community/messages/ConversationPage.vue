@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane scrollable @low="onLowWater">
     <template #header>
       <v-container class="py-1">
         <span class="text-subtitle-2">{{ conversation.topic }}</span>
@@ -335,6 +335,9 @@ export default {
             'Versturen van bericht is niet gelukt.'
           )
         })
+    },
+    onLowWater() {
+      // console.log(`Add more content`)
     },
   },
 }

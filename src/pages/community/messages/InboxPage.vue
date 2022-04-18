@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane scrollable @low="onLowWater">
     <template #header>
       <tab-bar
         class="shrink"
@@ -146,6 +146,9 @@ export default {
     },
     timestamp(timestamp) {
       return upperCaseFirst(moment(timestamp).locale('nl').calendar())
+    },
+    onLowWater() {
+      // console.log(`Add more content`)
     },
   },
 }

@@ -1,5 +1,5 @@
 <template>
-  <content-pane scrollable>
+  <content-pane scrollable @low="onLowWater">
     <v-row>
       <v-col>
         <h1>Credits</h1>
@@ -151,7 +151,6 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import CreditHistoryLine from '@/components/profile/CreditHistoryLine.vue'
 import constants from '@/constants/constants'
-import { isBottomVisible } from '@/utils/scroll'
 import * as uiStore from '@/store/ui'
 import * as bsStore from '@/store/banker-service'
 import GroupedCardList from '@/components/common/GroupedCardList'
@@ -169,10 +168,6 @@ export default {
   data() {
     return {
       bottom: false,
-      // eslint-disable-next-line no-unused-vars
-      scrollHandler: (event) => {
-        this.bottom = isBottomVisible()
-      },
       showPremiumDialog: false,
     }
   },
@@ -208,18 +203,15 @@ export default {
     // fetch first page with statements
     bsStore.actions.fetchFirstUserStatements(fetchBankerStatementsMaxResults)
   },
-  mounted() {
-    window.addEventListener('scroll', this.scrollHandler)
-  },
-  beforeDestroy() {
-    window.removeEventListener('scroll', this.scrollHandler)
-  },
   methods: {
     amountInEuro(amountInCredits) {
       return creditAmountInEuro(amountInCredits, this.exchangeRate)
     },
     balanceColor(balance) {
       return balance >= 0 ? 'text-green' : 'text-red'
+    },
+    onLowWater() {
+      // console.log(`Add more content`)
     },
   },
 }

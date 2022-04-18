@@ -1,5 +1,5 @@
 <template>
-  <content-pane id="scroll">
+  <content-pane>
     <v-row my-4 mr-4 ml-6>
       <v-col>
         <h1>Rit geannuleerd</h1>

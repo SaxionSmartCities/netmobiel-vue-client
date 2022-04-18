@@ -1,5 +1,5 @@
 <template>
-  <content-pane scrollable>
+  <content-pane scrollable @low="onLowWater">
     <template #header>
       <tab-bar
         :num-tabs="3"
@@ -100,7 +100,6 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import CreditHistoryLine from '@/components/profile/CreditHistoryLine.vue'
-import { isBottomVisible } from '@/utils/scroll'
 import * as uiStore from '@/store/ui'
 import * as bsStore from '@/store/banker-service'
 import GroupedCardList from '@/components/common/GroupedCardList'
@@ -158,10 +157,6 @@ export default {
       selectedPurpose: {},
       selectedTab: 0,
       bottom: false,
-      // eslint-disable-next-line no-unused-vars
-      scrollHandler: (event) => {
-        this.bottom = isBottomVisible()
-      },
     }
   },
   computed: {
@@ -221,12 +216,6 @@ export default {
     bsStore.mutations.setAccountStatements(null)
     bsStore.actions.fetchSystemAccounts()
   },
-  mounted() {
-    window.addEventListener('scroll', this.scrollHandler)
-  },
-  beforeDestroy() {
-    window.removeEventListener('scroll', this.scrollHandler)
-  },
   methods: {
     refreshCreditHistory() {
       bsStore.actions.fetchFirstStatements({
@@ -236,6 +225,9 @@ export default {
     },
     amountInEuro(amountInCredits) {
       return creditAmountInEuro(amountInCredits, this.exchangeRate)
+    },
+    onLowWater() {
+      // console.log(`Add more content`)
     },
   },
 }
