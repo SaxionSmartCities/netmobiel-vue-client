@@ -28,10 +28,10 @@
 
 <script>
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
-import { formatDateTimeLongNoYear } from '@/utils/datetime.js'
 import RouteMap from '@/components/itinerary-details/RouteMap'
 import constants from '@/constants/constants'
 import { triStateLogicText } from '@/utils/Utils'
+import { formatDateTimeLongYear } from '@/utils/datetime'
 
 export default {
   name: 'RideDetails',
@@ -74,7 +74,7 @@ export default {
       const { departureTime, duration, bookings, car, recurrence } = this.ride
       result.push({
         label: 'Datum',
-        value: formatDateTimeLongNoYear(departureTime),
+        value: formatDateTimeLongYear(departureTime),
       })
       if (duration) {
         const reisduur = `${Math.round(duration / 60)} minuten`

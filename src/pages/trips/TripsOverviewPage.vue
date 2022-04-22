@@ -5,17 +5,16 @@
         v-if="isDrivingPassenger"
         class="shrink"
         :selected-tab-model="selectedTab"
-        @tabChange="selectedTab = $event"
+        @tabChange="(n) => (selectedTab = n)"
       >
         <template #firstTab>
           <v-icon color="white">directions_car</v-icon>
           <span>
             Chauffeur
-            <sup>{{
-              ridesSearchTime === 'Future'
-                ? getPlannedRidesCount
-                : getPastRidesCount
-            }}</sup>
+            <sup
+              v-if="ridesSearchTime === 'Future' && plannedRides.totalCount > 0"
+              >{{ plannedRides.totalCount }}</sup
+            >
           </span>
         </template>
 
@@ -23,17 +22,16 @@
           <v-icon color="white">commute</v-icon>
           <span>
             Passagier
-            <sup>{{
-              tripsSearchTime === 'Future'
-                ? getPlannedTripsCount
-                : getPastTripsCount
-            }}</sup>
+            <sup
+              v-if="tripsSearchTime === 'Future' && plannedTrips.totalCount > 0"
+              >{{ plannedTrips.totalCount }}</sup
+            >
           </span>
         </template>
       </tab-bar>
       <slide-show-cancelled-trips
-        v-if="isPassengerView && getCancelledTrips.length > 0"
-        :trips="getCancelledTrips"
+        v-if="isPassengerView && cancelledTrips.totalCount > 0"
+        :trips="cancelledTrips.data"
       >
         <template #card="{ trip }">
           <travel-card
@@ -55,13 +53,13 @@
             </v-radio-group>
           </v-col>
         </v-row>
-        <v-row v-if="tripsSearchTime === 'Past'">
-          <v-col v-if="getPastTrips.length === 0" align="center">
+        <v-row v-if="tripsSearchTime === 'Past'" dense>
+          <v-col v-if="pastTrips.totalCount === 0" align="center">
             <em>Je hebt nog geen ritten gemaakt.</em>
           </v-col>
           <v-col v-else class="py-0">
             <grouped-card-list
-              :items="getPastTrips"
+              :items="pastTrips.data"
               :get-date="(t) => t.itinerary.arrivalTime"
             >
               <template #card="{ item: trip }">
@@ -77,14 +75,14 @@
             </grouped-card-list>
           </v-col>
         </v-row>
-        <v-row v-if="tripsSearchTime === 'Future'">
-          <v-col v-if="getPlannedTrips.length === 0">
+        <v-row v-if="tripsSearchTime === 'Future'" dense>
+          <v-col v-if="plannedTrips.totalCount === 0">
             Je hebt geen bewaarde ritten. Ga naar de planner om een rit te
             plannen.
           </v-col>
           <v-col v-else class="py-0">
             <grouped-card-list
-              :items="getPlannedTrips"
+              :items="plannedTrips.data"
               :get-date="(t) => t.itinerary.arrivalTime"
             >
               <template #card="{ item: trip }">
@@ -112,8 +110,8 @@
             </v-radio-group>
           </v-col>
         </v-row>
-        <v-row v-if="ridesSearchTime === 'Past'">
-          <v-col v-if="getPastRides.length === 0">
+        <v-row v-if="ridesSearchTime === 'Past'" dense>
+          <v-col v-if="pastRides.totalCount === 0">
             <span>
               Je hebt nog geen ritten gereden. Ga naar de planner om een nieuwe
               rit te plannen.
@@ -121,7 +119,7 @@
           </v-col>
           <v-col v-else class="py-0">
             <grouped-card-list
-              :items="getPastRides"
+              :items="pastRides.data"
               :get-date="(r) => r.departureTime"
             >
               <template #card="{ item: ride, index }">
@@ -136,8 +134,8 @@
             </grouped-card-list>
           </v-col>
         </v-row>
-        <v-row v-if="ridesSearchTime === 'Future'">
-          <v-col v-if="getPlannedRides.length === 0" class="py-1">
+        <v-row v-if="ridesSearchTime === 'Future'" dense>
+          <v-col v-if="plannedRides.totalCount === 0" class="py-1">
             <span>
               Je hebt nog geen ritten gepland. Ga naar de planner om een nieuwe
               rit te plannen.
@@ -145,7 +143,7 @@
           </v-col>
           <v-col v-else class="py-0">
             <grouped-card-list
-              :items="getPlannedRides"
+              :items="plannedRides.data"
               :get-date="(r) => r.departureTime"
             >
               <template #card="{ item: ride, index }">
@@ -204,13 +202,14 @@ export default {
   }),
   data() {
     return {
-      bottom: false,
       selectedTab: 0,
       maxResults: constants.fetchTripsMaxResults,
       maxResultsPastRides: constants.fetchPastRidesMaxResults,
       maxResultsPastTrips: constants.fetchPastTripsMaxResults,
       tripsSearchTime: 'Future',
       ridesSearchTime: 'Future',
+      // Fix the since/until division to the current request time
+      requestTime: null,
     }
   },
   computed: {
@@ -218,19 +217,11 @@ export default {
       return psStore.getters.getProfile
     },
     ...{
-      getPlannedTripsCount: () => isStore.getters.getPlannedTripsCount,
-      getPlannedTrips: () => isStore.getters.getPlannedTrips,
-      getPastTripsCount: () => isStore.getters.getPastTripsCount,
-      getPastTrips: () => isStore.getters.getPastTrips,
-      getCancelledTrips: () => isStore.getters.getCancelledTrips,
-      getPastRides: () => csStore.getters.getPastRides,
-      getPastRidesCount: () => csStore.getters.getPastRidesCount,
-    },
-    getPlannedRidesCount() {
-      return csStore.getters.getPlannedRidesCount
-    },
-    getPlannedRides() {
-      return csStore.getters.getRides
+      plannedTrips: () => isStore.getters.getPlannedTrips,
+      pastTrips: () => isStore.getters.getPastTrips,
+      cancelledTrips: () => isStore.getters.getCancelledTrips,
+      plannedRides: () => csStore.getters.getPlannedRides,
+      pastRides: () => csStore.getters.getPastRides,
     },
     isDriverTab() {
       return this.selectedTab === 0
@@ -260,43 +251,28 @@ export default {
     // selectedTab(newValue, oldValue) {
     //   console.log(`SelectedTab ${oldValue} --> ${newValue}`)
     // },
-    bottom(bottom) {
-      if (bottom) {
-        if (this.isPassengerView) {
-          if (this.tripsSearchTime === 'Future') {
-            this.fetchTrips(this.getPlannedTrips.length)
-          } else {
-            this.fetchPastTrips(this.getPastTrips.length)
-          }
-        } else if (this.isDriverView) {
-          if (this.ridesSearchTime === 'Future') {
-            this.fetchRides(this.getPlannedRides.length)
-          } else {
-            this.fetchPastRides(this.getPastRides.length)
-          }
-        }
-      }
-    },
     // eslint-disable-next-line no-unused-vars
     selectedTab(newValue, oldValue) {
-      this.profile.actualRole =
+      this.profile.actingRole =
         newValue === 1
           ? constants.PROFILE_ROLE_PASSENGER
           : constants.PROFILE_ROLE_DRIVER
-      psStore.actions
-        .updateMyProfile(this.profile)
-        .then(() => psStore.actions.fetchMyProfile())
+      // No update of profile, too many updates
+      // psStore.actions
+      //   .updateMyProfile(this.profile)
+      //   .then(() => psStore.actions.fetchMyProfile())
     },
   },
   mounted() {
+    this.requestTime = moment().format()
     this.selectedTab =
-      this.profile.actualRole === constants.PROFILE_ROLE_PASSENGER ? 1 : 0
+      this.profile.actingRole === constants.PROFILE_ROLE_PASSENGER ? 1 : 0
     if (this.isPassengerOnly || this.isDrivingPassenger) {
-      this.fetchTrips()
+      this.fetchPlannedTrips()
       this.fetchPastTrips()
     }
     if (this.isDriverOnly || this.isDrivingPassenger) {
-      this.fetchRides()
+      this.fetchPlannedRides()
       this.fetchPastRides()
     }
   },
@@ -311,38 +287,43 @@ export default {
       }
       return false
     },
-    fetchTrips(offset = 0) {
-      isStore.actions.fetchTrips({
-        maxResults: this.maxResults,
-        offset: offset,
-        since: moment().format(),
-      })
+    fetchPlannedTrips(offset = 0) {
+      if (offset === 0 || offset < this.plannedTrips.totalCount) {
+        isStore.actions.fetchTrips({
+          maxResults: this.maxResults,
+          offset: offset,
+          since: this.requestTime,
+        })
+      }
     },
     fetchPastTrips(offset = 0) {
-      if (offset === 0 || offset < this.getPastTripsCount) {
+      if (offset === 0 || offset < this.pastTrips.totalCount) {
         isStore.actions.fetchTrips({
           pastTrips: true,
           maxResults: this.maxResultsPastTrips,
           offset: offset,
           sortDir: 'DESC',
-          until: moment().format(),
+          until: this.requestTime,
         })
       }
     },
-    fetchRides(offset = 0) {
-      csStore.actions.fetchRides({
-        offset: offset,
-        maxResults: this.maxResults,
-      })
+    fetchPlannedRides(offset = 0) {
+      if (offset === 0 || offset < this.plannedRides.totalCount) {
+        csStore.actions.fetchRides({
+          offset: offset,
+          maxResults: this.maxResults,
+          since: this.requestTime,
+        })
+      }
     },
     fetchPastRides(offset = 0) {
-      if (offset === 0 || offset < this.getPastRidesCount) {
+      if (offset === 0 || offset < this.pastRides.totalCount) {
         csStore.actions.fetchRides({
           pastRides: true,
           offset: offset,
           maxResults: this.maxResultsPastRides,
           sortDir: 'DESC',
-          until: moment().format(),
+          until: this.requestTime,
         })
       }
     },
@@ -360,7 +341,19 @@ export default {
       })
     },
     onLowWater() {
-      // console.log(`Add more content`)
+      if (this.isPassengerView) {
+        if (this.tripsSearchTime === 'Future') {
+          this.fetchPlannedTrips(this.plannedTrips.data.length)
+        } else {
+          this.fetchPastTrips(this.pastTrips.data.length)
+        }
+      } else if (this.isDriverView) {
+        if (this.ridesSearchTime === 'Future') {
+          this.fetchPlannedRides(this.plannedRides.data.length)
+        } else {
+          this.fetchPastRides(this.pastRides.data.length)
+        }
+      }
     },
   },
 }

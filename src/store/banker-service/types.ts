@@ -1,26 +1,28 @@
 import { Page } from '@/store/types'
 
+const defaultPage = {
+  offset: 0,
+  count: 0,
+  totalCount: 0,
+  data: [],
+}
+
 export class BankerState {
-  paymentBatches: Page<PaymentBatch> | null = null
+  paymentBatches: Page<PaymentBatch> = defaultPage
   paymentBatch: PaymentBatch | null = null
-  withdrawals: Page<Withdrawal> | null = null
-  charities: Charity[] = []
-  popularCharities: Charity[] = []
-  charitySearchResults: Charity[] = []
+  withdrawals: Page<Withdrawal> = defaultPage
+  charities: Page<Charity> = defaultPage
+  popularCharities: Page<Charity> = defaultPage
+  charitySearchResults: Page<Charity> = defaultPage
   charity: Charity | null = null
-  charityDonations: Donation[] = []
-  previouslyDonatedCharities: Charity[] = []
-  topDonors: User[] = []
+  charityDonations: Page<Donation> = defaultPage
+  previouslyDonatedCharities: Page<Charity> = defaultPage
+  topDonors: Page<User> = defaultPage
   settings: Settings | null = null
   user: User | null = null
-  statements: Page<Statement> | null = null
-  systemAccounts: Page<Account> = {
-    offset: 0,
-    count: 0,
-    totalCount: 0,
-    data: [],
-  }
-  rewards: Page<Reward> | null = null
+  statements: Page<Statement> = defaultPage
+  systemAccounts: Page<Account> = defaultPage
+  rewards: Page<Reward> = defaultPage
 }
 
 export interface Location {

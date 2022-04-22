@@ -88,14 +88,7 @@
     </v-row>
     <v-row v-if="rides.length === 0 && trips.length === 0">
       <v-col>
-        <v-btn
-          large
-          rounded
-          block
-          depressed
-          color="button"
-          @click="routeToMode()"
-        >
+        <v-btn large rounded block depressed color="button" :to="plannerRoute">
           Direct aan de slag!
         </v-btn>
       </v-col>
@@ -139,7 +132,9 @@ export default {
     RoundUserImage,
   },
   data() {
-    return {}
+    return {
+      requestTime: null,
+    }
   },
   computed: {
     profile() {
@@ -150,12 +145,12 @@ export default {
       return `${firstName || ''} ${lastName || ''}`.trim()
     },
     rides() {
-      return csStore.getters.getRides
+      return csStore.getters.getPlannedRides.data
         .filter((ride) => ride.state !== 'CANCELLED')
         .slice(0, 2)
     },
     trips() {
-      return isStore.getters.getPlannedTrips
+      return isStore.getters.getPlannedTrips.data
         .filter((trip) => trip.state !== 'CANCELLED')
         .slice(0, 2)
     },
@@ -185,6 +180,17 @@ export default {
     isDrivingPassenger() {
       return this.profile.userRole === constants.PROFILE_ROLE_BOTH
     },
+    plannerRoute() {
+      let newRoute = ''
+      if (this.isPassengerOnly) {
+        newRoute = '/search'
+      } else if (this.isDriverOnly) {
+        newRoute = '/plan'
+      } else {
+        newRoute = '/modeSelection'
+      }
+      return newRoute
+    },
   },
   watch: {
     profile(newProfile, oldProfile) {
@@ -194,6 +200,7 @@ export default {
     },
   },
   mounted() {
+    this.requestTme = moment().format()
     // At least one main page where the profile is always refreshed
     psStore.actions
       .fetchMyProfile()
@@ -217,14 +224,14 @@ export default {
         csStore.actions.fetchRides({
           offset: 0,
           maxResults: maxCards,
-          since: moment().format(),
+          since: this.requestTime,
         })
       }
       if (this.isPassengerOnly || this.isDrivingPassenger) {
         isStore.actions.fetchTrips({
           offset: 0,
           maxResults: maxCards,
-          since: moment().format(),
+          since: this.requestTime,
         })
       }
     },
@@ -241,20 +248,6 @@ export default {
         name: 'rideDetailPage',
         params: { rideId: id },
       })
-    },
-    routeToMode() {
-      let newRoute = ''
-      if (this.profile.userRole === constants.PROFILE_ROLE_PASSENGER) {
-        newRoute = '/search'
-      } else if (this.profile.userRole === constants.PROFILE_ROLE_DRIVER) {
-        newRoute = '/plan'
-      } else {
-        newRoute = '/modeSelection'
-      }
-      // We cannot route to the same page.
-      if (this.$router.currentRoute.path !== newRoute) {
-        this.$router.push(newRoute)
-      }
     },
   },
 }

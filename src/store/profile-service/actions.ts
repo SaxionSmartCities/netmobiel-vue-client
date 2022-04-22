@@ -174,6 +174,9 @@ function fetchMyFavoriteLocations(context: ActionContext) {
         GRAVITEE_PROFILE_SERVICE_API_KEY,
         delegatorId
       ) as AxiosRequestHeaders,
+      params: {
+        maxResults: 100,
+      },
     })
     .then((response) => {
       if (response.status == 200) {

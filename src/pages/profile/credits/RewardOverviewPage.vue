@@ -5,12 +5,12 @@
         <h1>Beloningen</h1>
       </v-col>
     </v-row>
-    <v-row v-if="rewardHistory && rewardHistory.length === 0">
+    <v-row v-if="rewardHistory.data.length === 0">
       <v-col>Je hebt nog geen beloningen ontvangen.</v-col>
     </v-row>
     <grouped-card-list
       v-else
-      :items="rewardHistory"
+      :items="rewardHistory.data"
       :get-date="(r) => r.rewardTime"
     >
       <template #card="{ item, index }">
@@ -30,13 +30,20 @@ import * as bsStore from '@/store/banker-service'
 import * as uiStore from '@/store/ui'
 import GroupedCardList from '@/components/common/GroupedCardList'
 import RewardHistoryLine from '@/components/profile/RewardHistoryLine.vue'
+import moment from 'moment'
+import constants from '@/constants/constants'
 
 export default {
   name: 'RewardOverviewPage',
   components: { ContentPane, GroupedCardList, RewardHistoryLine },
+  data() {
+    return {
+      until: null,
+    }
+  },
   computed: {
     rewardHistory() {
-      return bsStore.getters.getRewards?.data ?? []
+      return bsStore.getters.getRewards
     },
     user() {
       return bsStore.getters.getBankerUser
@@ -45,11 +52,21 @@ export default {
   created() {
     uiStore.mutations.showBackButton()
     bsStore.actions.fetchBankerUser()
-    bsStore.actions.fetchUserRewards()
+    this.until = moment().format()
+    this.fetchRewardHistory()
   },
   methods: {
+    fetchRewardHistory(offset = 0) {
+      if (offset === 0 || offset < this.rewardHistory.totalCount) {
+        bsStore.actions.fetchUserRewards({
+          offset: offset,
+          maxResults: constants.fetchRewardsMaxResults,
+          until: this.until,
+        })
+      }
+    },
     onLowWater() {
-      // console.log(`Add more content`)
+      this.fetchRewardHistory(this.rewardHistory.data.length)
     },
   },
 }

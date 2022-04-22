@@ -70,6 +70,7 @@ import {
 } from '@/utils/itinerary_steps.js'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import TravelProposalSummary from '@/components/community/TravelProposalSummary.vue'
+import moment from 'moment'
 
 export default {
   name: 'ShoutOutDetailPassenger',
@@ -115,9 +116,16 @@ export default {
       // If requestDuration is set, then the shout-out has been closed.
       return !!this.shoutOut?.requestDuration
     },
+    isShoutOutInThePast() {
+      return (
+        this.shoutOut?.latestArrivalTime &&
+        moment(this.shoutOut?.latestArrivalTime).isBefore(moment())
+      )
+    },
     invalidOffer() {
       return (
         this.shoutOutIsClosed ||
+        this.isShoutOutInThePast ||
         !this.selectedOffer ||
         this.selectedOffer.legs.find((leg) => leg.state === 'CANCELLED')
       )

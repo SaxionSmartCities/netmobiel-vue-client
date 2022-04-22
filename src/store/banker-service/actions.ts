@@ -14,7 +14,7 @@ import axios, { AxiosError, AxiosRequestHeaders } from 'axios'
 import { generateHeaders } from '@/utils/Utils'
 import config from '@/config/config'
 import * as uiStore from '@/store/ui'
-import { PageSelection } from '@/store/types'
+import { Page, PageSelection } from '@/store/types'
 import { getters } from '@/store/banker-service'
 import { mutations } from '@/store/banker-service/index'
 
@@ -37,8 +37,8 @@ async function fetchCharities(context: ActionContext, payload: any = {}) {
       ) as AxiosRequestHeaders,
       params: payload,
     })
-    const charities = resp.data.data
-    charities.forEach((c: Charity) => {
+    const charities = resp.data
+    charities.data.forEach((c: Charity) => {
       c.imageUrl = createAbsoluteImageUrl(c.imageUrl)
     })
     mutations.setCharities(charities)
@@ -202,7 +202,7 @@ async function fetchPopularCharities(context: ActionContext, payload: any) {
       },
     })
     if (resp.status === 200) {
-      mutations.setPopularCharities(resp.data.data)
+      mutations.setPopularCharities(resp.data)
     }
   } catch (problem) {
     await uiStore.actions.queueErrorNotification(
@@ -234,7 +234,15 @@ async function donate(context: ActionContext, donation: Donation) {
   }
 }
 
-async function fetchPreviouslyDonatedCharities(context: ActionContext) {
+/**
+ * Return a paged list of recently donated charities
+ * @param context
+ * @params the list of parameters
+ */
+async function fetchPreviouslyDonatedCharities(
+  context: ActionContext,
+  params: any
+) {
   try {
     const resp = await axios.get(
       `${BANKER_BASE_URL}/users/me/recent-donations`,
@@ -242,17 +250,17 @@ async function fetchPreviouslyDonatedCharities(context: ActionContext) {
         headers: generateHeaders(
           GRAVITEE_BANKER_SERVICE_API_KEY
         ) as AxiosRequestHeaders,
-        params: {
-          maxResults: 5,
-        },
+        params: params,
       }
     )
-    const donations = resp.data
-    const charities = donations.data.map((d: any) => d.charity)
+    // The List contains the most recent donation to each charity ever donated too
+    const donationPage = resp.data
+    const charities = donationPage.data.map((d: any) => d.charity)
     charities.forEach((c: Charity) => {
       c.imageUrl = createAbsoluteImageUrl(c.imageUrl)
     })
-    mutations.setPreviouslyDonatedCharities(charities)
+    const charityPage: Page<Charity> = { ...donationPage, data: charities }
+    mutations.setPreviouslyDonatedCharities(charityPage)
   } catch (problem) {
     await uiStore.actions.queueErrorNotification(
       'Fout bij het ophalen van recent gedoneerde goede doelen.'
@@ -275,7 +283,7 @@ async function fetchDonationsForCharity(context: ActionContext, payload: any) {
         },
       }
     )
-    mutations.setCharityDonations(resp.data.data)
+    mutations.setCharityDonations(resp.data)
   } catch (problem) {
     await uiStore.actions.queueErrorNotification(
       'Fout bij het ophalen van de donaties voor het goede doel.'
@@ -296,7 +304,7 @@ async function fetchTopDonors(context: ActionContext, payload: any) {
       },
     })
     if (resp.status === 200) {
-      mutations.setTopDonors(resp.data.data)
+      mutations.setTopDonors(resp.data)
     }
   } catch (problem) {
     await uiStore.actions.queueErrorNotification(
@@ -337,48 +345,23 @@ async function fetchUser(context: ActionContext) {
 
 async function fetchUserStatements(
   context: ActionContext,
-  payload: PageSelection
+  { offset, maxResults, until }: any
 ) {
-  const offset = payload?.offset ?? 0,
-    maxResults = payload?.maxResults ?? 10
+  const params: any = {}
+  params.offset = offset ?? 0
+  params.maxResults = maxResults ?? 20
+  params.until = until
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/users/me/statements`, {
       headers: generateHeaders(
         GRAVITEE_BANKER_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
-      params: {
-        offset,
-        maxResults,
-      },
+      params,
     })
-    return resp.data
+    mutations.setAccountStatements(resp.data)
   } catch (problem) {
     await uiStore.actions.queueErrorNotification(
       'Fout bij het ophalen van de boekingen voor de rekeninghouder.'
-    )
-  }
-}
-
-async function fetchFirstUserStatements(
-  context: ActionContext,
-  maxResults: number
-) {
-  mutations.setAccountStatements(
-    await fetchUserStatements(context, { offset: 0, maxResults })
-  )
-}
-
-async function fetchMoreUserStatements(
-  context: ActionContext,
-  maxResults: number
-) {
-  const statementsPage = getters.getAccountStatements
-  if (statementsPage && statementsPage.count < statementsPage.totalCount) {
-    mutations.mergeAcountStatements(
-      await fetchUserStatements(context, {
-        offset: statementsPage.count,
-        maxResults,
-      })
     )
   }
 }
@@ -438,14 +421,19 @@ async function withdrawCreditsFromMyAccount(
   }
 }
 
-async function fetchUserRewards(context: ActionContext) {
+async function fetchUserRewards(
+  context: ActionContext,
+  { offset, maxResults, until }: any
+) {
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/users/me/rewards`, {
       headers: generateHeaders(
         GRAVITEE_BANKER_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
       params: {
-        maxResults: 20,
+        offset: offset,
+        maxResults: maxResults,
+        until: until,
       },
     })
     mutations.setRewards(resp.data)
@@ -499,14 +487,59 @@ async function getDepositStatus(context: ActionContext, payload: PaymentEvent) {
   }
 }
 
+async function fetchUserWithdrawals(context: ActionContext, params: any) {
+  try {
+    const resp = await axios.get(`${BANKER_BASE_URL}/users/me/withdrawals`, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+      params,
+    })
+    mutations.setWithdrawals(resp.data)
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de opnames.'
+    )
+  }
+}
+
+async function cancelUserWithdrawal(context: ActionContext, wrid: string) {
+  try {
+    const resp = await axios.delete(
+      `${BANKER_BASE_URL}/users/me/withdrawals/${wrid}`,
+      {
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+      }
+    )
+    if (resp.status !== 204) {
+      // eslint-disable-next-line
+      console.warn(`cancelUserWithdrawal: Unexpected status ${resp.status}`)
+    }
+    return true
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het annuleren van de opname.'
+    )
+    return false
+  }
+}
+
 // ===========  ACCOUNTS   ================
 
-async function fetchStatements(context: ActionContext, payload: any = {}) {
-  const params = { ...payload }
-  delete params.accountId
+async function fetchStatements(
+  context: ActionContext,
+  { accountId, offset, maxResults, purpose, until }: any
+) {
+  const params: any = {}
+  params.offset = offset ?? 0
+  params.maxResults = maxResults ?? 20
+  params.purpose = purpose
+  params.until = until
   try {
     const resp = await axios.get(
-      `${BANKER_BASE_URL}/accounts/${payload.accountId}/statements`,
+      `${BANKER_BASE_URL}/accounts/${accountId}/statements`,
       {
         headers: generateHeaders(
           GRAVITEE_BANKER_SERVICE_API_KEY
@@ -514,29 +547,11 @@ async function fetchStatements(context: ActionContext, payload: any = {}) {
         params,
       }
     )
-    return resp.data
+    mutations.setAccountStatements(resp.data)
   } catch (problem) {
     await uiStore.actions.queueErrorNotification(
       'Fout bij het ophalen van de boekingen voor de rekeninghouder.'
     )
-  }
-}
-
-async function fetchFirstStatements(context: ActionContext, payload: any) {
-  const firstSet = await fetchStatements(context, payload)
-  mutations.setAccountStatements(firstSet)
-}
-
-async function fetchMoreStatements(context: ActionContext, payload: any) {
-  const statementsPage = getters.getAccountStatements
-  if (statementsPage && statementsPage.count < statementsPage.totalCount) {
-    const nextSet = await fetchStatements(context, {
-      offset: statementsPage.count,
-      maxResults: payload.maxResults,
-    })
-    if (nextSet) {
-      mutations.mergeAcountStatements(nextSet)
-    }
   }
 }
 
@@ -553,7 +568,7 @@ async function fetchSystemAccounts(context: ActionContext) {
     mutations.setSystemAccounts(resp.data)
   } catch (problem) {
     await uiStore.actions.queueErrorNotification(
-      'Fout bij het ophalen van de systeemrekening.'
+      'Fout bij het ophalen van de systeemrekeningen.'
     )
   }
 }
@@ -636,45 +651,6 @@ async function updateAccount(context: ActionContext, account: Account) {
 
 // ===========  WITHDRAWAL & PAYMENT BATCH  ================
 
-async function fetchUserWithdrawals(context: ActionContext) {
-  try {
-    const resp = await axios.get(`${BANKER_BASE_URL}/users/me/withdrawals`, {
-      headers: generateHeaders(
-        GRAVITEE_BANKER_SERVICE_API_KEY
-      ) as AxiosRequestHeaders,
-    })
-    const withdrawals = resp.data
-    mutations.setWithdrawals(withdrawals)
-  } catch (problem) {
-    await uiStore.actions.queueErrorNotification(
-      'Fout bij het ophalen van de opnames.'
-    )
-  }
-}
-
-async function cancelUserWithdrawal(context: ActionContext, wrid: string) {
-  try {
-    const resp = await axios.delete(
-      `${BANKER_BASE_URL}/users/me/withdrawals/${wrid}`,
-      {
-        headers: generateHeaders(
-          GRAVITEE_BANKER_SERVICE_API_KEY
-        ) as AxiosRequestHeaders,
-      }
-    )
-    if (resp.status !== 204) {
-      // eslint-disable-next-line
-      console.warn(`cancelUserWithdrawal: Unexpected status ${resp.status}`)
-    }
-    return true
-  } catch (problem) {
-    await uiStore.actions.queueErrorNotification(
-      'Fout bij het annuleren van de opname.'
-    )
-    return false
-  }
-}
-
 async function fetchWithdrawalsPage(context: ActionContext, params: any) {
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/withdrawals`, {
@@ -703,6 +679,29 @@ async function fetchWithdrawalsRequestedCount(context: ActionContext) {
 async function fetchWithdrawals(context: ActionContext, params: any) {
   const withdrawals = await fetchWithdrawalsPage(context, params)
   mutations.setWithdrawals(withdrawals)
+}
+
+async function cancelWithdrawal(context: ActionContext, { wrid, reason }: any) {
+  try {
+    const params: any = {}
+    params.reason = reason
+    const resp = await axios.delete(`${BANKER_BASE_URL}/withdrawals/${wrid}`, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+      params: params,
+    })
+    if (resp.status !== 204) {
+      // eslint-disable-next-line
+      console.warn(`cancelWithdrawal: Unexpected status ${resp.status}`)
+    }
+    return true
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het annuleren van de opname.'
+    )
+    return false
+  }
 }
 
 async function fetchPaymentBatches(context: ActionContext, params: any) {
@@ -854,8 +853,7 @@ export const buildActions = (
     cancelUserWithdrawal: bsBuilder.dispatch(cancelUserWithdrawal),
     fetchBankerUser: bsBuilder.dispatch(fetchUser),
     fetchBankerSettings: bsBuilder.dispatch(fetchSettings),
-    fetchFirstUserStatements: bsBuilder.dispatch(fetchFirstUserStatements),
-    fetchMoreUserStatements: bsBuilder.dispatch(fetchMoreUserStatements),
+    fetchUserStatements: bsBuilder.dispatch(fetchUserStatements),
     fetchPreviouslyDonatedCharities: bsBuilder.dispatch(
       fetchPreviouslyDonatedCharities
     ),
@@ -863,8 +861,7 @@ export const buildActions = (
     updatePersonalAccount: bsBuilder.dispatch(updatePersonalAccount),
 
     // Accounts
-    fetchFirstStatements: bsBuilder.dispatch(fetchFirstStatements),
-    fetchMoreStatements: bsBuilder.dispatch(fetchMoreStatements),
+    fetchStatements: bsBuilder.dispatch(fetchStatements),
     fetchSystemAccounts: bsBuilder.dispatch(fetchSystemAccounts),
     depositCredits: bsBuilder.dispatch(depositCredits),
     withdrawCredits: bsBuilder.dispatch(withdrawCredits),
@@ -878,6 +875,7 @@ export const buildActions = (
       fetchWithdrawalsRequestedCount
     ),
     fetchWithdrawals: bsBuilder.dispatch(fetchWithdrawals),
+    cancelWithdrawal: bsBuilder.dispatch(cancelWithdrawal),
     fetchPaymentBatches: bsBuilder.dispatch(fetchPaymentBatches),
     fetchPaymentBatch: bsBuilder.dispatch(fetchPaymentBatch),
     createPaymentBatch: bsBuilder.dispatch(createPaymentBatch),

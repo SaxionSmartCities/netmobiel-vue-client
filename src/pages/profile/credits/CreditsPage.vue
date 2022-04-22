@@ -96,7 +96,7 @@
 
     <grouped-card-list
       v-if="user"
-      :items="creditHistory"
+      :items="creditHistory.data"
       :get-date="(t) => t.transactionTime"
     >
       <template #card="{ item, index }">
@@ -155,6 +155,7 @@ import * as uiStore from '@/store/ui'
 import * as bsStore from '@/store/banker-service'
 import GroupedCardList from '@/components/common/GroupedCardList'
 import { creditAmountInEuro } from '@/utils/Utils'
+import moment from 'moment'
 
 const { fetchBankerStatementsMaxResults } = constants
 
@@ -167,8 +168,8 @@ export default {
   },
   data() {
     return {
-      bottom: false,
       showPremiumDialog: false,
+      until: null,
     }
   },
   computed: {
@@ -182,18 +183,10 @@ export default {
       return this.user?.personalAccount?.credits ?? 0
     },
     creditHistory() {
-      return bsStore.getters.getAccountStatements?.data ?? []
+      return bsStore.getters.getAccountStatements
     },
     exchangeRate() {
       return bsStore.getters.getBankerSettings?.exchangeRate ?? 0
-    },
-  },
-  watch: {
-    bottom(bottom) {
-      if (bottom) {
-        // fetch more statements when window bottom is visible
-        bsStore.actions.fetchMoreUserStatements(fetchBankerStatementsMaxResults)
-      }
     },
   },
   created() {
@@ -201,9 +194,19 @@ export default {
     bsStore.actions.fetchBankerUser()
     bsStore.actions.fetchBankerSettings()
     // fetch first page with statements
-    bsStore.actions.fetchFirstUserStatements(fetchBankerStatementsMaxResults)
+    this.until = moment().format()
+    this.fetchCreditHistory()
   },
   methods: {
+    fetchCreditHistory(offset = 0) {
+      if (offset === 0 || offset < this.creditHistory.totalCount) {
+        bsStore.actions.fetchUserStatements({
+          offset,
+          maxResult: fetchBankerStatementsMaxResults,
+          until: this.until,
+        })
+      }
+    },
     amountInEuro(amountInCredits) {
       return creditAmountInEuro(amountInCredits, this.exchangeRate)
     },
@@ -211,7 +214,8 @@ export default {
       return balance >= 0 ? 'text-green' : 'text-red'
     },
     onLowWater() {
-      // console.log(`Add more content`)
+      // fetch more statements when window bottom is visible
+      this.fetchCreditHistory(this.creditHistory.data.length)
     },
   },
 }

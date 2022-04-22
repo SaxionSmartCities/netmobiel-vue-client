@@ -187,6 +187,7 @@ export interface Profile extends PublicProfile {
   ridePlanOptions: RidePlanOptions | null
   notificationOptions: NotificationOptions
   userRole: string | null
+  // Transient, not immediately stored to prevent many, many profile updates
   actingRole: string | null
 }
 

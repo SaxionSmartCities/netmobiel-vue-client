@@ -79,6 +79,7 @@ import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 import * as bsStore from '@/store/banker-service'
 import { coordinatesToGeoLocation } from '@/utils/Utils'
+import moment from 'moment'
 
 const CREDITS_ENABLED = config.CREDITS_ENABLED
 
@@ -118,10 +119,10 @@ export default {
     shoutOutCount() {
       let count = 0
       if (this.isPassenger) {
-        count += isStore.getters.getMyShoutOutsCount
+        count += isStore.getters.getMyShoutOuts.totalCount
       }
       if (this.isDriver) {
-        count += isStore.getters.getShoutOutsTotalCount
+        count += isStore.getters.getShoutOuts.totalCount
       }
       return count
     },
@@ -135,9 +136,14 @@ export default {
     },
   },
   mounted() {
+    const requestTime = moment().format()
     if (this.isPassenger) {
       // Display the count of the user's own shout-outs.
-      isStore.actions.fetchMyShoutOutTripPlans({ offset: 0, maxResults: 0 })
+      isStore.actions.fetchMyShoutOutTripPlans({
+        since: requestTime,
+        inProgress: true, // Not the ones that are already fulfilled
+        maxResults: 0,
+      })
     }
     if (this.isDriver) {
       // Display the community shout-out count, but only if my address is known
@@ -145,7 +151,12 @@ export default {
       const location = address?.location
         ? coordinatesToGeoLocation(address.location)
         : undefined
-      isStore.actions.fetchShoutOuts({ location, maxResults: 0 })
+      isStore.actions.fetchShoutOuts({
+        location,
+        since: requestTime, // Only the ones that are still needed
+        inProgress: true, // Not the ones that are already fulfilled
+        maxResults: 0,
+      })
     }
     this.refreshWithdrawalCount()
   },

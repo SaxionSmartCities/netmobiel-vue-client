@@ -20,3 +20,7 @@ export function formatDateTimeLong(date) {
 export function formatDateTimeLongNoYear(date) {
   return moment(date).locale('nl').format('dddd D MMMM')
 }
+
+export function formatDateTimeLongYear(date) {
+  return moment(date).locale('nl').format('dddd D MMMM YYYY')
+}

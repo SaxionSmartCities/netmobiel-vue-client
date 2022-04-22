@@ -1,24 +1,30 @@
 <template>
-  <content-pane scrollable @low="onLowWater">
+  <content-pane
+    scrollable
+    direction="top"
+    :low-water="150"
+    :content-stamp="contentUpdated"
+    @low="onLowWater"
+  >
     <template #header>
       <v-container class="py-1">
-        <span class="text-subtitle-2">{{ conversation.topic }}</span>
+        <span class="text-subtitle-2">{{
+          conversation && conversation.topic
+        }}</span>
         <v-divider class="mt-1" />
       </v-container>
     </template>
     <v-row dense>
-      <v-col v-if="!isFetchingMessages" id="message-container">
-        <template v-for="(message, index) in messages">
-          <v-row :key="index">
-            <v-col class="py-1">
-              <message-card
-                :send-by-me="isMessageSendByMe(message)"
-                :message="message"
-                @click="onMessageClick(message)"
-              />
-            </v-col>
-          </v-row>
-        </template>
+      <v-col v-if="!isFetchingMessages" ref="messageContainer">
+        <v-row v-for="message in messageList" :key="message.id">
+          <v-col class="py-1">
+            <message-card
+              :send-by-me="isMessageSendByMe(message)"
+              :message="message"
+              @click="onMessageClick(message)"
+            />
+          </v-col>
+        </v-row>
       </v-col>
       <v-col v-else class="my-2">
         <v-progress-circular indeterminate color="button"></v-progress-circular>
@@ -63,6 +69,7 @@ import {
   restoreDataBeforeRouteEnter,
   saveDataBeforeRouteLeave,
 } from '@/utils/navigation'
+import { emptyPage } from '@/store/storeHelper'
 
 export default {
   components: {
@@ -102,11 +109,15 @@ export default {
   data() {
     return {
       newMessage: '',
-      isFetchingMessages: true,
+      isFetchingMessages: false,
       recipientProfile: undefined,
       savedConversationId: undefined,
       savedChatMeta: undefined,
       recipientManagedIdentity: undefined,
+      // Scroll to bottom after loading messages
+      autoScrollToBottom: true,
+      contentUpdated: '',
+      messageContainerHeight: 0,
     }
   },
   computed: {
@@ -115,6 +126,9 @@ export default {
     },
     messages() {
       return msStore.getters.getMessages
+    },
+    messageList() {
+      return [...this.messages.data].reverse()
     },
     profile() {
       return psStore.getters.getProfile
@@ -134,9 +148,7 @@ export default {
       // console.log(`savedConversationId: ${oldValue} --> ${newValue}`)
       if (newValue) {
         msStore.actions.fetchConversation({ id: newValue })
-        msStore.actions
-          .fetchMessages({ id: newValue })
-          .then(() => (this.isFetchingMessages = false))
+        this.fetchMessages()
       }
     },
     // eslint-disable-next-line no-unused-vars
@@ -191,26 +203,65 @@ export default {
   },
   mounted() {
     msStore.mutations.setConversation({})
-    msStore.mutations.setMessages([])
-    this.isFetchingMessages = true
+    msStore.mutations.setMessages(emptyPage)
   },
   updated() {
-    this.scrollToBottomMessageContainer()
+    // Called after the component has updated its DOM tree due to a reactive state change.
+    if (this.autoScrollToBottom) {
+      // Only when the user has not started scrolling go to the bottom at once after update
+      this.scrollToBottomMessageContainer()
+    }
+    // console.log(`ConversationPage: Updated`)
+    // if (this.$refs.messageContainer) {
+    //   if (this.messages.data.length > 0) {
+    //     if (
+    //       this.messageContainerHeight !==
+    //       this.$refs.messageContainer.scrollHeight
+    //     ) {
+    //       this.contentUpdated = `${moment().valueOf()}`
+    //     }
+    //   }
+    //   this.messageContainerHeight = this.$refs.messageContainer.scrollHeight
+    // }
   },
   methods: {
+    onLowWater() {
+      // console.log(`ConversationPage: Low water!`)
+      // The user has touched the scroll, switch-off automatic scroll
+      // console.log(`ConversationPage: Low water!`)
+      this.autoScrollToBottom = false
+      this.fetchMessages(this.messages.data.length)
+    },
+    fetchMessages(offset = 0, maxResults = constants.fetchMessagesMaxResults) {
+      if (this.isFetchingMessages) {
+        return Promise.resolve()
+      }
+      if (offset === 0 || offset < this.messages.totalCount) {
+        this.isFetchingMessages = true
+        return msStore.actions
+          .fetchMessages({
+            conversationId: this.savedConversationId,
+            sortDir: 'DESC',
+            offset,
+            maxResults,
+          })
+          .then(() => {
+            this.isFetchingMessages = false
+          })
+      }
+      return Promise.resolve()
+    },
     isMessageSendByMe(msg) {
       return msg.sender?.managedIdentity === this.profile.id
     },
     scrollToBottomMessageContainer(animation = false) {
-      let items = document.getElementById('message-container')
-      if (items && items.children) {
-        items = items.children
-        if (items.length > 1) {
-          const last = items[items.length - 1]
-          animation
-            ? last.scrollIntoView({ behavior: 'smooth', block: 'center' })
-            : last.scrollIntoView()
-        }
+      const items = this.$refs.messageContainer?.children
+      if (items && items.length > 0) {
+        const last = items[items.length - 1]
+        last.scrollIntoView({
+          behavior: animation ? 'smooth' : 'auto',
+          block: 'end',
+        })
       }
     },
     myEnvelope(msg) {
@@ -224,6 +275,48 @@ export default {
       } else {
         return this.myEnvelope(msg)?.context
       }
+    },
+    sendMessage() {
+      // console.log('Send message')
+      msStore.actions
+        .sendMessage({
+          body: this.newMessage,
+          context: this.savedChatMeta.senderContext,
+          deliveryMode: 'ALL',
+          envelopes: [
+            {
+              context: this.savedChatMeta.recipientContext,
+              recipient: {
+                managedIdentity: this.savedChatMeta.recipientManagedIdentity,
+              },
+            },
+          ],
+        })
+        .then(() => {
+          // Refresh the complete message list, retrieve all we have plus 1
+          // const maxResults = Math.min(
+          //   100,
+          //   Math.max(
+          //     constants.fetchMessagesMaxResults,
+          //     this.messages.data.length + 1
+          //   )
+          // )
+          const maxResults = constants.fetchMessagesMaxResults
+          this.newMessage = null
+          return this.fetchMessages(0, maxResults)
+        })
+        .then(() => {
+          this.$nextTick(() => {
+            this.scrollToBottomMessageContainer(false)
+          })
+        })
+        .catch(function (error) {
+          // eslint-disable-next-line
+          console.log(error)
+          uiStore.actions.queueErrorNotification(
+            'Versturen van bericht is niet gelukt.'
+          )
+        })
     },
     // Redirect the user to the relevant page if the system is the sender
     // Otherwise enable the chat box to reply to the sender
@@ -302,42 +395,6 @@ export default {
           console.warn(`No support for ${ctx}`)
         }
       }
-    },
-    sendMessage() {
-      // console.log('Send message')
-      msStore.actions
-        .sendMessage({
-          body: this.newMessage,
-          context: this.savedChatMeta.senderContext,
-          deliveryMode: 'ALL',
-          envelopes: [
-            {
-              context: this.savedChatMeta.recipientContext,
-              recipient: {
-                managedIdentity: this.savedChatMeta.recipientManagedIdentity,
-              },
-            },
-          ],
-        })
-        .then(() => {
-          this.newMessage = null
-          return msStore.actions.fetchMessages({ id: this.savedConversationId })
-        })
-        .then(() => {
-          this.$nextTick(() => {
-            this.scrollToBottomMessageContainer(true)
-          })
-        })
-        .catch(function (error) {
-          // eslint-disable-next-line
-          console.log(error)
-          uiStore.actions.queueErrorNotification(
-            'Versturen van bericht is niet gelukt.'
-          )
-        })
-    },
-    onLowWater() {
-      // console.log(`Add more content`)
     },
   },
 }

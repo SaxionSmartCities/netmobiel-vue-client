@@ -143,15 +143,17 @@ function fetchTripPlan(context: ActionContext, { id }: any) {
 
 function fetchMyShoutOutTripPlans(
   context: ActionContext,
-  { offset, maxResults }: any
+  { past, inProgress, since, until, sortDir, offset, maxResults }: any
 ) {
   const delegatorId = context.rootState.ps.user.delegatorId
   const params = {
-    offset: offset || 0,
+    offset: offset ?? 0,
     maxResults: maxResults,
-    inProgressOnly: true, // Only shout-outs that are still running
+    inProgress: inProgress, // If true then only fetch shout-outs that are still running
     planType: 'SHOUT_OUT',
-    since: moment().format(),
+    since: since,
+    until: until,
+    sortDir: sortDir,
   }
   axios
     .get(`${PLANNER_BASE_URL}/plans`, {
@@ -163,20 +165,19 @@ function fetchMyShoutOutTripPlans(
     })
     .then((response) => {
       if (response.status === 200) {
-        mutations.setMyShoutOutsTotalCount(response.data.totalCount)
-        if (maxResults !== 0) {
-          // When you using a offset you want to append the shoutouts and not clear the already fetched shoutouts.
-          if (offset > 0) {
-            mutations.appendMyShoutOuts(response.data.data)
-          } else {
-            mutations.setMyShoutOuts(response.data.data)
-          }
+        if (past) {
+          mutations.setMyPastShoutOuts(response.data)
+        } else {
+          mutations.setMyShoutOuts(response.data)
         }
       }
     })
     .catch((error) => {
       // eslint-disable-next-line
       console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van de oproepen.'
+      )
     })
 }
 
@@ -290,15 +291,9 @@ function fetchTrips(
     .then((response) => {
       if (response.status === 200) {
         if (pastTrips) {
-          offset === 0
-            ? mutations.setPastTrips(response.data.data)
-            : mutations.appendPastTrips(response.data.data)
-          mutations.setPastTripsCount(response.data.totalCount)
+          mutations.setPastTrips(response.data)
         } else {
-          offset === 0
-            ? mutations.setPlannedTrips(response.data.data)
-            : mutations.appendPlannedTrips(response.data.data)
-          mutations.setPlannedTripsCount(response.data.totalCount)
+          mutations.setPlannedTrips(response.data)
         }
       }
     })
@@ -324,7 +319,7 @@ function fetchCancelledTrips(context: ActionContext) {
       params: params,
     })
     .then((response) => {
-      mutations.setCancelledTrips(response.data.data)
+      mutations.setCancelledTrips(response.data)
     })
     .catch((error) => {
       // eslint-disable-next-line
@@ -521,7 +516,18 @@ function fetchShoutOut(context: ActionContext, { id }: any) {
 
 function fetchShoutOuts(
   context: ActionContext,
-  { location, depArrRadius, travelRadius, maxResults }: any
+  {
+    past,
+    location,
+    depArrRadius,
+    travelRadius,
+    since,
+    until,
+    inProgressOnly,
+    sortDir,
+    offset,
+    maxResults,
+  }: any
 ) {
   let driverLocation = location
   let theDepArrRadius = depArrRadius
@@ -529,16 +535,22 @@ function fetchShoutOuts(
   if (!driverLocation) {
     driverLocation = constants.GEOLOCATION_CENTER_NL
     theDepArrRadius = constants.shoutOutDepArrRadiusWhole_NL
+    theTravelRadius = theDepArrRadius
   }
   if (!theDepArrRadius) {
     theDepArrRadius = constants.shoutOutDepArrRadiusNearby
     theTravelRadius = constants.shoutOutTravelRadius
   }
   const params = {
-    maxResults: maxResults,
     location: `${driverLocation.latitude},${driverLocation.longitude}`,
     depArrRadius: theDepArrRadius,
     travelRadius: theTravelRadius,
+    since,
+    until,
+    inProgressOnly, // If true then only active shout-outs
+    sortDir,
+    offset,
+    maxResults,
   }
   axios
     .get(`${PLANNER_BASE_URL}/shout-outs`, {
@@ -549,8 +561,11 @@ function fetchShoutOuts(
     })
     .then((response) => {
       if (response.status === 200) {
-        mutations.setShoutOutsTotalCount(response.data.totalCount)
-        mutations.setShoutOuts(response.data.data)
+        if (past) {
+          mutations.setPastShoutOuts(response.data)
+        } else {
+          mutations.setShoutOuts(response.data)
+        }
       }
     })
     .catch((error) => {

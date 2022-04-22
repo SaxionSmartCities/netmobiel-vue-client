@@ -13,46 +13,54 @@ import {
 } from '@/store/banker-service/types'
 import { RootState } from '@/store/Rootstate'
 import { Page } from '@/store/types'
+import { assignPageResults } from '@/store/storeHelper'
 
-function setCharities(state: BankerState, payload: Charity[]) {
-  state.charities = payload
+function setCharities(state: BankerState, charities: Page<Charity>) {
+  state.charities = assignPageResults(state.charities, charities)
 }
 
-function setPopularCharities(state: BankerState, payload: Charity[]) {
-  state.popularCharities = payload
+function setPopularCharities(state: BankerState, charities: Page<Charity>) {
+  state.popularCharities = assignPageResults(state.popularCharities, charities)
 }
 
-function setCharitySearchResults(state: BankerState, payload: Charity[]) {
-  state.charitySearchResults = payload
+function setCharitySearchResults(state: BankerState, charities: Page<Charity>) {
+  state.charitySearchResults = assignPageResults(
+    state.charitySearchResults,
+    charities
+  )
 }
 
 function setCharity(state: BankerState, payload: Charity) {
   state.charity = payload
 }
 
-function setCharityDonations(state: BankerState, donations: Donation[]) {
-  state.charityDonations = donations
+function setCharityDonations(state: BankerState, donations: Page<Donation>) {
+  state.charityDonations = assignPageResults(state.charityDonations, donations)
 }
-function setTopDonors(state: BankerState, donors: User[]) {
-  state.topDonors = donors
+
+function setTopDonors(state: BankerState, donors: Page<User>) {
+  state.topDonors = assignPageResults(state.topDonors, donors)
 }
 
 function setPreviouslyDonatedCharities(
   state: BankerState,
-  charities: Charity[]
+  charities: Page<Charity>
 ) {
-  state.previouslyDonatedCharities = charities
+  state.previouslyDonatedCharities = assignPageResults(
+    state.previouslyDonatedCharities,
+    charities
+  )
 }
 
 function setWithdrawals(state: BankerState, withdrawals: Page<Withdrawal>) {
-  state.withdrawals = withdrawals
+  state.withdrawals = assignPageResults(state.withdrawals, withdrawals)
 }
 
 function setPaymentBatches(
   state: BankerState,
   paymentBatches: Page<PaymentBatch>
 ) {
-  state.paymentBatches = paymentBatches
+  state.paymentBatches = assignPageResults(state.paymentBatches, paymentBatches)
 }
 
 function setPaymentBatch(state: BankerState, payload: PaymentBatch) {
@@ -66,25 +74,15 @@ function setSettings(state: BankerState, settings: Settings) {
   state.settings = settings
 }
 function setStatements(state: BankerState, statements: Page<Statement>) {
-  state.statements = statements
+  state.statements = assignPageResults(state.statements, statements)
 }
-function mergeStatements(state: BankerState, statements: Page<Statement>) {
-  const old = state.statements
-  if (old?.count === statements.offset) {
-    state.statements = {
-      totalCount: statements.totalCount,
-      offset: old.offset,
-      count: old.count + statements.count,
-      data: [...old.data, ...statements.data],
-    }
-  }
-}
+
 function setSystemAccounts(state: BankerState, accounts: Page<Account>) {
-  state.systemAccounts = accounts
+  state.systemAccounts = assignPageResults(state.systemAccounts, accounts)
 }
 
 function setRewards(state: BankerState, rewards: Page<Reward>) {
-  state.rewards = rewards
+  state.rewards = assignPageResults(state.rewards, rewards)
 }
 
 export const buildMutations = (
@@ -106,7 +104,6 @@ export const buildMutations = (
     setBankerUser: bsBuilder.commit(setUser),
     setBankerSettings: bsBuilder.commit(setSettings),
     setAccountStatements: bsBuilder.commit(setStatements),
-    mergeAcountStatements: bsBuilder.commit(mergeStatements),
     setSystemAccounts: bsBuilder.commit(setSystemAccounts),
     setRewards: bsBuilder.commit(setRewards),
   }
