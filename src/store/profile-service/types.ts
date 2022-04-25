@@ -1,3 +1,6 @@
+import { emptyPage } from '@/store/storeHelper'
+import { Page } from '@/store/types'
+
 export class ProfileState {
   complimentTypes: ComplimentType[] = []
   publicUsers: Map<string, ExternalUser> = new Map()
@@ -52,7 +55,7 @@ export class ProfileState {
       },
       interests: [],
     },
-    favoriteLocations: [],
+    favoriteLocations: emptyPage,
     rating: 2,
     maxRating: 3,
     delegatorId: null,
@@ -84,7 +87,7 @@ export class ProfileState {
   search: ProfileSearch = {
     keyword: '',
     status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
-    results: [],
+    results: emptyPage,
   }
   // The FCM token received from the current device
   deviceFcmToken: string | null = null
@@ -156,7 +159,7 @@ export interface User {
   privacySecurity: NameValue[]
   tripOptions: NameValue[]
   notificationOptions: NameValue[]
-  favoriteLocations: Place[]
+  favoriteLocations: Page<Place>
   reviews: NameValue[]
   credits: Credits
   profile: Profile
@@ -194,7 +197,7 @@ export interface Profile extends PublicProfile {
 export interface ProfileSearch {
   keyword: string
   status: string
-  results: PublicProfile[] | []
+  results: Page<PublicProfile>
 }
 
 export interface UserConsent {

@@ -248,7 +248,7 @@ export default {
       this.searchInput = ''
       gsStore.mutations.setGeocoderSuggestions(emptyPage)
     },
-    iconicCategory(category): string {
+    iconicCategory(category) {
       return (
         constants.searchSuggestionCategoryIcons[category] ||
         constants.searchSuggestionDefaultIcon

@@ -13,6 +13,8 @@ import {
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { decodeJwt } from '@/utils/Utils'
+import { Page } from '@/store/types'
+import { assignPageResults } from '@/store/storeHelper'
 
 function setUserToken(state: ProfileState, token: string) {
   state.user.accessToken = token
@@ -138,8 +140,11 @@ function clearPublicReviews(state: ProfileState, profileId: string) {
   state.publicUsers = new Map(state.publicUsers)
 }
 
-function setFavoriteLocations(state: ProfileState, places: Place[]) {
-  state.user.favoriteLocations = places
+function setFavoriteLocations(state: ProfileState, places: Page<Place>) {
+  state.user.favoriteLocations = assignPageResults(
+    state.user.favoriteLocations,
+    places
+  )
 }
 
 function setDelegations(state: ProfileState, delegations: Delegation[]) {
@@ -170,8 +175,8 @@ function setSearchStatus(state: ProfileState, status: string) {
   state.search.status = status
 }
 
-function setSearchResults(state: ProfileState, results: PublicProfile[]) {
-  state.search.results = results
+function setSearchResults(state: ProfileState, results: Page<PublicProfile>) {
+  state.search.results = assignPageResults(state.search.results, results)
 }
 
 function setDeviceFcmToken(state: ProfileState, fcmToken: string | null) {

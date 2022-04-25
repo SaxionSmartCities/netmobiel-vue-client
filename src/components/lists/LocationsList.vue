@@ -36,18 +36,12 @@
           </v-row>
         </v-col>
         <v-col
-          v-if="!location.favorite && showFavoriteIcon"
+          v-if="showFavoriteIcon"
           class="shrink pa-2"
-          @click="onFavoriteClicked(location, $event)"
+          @click="onToggleFavoriteClicked(location, $event)"
         >
-          <v-icon>favorite_border</v-icon>
-        </v-col>
-        <v-col
-          v-if="location.favorite && showFavoriteIcon"
-          class="shrink pa-2"
-          @click="onUnFavoriteClicked(location, $event)"
-        >
-          <v-icon>favorite</v-icon>
+          <v-icon v-if="!location.favorite">favorite_border</v-icon>
+          <v-icon v-else>favorite</v-icon>
         </v-col>
       </v-row>
     </template>
@@ -86,15 +80,18 @@ export default {
     onItemClicked(location) {
       this.$emit('onItemClicked', location)
     },
-    onFavoriteClicked(location, event) {
+    onToggleFavoriteClicked(location, event) {
       event.stopPropagation()
       this.selectedListItem = null
-      this.$emit('onFavoriteClicked', location)
+      if (location.favorite) {
+        this.$emit('onUnFavoriteClicked', location)
+      } else {
+        this.$emit('onFavoriteClicked', location)
+      }
     },
     onUnFavoriteClicked(location, event) {
       event.stopPropagation()
       this.selectedListItem = null
-      this.$emit('onUnFavoriteClicked', location)
     },
   },
 }

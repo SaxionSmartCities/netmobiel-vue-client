@@ -130,7 +130,7 @@ export default {
       return []
     },
     favorites() {
-      const places = psStore.getters.getUser?.favoriteLocations ?? []
+      const places = psStore.getters.getUser?.favoriteLocations.data
       return places.map((place) => {
         return {
           ...place,
@@ -158,7 +158,7 @@ export default {
           gsStore.actions.fetchGeocoderSuggestions({ query: val })
         }
       }
-    }, 500),
+    }, 1000),
   },
   created() {
     uiStore.mutations.showBackButton()
@@ -288,7 +288,7 @@ export default {
         .deleteMyFavoriteLocation({ placeId })
         .then(() => psStore.actions.fetchMyFavoriteLocations())
     },
-    iconicCategory(category): string {
+    iconicCategory(category) {
       return (
         constants.searchSuggestionCategoryIcons[category] ||
         constants.searchSuggestionDefaultIcon

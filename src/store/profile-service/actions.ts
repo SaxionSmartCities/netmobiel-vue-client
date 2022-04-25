@@ -1,11 +1,16 @@
 import axios, { AxiosError, AxiosRequestHeaders } from 'axios'
 import config from '@/config/config'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
-import { Profile, ProfileState } from '@/store/profile-service/types'
+import {
+  Profile,
+  ProfileState,
+  PublicProfile,
+} from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { getters, mutations } from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
 import { generateHeaders } from '@/utils/Utils'
+import { Page } from '@/store/types'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -146,12 +151,10 @@ function fetchProfiles(context: ActionContext, { keyword }: any) {
       ) as AxiosRequestHeaders,
     })
     .then((response) => {
-      if (response.status == 200) {
-        const results = response.data.data.map((r: any) => {
-          return {
-            ...r,
-            image: createAbsoluteImageUrl(r.image),
-          }
+      if (response.status === 200) {
+        const results: Page<PublicProfile> = response.data
+        results.data.forEach((p) => {
+          p.image = createAbsoluteImageUrl(p.image)
         })
         mutations.setSearchResults(results)
       }
@@ -175,12 +178,13 @@ function fetchMyFavoriteLocations(context: ActionContext) {
         delegatorId
       ) as AxiosRequestHeaders,
       params: {
+        offset: 0,
         maxResults: 100,
       },
     })
     .then((response) => {
       if (response.status == 200) {
-        mutations.setFavoriteLocations(response.data.data)
+        mutations.setFavoriteLocations(response.data)
       }
     })
     .catch((error) => {
