@@ -1,10 +1,11 @@
 import { ModuleBuilder } from 'vuex-typex'
 import { GeoCoderState, GeoCoderSuggestion, PickedLocation } from './types'
 import { RootState } from '@/store/Rootstate'
+import { Page } from '@/store/types'
 
 function setGeocoderSuggestions(
   state: GeoCoderState,
-  payload: GeoCoderSuggestion[]
+  payload: Page<GeoCoderSuggestion>
 ) {
   state.geocoder.suggestions = payload
 }

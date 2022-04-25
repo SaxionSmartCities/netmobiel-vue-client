@@ -51,6 +51,7 @@ import { throttle } from 'lodash'
 import { geoPlaceToAddressLabel, geoSuggestionToPlace } from '@/utils/Utils'
 import * as gsStore from '@/store/geocoder-service'
 import constants from '@/constants/constants'
+import { emptyPage } from '@/store/storeHelper'
 
 const maxSuggestions = 8
 
@@ -127,7 +128,7 @@ export default {
       },
     },
     suggestions() {
-      return gsStore.getters.getGeocoderSuggestions.map((suggestion) =>
+      return gsStore.getters.getGeocoderSuggestions.data.map((suggestion) =>
         this.createLocationFromSuggestion(suggestion)
       )
     },
@@ -176,7 +177,7 @@ export default {
     // uiStore.mutations.showBackButton()
   },
   mounted() {
-    gsStore.mutations.setGeocoderSuggestions([])
+    gsStore.mutations.setGeocoderSuggestions(emptyPage)
   },
   methods: {
     createLocationFromSuggestion(sug) {
@@ -245,9 +246,9 @@ export default {
     },
     clearSearchInput() {
       this.searchInput = ''
-      gsStore.mutations.setGeocoderSuggestions([])
+      gsStore.mutations.setGeocoderSuggestions(emptyPage)
     },
-    iconicCategory(category) {
+    iconicCategory(category): string {
       return (
         constants.searchSuggestionCategoryIcons[category] ||
         constants.searchSuggestionDefaultIcon
