@@ -129,12 +129,14 @@ export default {
         : undefined
     },
     myComplimentSet() {
-      return this.driver?.compliments?.find(
+      return this.driver?.compliments?.data.find(
         (c) => c.context === this.trip?.tripRef
       )
     },
     myReview() {
-      return this.driver?.reviews?.find((r) => r.context === this.trip?.tripRef)
+      return this.driver?.reviews?.data.find(
+        (r) => r.context === this.trip?.tripRef
+      )
     },
   },
   watch: {

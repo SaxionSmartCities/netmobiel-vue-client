@@ -14,8 +14,8 @@ export class ProfileState {
       address: null,
       interests: [],
     },
-    compliments: [],
-    reviews: [],
+    compliments: emptyPage,
+    reviews: emptyPage,
   }
   user: User = {
     accessToken: null,
@@ -103,13 +103,13 @@ export const emptyPublicUser: ExternalUser = {
     address: null,
     interests: [],
   },
-  compliments: [],
-  reviews: [],
+  compliments: emptyPage,
+  reviews: emptyPage,
 }
 export interface ExternalUser {
   profile: PublicProfile
-  compliments: Compliment[] | []
-  reviews: Review[] | []
+  compliments: Page<Compliment>
+  reviews: Page<Review>
 }
 
 export interface UserRef {

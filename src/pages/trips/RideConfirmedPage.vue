@@ -130,12 +130,12 @@ export default {
       return driverTypes.filter((ct) => ct !== 'NICE_CAR')
     },
     myComplimentSet() {
-      return this.passenger?.compliments?.find(
+      return this.passenger?.compliments?.data.find(
         (c) => c.context === this.ride?.rideRef
       )
     },
     myReview() {
-      return this.passenger?.reviews?.find(
+      return this.passenger?.reviews?.data.find(
         (r) => r.context === this.ride?.rideRef
       )
     },
