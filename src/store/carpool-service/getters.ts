@@ -13,18 +13,6 @@ export const buildGetters = (
     return state.selectedCar
   }, 'getSelectedCar')
 
-  const getRides = csBuilder.read((state: CarpoolState) => {
-    return state.rides
-  }, 'getRides')
-
-  const getSelectedRide = csBuilder.read((state: CarpoolState) => {
-    return state.selectedRide
-  }, 'getSelectedRide')
-
-  const getPlannedRidesCount = csBuilder.read((state: CarpoolState) => {
-    return state.plannedRidesCount
-  }, 'getPlannedRidesCount')
-
   const getCarSearchResult = csBuilder.read((state: CarpoolState) => {
     return state.carSearch.result
   }, 'getCarSearchResult')
@@ -33,25 +21,21 @@ export const buildGetters = (
     return state.carSearch.licensePlate
   }, 'getCarSearchLicensePlate')
 
+  const getSelectedRide = csBuilder.read((state: CarpoolState) => {
+    return state.selectedRide
+  }, 'getSelectedRide')
+
+  const getPlannedRides = csBuilder.read((state: CarpoolState) => {
+    return state.plannedRides
+  }, 'getPlannedRides')
+
   const getPastRides = csBuilder.read((state: CarpoolState) => {
     return state.pastRides
   }, 'getPastRides')
 
-  const getPastRidesCount = csBuilder.read((state: CarpoolState) => {
-    return state.pastRidesCount
-  }, 'getPastRidesCount')
-
   const getProposedRides = csBuilder.read((state: CarpoolState) => {
     return state.proposedRides
   }, 'getProposedRides')
-
-  const getInboxRides = csBuilder.read((state: CarpoolState) => {
-    return state.inboxRides
-  }, 'getInboxRides')
-
-  const getUsers = csBuilder.read((state: CarpoolState) => {
-    return state.users
-  }, 'getUsers')
 
   return {
     get getCarSearchResult() {
@@ -66,29 +50,18 @@ export const buildGetters = (
     get getSelectedCar() {
       return getSelectedCar()
     },
-    get getRides() {
-      return getRides()
-    },
+
     get getSelectedRide() {
       return getSelectedRide()
     },
-    get getPlannedRidesCount() {
-      return getPlannedRidesCount()
+    get getPlannedRides() {
+      return getPlannedRides()
     },
     get getPastRides() {
       return getPastRides()
     },
-    get getPastRidesCount() {
-      return getPastRidesCount()
-    },
     get getProposedRides() {
       return getProposedRides()
-    },
-    get getInboxRides() {
-      return getInboxRides()
-    },
-    get getUsers() {
-      return getUsers()
     },
   }
 }

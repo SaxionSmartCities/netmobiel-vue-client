@@ -1,11 +1,16 @@
 import axios, { AxiosError, AxiosRequestHeaders } from 'axios'
 import config from '@/config/config'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
-import { Profile, ProfileState } from '@/store/profile-service/types'
+import {
+  Profile,
+  ProfileState,
+  PublicProfile,
+} from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { getters, mutations } from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
 import { generateHeaders } from '@/utils/Utils'
+import { Page } from '@/store/types'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -146,12 +151,10 @@ function fetchProfiles(context: ActionContext, { keyword }: any) {
       ) as AxiosRequestHeaders,
     })
     .then((response) => {
-      if (response.status == 200) {
-        const results = response.data.data.map((r: any) => {
-          return {
-            ...r,
-            image: createAbsoluteImageUrl(r.image),
-          }
+      if (response.status === 200) {
+        const results: Page<PublicProfile> = response.data
+        results.data.forEach((p) => {
+          p.image = createAbsoluteImageUrl(p.image)
         })
         mutations.setSearchResults(results)
       }
@@ -174,10 +177,14 @@ function fetchMyFavoriteLocations(context: ActionContext) {
         GRAVITEE_PROFILE_SERVICE_API_KEY,
         delegatorId
       ) as AxiosRequestHeaders,
+      params: {
+        offset: 0,
+        maxResults: 100,
+      },
     })
     .then((response) => {
       if (response.status == 200) {
-        mutations.setFavoriteLocations(response.data.data)
+        mutations.setFavoriteLocations(response.data)
       }
     })
     .catch((error) => {
@@ -329,7 +336,7 @@ function updateMyProfileImage(context: ActionContext, { image }: any) {
  */
 function fetchUserCompliments(context: ActionContext, { receiverId }: any) {
   const usr = getters.getPublicUsers.get(receiverId)
-  if (usr && usr.compliments.length > 0) {
+  if (usr && usr.compliments.data.length > 0) {
     return Promise.resolve(usr.compliments)
   }
   const URL = `${PROFILE_BASE_URL}/compliments`
@@ -344,9 +351,9 @@ function fetchUserCompliments(context: ActionContext, { receiverId }: any) {
       // @ts-ignore
       mutations.addPublicCompliments({
         profileId: receiverId,
-        compliments: response.data.data,
+        compliments: response.data,
       })
-      return response.data.data
+      return response.data
     })
     .catch((error) => {
       // eslint-disable-next-line
@@ -456,7 +463,7 @@ function removeUserCompliments(
  */
 function fetchUserReviews(context: ActionContext, { receiverId }: any) {
   const usr = getters.getPublicUsers.get(receiverId)
-  if (usr && usr.reviews.length > 0) {
+  if (usr && usr.reviews.data.length > 0) {
     return Promise.resolve(usr.reviews)
   }
   const URL = `${PROFILE_BASE_URL}/reviews`
@@ -471,9 +478,9 @@ function fetchUserReviews(context: ActionContext, { receiverId }: any) {
       // @ts-ignore
       mutations.addPublicReviews({
         profileId: receiverId,
-        reviews: response.data.data,
+        reviews: response.data,
       })
-      return response.data.data
+      return response.data
     })
     .catch((error) => {
       // eslint-disable-next-line
@@ -719,35 +726,6 @@ function fetchSurvey(context: ActionContext, id: string) {
       console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het opzoeken van de registratie van de enquête`
-      )
-    })
-}
-
-function fetchSurveyByProviderId(
-  context: ActionContext,
-  surveyProviderId: string
-) {
-  const delegatorId = context.rootState.ps.user.delegatorId
-  const URL = `${PROFILE_BASE_URL}/survey-interactions?surveyId=${surveyProviderId}`
-  return axios
-    .get(URL, {
-      headers: generateHeaders(
-        GRAVITEE_PROFILE_SERVICE_API_KEY,
-        delegatorId
-      ) as AxiosRequestHeaders,
-    })
-    .then((response) => {
-      if (response.status === 200 && response.data.count >= 1) {
-        return response.data.data[0]
-      } else {
-        return null
-      }
-    })
-    .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
-      uiStore.actions.queueErrorNotification(
-        `Fout bij het opzoeken van de enquête`
       )
     })
 }

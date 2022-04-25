@@ -77,13 +77,13 @@ import ItineraryOptions from '@/components/itinerary-details/ItineraryOptions.vu
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
 import ShoutOutDetailPassenger from '@/components/community/ShoutOutDetailPassenger.vue'
 import ShoutOutCancelDialog from '@/components/dialogs/ShoutOutCancelDialog.vue'
-import { formatDateTimeLongNoYear } from '@/utils/datetime.js'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 import * as gsStore from '@/store/geocoder-service'
 import { geoLocationToPlace } from '@/utils/Utils'
 import RouteMap from '@/components/itinerary-details/RouteMap'
+import { formatDateTimeLongYear } from '@/utils/datetime'
 
 export default {
   name: 'ShoutOutPassengerDetailPage',
@@ -100,18 +100,6 @@ export default {
   },
   data() {
     return {
-      options: [
-        {
-          icon: 'fa-pencil-alt',
-          label: 'Wijzig deze oproep',
-          callback: this.onEditShoutOut,
-        },
-        {
-          icon: 'fa-times-circle',
-          label: 'Annuleer deze oproep',
-          callback: this.onCancelShoutOut,
-        },
-      ],
       showCancelDialog: false,
       showMap: false,
       selectedOffer: null,
@@ -119,6 +107,22 @@ export default {
     }
   },
   computed: {
+    options() {
+      let options = []
+      if (!this.isShoutOutInThePast) {
+        options.push({
+          icon: 'fa-pencil-alt',
+          label: 'Wijzig deze oproep',
+          callback: this.onEditShoutOut,
+        })
+        options.push({
+          icon: 'fa-times-circle',
+          label: 'Annuleer deze oproep',
+          callback: this.onCancelShoutOut,
+        })
+      }
+      return options
+    },
     profile() {
       return psStore.getters.getProfile
     },
@@ -131,7 +135,7 @@ export default {
       if (travelTime) {
         result.push({
           label: 'Datum',
-          value: formatDateTimeLongNoYear(this.shoutOut?.travelTime),
+          value: formatDateTimeLongYear(this.shoutOut?.travelTime),
         })
       }
       if (this.itinerary?.duration) {
@@ -170,7 +174,7 @@ export default {
     },
     isShoutOutInThePast() {
       return (
-        this.shoutOut?.referenceItinerary?.departureTime &&
+        this.shoutOut?.latestArrivalTime &&
         moment(this.shoutOut?.latestArrivalTime).isBefore(moment())
       )
     },

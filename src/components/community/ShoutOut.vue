@@ -86,6 +86,7 @@ import ExternalUserImage from '@/components/profile/ExternalUserImage.vue'
 import { generateShoutOutDetailSteps } from '@/utils/itinerary_steps.js'
 import * as psStore from '@/store/profile-service'
 import * as csStore from '@/store/carpool-service'
+import moment from 'moment'
 
 export default {
   name: 'ShoutOut',
@@ -113,6 +114,19 @@ export default {
       return this.traveller
         ? `${this.traveller.givenName} ${this.traveller.familyName}`
         : ''
+    },
+    shoutOutIsClosed() {
+      // If requestDuration is set, then the shout-out has been closed.
+      return !!this.shoutOut?.requestDuration
+    },
+    isShoutOutInThePast() {
+      return (
+        this.shoutOut?.latestArrivalTime &&
+        moment(this.shoutOut?.latestArrivalTime).isBefore(moment())
+      )
+    },
+    canOffer() {
+      return !this.shoutOutIsClosed && !this.isShoutOutInThePast
     },
     cost() {
       let fare
@@ -165,7 +179,9 @@ export default {
         ? 'Bekijk Oproep'
         : this.hasOffer
         ? 'Aanbod bekijken'
-        : 'Rit aanbieden'
+        : this.canOffer
+        ? 'Rit aanbieden'
+        : 'Bekijk Oproep'
     },
     offeredItineraries() {
       return this.shoutOut?.itineraries?.filter((it) => {
@@ -176,7 +192,8 @@ export default {
       return !!this.proposedRide?.rideRef || this.offeredItineraries?.length > 0
     },
     proposedRides() {
-      return csStore.getters.getProposedRides
+      // Proposed rides are fetched in the parent page
+      return csStore.getters.getProposedRides.data
     },
     /**
      * Loop through my rides and try to combine the shout-outs with the rides to find the shout-outs with

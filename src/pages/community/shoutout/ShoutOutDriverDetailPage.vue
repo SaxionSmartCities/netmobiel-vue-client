@@ -80,7 +80,6 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import ItinerarySummaryList from '@/components/itinerary-details/ItinerarySummaryList.vue'
 import ShoutOutDetailDriver from '@/components/community/ShoutOutDetailDriver.vue'
 import ShoutOutTravelProposal from '@/components/community/ShoutOutTravelProposal.vue'
-import { formatDateTimeLongNoYear } from '@/utils/datetime.js'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
@@ -89,6 +88,7 @@ import * as isStore from '@/store/itinerary-service'
 import { geoPlaceToCriteria } from '@/utils/Utils'
 import RouteMap from '@/components/itinerary-details/RouteMap'
 import moment from 'moment'
+import { formatDateTimeLongYear } from '@/utils/datetime'
 
 /**
  * This Page is used to show the driver view of details of an existing shout-out proposal (with a rideId) as well as an
@@ -162,7 +162,7 @@ export default {
       if (travelTime) {
         result.push({
           label: 'Datum',
-          value: formatDateTimeLongNoYear(travelTime),
+          value: formatDateTimeLongYear(travelTime),
         })
       }
       if (this.rideDuration) {

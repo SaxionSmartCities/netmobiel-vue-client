@@ -1,10 +1,10 @@
 <template>
-  <content-pane>
+  <content-pane scrollable @low="onLowWater">
     <template #header>
       <tab-bar
         class="shrink"
         :selected-tab-model="selectedTab"
-        @tabChange="selectedTab = $event"
+        @tabChange="(n) => (selectedTab = n)"
       >
         <template #firstTab>
           <span>Recent</span>
@@ -16,7 +16,7 @@
       </tab-bar>
     </template>
     <v-list three-line avatar class="pt-0 conversation-list">
-      <template v-for="(cvs, index) in conversations">
+      <template v-for="(cvs, index) in conversations.data">
         <v-divider v-show="index !== 0" :key="cvs.id + '-divider'" />
         <v-list-item :key="cvs.id" class="pa-0" @click="showConversation(cvs)">
           <v-list-item-avatar size="60">
@@ -89,10 +89,16 @@ export default {
     profile() {
       return psStore.getters.getProfile
     },
+    actualConversations() {
+      return msStore.getters.getActualConversations
+    },
+    archivedConversations() {
+      return msStore.getters.getArchivedConversations
+    },
     conversations() {
       return this.isActualTab
-        ? msStore.getters.getActualConversations
-        : msStore.getters.getArchivedConversations
+        ? this.actualConversations
+        : this.archivedConversations
     },
     isActualTab() {
       return this.selectedTab === 0
@@ -103,10 +109,26 @@ export default {
   },
   created: function () {
     uiStore.mutations.showBackButton()
-    msStore.actions.fetchActualConversations()
-    msStore.actions.fetchArchivedConversations()
+    this.fetchActualConversations()
+    this.fetchArchivedConversations()
   },
   methods: {
+    fetchActualConversations(offset = 0) {
+      if (offset === 0 || offset < this.actualConversations.totalCount) {
+        msStore.actions.fetchActualConversations({
+          offset,
+          maxResults: constants.fetchConversationsMaxResults,
+        })
+      }
+    },
+    fetchArchivedConversations(offset = 0) {
+      if (offset === 0 || offset < this.archivedConversations.totalCount) {
+        msStore.actions.fetchArchivedConversations({
+          offset,
+          maxResults: constants.fetchConversationsMaxResults,
+        })
+      }
+    },
     isMessageSendByMe(msg) {
       return msg.sender?.managedIdentity === this.profile.id
     },
@@ -146,6 +168,13 @@ export default {
     },
     timestamp(timestamp) {
       return upperCaseFirst(moment(timestamp).locale('nl').calendar())
+    },
+    onLowWater() {
+      if (this.isActualTab) {
+        this.fetchActualConversations(this.actualConversations.data.length)
+      } else {
+        this.fetchArchivedConversations(this.archivedConversations.data.length)
+      }
     },
   },
 }

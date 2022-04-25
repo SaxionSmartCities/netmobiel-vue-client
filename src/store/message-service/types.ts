@@ -1,8 +1,11 @@
+import { emptyPage } from '@/store/storeHelper'
+import { Page } from '@/store/types'
+
 export class MessageState {
-  actualConversations: Conversation[] = []
-  archivedConversations: Conversation[] = []
-  conversation: Conversation = {}
-  messages: Message[] = []
+  actualConversations: Page<Conversation> = emptyPage
+  archivedConversations: Page<Conversation> = emptyPage
+  conversation: Conversation | null = null
+  messages: Page<Message> = emptyPage
 }
 
 export interface Message {

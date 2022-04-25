@@ -70,10 +70,10 @@ export default {
       return this.publicUser?.profile
     },
     compliments() {
-      return this.publicUser?.compliments
+      return this.publicUser?.compliments.data
     },
     reviews() {
-      return this.publicUser?.reviews
+      return this.publicUser?.reviews.data
     },
     ridesDriven() {
       // TODO: fetch from backend

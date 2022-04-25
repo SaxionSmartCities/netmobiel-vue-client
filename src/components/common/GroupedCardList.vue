@@ -1,5 +1,5 @@
 <template>
-  <v-row v-if="items && items.length > 0">
+  <v-row v-if="items && items.length > 0" dense>
     <v-col>
       <section v-for="date in getDistinctDays" :key="date" class="px-0 pb-2">
         <h4 class="netmobiel pb-1">{{ formatToCategoryDate(date) }}</h4>

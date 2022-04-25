@@ -1,61 +1,83 @@
 <template>
-  <content-pane>
+  <content-pane scrollable @low="onLowWater">
     <template #header>
       <tab-bar
         v-if="isDrivingPassenger"
         class="shrink"
         :selected-tab-model="selectedTab"
-        @tabChange="selectedTab = $event"
+        @tabChange="(n) => (selectedTab = n)"
       >
         <template #firstTab>
           <!-- Community shout-outs are directed to (potential) drivers -->
           <!-- The selection is made by the backend based on the geo locations of traveller and driver -->
           <span>
             Community
-            <sup>{{ communityShoutOuts.length }}</sup>
+            <sup>{{
+              shoutOutPeriod === 'Future'
+                ? communityShoutOuts.totalCount
+                : pastCommunityShoutOuts.totalCount
+            }}</sup>
           </span>
         </template>
         <template #secondTab>
           <!-- My shout-outs are my own calls to the community -->
           <span>
             Mijn oproepen
-            <sup>{{ myShoutOuts.length }}</sup>
+            <sup>{{
+              shoutOutPeriod === 'Future'
+                ? myShoutOuts.totalCount
+                : myPastShoutOuts.totalCount
+            }}</sup>
           </span>
         </template>
       </tab-bar>
     </template>
-    <v-row v-if="isDriverView">
+    <v-row dense>
       <v-col>
-        <v-row>
-          <v-col>
-            <h1>Community oproepen</h1>
-            <p class="mt-2 mb-0">Gezochte ritten in de buurt van mijn:</p>
-            <v-radio-group v-model="baseLocation" class="location" row>
-              <v-radio
-                label="Woonplaats"
-                value="Home"
-                :disabled="!profile.address.location"
-              ></v-radio>
-              <v-radio label="Huidige locatie" value="Here" disabled></v-radio>
-              <v-radio label="Land" value="All"></v-radio>
-            </v-radio-group>
-          </v-col>
-        </v-row>
-        <shout-out-list
-          :shout-outs="communityShoutOuts"
-          no-items-label="Er zijn op dit moment geen oproepen gevonden."
-          @shoutOutSelected="onShoutOutSelected"
-        />
+        <h1 v-if="isDriverView">Oproepen</h1>
+        <h1 v-else>Mijn Oproepen</h1>
       </v-col>
     </v-row>
-    <v-row v-if="isPassengerView">
+    <v-row v-if="isPassengerView || supportDriverHistory" dense>
       <v-col>
-        <h1>Mijn oproepen</h1>
-        <shout-out-list
-          :shout-outs="myShoutOuts"
-          no-items-label="Je hebt op dit moment geen opgeslagen oproepen."
-          @shoutOutSelected="onShoutOutSelected"
-        />
+        <v-radio-group v-model="shoutOutPeriod" class="mt-0" row hide-details>
+          <v-radio label="Historie" value="Past"></v-radio>
+          <v-radio label="Actueel" value="Future"></v-radio>
+        </v-radio-group>
+      </v-col>
+    </v-row>
+    <v-row v-if="isDriverView" dense>
+      <v-col>
+        <p class="mt-0 mb-0">Gezochte ritten in de buurt van mijn:</p>
+        <v-radio-group v-model="baseLocation" class="location" row hide-details>
+          <v-radio
+            label="Woonplaats"
+            value="Home"
+            :disabled="!profile.address.location"
+          ></v-radio>
+          <v-radio label="Locatie" value="Here" disabled></v-radio>
+          <v-radio label="Land" value="All"></v-radio>
+        </v-radio-group>
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col>
+        <span v-if="activeShoutOuts.totalCount === 0">
+          Er zijn geen oproepen gevonden.
+        </span>
+        <grouped-card-list
+          v-else
+          :items="activeShoutOuts.data"
+          :get-date="(s) => s.travelTime"
+        >
+          <template #card="{ item: shoutOut, index }">
+            <shout-out
+              :index="index"
+              :shout-out="shoutOut"
+              @shoutOutSelected="onShoutOutSelected"
+            />
+          </template>
+        </grouped-card-list>
       </v-col>
     </v-row>
   </content-pane>
@@ -64,7 +86,6 @@
 <script>
 import moment from 'moment'
 import ContentPane from '@/components/common/ContentPane'
-import ShoutOutList from '@/components/community/ShoutOutList'
 import TabBar from '../../../components/common/TabBar'
 import { beforeRouteEnter, beforeRouteLeave } from '@/utils/navigation.js'
 import constants from '@/constants/constants'
@@ -73,27 +94,47 @@ import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 import { coordinatesToGeoLocation } from '@/utils/Utils'
+import GroupedCardList from '@/components/common/GroupedCardList'
+import ShoutOut from '@/components/community/ShoutOut'
+import {
+  encodeUrn,
+  NETMOBIEL_CLASS,
+  NETMOBIEL_SERVICE,
+} from '@/utils/UrnHelper'
 
 export default {
   name: 'ShoutOutOverview',
-  components: { TabBar, ShoutOutList, ContentPane },
+  components: { TabBar, ContentPane, GroupedCardList, ShoutOut },
   beforeRouteEnter: beforeRouteEnter({
     selectedTab: (number) => number || 0,
     baseLocation: (value) => value,
+    shoutOutPeriod: (period) => period || 'Future',
   }),
   beforeRouteLeave: beforeRouteLeave({
     selectedTab: (number) => number || 0,
     baseLocation: (value) => value,
+    shoutOutPeriod: (period) => period,
   }),
   data() {
     return {
+      supportDriverHistory: false,
+      driverOnly: true,
       selectedTab: 0,
       baseLocation: '',
+      requestTime: null,
+      shoutOutPeriod: 'Future',
     }
   },
   computed: {
     profile() {
       return psStore.getters.getProfile
+    },
+    driverId() {
+      return encodeUrn(
+        NETMOBIEL_SERVICE.KEYCLOAK,
+        NETMOBIEL_CLASS.USER,
+        this.profile.id
+      )
     },
     isDriverTab() {
       return this.selectedTab === 0
@@ -133,66 +174,134 @@ export default {
     myShoutOuts() {
       return isStore.getters.getMyShoutOuts
     },
+    myPastShoutOuts() {
+      return isStore.getters.getMyPastShoutOuts
+    },
     communityShoutOuts() {
       return isStore.getters.getShoutOuts
     },
+    pastCommunityShoutOuts() {
+      return isStore.getters.getPastShoutOuts
+    },
+    activeShoutOuts() {
+      if (this.isDriverView) {
+        return this.shoutOutPeriod === 'Future'
+          ? this.communityShoutOuts
+          : this.pastCommunityShoutOuts
+      } else {
+        return this.shoutOutPeriod === 'Future'
+          ? this.myShoutOuts
+          : this.myPastShoutOuts
+      }
+    },
+    searchLocation() {
+      return this.baseLocation === 'Home'
+        ? coordinatesToGeoLocation(this.profile?.address?.location)
+        : undefined
+    },
   },
   watch: {
+    // Whenever the radius radio button changes then refresh the community shout-outs
     // eslint-disable-next-line no-unused-vars
     baseLocation(newValue, oldValue) {
       // console.log(`baseLocation: ${oldValue} --> ${newValue}`)
-      this.fetchShoutOuts()
+      this.fetchCommunityShoutOuts()
+      this.fetchPastCommunityShoutOuts()
     },
     // eslint-disable-next-line no-unused-vars
     selectedTab(newValue, oldValue) {
-      this.profile.actualRole =
+      this.profile.actingRole =
         newValue === 1
           ? constants.PROFILE_ROLE_PASSENGER
           : constants.PROFILE_ROLE_DRIVER
-      psStore.actions
-        .updateMyProfile(this.profile)
-        .then(() => psStore.actions.fetchMyProfile())
+      // No update of profile, too many updates
+      // psStore.actions
+      //   .updateMyProfile(this.profile)
+      //   .then(() => psStore.actions.fetchMyProfile())
     },
   },
   created() {
     uiStore.mutations.showBackButton()
   },
   mounted() {
+    this.requestTime = moment().format()
     this.selectedTab =
-      this.profile.actualRole === constants.PROFILE_ROLE_PASSENGER ? 1 : 0
-    csStore.mutations.setProposedRides([])
-    isStore.mutations.setMyShoutOuts([])
-    isStore.mutations.setShoutOuts([])
+      this.profile.actingRole === constants.PROFILE_ROLE_PASSENGER ? 1 : 0
     if (this.isPassengerOnly || this.isDrivingPassenger) {
-      isStore.actions.fetchMyShoutOutTripPlans({
-        offset: 0,
-      })
+      this.fetchMyShoutOuts()
+      this.fetchMyPastShoutOuts()
     }
     if (this.isDriverOnly || this.isDrivingPassenger) {
       // Initialize the base location radio
-      this.baseLocation = this.profile?.address?.location ? 'Home' : 'All'
+      if (!this.baseLocation) {
+        this.baseLocation = this.profile?.address?.location ? 'Home' : 'All'
+      }
+      // Ride proposals are used in the shoutOut component
       csStore.actions.fetchRideProposals({
-        since: moment().format(),
+        since: this.requestTime,
+        maxResults: 100,
       })
+      // The watcher fetches the driver shout-outs
     }
     isStore.mutations.clearPlanningRequest()
   },
   methods: {
-    fetchShoutOuts() {
-      const location =
-        this.baseLocation === 'Home'
-          ? coordinatesToGeoLocation(this.profile?.address?.location)
-          : undefined
-      isStore.actions.fetchShoutOuts({ location })
+    // All shout-outs before 'now' where the driver was participating somehow.
+    fetchPastCommunityShoutOuts(offset = 0) {
+      if (offset === 0 || offset < this.pastCommunityShoutOuts.totalCount) {
+        isStore.actions.fetchShoutOuts({
+          past: true,
+          location: this.searchLocation,
+          sortDir: 'DESC',
+          until: this.requestTime,
+          driver: this.driverOnly ? this.driverId : undefined,
+          offset,
+          maxResults:
+            offset === 0 ? 5 : constants.fetchCommunityShoutOutsMaxResults,
+        })
+      }
+    },
+    // All shout-outs after 'now' that are still open
+    fetchCommunityShoutOuts(offset = 0) {
+      if (offset === 0 || offset < this.communityShoutOuts.totalCount) {
+        isStore.actions.fetchShoutOuts({
+          location: this.searchLocation,
+          sortDir: 'ASC',
+          since: this.requestTime,
+          inProgressOnly: true,
+          offset,
+          maxResults: constants.fetchCommunityShoutOutsMaxResults,
+        })
+      }
+    },
+    // All shout-outs before 'now' issued by me
+    fetchMyPastShoutOuts(offset = 0) {
+      // Choose the initial value large enough! Otherwise no scroll event will occur.
+      if (offset === 0 || offset < this.myPastShoutOuts.totalCount) {
+        isStore.actions.fetchMyShoutOutTripPlans({
+          past: true,
+          sortDir: 'DESC',
+          until: this.requestTime,
+          offset,
+          maxResults: offset === 0 ? 5 : constants.fetchMyShoutOutsMaxResults,
+        })
+      }
+    },
+    // All shout-outs after 'now' issued by me
+    fetchMyShoutOuts(offset = 0) {
+      // For now: all shout-outs, in progress or fulfilled
+      if (offset === 0 || offset < this.myShoutOuts.totalCount) {
+        isStore.actions.fetchMyShoutOutTripPlans({
+          sortDir: 'ASC',
+          since: this.requestTime,
+          offset,
+          maxResults: constants.fetchMyShoutOutsMaxResults,
+        })
+      }
     },
     onShoutOutSelected(selected) {
-      isStore.mutations.setSelectedTripPlan({})
-      if (selected.shoutOut.traveller.managedIdentity === this.profile.id) {
-        this.$router.push({
-          name: 'shoutOutPassenger',
-          params: { shoutOutId: selected.shoutOut.planRef },
-        })
-      } else {
+      if (this.isDriverView) {
+        isStore.mutations.setSelectedTripPlan({})
         // Only a driver can see his own proposed ride
         this.$router.push({
           name: 'shoutOutDriver',
@@ -202,10 +311,33 @@ export default {
             rideId: selected.proposedRide?.rideRef || 'none',
           },
         })
+      } else {
+        isStore.mutations.setSelectedTripPlan({})
+        this.$router.push({
+          name: 'shoutOutPassenger',
+          params: { shoutOutId: selected.shoutOut.planRef },
+        })
       }
     },
     formatDate(date) {
       return date ? moment(date).locale('nl').format('dddd D MMMM') : ''
+    },
+    onLowWater() {
+      if (this.isPassengerView) {
+        if (this.shoutOutPeriod === 'Future') {
+          this.fetchMyShoutOuts(this.myShoutOuts.data.length)
+        } else {
+          this.fetchMyPastShoutOuts(this.myPastShoutOuts.data.length)
+        }
+      } else if (this.isDriverView) {
+        if (this.shoutOutPeriod === 'Future') {
+          this.fetchCommunityShoutOuts(this.communityShoutOuts.data.length)
+        } else {
+          this.fetchPastCommunityShoutOuts(
+            this.pastCommunityShoutOuts.data.length
+          )
+        }
+      }
     },
   },
 }

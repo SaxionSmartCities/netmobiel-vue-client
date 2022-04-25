@@ -4,7 +4,7 @@
       <v-row v-if="options.length === 0">
         <v-col>
           <v-divider></v-divider>
-          <em>Geen wijzigingen mogelijk op dit moment.</em>
+          <em>Geen wijzigingen mogelijk.</em>
         </v-col>
       </v-row>
       <v-row v-for="(option, index) in options" :key="index">

@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane scrollable @low="onLowWater">
     <v-row align="center" justify="center">
       <v-col>
         <v-img
@@ -97,6 +97,8 @@ import DonationList from '@/components/community/charity/DonationList'
 import moment from 'moment'
 import defaultCharityImage from '@/assets/achterhoek_background.jpg'
 import TopDonorList from '@/components/community/charity/TopDonorList'
+import constants from '@/constants/constants'
+import { emptyPage } from '@/store/storeHelper'
 export default {
   name: 'CharityDetailPage',
   components: { DonationList, ContentPane, GoalProgressBar, TopDonorList },
@@ -113,7 +115,7 @@ export default {
         : defaultCharityImage
     },
     donations() {
-      return bsStore.getters.getSelectedCharityDonations
+      return bsStore.getters.getSelectedCharityDonations.data
     },
     charityName() {
       return this.charity?.name || ''
@@ -122,6 +124,7 @@ export default {
       return this.charity?.location?.label || ''
     },
     totalDonors() {
+      // In the detail page there is only one popular charity: The current one
       return this.popularCharities.length > 0
         ? this.popularCharities[0].donorCount
         : 0
@@ -133,29 +136,44 @@ export default {
       return this.charity?.goalAmount || 1
     },
     popularCharities() {
-      return bsStore.getters.getPopularCharities
+      return bsStore.getters.getPopularCharities.data
     },
     topDonors() {
-      return bsStore.getters.getTopDonors
+      return bsStore.getters.getTopDonors.data
     },
   },
   created() {
     uiStore.mutations.showBackButton()
     bsStore.actions.fetchCharity(this.id)
-    bsStore.mutations.setPopularCharities([])
+    bsStore.mutations.setPopularCharities(emptyPage)
     bsStore.actions.fetchPopularCharities({ charity: this.id })
-    bsStore.actions.fetchDonationsForCharity({
-      charityId: this.id,
-      maxResults: 50,
+    bsStore.actions.fetchTopDonors({
+      charity: this.id,
+      maxResults: constants.fetchCharityDetailTopDonorsMaxResults,
     })
-    bsStore.actions.fetchTopDonors({ charity: this.id, maxResults: 3 })
+    this.fetchCharityDonations()
   },
   methods: {
+    fetchCharityDonations(offset = 0) {
+      bsStore.actions.fetchDonationsForCharity({
+        charityId: this.id,
+        offset: offset,
+        maxResults: constants.fetchCharityDetailDonationsMaxResults,
+      })
+    },
     supportCharity() {
       this.$router.push({ name: 'supportGoal' })
     },
     formatDate(date) {
       return date ? moment(date).locale('nl').format('D MMM YYYY') : ''
+    },
+    onLowWater() {
+      if (
+        this.donations.length <
+        bsStore.getters.getSelectedCharityDonations.totalCount
+      ) {
+        this.fetchCharityDonations(this.donations.length)
+      }
     },
   },
 }

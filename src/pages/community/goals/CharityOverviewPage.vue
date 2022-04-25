@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane scrollable @low="onLowWater">
     <v-row>
       <v-col>
         <h1 class="netmobiel">Goede Doelen</h1>
@@ -38,7 +38,7 @@
           v-model="showClosedToo"
           label="Ook niet-actuele doelen"
         ></v-switch>
-        <template v-for="charity in charities">
+        <template v-for="charity in charities.data">
           <charity-card
             :key="charity.id"
             :charity="charity"
@@ -60,7 +60,7 @@
           light
         >
           <v-carousel-item
-            v-for="charity in previouslyDonatedCharities"
+            v-for="charity in previouslyDonatedCharities.data"
             :key="charity.id"
           >
             <div class="cards-container">
@@ -79,7 +79,7 @@
       <v-col>
         <h4 class="netmobiel my-3">Top donateurs</h4>
         <v-divider />
-        <top-donor-list :donors="topDonors"></top-donor-list>
+        <top-donor-list :donors="topDonors.data"></top-donor-list>
       </v-col>
     </v-row>
   </content-pane>
@@ -92,6 +92,7 @@ import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import CharityCard from '@/components/community/charity/CharityCard'
 import TopDonorList from '@/components/community/charity/TopDonorList'
+import constants from '@/constants/constants'
 
 export default {
   name: 'CharityOverviewPage',
@@ -123,14 +124,22 @@ export default {
   created() {
     uiStore.mutations.showBackButton()
     this.fetchCharities()
-    bsStore.actions.fetchPreviouslyDonatedCharities()
-    bsStore.actions.fetchTopDonors()
+    bsStore.actions.fetchPreviouslyDonatedCharities({
+      maxResults: constants.fetchPreviouslyDonatedCharitiesMaxResults,
+    })
+    bsStore.actions.fetchTopDonors({
+      maxResults: constants.fetchCharityTopDonorsMaxResults,
+    })
   },
   methods: {
-    fetchCharities() {
-      bsStore.actions.fetchCharities({
-        closedToo: this.showClosedToo,
-      })
+    fetchCharities(offset = 0) {
+      if (offset === 0 || offset < this.charities.totalCount) {
+        bsStore.actions.fetchCharities({
+          offset: offset,
+          maxResults: constants.fetchCharityMaxResults,
+          closedToo: this.showClosedToo,
+        })
+      }
     },
     onCharityLookup(charityId) {
       this.$router.push({
@@ -148,6 +157,9 @@ export default {
       this.$router.push({
         name: 'createCharity',
       })
+    },
+    onLowWater() {
+      this.fetchCharities(this.charities.data.length)
     },
   },
 }

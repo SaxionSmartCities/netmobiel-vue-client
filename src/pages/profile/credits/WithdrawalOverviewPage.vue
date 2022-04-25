@@ -1,5 +1,5 @@
 <template>
-  <content-pane>
+  <content-pane scrollable @low="onLowWater">
     <v-row>
       <v-col>
         <h1>Opnames</h1>
@@ -17,12 +17,12 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row v-if="withdrawalHistory && withdrawalHistory.length === 0">
+    <v-row v-if="withdrawalHistory.data.length === 0">
       <v-col>Je hebt nog geen opnames gedaan.</v-col>
     </v-row>
     <grouped-card-list
       v-else
-      :items="withdrawalHistory"
+      :items="withdrawalHistory.data"
       :get-date="(w) => w.creationTime"
     >
       <template #card="{ item, index }">
@@ -76,6 +76,7 @@ import * as bsStore from '@/store/banker-service'
 import * as uiStore from '@/store/ui'
 import GroupedCardList from '@/components/common/GroupedCardList'
 import WithdrawalHistoryLine from '@/components/profile/WithdrawalHistoryLine'
+import constants from '@/constants/constants'
 
 export default {
   name: 'WithdrawalOverviewPage',
@@ -88,7 +89,7 @@ export default {
   },
   computed: {
     withdrawalHistory() {
-      return bsStore.getters.getWithdrawals?.data ?? []
+      return bsStore.getters.getWithdrawals
     },
     user() {
       return bsStore.getters.getBankerUser
@@ -97,9 +98,17 @@ export default {
   created() {
     uiStore.mutations.showBackButton()
     bsStore.actions.fetchBankerUser()
-    bsStore.actions.fetchUserWithdrawals()
+    this.fetchWithdrawalHistory()
   },
   methods: {
+    fetchWithdrawalHistory(offset = 0) {
+      if (offset === 0 || offset < this.withdrawalHistory.totalCount) {
+        bsStore.actions.fetchUserWithdrawals({
+          offset: offset,
+          maxResults: constants.fetchWithdrawalsMaxResults,
+        })
+      }
+    },
     onCancel(wr) {
       this.withdrawalToCancel = wr
       this.showCancelDialog = true
@@ -110,12 +119,15 @@ export default {
         .then((result) => {
           if (result) {
             this.showCancelDialog = false
-            bsStore.actions.fetchUserWithdrawals()
+            this.fetchWithdrawalHistory()
           }
         })
     },
     closeCancelDialog() {
       this.showCancelDialog = false
+    },
+    onLowWater() {
+      this.fetchWithdrawalHistory(this.withdrawalHistory.data.length)
     },
   },
 }

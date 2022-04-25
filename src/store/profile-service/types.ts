@@ -1,3 +1,6 @@
+import { emptyPage } from '@/store/storeHelper'
+import { Page } from '@/store/types'
+
 export class ProfileState {
   complimentTypes: ComplimentType[] = []
   publicUsers: Map<string, ExternalUser> = new Map()
@@ -11,8 +14,8 @@ export class ProfileState {
       address: null,
       interests: [],
     },
-    compliments: [],
-    reviews: [],
+    compliments: emptyPage,
+    reviews: emptyPage,
   }
   user: User = {
     accessToken: null,
@@ -52,7 +55,7 @@ export class ProfileState {
       },
       interests: [],
     },
-    favoriteLocations: [],
+    favoriteLocations: emptyPage,
     rating: 2,
     maxRating: 3,
     delegatorId: null,
@@ -84,7 +87,7 @@ export class ProfileState {
   search: ProfileSearch = {
     keyword: '',
     status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
-    results: [],
+    results: emptyPage,
   }
   // The FCM token received from the current device
   deviceFcmToken: string | null = null
@@ -100,13 +103,13 @@ export const emptyPublicUser: ExternalUser = {
     address: null,
     interests: [],
   },
-  compliments: [],
-  reviews: [],
+  compliments: emptyPage,
+  reviews: emptyPage,
 }
 export interface ExternalUser {
   profile: PublicProfile
-  compliments: Compliment[] | []
-  reviews: Review[] | []
+  compliments: Page<Compliment>
+  reviews: Page<Review>
 }
 
 export interface UserRef {
@@ -156,7 +159,7 @@ export interface User {
   privacySecurity: NameValue[]
   tripOptions: NameValue[]
   notificationOptions: NameValue[]
-  favoriteLocations: Place[]
+  favoriteLocations: Page<Place>
   reviews: NameValue[]
   credits: Credits
   profile: Profile
@@ -187,13 +190,14 @@ export interface Profile extends PublicProfile {
   ridePlanOptions: RidePlanOptions | null
   notificationOptions: NotificationOptions
   userRole: string | null
+  // Transient, not immediately stored to prevent many, many profile updates
   actingRole: string | null
 }
 
 export interface ProfileSearch {
   keyword: string
   status: string
-  results: PublicProfile[] | []
+  results: Page<PublicProfile>
 }
 
 export interface UserConsent {

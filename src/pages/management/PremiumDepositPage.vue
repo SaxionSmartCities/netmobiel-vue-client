@@ -74,10 +74,10 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import * as bsStore from '@/store/banker-service'
 import * as uiStore from '@/store/ui'
 import { creditAmountInEuro } from '@/utils/Utils'
+import constants from '@/constants/constants'
 
-const MIN_AMOUNT = 1
-const MAX_AMOUNT = 50000
-const PREMIUM_ACCOUNT_NCAN = 'premiums'
+const MIN_AMOUNT = constants.PREMIUM_DEPOSIT_MIN_AMOUNT
+const MAX_AMOUNT = constants.PREMIUM_DEPOSIT_MAX_AMOUNT
 
 export default {
   name: 'PremiumDepositPage',
@@ -101,11 +101,11 @@ export default {
       return bsStore.getters.getBankerSettings?.exchangeRate ?? 0
     },
     systemAccounts() {
-      return bsStore.getters.getSystemAccounts?.data ?? []
+      return bsStore.getters.getSystemAccounts
     },
     premiumsAccount() {
-      return this.systemAccounts.find(
-        (acc) => acc.ncan === PREMIUM_ACCOUNT_NCAN
+      return this.systemAccounts.data.find(
+        (acc) => acc.ncan === constants.PREMIUM_ACCOUNT_NCAN
       )
     },
   },

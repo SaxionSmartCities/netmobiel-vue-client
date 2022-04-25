@@ -206,13 +206,13 @@ function fetchRides(
   { pastRides, offset, maxResults, until, since, sortDir }: any
 ) {
   const URL = `${RIDESHARE_BASE_URL}/rides`
-  const params: any = {}
-  params['maxResults'] = maxResults || 10
-  params['offset'] = offset || 0
-  until && (params['until'] = until)
-  since && (params['since'] = since)
-  sortDir && (params['sortDir'] = sortDir)
-
+  const params: any = {
+    maxResults: maxResults ?? 10,
+    offset: offset ?? 0,
+    until: until,
+    since: since,
+    sortDir: sortDir,
+  }
   axios
     .get(URL, {
       headers: generateHeaders(
@@ -222,15 +222,9 @@ function fetchRides(
     })
     .then(function (resp) {
       if (pastRides) {
-        offset === 0
-          ? mutations.savePastRides(resp.data.data)
-          : mutations.appendPastRides(resp.data.data)
-        mutations.setPastRidesCount(resp.data.totalCount)
+        mutations.setPastRides(resp.data)
       } else {
-        offset === 0
-          ? mutations.saveRides(resp.data.data)
-          : mutations.appendRides(resp.data.data)
-        mutations.setPlannedRidesCount(resp.data.totalCount)
+        mutations.setPlannedRides(resp.data)
       }
     })
     .catch(function (error) {
@@ -272,7 +266,7 @@ function confirmBookedRide(context: ActionContext, payload: any) {
   return axios
     .put(URL, data, config)
     .then(function (resp) {
-      if (resp.status == 204) {
+      if (resp.status === 204) {
         // Ride is confirmed
         uiStore.actions.queueInfoNotification(
           'Je hebt de rit van je passagier bevestigd.'
@@ -299,7 +293,7 @@ function rejectBookedRide(context: ActionContext, payload: any) {
   return axios
     .put(URL, data, config)
     .then(function (resp) {
-      if (resp.status == 204) {
+      if (resp.status === 204) {
         // Ride is confirmed
         uiStore.actions.queueInfoNotification(
           'Je hebt je passagier niet meegenomen.'
@@ -326,7 +320,7 @@ function unconfirmBookedRide(context: ActionContext, payload: any) {
   axios
     .put(URL, data, config)
     .then(function (resp) {
-      if (resp.status == 204) {
+      if (resp.status === 204) {
         uiStore.actions.queueInfoNotification(
           'Je kunt je rit nu opnieuw bevestigen.'
         )
@@ -361,13 +355,9 @@ function deleteRide(context: ActionContext, payload: any) {
       params: params,
     })
     .then(function (resp) {
-      if (resp.status == 204) {
-        //Delete trip from store!
-        mutations.deleteRides(payload.id)
-      } else {
-        uiStore.actions.queueErrorNotification(
-          'Fout bij het verwijderen van uw rit-aanbod.'
-        )
+      if (resp.status !== 204) {
+        // eslint-disable-next-line
+        console.log(`DeleteRide: Unexpected status ${resp.status}`)
       }
     })
     .catch(function (error) {
@@ -376,29 +366,6 @@ function deleteRide(context: ActionContext, payload: any) {
       uiStore.actions.queueErrorNotification(
         'Fout bij het verwijderen van uw rit-aanbod.'
       )
-    })
-}
-
-function fetchUser(context: ActionContext, { userRef }: UserRef) {
-  const URL = `${RIDESHARE_BASE_URL}/users/${userRef}`
-  const usr = getters.getUsers.get(userRef)
-  if (usr) {
-    return Promise.resolve(usr)
-  }
-  return axios
-    .get(URL, {
-      headers: generateHeaders(
-        GRAVITEE_RIDESHARE_SERVICE_API_KEY
-      ) as AxiosRequestHeaders,
-    })
-    .then(function (resp) {
-      mutations.addUser({ userRef, ...resp.data })
-      return resp.data
-    })
-    .catch(function (error) {
-      // TODO: Proper error handling.
-      // eslint-disable-next-line
-      console.log(error)
     })
 }
 
@@ -418,8 +385,8 @@ function fetchRideProposals(
 ) {
   const URL = `${RIDESHARE_BASE_URL}/rides`
   const params: any = {}
-  params.maxResults = maxResults || 10
-  params.offset = offset || 0
+  params.maxResults = maxResults ?? 10
+  params.offset = offset ?? 0
   params.bookingState = 'PROPOSED'
   params.until = until
   params.since = since
@@ -432,36 +399,15 @@ function fetchRideProposals(
       params: params,
     })
     .then(function (resp) {
-      mutations.setProposedRides(resp.data.data)
+      mutations.setProposedRides(resp.data)
     })
     .catch(function (error) {
       // eslint-disable-next-line
-        console.log(error)
+      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van uw rit-aanbod.'
       )
     })
-}
-
-function fetchRidesFromConversations(context: ActionContext, payload: any) {
-  const rideFetches = []
-  for (const conversation of payload) {
-    const URL = `${RIDESHARE_BASE_URL}/rides/${conversation.context}`
-    rideFetches.push(
-      axios.get(URL, {
-        headers: generateHeaders(
-          GRAVITEE_RIDESHARE_SERVICE_API_KEY
-        ) as AxiosRequestHeaders,
-      })
-    )
-  }
-  Promise.all(rideFetches).then((values) => {
-    const rides = []
-    for (const resp of values) {
-      rides.push(resp.data)
-    }
-    mutations.setInboxRides(rides)
-  })
 }
 
 export const buildActions = (
@@ -483,10 +429,6 @@ export const buildActions = (
     rejectBookedRide: csBuilder.dispatch(rejectBookedRide),
     unconfirmBookedRide: csBuilder.dispatch(unconfirmBookedRide),
 
-    fetchUser: csBuilder.dispatch(fetchUser),
     fetchRideProposals: csBuilder.dispatch(fetchRideProposals),
-    fetchRidesFromConversations: csBuilder.dispatch(
-      fetchRidesFromConversations
-    ),
   }
 }

@@ -1,10 +1,10 @@
 <template>
-  <content-pane scrollable>
+  <content-pane scrollable @low="onLowWater">
     <template #header>
       <tab-bar
         :num-tabs="3"
         :selected-tab-model="selectedTab"
-        @tabChange="selectedTab = $event"
+        @tabChange="(n) => (selectedTab = n)"
       >
         <template #firstTab>
           <span> Premies </span>
@@ -83,7 +83,7 @@
     </v-row>
     <grouped-card-list
       v-if="selectedAccount"
-      :items="creditHistory"
+      :items="creditHistory.data"
       :get-date="(t) => t.transactionTime"
     >
       <template #card="{ item, index }">
@@ -100,19 +100,21 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import CreditHistoryLine from '@/components/profile/CreditHistoryLine.vue'
-import { isBottomVisible } from '@/utils/scroll'
 import * as uiStore from '@/store/ui'
 import * as bsStore from '@/store/banker-service'
 import GroupedCardList from '@/components/common/GroupedCardList'
 import TabBar from '@/components/common/TabBar'
 import { creditAmountInEuro } from '@/utils/Utils'
+import constants from '@/constants/constants'
+import moment from 'moment'
+import { emptyPage } from '@/store/storeHelper'
 
-// const { fetchBankerStatementsMaxResults } = constants
+const { fetchBankerStatementsMaxResults } = constants
 
 const SYSTEM_ACCOUNTS = [
   // 0
   {
-    ncan: 'premiums',
+    ncan: constants.PREMIUM_ACCOUNT_NCAN,
     title: 'Premieuitgifte',
     transaction: true,
     description: `Het beschikbaar aantal credits voor het belonen van deelnemers voor het volbrengen van bepaalde taken`,
@@ -120,7 +122,7 @@ const SYSTEM_ACCOUNTS = [
   },
   // 1
   {
-    ncan: 'reservations',
+    ncan: constants.RESERVATIONS_ACCOUNT_NCAN,
     title: 'Reserveringen',
     transaction: false,
     description: `Het aantal credits dat door deelnemers is gereserveerd
@@ -129,7 +131,7 @@ const SYSTEM_ACCOUNTS = [
   },
   // 2
   {
-    ncan: 'banking-reserve',
+    ncan: constants.BANKING_ACCOUNT_NCAN,
     title: 'Kas',
     transaction: false,
     description: `Het balanstotaal van de boekhouding. Dit aantal euro's moet minimaal op de bankrekening staan`,
@@ -157,11 +159,7 @@ export default {
     return {
       selectedPurpose: {},
       selectedTab: 0,
-      bottom: false,
-      // eslint-disable-next-line no-unused-vars
-      scrollHandler: (event) => {
-        this.bottom = isBottomVisible()
-      },
+      until: null,
     }
   },
   computed: {
@@ -177,18 +175,18 @@ export default {
       return [PURPOSE_LIST[0]].concat(specificPurposes)
     },
     selectedAccount() {
-      return this.systemAccounts.find(
+      return this.systemAccounts.data.find(
         (acc) => acc.ncan === this.selectedTabEntry.ncan
       )
     },
     creditHistory() {
-      return bsStore.getters.getAccountStatements?.data ?? []
+      return bsStore.getters.getAccountStatements
     },
     exchangeRate() {
       return bsStore.getters.getBankerSettings?.exchangeRate ?? 0
     },
     systemAccounts() {
-      return bsStore.getters.getSystemAccounts?.data ?? []
+      return bsStore.getters.getSystemAccounts
     },
   },
   watch: {
@@ -196,21 +194,13 @@ export default {
       this.selectedPurpose = PURPOSE_LIST[0]
     },
     selectedAccount() {
-      bsStore.mutations.setAccountStatements(null)
-      this.refreshCreditHistory()
+      bsStore.mutations.setAccountStatements(emptyPage)
+      this.fetchCreditHistory()
     },
     selectedPurpose() {
       if (this.selectedAccount) {
-        bsStore.mutations.setAccountStatements(null)
-        this.refreshCreditHistory()
-      }
-    },
-    bottom(bottom) {
-      if (bottom) {
-        // fetch more statements when window bottom is visible
-        bsStore.actions.fetchMoreUserStatements({
-          accountId: this.selectedAccount.id,
-        })
+        bsStore.mutations.setAccountStatements(emptyPage)
+        this.fetchCreditHistory()
       }
     },
   },
@@ -218,24 +208,29 @@ export default {
     this.selectedPurpose = this.purposeList[0]
     uiStore.mutations.showBackButton()
     bsStore.actions.fetchBankerSettings()
-    bsStore.mutations.setAccountStatements(null)
+    bsStore.mutations.setAccountStatements(emptyPage)
     bsStore.actions.fetchSystemAccounts()
-  },
-  mounted() {
-    window.addEventListener('scroll', this.scrollHandler)
-  },
-  beforeDestroy() {
-    window.removeEventListener('scroll', this.scrollHandler)
+    this.until = moment().format()
   },
   methods: {
-    refreshCreditHistory() {
-      bsStore.actions.fetchFirstStatements({
-        accountId: this.selectedAccount.id,
-        purpose: this.selectedPurpose.value,
-      })
+    fetchCreditHistory(offset = 0) {
+      if (offset === 0 || offset < this.creditHistory.totalCount) {
+        // To avoid inconsistent paging, add the until parameter
+        bsStore.actions.fetchStatements({
+          accountId: this.selectedAccount.id,
+          purpose: this.selectedPurpose.value,
+          maxResults: fetchBankerStatementsMaxResults,
+          until: this.until,
+          offset: offset,
+        })
+      }
     },
     amountInEuro(amountInCredits) {
       return creditAmountInEuro(amountInCredits, this.exchangeRate)
+    },
+    onLowWater() {
+      // fetch more statements when window bottom is visible
+      this.fetchCreditHistory(this.creditHistory.data.length)
     },
   },
 }
