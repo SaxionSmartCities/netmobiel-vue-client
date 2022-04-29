@@ -45,8 +45,6 @@ function fetchActualConversations(context: ActionContext, payload: any) {
       return emptyPage
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van de conversaties.'
       )
@@ -66,8 +64,6 @@ function fetchArchivedConversations(context: ActionContext, payload: any) {
       return emptyPage
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       // Omit the message as the conversations are fetched in twins
       // The new conversations listing would be in error too, probably
       // uiStore.actions.queueErrorNotification(
@@ -93,8 +89,6 @@ function fetchConversation(context: ActionContext, { id }: any) {
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van de conversatie.'
       )
@@ -126,9 +120,10 @@ function fetchConversationByContext(
       }
     })
     .catch(function (error) {
-      // TODO: Proper error handling.
-      // eslint-disable-next-line
-      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van de conversatie.'
+      )
+      return null
     })
 }
 function fetchMessages(
@@ -156,10 +151,8 @@ function fetchMessages(
     .catch(function (error) {
       mutations.setMessages(emptyPage)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van de meldingen.'
+        'Fout bij het ophalen van de berichten.'
       )
-      // eslint-disable-next-line
-      console.log(error)
     })
 }
 
@@ -191,8 +184,6 @@ function fetchMessage(context: ActionContext, { id }: any) {
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van het bericht.'
       )
-      // eslint-disable-next-line
-      console.log(error)
     })
 }
 

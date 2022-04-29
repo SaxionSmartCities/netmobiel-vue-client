@@ -25,8 +25,6 @@ function fetchByLicensePlate(context: ActionContext, payload: string): void {
       mutations.setCarSearchResult(resp.data)
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueInfoNotification(
         `Geen auto gevonden voor kenteken ${plate}.`
       )
@@ -47,10 +45,8 @@ function fetchCars(context: ActionContext) {
       }
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueInfoNotification(
-        `Onbekende fout bij ophalen van de autos.`
+        `Onbekende fout bij ophalen van de auto's.`
       )
     })
 }
@@ -67,9 +63,7 @@ function submitCar(context: ActionContext, payload: Car) {
       fetchCars(context)
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
-      if (!!error.response && error.response.status == 409) {
+      if (error.response?.status == 409) {
         uiStore.actions.queueErrorNotification(
           `Kenteken ${payload.licensePlate} is al geregistreerd.`
         )
@@ -89,8 +83,6 @@ function fetchCar(context: ActionContext, payload: any) {
       mutations.setSelectedCar(resp.data)
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       mutations.setSelectedCar({})
     })
 }
@@ -105,20 +97,15 @@ function removeCar(context: ActionContext, payload: Car) {
     })
     .then(function (resp) {
       fetchCars(context)
-      // eslint-disable-next-line
-      console.log(resp)
-      fetchCars(context)
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
-      if (!!error.response && error.response.status == 403) {
+      if (error.response?.status == 403) {
         uiStore.actions.queueErrorNotification(
           `Niet toegestaan auto (${payload.licensePlate}) te verwijderen.`
         )
-      } else if (!!error.response && error.response.status == 404) {
+      } else if (error.response?.status == 404) {
         uiStore.actions.queueErrorNotification(
-          `Onbekende kenteken ${payload.licensePlate}.`
+          `Onbekend kenteken ${payload.licensePlate}.`
         )
       }
     })
@@ -166,8 +153,6 @@ function submitRide(context: ActionContext, payload: any) {
       fetchRides(context, { offset: 0, maxResults: 10 })
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het versturen van uw rit-aanbod.'
       )
@@ -193,8 +178,6 @@ function updateRide(context: ActionContext, payload: any) {
       fetchRide(context, { id: ride.rideRef })
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het wijzigen van uw rit.'
       )
@@ -228,8 +211,6 @@ function fetchRides(
       }
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van uw rit-aanbod.'
       )
@@ -249,9 +230,7 @@ function fetchRide(context: ActionContext, payload: any) {
       mutations.setSelectedRide(resp.data)
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
-      uiStore.actions.queueErrorNotification('Fout bij het ophalen van uw rit.')
+      uiStore.actions.queueErrorNotification('Fout bij het ophalen van je rit.')
     })
 }
 
@@ -274,8 +253,6 @@ function confirmBookedRide(context: ActionContext, payload: any) {
       }
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het bevestigen van de rit.'
       )
@@ -301,10 +278,8 @@ function rejectBookedRide(context: ActionContext, payload: any) {
       }
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het bevestigen van de rit.'
+        'Fout bij het afwijzen van de rit.'
       )
     })
 }
@@ -327,9 +302,7 @@ function unconfirmBookedRide(context: ActionContext, payload: any) {
       }
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
-      if (error.response.status === 403) {
+      if (error.response?.status === 403) {
         uiStore.actions.queueErrorNotification(
           'De rit is reeds afgewezen. Vraag de passagier om de bevestiging ongedaan te maken.'
         )
@@ -361,10 +334,8 @@ function deleteRide(context: ActionContext, payload: any) {
       }
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het verwijderen van uw rit-aanbod.'
+        'Fout bij het verwijderen van je rit(ten).'
       )
     })
 }
@@ -402,10 +373,8 @@ function fetchRideProposals(
       mutations.setProposedRides(resp.data)
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van uw rit-aanbod.'
+        'Fout bij het ophalen van je rit-aanbod.'
       )
     })
 }

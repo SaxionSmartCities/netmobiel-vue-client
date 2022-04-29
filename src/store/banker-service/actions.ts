@@ -102,8 +102,6 @@ async function updateCharity(context: ActionContext, charity: Charity) {
     }
     return true
   } catch (error) {
-    // eslint-disable-next-line
-    console.log(error)
     await uiStore.actions.queueErrorNotification(
       'Fout bij het opslaan van het goede doel.'
     )
@@ -131,8 +129,6 @@ async function updateCharityImage(context: ActionContext, { id, image }: any) {
     }
     return true
   } catch (error) {
-    // eslint-disable-next-line
-    console.log(error)
     await uiStore.actions.queueErrorNotification(
       'Fout bij het opslaan van de afbeelding van het goede doel.'
     )
@@ -153,8 +149,6 @@ async function removeCharityImage(context: ActionContext, id: string) {
       console.warn(`removeCharityImage: Unexpected status ${resp.status}`)
     }
   } catch (error) {
-    // eslint-disable-next-line
-    console.log(error)
     await uiStore.actions.queueErrorNotification(
       'Fout bij het verwijderen van de afbeelding van het goede doel.'
     )
@@ -178,8 +172,6 @@ async function updateCharityAccount(
     }
     return true
   } catch (error) {
-    // eslint-disable-next-line
-    console.log(error)
     await uiStore.actions.queueErrorNotification(
       'Fout bij het opslaan van de financiële gegevens van het goede doel.'
     )
@@ -458,8 +450,6 @@ async function updatePersonalAccount(context: ActionContext, account: Account) {
     }
     return true
   } catch (error) {
-    // eslint-disable-next-line
-    console.log(error)
     await uiStore.actions.queueErrorNotification(
       'Fout bij het opslaan van de financiële gegevens.'
     )
@@ -640,8 +630,6 @@ async function updateAccount(context: ActionContext, account: Account) {
     }
     return true
   } catch (error) {
-    // eslint-disable-next-line
-    console.log(error)
     await uiStore.actions.queueErrorNotification(
       'Fout bij het opslaan van de financiële gegevens.'
     )
