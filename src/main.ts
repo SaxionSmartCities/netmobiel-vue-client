@@ -28,7 +28,11 @@ function addStaticResponseInterceptor() {
   axios.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response.status === 401) {
+      if (!error.response) {
+        // Probably a CORS error of some kind
+        // eslint-disable-next-line
+        console.error(error)
+      } else if (error.response.status === 401) {
         // eslint-disable-next-line
         console.warn(
           `No authorization for ${error.config.method?.toUpperCase()} ${
@@ -41,12 +45,12 @@ function addStaticResponseInterceptor() {
             throw error
           }
         })
-      } else if (error.response.status === 500) {
-        const data = error.response?.data
-        if (data && typeof data === 'string' && data.includes('ECONNREFUSED')) {
-          // eslint-disable-next-line
-          console.warn('Network issue detected')
-        }
+      } else if (error.response.status < 500) {
+        // eslint-disable-next-line
+        console.warn(error)
+      } else {
+        // eslint-disable-next-line
+        console.error(error)
       }
       return Promise.reject(error)
     }

@@ -310,9 +310,7 @@ export default {
             this.scrollToBottomMessageContainer(false)
           })
         })
-        .catch(function (error) {
-          // eslint-disable-next-line
-          console.log(error)
+        .catch(() => {
           uiStore.actions.queueErrorNotification(
             'Versturen van bericht is niet gelukt.'
           )

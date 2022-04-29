@@ -68,7 +68,7 @@ function searchTripPlan(
     .catch((error) => {
       mutations.setPlanningStatus({ status: 'FAILED' })
       uiStore.actions.queueErrorNotification(
-        error.response ? error.response.data.message : 'Network failure'
+        error.response?.data.message ?? 'Network failure'
       )
     })
 }
@@ -101,7 +101,7 @@ function createShoutOutTripPlan(
     .then((response) => {
       let shoutOutId
       if (response.status == 201) {
-        const message = 'Oproep naar de community is geplaatst'
+        const message = 'Je oproep naar de community is geplaatst'
         uiStore.actions.queueInfoNotification(message)
         shoutOutId = getCreatedObjectIdFromResponse(response)
       } else {
@@ -111,10 +111,8 @@ function createShoutOutTripPlan(
       return shoutOutId
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het opslaan van uw oproep.'
+        'Fout bij het opslaan van je oproep.'
       )
     })
 }
@@ -135,8 +133,6 @@ function fetchTripPlan(context: ActionContext, { id }: any) {
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification('Fout bij het ophalen van de rit.')
     })
 }
@@ -173,8 +169,6 @@ function fetchMyShoutOutTripPlans(
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van de oproepen.'
       )
@@ -207,8 +201,6 @@ function cancelTripPlan(
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het verwijderen van uw oproep.'
       )
@@ -253,9 +245,7 @@ function createTrip(context: ActionContext, itinerary: Itinerary) {
     })
     .catch((error) => {
       mutations.setBookingStatus({ status: 'FAILED' })
-      // eslint-disable-next-line
-      console.log(error)
-      if (error.response.status == 402) {
+      if (error.response?.status == 402) {
         uiStore.actions.queueErrorNotification(
           'Je hebt onvoldoende credits voor deze rit'
         )
@@ -298,10 +288,8 @@ function fetchTrips(
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van opgeslagen ritten.'
+        'Fout bij het ophalen van je ritten.'
       )
     })
 }
@@ -322,8 +310,6 @@ function fetchCancelledTrips(context: ActionContext) {
       mutations.setCancelledTrips(response.data)
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van geannuleerde ritten.'
       )
@@ -348,8 +334,6 @@ function fetchTrip(context: ActionContext, payload: any) {
       return response.data
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification('Fout bij het ophalen van de rit.')
     })
 }
@@ -384,8 +368,6 @@ function deleteTrip(context: ActionContext, payload: any) {
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het annuleren van de rit'
       )
@@ -411,10 +393,8 @@ function confirmTrip(context: ActionContext, payload: any) {
       }
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het bevestigen van uw rit.'
+        'Fout bij het bevestigen van je rit.'
       )
     })
 }
@@ -438,10 +418,8 @@ function rejectTrip(context: ActionContext, payload: any) {
       }
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het afwijzen van uw rit.'
+        'Fout bij het afwijzen van je rit.'
       )
     })
 }
@@ -466,13 +444,11 @@ function unconfirmTrip(context: ActionContext, payload: any) {
       }
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
-      if (error.response.status === 403) {
+      if (error.response?.status === 403) {
         uiStore.actions.queueErrorNotification(
           'De rit is reeds afgerekend. Vraag de chauffeur om de bevestiging ongedaan te maken.'
         )
-      } else if (error.response.status == 402) {
+      } else if (error.response?.status == 402) {
         uiStore.actions.queueErrorNotification(
           'Je hebt onvoldoende credits om deze rit opnieuw te reserveren'
         )
@@ -506,8 +482,6 @@ function fetchShoutOut(context: ActionContext, { id }: any) {
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van de oproep.'
       )
@@ -569,8 +543,6 @@ function fetchShoutOuts(
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van de oproepen'
       )
@@ -610,7 +582,7 @@ function planShoutOutSolution(
     .catch((error) => {
       mutations.setPlanningStatus({ status: 'FAILED' })
       uiStore.actions.queueErrorNotification(
-        error.response ? error.response.data.message : 'Network failure'
+        error.response?.data.message ?? 'Network failure'
       )
     })
 }
@@ -637,10 +609,8 @@ function addShoutOutTravelOffer(
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het opslaan van uw aanbod.'
+        'Fout bij het opslaan van je aanbod.'
       )
     })
 }
