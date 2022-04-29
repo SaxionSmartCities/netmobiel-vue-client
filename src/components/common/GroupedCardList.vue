@@ -50,7 +50,7 @@ export default {
       })
     },
     formatToCategoryDate(date) {
-      return moment(date, 'LL').locale('NL').format('dddd DD MMMM')
+      return moment(date, 'LL').locale('NL').format('dddd D MMMM')
     },
   },
 }
