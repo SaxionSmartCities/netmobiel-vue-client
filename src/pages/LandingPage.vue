@@ -82,7 +82,7 @@ export default {
             return this.startRegistration()
           } else if (status >= 500) {
             return uiStore.actions.queueErrorNotification(
-              'De Netmobiel server is momenteel niet beschikbaar,probeer het later opnieuw'
+              'De Netmobiel server is momenteel niet beschikbaar, probeer het later opnieuw'
             )
           }
         })
