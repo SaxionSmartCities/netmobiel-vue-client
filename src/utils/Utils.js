@@ -1,6 +1,9 @@
 import constants from '@/constants/constants'
 import * as PhoneNumber from 'awesome-phonenumber'
-import { runningInsideFlutterApp } from '@/utils/NetmobielApp'
+import {
+  runningInsideFlutterApp,
+  runningInsideFlutterApp2022,
+} from '@/utils/NetmobielApp'
 
 function upperCaseFirst(input) {
   return input.charAt(0).toUpperCase() + input.slice(1)
@@ -191,6 +194,10 @@ function allowExternalLinks() {
   return !runningInsideFlutterApp()
 }
 
+function isUpdateImageSupported() {
+  return !runningInsideFlutterApp2022()
+}
+
 export {
   upperCaseFirst,
   generateHeaders,
@@ -209,4 +216,5 @@ export {
   isValidPhoneNumber,
   formatPhoneNumber,
   allowExternalLinks,
+  isUpdateImageSupported,
 }
