@@ -615,6 +615,28 @@ function addShoutOutTravelOffer(
     })
 }
 
+// ============  REPORTS  ================
+
+function fetchUserReport(context: ActionContext, { profileRef }: any) {
+  const URL = `${PLANNER_BASE_URL}/users/${profileRef}/report`
+  axios
+    .get(URL, {
+      headers: generateHeaders(
+        GRAVITEE_PLANNER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    .then((response) => {
+      if (response.status == 200) {
+        mutations.setSelectedUserReport(response.data)
+      }
+    })
+    .catch((error) => {
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van de rapportage.'
+      )
+    })
+}
+
 export const buildActions = (
   isBuilder: ModuleBuilder<ItineraryState, RootState>
 ) => {
@@ -641,5 +663,8 @@ export const buildActions = (
     fetchShoutOut: isBuilder.dispatch(fetchShoutOut),
     planShoutOutSolution: isBuilder.dispatch(planShoutOutSolution),
     addShoutOutTravelOffer: isBuilder.dispatch(addShoutOutTravelOffer),
+
+    // Reporting
+    fetchUserReport: isBuilder.dispatch(fetchUserReport),
   }
 }

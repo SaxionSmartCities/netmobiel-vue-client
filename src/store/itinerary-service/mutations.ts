@@ -1,15 +1,13 @@
 import { ModuleBuilder } from 'vuex-typex'
 import { RootState } from '@/store/Rootstate'
 import {
-  Itinerary,
   ItineraryState,
-  PlanningRequest,
-  SubmitStatus,
-  TripPlan,
-  Trip,
   SearchCriteria,
+  SubmitStatus,
+  Trip,
+  TripPlan,
+  UserReport,
 } from '@/store/itinerary-service/types'
-import { Moment } from 'moment'
 import { Page } from '@/store/types'
 import { assignPageResults } from '@/store/storeHelper'
 
@@ -106,6 +104,13 @@ function setCancelledTrips(state: ItineraryState, trips: Page<Trip>) {
   state.cancelledTrips = assignPageResults(state.cancelledTrips, trips)
 }
 
+function setSelectedUserReport(
+  state: ItineraryState,
+  userReport: UserReport | null
+) {
+  state.userReport = userReport
+}
+
 export const buildMutations = (
   isBuilder: ModuleBuilder<ItineraryState, RootState>
 ) => {
@@ -133,5 +138,8 @@ export const buildMutations = (
     setPastShoutOuts: isBuilder.commit(setPastShoutOuts),
     setMyShoutOuts: isBuilder.commit(setMyShoutOuts),
     setMyPastShoutOuts: isBuilder.commit(setMyPastShoutOuts),
+
+    // Reports
+    setSelectedUserReport: isBuilder.commit(setSelectedUserReport),
   }
 }

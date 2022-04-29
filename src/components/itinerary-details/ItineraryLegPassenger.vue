@@ -1,6 +1,6 @@
 <template>
   <v-row no-gutters>
-    <v-col>
+    <v-col class="clickable-item" @click="onClickPassenger">
       <external-user-image
         :managed-identity="passenger.managedIdentity"
         :image-size="54"
@@ -20,6 +20,16 @@ export default {
   components: { ExternalUserImage },
   props: {
     passenger: { type: Object, required: true },
+  },
+  methods: {
+    onClickPassenger() {
+      this.$router.push({
+        name: 'userProfile',
+        params: {
+          profileId: this.passenger.managedIdentity,
+        },
+      })
+    },
   },
 }
 </script>

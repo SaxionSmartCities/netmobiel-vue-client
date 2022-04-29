@@ -90,7 +90,7 @@ function fetchMyProfile(context: ActionContext) {
       return Promise.resolve(response.status)
     })
     .catch((error) => {
-      // Cannot show error message, landin page will try to fetch profile
+      // Cannot show error message, landing page will try to fetch profile
       // uiStore.actions.queueErrorNotification(
       //   `Fout bij het ophalen van het profiel`
       // )
