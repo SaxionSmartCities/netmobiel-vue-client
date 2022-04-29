@@ -131,28 +131,38 @@ export default {
       )
     },
   },
-  mounted() {
-    psStore.actions.fetchPublicProfile({
-      profileId: this.profileId,
-    })
-    psStore.actions.fetchUserCompliments({
-      receiverId: this.profileId,
-    })
-    psStore.actions.fetchUserReviews({
-      receiverId: this.profileId,
-    })
-    isStore.mutations.setSelectedUserReport(null)
-    isStore.actions.fetchUserReport({
-      profileRef: this.keycloakUrn,
-    })
-    bsStore.mutations.setTopDonors(emptyPage)
-    bsStore.actions.fetchTopDonors({
-      user: this.keycloakUrn,
-      maxResults: 1,
-    })
+  watch: {
+    profileId() {
+      if (this.profileId) {
+        this.refresh()
+      }
+    },
   },
   created() {
-    uiStore.mutations.showBackButton()
+    this.refresh()
+  },
+  methods: {
+    refresh() {
+      uiStore.mutations.showBackButton()
+      psStore.actions.fetchPublicProfile({
+        profileId: this.profileId,
+      })
+      psStore.actions.fetchUserCompliments({
+        receiverId: this.profileId,
+      })
+      psStore.actions.fetchUserReviews({
+        receiverId: this.profileId,
+      })
+      isStore.mutations.setSelectedUserReport(null)
+      isStore.actions.fetchUserReport({
+        profileRef: this.keycloakUrn,
+      })
+      bsStore.mutations.setTopDonors(emptyPage)
+      bsStore.actions.fetchTopDonors({
+        user: this.keycloakUrn,
+        maxResults: 1,
+      })
+    },
   },
 }
 </script>

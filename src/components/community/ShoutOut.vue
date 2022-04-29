@@ -1,11 +1,10 @@
 <template>
-  <v-card
-    outlined
-    class="pa-2"
-    :class="{ 'travel-offer': hasOffer }"
-    @click="onShoutOutSelected"
-  >
-    <v-row v-if="!isUserTraveller" class="mb-2">
+  <v-card outlined class="pa-2" :class="{ 'travel-offer': hasOffer }">
+    <v-row
+      v-if="!isUserTraveller"
+      class="mb-2 clickable-item"
+      @click="onClickProfile(travellerIdentity)"
+    >
       <v-col class="shrink">
         <external-user-image :managed-identity="travellerIdentity" />
       </v-col>
@@ -72,7 +71,13 @@
         </v-row>
       </v-col>
       <v-col d-flex class="text-right" align-self="center">
-        <v-btn small rounded depressed color="button">
+        <v-btn
+          small
+          rounded
+          depressed
+          color="button"
+          @click="onShoutOutSelected"
+        >
           {{ nextAction }}
         </v-btn>
       </v-col>
@@ -215,6 +220,14 @@ export default {
       this.$emit('shoutOutSelected', {
         shoutOut: this.shoutOut,
         proposedRide: this.proposedRide,
+      })
+    },
+    onClickProfile(managedIdentity) {
+      this.$router.push({
+        name: 'userProfile',
+        params: {
+          profileId: managedIdentity,
+        },
       })
     },
   },
