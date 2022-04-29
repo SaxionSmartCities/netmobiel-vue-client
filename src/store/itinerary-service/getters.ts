@@ -65,6 +65,10 @@ export const buildGetters = (
     return state.myPastShoutOuts
   }, 'getMyPastShoutOuts')
 
+  const getSelectedUserReport = isBuilder.read((state: ItineraryState) => {
+    return state.userReport
+  }, 'getSelectedUserReport')
+
   return {
     // Trip plans & searching
     get getSearchCriteria() {
@@ -115,6 +119,11 @@ export const buildGetters = (
     },
     get getMyPastShoutOuts() {
       return getMyPastShoutOuts()
+    },
+
+    // Reports
+    get getSelectedUserReport() {
+      return getSelectedUserReport()
     },
   }
 }

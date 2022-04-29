@@ -37,6 +37,7 @@ export class ItineraryState {
       message: '',
     },
   }
+  userReport: UserReport | null = null
 }
 
 export interface Location {
@@ -189,4 +190,14 @@ export interface Leg {
   cancelledByProvider?: boolean
   // If set, the reference to the shout-out that this leg resolves
   shoutOutRef?: string
+}
+
+export interface ModalityCount {
+  modality: string
+  count: number
+}
+
+export interface UserReport {
+  tripsAsDriver: ModalityCount[] | undefined
+  tripsAsPassenger: ModalityCount[] | undefined
 }

@@ -290,6 +290,7 @@ async function fetchTopDonors(context: ActionContext, payload: any) {
         GRAVITEE_BANKER_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
       params: {
+        user: payload?.user,
         charity: payload?.charity,
         offset: payload?.offset,
         maxResults: payload?.maxResults,
