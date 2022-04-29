@@ -18,7 +18,9 @@
           class="d-flex flex-row px-0 pt-0 pb-0 text-subtitle-2 font-weight-bold"
           :class="{ 'justify-start': !sendByMe, 'justify-end': sendByMe }"
         >
+          <v-icon v-if="sendByMe">outgoing_mail</v-icon>
           <div>{{ userName }}</div>
+          <v-icon v-if="!sendByMe">outgoing_mail</v-icon>
         </v-card-subtitle>
         <v-card-text class="pa-0">
           <div>{{ message.body }}</div>
