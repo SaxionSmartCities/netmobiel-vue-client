@@ -106,12 +106,13 @@
               <v-file-input
                 ref="uploader"
                 v-model="imageFile"
-                accept="image/jpeg,image/gif, image/png"
+                accept="image/jpeg,image/gif,image/png"
                 class="bg-white"
                 hide-details="auto"
                 label="Afbeelding"
                 prepend-icon="image"
                 :loading="isUploadingFile ? 'primary' : false"
+                :disabled="!canUploadFile"
                 clearable
                 outlined
                 dense
@@ -120,11 +121,7 @@
                 @click:clear="clearImage"
               />
             </v-col>
-            <v-col
-              cols="8"
-              class="clickable-item"
-              @click="$refs.uploader.$refs.input.click()"
-            >
+            <v-col cols="8" class="clickable-item" @click="onShowFileDialog">
               <v-img
                 v-if="charityImage"
                 class="mx-auto"
@@ -218,6 +215,10 @@
           </v-btn>
         </v-col>
       </v-row>
+      <update-image-issue-dialog
+        :show-dialog="showImageUploadIssue"
+        @close="showImageUploadIssue = false"
+      />
     </content-pane>
   </v-form>
 </template>
@@ -229,11 +230,16 @@ import * as uiStore from '@/store/ui'
 import SearchLocation from '@/components/search/SearchLocation'
 import DateMenuSelector from '@/components/common/DateMenuSelector'
 import moment from 'moment'
-import { geoLocationToPlace, geoPlaceToCriteria } from '@/utils/Utils'
+import {
+  geoLocationToPlace,
+  geoPlaceToCriteria,
+  isUpdateImageSupported,
+} from '@/utils/Utils'
 import * as gsStore from '@/store/geocoder-service'
 import { scaleImageDown } from '@/utils/image_scaling'
 import defaultCharityImage from '@/assets/achterhoek_background.jpg'
 import * as ibantools from 'ibantools'
+import UpdateImageIssueDialog from '@/components/dialogs/UpdateImageIssueDialog'
 
 export default {
   name: 'CharityAdminPage',
@@ -241,6 +247,7 @@ export default {
     ContentPane,
     SearchLocation,
     DateMenuSelector,
+    UpdateImageIssueDialog,
   },
   props: {
     charityId: { type: String, required: false, default: '' },
@@ -249,6 +256,7 @@ export default {
     return {
       valid: true,
       isUploadingFile: false,
+      showImageUploadIssue: false,
       imageFile: null,
       // If set to null then clear the image
       image: undefined,
@@ -278,6 +286,9 @@ export default {
     }
   },
   computed: {
+    canUploadFile() {
+      return isUpdateImageSupported()
+    },
     selectedCharity() {
       return bsStore.getters.getSelectedCharity
     },
@@ -323,6 +334,18 @@ export default {
     // this.this.$refs.form.resetValidation()
   },
   methods: {
+    onShowFileDialog() {
+      if (this.isUploadingFile || this.showImageUploadIssue) {
+        this.isUploadingFile = false
+        this.showImageUploadIssue = false
+      } else {
+        if (this.canUploadFile) {
+          this.$refs.uploader.$refs.input.click()
+        } else {
+          this.showImageUploadIssue = true
+        }
+      }
+    },
     isValidIBAN(input) {
       if (!input) {
         // No IBAN is also a valid IBAN

@@ -9,14 +9,17 @@
               :avatar-size="100"
               :profile-image="profileImage"
             ></round-user-image>
-            <a class="caption bewerk" @click="showUploadFile = !showUploadFile">
-              Bewerk
-            </a>
+            <a class="caption bewerk" @click="onShowFileDialog"> Bewerk </a>
             <!--UPLOAD-->
             <div v-if="showUploadFile" class="text-center">
               <label for="file-input" class="custom-file-upload caption">
                 Upload afbeelding
-                <input id="file-input" type="file" @change="readFile" />
+                <input
+                  id="file-input"
+                  type="file"
+                  accept="image/jpeg,image/gif,image/png"
+                  @change="readFile"
+                />
                 <v-progress-circular
                   v-if="isUploadingFile"
                   indeterminate
@@ -130,17 +133,22 @@
       :show-dialog="dialogIsVisible"
       @close="dialogIsVisible = false"
     />
+    <update-image-issue-dialog
+      :show-dialog="showImageUploadIssue"
+      @close="showImageUploadIssue = false"
+    />
   </content-pane>
 </template>
 
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import RoundUserImage from '@/components/common/RoundUserImage'
-import { scaleImageDown } from '../../utils/image_scaling'
+import { scaleImageDown } from '@/utils/image_scaling'
 import * as psStore from '@/store/profile-service'
 import config from '@/config/config'
 import ExternalLinkBlockedDialog from '@/components/dialogs/ExternalLinkBlockedDialog'
-import { allowExternalLinks } from '@/utils/Utils'
+import UpdateImageIssueDialog from '@/components/dialogs/UpdateImageIssueDialog'
+import { allowExternalLinks, isUpdateImageSupported } from '@/utils/Utils'
 
 const CREDITS_ENABLED = config.CREDITS_ENABLED
 
@@ -150,11 +158,13 @@ export default {
     ContentPane,
     RoundUserImage,
     ExternalLinkBlockedDialog,
+    UpdateImageIssueDialog,
   },
   data() {
     return {
       rating: 4,
       showUploadFile: false,
+      showImageUploadIssue: false,
       isUploadingFile: false,
       creditsEnabled: CREDITS_ENABLED || false,
       items: [
@@ -209,6 +219,18 @@ export default {
     },
   },
   methods: {
+    onShowFileDialog() {
+      if (this.showUploadFile || this.showImageUploadIssue) {
+        this.showUploadFile = false
+        this.showImageUploadIssue = false
+      } else {
+        if (isUpdateImageSupported()) {
+          this.showUploadFile = true
+        } else {
+          this.showImageUploadIssue = true
+        }
+      }
+    },
     navTo(name) {
       this.$router.push({ name: name })
     },

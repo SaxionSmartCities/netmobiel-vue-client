@@ -1,11 +1,17 @@
 import axios, { AxiosError, AxiosRequestHeaders } from 'axios'
 import config from '@/config/config'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
-import { Profile, ProfileState } from '@/store/profile-service/types'
+import {
+  Profile,
+  ProfileState,
+  PublicProfile,
+} from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { getters, mutations } from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
 import { generateHeaders } from '@/utils/Utils'
+import { Page } from '@/store/types'
+import { emptyPage } from '@/store/storeHelper'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -31,9 +37,7 @@ function createProfile(
       return Promise.resolve()
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
-      const status = error.response.status
+      const status = error.response?.status
       let errorMsg
       if (status === 422) {
         errorMsg = 'Ontbrekende data (email, voornaam of achternaam).'
@@ -42,7 +46,7 @@ function createProfile(
       } else if (status === 409) {
         errorMsg = 'Je bent al geregistreerd bij Netmobiel.'
       } else {
-        errorMsg = error.response.data.message || error.response.data
+        errorMsg = error.response?.data.message ?? 'Netwerkstoring'
       }
       uiStore.actions.queueErrorNotification(errorMsg)
       return Promise.reject(status)
@@ -63,7 +67,7 @@ function fetchMyProfileStatus(context: ActionContext) {
       return response.status
     })
     .catch((error) => {
-      return Promise.reject(error.response.status)
+      return Promise.reject(error.response?.status ?? 500)
     })
 }
 
@@ -86,13 +90,11 @@ function fetchMyProfile(context: ActionContext) {
       return Promise.resolve(response.status)
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
-      // Cannot show error message, landin page will try to fetch profile
+      // Cannot show error message, landing page will try to fetch profile
       // uiStore.actions.queueErrorNotification(
       //   `Fout bij het ophalen van het profiel`
       // )
-      return Promise.reject(error.response.status)
+      return Promise.reject(error.response?.status ?? 500)
     })
 }
 
@@ -146,19 +148,15 @@ function fetchProfiles(context: ActionContext, { keyword }: any) {
       ) as AxiosRequestHeaders,
     })
     .then((response) => {
-      if (response.status == 200) {
-        const results = response.data.data.map((r: any) => {
-          return {
-            ...r,
-            image: createAbsoluteImageUrl(r.image),
-          }
+      if (response.status === 200) {
+        const results: Page<PublicProfile> = response.data
+        results.data.forEach((p) => {
+          p.image = createAbsoluteImageUrl(p.image)
         })
         mutations.setSearchResults(results)
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het zoeken naar profielen`
       )
@@ -174,15 +172,17 @@ function fetchMyFavoriteLocations(context: ActionContext) {
         GRAVITEE_PROFILE_SERVICE_API_KEY,
         delegatorId
       ) as AxiosRequestHeaders,
+      params: {
+        offset: 0,
+        maxResults: 100,
+      },
     })
     .then((response) => {
       if (response.status == 200) {
-        mutations.setFavoriteLocations(response.data.data)
+        mutations.setFavoriteLocations(response.data)
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het ophalen van de favorieten`
       )
@@ -203,8 +203,6 @@ function storeMyFavoriteLocation(context: ActionContext, { place }: any) {
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(`Fout bij opslaan van de favoriet`)
     })
 }
@@ -221,8 +219,6 @@ function deleteMyFavoriteLocation(context: ActionContext, { placeId }: any) {
       uiStore.actions.queueInfoNotification(`Favoriet is verwijderd`)
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het verwijderen van de favoriet`
       )
@@ -265,8 +261,7 @@ function storeMyFcmToken(context: ActionContext) {
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
+      // Ignore error
     })
 }
 
@@ -286,8 +281,6 @@ function updateMyProfile(context: ActionContext, profile: Profile) {
       return true
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het opslaan van het profiel`
       )
@@ -314,8 +307,6 @@ function updateMyProfileImage(context: ActionContext, { image }: any) {
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het vervangen van de profielfoto`
       )
@@ -329,7 +320,7 @@ function updateMyProfileImage(context: ActionContext, { image }: any) {
  */
 function fetchUserCompliments(context: ActionContext, { receiverId }: any) {
   const usr = getters.getPublicUsers.get(receiverId)
-  if (usr && usr.compliments.length > 0) {
+  if (usr && usr.compliments.data.length > 0) {
     return Promise.resolve(usr.compliments)
   }
   const URL = `${PROFILE_BASE_URL}/compliments`
@@ -344,16 +335,15 @@ function fetchUserCompliments(context: ActionContext, { receiverId }: any) {
       // @ts-ignore
       mutations.addPublicCompliments({
         profileId: receiverId,
-        compliments: response.data.data,
+        compliments: response.data,
       })
-      return response.data.data
+      return response.data
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het ophalen van de complimenten`
       )
+      return emptyPage
     })
 }
 
@@ -373,8 +363,6 @@ function fetchComplimentTypes(context: ActionContext) {
       mutations.setComplimentTypes(response.data.complimentTypes)
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het ophalen van de complimentdefinities`
       )
@@ -408,8 +396,6 @@ function addUserCompliments(
       mutations.clearPublicCompliments(receiver.id)
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het versturen van de complimenten`
       )
@@ -440,8 +426,6 @@ function removeUserCompliments(
       mutations.clearPublicCompliments(receiverId)
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het verwijderen van de complimenten`
       )
@@ -456,7 +440,7 @@ function removeUserCompliments(
  */
 function fetchUserReviews(context: ActionContext, { receiverId }: any) {
   const usr = getters.getPublicUsers.get(receiverId)
-  if (usr && usr.reviews.length > 0) {
+  if (usr && usr.reviews.data.length > 0) {
     return Promise.resolve(usr.reviews)
   }
   const URL = `${PROFILE_BASE_URL}/reviews`
@@ -471,16 +455,15 @@ function fetchUserReviews(context: ActionContext, { receiverId }: any) {
       // @ts-ignore
       mutations.addPublicReviews({
         profileId: receiverId,
-        reviews: response.data.data,
+        reviews: response.data,
       })
-      return response.data.data
+      return response.data
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het ophalen van de beoordelingen`
       )
+      return emptyPage
     })
 }
 
@@ -511,8 +494,6 @@ function addUserReview(
       mutations.clearPublicReviews(receiver.id)
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het opslaan van de beoordeling`
       )
@@ -542,8 +523,6 @@ function removeUserReview(
       mutations.clearPublicReviews(receiverId)
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het verwijderen van de beoordeling`
       )
@@ -580,8 +559,6 @@ function storeDelegation(
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij opslaan van de machtiging`
       )
@@ -607,8 +584,6 @@ function deleteDelegation(
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het verwijderen van de machtiging`
       )
@@ -644,8 +619,6 @@ function fetchDelegations(context: ActionContext, { delegateId }: any) {
       mutations.setDelegations(response.data.data)
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het ophalen van de machtigingen`
       )
@@ -689,11 +662,10 @@ function createSurveyInvitation(context: ActionContext) {
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het aanmaken van de registratie van de enquête`
       )
+      return Promise.resolve()
     })
 }
 
@@ -715,39 +687,8 @@ function fetchSurvey(context: ActionContext, id: string) {
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het opzoeken van de registratie van de enquête`
-      )
-    })
-}
-
-function fetchSurveyByProviderId(
-  context: ActionContext,
-  surveyProviderId: string
-) {
-  const delegatorId = context.rootState.ps.user.delegatorId
-  const URL = `${PROFILE_BASE_URL}/survey-interactions?surveyId=${surveyProviderId}`
-  return axios
-    .get(URL, {
-      headers: generateHeaders(
-        GRAVITEE_PROFILE_SERVICE_API_KEY,
-        delegatorId
-      ) as AxiosRequestHeaders,
-    })
-    .then((response) => {
-      if (response.status === 200 && response.data.count >= 1) {
-        return response.data.data[0]
-      } else {
-        return null
-      }
-    })
-    .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
-      uiStore.actions.queueErrorNotification(
-        `Fout bij het opzoeken van de enquête`
       )
     })
 }
@@ -766,8 +707,7 @@ function markSurveyRedirection(context: ActionContext, surveyId: string) {
       // Should be 204
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
+      // Ignore
     })
 }
 
@@ -785,8 +725,6 @@ function markSurveySubmitted(context: ActionContext, surveyId: string) {
       // Should be 204
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         `Fout bij het registreren van de afronding van de enquête`
       )
@@ -806,9 +744,7 @@ function fetchVersion(context: ActionContext) {
       return response.status
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
-      return error.response.status
+      return Promise.reject(error.response?.status ?? 500)
     })
 }
 

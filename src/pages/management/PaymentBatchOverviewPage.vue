@@ -1,11 +1,11 @@
 <template>
-  <content-pane>
+  <content-pane scrollable @low="onLowWater">
     <v-row>
       <v-col>
         <h1>Uitbetalingen</h1>
         <div class="caption">
           Uitbetalingen worden gedaan via internetbankieren. Door op de knop te
-          drukken worden de uitstaande opdrachten in een batchbestand verzameld.
+          drukken worden de uitstaande aanvragen in een batchbestand verzameld.
         </div>
       </v-col>
     </v-row>
@@ -15,7 +15,7 @@
           rounded
           outlined
           color="primary"
-          :disabled="pendingWithdrawals.length === 0"
+          :disabled="pendingWithdrawals.data.length === 0"
           @click="onNewPaymentBatch"
         >
           Nieuwe Uitbetaling
@@ -46,12 +46,16 @@
         </div>
       </v-col>
     </v-row>
-    <v-row v-if="pendingWithdrawals.length === 0">
-      <v-col>Er zijn momenteel geen verzoeken tot uitbetaling.</v-col>
+    <v-row>
+      <v-col v-if="pendingWithdrawals.data.length === 0"
+        >Er zijn momenteel geen aanvragen tot uitbetaling.</v-col
+      >
+      <v-col v-else>
+        <h2>Uitbetalingsaanvragen</h2>
+      </v-col>
     </v-row>
     <grouped-card-list
-      v-else
-      :items="pendingWithdrawals"
+      :items="pendingWithdrawals.data"
       :get-date="(w) => w.creationTime"
     >
       <template #card="{ item, index }">
@@ -60,7 +64,6 @@
           :withdrawal="item"
           :show-user="true"
           :show-cancel="false"
-          @cancel="onCancel(item)"
         ></withdrawal-history-line>
       </template>
     </grouped-card-list>
@@ -70,7 +73,7 @@
       </v-col>
     </v-row>
     <v-row
-      v-for="(pb, index) in paymentBatches"
+      v-for="(pb, index) in paymentBatches.data"
       :key="index"
       dense
       class="body-2 text-left text-gray clickable-item"
@@ -95,39 +98,6 @@
         >
       </v-col>
     </v-row>
-    <v-dialog v-model="showCancelDialog">
-      <v-card class="py-1 px-3">
-        <v-card-title class="headline">Verwijder Opdracht</v-card-title>
-        <v-card-text>
-          Wil je de opdracht annuleren om
-          {{ withdrawalToCancel && withdrawalToCancel.amountCredits }} credits
-          over te maken?
-        </v-card-text>
-        <v-card-actions class="justify-space-around">
-          <v-btn
-            large
-            rounded
-            depressed
-            color="button"
-            min-width="9em"
-            @click="confirmCancellation"
-          >
-            Verwijderen
-          </v-btn>
-          <v-btn
-            large
-            rounded
-            outlined
-            depressed
-            color="primary"
-            min-width="9em"
-            @click="closeCancelDialog"
-          >
-            Behouden
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </content-pane>
 </template>
 
@@ -147,16 +117,15 @@ export default {
   components: { ContentPane, GroupedCardList, WithdrawalHistoryLine },
   data() {
     return {
-      showCancelDialog: false,
-      withdrawalToCancel: null,
+      until: null,
     }
   },
   computed: {
     pendingWithdrawals() {
-      return bsStore.getters.getWithdrawals?.data ?? []
+      return bsStore.getters.getWithdrawals
     },
     paymentBatches() {
-      return bsStore.getters.getPaymentBatches?.data ?? []
+      return bsStore.getters.getPaymentBatches
     },
     user() {
       return bsStore.getters.getBankerUser
@@ -175,10 +144,27 @@ export default {
     uiStore.mutations.showBackButton()
     bsStore.actions.fetchSystemAccounts()
     bsStore.actions.fetchBankerUser()
-    bsStore.actions.fetchWithdrawals({ status: 'REQUESTED' })
-    bsStore.actions.fetchPaymentBatches()
+    this.until = moment().format()
+    this.fetchPendingWithdrawals()
+    this.fetchPaymentBatches()
   },
   methods: {
+    fetchPendingWithdrawals() {
+      bsStore.actions.fetchWithdrawals({
+        status: 'REQUESTED',
+        offset: 0,
+        maxResults: 100,
+      })
+    },
+    fetchPaymentBatches(offset = 0) {
+      if (offset === 0 || offset < this.paymentBatches.totalCount) {
+        bsStore.actions.fetchPaymentBatches({
+          offset: offset,
+          maxResults: constants.fetchPaymentBatchesMaxResults,
+          until: this.until,
+        })
+      }
+    },
     formatDateTime(dt) {
       return moment(dt).locale('nl').format('DD-MM-YYYY HH:mm')
     },
@@ -187,23 +173,6 @@ export default {
     },
     amountInEuro(amountInEurocents) {
       return amountInEuro(amountInEurocents)
-    },
-    onCancel(wr) {
-      this.withdrawalToCancel = wr
-      this.showCancelDialog = true
-    },
-    confirmCancellation() {
-      bsStore.actions
-        .cancelUserWithdrawal(this.withdrawalToCancel.urn)
-        .then((result) => {
-          if (result) {
-            this.showCancelDialog = false
-            bsStore.actions.fetchUserWithdrawals()
-          }
-        })
-    },
-    closeCancelDialog() {
-      this.showCancelDialog = false
     },
     onEditPaymentBatch(batch) {
       // Add the batch itself now. The withdrawals are added by the edit page
@@ -238,6 +207,9 @@ export default {
         : !account.ibanHolder
         ? 'Voeg naam rekeninghouder toe'
         : true
+    },
+    onLowWater() {
+      this.fetchPaymentBatches(this.paymentBatches.data.length)
     },
   },
 }

@@ -7,6 +7,7 @@ import { mutations } from '@/store/geocoder-service/index'
 import * as uiStore from '@/store/ui'
 import constants from '@/constants/constants'
 import { generateHeaders } from '@/utils/Utils'
+import { Page } from '@/store/types'
 
 type ActionContext = BareActionContext<GeoCoderState, RootState>
 
@@ -22,6 +23,19 @@ function isPhonetic(s: string) {
     .split(' ')
     .filter((elem) => elem.length <= 4)
   return memes.length > 1
+}
+
+function cleanUpSuggestions(
+  page: Page<GeoCoderSuggestion>
+): Page<GeoCoderSuggestion> {
+  let suggestions: GeoCoderSuggestion[] = page.data
+  suggestions = suggestions.filter((s) => !isPhonetic(s.title))
+  return {
+    offset: 0,
+    count: suggestions.length,
+    totalCount: suggestions.length,
+    data: suggestions,
+  }
 }
 
 async function fetchGeocoderSuggestions(
@@ -50,11 +64,11 @@ async function fetchGeocoderSuggestions(
         GRAVITEE_GEOCODE_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
     })
-    let suggestions: GeoCoderSuggestion[] = resp.data.data
+    let results: Page<GeoCoderSuggestion> = resp.data
     if (hidePhoneticMatches) {
-      suggestions = suggestions.filter((s) => !isPhonetic(s.title))
+      results = cleanUpSuggestions(results)
     }
-    mutations.setGeocoderSuggestions(suggestions)
+    mutations.setGeocoderSuggestions(results)
   } catch (problem) {
     uiStore.actions.queueErrorNotification(
       'Fout bij het ophalen van locatiesuggesties.'

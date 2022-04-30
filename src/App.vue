@@ -43,12 +43,7 @@
       </v-row>
     </v-snackbar>
     <!-- Footer -->
-    <v-bottom-navigation
-      v-if="isFooterVisible"
-      v-model="selectedNav"
-      class="bottom-nav"
-      app
-    >
+    <v-bottom-navigation v-if="isFooterVisible" v-model="selectedNav" app>
       <v-btn text value="home" to="/home">
         <span>Home</span>
         <v-icon>home</v-icon>
@@ -79,6 +74,8 @@ import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
 import * as NetmobielApp from '@/utils/NetmobielApp'
+import config from '@/config/config'
+import { runningInsideFlutterApp2021 } from '@/utils/NetmobielApp'
 
 export default {
   name: 'App',
@@ -146,6 +143,9 @@ export default {
       }
       return newRoute
     },
+    config() {
+      return config
+    },
   },
   watch: {
     deviceFcmToken() {
@@ -200,39 +200,43 @@ export default {
     //   console.log('Route changed from ' + from.path + ' to ' + to.path)
     // },
   },
+  created() {
+    //eslint-disable-next-line
+    console.log(
+      `Netmobiel ${config.GIT_HASH} ${config.BUILD_TIME} UserAgent ${navigator.userAgent}`
+    )
+  },
   mounted() {
+    // console.log(`App: Mounted`)
     // The initial message, if any, is passed by a query parameter to the url of the landing page
     window.addEventListener('NetmobielPushMessage', this.onPushMessageReceived)
     // Set the fcm token (for push notifications) in the local storage,
     // so we can retrieve it later to update the profile. Local storage is needed because
-    // When a session expires or when returning from an external source no FCM token will be on the url
-    if (typeof this.$route.query.fcm === 'string') {
-      if (this.$route.query.fcm) {
-        localStorage.setItem('fcm', this.$route.query.fcm)
-      } else {
-        localStorage.removeItem('fcm')
-      }
+    // when a session expires or when returning from an external source no FCM token will be on the url
+    if (this.$route.query.fcm && typeof this.$route.query.fcm === 'string') {
+      localStorage.setItem('fcm', this.$route.query.fcm)
+    } else if (!runningInsideFlutterApp2021()) {
+      // This construction allows testing of the old-style parameter exchange and at the same time ensures
+      // clearing old-stuff away.
+      // Only the old app (version mid 2021) uses the local storage
+      localStorage.removeItem('fcm')
     }
     if (this.$keycloak.authenticated) {
       psStore.mutations.setUserToken(this.$keycloak.token)
+      // Fetch the FCM token from the localstorage (app version mid 2021) - for backward compatibility
+      if (localStorage.fcm) {
+        psStore.mutations.setDeviceFcmToken(localStorage.fcm)
+      }
       window.addEventListener('NetmobielFcmToken', this.onFcmTokenReceived)
+      // Fetch the FCM token via message channel (since jan 2022 app)
+      // console.log(`Request FCM token`)
+      NetmobielApp.requestFcmToken()
       // The FCM token is received before or after receiving the profile (if any), and also when still registering
       // The FCM token will be stored in the following situations:
       // 1. When receiving the updated FCM token
       // 2. When receiving the profile
       // 3. When creating the profile
       // If no FCM token is received the token value stays null and that value is stored in the profile.
-      // console.log(`Request FCM token`)
-      // Fetch the FCM token via message channel (since jan 2022 app)
-      if (!NetmobielApp.requestFcmToken()) {
-        // Message channel does not seem to be supported.
-        // Fetch the FCM token from the localstorage (app version mid 2021) - for backward compatibility
-        if (localStorage.fcm) {
-          psStore.mutations.setDeviceFcmToken(localStorage.fcm)
-        }
-      } else {
-        localStorage.removeItem('fcm')
-      }
       // Only fetch profile of authenticated user
       // Fetch the profile, just in case the user is returning from an external page
       // It will cause duplicate calls to profile/me/status and profile/me when immediately navigating to the home page
@@ -264,7 +268,7 @@ export default {
       }
     },
     onFcmTokenReceived(evt) {
-      // Store the FCM token in the store, because at registration time, there is no profile yet
+      // Store the FCM token in the store first, at registration time, there is no profile yet
       const fcmToken = evt.detail?.fcmToken
       // console.log(`FCM received: ${this.fcmToken}`)
       psStore.mutations.setDeviceFcmToken(fcmToken)
@@ -295,47 +299,12 @@ export default {
   // Vuetify applies automatically the padding for header and footer
   height: 100vh;
 }
-.homepage {
-  background-image: url('assets/achterhoek_background.jpg');
-  background-size: contain;
-  background-position: top;
-  background-repeat: no-repeat;
-}
 
-.homepage #content {
-  margin-top: 30vmin;
-  border-radius: $border-radius $border-radius 0 0;
-  transition: all 250ms linear;
-  -webkit-transition: all 250ms linear;
-  -moz-transition: all 250ms linear;
-  -o-transition: all 250ms linear;
-}
-
-.small #content {
-  margin-top: 0;
-}
-
-.modeSelectPage #content {
-  background: transparent;
-}
-
-header {
+.v-app-bar {
   background-image: url('./assets/logo_header.png');
   background-size: 120px;
   background-repeat: no-repeat;
   background-position: center center;
-}
-
-.v-application .text-light-grey {
-  color: $color-light-grey;
-}
-
-.v-application .underlined {
-  text-decoration: underline;
-}
-
-.text-bold {
-  font-weight: bold;
 }
 
 .v-application .v-snack {
@@ -343,19 +312,8 @@ header {
   z-index: 5;
 }
 
-.bottom-nav {
-  z-index: 5;
-}
-
-//HACK: Styling of the notification close button. Some should fix this.
-.notification-close-button {
-  border-color: rgba(255, 255, 255, 0.54) !important;
-  border-radius: 4px !important;
-}
-.notification-close-button span.v-btn__content {
-  color: white !important;
-}
 .v-bottom-navigation {
   align-items: center;
+  z-index: 5;
 }
 </style>

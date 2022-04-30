@@ -7,7 +7,7 @@
         </v-col>
       </v-row>
       <v-row dense>
-        <v-col>
+        <v-col class="clickable-item" @click="onClick">
           <external-user-image
             :managed-identity="review.sender.id"
             :image-size="32"
@@ -43,6 +43,14 @@ export default {
   methods: {
     formatDate(date) {
       return moment(date).locale('nl').calendar()
+    },
+    onClick() {
+      this.$router.push({
+        name: 'userProfile',
+        params: {
+          profileId: this.review.sender.id,
+        },
+      })
     },
   },
 }

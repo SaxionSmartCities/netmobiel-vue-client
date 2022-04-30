@@ -49,6 +49,14 @@ import HighlightedInfo from '@/components/profile/HighlightedInfo'
 import * as psStore from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
 import constants from '@/constants/constants'
+import {
+  encodeUrn,
+  NETMOBIEL_CLASS,
+  NETMOBIEL_SERVICE,
+} from '@/utils/UrnHelper'
+import * as isStore from '@/store/itinerary-service'
+import * as bsStore from '@/store/banker-service'
+import { emptyPage } from '@/store/storeHelper'
 
 export default {
   name: 'UserProfilePage',
@@ -69,19 +77,36 @@ export default {
     profile() {
       return this.publicUser?.profile
     },
+    keycloakUrn() {
+      return encodeUrn(
+        NETMOBIEL_SERVICE.KEYCLOAK,
+        NETMOBIEL_CLASS.USER,
+        this.profileId
+      )
+    },
     compliments() {
-      return this.publicUser?.compliments
+      return this.publicUser?.compliments.data
     },
     reviews() {
-      return this.publicUser?.reviews
+      return this.publicUser?.reviews.data
+    },
+    userReport() {
+      return isStore.getters.getSelectedUserReport
     },
     ridesDriven() {
-      // TODO: fetch from backend
-      return 0
+      const asPassenger =
+        this.userReport?.tripsAsPassenger.find(
+          (mc) => mc.modality === 'RIDESHARE'
+        )?.count ?? 0
+      const asDriver =
+        this.userReport?.tripsAsDriver.find((mc) => mc.modality === 'RIDESHARE')
+          ?.count ?? 0
+      return Math.max(asDriver, asPassenger)
     },
     creditsDonated() {
-      // TODO: fetch from backend
-      return 0
+      return bsStore.getters.getTopDonors.totalCount > 0
+        ? bsStore.getters.getTopDonors.data[0].donatedCredits
+        : 0
     },
     refinedCompliments() {
       const result = {}
@@ -106,19 +131,38 @@ export default {
       )
     },
   },
-  mounted() {
-    psStore.actions.fetchPublicProfile({
-      profileId: this.profileId,
-    })
-    psStore.actions.fetchUserCompliments({
-      receiverId: this.profileId,
-    })
-    psStore.actions.fetchUserReviews({
-      receiverId: this.profileId,
-    })
+  watch: {
+    profileId() {
+      if (this.profileId) {
+        this.refresh()
+      }
+    },
   },
   created() {
-    uiStore.mutations.showBackButton()
+    this.refresh()
+  },
+  methods: {
+    refresh() {
+      uiStore.mutations.showBackButton()
+      psStore.actions.fetchPublicProfile({
+        profileId: this.profileId,
+      })
+      psStore.actions.fetchUserCompliments({
+        receiverId: this.profileId,
+      })
+      psStore.actions.fetchUserReviews({
+        receiverId: this.profileId,
+      })
+      isStore.mutations.setSelectedUserReport(null)
+      isStore.actions.fetchUserReport({
+        profileRef: this.keycloakUrn,
+      })
+      bsStore.mutations.setTopDonors(emptyPage)
+      bsStore.actions.fetchTopDonors({
+        user: this.keycloakUrn,
+        maxResults: 1,
+      })
+    },
   },
 }
 </script>

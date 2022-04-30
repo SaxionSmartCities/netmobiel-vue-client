@@ -1,20 +1,19 @@
 import { Moment } from 'moment'
 import { SearchPreferences } from '@/store/profile-service/types'
+import { Page } from '@/store/types'
+import { emptyPage } from '@/store/storeHelper'
 
 export class ItineraryState {
   selectedTrip: Trip | null = null
   selectedTripPlan: TripPlan | null = null
   selectedShoutOut: TripPlan | null = null
-  shoutOuts: TripPlan[] = []
-  shoutOutsTotalCount: number = 0
-  myShoutOuts: TripPlan[] = []
-  myShoutOutsCount: number = 0
-  plannedTripsCount: number = 0
-  plannedTrips: Trip[] = []
-  pastTripsCount: number = 0
-  pastTrips: Trip[] = []
-  cancelledTrips: Trip[] = []
-  shoutoutPlanTime: any = null
+  shoutOuts: Page<TripPlan> = emptyPage
+  pastShoutOuts: Page<TripPlan> = emptyPage
+  myShoutOuts: Page<TripPlan> = emptyPage
+  myPastShoutOuts: Page<TripPlan> = emptyPage
+  plannedTrips: Page<Trip> = emptyPage
+  pastTrips: Page<Trip> = emptyPage
+  cancelledTrips: Page<Trip> = emptyPage
   searchCriteria: SearchCriteria = {
     from: null,
     to: null,
@@ -38,6 +37,7 @@ export class ItineraryState {
       message: '',
     },
   }
+  userReport: UserReport | null = null
 }
 
 export interface Location {
@@ -190,4 +190,14 @@ export interface Leg {
   cancelledByProvider?: boolean
   // If set, the reference to the shout-out that this leg resolves
   shoutOutRef?: string
+}
+
+export interface ModalityCount {
+  modality: string
+  count: number
+}
+
+export interface UserReport {
+  tripsAsDriver: ModalityCount[] | undefined
+  tripsAsPassenger: ModalityCount[] | undefined
 }

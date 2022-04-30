@@ -87,6 +87,7 @@ import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 import * as gsStore from '@/store/geocoder-service'
 import constants from '@/constants/constants'
+import { emptyPage } from '@/store/storeHelper'
 // map category to Material icon name (needs more work...)
 // show at most 8 suitable suggestions
 // const skipCategories = new Set(['intersection'])
@@ -129,7 +130,7 @@ export default {
       return []
     },
     favorites() {
-      const places = psStore.getters.getUser?.favoriteLocations ?? []
+      const places = psStore.getters.getUser?.favoriteLocations.data
       return places.map((place) => {
         return {
           ...place,
@@ -141,7 +142,7 @@ export default {
       })
     },
     suggestions() {
-      return gsStore.getters.getGeocoderSuggestions.map((suggestion) =>
+      return gsStore.getters.getGeocoderSuggestions.data.map((suggestion) =>
         this.createLocationFromSuggestion(suggestion)
       )
     },
@@ -157,14 +158,14 @@ export default {
           gsStore.actions.fetchGeocoderSuggestions({ query: val })
         }
       }
-    }, 500),
+    }, 1000),
   },
   created() {
     uiStore.mutations.showBackButton()
   },
   mounted() {
     psStore.actions.fetchMyFavoriteLocations()
-    gsStore.mutations.setGeocoderSuggestions([])
+    gsStore.mutations.setGeocoderSuggestions(emptyPage)
     this.searchInput = gsStore.getters.getPickedLocations.get(
       this.$route.params.field
     )?.query
@@ -255,7 +256,7 @@ export default {
     clearSearchInput() {
       this.searchInput = ''
       this.showSuggestionsList = false
-      gsStore.mutations.setGeocoderSuggestions([])
+      gsStore.mutations.setGeocoderSuggestions(emptyPage)
     },
     promptFavorite(suggestion) {
       this.selectedLocation = suggestion

@@ -1,23 +1,16 @@
 import { ModuleBuilder } from 'vuex-typex'
 import { RootState } from '@/store/Rootstate'
 import {
-  Itinerary,
   ItineraryState,
-  PlanningRequest,
-  SubmitStatus,
-  TripPlan,
-  Trip,
   SearchCriteria,
+  SubmitStatus,
+  Trip,
+  TripPlan,
+  UserReport,
 } from '@/store/itinerary-service/types'
-import { Moment } from 'moment'
+import { Page } from '@/store/types'
+import { assignPageResults } from '@/store/storeHelper'
 
-function safeConcatTrips(current: Trip[], additions: Trip[]) {
-  return current.concat(
-    additions.filter(
-      (trip) => !current.some((existing) => existing.id === trip.id)
-    )
-  )
-}
 function setSearchCriteria(state: ItineraryState, payload: SearchCriteria) {
   state.searchCriteria.from = payload.from
   state.searchCriteria.to = payload.to
@@ -44,12 +37,12 @@ function setPlanningStatus(state: ItineraryState, payload: SubmitStatus) {
   state.planningRequest.submitStatus = payload
 }
 
-function setPlanningResults(state: ItineraryState, payload: TripPlan) {
-  state.planningRequest.tripPlan = payload
-}
-
 function clearPlanningResults(state: ItineraryState, payload: any) {
   state.planningRequest.tripPlan = null
+}
+
+function setPlanningResults(state: ItineraryState, payload: TripPlan) {
+  state.planningRequest.tripPlan = payload
 }
 
 function clearPlanningRequest(state: ItineraryState, payload: any) {
@@ -71,11 +64,6 @@ function clearBookingRequest(state: ItineraryState, payload: any) {
   }
 }
 
-function sortItineraries(state: ItineraryState, payload: Itinerary[]) {
-  // @ts-ignore
-  state.planningRequest.result!.data.itineraries.sort(payload)
-}
-
 function setSelectedTripPlan(state: ItineraryState, payload: TripPlan) {
   state.selectedTripPlan = payload
 }
@@ -84,67 +72,50 @@ function setSelectedShoutOut(state: ItineraryState, payload: TripPlan) {
   state.selectedShoutOut = payload
 }
 
+function setShoutOuts(state: ItineraryState, shoutOuts: Page<TripPlan>) {
+  state.shoutOuts = assignPageResults(state.shoutOuts, shoutOuts)
+}
+
+function setPastShoutOuts(state: ItineraryState, shoutOuts: Page<TripPlan>) {
+  state.pastShoutOuts = assignPageResults(state.pastShoutOuts, shoutOuts)
+}
+
+function setMyShoutOuts(state: ItineraryState, shoutOuts: Page<TripPlan>) {
+  state.myShoutOuts = assignPageResults(state.myShoutOuts, shoutOuts)
+}
+
+function setMyPastShoutOuts(state: ItineraryState, shoutOuts: Page<TripPlan>) {
+  state.myPastShoutOuts = assignPageResults(state.myPastShoutOuts, shoutOuts)
+}
+
 function setSelectedTrip(state: ItineraryState, payload: Trip) {
   state.selectedTrip = payload
 }
 
-function setPlannedTripsCount(state: ItineraryState, payload: number) {
-  state.plannedTripsCount = payload
+function setPlannedTrips(state: ItineraryState, trips: Page<Trip>) {
+  state.plannedTrips = assignPageResults(state.plannedTrips, trips)
 }
 
-function setPlannedTrips(state: ItineraryState, payload: Trip[]) {
-  state.plannedTrips = payload
+function setPastTrips(state: ItineraryState, trips: Page<Trip>) {
+  state.pastTrips = assignPageResults(state.pastTrips, trips)
 }
 
-function appendPlannedTrips(state: ItineraryState, payload: Trip[]) {
-  state.plannedTrips = safeConcatTrips(state.plannedTrips, payload)
+function setCancelledTrips(state: ItineraryState, trips: Page<Trip>) {
+  state.cancelledTrips = assignPageResults(state.cancelledTrips, trips)
 }
 
-function setShoutOuts(state: ItineraryState, payload: TripPlan[]) {
-  const length = state.shoutOuts.length
-  state.shoutOuts.splice(0, length, ...payload)
-}
-
-function setMyShoutOuts(state: ItineraryState, payload: TripPlan[]) {
-  state.myShoutOuts = payload
-}
-
-function appendMyShoutOuts(state: ItineraryState, payload: TripPlan[]) {
-  state.myShoutOuts.concat(payload)
-}
-
-function setShoutOutsTotalCount(state: ItineraryState, payload: number) {
-  state.shoutOutsTotalCount = payload
-}
-
-function setMyShoutOutsTotalCount(state: ItineraryState, payload: number) {
-  state.myShoutOutsCount = payload
-}
-
-function setPastTrips(state: ItineraryState, payload: Trip[]) {
-  state.pastTrips = payload
-}
-
-function appendPastTrips(state: ItineraryState, payload: Trip[]) {
-  state.pastTrips = safeConcatTrips(state.pastTrips, payload)
-}
-
-function setPastTripsCount(state: ItineraryState, payload: number) {
-  state.pastTripsCount = payload
-}
-
-function setCancelledTrips(state: ItineraryState, payload: Trip[]) {
-  state.cancelledTrips = payload
-}
-
-function setShoutoutPlanTime(state: ItineraryState, payload: Moment) {
-  state.shoutoutPlanTime = payload
+function setSelectedUserReport(
+  state: ItineraryState,
+  userReport: UserReport | null
+) {
+  state.userReport = userReport
 }
 
 export const buildMutations = (
   isBuilder: ModuleBuilder<ItineraryState, RootState>
 ) => {
   return {
+    // Trip plans & searching
     setSearchCriteria: isBuilder.commit(setSearchCriteria),
     setPlanningSearchCriteria: isBuilder.commit(setPlanningSearchCriteria),
     setPlanningStatus: isBuilder.commit(setPlanningStatus),
@@ -153,22 +124,22 @@ export const buildMutations = (
     clearPlanningRequest: isBuilder.commit(clearPlanningRequest),
     clearBookingRequest: isBuilder.commit(clearBookingRequest),
     setBookingStatus: isBuilder.commit(setBookingStatus),
-    sortItineraries: isBuilder.commit(sortItineraries),
     setSelectedTripPlan: isBuilder.commit(setSelectedTripPlan),
-    setSelectedShoutOut: isBuilder.commit(setSelectedShoutOut),
+
+    // Trips
     setSelectedTrip: isBuilder.commit(setSelectedTrip),
-    setPlannedTripsCount: isBuilder.commit(setPlannedTripsCount),
     setPlannedTrips: isBuilder.commit(setPlannedTrips),
-    appendPlannedTrips: isBuilder.commit(appendPlannedTrips),
-    setShoutOuts: isBuilder.commit(setShoutOuts),
-    setMyShoutOuts: isBuilder.commit(setMyShoutOuts),
-    appendMyShoutOuts: isBuilder.commit(appendMyShoutOuts),
-    setShoutOutsTotalCount: isBuilder.commit(setShoutOutsTotalCount),
-    setMyShoutOutsTotalCount: isBuilder.commit(setMyShoutOutsTotalCount),
     setPastTrips: isBuilder.commit(setPastTrips),
-    appendPastTrips: isBuilder.commit(appendPastTrips),
-    setPastTripsCount: isBuilder.commit(setPastTripsCount),
     setCancelledTrips: isBuilder.commit(setCancelledTrips),
-    setShoutoutPlanTime: isBuilder.commit(setShoutoutPlanTime),
+
+    // Shout-outs
+    setSelectedShoutOut: isBuilder.commit(setSelectedShoutOut),
+    setShoutOuts: isBuilder.commit(setShoutOuts),
+    setPastShoutOuts: isBuilder.commit(setPastShoutOuts),
+    setMyShoutOuts: isBuilder.commit(setMyShoutOuts),
+    setMyPastShoutOuts: isBuilder.commit(setMyPastShoutOuts),
+
+    // Reports
+    setSelectedUserReport: isBuilder.commit(setSelectedUserReport),
   }
 }

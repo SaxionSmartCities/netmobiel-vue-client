@@ -12,7 +12,7 @@ const driver = {
     },
     {
       title: 'Ritherinneringen',
-      info: '5 Minuten voor je reis wordt je via een melding herinnerd dat je reis spoedig plaatsvindt.',
+      info: 'Kort voor aanvang van je reis ontvang je ter herinnering een melding.',
       key: 'tripReminders',
     },
     {

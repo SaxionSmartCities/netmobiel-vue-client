@@ -101,7 +101,7 @@ export default {
       return bsStore.getters.getBankerUser
     },
     systemAccounts() {
-      return bsStore.getters.getSystemAccounts?.data ?? []
+      return bsStore.getters.getSystemAccounts
     },
   },
   watch: {
@@ -121,7 +121,7 @@ export default {
   },
   methods: {
     lookupSystemAccount(ncan) {
-      return this.systemAccounts.find((acc) => acc.ncan === ncan)
+      return this.systemAccounts.data.find((acc) => acc.ncan === ncan)
     },
     validate() {
       return this.$refs.form.validate()

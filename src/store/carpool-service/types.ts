@@ -1,4 +1,12 @@
 import { ExternalUser } from '@/store/profile-service/types'
+import { Page } from '@/store/types'
+
+const defaultPage = {
+  offset: 0,
+  count: 0,
+  totalCount: 0,
+  data: [],
+}
 
 export class CarpoolState {
   cars: Car[] = []
@@ -7,14 +15,10 @@ export class CarpoolState {
     licensePlate: null,
     result: {},
   }
-  plannedRidesCount: number = 0
-  rides: Ride[] = []
   selectedRide: Ride = {}
-  pastRidesCount: number = 0
-  pastRides: Ride[] = []
-  proposedRides: Ride[] = []
-  inboxRides: Ride[] = []
-  users: Map<string, RideshareUser> = new Map()
+  plannedRides: Page<Ride> = defaultPage
+  pastRides: Page<Ride> = defaultPage
+  proposedRides: Page<Ride> = defaultPage
 }
 
 export interface Car {

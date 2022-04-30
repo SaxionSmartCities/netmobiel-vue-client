@@ -1,15 +1,17 @@
 import { Place } from '../profile-service/types'
+import { emptyPage } from '@/store/storeHelper'
+import { Page } from '@/store/types'
 
 export class GeoCoderState {
   geocoder: GeoCoder = {
     pickedLocations: new Map(),
-    suggestions: [],
+    suggestions: emptyPage,
   }
 }
 
 export interface GeoCoder {
   pickedLocations: Map<string, PickedLocation | undefined>
-  suggestions: GeoCoderSuggestion[]
+  suggestions: Page<GeoCoderSuggestion>
 }
 
 export interface PickedLocation {

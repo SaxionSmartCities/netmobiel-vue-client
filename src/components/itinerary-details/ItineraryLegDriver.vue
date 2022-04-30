@@ -1,6 +1,6 @@
 <template>
   <v-row no-gutters>
-    <v-col>
+    <v-col class="clickable-item" @click="onClickDriver">
       <driver-image
         v-if="leg.driverId"
         :image-size="54"
@@ -22,12 +22,28 @@
 
 <script>
 import DriverImage from '@/components/itinerary-details/DriverImage'
+import { decodeUrn } from '@/utils/UrnHelper'
 
 export default {
   name: 'ItineraryLegDriver',
   components: { DriverImage },
   props: {
     leg: { type: Object, required: true },
+  },
+  computed: {
+    driverId() {
+      return decodeUrn(this.leg.driverId)?.id
+    },
+  },
+  methods: {
+    onClickDriver() {
+      this.$router.push({
+        name: 'userProfile',
+        params: {
+          profileId: this.driverId,
+        },
+      })
+    },
   },
 }
 </script>

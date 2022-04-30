@@ -7,6 +7,7 @@ import { mutations } from './index'
 import { generateHeaders } from '@/utils/Utils'
 import moment from 'moment'
 import * as uiStore from '@/store/ui'
+import { emptyPage } from '@/store/storeHelper'
 
 type ActionContext = BareActionContext<MessageState, RootState>
 
@@ -14,17 +15,16 @@ const { COMMUNICATOR_BASE_URL, GRAVITEE_COMMUNICATOR_SERVICE_API_KEY } = config
 
 function fetchConversations(
   context: ActionContext,
-  select: string | null,
-  conversationContext: string | null,
-  maxResults: number | null
+  { select, conversationContext, offset, maxResults }: any
 ): Promise<AxiosResponse<any>> {
   const delegatorId = context.rootState.ps.user.delegatorId
   const URL = `${COMMUNICATOR_BASE_URL}/conversations`
   return axios.get(URL, {
     params: {
       context: conversationContext,
-      select: select,
-      maxResults: maxResults || 100,
+      select,
+      maxResults: maxResults ?? 100,
+      offset: offset ?? 0,
     },
     headers: generateHeaders(
       GRAVITEE_COMMUNICATOR_SERVICE_API_KEY,
@@ -33,43 +33,43 @@ function fetchConversations(
   })
 }
 
-function fetchActualConversations(context: ActionContext) {
-  return fetchConversations(context, 'ACTUAL', null, 100)
+function fetchActualConversations(context: ActionContext, payload: any) {
+  const params = { ...payload }
+  params.select = 'ACTUAL'
+  return fetchConversations(context, params)
     .then(function (resp) {
       if (resp.status === 200) {
-        mutations.setActualConversations(resp.data.data)
-        return resp.data.data
+        mutations.setActualConversations(resp.data)
+        return resp.data
       }
-      return []
+      return emptyPage
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van de conversaties.'
       )
-      return []
+      return emptyPage
     })
 }
 
-function fetchArchivedConversations(context: ActionContext) {
-  return fetchConversations(context, 'ARCHIVED', null, 100)
+function fetchArchivedConversations(context: ActionContext, payload: any) {
+  const params = { ...payload }
+  params.select = 'ARCHIVED'
+  return fetchConversations(context, params)
     .then(function (resp) {
       if (resp.status === 200) {
-        mutations.setArchivedConversations(resp.data.data)
-        return resp.data.data
+        mutations.setArchivedConversations(resp.data)
+        return resp.data
       }
-      return []
+      return emptyPage
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       // Omit the message as the conversations are fetched in twins
       // The new conversations listing would be in error too, probably
       // uiStore.actions.queueErrorNotification(
       //   'Fout bij het ophalen van de conversaties.'
       // )
-      return []
+      return emptyPage
     })
 }
 
@@ -89,8 +89,6 @@ function fetchConversation(context: ActionContext, { id }: any) {
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van de conversatie.'
       )
@@ -101,11 +99,12 @@ function fetchConversationByContext(
   context: ActionContext,
   { conversationContext }: any
 ) {
-  return fetchConversations(context, null, conversationContext, 1)
+  const params = { conversationContext, maxResults: 1 }
+  return fetchConversations(context, params)
     .then(function (resp) {
       if (resp.status === 200) {
         const pagedResultSet = resp.data
-        if (pagedResultSet.totalCount == 0) {
+        if (pagedResultSet.totalCount === 0) {
           // no conversation found
           uiStore.actions.queueErrorNotification(
             'Geen passende conversatie gevonden.'
@@ -117,28 +116,29 @@ function fetchConversationByContext(
           console.warn(`#${pagedResultSet.totalCount} conversations found for context ${conversationContext}`)
         }
         // Assign the single conversation. Note that in this version the set of contexts is missing.
-        const conversation = pagedResultSet.data[0]
-        return conversation
+        return pagedResultSet.data[0]
       }
     })
     .catch(function (error) {
-      // TODO: Proper error handling.
-      // eslint-disable-next-line
-      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van de conversatie.'
+      )
+      return null
     })
 }
 function fetchMessages(
   context: ActionContext,
-  { id, maxResults, offset }: any
+  { conversationId, sortDir, maxResults, offset }: any
 ) {
   const delegatorId = context.rootState.ps.user.delegatorId
-  const URL = `${COMMUNICATOR_BASE_URL}/conversations/${id}/messages`
+  const URL = `${COMMUNICATOR_BASE_URL}/conversations/${conversationId}/messages`
   axios
     .get(URL, {
       params: {
         deliveryMode: 'MESSAGE',
-        maxResults: maxResults || 100,
-        offset: offset,
+        maxResults: maxResults ?? 100,
+        sortDir,
+        offset,
       },
       headers: generateHeaders(
         GRAVITEE_COMMUNICATOR_SERVICE_API_KEY,
@@ -146,15 +146,13 @@ function fetchMessages(
       ) as AxiosRequestHeaders,
     })
     .then(function (resp) {
-      mutations.setMessages(resp.data.data)
+      mutations.setMessages(resp.data)
     })
     .catch(function (error) {
-      mutations.setMessages([])
+      mutations.setMessages(emptyPage)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van de meldingen.'
+        'Fout bij het ophalen van de berichten.'
       )
-      // eslint-disable-next-line
-      console.log(error)
     })
 }
 
@@ -186,8 +184,6 @@ function fetchMessage(context: ActionContext, { id }: any) {
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van het bericht.'
       )
-      // eslint-disable-next-line
-      console.log(error)
     })
 }
 

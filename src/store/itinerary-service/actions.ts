@@ -68,7 +68,7 @@ function searchTripPlan(
     .catch((error) => {
       mutations.setPlanningStatus({ status: 'FAILED' })
       uiStore.actions.queueErrorNotification(
-        error.response ? error.response.data.message : 'Network failure'
+        error.response?.data.message ?? 'Network failure'
       )
     })
 }
@@ -101,7 +101,7 @@ function createShoutOutTripPlan(
     .then((response) => {
       let shoutOutId
       if (response.status == 201) {
-        const message = 'Oproep naar de community is geplaatst'
+        const message = 'Je oproep naar de community is geplaatst'
         uiStore.actions.queueInfoNotification(message)
         shoutOutId = getCreatedObjectIdFromResponse(response)
       } else {
@@ -111,10 +111,8 @@ function createShoutOutTripPlan(
       return shoutOutId
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het opslaan van uw oproep.'
+        'Fout bij het opslaan van je oproep.'
       )
     })
 }
@@ -135,23 +133,23 @@ function fetchTripPlan(context: ActionContext, { id }: any) {
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification('Fout bij het ophalen van de rit.')
     })
 }
 
 function fetchMyShoutOutTripPlans(
   context: ActionContext,
-  { offset, maxResults }: any
+  { past, inProgress, since, until, sortDir, offset, maxResults }: any
 ) {
   const delegatorId = context.rootState.ps.user.delegatorId
   const params = {
-    offset: offset || 0,
+    offset: offset ?? 0,
     maxResults: maxResults,
-    inProgressOnly: true, // Only shout-outs that are still running
+    inProgress: inProgress, // If true then only fetch shout-outs that are still running
     planType: 'SHOUT_OUT',
-    since: moment().format(),
+    since: since,
+    until: until,
+    sortDir: sortDir,
   }
   axios
     .get(`${PLANNER_BASE_URL}/plans`, {
@@ -163,20 +161,17 @@ function fetchMyShoutOutTripPlans(
     })
     .then((response) => {
       if (response.status === 200) {
-        mutations.setMyShoutOutsTotalCount(response.data.totalCount)
-        if (maxResults !== 0) {
-          // When you using a offset you want to append the shoutouts and not clear the already fetched shoutouts.
-          if (offset > 0) {
-            mutations.appendMyShoutOuts(response.data.data)
-          } else {
-            mutations.setMyShoutOuts(response.data.data)
-          }
+        if (past) {
+          mutations.setMyPastShoutOuts(response.data)
+        } else {
+          mutations.setMyShoutOuts(response.data)
         }
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van de oproepen.'
+      )
     })
 }
 
@@ -206,8 +201,6 @@ function cancelTripPlan(
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het verwijderen van uw oproep.'
       )
@@ -252,9 +245,7 @@ function createTrip(context: ActionContext, itinerary: Itinerary) {
     })
     .catch((error) => {
       mutations.setBookingStatus({ status: 'FAILED' })
-      // eslint-disable-next-line
-      console.log(error)
-      if (error.response.status == 402) {
+      if (error.response?.status == 402) {
         uiStore.actions.queueErrorNotification(
           'Je hebt onvoldoende credits voor deze rit'
         )
@@ -290,23 +281,15 @@ function fetchTrips(
     .then((response) => {
       if (response.status === 200) {
         if (pastTrips) {
-          offset === 0
-            ? mutations.setPastTrips(response.data.data)
-            : mutations.appendPastTrips(response.data.data)
-          mutations.setPastTripsCount(response.data.totalCount)
+          mutations.setPastTrips(response.data)
         } else {
-          offset === 0
-            ? mutations.setPlannedTrips(response.data.data)
-            : mutations.appendPlannedTrips(response.data.data)
-          mutations.setPlannedTripsCount(response.data.totalCount)
+          mutations.setPlannedTrips(response.data)
         }
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van opgeslagen ritten.'
+        'Fout bij het ophalen van je ritten.'
       )
     })
 }
@@ -324,11 +307,9 @@ function fetchCancelledTrips(context: ActionContext) {
       params: params,
     })
     .then((response) => {
-      mutations.setCancelledTrips(response.data.data)
+      mutations.setCancelledTrips(response.data)
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van geannuleerde ritten.'
       )
@@ -353,8 +334,6 @@ function fetchTrip(context: ActionContext, payload: any) {
       return response.data
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification('Fout bij het ophalen van de rit.')
     })
 }
@@ -389,8 +368,6 @@ function deleteTrip(context: ActionContext, payload: any) {
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het annuleren van de rit'
       )
@@ -416,10 +393,8 @@ function confirmTrip(context: ActionContext, payload: any) {
       }
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het bevestigen van uw rit.'
+        'Fout bij het bevestigen van je rit.'
       )
     })
 }
@@ -443,10 +418,8 @@ function rejectTrip(context: ActionContext, payload: any) {
       }
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het afwijzen van uw rit.'
+        'Fout bij het afwijzen van je rit.'
       )
     })
 }
@@ -471,13 +444,11 @@ function unconfirmTrip(context: ActionContext, payload: any) {
       }
     })
     .catch(function (error) {
-      // eslint-disable-next-line
-      console.log(error)
-      if (error.response.status === 403) {
+      if (error.response?.status === 403) {
         uiStore.actions.queueErrorNotification(
           'De rit is reeds afgerekend. Vraag de chauffeur om de bevestiging ongedaan te maken.'
         )
-      } else if (error.response.status == 402) {
+      } else if (error.response?.status == 402) {
         uiStore.actions.queueErrorNotification(
           'Je hebt onvoldoende credits om deze rit opnieuw te reserveren'
         )
@@ -511,8 +482,6 @@ function fetchShoutOut(context: ActionContext, { id }: any) {
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van de oproep.'
       )
@@ -521,7 +490,18 @@ function fetchShoutOut(context: ActionContext, { id }: any) {
 
 function fetchShoutOuts(
   context: ActionContext,
-  { location, depArrRadius, travelRadius, maxResults }: any
+  {
+    past,
+    location,
+    depArrRadius,
+    travelRadius,
+    since,
+    until,
+    inProgressOnly,
+    sortDir,
+    offset,
+    maxResults,
+  }: any
 ) {
   let driverLocation = location
   let theDepArrRadius = depArrRadius
@@ -529,16 +509,22 @@ function fetchShoutOuts(
   if (!driverLocation) {
     driverLocation = constants.GEOLOCATION_CENTER_NL
     theDepArrRadius = constants.shoutOutDepArrRadiusWhole_NL
+    theTravelRadius = theDepArrRadius
   }
   if (!theDepArrRadius) {
     theDepArrRadius = constants.shoutOutDepArrRadiusNearby
     theTravelRadius = constants.shoutOutTravelRadius
   }
   const params = {
-    maxResults: maxResults,
     location: `${driverLocation.latitude},${driverLocation.longitude}`,
     depArrRadius: theDepArrRadius,
     travelRadius: theTravelRadius,
+    since,
+    until,
+    inProgressOnly, // If true then only active shout-outs
+    sortDir,
+    offset,
+    maxResults,
   }
   axios
     .get(`${PLANNER_BASE_URL}/shout-outs`, {
@@ -549,13 +535,14 @@ function fetchShoutOuts(
     })
     .then((response) => {
       if (response.status === 200) {
-        mutations.setShoutOutsTotalCount(response.data.totalCount)
-        mutations.setShoutOuts(response.data.data)
+        if (past) {
+          mutations.setPastShoutOuts(response.data)
+        } else {
+          mutations.setShoutOuts(response.data)
+        }
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van de oproepen'
       )
@@ -595,7 +582,7 @@ function planShoutOutSolution(
     .catch((error) => {
       mutations.setPlanningStatus({ status: 'FAILED' })
       uiStore.actions.queueErrorNotification(
-        error.response ? error.response.data.message : 'Network failure'
+        error.response?.data.message ?? 'Network failure'
       )
     })
 }
@@ -622,10 +609,30 @@ function addShoutOutTravelOffer(
       }
     })
     .catch((error) => {
-      // eslint-disable-next-line
-      console.log(error)
       uiStore.actions.queueErrorNotification(
-        'Fout bij het opslaan van uw aanbod.'
+        'Fout bij het opslaan van je aanbod.'
+      )
+    })
+}
+
+// ============  REPORTS  ================
+
+function fetchUserReport(context: ActionContext, { profileRef }: any) {
+  const URL = `${PLANNER_BASE_URL}/users/${profileRef}/report`
+  axios
+    .get(URL, {
+      headers: generateHeaders(
+        GRAVITEE_PLANNER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    .then((response) => {
+      if (response.status == 200) {
+        mutations.setSelectedUserReport(response.data)
+      }
+    })
+    .catch((error) => {
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van de rapportage.'
       )
     })
 }
@@ -656,5 +663,8 @@ export const buildActions = (
     fetchShoutOut: isBuilder.dispatch(fetchShoutOut),
     planShoutOutSolution: isBuilder.dispatch(planShoutOutSolution),
     addShoutOutTravelOffer: isBuilder.dispatch(addShoutOutTravelOffer),
+
+    // Reporting
+    fetchUserReport: isBuilder.dispatch(fetchUserReport),
   }
 }

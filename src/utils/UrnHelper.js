@@ -7,6 +7,10 @@ const NETMOBIEL_SERVICE = {
   RIDESHARE: 'rs',
 }
 
+const NETMOBIEL_CLASS = {
+  USER: 'user',
+}
+
 function isUrn(urn) {
   return urn && urn.startsWith('urn:')
 }
@@ -23,5 +27,9 @@ function decodeUrn(urn) {
     id: parts[4],
   }
 }
+//Example urn:nb:kc:user:71f69345-42e1-4d17-a7c4-7c47178edcd7
+function encodeUrn(service, clazz, id) {
+  return `urn:nb:${service}:${clazz}:${id}`
+}
 
-export { NETMOBIEL_SERVICE, isUrn, decodeUrn }
+export { NETMOBIEL_SERVICE, NETMOBIEL_CLASS, isUrn, decodeUrn, encodeUrn }

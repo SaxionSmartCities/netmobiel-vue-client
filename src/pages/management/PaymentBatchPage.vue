@@ -193,7 +193,6 @@ export default {
     uiStore.mutations.showBackButton()
     // Fetch me from the banker service
     bsStore.actions.fetchBankerUser()
-    bsStore.actions.fetchSystemAccounts()
     bsStore.actions.fetchPaymentBatch(this.batchId).then(() => {
       this.showSettling = this.paymentBatch.withdrawalRequests
         .map((wr) => wr.status)

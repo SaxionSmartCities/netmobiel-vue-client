@@ -13,6 +13,8 @@ import {
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { decodeJwt } from '@/utils/Utils'
+import { Page } from '@/store/types'
+import { assignPageResults, emptyPage } from '@/store/storeHelper'
 
 function setUserToken(state: ProfileState, token: string) {
   state.user.accessToken = token
@@ -109,7 +111,7 @@ function clearPublicProfile(state: ProfileState, profileId: string) {
 function addPublicCompliments(state: ProfileState, payload: any) {
   if (payload && payload.profileId) {
     const usr = getOrCreatePublicUser(state, payload.profileId)
-    usr.compliments = payload.compliments
+    usr.compliments = assignPageResults(usr.compliments, payload.compliments)
   }
   // Brute force reactivity, is this really needed?
   state.publicUsers = new Map(state.publicUsers)
@@ -117,7 +119,7 @@ function addPublicCompliments(state: ProfileState, payload: any) {
 
 function clearPublicCompliments(state: ProfileState, profileId: string) {
   const usr = getOrCreatePublicUser(state, profileId)
-  usr.compliments = []
+  usr.compliments = emptyPage
   // Brute force reactivity, is this really needed?
   state.publicUsers = new Map(state.publicUsers)
 }
@@ -125,7 +127,7 @@ function clearPublicCompliments(state: ProfileState, profileId: string) {
 function addPublicReviews(state: ProfileState, payload: any) {
   if (payload && payload.profileId) {
     const usr = getOrCreatePublicUser(state, payload.profileId)
-    usr.reviews = payload.reviews
+    usr.reviews = assignPageResults(usr.reviews, payload.reviews)
   }
   // Brute force reactivity, is this really needed?
   state.publicUsers = new Map(state.publicUsers)
@@ -133,13 +135,16 @@ function addPublicReviews(state: ProfileState, payload: any) {
 
 function clearPublicReviews(state: ProfileState, profileId: string) {
   const usr = getOrCreatePublicUser(state, profileId)
-  usr.reviews = []
+  usr.reviews = emptyPage
   // Brute force reactivity, is this really needed?
   state.publicUsers = new Map(state.publicUsers)
 }
 
-function setFavoriteLocations(state: ProfileState, places: Place[]) {
-  state.user.favoriteLocations = places
+function setFavoriteLocations(state: ProfileState, places: Page<Place>) {
+  state.user.favoriteLocations = assignPageResults(
+    state.user.favoriteLocations,
+    places
+  )
 }
 
 function setDelegations(state: ProfileState, delegations: Delegation[]) {
@@ -170,8 +175,8 @@ function setSearchStatus(state: ProfileState, status: string) {
   state.search.status = status
 }
 
-function setSearchResults(state: ProfileState, results: PublicProfile[]) {
-  state.search.results = results
+function setSearchResults(state: ProfileState, results: Page<PublicProfile>) {
+  state.search.results = assignPageResults(state.search.results, results)
 }
 
 function setDeviceFcmToken(state: ProfileState, fcmToken: string | null) {
