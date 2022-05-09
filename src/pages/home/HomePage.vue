@@ -211,7 +211,7 @@ export default {
         } else if (status >= 500) {
           // Gateway/server trouble or not found
           return uiStore.actions.queueErrorNotification(
-            'De Netmobiel server is momenteel niet beschikbaar,probeer het later opnieuw'
+            'De Netmobiel server is momenteel niet beschikbaar, probeer het later opnieuw'
           )
         }
       })

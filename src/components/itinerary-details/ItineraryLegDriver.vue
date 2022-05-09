@@ -1,21 +1,34 @@
 <template>
   <v-row no-gutters>
     <v-col class="clickable-item" @click="onClickDriver">
-      <driver-image
-        v-if="leg.driverId"
-        :image-size="54"
-        :avatar-size="60"
-        :leg="leg"
-      />
-      <br />
-      <span v-if="leg.driverName === 'Jij'">
-        <b>{{ leg.driverName }}</b> bent de chauffeur.
-      </span>
-      <span v-else>
-        <b>{{ leg.driverName }}</b> is de chauffeur.
-      </span>
-      <br />
-      <span>{{ leg.vehicleName }} ({{ leg.vehicleLicensePlate }})</span>
+      <v-row dense class="mt-1 align-center">
+        <v-vol class="shrink">
+          <driver-image
+            v-if="leg.driverId"
+            :image-size="54"
+            :avatar-size="60"
+            :leg="leg"
+          />
+        </v-vol>
+        <v-col class="text-center">
+          <v-btn small rounded depressed color="button"> Bekijk Profiel </v-btn>
+        </v-col>
+      </v-row>
+      <v-row dense>
+        <v-col>
+          <span v-if="leg.driverName === 'Jij'">
+            <b>{{ leg.driverName }}</b> bent de chauffeur.
+          </span>
+          <span v-else>
+            <b>{{ leg.driverName }}</b> is de chauffeur.
+          </span>
+        </v-col>
+      </v-row>
+      <v-row dense>
+        <v-col>
+          <span>{{ leg.vehicleName }} ({{ leg.vehicleLicensePlate }})</span>
+        </v-col>
+      </v-row>
     </v-col>
   </v-row>
 </template>
