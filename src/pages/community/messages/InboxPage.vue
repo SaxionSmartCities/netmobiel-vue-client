@@ -7,7 +7,7 @@
         @tabChange="(n) => (selectedTab = n)"
       >
         <template #firstTab>
-          <span>Recent</span>
+          <span>Actueel</span>
         </template>
 
         <template #secondTab>
@@ -15,49 +15,52 @@
         </template>
       </tab-bar>
     </template>
-    <v-list three-line avatar class="pt-0 conversation-list">
+    <p
+      v-if="conversations.totalCount === 0"
+      class="text-center pt-4 text-body-1"
+    >
+      <span v-if="isActualTab"> Geen actuele berichten beschikbaar </span>
+      <span v-else> Geen gearchiveerde berichten beschikbaar </span>
+    </p>
+    <v-list v-else three-line avatar class="pt-0 conversation-list">
       <template v-for="(cvs, index) in conversations.data">
         <v-divider v-show="index !== 0" :key="cvs.id + '-divider'" />
-        <v-list-item :key="cvs.id" class="pa-0" @click="showConversation(cvs)">
-          <v-list-item-avatar size="60">
-            <external-user-image
-              :managed-identity="user(cvs.recentMessage).managedIdentity"
-              :image-size="54"
-              :avatar-size="60"
-            />
-          </v-list-item-avatar>
-          <v-list-item-content class="pa-0 ma-0">
-            <v-list-item-title class="pa-0 ma-0">
-              <v-row dense class="justify-space-between flex-nowrap pa-0">
-                <v-col class="text-subtitle-2 font-weight-bold">
-                  {{ name(user(cvs.recentMessage)) }}
-                </v-col>
-                <!-- Let's hide the number of unread message for now until we have fixed it.
-                <v-col class="px-2" cols="2">
-                  <div class="message-counter">
-                    {{ getNewMessageCount(conversation) }}
-                  </div>
-                </v-col> -->
-                <!--                <v-col class="px-1 py-1 text-right" cols="5">-->
-                <!--                  <em>{{ timestamp(cvs.recentMessage.createdTime) }}</em>-->
-                <!--                </v-col>-->
-              </v-row>
-            </v-list-item-title>
-            <v-list-item-subtitle class="text-body-2">
-              <!--              <div class="px-1 py-1 text-right">-->
-              <!--                <em>{{ getTimestamp(cvs.recentMessage.createdTime) }}</em>-->
-              <!--              </div>-->
-              <div>
-                {{ cvs.topic }}
-              </div>
-            </v-list-item-subtitle>
-            <v-list-item-subtitle
-              class="font-italic text-caption text-right mt-n1"
-            >
-              <em>{{ timestamp(cvs.recentMessage.createdTime) }}</em>
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
+        <v-badge
+          :key="cvs.id"
+          color="red"
+          offset-x="2em"
+          offset-y="4ex"
+          style="width: inherit"
+          :value="cvs.unreadCount > 0"
+          :content="cvs.unreadCount"
+        >
+          <v-list-item class="pa-0" @click="showConversation(cvs)">
+            <v-list-item-avatar size="60">
+              <external-user-image
+                :managed-identity="user(cvs.recentMessage).managedIdentity"
+                :image-size="54"
+                :avatar-size="60"
+              />
+            </v-list-item-avatar>
+            <v-list-item-content class="pa-0 ma-0">
+              <v-list-item-title
+                class="pa-0 ma-0 text-subtitle-2 font-weight-bold"
+              >
+                {{ name(user(cvs.recentMessage)) }}
+              </v-list-item-title>
+              <v-list-item-subtitle class="text-body-2">
+                <div>
+                  {{ cvs.topic }}
+                </div>
+              </v-list-item-subtitle>
+              <v-list-item-subtitle
+                class="font-italic text-caption text-right mt-n1"
+              >
+                <em>{{ timestamp(cvs.recentMessage.createdTime) }}</em>
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-badge>
       </template>
     </v-list>
   </content-pane>
@@ -73,12 +76,32 @@ import * as msStore from '@/store/message-service'
 import moment from 'moment'
 import { upperCaseFirst } from '@/utils/Utils.js'
 import constants from '@/constants/constants'
+import {
+  restoreDataBeforeRouteEnter,
+  saveDataBeforeRouteLeave,
+} from '@/utils/navigation'
 
 export default {
   components: {
     TabBar,
     ContentPane,
     ExternalUserImage,
+  },
+  beforeRouteEnter(to, from, next) {
+    // The restore is called after the mount!
+    // console.log(`beforeRouteEnter: ${from.name} --> ${to.name}`)
+    next((vm) =>
+      restoreDataBeforeRouteEnter(vm, {
+        selectedTab: (value) => value,
+      })
+    )
+  },
+  beforeRouteLeave(to, from, next) {
+    // console.log(`beforeRouteLeave: ${from.name} --> ${to.name}`)
+    saveDataBeforeRouteLeave(this, {
+      selectedTab: (value) => value,
+    })
+    next()
   },
   data() {
     return {
@@ -161,11 +184,6 @@ export default {
         },
       })
     },
-    // eslint-disable-next-line no-unused-vars
-    getNewMessageCount(conversation) {
-      //TODO: Get the count from somewhere.
-      return 0
-    },
     timestamp(timestamp) {
       return upperCaseFirst(moment(timestamp).locale('nl').calendar())
     },
@@ -180,14 +198,16 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .conversation-list {
   width: 100%;
 }
 
 .message-counter {
-  border-radius: 1000px;
-  background: $color-green;
+  display: inline-block;
+  width: 2em;
+  border-radius: 50%;
+  background-color: $color-alertRed;
   color: white;
   padding: 2px;
   text-align: center;
