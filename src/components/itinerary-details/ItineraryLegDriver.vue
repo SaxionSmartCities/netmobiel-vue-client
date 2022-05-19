@@ -2,14 +2,14 @@
   <v-row no-gutters>
     <v-col class="clickable-item" @click="onClickDriver">
       <v-row dense class="mt-1 align-center">
-        <v-vol class="shrink">
+        <v-col class="shrink">
           <driver-image
             v-if="leg.driverId"
             :image-size="54"
             :avatar-size="60"
             :leg="leg"
           />
-        </v-vol>
+        </v-col>
         <v-col class="text-center">
           <v-btn small rounded depressed color="button"> Bekijk Profiel </v-btn>
         </v-col>
