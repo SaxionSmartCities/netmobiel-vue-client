@@ -26,11 +26,11 @@ function setAvailableCars(state: CarpoolState, payload: Car[]) {
   state.cars = payload
 }
 
-function setSelectedCar(state: CarpoolState, payload: Car) {
+function setSelectedCar(state: CarpoolState, payload: Car | null) {
   state.selectedCar = payload
 }
 
-function setSelectedRide(state: CarpoolState, payload: Ride) {
+function setSelectedRide(state: CarpoolState, payload: Ride | null) {
   state.selectedRide = payload
 }
 

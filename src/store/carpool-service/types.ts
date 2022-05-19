@@ -1,4 +1,3 @@
-import { ExternalUser } from '@/store/profile-service/types'
 import { Page } from '@/store/types'
 
 const defaultPage = {
@@ -10,24 +9,28 @@ const defaultPage = {
 
 export class CarpoolState {
   cars: Car[] = []
-  selectedCar: Car = {}
+  selectedCar: Car | null = null
   carSearch: CarSearch = {
     licensePlate: null,
     result: {},
   }
-  selectedRide: Ride = {}
+  selectedRide: Ride | null = null
   plannedRides: Page<Ride> = defaultPage
   pastRides: Page<Ride> = defaultPage
   proposedRides: Page<Ride> = defaultPage
 }
 
 export interface Car {
-  id?: string
+  brand: string
   carRef?: string
-  licensePlate?: string
+  id: string
+  licensePlate: string
+  licensePlateRaw: string
+  nrSeats?: number
+  model: string
+  registrationCountry: string
   registrationYear?: string
   type?: string
-  model?: string
 }
 
 export interface Location {
@@ -88,23 +91,35 @@ export interface UserRef {
 }
 
 export interface RideshareUser {
-  userRef: string
-  managedIdentity: string
+  email: string
   familyName: string
   givenName: string
   id: string
-  email: string
+  managedIdentity: string
+  userRef: string
 }
 
 export interface Booking {
-  bookingRef?: string
-  departureTime?: string
-  arrivalTime?: string
-  passenger?: RideshareUser
-  passengerRef?: string
-  state?: string
+  arrivalTime: string
+  bookingRef: string
+  cancelledByDriver?: boolean
+  cancelReason?: string
+  confirmationReason?: string
+  confirmationReasonByPassenger?: string
   confirmed?: boolean
-  confirmationReason: string
   confirmedByPassenger?: boolean
-  confirmationReasonByPassenger: string
+  departureTime: string
+  dropOff: Location
+  fareInCredits: number
+  legs?: Leg[]
+  nrSeats: number
+  passenger: RideshareUser
+  passengerRef: string
+  passengerTripPlanRef: string
+  passengerTripRef: string
+  paymentId: string
+  paymentState: 'CANCELLED' | 'PAID' | null
+  pickup: Location
+  ride: Ride
+  state: 'New' | 'Proposed' | 'Requested' | 'Confirmed' | 'Cancelled'
 }
