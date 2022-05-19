@@ -237,7 +237,7 @@ export default {
     },
     onTripSelected(selected) {
       //TODO Use trips from the list (less detailed, then immediate result on page change)
-      isStore.mutations.setSelectedTrip({})
+      isStore.mutations.setSelectedTrip(null)
       this.$router.push({
         name: 'tripDetailPage',
         params: { tripId: String(selected.tripId) },

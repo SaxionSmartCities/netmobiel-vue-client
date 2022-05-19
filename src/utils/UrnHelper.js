@@ -25,6 +25,7 @@ function decodeUrn(urn) {
     service: parts[2],
     class: parts[3],
     id: parts[4],
+    urn: urn,
   }
 }
 //Example urn:nb:kc:user:71f69345-42e1-4d17-a7c4-7c47178edcd7

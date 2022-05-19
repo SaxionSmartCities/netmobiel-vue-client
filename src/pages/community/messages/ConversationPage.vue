@@ -16,13 +16,15 @@
     </template>
     <v-row dense>
       <v-col v-if="!isFetchingMessages" ref="messageContainer">
-        <v-row v-for="message in messageList" :key="message.id">
+        <v-row v-for="(message, index) in messageList" :key="message.id">
           <v-col class="py-1">
-            <message-card
-              :send-by-me="isMessageSendByMe(message)"
-              :message="message"
-              @click="onMessageClick(message)"
-            />
+            <div
+              v-if="index === firstUnreadMessageIndex"
+              class="my-2 pa-1 unreadMessageBox text-center caption font-weight-bold"
+            >
+              <span class="pa-1">Ongelezen berichten</span>
+            </div>
+            <message-card :message="message" @click="onMessageClick(message)" />
           </v-col>
         </v-row>
       </v-col>
@@ -44,14 +46,16 @@
             :label="'Bericht voor ' + recipientName"
           ></v-textarea>
         </v-col>
-        <v-col cols="1" align-self="center">
-          <v-icon
-            class="send-icon"
+        <v-col cols="1" align-self="center" class="mr-2">
+          <v-btn
+            icon
+            outlined
+            color="button"
             :disabled="!newMessage"
             @click="sendMessage"
           >
-            send
-          </v-icon>
+            <v-icon> send </v-icon>
+          </v-btn>
         </v-col>
       </v-row>
     </template>
@@ -70,6 +74,7 @@ import {
   saveDataBeforeRouteLeave,
 } from '@/utils/navigation'
 import { emptyPage } from '@/store/storeHelper'
+import { decodeUrn } from '@/utils/UrnHelper'
 
 export default {
   components: {
@@ -88,6 +93,9 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     // console.log(`beforeRouteLeave: ${from.name} --> ${to.name}`)
+    if (this.savedConversationId && this.$keycloak.authenticated) {
+      msStore.actions.acknowledgeConversation(this.savedConversationId)
+    }
     saveDataBeforeRouteLeave(this, {
       savedConversationId: (value) => value,
       savedChatMeta: (model) => model,
@@ -118,6 +126,7 @@ export default {
       autoScrollToBottom: true,
       contentUpdated: '',
       messageContainerHeight: 0,
+      initialUnreadMessageIndex: null,
     }
   },
   computed: {
@@ -141,6 +150,18 @@ export default {
         this.savedChatMeta?.recipientManagedIdentity && this.savedConversationId
       )
     },
+    firstUnreadMessageIndex() {
+      const unreadMsg = this.messageList.find(
+        (msg) => !this.isMessageSendByMe(msg) && !this.myEnvelope(msg)?.ackTime
+      )
+      return unreadMsg ? this.messageList.indexOf(unreadMsg) : -1
+    },
+    firstAckMessageIndex() {
+      const ackMsg = this.messageList.find(
+        (msg) => !this.isMessageSendByMe(msg) && this.myEnvelope(msg)?.ackTime
+      )
+      return ackMsg ? this.messageList.indexOf(ackMsg) : -1
+    },
   },
   watch: {
     // eslint-disable-next-line no-unused-vars
@@ -154,24 +175,11 @@ export default {
     // eslint-disable-next-line no-unused-vars
     savedChatMeta(newValue, oldValue) {
       // console.log(
-      //   `savedChatMeta: ${oldValue} --> Sender ${newValue?.senderContext} Recipient ${newValue?.recipientContext} ${newValue?.recipientManagedIdentity}`
+      //   `savedChatMeta: ${oldValue} --> Message ${newValue?.context} Sender ${newValue?.senderContext} Recipient ${newValue?.recipientContext} ${newValue?.recipientManagedIdentity}`
       // )
       this.recipientManagedIdentity = newValue.recipientManagedIdentity
       if (!this.savedConversationId) {
-        msStore.actions
-          .fetchConversationByContext({
-            conversationContext: newValue.senderContext,
-          })
-          .then((c) => {
-            if (c?.conversationRef) {
-              this.savedConversationId = c.conversationRef
-            } else {
-              // eslint-disable-next-line
-              console.error(
-                `No Conversation found for urn ${newValue.senderContext}`
-              )
-            }
-          })
+        this.updateSavedConversation(newValue.senderContext)
       }
     },
     // eslint-disable-next-line no-unused-vars
@@ -187,6 +195,48 @@ export default {
           .catch()
       }
     },
+    messageList() {
+      // The messageList contains messages ordered from older to newest.
+      // The top of the messageList (the oldest message in the list) is not necessarily the
+      // oldest in the database. To be sure, find in the current list the first message read and
+      // the first unread. If there is unread but no read, then fetch more messages
+      // Only scroll into view to unread item if initialUnreadMessageIndex is still undefined.
+      // console.log(
+      //   `List ${this.messageList.length} First unread: ${this.firstUnreadMessageIndex} First ack ${this.firstAckMessageIndex}`
+      // )
+      if (
+        this.firstUnreadMessageIndex >= 0 &&
+        this.initialUnreadMessageIndex == null
+      ) {
+        if (
+          // If there is no ack-ed message before the unread one, there might be more.
+          this.firstUnreadMessageIndex >= 0 &&
+          this.firstAckMessageIndex === -1 &&
+          this.messages.totalCount > this.messages.data.length
+        ) {
+          // Fetch more messages until we find the first acknowledged message
+          this.fetchMessages(this.messages.data.length)
+        } else {
+          if (this.firstUnreadMessageIndex >= 0) {
+            this.initialUnreadMessageIndex = this.firstUnreadMessageIndex
+            // console.log(
+            //   `initialUnreadMessageIndex = ${this.initialUnreadMessageIndex}`
+            // )
+          }
+          this.$nextTick(() => {
+            this.scrollMessageIntoView(false, this.initialUnreadMessageIndex)
+          })
+        }
+      } else {
+        if (this.autoScrollToBottom && this.messageList.length > 0) {
+          // Only when the user has not started scrolling go to the bottom at once after update
+          this.$nextTick(() => {
+            this.scrollMessageIntoView(false)
+            this.autoScrollToBottom = false
+          })
+        }
+      }
+    },
   },
   created() {
     uiStore.mutations.showBackButton()
@@ -195,35 +245,36 @@ export default {
       // console.log(`set savedConversationId = ${this.savedConversationId}`)
     }
     if (this.chatMeta) {
-      this.savedChatMeta = this.chatMeta
+      this.savedChatMeta = { ...this.chatMeta }
       // console.log(
-      //   `set savedChatMeta = Sender ${this.chatMeta?.senderContext} Recipient ${this.chatMeta?.recipientContext} ${this.chatMeta?.recipientManagedIdentity}`
+      //   `set savedChatMeta =  Message ${this.chatMeta?.context} Sender ${this.chatMeta?.senderContext} Recipient ${this.chatMeta?.recipientContext} ${this.chatMeta?.recipientManagedIdentity}`
       // )
     }
   },
   mounted() {
-    msStore.mutations.setConversation({})
+    msStore.mutations.setConversation(null)
     msStore.mutations.setMessages(emptyPage)
   },
-  updated() {
-    // Called after the component has updated its DOM tree due to a reactive state change.
-    if (this.autoScrollToBottom) {
-      // Only when the user has not started scrolling go to the bottom at once after update
-      this.scrollToBottomMessageContainer()
-    }
-    // console.log(`ConversationPage: Updated`)
-    // if (this.$refs.messageContainer) {
-    //   if (this.messages.data.length > 0) {
-    //     if (
-    //       this.messageContainerHeight !==
-    //       this.$refs.messageContainer.scrollHeight
-    //     ) {
-    //       this.contentUpdated = `${moment().valueOf()}`
-    //     }
-    //   }
-    //   this.messageContainerHeight = this.$refs.messageContainer.scrollHeight
-    // }
-  },
+  // updated() {
+  //TODO Use either this method or the $nextTick in the messageList watcher. What is better?
+  // Called after the component has updated its DOM tree due to a reactive state change.
+  // if (this.autoScrollToBottom) {
+  // Only when the user has not started scrolling go to the bottom at once after update
+  // JR ???? this.scrollMessageIntoView()
+  // }
+  // console.log(`ConversationPage: Updated`)
+  // if (this.$refs.messageContainer) {
+  //   if (this.messages.data.length > 0) {
+  //     if (
+  //       this.messageContainerHeight !==
+  //       this.$refs.messageContainer.scrollHeight
+  //     ) {
+  //       this.contentUpdated = `${moment().valueOf()}`
+  //     }
+  //   }
+  //   this.messageContainerHeight = this.$refs.messageContainer.scrollHeight
+  // }
+  // },
   methods: {
     onLowWater() {
       // console.log(`ConversationPage: Low water!`)
@@ -254,13 +305,19 @@ export default {
     isMessageSendByMe(msg) {
       return msg.sender?.managedIdentity === this.profile.id
     },
-    scrollToBottomMessageContainer(animation = false) {
+    /**
+     * Scroll the message into view. Not so trivial. See also the following link:
+     * https://stackoverflow.com/questions/52086128/vue-js-ref-inside-the-v-for-loop
+     * @param animation smooth or auto
+     * @param itemIndex if set scroll the nth item into view. Otherwise end of list.
+     */
+    scrollMessageIntoView(animation = false, itemIndex) {
       const items = this.$refs.messageContainer?.children
       if (items && items.length > 0) {
-        const last = items[items.length - 1]
-        last.scrollIntoView({
+        const item = items[itemIndex ?? items.length - 1]
+        item.scrollIntoView({
           behavior: animation ? 'smooth' : 'auto',
-          block: 'end',
+          block: itemIndex != null ? 'center' : 'end',
         })
       }
     },
@@ -271,17 +328,44 @@ export default {
     },
     getMyContext(msg) {
       if (this.isMessageSendByMe(msg)) {
-        return msg.context
+        return msg.senderContext
       } else {
         return this.myEnvelope(msg)?.context
       }
+    },
+    updateSavedConversation(senderContext, create = true) {
+      msStore.actions
+        .fetchConversationByContext({
+          conversationContext: senderContext,
+        })
+        .then((pr) => {
+          if (!pr) {
+            // Error message is already presented in actions
+            return null
+          }
+          if (pr.data.length > 0) {
+            this.savedConversationId = pr.data[0].conversationRef
+          } else if (create) {
+            // No conversation! Try to start one (do this only once)
+            const c = {
+              contexts: [senderContext],
+            }
+            msStore.actions.startConversation(c).then((location) => {
+              if (location) {
+                // Ok, try again, but don't create if not present
+                this.updateSavedConversation(senderContext, false)
+              }
+            })
+          }
+        })
     },
     sendMessage() {
       // console.log('Send message')
       msStore.actions
         .sendMessage({
           body: this.newMessage,
-          context: this.savedChatMeta.senderContext,
+          context: this.savedChatMeta.context,
+          senderContext: this.savedChatMeta.senderContext,
           deliveryMode: 'ALL',
           envelopes: [
             {
@@ -293,21 +377,13 @@ export default {
           ],
         })
         .then(() => {
-          // Refresh the complete message list, retrieve all we have plus 1
-          // const maxResults = Math.min(
-          //   100,
-          //   Math.max(
-          //     constants.fetchMessagesMaxResults,
-          //     this.messages.data.length + 1
-          //   )
-          // )
           const maxResults = constants.fetchMessagesMaxResults
           this.newMessage = null
           return this.fetchMessages(0, maxResults)
         })
         .then(() => {
           this.$nextTick(() => {
-            this.scrollToBottomMessageContainer(false)
+            this.scrollMessageIntoView(false)
           })
         })
         .catch(() => {
@@ -316,84 +392,96 @@ export default {
           )
         })
     },
+    onChatMessageClicked(msg) {
+      if (this.isMessageSendByMe(msg)) {
+        // I was me and I want to send  a message again
+        const rcpEnvelope = msg.envelopes[0]
+        this.savedChatMeta = {
+          context: msg.context,
+          senderContext: msg.senderContext,
+          recipientContext: rcpEnvelope.context,
+          recipientManagedIdentity: rcpEnvelope.recipient.managedIdentity,
+        }
+      } else {
+        // The message was sent by someone else.
+        // The chat message metadata are simply the opposite of the received message
+        this.savedChatMeta = {
+          context: msg.context,
+          senderContext: this.myEnvelope(msg).context,
+          recipientContext: msg.senderContext,
+          recipientManagedIdentity: msg.sender.managedIdentity,
+        }
+        this.recipientManagedIdentity =
+          this.savedChatMeta.recipientManagedIdentity
+      }
+    },
+    onSystemMessageClicked(msg) {
+      let location
+      const ctx = this.getMyContext(msg)
+      const clazz = decodeUrn(ctx).class
+      // const cvsDecoded = this.conversation.contexts.map((c) => decodeUrn(c))
+      if (clazz === 'ride') {
+        location = {
+          name: 'rideDetailPage',
+          params: { rideId: ctx },
+        }
+      } else if (clazz === 'tripplan') {
+        // Right. Is it the passenger or the driver looking at it
+        if (
+          this.conversation.ownerRole ===
+          constants.CONVERSATION_OWNER_ROLE.DRIVER
+        ) {
+          const rideId =
+            this.conversation.contexts.find((c) => c.includes('ride')) || 'none'
+          location = {
+            name: 'shoutOutDriver',
+            params: { shoutOutId: ctx, rideId: rideId },
+          }
+        } else {
+          location = {
+            name: 'shoutOutPassenger',
+            params: { shoutOutId: ctx },
+          }
+        }
+      } else if (clazz === 'trip') {
+        location = {
+          name: 'tripDetailPage',
+          params: { tripId: ctx },
+        }
+      } else if (clazz === 'reward') {
+        location = {
+          name: 'rewardOverviewPage',
+        }
+      } else {
+        // eslint-disable-next-line
+        console.warn(`No support for ${ctx}`)
+      }
+      return location
+    },
     // Redirect the user to the relevant page if the system is the sender
     // Otherwise enable the chat box to reply to the sender
     onMessageClick(msg) {
       if (msg.sender) {
         // A real person has sent a message. That could be me or someone else.
-        if (this.isMessageSendByMe(msg)) {
-          // I was me and I want to send  a message again
-          const rcpEnvelope = msg.envelopes[0]
-          this.savedChatMeta = {
-            senderContext: msg.context,
-            recipientContext: rcpEnvelope.context,
-            recipientManagedIdentity: rcpEnvelope.recipient.managedIdentity,
-          }
-        } else {
-          // The message was sent by someone else.
-          // The chat message metadata are simply the opposite of the received message
-          this.savedChatMeta = {
-            senderContext: this.myEnvelope(msg).context,
-            recipientContext: msg.context,
-            recipientManagedIdentity: msg.sender.managedIdentity,
-          }
-          this.recipientManagedIdentity =
-            this.savedChatMeta.recipientManagedIdentity
-        }
+        this.onChatMessageClicked(msg)
       } else {
-        const ctx = this.getMyContext(msg)
-        if (ctx.includes('booking')) {
-          const rideId = this.conversation.contexts.find((c) =>
-            c.includes('ride')
-          )
-          if (rideId) {
-            this.$router.push({
-              name: 'rideDetailPage',
-              params: { rideId: rideId },
-            })
-          } else {
-            // eslint-disable-next-line
-            console.error(`Expected a ride in the conversation with ${ctx}`)
-          }
-        } else if (ctx.includes('ride')) {
-          this.$router.push({
-            name: 'rideDetailPage',
-            params: { rideId: ctx },
-          })
-        } else if (ctx.includes('tripplan')) {
-          // Right. Is it the passenger or the driver looking at it
-          if (
-            this.conversation.ownerRole ===
-            constants.CONVERSATION_OWNER_ROLE.DRIVER
-          ) {
-            const rideId =
-              this.conversation.contexts.find((c) => c.includes('ride')) ||
-              'none'
-            this.$router.push({
-              name: 'shoutOutDriver',
-              params: { shoutOutId: ctx, rideId: rideId },
-            })
-          } else {
-            this.$router.push({
-              name: 'shoutOutPassenger',
-              params: { shoutOutId: ctx },
-            })
-          }
-        } else if (ctx.includes('trip')) {
-          this.$router.push({
-            name: 'tripDetailPage',
-            params: { tripId: ctx },
-          })
-        } else if (ctx.includes('reward')) {
-          this.$router.push({
-            name: 'rewardOverviewPage',
-          })
-        } else {
-          // eslint-disable-next-line
-          console.warn(`No support for ${ctx}`)
+        // It was a system message, find the new location
+        const location = this.onSystemMessageClicked(msg)
+        if (location) {
+          this.$router.push(location)
         }
       }
     },
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.unreadMessageBox {
+  background-color: $color-light-grey;
+}
+.unreadMessageBox > span {
+  border-radius: 6px;
+  background-color: $color-white;
+}
+</style>

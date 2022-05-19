@@ -9,7 +9,7 @@
       <v-col>
         <car-card
           :car="car"
-          :selected-car="selectedCarRef"
+          :is-selected-car="selectedCarRef === car.carRef"
           @set-car="selectAlternativeCar"
           @check-delete-car="checkDeleteCar"
         ></car-card>
@@ -125,6 +125,7 @@ export default {
       psStore.actions
         .storeMyRidePreferences(ridePlanOptions)
         .then(() => psStore.actions.fetchMyProfile())
+        .then(() => this.$router.go(-1))
     },
     checkDeleteCar(car) {
       this.dialog = true

@@ -20,11 +20,11 @@
     </template>
     <v-row>
       <v-col>
-        <v-row v-if="selectedLegs && shouldShowMap">
+        <v-row v-if="routeMapLegs && routeMapLegs.length > 0 && shouldShowMap">
           <v-col>
             <route-map
               ref="mapComp"
-              :legs="selectedLegs"
+              :legs="routeMapLegs"
               :map-size-prop="mapSize"
               :single-leg-dashed="false"
               @sizeChanged="onMapSizeChanged"
@@ -49,6 +49,7 @@
               @travel-proposal-selected="onTravelOfferSelected"
               @travel-proposal-confirm="onTravelOfferConfirmed"
               @show-map="showMap = true"
+              @contact-driver="onContactDriver"
             />
           </v-col>
           <v-col>
@@ -84,6 +85,7 @@ import * as gsStore from '@/store/geocoder-service'
 import { geoLocationToPlace } from '@/utils/Utils'
 import RouteMap from '@/components/itinerary-details/RouteMap'
 import { formatDateTimeLongYear } from '@/utils/datetime'
+import * as UrnHelper from '@/utils/UrnHelper'
 
 export default {
   name: 'ShoutOutPassengerDetailPage',
@@ -160,13 +162,18 @@ export default {
     shouldShowMap() {
       return this.showMap
     },
-    selectedLegs() {
-      return this.showMap && this.itinerary ? this.itinerary.legs : null
-    },
     itinerary() {
       return this.selectedOffer
         ? this.selectedOffer
         : this.shoutOut?.referenceItinerary
+    },
+    routeMapLegs() {
+      return this.showMap && this.itinerary ? this.itinerary.legs : null
+    },
+    selectedRideshareLeg() {
+      return this.itinerary?.legs.find(
+        (leg) => leg.traverseMode === 'RIDESHARE'
+      )
     },
     shoutOutIsClosed() {
       // If requestDuration is set, then the shout-out has been closed.
@@ -259,6 +266,28 @@ export default {
     onMapClose() {
       this.showMap = false
       this.mapSize = 'small'
+    },
+    onContactDriver() {
+      const rsleg = this.selectedRideshareLeg
+      if (rsleg) {
+        const recipientUrn = UrnHelper.decodeUrn(rsleg.driverId)
+        const chatMeta = {
+          // The message is about the proposed booking
+          context: rsleg.bookingId,
+          // Context of passenger (me) is the shout-out
+          senderContext: this.shoutOut.planRef,
+          // Context of the driver is the proposed ride
+          recipientContext: rsleg.tripId,
+          // The driver is the recipient, the drive rid is a keycloak urn in the leg
+          recipientManagedIdentity: recipientUrn.id,
+        }
+        this.$router.push({
+          name: `conversation`,
+          params: {
+            chatMeta,
+          },
+        })
+      }
     },
   },
 }

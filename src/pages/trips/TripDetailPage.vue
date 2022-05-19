@@ -193,6 +193,7 @@ export default {
             name: leg.driverName,
             managedIdentity: decodedUrn.id,
             context: leg.bookingId,
+            rideRef: leg.tripId,
           }
         })
     },
@@ -303,8 +304,12 @@ export default {
         name: `conversation`,
         params: {
           chatMeta: {
+            // Context of the message is the booking
+            context: this.rideshareDriver.context,
+            // Context of the passenger (me) is the trip
             senderContext: this.trip.tripRef,
-            recipientContext: this.rideshareDriver.context,
+            // Context of the driver is the ride
+            recipientContext: this.rideshareDriver.rideRef,
             recipientManagedIdentity: this.rideshareDriver.managedIdentity,
           },
         },

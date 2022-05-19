@@ -83,7 +83,7 @@ function fetchCar(context: ActionContext, payload: any) {
       mutations.setSelectedCar(resp.data)
     })
     .catch((error) => {
-      mutations.setSelectedCar({})
+      mutations.setSelectedCar(null)
     })
 }
 

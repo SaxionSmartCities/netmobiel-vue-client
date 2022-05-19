@@ -64,6 +64,21 @@
           large
           rounded
           block
+          outlined
+          color="primary"
+          :disabled="!isChatEnabled"
+          @click="onContactPassenger"
+        >
+          Stuur bericht naar passagier
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn
+          large
+          rounded
+          block
           depressed
           color="button"
           :disabled="generateSteps.length === 0 || !offer"
@@ -166,6 +181,9 @@ export default {
       }
       return steps
     },
+    isChatEnabled() {
+      return true
+    },
   },
   methods: {
     onCancelProposal() {
@@ -192,6 +210,18 @@ export default {
     },
     onShowMap() {
       this.$emit('show-map-proposal')
+    },
+    onContactPassenger() {
+      const chatMeta = {
+        // The message is about the shout-out
+        context: this.shoutOut.planRef,
+        // Context of driver (me) is also the shout-out
+        senderContext: this.shoutOut.planRef,
+        // Context of the passenger is als the shout-out
+        recipientContext: this.shoutOut.planRef,
+        recipientManagedIdentity: this.shoutOut.traveller.managedIdentity,
+      }
+      this.$emit('contact-passenger', chatMeta)
     },
   },
 }

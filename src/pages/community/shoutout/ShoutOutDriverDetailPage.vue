@@ -65,6 +65,7 @@
                   @departureLocationReset="onDepartureLocationReset"
                   @arrivalLocationUpdate="onArrivalLocationUpdate"
                   @arrivalLocationReset="onArrivalLocationReset"
+                  @contact-passenger="onContactPassenger"
                 />
               </v-col>
             </v-row>
@@ -267,8 +268,8 @@ export default {
   //   next()
   // },
   mounted() {
-    isStore.mutations.setSelectedShoutOut({})
-    csStore.mutations.setSelectedRide({})
+    isStore.mutations.setSelectedShoutOut(null)
+    csStore.mutations.setSelectedRide(null)
     isStore.mutations.clearPlanningResults()
     isStore.actions.fetchShoutOut({ id: this.shoutOutId })
     if (this.isProposedRideView) {
@@ -350,6 +351,14 @@ export default {
     onMapClose() {
       this.showMap = false
       this.mapSize = 'small'
+    },
+    onContactPassenger(chatMeta) {
+      this.$router.push({
+        name: `conversation`,
+        params: {
+          chatMeta,
+        },
+      })
     },
   },
 }

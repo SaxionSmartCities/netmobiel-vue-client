@@ -4,19 +4,6 @@ import { Page } from '@/store/types'
 export class ProfileState {
   complimentTypes: ComplimentType[] = []
   publicUsers: Map<string, ExternalUser> = new Map()
-  externalUser: ExternalUser = {
-    profile: {
-      id: null,
-      age: null,
-      image: null,
-      firstName: null,
-      lastName: null,
-      address: null,
-      interests: [],
-    },
-    compliments: emptyPage,
-    reviews: emptyPage,
-  }
   user: User = {
     accessToken: null,
     // Attributes from (or derived from) the token

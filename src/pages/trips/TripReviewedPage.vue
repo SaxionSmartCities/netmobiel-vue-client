@@ -33,9 +33,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {}
-  },
   computed: {
     otherRoleName() {
       return this.otherRole === 'driver' ? 'chauffeur' : 'passagier'
