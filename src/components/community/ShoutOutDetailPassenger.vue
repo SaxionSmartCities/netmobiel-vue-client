@@ -25,6 +25,21 @@
           </v-btn>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col>
+          <v-btn
+            large
+            rounded
+            block
+            outlined
+            color="primary"
+            :disabled="!isChatEnabled"
+            @click="onContactDriver"
+          >
+            Stuur bericht naar chauffeur
+          </v-btn>
+        </v-col>
+      </v-row>
       <v-row v-if="selectedOffer != null">
         <v-col>
           <v-btn
@@ -45,7 +60,7 @@
           <h3>Aangeboden ritten</h3>
         </v-col>
         <v-col v-if="!itineraries.length">
-          <em>Er zijn nog geen ritten aangeboden.</em>
+          <em>Er zijn geen ritten aangeboden.</em>
         </v-col>
         <v-col v-else>
           <travel-proposal-summary
@@ -83,7 +98,7 @@ export default {
   },
   data() {
     return {
-      selectedOfferIndex: 0,
+      selectedOfferIndex: null,
     }
   },
   computed: {
@@ -93,8 +108,8 @@ export default {
     },
     selectedOffer() {
       if (
-        this.itineraries &&
-        this.itineraries.length > this.selectedOfferIndex
+        this.selectedOfferIndex >= 0 &&
+        this.selectedOfferIndex < this.itineraries.length
       ) {
         return this.itineraries[this.selectedOfferIndex]
       }
@@ -130,6 +145,20 @@ export default {
         this.selectedOffer.legs.find((leg) => leg.state === 'CANCELLED')
       )
     },
+    isChatEnabled() {
+      return !!this.selectedOffer
+    },
+  },
+  mounted() {
+    // Select the first booking that is not cancelled
+    if (this.itineraries?.length > 0) {
+      const ix = this.itineraries.findIndex(
+        (it) => it.legs.find((leg) => leg.state !== 'CANCELLED') != null
+      )
+      if (ix != null) {
+        this.onTravelProposalSelected(ix)
+      }
+    }
   },
   methods: {
     onTravelProposalSelected(index) {
@@ -144,6 +173,9 @@ export default {
     },
     onShowMap() {
       this.$emit('show-map')
+    },
+    onContactDriver() {
+      this.$emit('contact-driver')
     },
   },
 }
