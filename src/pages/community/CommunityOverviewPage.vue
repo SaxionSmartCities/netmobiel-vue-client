@@ -7,6 +7,7 @@
           forward="inbox"
           icon="fa-comments"
           name="Berichten"
+          :counter="unreadMessageCount"
         ></community-button>
       </v-col>
       <v-col>
@@ -78,6 +79,7 @@ import config from '@/config/config'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 import * as bsStore from '@/store/banker-service'
+import * as msStore from '@/store/message-service'
 import { coordinatesToGeoLocation } from '@/utils/Utils'
 import moment from 'moment'
 
@@ -126,6 +128,9 @@ export default {
       }
       return count
     },
+    unreadMessageCount() {
+      return msStore.getters.getUser?.unreadMessageCount
+    },
     canActAsTreasurer() {
       return psStore.getters.canActAsTreasurer
     },
@@ -158,6 +163,7 @@ export default {
         maxResults: 0,
       })
     }
+    msStore.actions.fetchMyStatus()
     this.refreshWithdrawalCount()
   },
   methods: {
