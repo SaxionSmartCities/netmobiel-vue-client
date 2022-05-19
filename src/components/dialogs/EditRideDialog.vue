@@ -1,5 +1,5 @@
 <template>
-  <v-card class="pa-3">
+  <v-card>
     <v-card-title class="headline"> Rit Wijzigen </v-card-title>
     <v-card-text v-if="showWarning">
       <v-row class="d-flex flex-column">
@@ -73,7 +73,6 @@
             rounded
             outlined
             block
-            mb-4
             depressed
             color="primary"
             @click="onCancel"
