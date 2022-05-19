@@ -328,7 +328,8 @@ export default {
       }
     },
     onTripSelected(selected) {
-      isStore.mutations.setSelectedTrip({})
+      //TODO Why is the trip cleared?
+      isStore.mutations.setSelectedTrip(null)
       this.$router.push({
         name: 'tripDetailPage',
         params: { tripId: String(selected.tripId) },

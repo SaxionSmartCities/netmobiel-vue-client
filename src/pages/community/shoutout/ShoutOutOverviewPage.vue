@@ -301,7 +301,7 @@ export default {
     },
     onShoutOutSelected(selected) {
       if (this.isDriverView) {
-        isStore.mutations.setSelectedTripPlan({})
+        isStore.mutations.setSelectedTripPlan(null)
         // Only a driver can see his own proposed ride
         this.$router.push({
           name: 'shoutOutDriver',
@@ -312,7 +312,7 @@ export default {
           },
         })
       } else {
-        isStore.mutations.setSelectedTripPlan({})
+        isStore.mutations.setSelectedTripPlan(null)
         this.$router.push({
           name: 'shoutOutPassenger',
           params: { shoutOutId: selected.shoutOut.planRef },
