@@ -56,10 +56,19 @@
         <span>Ritten</span>
         <v-icon>favorite</v-icon>
       </v-btn>
-      <v-btn text value="community" to="/community">
-        <span>Community</span>
-        <v-icon>chat</v-icon>
-      </v-btn>
+      <v-badge
+        offset-x="3em"
+        offset-y="1ex"
+        overlap
+        dot
+        color="red"
+        :value="hasUnreadMessages"
+      >
+        <v-btn text value="community" to="/community">
+          <span>Community</span>
+          <v-icon>chat</v-icon>
+        </v-btn>
+      </v-badge>
       <v-btn text value="profile" to="/profile">
         <span>Profiel</span>
         <v-icon>person</v-icon>
@@ -76,12 +85,16 @@ import * as psStore from '@/store/profile-service'
 import * as NetmobielApp from '@/utils/NetmobielApp'
 import config from '@/config/config'
 import { runningInsideFlutterApp2021 } from '@/utils/NetmobielApp'
+import * as msStore from '@/store/message-service'
+
+const checkMessageStatusInterval = 1000 * 60 * 15 // msec
 
 export default {
   name: 'App',
   components: { RoundUserImage },
   data: () => ({
     offsetTop: 0,
+    messageStatusTimer: null,
   }),
   computed: {
     profileImage() {
@@ -145,6 +158,9 @@ export default {
     },
     config() {
       return config
+    },
+    hasUnreadMessages() {
+      return msStore.getters.getUser?.unreadMessageCount > 0
     },
   },
   watch: {
@@ -245,6 +261,11 @@ export default {
         .then(() => psStore.actions.fetchMyProfile())
         // Ignore the errors, they are resolved elsewhere.
         .catch(() => {})
+      // Get the message status
+      msStore.actions.fetchMyStatus()
+      this.messageStatusTimer = setInterval(() => {
+        msStore.actions.fetchMyStatus()
+      }, checkMessageStatusInterval)
     }
   },
   beforeDestroy() {
@@ -253,6 +274,10 @@ export default {
       'NetmobielPushMessage',
       this.onPushMessageReceived
     )
+    if (this.messageStatusTimer) {
+      clearInterval(this.messageStatusTimer)
+      this.messageStatusTimer = null
+    }
   },
   methods: {
     onPushMessageReceived(evt) {

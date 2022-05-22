@@ -23,9 +23,9 @@
             'justify-end': isMessageSendByMe,
           }"
         >
-          <v-icon v-if="sendByMe">outgoing_mail</v-icon>
+          <v-icon v-if="isMessageSendByMe">outgoing_mail</v-icon>
           <div>{{ userName }}</div>
-          <v-icon v-if="!sendByMe">outgoing_mail</v-icon>
+          <v-icon v-if="!isMessageSendByMe">outgoing_mail</v-icon>
         </v-card-subtitle>
         <v-card-text class="pa-0">
           <div>{{ message.body }}</div>
