@@ -135,12 +135,9 @@ export default {
       return ''
     },
     cancelled() {
-      // const found = this.legs.find(l => l.state === 'CANCELLED')
-      // return found !== undefined
       return this.tripState === 'CANCELLED'
     },
     completed() {
-      // return this.tripState === 'COMPLETED' && !this.cancelled
       return this.tripState === 'COMPLETED'
     },
     needsReview() {
@@ -172,8 +169,12 @@ export default {
       })
     },
     formatDateTime(dateTime, format) {
-      if (!format) return moment(dateTime).locale('nl').calendar()
-      else return moment(dateTime).local('nl').format(format)
+      const time = moment(dateTime)
+      if (format) {
+        return time.local('nl').format(format)
+      } else {
+        return time.locale('nl').calendar()
+      }
     },
     // Function to pre-determine the divions of column per leg
     calculateLegDivison() {
@@ -208,7 +209,7 @@ export default {
 
         // Find the highest value. We'll need to adjust this value to reach 12.
         let highestIndex = 0
-        for (var i = 0; i < ratios.length; i++) {
+        for (let i = 0; i < ratios.length; i++) {
           if (ratios[i] > ratios[highestIndex]) {
             highestIndex = i
           }
