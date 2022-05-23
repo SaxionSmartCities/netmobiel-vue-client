@@ -2,15 +2,19 @@
   <v-row dense no-gutters>
     <v-col>
       {{ formattedRecurrence }}
-      <table v-if="recurrence.unit == 'WEEK'" id="overview">
+      <table
+        v-if="recurrence.unit === 'WEEK'"
+        id="overview"
+        role="presentation"
+      >
         <tr>
-          <th>Ma</th>
-          <th>Di</th>
-          <th>Wo</th>
-          <th>Do</th>
-          <th>Vr</th>
-          <th>Za</th>
-          <th>Zo</th>
+          <th scope="col">Ma</th>
+          <th scope="col">Di</th>
+          <th scope="col">Wo</th>
+          <th scope="col">Do</th>
+          <th scope="col">Vr</th>
+          <th scope="col">Za</th>
+          <th scope="col">Zo</th>
         </tr>
         <tr>
           <td v-for="day in [0, 1, 2, 3, 4, 5, 6]" :key="day">
@@ -41,7 +45,7 @@ export default {
   },
   methods: {
     recursOn(weekday) {
-      return this.recurrence.daysOfWeekMask & (1 << weekday)
+      return (this.recurrence.daysOfWeekMask & (1 << weekday)) !== 0
     },
   },
 }

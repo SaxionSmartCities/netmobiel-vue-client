@@ -15,7 +15,8 @@
       </v-row>
       <v-row dense>
         <v-col>
-          <b>{{ passenger.givenName }} {{ passenger.familyName }}</b> rijdt mee.
+          <strong>{{ passenger.givenName }} {{ passenger.familyName }}</strong>
+          rijdt mee.
         </v-col>
       </v-row>
     </v-col>

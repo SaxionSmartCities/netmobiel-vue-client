@@ -11,14 +11,6 @@
       opacity="0.08"
       z-index="99"
     />
-    <!-- <v-icon
-      v-if="displayOverlay"
-      aria-hidden="false"
-      class="overlay-icon"
-      size="50"
-    >
-      {{ overlayIcon }}
-    </v-icon> -->
     <v-row no-gutters>
       <v-col>
         <v-card-title class="d-flex justify-space-between pt-2 pr-0">
@@ -249,13 +241,5 @@ export default {
 }
 .review-icon {
   color: $color-orange !important;
-}
-.overlay-icon {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  left: calc(50% - 25px);
-  top: calc(50% - 25px);
-  opacity: 0.5;
 }
 </style>
