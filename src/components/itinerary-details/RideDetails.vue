@@ -84,40 +84,40 @@ export default {
         ? `${this.ride.car.brand} ${this.ride.car.model}`
         : 'Onbekend'
       result.push({ label: 'Auto', value: auto })
-      // result.push({
-      //   label: 'Boekingen',
-      //   value: bookings,
-      //   renderingComponent: 'BookingList',
-      // })
-      const bookingLabel = this.bookingLabel
       result.push({
-        label: 'Boekingen',
-        value: bookingLabel,
+        label: 'Plaatsen',
+        value: this.ride.nrSeatsAvailable,
       })
-      const booking = this.confirmedBookings[0]
-      if (booking) {
-        if (booking.fareInCredits !== undefined) {
-          result.push({
-            label: 'Opbrengst',
-            value: `${booking.fareInCredits} credits`,
-          })
-        }
-        if (
-          this.ride?.state === 'VALIDATING' ||
-          this.ride?.state === 'COMPLETED'
-        ) {
-          const cv = this.confirmationText(booking.confirmed)
-          result.push({ label: 'Bevestiging', value: cv })
-          if (booking.confirmed === false) {
-            const reason = this.providerReasonText(booking.confirmationReason)
-            result.push({ label: 'Reden', value: reason })
+      if (this.activeBookings?.length > 0) {
+        result.push({
+          label: 'Boekingen',
+          value: this.bookingLabel,
+        })
+        const booking = this.confirmedBookings[0]
+        if (booking) {
+          if (booking.fareInCredits !== undefined) {
+            result.push({
+              label: 'Opbrengst',
+              value: `${booking.fareInCredits} credits`,
+            })
           }
-        }
-        if (booking.paymentState) {
-          result.push({
-            label: 'Betaling',
-            value: constants.PAYMENT_STATE[booking.paymentState],
-          })
+          if (
+            this.ride?.state === 'VALIDATING' ||
+            this.ride?.state === 'COMPLETED'
+          ) {
+            const cv = this.confirmationText(booking.confirmed)
+            result.push({ label: 'Bevestiging', value: cv })
+            if (booking.confirmed === false) {
+              const reason = this.providerReasonText(booking.confirmationReason)
+              result.push({ label: 'Reden', value: reason })
+            }
+          }
+          if (booking.paymentState) {
+            result.push({
+              label: 'Betaling',
+              value: constants.PAYMENT_STATE[booking.paymentState],
+            })
+          }
         }
       }
       if (recurrence) {
