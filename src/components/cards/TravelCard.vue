@@ -236,7 +236,6 @@ export default {
 .is-completed {
   border-color: $color-primary !important;
 }
-
 .is-cancelled-icon {
   color: $color-alertRed !important;
 }
