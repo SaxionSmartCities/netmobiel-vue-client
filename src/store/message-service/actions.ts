@@ -237,7 +237,7 @@ function fetchMessage(context: ActionContext, { id }: any) {
       ) as AxiosRequestHeaders,
     })
     .then(function (resp) {
-      return Promise.resolve(resp.data)
+      return resp.data
     })
     .catch(function (error) {
       uiStore.actions.queueErrorNotification(
