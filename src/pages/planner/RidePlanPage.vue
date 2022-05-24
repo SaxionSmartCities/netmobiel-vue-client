@@ -53,6 +53,9 @@
                         {{ selectedCar.model }}
                       </div>
                     </v-col>
+                    <v-col v-if="ridePlanOptions">
+                      {{ ridePlanOptions.maxPassengers }} plaatsen
+                    </v-col>
                   </v-row>
                 </v-col>
               </v-row>
