@@ -52,5 +52,6 @@ export interface CommunicatorUser {
   givenName?: string
   managedIdentity: string
   phoneNumber?: string
+  // Only present and/or valid after certain calls
   unreadMessageCount?: number
 }

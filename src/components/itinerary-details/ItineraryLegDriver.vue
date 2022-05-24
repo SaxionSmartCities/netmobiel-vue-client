@@ -17,10 +17,10 @@
       <v-row dense>
         <v-col>
           <span v-if="leg.driverName === 'Jij'">
-            <b>{{ leg.driverName }}</b> bent de chauffeur.
+            <strong>{{ leg.driverName }}</strong> bent de chauffeur.
           </span>
           <span v-else>
-            <b>{{ leg.driverName }}</b> is de chauffeur.
+            <strong>{{ leg.driverName }}</strong> is de chauffeur.
           </span>
         </v-col>
       </v-row>

@@ -293,11 +293,14 @@ export default {
       return bsStore.getters.getSelectedCharity
     },
     charityImage() {
-      return this.image
-        ? this.image
-        : this.charity?.imageUrl
-        ? this.charity?.imageUrl
-        : defaultCharityImage
+      let image = this.image
+      if (!image) {
+        image = this.charity?.imageUrl
+      }
+      if (!image) {
+        image = defaultCharityImage
+      }
+      return image
     },
   },
   watch: {

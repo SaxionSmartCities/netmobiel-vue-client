@@ -443,7 +443,7 @@ const router = new Router({
 const unprotectedPaths = ['/', '/logout', '/session-expired']
 
 router.beforeEach((to, from, next) => {
-  //console.log(`Route ${from.path} --> ${to.path}`)
+  //console.log(`Route ${from.name} ${from.path} --> ${to.name} ${to.path}`)
   uiStore.mutations.hideBackButton()
   uiStore.mutations.enableFooter()
   uiStore.mutations.enableHeader()

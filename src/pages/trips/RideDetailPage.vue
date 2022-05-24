@@ -20,9 +20,9 @@
       <v-col>
         <v-alert type="warning">
           Je passagier reed naar eigen zeggen niet mee:
-          <i>{{
+          <em>{{
             passengerReasonText(confirmedBooking.confirmationReasonByPassenger)
-          }}</i
+          }}</em
           >. Klopt dat? Vraag eventueel opheldering bij de passagier door een
           berichtje te sturen.
         </v-alert>

@@ -11,14 +11,6 @@
       opacity="0.08"
       z-index="99"
     />
-    <!-- <v-icon
-      v-if="displayOverlay"
-      aria-hidden="false"
-      class="overlay-icon"
-      size="50"
-    >
-      {{ overlayIcon }}
-    </v-icon> -->
     <v-row no-gutters>
       <v-col>
         <v-card-title class="d-flex justify-space-between pt-2 pr-0">
@@ -143,12 +135,9 @@ export default {
       return ''
     },
     cancelled() {
-      // const found = this.legs.find(l => l.state === 'CANCELLED')
-      // return found !== undefined
       return this.tripState === 'CANCELLED'
     },
     completed() {
-      // return this.tripState === 'COMPLETED' && !this.cancelled
       return this.tripState === 'COMPLETED'
     },
     needsReview() {
@@ -180,8 +169,12 @@ export default {
       })
     },
     formatDateTime(dateTime, format) {
-      if (!format) return moment(dateTime).locale('nl').calendar()
-      else return moment(dateTime).local('nl').format(format)
+      const time = moment(dateTime)
+      if (format) {
+        return time.local('nl').format(format)
+      } else {
+        return time.locale('nl').calendar()
+      }
     },
     // Function to pre-determine the divions of column per leg
     calculateLegDivison() {
@@ -216,7 +209,7 @@ export default {
 
         // Find the highest value. We'll need to adjust this value to reach 12.
         let highestIndex = 0
-        for (var i = 0; i < ratios.length; i++) {
+        for (let i = 0; i < ratios.length; i++) {
           if (ratios[i] > ratios[highestIndex]) {
             highestIndex = i
           }
@@ -249,13 +242,5 @@ export default {
 }
 .review-icon {
   color: $color-orange !important;
-}
-.overlay-icon {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  left: calc(50% - 25px);
-  top: calc(50% - 25px);
-  opacity: 0.5;
 }
 </style>

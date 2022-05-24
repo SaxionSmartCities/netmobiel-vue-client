@@ -40,9 +40,9 @@ function addStaticResponseInterceptor() {
           }`
         )
         // Redirect to the session expired. Ignore errors saying that others also redirected to that same page.
-        router.push('/session-expired').catch((error) => {
-          if (error.name !== 'NavigationDuplicated') {
-            throw error
+        router.push('/session-expired').catch((expiredError) => {
+          if (expiredError.name !== 'NavigationDuplicated') {
+            throw expiredError
           }
         })
       } else if (error.response.status < 500) {

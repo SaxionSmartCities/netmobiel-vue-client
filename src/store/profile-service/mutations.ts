@@ -36,46 +36,6 @@ function setProfile(state: ProfileState, payload: Profile) {
   state.user.profile = payload
 }
 
-function setNotificationOptionsValue(state: ProfileState, payload: any) {
-  state.user.notificationOptions.filter(function (item) {
-    if (item.name === payload.key) {
-      item.value = payload.value
-      return item
-    }
-  })
-}
-
-function setTripOptionsValue(state: ProfileState, payload: any) {
-  state.user.tripOptions.filter(function (item) {
-    if (item.name === payload.key) {
-      item.value = payload.value
-      return
-    }
-  })
-}
-
-function setReviewOptionsValue(state: ProfileState, payload: any) {
-  state.user.reviews.filter(function (item) {
-    if (item.name === payload.key) {
-      item.value = payload.value
-      return item
-    }
-  })
-}
-
-function setRidePlanOptions(state: ProfileState, payload: RidePlanOptions) {
-  state.user.profile.ridePlanOptions = payload
-}
-
-function setPrivacySecurityValue(state: ProfileState, payload: any) {
-  state.user.privacySecurity.filter(function (item) {
-    if (item.name === payload.key) {
-      item.value = payload.value
-      return item
-    }
-  })
-}
-
 function setComplimentTypes(
   state: ProfileState,
   complimentTypes: ComplimentType[]
@@ -201,11 +161,6 @@ export const buildMutations = (
     setUserToken: psBuilder.commit(setUserToken),
     deleteAccessToken: psBuilder.commit(deleteAccessToken),
     setProfile: psBuilder.commit(setProfile),
-    setNotificationOptionsValue: psBuilder.commit(setNotificationOptionsValue),
-    setTripOptionsValue: psBuilder.commit(setTripOptionsValue),
-    setReviewOptionsValue: psBuilder.commit(setReviewOptionsValue),
-    setRidePlanOptions: psBuilder.commit(setRidePlanOptions),
-    setPrivacySecurityValue: psBuilder.commit(setPrivacySecurityValue),
     setComplimentTypes: psBuilder.commit(setComplimentTypes),
     addPublicProfile: psBuilder.commit(addPublicProfile),
     clearPublicProfile: psBuilder.commit(clearPublicProfile),

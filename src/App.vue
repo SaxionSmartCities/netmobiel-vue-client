@@ -82,10 +82,13 @@ import RoundUserImage from '@/components/common/RoundUserImage'
 import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
-import * as NetmobielApp from '@/utils/NetmobielApp'
 import config from '@/config/config'
-import { runningInsideFlutterApp2021 } from '@/utils/NetmobielApp'
 import * as msStore from '@/store/message-service'
+import { EventBus } from '@/utils/EventBus'
+import {
+  requestFcmToken,
+  runningInsideFlutterApp2021,
+} from '@/utils/NetmobielApp'
 
 const checkMessageStatusInterval = 1000 * 60 * 15 // msec
 
@@ -246,7 +249,7 @@ export default {
       window.addEventListener('NetmobielFcmToken', this.onFcmTokenReceived)
       // Fetch the FCM token via message channel (since jan 2022 app)
       // console.log(`Request FCM token`)
-      NetmobielApp.requestFcmToken()
+      requestFcmToken()
       // The FCM token is received before or after receiving the profile (if any), and also when still registering
       // The FCM token will be stored in the following situations:
       // 1. When receiving the updated FCM token
@@ -259,8 +262,9 @@ export default {
       psStore.actions
         .fetchMyProfileStatus()
         .then(() => psStore.actions.fetchMyProfile())
-        // Ignore the errors, they are resolved elsewhere.
-        .catch(() => {})
+        .catch(() => {
+          // Ignore the errors, they are resolved elsewhere.
+        })
       // Get the message status
       msStore.actions.fetchMyStatus()
       this.messageStatusTimer = setInterval(() => {
@@ -285,7 +289,12 @@ export default {
       // console.log(
       //   `Message received: ${detail.msgId} ${detail.title} ${detail.body}`
       // )
-      if (detail.body) {
+      // Update message count
+      msStore.actions.fetchMyStatus()
+      // Send event to message list (if active)
+      EventBus.$emit('message-received', detail)
+      // Show the message, but only when not already busy with some conversation
+      if (detail.body && this.$route.name !== 'conversation') {
         const textMessage = [detail.title || '', detail.body]
           .filter((elem) => elem)
           .join(': ')
@@ -311,7 +320,9 @@ export default {
       uiStore.actions.finishNotification()
     },
     isProfileComplete(profile) {
-      return !!profile.dateOfBirth
+      return (
+        profile.dateOfBirth != null && profile.dateOfBirth.trim().length > 0
+      )
     },
   },
 }

@@ -104,10 +104,10 @@ export default {
       return rules
     },
     maxDate() {
-      return this.max === 'today' ? this.todayIsoDate : this.max ? this.max : ''
+      return this.dateValue(this.max)
     },
     minDate() {
-      return this.min === 'today' ? this.todayIsoDate : this.min ? this.min : ''
+      return this.dateValue(this.min)
     },
     displayDate: {
       get() {
@@ -140,6 +140,13 @@ export default {
     },
   },
   methods: {
+    dateValue(text) {
+      if (text === 'today') {
+        return this.todayIsoDate
+      } else {
+        return text || ''
+      }
+    },
     titleDate(val) {
       if (val) {
         return moment(val).locale('nl').format('D MMM YYYY')
