@@ -7,7 +7,12 @@
         dense
         no-gutters
       >
-        <v-col> Deze oproep is gesloten </v-col>
+        <v-col>
+          <span v-if="shoutOut.planState === 'FINAL'"
+            >Deze oproep is al ingevuld</span
+          >
+          <span v-else>Deze oproep is geannuleerd</span>
+        </v-col>
       </v-row>
       <v-row
         v-else-if="isShoutOutInThePast"

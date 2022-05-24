@@ -1,5 +1,19 @@
 <template>
-  <v-card outlined class="pa-2" :class="{ 'travel-offer': hasOffer }">
+  <v-card
+    outlined
+    class="pa-2"
+    :class="{
+      'travel-offer': hasOffer,
+      'is-cancelled': isCancelled,
+      'is-final': isFinal,
+    }"
+  >
+    <v-overlay
+      :color="overlayColor"
+      :value="displayOverlay"
+      :absolute="true"
+      opacity="0.08"
+    />
     <v-row
       v-if="!isUserTraveller"
       class="mb-2 clickable-item"
@@ -119,6 +133,24 @@ export default {
       return this.traveller
         ? `${this.traveller.givenName} ${this.traveller.familyName}`
         : ''
+    },
+    isCancelled() {
+      return this.shoutOut.planState === 'CANCELLED'
+    },
+    isFinal() {
+      return this.shoutOut.planState === 'FINAL'
+    },
+    displayOverlay() {
+      return this.completed || this.cancelled
+    },
+    // HACK: Should be done using CSS.
+    overlayColor() {
+      if (this.isCancelled) {
+        return '#d0021b'
+      } else if (this.isFinal) {
+        return '#2e8997'
+      }
+      return ''
     },
     shoutOutIsClosed() {
       // If requestDuration is set, then the shout-out has been closed.
@@ -240,5 +272,15 @@ export default {
 }
 .travel-offer {
   border: 1px solid $color-primary;
+}
+.is-cancelled {
+  border-color: $color-alertRed !important;
+}
+.is-completed {
+  border-color: $color-primary !important;
+}
+// Make the overlay transparent for pointer events
+.v-card > .v-overlay {
+  pointer-events: none;
 }
 </style>
