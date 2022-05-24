@@ -80,6 +80,7 @@ import {
   restoreDataBeforeRouteEnter,
   saveDataBeforeRouteLeave,
 } from '@/utils/navigation'
+import { EventBus } from '@/utils/EventBus'
 
 export default {
   components: {
@@ -132,10 +133,21 @@ export default {
   },
   created: function () {
     uiStore.mutations.showBackButton()
-    this.fetchActualConversations()
-    this.fetchArchivedConversations()
+    this.refreshInbox()
+    EventBus.$on('message-received', this.onMessageReceived)
+  },
+  beforeDestroy() {
+    EventBus.$off('message-received', this.onMessageReceived)
   },
   methods: {
+    refreshInbox() {
+      msStore.actions.fetchMyStatus()
+      this.fetchActualConversations()
+      this.fetchArchivedConversations()
+    },
+    onMessageReceived() {
+      this.refreshInbox()
+    },
     fetchActualConversations(offset = 0) {
       if (offset === 0 || offset < this.actualConversations.totalCount) {
         msStore.actions.fetchActualConversations({

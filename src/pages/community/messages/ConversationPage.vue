@@ -75,6 +75,10 @@ import {
 } from '@/utils/navigation'
 import { emptyPage } from '@/store/storeHelper'
 import { decodeUrn } from '@/utils/UrnHelper'
+import { EventBus } from '@/utils/EventBus'
+
+// Maximum number of messages in one fetch
+const maxMessages = 100
 
 export default {
   components: {
@@ -250,10 +254,12 @@ export default {
       //   `set savedChatMeta =  Message ${this.chatMeta?.context} Sender ${this.chatMeta?.senderContext} Recipient ${this.chatMeta?.recipientContext} ${this.chatMeta?.recipientManagedIdentity}`
       // )
     }
-  },
-  mounted() {
     msStore.mutations.setConversation(null)
     msStore.mutations.setMessages(emptyPage)
+    EventBus.$on('message-received', this.onMessageReceived)
+  },
+  beforeDestroy() {
+    EventBus.$off('message-received', this.onMessageReceived)
   },
   // updated() {
   //TODO Use either this method or the $nextTick in the messageList watcher. What is better?
@@ -276,10 +282,28 @@ export default {
   // }
   // },
   methods: {
+    onMessageReceived(msg) {
+      // console.log(`Message received: ${msg.msgId} ${msg.title} ${msg.body}`)
+      this.fetchConversationIdFromMessage(msg.msgId).then((convId) => {
+        if (convId === this.conversationId) {
+          // Message received in current conversation. Reload messages and scroll to end
+          const maxResults = Math.min(maxMessages, this.messages.data.length)
+          return this.fetchMessages(0, maxResults).then(() => {
+            this.$nextTick(() => {
+              this.scrollMessageIntoView(false)
+            })
+          })
+        } else {
+          const textMessage = [msg.title || '', msg.body]
+            .filter((elem) => elem)
+            .join(': ')
+          return uiStore.actions.queueInfoNotification(textMessage)
+        }
+      })
+    },
     onLowWater() {
       // console.log(`ConversationPage: Low water!`)
       // The user has touched the scroll, switch-off automatic scroll
-      // console.log(`ConversationPage: Low water!`)
       this.autoScrollToBottom = false
       this.fetchMessages(this.messages.data.length)
     },
@@ -311,8 +335,9 @@ export default {
      * @param animation smooth or auto
      * @param itemIndex if set scroll the nth item into view. Otherwise end of list.
      */
-    scrollMessageIntoView(animation = false, itemIndex) {
+    scrollMessageIntoView(animation, itemIndex) {
       const items = this.$refs.messageContainer?.children
+      //console.log(`Scroll: itemIndex ${itemIndex}, #items ${items.length}`)
       if (items && items.length > 0) {
         const item = items[itemIndex ?? items.length - 1]
         item.scrollIntoView({
@@ -377,7 +402,7 @@ export default {
           ],
         })
         .then(() => {
-          const maxResults = constants.fetchMessagesMaxResults
+          const maxResults = Math.min(maxMessages, this.messages.data.length)
           this.newMessage = null
           return this.fetchMessages(0, maxResults)
         })
@@ -471,6 +496,24 @@ export default {
           this.$router.push(location)
         }
       }
+    },
+    fetchConversationIdFromMessage(msgId) {
+      return msStore.actions
+        .fetchMessage({ id: msgId })
+        .then((msg) => {
+          // Now goto the relevant (i.e., my) conversation. Find whether
+          // that should be the sender's conversation or the recipient
+          let conversationId
+          if (msg?.sender?.managedIdentity === this.profile.id) {
+            conversationId = msg.senderConversationRef
+          } else {
+            conversationId = msg?.envelopes.find(
+              (env) => env.recipient.managedIdentity === this.profile.id
+            )?.conversationRef
+          }
+          return conversationId
+        })
+        .catch(() => {})
     },
   },
 }
