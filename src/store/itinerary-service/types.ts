@@ -80,6 +80,7 @@ export interface TripPlan {
   maxWalkDistance: number | null
   modalities: string[]
   requestDuration?: number
+  planState: 'OPEN' | 'FINAL' | 'CANCELLED'
 }
 
 /**
