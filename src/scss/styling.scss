@@ -112,6 +112,11 @@ h3 {
   color: $color-alertRed;
   background-color: lighten($color-alertRed, 50%) !important;
 }
+.information-banner {
+  font-weight: bold;
+  color: $color-green;
+  background-color: $background-light-green;
+}
 
 .color-alert-red {
   color: $color-alertRed !important;

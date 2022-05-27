@@ -35,6 +35,7 @@
           :key="index"
           :leg="leg"
           :step="index"
+          :part-of-passengers-itinerary="false"
         />
       </v-col>
     </v-row>
@@ -64,7 +65,7 @@
           :disabled="!isChatEnabled"
           @click="contactPassenger"
         >
-          Stuur bericht naar passagier
+          Bericht passagier
         </v-btn>
       </v-col>
     </v-row>

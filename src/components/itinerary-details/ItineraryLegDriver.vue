@@ -10,7 +10,7 @@
             :leg="leg"
           />
         </v-col>
-        <v-col class="text-center">
+        <v-col v-if="leg.driverName !== 'Jij'" class="text-center">
           <v-btn small rounded depressed color="button"> Bekijk Profiel </v-btn>
         </v-col>
       </v-row>

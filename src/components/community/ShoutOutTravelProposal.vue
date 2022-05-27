@@ -27,6 +27,7 @@
           :showicon="false"
           :showdottedline="true"
           :step="index"
+          :part-of-passengers-itinerary="true"
         />
       </v-col>
     </v-row>
@@ -58,7 +59,7 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row dense>
       <v-col>
         <v-btn
           large
@@ -69,11 +70,11 @@
           :disabled="!isChatEnabled"
           @click="onContactPassenger"
         >
-          Stuur bericht naar passagier
+          Bericht passagier
         </v-btn>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row dense>
       <v-col>
         <v-btn
           large
@@ -109,8 +110,8 @@ import moment from 'moment'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import ShoutOutTravelProposalEditor from '@/components/community/ShoutOutTravelProposalEditor'
 import {
+  generateCommunityShoutOutDetailSteps,
   generateItineraryDetailSteps,
-  generateShoutOutDetailSteps,
 } from '@/utils/itinerary_steps.js'
 
 export default {
@@ -175,7 +176,7 @@ export default {
           .filter((leg) => leg.traverseMode === 'RIDESHARE')
           .forEach((leg) => (leg.passenger = { ...this.shoutOut.traveller }))
       } else if (this.shoutOut?.planRef) {
-        steps = generateShoutOutDetailSteps(this.shoutOut, undefined)
+        steps = generateCommunityShoutOutDetailSteps(this.shoutOut)
       } else {
         steps = []
       }

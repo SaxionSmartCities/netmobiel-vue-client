@@ -456,11 +456,9 @@ export default {
           this.conversation.ownerRole ===
           constants.CONVERSATION_OWNER_ROLE.DRIVER
         ) {
-          const rideId =
-            this.conversation.contexts.find((c) => c.includes('ride')) || 'none'
           location = {
             name: 'shoutOutDriver',
-            params: { shoutOutId: ctx, rideId: rideId },
+            params: { shoutOutId: ctx },
           }
         } else {
           location = {

@@ -1,6 +1,6 @@
 <template>
   <v-row class="bg-light-green">
-    <v-col cols="3">
+    <v-col cols="4">
       <v-dialog v-model="showTimePicker" persistent>
         <template #activator="{ on }">
           <v-text-field
@@ -42,7 +42,7 @@
         </v-card>
       </v-dialog>
     </v-col>
-    <v-col cols="9">
+    <v-col cols="8">
       <v-text-field
         class="bg-white"
         dense
@@ -52,7 +52,7 @@
         :disabled="!isEnabled"
         :label="locationFieldLabel"
         :value="locationLabel"
-        append-icon="close"
+        :append-icon="appendIcon"
         @click:append="onLocationReset"
         @click="onLocationUpdate"
       />
@@ -70,6 +70,7 @@ export default {
     // The time prop should be a moment object.
     time: { type: Object, required: false, default: () => null },
     location: { type: Object, required: false, default: () => null },
+    defaultLocation: { type: Object, required: false, default: () => null },
     allowedMinutes: { type: Function, default: (m) => m % 5 === 0 },
     isArrival: { type: Boolean, default: false },
     isEnabled: { type: Boolean, default: true },
@@ -93,18 +94,28 @@ export default {
     timeLabel() {
       return this.pickedTime
     },
+    appendIcon() {
+      return this.location !== this.defaultLocation ? 'close' : undefined
+    },
   },
   watch: {
     /**
      * Update the time displayed whenever the input time changes.
      * This does not interfere with the value set by the time editor.
      */
-    // eslint-disable-next-line no-unused-vars
-    time(newValue, oldValue) {
-      this.pickedTime = this.time.format('HH:mm')
+    time() {
+      this.refreshPickedTime()
     },
   },
+  mounted() {
+    this.refreshPickedTime()
+  },
   methods: {
+    refreshPickedTime() {
+      if (this.time) {
+        this.pickedTime = this.time.format('HH:mm')
+      }
+    },
     onConfirmTime() {
       this.showTimePicker = false
       // Combine the selected time with the original (!) input date

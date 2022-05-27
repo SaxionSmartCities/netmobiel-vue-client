@@ -68,6 +68,7 @@ import SystemCreditsPage from '@/pages/management/SystemCreditsPage'
 import PremiumWithdrawalPage from '@/pages/management/PremiumWithdrawalPage'
 import PremiumDepositPage from '@/pages/management/PremiumDepositPage'
 import TermsPage from '@/pages/profile/TermsPage'
+import ShoutOutDriverProposePage from '@/pages/community/shoutout/ShoutOutDriverProposePage'
 
 Vue.use(Router)
 
@@ -337,9 +338,15 @@ const router = new Router({
       name: 'shoutOuts',
     },
     {
-      path: '/shout-out-driver/:shoutOutId;:rideId',
+      path: '/shout-out-driver/:shoutOutId',
       component: ShoutOutDriverDetailPage,
       name: 'shoutOutDriver',
+      props: true,
+    },
+    {
+      path: '/shout-out-driver-propose/:shoutOutId',
+      component: ShoutOutDriverProposePage,
+      name: 'shoutOutDriverPropose',
       props: true,
     },
     {

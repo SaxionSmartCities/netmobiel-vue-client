@@ -44,6 +44,7 @@
                 :key="index"
                 :step="index"
                 :leg="leg"
+                :part-of-passengers-itinerary="true"
               />
             </v-col>
           </v-row>

@@ -25,15 +25,17 @@
                 map
               </v-icon>
             </v-col>
-            <v-col v-if="leg.isEditable" cols="2" class="map-icon-height py-0">
-              <v-icon @click="$emit('legEdit', { leg, step })">edit</v-icon>
-            </v-col>
           </v-row>
         </v-col>
       </v-row>
       <v-row no-gutters>
-        <v-col cols="2" class="pl-2">
-          <v-icon v-if="showicon" :class="{ rideshare: isRideShare }">
+        <v-col cols="2" class="px-0 mx-auto">
+          <div v-if="deltaTime" class="time">({{ deltaTime }})</div>
+          <v-icon
+            v-if="showicon"
+            class="pl-1"
+            :class="{ rideshare: isRideShare }"
+          >
             {{ icon }}
           </v-icon>
         </v-col>
@@ -46,9 +48,18 @@
           <div v-else class="border borderwidth" />
         </v-col>
         <v-col class="description pl-2 pb-3">
-          {{ description }}
-          <itinerary-leg-passenger v-if="passenger" :passenger="passenger" />
-          <itinerary-leg-driver v-if="hasDriver" :leg="leg" />
+          <v-row>
+            <v-col>{{ description }}</v-col>
+          </v-row>
+          <itinerary-leg-rideshare-details
+            v-if="isRideShare && otherRideshareParticipant"
+            :other-person="otherRideshareParticipant"
+            :is-passengers-leg="partOfPassengersItinerary"
+            :vehicle-details="vehicleDetails"
+            :can-view-profile="canViewProfile"
+          />
+          <!--          <itinerary-leg-passenger v-if="passenger" :passenger="passenger" />-->
+          <!--          <itinerary-leg-driver v-if="hasDriver" :leg="leg" />-->
         </v-col>
       </v-row>
     </v-col>
@@ -58,18 +69,22 @@
 <script>
 import moment from 'moment'
 import travelModes from '@/constants/travel-modes.js'
-import ItineraryLegPassenger from '@/components/itinerary-details/ItineraryLegPassenger.vue'
-import ItineraryLegDriver from '@/components/itinerary-details/ItineraryLegDriver.vue'
+import ItineraryLegRideshareDetails from '@/components/itinerary-details/ItineraryLegRideshareDetails'
+import * as UrnHelper from '@/utils/UrnHelper'
 
 export default {
   name: 'ItineraryLeg',
-  components: { ItineraryLegPassenger, ItineraryLegDriver },
+  components: {
+    ItineraryLegRideshareDetails,
+  },
   props: {
     leg: { type: Object, required: true },
     isMapActive: { type: Boolean, default: false },
     step: { type: Number, default: 0 },
     showicon: { type: Boolean, default: true },
     showdottedline: { type: Boolean, default: false },
+    partOfPassengersItinerary: { type: Boolean, default: true },
+    canViewProfile: { type: Boolean, required: false, default: true },
   },
   computed: {
     travelMode() {
@@ -84,6 +99,16 @@ export default {
         ? moment(this.leg.startTime).locale('nl').format('LT')
         : '- - : - -'
     },
+    deltaTime() {
+      if (this.leg.deltaTime) {
+        const duration = moment.duration(Math.abs(this.leg.deltaTime))
+        const hours = duration.hours()
+        const minutes = String(duration.minutes()).padStart(2, '0')
+        const sign = this.leg.deltaTime < 0 ? '-' : '+'
+        return `${sign}${hours}:${minutes}`
+      }
+      return ''
+    },
     header() {
       return headers[this.travelMode]
         ? headers[this.travelMode].call(this, this.step)
@@ -95,12 +120,32 @@ export default {
         : 'Undefined mode'
     },
     passenger() {
-      return this.leg.passenger
+      if (this.leg.passenger) {
+        return {
+          managedIdentity: this.leg.passenger.managedIdentity,
+          name: `${this.leg.passenger.givenName} ${this.leg.passenger.familyName}`,
+        }
+      }
+      return undefined
+    },
+    driver() {
+      if (this.leg.driverId) {
+        const driverUrn = UrnHelper.decodeUrn(this.leg.driverId)
+        const driverMid =
+          driverUrn?.service === UrnHelper.NETMOBIEL_SERVICE.KEYCLOAK
+            ? driverUrn.id
+            : undefined
+        return {
+          managedIdentity: driverMid,
+          name: this.leg.driverName,
+        }
+      }
+      return undefined
     },
     isRideShare() {
       return (
         this.travelMode === travelModes.RIDESHARE.mode ||
-        (this.passenger && this.travelMode === travelModes.CAR.mode)
+        (this.leg.passenger && this.travelMode === travelModes.CAR.mode)
       )
     },
     hasDriver() {
@@ -109,6 +154,15 @@ export default {
       return (
         this.travelMode === travelModes.RIDESHARE.mode && this.leg.driverName
       )
+    },
+    vehicleDetails() {
+      if (this.leg.vehicleName) {
+        return `${this.leg.vehicleName} (${this.leg.vehicleLicensePlate})`
+      }
+      return undefined
+    },
+    otherRideshareParticipant() {
+      return this.partOfPassengersItinerary ? this.driver : this.passenger
     },
   },
 }
@@ -149,11 +203,11 @@ const descriptions = {
   WALK() {
     return `${this.leg.from.label} - ${this.leg.to.label}`
   },
-  CAR(step) {
-    return (step === 0 ? '' : 'Uitstappen op ') + this.leg.from.label
+  CAR() {
+    return this.leg.from.label
   },
   RIDESHARE() {
-    return `Instappen vanaf ${this.leg.from.label}`
+    return this.leg.from.label
   },
   RAIL() {
     // add platform to departure and arrival

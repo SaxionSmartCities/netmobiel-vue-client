@@ -1,12 +1,13 @@
 <template>
   <v-row>
     <v-col>
-      <v-row v-for="(leg, index) in legs" :key="index" no-gutters>
+      <v-row v-for="(leg, index) in generateSteps" :key="index" no-gutters>
         <v-col>
           <itinerary-leg
             :leg="leg"
             :showicon="showicon"
             :showdottedline="showdottedline"
+            :part-of-passengers-itinerary="true"
           />
         </v-col>
       </v-row>
@@ -79,10 +80,7 @@
 </template>
 
 <script>
-import {
-  generateItineraryDetailSteps,
-  generateShoutOutDetailSteps,
-} from '@/utils/itinerary_steps.js'
+import { generateShoutOutItineraryDetailSteps } from '@/utils/itinerary_steps.js'
 import ItineraryLeg from '@/components/itinerary-details/ItineraryLeg.vue'
 import TravelProposalSummary from '@/components/community/TravelProposalSummary.vue'
 import moment from 'moment'
@@ -121,11 +119,14 @@ export default {
     showdottedline() {
       return this.selectedOffer == null
     },
-    legs() {
-      if (this.selectedOffer == null) {
-        return generateShoutOutDetailSteps(this.shoutOut)
+    generateSteps() {
+      if (this.shoutOut) {
+        return generateShoutOutItineraryDetailSteps(
+          this.shoutOut,
+          this.selectedOffer ?? this.shoutOut.referenceItinerary
+        )
       }
-      return generateItineraryDetailSteps(this.selectedOffer)
+      return []
     },
     shoutOutIsClosed() {
       // If requestDuration is set, then the shout-out has been closed.
@@ -138,7 +139,7 @@ export default {
       )
     },
     invalidOffer() {
-      return (
+      return !!(
         this.shoutOutIsClosed ||
         this.isShoutOutInThePast ||
         !this.selectedOffer ||
@@ -155,7 +156,7 @@ export default {
       const ix = this.itineraries.findIndex(
         (it) => it.legs.find((leg) => leg.state !== 'CANCELLED') != null
       )
-      if (ix != null) {
+      if (ix >= 0) {
         this.onTravelProposalSelected(ix)
       }
     }
