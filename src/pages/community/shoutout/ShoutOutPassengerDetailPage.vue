@@ -455,8 +455,11 @@ export default {
     onShowTrip() {
       // Lookup the booking of the selected offer
       if (this.selectedRideshareLeg?.bookingId) {
-        // eslint-disable-next-line
-        csStore.actions.fetchBooking(this.selectedRideshareLeg?.bookingId).then((booking) => {
+        // We use the rideshar endpoint to retrieve the booking, because the planner
+        // does not have its own booking system (so sorry about this omission).
+        csStore.actions
+          .fetchBooking(this.selectedRideshareLeg?.bookingId)
+          .then((booking) => {
             // Check for the trip reference
             if (booking?.passengerTripRef) {
               this.$router.push({
