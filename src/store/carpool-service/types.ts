@@ -18,6 +18,7 @@ export class CarpoolState {
   plannedRides: Page<Ride> = defaultPage
   pastRides: Page<Ride> = defaultPage
   proposedRides: Page<Ride> = defaultPage
+  selectedBooking: Booking | null = null
 }
 
 export interface Car {

@@ -53,7 +53,7 @@
             </v-btn>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row dense>
           <v-col>
             <v-btn
               large
@@ -68,7 +68,14 @@
             </v-btn>
           </v-col>
         </v-row>
-        <v-row v-if="selectedOffer != null">
+        <v-row v-if="isAcceptedOffer" dense>
+          <v-col>
+            <v-btn large rounded block color="button" @click="onShowTrip">
+              Bekijk mijn rit
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row v-else-if="selectedOffer != null" dense>
           <v-col>
             <v-btn
               block
@@ -78,7 +85,7 @@
               :disabled="invalidOffer"
               @click="onTravelOfferConfirmed"
             >
-              Rit Bevestigen
+              Bevestig aanbod
             </v-btn>
           </v-col>
         </v-row>
@@ -142,6 +149,7 @@ import {
   restoreDataBeforeRouteEnter,
   saveDataBeforeRouteLeave,
 } from '@/utils/navigation'
+import * as csStore from '@/store/carpool-service'
 
 export default {
   name: 'ShoutOutPassengerDetailPage',
@@ -243,14 +251,28 @@ export default {
         this.shoutOutIsClosed ||
         this.isShoutOutInThePast ||
         this.selectedOffer == null ||
-        this.selectedOffer.legs.find((leg) => leg.state === 'CANCELLED') != null
+        this.isCancelledOffer
+      )
+    },
+    isFinal() {
+      return this.shoutOut?.planState === 'FINAL'
+    },
+    isCancelledOffer() {
+      return (
+        this.selectedOffer?.legs.find((leg) => leg.state === 'CANCELLED') !=
+        null
+      )
+    },
+    isAcceptedOffer() {
+      return (
+        this.isFinal && this.selectedOffer != null && !this.isCancelledOffer
       )
     },
     isChatEnabled() {
       return this.selectedOffer != null
     },
     selectedRideshareLeg() {
-      return this.itinerary?.legs.find(
+      return this.selectedOffer?.legs.find(
         (leg) => leg.traverseMode === 'RIDESHARE'
       )
     },
@@ -428,6 +450,23 @@ export default {
             chatMeta,
           },
         })
+      }
+    },
+    onShowTrip() {
+      // Lookup the booking of the selected offer
+      if (this.selectedRideshareLeg?.bookingId) {
+        // eslint-disable-next-line
+        csStore.actions.fetchBooking(this.selectedRideshareLeg?.bookingId).then((booking) => {
+            // Check for the trip reference
+            if (booking?.passengerTripRef) {
+              this.$router.push({
+                name: `tripDetailPage`,
+                params: {
+                  tripId: booking?.passengerTripRef,
+                },
+              })
+            }
+          })
       }
     },
   },
