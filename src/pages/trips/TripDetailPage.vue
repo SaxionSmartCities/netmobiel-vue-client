@@ -230,6 +230,13 @@ export default {
       }
       const state = this.trip.state
       switch (state) {
+        case 'BOOKING':
+          options.push({
+            icon: 'fa-times-circle',
+            label: 'Annuleer deze rit',
+            callback: this.onCancelTrip,
+          })
+          break
         case 'SCHEDULED':
           options.push({
             icon: 'fa-pencil-alt',
