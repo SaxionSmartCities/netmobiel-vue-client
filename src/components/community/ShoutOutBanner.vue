@@ -9,7 +9,7 @@
     }"
   >
     <v-col>
-      <span v-if="isFinal"> Deze oproep is al ingevuld</span>
+      <span v-if="isFinal"> Deze oproep is ingevuld</span>
       <span v-else-if="isCancelled"> Deze oproep is geannuleerd</span>
       <span v-else-if="isShoutOutInThePast"> Deze oproep is verstreken </span>
     </v-col>
@@ -54,7 +54,7 @@ export default {
     showAsCancelled() {
       // console.log(`IsUser: ${this.isUserTraveller} isFinal ${this.isFinal} Past ${}`)
       if (this.isUserTraveller) {
-        return this.isShoutOutInThePast || this.isCancelled
+        return (!this.isFinal && this.isShoutOutInThePast) || this.isCancelled
       } else {
         return this.isShoutOutInThePast || this.isShoutOutClosed
       }
