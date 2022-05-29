@@ -230,12 +230,20 @@ export default {
       }
       const state = this.trip.state
       switch (state) {
-        case 'SCHEDULED':
+        case 'BOOKING':
           options.push({
-            icon: 'fa-pencil-alt',
-            label: 'Wijzig deze rit',
-            callback: this.onTripEdit,
+            icon: 'fa-times-circle',
+            label: 'Annuleer deze rit',
+            callback: this.onCancelTrip,
           })
+          break
+        case 'SCHEDULED':
+          // Disable edit: Unclear semantics
+          // options.push({
+          //   icon: 'fa-pencil-alt',
+          //   label: 'Wijzig deze rit',
+          //   callback: this.onTripEdit,
+          // })
           options.push({
             icon: 'fa-times-circle',
             label: 'Annuleer deze rit',

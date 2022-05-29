@@ -85,7 +85,7 @@ export default {
         : 'Onbekend'
       result.push({ label: 'Auto', value: auto })
       result.push({
-        label: 'Plaatsen',
+        label: 'Stoelen over',
         value: this.ride.nrSeatsAvailable,
       })
       if (this.activeBookings?.length > 0) {

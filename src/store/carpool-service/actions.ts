@@ -379,6 +379,26 @@ function fetchRideProposals(
     })
 }
 
+function fetchBooking(context: ActionContext, bookingId: any) {
+  const URL = `${RIDESHARE_BASE_URL}/bookings/${bookingId}`
+  return axios
+    .get(URL, {
+      headers: generateHeaders(
+        GRAVITEE_RIDESHARE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    .then((resp) => {
+      mutations.setSelectedBooking(resp.data)
+      return Promise.resolve(resp.data)
+    })
+    .catch((error) => {
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van je boeking.'
+      )
+      return Promise.resolve()
+    })
+}
+
 export const buildActions = (
   csBuilder: ModuleBuilder<CarpoolState, RootState>
 ) => {
@@ -399,5 +419,7 @@ export const buildActions = (
     unconfirmBookedRide: csBuilder.dispatch(unconfirmBookedRide),
 
     fetchRideProposals: csBuilder.dispatch(fetchRideProposals),
+
+    fetchBooking: csBuilder.dispatch(fetchBooking),
   }
 }

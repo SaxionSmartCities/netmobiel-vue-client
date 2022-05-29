@@ -90,7 +90,6 @@ import TabBar from '../../../components/common/TabBar'
 import { beforeRouteEnter, beforeRouteLeave } from '@/utils/navigation.js'
 import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
-import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
 import { coordinatesToGeoLocation } from '@/utils/Utils'
@@ -105,15 +104,21 @@ import {
 export default {
   name: 'ShoutOutOverview',
   components: { TabBar, ContentPane, GroupedCardList, ShoutOut },
+  // Should we refresh the list on return from viewing a shout-out?
+  // Tricky, as time passes and a shout-out might change from actual to historic
+  // or some other state change (mostly that happens on actual shout-outs).
+  // Better on the safe side: Always refresh the view.
   beforeRouteEnter: beforeRouteEnter({
     selectedTab: (number) => number || 0,
     baseLocation: (value) => value,
     shoutOutPeriod: (period) => period || 'Future',
+    // refreshShoutOutList: (value) => value ?? true,
   }),
   beforeRouteLeave: beforeRouteLeave({
     selectedTab: (number) => number || 0,
     baseLocation: (value) => value,
     shoutOutPeriod: (period) => period,
+    // refreshShoutOutList: () => false,
   }),
   data() {
     return {
@@ -123,6 +128,7 @@ export default {
       baseLocation: '',
       requestTime: null,
       shoutOutPeriod: 'Future',
+      refreshShoutOutList: undefined,
     }
   },
   computed: {
@@ -206,7 +212,6 @@ export default {
     baseLocation(newValue, oldValue) {
       // console.log(`baseLocation: ${oldValue} --> ${newValue}`)
       this.fetchCommunityShoutOuts()
-      this.fetchPastCommunityShoutOuts()
     },
     // eslint-disable-next-line no-unused-vars
     selectedTab(newValue, oldValue) {
@@ -228,39 +233,35 @@ export default {
     this.selectedTab =
       this.profile.actingRole === constants.PROFILE_ROLE_PASSENGER ? 1 : 0
     if (this.isPassengerOnly || this.isDrivingPassenger) {
-      this.fetchMyShoutOuts()
-      this.fetchMyPastShoutOuts()
+      if (this.refreshShoutOutList ?? true) {
+        this.fetchMyShoutOuts()
+        this.fetchMyPastShoutOuts()
+      }
     }
     if (this.isDriverOnly || this.isDrivingPassenger) {
       // Initialize the base location radio
       if (!this.baseLocation) {
         this.baseLocation = this.profile?.address?.location ? 'Home' : 'All'
       }
-      // Ride proposals are used in the shoutOut component
-      csStore.actions.fetchRideProposals({
-        since: this.requestTime,
-        maxResults: 100,
-      })
-      // The watcher fetches the driver shout-outs
     }
     isStore.mutations.clearPlanningRequest()
   },
   methods: {
     // All shout-outs before 'now' where the driver was participating somehow.
-    fetchPastCommunityShoutOuts(offset = 0) {
-      if (offset === 0 || offset < this.pastCommunityShoutOuts.totalCount) {
-        isStore.actions.fetchShoutOuts({
-          past: true,
-          location: this.searchLocation,
-          sortDir: 'DESC',
-          until: this.requestTime,
-          driver: this.driverOnly ? this.driverId : undefined,
-          offset,
-          maxResults:
-            offset === 0 ? 5 : constants.fetchCommunityShoutOutsMaxResults,
-        })
-      }
-    },
+    // fetchPastCommunityShoutOuts(offset = 0) {
+    //   if (offset === 0 || offset < this.pastCommunityShoutOuts.totalCount) {
+    //     isStore.actions.fetchShoutOuts({
+    //       past: true,
+    //       location: this.searchLocation,
+    //       sortDir: 'DESC',
+    //       until: this.requestTime,
+    //       driver: this.driverOnly ? this.driverId : undefined,
+    //       offset,
+    //       maxResults:
+    //         offset === 0 ? 5 : constants.fetchCommunityShoutOutsMaxResults,
+    //     })
+    //   }
+    // },
     // All shout-outs after 'now' that are still open
     fetchCommunityShoutOuts(offset = 0) {
       if (offset === 0 || offset < this.communityShoutOuts.totalCount) {
@@ -301,17 +302,16 @@ export default {
     },
     onShoutOutSelected(selected) {
       if (this.isDriverView) {
-        isStore.mutations.setSelectedTripPlan(null)
-        // Only a driver can see his own proposed ride
+        // The driver view of the shout-out
+        isStore.mutations.setSelectedShoutOut(null)
         this.$router.push({
           name: 'shoutOutDriver',
           params: {
             shoutOutId: selected.shoutOut.planRef,
-            // Is it possible to pass an optional parameter? For now set the default to 'none'
-            rideId: selected.proposedRide?.rideRef || 'none',
           },
         })
       } else {
+        // The passenger view of the shout-out is a trip plan as all other
         isStore.mutations.setSelectedTripPlan(null)
         this.$router.push({
           name: 'shoutOutPassenger',
@@ -332,10 +332,6 @@ export default {
       } else if (this.isDriverView) {
         if (this.shoutOutPeriod === 'Future') {
           this.fetchCommunityShoutOuts(this.communityShoutOuts.data.length)
-        } else {
-          this.fetchPastCommunityShoutOuts(
-            this.pastCommunityShoutOuts.data.length
-          )
         }
       }
     },

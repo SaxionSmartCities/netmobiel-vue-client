@@ -4,7 +4,7 @@ import {
   CarpoolState,
   Ride,
   CarSearchResult,
-  RideshareUser,
+  Booking,
 } from '@/store/carpool-service/types'
 import { RootState } from '@/store/Rootstate'
 import { Page } from '@/store/types'
@@ -46,6 +46,10 @@ function setProposedRides(state: CarpoolState, rides: Page<Ride>) {
   state.proposedRides = assignPageResults(state.proposedRides, rides)
 }
 
+function setSelectedBooking(state: CarpoolState, payload: Booking | null) {
+  state.selectedBooking = payload
+}
+
 export const buildMutations = (
   csBuilder: ModuleBuilder<CarpoolState, RootState>
 ) => {
@@ -60,5 +64,6 @@ export const buildMutations = (
     setPastRides: csBuilder.commit(setPastRides),
     setSelectedRide: csBuilder.commit(setSelectedRide),
     setProposedRides: csBuilder.commit(setProposedRides),
+    setSelectedBooking: csBuilder.commit(setSelectedBooking),
   }
 }

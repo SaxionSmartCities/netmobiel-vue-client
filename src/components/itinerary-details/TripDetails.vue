@@ -29,6 +29,7 @@
                 :is-map-active="selectedLegsIndex === index"
                 :step="index"
                 :leg="leg"
+                :part-of-passengers-itinerary="true"
                 @leg-select="onLegSelected"
               />
             </v-col>

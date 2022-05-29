@@ -38,6 +38,7 @@ export function generateItineraryDetailSteps(itinerary) {
 }
 
 export function generateRideItineraryDetailSteps(ride) {
+  // console.log(`Generate ride steps: ${ride?.rideRef}`)
   // Guard: If we have no ride (id) then don't do the processing.
   if (!ride?.id) return []
 
@@ -93,20 +94,11 @@ function setPassenger(leg, bookingDict) {
       leg.passenger = passenger
       leg.mode = travelModes.RIDESHARE.mode
     }
+    // console.log(`Leg ${leg.id} Passenger ${passenger?.managedIdentity}`)
   }
 }
 
-export function generateShoutOutDetailSteps(shoutOut, ride, veryDetailed) {
-  if (ride) {
-    return generateShoutOutRideOfferDetailSteps(ride, veryDetailed)
-  }
-  if (shoutOut) {
-    return generateCommunityShoutOutDetailSteps(shoutOut)
-  }
-  return []
-}
-
-function generateCommunityShoutOutDetailSteps(shoutout) {
+export function generateCommunityShoutOutDetailSteps(shoutout) {
   const departure = shoutout.useAsArrivalTime
     ? null
     : moment(shoutout.travelTime).toDate().getTime()
@@ -130,6 +122,35 @@ function generateCommunityShoutOutDetailSteps(shoutout) {
   ]
 }
 
+export function generateShoutOutItineraryDetailSteps(
+  shoutOut,
+  proposedItinerary,
+  driverView = false
+) {
+  let steps = []
+  if (proposedItinerary != null) {
+    steps = generateItineraryDetailSteps(proposedItinerary)
+    const travelTime = moment(shoutOut.travelTime)
+    const rslegIx = steps.findIndex((leg) => leg.traverseMode === 'RIDESHARE')
+    if (rslegIx >= 0) {
+      const rsleg = steps[rslegIx]
+      const actualTravelTime = moment(
+        shoutOut.useAsArrivalTime ? rsleg.endTime : rsleg.startTime
+      )
+      steps[shoutOut.useAsArrivalTime ? rslegIx + 1 : rslegIx].deltaTime =
+        moment.duration(actualTravelTime.diff(travelTime)).as('milliseconds')
+    }
+  } else {
+    steps = generateCommunityShoutOutDetailSteps(shoutOut)
+  }
+  if (driverView) {
+    steps
+      .filter((leg) => leg.traverseMode === 'RIDESHARE')
+      .forEach((leg) => (leg.passenger = shoutOut.traveller))
+  }
+  return steps
+}
+
 /**
  * Generates the steps for a ride. A ride from a list of rides has no leg information.
  * (it is taken from a list of proposed rides).
@@ -139,7 +160,7 @@ function generateCommunityShoutOutDetailSteps(shoutout) {
  * @param veryDetailed if true then add all details
  * @return {*[]} a list of steps
  */
-function generateShoutOutRideOfferDetailSteps(ride, veryDetailed) {
+export function generateShoutOutRideOfferDetailSteps(ride, veryDetailed) {
   // eslint-disable-next-line no-unused-vars
   const { fromPlace, toPlace, car, bookings, legs } = ride
   // If the legs are available too, then booking.legs[].legRef points to the

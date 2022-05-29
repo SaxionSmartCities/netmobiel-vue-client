@@ -27,11 +27,11 @@
           {{ driverName }}
         </p>
         <p class="caption mb-0">
-          <span>Vertrek: </span>
+          <span>Instappen: </span>
           <span class="text-capitalize">
             {{ formatDateTime(itinerary.departureTime) }}
           </span>
-          <span> - Aankomst: </span>
+          <span> - Uitstappen: </span>
           <span class="text-capitalize">
             {{ formatDateTime(itinerary.arrivalTime) }}
           </span>
