@@ -79,6 +79,7 @@
           <v-col>
             <v-btn
               block
+              large
               rounded
               depressed
               color="button"

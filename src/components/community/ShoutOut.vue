@@ -1,13 +1,5 @@
 <template>
-  <v-card
-    outlined
-    class="pa-2"
-    :class="{
-      'travel-offer': hasOffer,
-      'is-cancelled': isCancelled,
-      'is-final': isFinal,
-    }"
-  >
+  <v-card outlined class="pa-2" :class="getCssStatusClass">
     <v-overlay
       :color="overlayColor"
       :value="displayOverlay"
@@ -17,6 +9,7 @@
     <shout-out-passenger-profile
       v-if="!isUserTraveller && traveller"
       :user="traveller"
+      :can-view-profile="false"
     />
     <v-row v-if="firstValidItinerary">
       <v-col class="pt-0 pb-4">
@@ -36,6 +29,7 @@
           :showdottedline="firstValidItinerary == null"
           :step="index"
           :part-of-passengers-itinerary="true"
+          :show-profile="false"
         />
       </v-col>
     </v-row>
@@ -119,10 +113,32 @@ export default {
       return this.profile.id === this.traveller?.managedIdentity
     },
     isCancelled() {
-      return this.shoutOut?.planState === 'CANCELLED'
+      return (
+        this.shoutOut?.planState === 'CANCELLED' ||
+        (this.shoutOut?.planState === 'FINAL' &&
+          this.firstValidItinerary == null)
+      )
     },
     isFinal() {
-      return this.shoutOut?.planState === 'FINAL'
+      return (
+        this.shoutOut?.planState === 'FINAL' && this.firstValidItinerary != null
+      )
+    },
+    getCssStatusClass() {
+      let css
+      if (this.isFinal) {
+        css = 'is-final'
+        if (this.hasOffer) {
+          css += ' travel-offer'
+        }
+      } else if (this.isCancelled) {
+        css = 'is-cancelled'
+      } else if (this.hasOffer) {
+        css = 'travel-offer'
+      } else {
+        css = ''
+      }
+      return css
     },
     displayOverlay() {
       return this.completed || this.cancelled

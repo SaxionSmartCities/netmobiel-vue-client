@@ -74,7 +74,7 @@
           :showdottedline="true"
           :step="index"
           :part-of-passengers-itinerary="false"
-          :can-view-profile="false"
+          :show-profile="false"
         />
       </v-col>
     </v-row>
@@ -282,7 +282,7 @@ export default {
         value: this.selectedCar,
         renderingComponent: 'CarViewer',
       })
-      if (this.ridePlanOptions.maxPassengers != null) {
+      if (this.ridePlanOptions?.maxPassengers != null) {
         result.push({
           label: 'Stoelen over',
           value: this.ridePlanOptions.maxPassengers,
@@ -410,8 +410,12 @@ export default {
           vehicleRef: this.selectedCar.carRef,
         }
         isStore.actions.addShoutOutTravelOffer(travelOffer).then(() => {
-          // Update the shout-out object
-          isStore.actions.fetchShoutOut({ id: this.shoutOutId })
+          this.$router.push({
+            name: 'shoutOutDriver',
+            params: {
+              shoutOutId: this.shoutOutId,
+            },
+          })
         })
       }
     },

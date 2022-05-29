@@ -288,13 +288,15 @@ export default {
   watch: {
     // eslint-disable-next-line no-unused-vars
     shoutOut(newValue, oldValue) {
-      if (this.itineraries > 0) {
+      if (this.itineraries?.length > 0) {
         if (this.proposalIndex < 0) {
           this.proposalIndex = this.firstValidProposalIndex
           if (this.proposalIndex < 0) {
             this.proposalIndex = 0
           }
         }
+      } else {
+        this.proposalIndex = -1
       }
     },
   },

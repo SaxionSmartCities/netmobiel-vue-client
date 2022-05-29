@@ -1,8 +1,8 @@
 <template>
-  <v-row no-gutters>
-    <v-col class="clickable-item" @click="onClickOther">
+  <v-row dense>
+    <v-col>
       <v-row
-        v-if="canViewProfile && otherPerson.managedIdentity !== profile.id"
+        v-if="showProfile && otherPerson.managedIdentity !== profile.id"
         dense
         class="mt-1 align-center"
       >
@@ -13,8 +13,10 @@
             :avatar-size="60"
           />
         </v-col>
-        <v-col class="text-center">
-          <v-btn small rounded outlined color="primary"> Bekijk Profiel </v-btn>
+        <v-col v-if="canViewProfile" class="text-center">
+          <v-btn small rounded outlined color="primary" @click="onClickOther">
+            Bekijk Profiel
+          </v-btn>
         </v-col>
       </v-row>
       <v-row dense>
@@ -50,6 +52,7 @@ export default {
     otherPerson: { type: Object, required: true },
     isPassengersLeg: { type: Boolean, required: true },
     vehicleDetails: { type: String, required: false, default: '' },
+    showProfile: { type: Boolean, required: false, default: true },
     canViewProfile: { type: Boolean, required: false, default: true },
   },
   computed: {

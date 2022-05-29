@@ -35,6 +35,10 @@ export default {
     isUserTraveller() {
       return this.profile.id === this.traveller?.managedIdentity
     },
+    itineraries() {
+      // List all itineraries, including the cancelled ones.
+      return this.shoutOut?.itineraries || []
+    },
     isShoutOutClosed() {
       // If requestDuration is set, then the shout-out has been closed or cancelled
       return !!this.shoutOut?.requestDuration
@@ -45,11 +49,23 @@ export default {
         moment(this.shoutOut?.latestArrivalTime).isBefore(moment())
       )
     },
+    firstValidProposalIndex() {
+      return this.itineraries.findIndex(
+        (it) => it.legs.find((leg) => leg.state !== 'CANCELLED') != null
+      )
+    },
     isFinal() {
-      return this.shoutOut?.planState === 'FINAL'
+      return (
+        this.shoutOut?.planState === 'FINAL' &&
+        this.firstValidProposalIndex >= 0
+      )
     },
     isCancelled() {
-      return this.shoutOut?.planState === 'CANCELLED'
+      return (
+        this.shoutOut?.planState === 'CANCELLED' ||
+        (this.shoutOut?.planState === 'FINAL' &&
+          this.firstValidProposalIndex === -1)
+      )
     },
     showAsCancelled() {
       // console.log(`IsUser: ${this.isUserTraveller} isFinal ${this.isFinal} Past ${}`)

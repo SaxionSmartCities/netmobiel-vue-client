@@ -56,6 +56,7 @@
             :other-person="otherRideshareParticipant"
             :is-passengers-leg="partOfPassengersItinerary"
             :vehicle-details="vehicleDetails"
+            :show-profile="showProfile"
             :can-view-profile="canViewProfile"
           />
           <!--          <itinerary-leg-passenger v-if="passenger" :passenger="passenger" />-->
@@ -85,6 +86,7 @@ export default {
     showdottedline: { type: Boolean, default: false },
     partOfPassengersItinerary: { type: Boolean, default: true },
     canViewProfile: { type: Boolean, required: false, default: true },
+    showProfile: { type: Boolean, required: false, default: true },
   },
   computed: {
     travelMode() {
