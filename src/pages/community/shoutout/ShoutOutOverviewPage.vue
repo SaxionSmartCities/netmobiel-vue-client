@@ -104,15 +104,21 @@ import {
 export default {
   name: 'ShoutOutOverview',
   components: { TabBar, ContentPane, GroupedCardList, ShoutOut },
+  // Should we refresh the list on return from viewing a shout-out?
+  // Tricky, as time passes and a shout-out might change from actual to historic
+  // or some other state change (mostly that happens on actual shout-outs).
+  // Better on the safe side: Always refresh the view.
   beforeRouteEnter: beforeRouteEnter({
     selectedTab: (number) => number || 0,
     baseLocation: (value) => value,
     shoutOutPeriod: (period) => period || 'Future',
+    // refreshShoutOutList: (value) => value ?? true,
   }),
   beforeRouteLeave: beforeRouteLeave({
     selectedTab: (number) => number || 0,
     baseLocation: (value) => value,
     shoutOutPeriod: (period) => period,
+    // refreshShoutOutList: () => false,
   }),
   data() {
     return {
@@ -122,6 +128,7 @@ export default {
       baseLocation: '',
       requestTime: null,
       shoutOutPeriod: 'Future',
+      refreshShoutOutList: undefined,
     }
   },
   computed: {
@@ -226,8 +233,10 @@ export default {
     this.selectedTab =
       this.profile.actingRole === constants.PROFILE_ROLE_PASSENGER ? 1 : 0
     if (this.isPassengerOnly || this.isDrivingPassenger) {
-      this.fetchMyShoutOuts()
-      this.fetchMyPastShoutOuts()
+      if (this.refreshShoutOutList ?? true) {
+        this.fetchMyShoutOuts()
+        this.fetchMyPastShoutOuts()
+      }
     }
     if (this.isDriverOnly || this.isDrivingPassenger) {
       // Initialize the base location radio
