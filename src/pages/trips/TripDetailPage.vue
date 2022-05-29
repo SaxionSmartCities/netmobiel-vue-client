@@ -238,11 +238,12 @@ export default {
           })
           break
         case 'SCHEDULED':
-          options.push({
-            icon: 'fa-pencil-alt',
-            label: 'Wijzig deze rit',
-            callback: this.onTripEdit,
-          })
+          // Disable edit: Unclear semantics
+          // options.push({
+          //   icon: 'fa-pencil-alt',
+          //   label: 'Wijzig deze rit',
+          //   callback: this.onTripEdit,
+          // })
           options.push({
             icon: 'fa-times-circle',
             label: 'Annuleer deze rit',
