@@ -403,7 +403,8 @@ const router = new Router({
       name: 'waitForDepositConfirmation',
     },
     {
-      path: '/survey-completed/:surveyId?',
+      // Make it optional to display an error if it is missing. This url is entered from external.
+      path: '/survey-completed/:incentiveCode?',
       component: SurveyCompletedPage,
       name: 'surveyCompleted',
       props: true,

@@ -32,16 +32,18 @@
     </v-row>
     <v-row v-if="updateMessages.length > 0" dense>
       <v-col>
-        <v-row dense>
-          <v-col>
-            <h4 class="netmobiel">Updates ({{ updateMessages.length }})</h4>
-          </v-col>
-        </v-row>
-        <v-row dense>
-          <v-col>
-            <update-card :update-message="updateMessages[0]"></update-card>
-          </v-col>
-        </v-row>
+        <h4 class="netmobiel">Updates</h4>
+        <v-carousel
+          cycle
+          height="284"
+          :show-arrows="false"
+          hide-delimiter-background
+          light
+        >
+          <v-carousel-item v-for="msg in updateMessages" :key="msg.id">
+            <update-card :update-message="msg" card-style="height: 240px" />
+          </v-carousel-item>
+        </v-carousel>
       </v-col>
     </v-row>
     <v-row dense>
@@ -122,6 +124,7 @@ import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
+import * as bsStore from '@/store/banker-service'
 
 export default {
   components: {
@@ -134,6 +137,7 @@ export default {
   data() {
     return {
       requestTime: null,
+      surveyInvitationIssued: false,
     }
   },
   computed: {
@@ -165,9 +169,6 @@ export default {
         return 'Goedenavond'
       }
     },
-    updateMessages() {
-      return uiStore.getters.getUpdateMessages
-    },
     profileImage() {
       return this.profile.image
     },
@@ -191,11 +192,59 @@ export default {
       }
       return newRoute
     },
+    surveyInteraction() {
+      return psStore.getters.getSurveyInteraction
+    },
+    ctaIncentives() {
+      return bsStore.getters.getCtaIncentives.data.filter(
+        (inc) =>
+          inc.category !== 'CARPOOL' ||
+          this.isDriverOnly ||
+          this.isDrivingPassenger
+      )
+    },
+    updateMessages() {
+      // Remove the survey CTA until more data has arrived
+      // Also remove Survey CTA if submit time is already set (survey reward might take some time to process,
+      // it is asynchronous in the backend)
+      return this.ctaIncentives
+        .filter(
+          (inc) =>
+            inc.category !== 'SURVEY' ||
+            (this.surveyInteraction != null &&
+              !this.surveyInteraction.submitTime)
+        )
+        .map((inc) => {
+          return {
+            id: inc.code,
+            title: inc.ctaTitle,
+            content: inc.ctaBody,
+            link: this.createUpdateMessageLink(inc),
+          }
+        })
+    },
   },
   watch: {
     profile(newProfile, oldProfile) {
       if (newProfile.userRole !== oldProfile.userRole) {
         this.fetchTripsAndRides()
+      }
+    },
+    ctaIncentives() {
+      if (this.ctaIncentives.find((inc) => inc.category === 'SURVEY') != null) {
+        // There is still a survey incentive.Unless we already have a survey interaction,
+        // make a survey invitation. The survey completed page will reset the internal cache.
+        if (this.surveyInteraction == null && !this.surveyInvitationIssued) {
+          this.surveyInvitationIssued = true
+          psStore.actions
+            .createSurveyInvitation()
+            .then((surveyUrn) => {
+              if (surveyUrn) {
+                psStore.actions.fetchSurvey(surveyUrn)
+              }
+            })
+            .catch(() => (this.surveyInvitationIssued = false))
+        }
       }
     },
   },
@@ -218,6 +267,9 @@ export default {
   },
   methods: {
     fetchTripsAndRides() {
+      // ... and also fetch the call-to-actions
+      // at most 10 (recent)
+      bsStore.actions.fetchUserCtaIncentives({ offset: 0, maxResults: 10 })
       //TODO: How many cards do we want? Get enough to skip the cancelled rides and trips
       const maxCards = 8
       if (this.isDriverOnly || this.isDrivingPassenger) {
@@ -248,6 +300,32 @@ export default {
         name: 'rideDetailPage',
         params: { rideId: id },
       })
+    },
+    createUpdateMessageLink(incentive) {
+      let link
+      if (incentive.ctaButtonLabel) {
+        link = {
+          label: incentive.ctaButtonLabel,
+        }
+        switch (incentive.ctaButtonAction) {
+          case 'plan-ride':
+            link.to = this.plannerRoute
+            break
+          case 'onboarding-profile':
+            link.to = '/onboardingPage'
+            break
+          case 'start-survey':
+            if (this.surveyInteraction != null) {
+              link.href = this.surveyInteraction.surveyUrl
+              link.notification = () =>
+                psStore.actions.markSurveyRedirection(
+                  this.surveyInteraction.urn
+                )
+            }
+            break
+        }
+      }
+      return link
     },
   },
 }

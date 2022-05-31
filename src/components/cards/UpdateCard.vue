@@ -1,19 +1,10 @@
 <template>
-  <v-card outlined>
-    <v-card-title>
-      <v-row>
-        <v-col class="text-center shrink">
-          <v-icon>new_releases</v-icon>
-        </v-col>
-        <v-col>
-          {{ updateMessage.title }}
-        </v-col>
-        <v-col class="text-center shrink">
-          <v-icon @click="popMessage">close</v-icon>
-        </v-col>
-      </v-row>
+  <v-card outlined :style="cardStyle">
+    <v-card-title class="flex flex-row justify-start flex-nowrap">
+      <v-icon class="mr-4">new_releases</v-icon>
+      <span class="subtitle-1">{{ updateMessage.title }}</span>
     </v-card-title>
-    <v-card-text class="body-1">
+    <v-card-text class="body-2">
       {{ updateMessage.content }}
     </v-card-text>
     <v-card-actions class="justify-center">
@@ -21,6 +12,7 @@
         v-if="updateMessage.link && updateMessage.link.to"
         rounded
         outlined
+        color="primary"
         :to="updateMessage.link.to"
       >
         {{ updateMessage.link.label }}
@@ -29,6 +21,7 @@
         v-else-if="updateMessage.link && updateMessage.link.href"
         rounded
         outlined
+        color="primary"
         @click="redirect(updateMessage.link)"
       >
         {{ updateMessage.link.label }}
@@ -38,19 +31,19 @@
 </template>
 
 <script>
-import * as uiStore from '@/store/ui'
-
 export default {
   props: {
     updateMessage: {
       type: Object,
       required: true,
     },
+    cardStyle: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   methods: {
-    popMessage: function () {
-      uiStore.mutations.shiftUpdateMessage()
-    },
     redirect: function (link) {
       let callback = () => Promise.resolve()
       if (typeof link.notification === 'function') {

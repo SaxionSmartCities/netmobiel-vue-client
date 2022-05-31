@@ -65,6 +65,10 @@ export const buildGetters = (
     return state.rewards
   }, 'getRewards')
 
+  const getCtaIncentives = bsBuilder.read((state) => {
+    return state.ctaIncentives
+  }, 'getCtaIncentives')
+
   return {
     get getCharities() {
       return getCharities()
@@ -110,6 +114,9 @@ export const buildGetters = (
     },
     get getRewards() {
       return getRewards()
+    },
+    get getCtaIncentives() {
+      return getCtaIncentives()
     },
   }
 }
