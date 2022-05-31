@@ -655,17 +655,41 @@ function createSurveyInvitation(context: ActionContext) {
       ) as AxiosRequestHeaders,
     })
     .then((response) => {
-      if (response.status === 201) {
-        return fetchSurvey(context, response.headers?.location)
+      return Promise.resolve(
+        response.status === 201 ? response.headers?.location : undefined
+      )
+    })
+    .catch((error) => {
+      uiStore.actions.queueErrorNotification(
+        `Fout bij het aanmaken van de registratie van de enquête`
+      )
+      return Promise.reject()
+    })
+}
+
+function fetchSurveys(context: ActionContext, params: string) {
+  const delegatorId = context.rootState.ps.user.delegatorId
+  const URL = `${PROFILE_BASE_URL}/survey-interactions`
+  return axios
+    .get(URL, {
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
+      ) as AxiosRequestHeaders,
+      params,
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        return Promise.resolve(response.data)
       } else {
         return Promise.resolve()
       }
     })
     .catch((error) => {
       uiStore.actions.queueErrorNotification(
-        `Fout bij het aanmaken van de registratie van de enquête`
+        `Fout bij het opzoeken van de enquêtes`
       )
-      return Promise.resolve()
+      return Promise.reject()
     })
 }
 
@@ -685,11 +709,13 @@ function fetchSurvey(context: ActionContext, id: string) {
       } else {
         mutations.setSurveyInteraction(null)
       }
+      return Promise.resolve(response.data)
     })
     .catch((error) => {
       uiStore.actions.queueErrorNotification(
         `Fout bij het opzoeken van de registratie van de enquête`
       )
+      return Promise.reject()
     })
 }
 
@@ -723,11 +749,13 @@ function markSurveySubmitted(context: ActionContext, surveyId: string) {
     })
     .then((response) => {
       // Should be 204
+      return Promise.resolve()
     })
     .catch((error) => {
       uiStore.actions.queueErrorNotification(
         `Fout bij het registreren van de afronding van de enquête`
       )
+      return Promise.reject()
     })
 }
 
@@ -783,6 +811,7 @@ export const buildActions = (
     switchProfile: psBuilder.dispatch(switchProfile),
 
     createSurveyInvitation: psBuilder.dispatch(createSurveyInvitation),
+    fetchSurveys: psBuilder.dispatch(fetchSurveys),
     fetchSurvey: psBuilder.dispatch(fetchSurvey),
     markSurveyRedirection: psBuilder.dispatch(markSurveyRedirection),
     markSurveySubmitted: psBuilder.dispatch(markSurveySubmitted),

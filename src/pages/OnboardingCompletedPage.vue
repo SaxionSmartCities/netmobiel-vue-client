@@ -6,10 +6,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
-        Bedankt voor het invullen van je profiel! Je krijgt een gratis rit zo
-        snel mogelijk toeschreven op je account.
-      </v-col>
+      <v-col> Bedankt voor het aanvullen van je profiel! </v-col>
     </v-row>
     <v-row>
       <v-col>
@@ -25,18 +22,8 @@
 </template>
 
 <script>
-import constants from '@/constants/constants'
-import * as uiStore from '@/store/ui'
-
 export default {
   name: 'OnboardingCompletedPage',
-  data() {
-    return {}
-  },
-  mounted() {
-    let update = constants.COMPLETE_PROFILE_UPDATE
-    uiStore.mutations.removeUpdate(update)
-  },
 }
 </script>
 

@@ -23,6 +23,7 @@ export class BankerState {
   statements: Page<Statement> = defaultPage
   systemAccounts: Page<Account> = defaultPage
   rewards: Page<Reward> = defaultPage
+  ctaIncentives: Page<Incentive> = defaultPage
 }
 
 export interface Location {
@@ -152,7 +153,13 @@ export interface Incentive {
   readonly amount: number
   readonly category: string
   readonly code: string
-  readonly descriptionTime?: string
+  readonly ctaBody?: string
+  readonly ctaButtonAction?: string
+  readonly ctaButtonLabel?: string
+  readonly ctaEnabled?: boolean
+  readonly ctaHideBeyondRewardCount?: number
+  readonly ctaTitle?: string
+  readonly description: string
   readonly disableTime?: Date
   readonly id: number
   readonly maxAmount?: number

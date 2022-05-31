@@ -139,9 +139,6 @@ export default {
     isProfileManaged() {
       return !!psStore.getters.getProfile?.id
     },
-    surveyInteraction() {
-      return psStore.getters.getSurveyInteraction
-    },
     isPassengerOnly() {
       return this.myProfile.userRole === constants.PROFILE_ROLE_PASSENGER
     },
@@ -183,35 +180,7 @@ export default {
           // A fresh profile has arrived
           // The profile is present. By now the FCM token should also have arrived.
           psStore.actions.storeMyFcmToken()
-          psStore.mutations.setSurveyInteraction(null)
-          psStore.actions.createSurveyInvitation()
         }
-        if (!this.isProfileComplete(newProfile)) {
-          let update = constants.COMPLETE_PROFILE_UPDATE
-          uiStore.actions.addUpdate(update)
-        }
-      }
-    },
-    surveyInteraction(newSurvey, oldSurvey) {
-      if (newSurvey?.survey && !newSurvey?.submitTime) {
-        // console.log(
-        //   `New survey ${newSurvey.urn} ${newSurvey.survey.surveyId} is detected`
-        // )
-        // Make a deep copy
-        let updateMsg = JSON.parse(
-          JSON.stringify(constants.COMPLETE_SURVEY_UPDATE)
-        )
-        updateMsg.id = newSurvey.urn
-        updateMsg.link.href = newSurvey.surveyUrl
-        updateMsg.link.notification = () =>
-          psStore.actions.markSurveyRedirection(newSurvey.urn)
-        uiStore.mutations.pushUpdate(updateMsg)
-      }
-      if (oldSurvey?.survey) {
-        // console.log(
-        //   `Old survey ${oldSurvey.urn} ${oldSurvey.survey.surveyId} is now gone`
-        // )
-        uiStore.mutations.removeUpdateById(oldSurvey.urn)
       }
     },
     // Log all route changes

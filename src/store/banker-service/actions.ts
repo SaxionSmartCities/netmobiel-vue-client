@@ -458,6 +458,39 @@ async function updatePersonalAccount(context: ActionContext, account: Account) {
   }
 }
 
+/**
+ * Fetches the call to actions for this user. Note that the banker has no knowledge of the role
+ * of the user. The client must filter the relevant CTAs, based on the role of the user and the category
+ * of the incentive.
+ * @param context
+ * @param offset
+ * @param maxResults
+ */
+async function fetchUserCtaIncentives(
+  context: ActionContext,
+  { offset, maxResults }: any
+) {
+  try {
+    const resp = await axios.get(
+      `${BANKER_BASE_URL}/users/me/call-to-actions`,
+      {
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+        params: {
+          offset: offset,
+          maxResults: maxResults,
+        },
+      }
+    )
+    mutations.setCtaIncentives(resp.data)
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de call-to-actions.'
+    )
+  }
+}
+
 async function getDepositStatus(context: ActionContext, payload: PaymentEvent) {
   try {
     const resp = await axios.post(
@@ -848,6 +881,7 @@ export const buildActions = (
     ),
     fetchUserRewards: bsBuilder.dispatch(fetchUserRewards),
     updatePersonalAccount: bsBuilder.dispatch(updatePersonalAccount),
+    fetchUserCtaIncentives: bsBuilder.dispatch(fetchUserCtaIncentives),
 
     // Accounts
     fetchStatements: bsBuilder.dispatch(fetchStatements),
