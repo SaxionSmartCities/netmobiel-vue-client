@@ -402,7 +402,14 @@ export default {
           ],
         })
         .then(() => {
-          const maxResults = Math.min(maxMessages, this.messages.data.length)
+          // Get a complete page, or get the current list plus one (to count for my message just sent)
+          const maxResults = Math.min(
+            maxMessages,
+            Math.max(
+              this.messages.data.length + 1,
+              constants.fetchMessagesMaxResults
+            )
+          )
           this.newMessage = null
           return this.fetchMessages(0, maxResults)
         })
