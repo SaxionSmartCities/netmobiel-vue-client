@@ -373,7 +373,7 @@ export default {
           } else if (create) {
             // No conversation! Try to start one (do this only once)
             const c = {
-              contexts: [senderContext],
+              initialContext: senderContext,
             }
             msStore.actions.startConversation(c).then((location) => {
               if (location) {

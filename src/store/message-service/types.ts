@@ -35,6 +35,7 @@ export interface Conversation {
   conversationRef?: string
   createdTime?: string
   id?: number
+  initialContext: string
   owner?: CommunicatorUser
   ownerRole?: string
   // Only present after inbox query
