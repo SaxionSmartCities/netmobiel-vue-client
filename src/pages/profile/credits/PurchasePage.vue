@@ -132,8 +132,11 @@ export default {
       }
       // Credits go to the user's personal account
       bsStore.actions.depositCreditsToMyAccount(deposit).then((data) => {
-        // follow payment URL in current window
-        location = data.paymentUrl
+        // follow payment URL in current window, only if available
+        // Error message is issued in action
+        if (data) {
+          location = data.paymentUrl
+        }
       })
     },
   },

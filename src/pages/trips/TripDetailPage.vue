@@ -193,6 +193,7 @@ export default {
             name: leg.driverName,
             managedIdentity: decodedUrn.id,
             context: leg.bookingId,
+            rideRef: leg.tripId,
           }
         })
     },
@@ -229,12 +230,20 @@ export default {
       }
       const state = this.trip.state
       switch (state) {
-        case 'SCHEDULED':
+        case 'BOOKING':
           options.push({
-            icon: 'fa-pencil-alt',
-            label: 'Wijzig deze rit',
-            callback: this.onTripEdit,
+            icon: 'fa-times-circle',
+            label: 'Annuleer deze rit',
+            callback: this.onCancelTrip,
           })
+          break
+        case 'SCHEDULED':
+          // Disable edit: Unclear semantics
+          // options.push({
+          //   icon: 'fa-pencil-alt',
+          //   label: 'Wijzig deze rit',
+          //   callback: this.onTripEdit,
+          // })
           options.push({
             icon: 'fa-times-circle',
             label: 'Annuleer deze rit',
@@ -303,8 +312,12 @@ export default {
         name: `conversation`,
         params: {
           chatMeta: {
+            // Context of the message is the booking
+            context: this.rideshareDriver.context,
+            // Context of the passenger (me) is the trip
             senderContext: this.trip.tripRef,
-            recipientContext: this.rideshareDriver.context,
+            // Context of the driver is the ride
+            recipientContext: this.rideshareDriver.rideRef,
             recipientManagedIdentity: this.rideshareDriver.managedIdentity,
           },
         },

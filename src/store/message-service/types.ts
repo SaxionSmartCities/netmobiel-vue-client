@@ -6,6 +6,7 @@ export class MessageState {
   archivedConversations: Page<Conversation> = emptyPage
   conversation: Conversation | null = null
   messages: Page<Message> = emptyPage
+  user: CommunicatorUser | null = null
 }
 
 export interface Message {
@@ -15,35 +16,43 @@ export interface Message {
   deliveryMode: string
   envelopes?: Envelope[]
   id?: number
-  sender: CommunicationUser | null
+  sender: CommunicatorUser | null
+  senderContext?: string | null
   senderConversationRef?: string
-  subject?: string
 }
 
 export interface Envelope {
   ackTime: string | null
   pushTime: string | null
   context: string
-  recipient: CommunicationUser
+  recipient: CommunicatorUser
   conversationRef?: string
 }
 
 export interface Conversation {
-  id?: number
-  conversationRef?: string
-  topic?: string
-  contexts?: string[]
-  recentMessage?: Message
-  createdTime?: string
   archivedTime?: string
-  owner?: CommunicationUser
+  contexts: string[]
+  conversationRef?: string
+  createdTime?: string
+  id?: number
+  initialContext: string
+  owner?: CommunicatorUser
   ownerRole?: string
+  // Only present after inbox query
+  recentMessage?: Message
+  topic?: string
+  // Only present after inbox query
+  unreadCount?: number
 }
 
-export interface CommunicationUser {
+export interface CommunicatorUser {
   id?: number
+  countryCode?: string
   email?: string
   familyName?: string
   givenName?: string
   managedIdentity: string
+  phoneNumber?: string
+  // Only present and/or valid after certain calls
+  unreadMessageCount?: number
 }

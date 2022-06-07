@@ -4,7 +4,7 @@ import {
   CarpoolState,
   Ride,
   CarSearchResult,
-  RideshareUser,
+  Booking,
 } from '@/store/carpool-service/types'
 import { RootState } from '@/store/Rootstate'
 import { Page } from '@/store/types'
@@ -26,11 +26,11 @@ function setAvailableCars(state: CarpoolState, payload: Car[]) {
   state.cars = payload
 }
 
-function setSelectedCar(state: CarpoolState, payload: Car) {
+function setSelectedCar(state: CarpoolState, payload: Car | null) {
   state.selectedCar = payload
 }
 
-function setSelectedRide(state: CarpoolState, payload: Ride) {
+function setSelectedRide(state: CarpoolState, payload: Ride | null) {
   state.selectedRide = payload
 }
 
@@ -44,6 +44,10 @@ function setPastRides(state: CarpoolState, rides: Page<Ride>) {
 
 function setProposedRides(state: CarpoolState, rides: Page<Ride>) {
   state.proposedRides = assignPageResults(state.proposedRides, rides)
+}
+
+function setSelectedBooking(state: CarpoolState, payload: Booking | null) {
+  state.selectedBooking = payload
 }
 
 export const buildMutations = (
@@ -60,5 +64,6 @@ export const buildMutations = (
     setPastRides: csBuilder.commit(setPastRides),
     setSelectedRide: csBuilder.commit(setSelectedRide),
     setProposedRides: csBuilder.commit(setProposedRides),
+    setSelectedBooking: csBuilder.commit(setSelectedBooking),
   }
 }

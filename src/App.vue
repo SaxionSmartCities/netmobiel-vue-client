@@ -56,10 +56,19 @@
         <span>Ritten</span>
         <v-icon>favorite</v-icon>
       </v-btn>
-      <v-btn text value="community" to="/community">
-        <span>Community</span>
-        <v-icon>chat</v-icon>
-      </v-btn>
+      <v-badge
+        offset-x="3em"
+        offset-y="1ex"
+        overlap
+        dot
+        color="red"
+        :value="hasUnreadMessages"
+      >
+        <v-btn text value="community" to="/community">
+          <span>Community</span>
+          <v-icon>chat</v-icon>
+        </v-btn>
+      </v-badge>
       <v-btn text value="profile" to="/profile">
         <span>Profiel</span>
         <v-icon>person</v-icon>
@@ -73,15 +82,22 @@ import RoundUserImage from '@/components/common/RoundUserImage'
 import constants from '@/constants/constants'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
-import * as NetmobielApp from '@/utils/NetmobielApp'
 import config from '@/config/config'
-import { runningInsideFlutterApp2021 } from '@/utils/NetmobielApp'
+import * as msStore from '@/store/message-service'
+import { EventBus } from '@/utils/EventBus'
+import {
+  requestFcmToken,
+  runningInsideFlutterApp2021,
+} from '@/utils/NetmobielApp'
+
+const checkMessageStatusInterval = 1000 * 60 * 15 // msec
 
 export default {
   name: 'App',
   components: { RoundUserImage },
   data: () => ({
     offsetTop: 0,
+    messageStatusTimer: null,
   }),
   computed: {
     profileImage() {
@@ -123,9 +139,6 @@ export default {
     isProfileManaged() {
       return !!psStore.getters.getProfile?.id
     },
-    surveyInteraction() {
-      return psStore.getters.getSurveyInteraction
-    },
     isPassengerOnly() {
       return this.myProfile.userRole === constants.PROFILE_ROLE_PASSENGER
     },
@@ -146,6 +159,9 @@ export default {
     config() {
       return config
     },
+    hasUnreadMessages() {
+      return msStore.getters.getUser?.unreadMessageCount > 0
+    },
   },
   watch: {
     deviceFcmToken() {
@@ -164,35 +180,7 @@ export default {
           // A fresh profile has arrived
           // The profile is present. By now the FCM token should also have arrived.
           psStore.actions.storeMyFcmToken()
-          psStore.mutations.setSurveyInteraction(null)
-          psStore.actions.createSurveyInvitation()
         }
-        if (!this.isProfileComplete(newProfile)) {
-          let update = constants.COMPLETE_PROFILE_UPDATE
-          uiStore.actions.addUpdate(update)
-        }
-      }
-    },
-    surveyInteraction(newSurvey, oldSurvey) {
-      if (newSurvey?.survey && !newSurvey?.submitTime) {
-        // console.log(
-        //   `New survey ${newSurvey.urn} ${newSurvey.survey.surveyId} is detected`
-        // )
-        // Make a deep copy
-        let updateMsg = JSON.parse(
-          JSON.stringify(constants.COMPLETE_SURVEY_UPDATE)
-        )
-        updateMsg.id = newSurvey.urn
-        updateMsg.link.href = newSurvey.surveyUrl
-        updateMsg.link.notification = () =>
-          psStore.actions.markSurveyRedirection(newSurvey.urn)
-        uiStore.mutations.pushUpdate(updateMsg)
-      }
-      if (oldSurvey?.survey) {
-        // console.log(
-        //   `Old survey ${oldSurvey.urn} ${oldSurvey.survey.surveyId} is now gone`
-        // )
-        uiStore.mutations.removeUpdateById(oldSurvey.urn)
       }
     },
     // Log all route changes
@@ -230,7 +218,7 @@ export default {
       window.addEventListener('NetmobielFcmToken', this.onFcmTokenReceived)
       // Fetch the FCM token via message channel (since jan 2022 app)
       // console.log(`Request FCM token`)
-      NetmobielApp.requestFcmToken()
+      requestFcmToken()
       // The FCM token is received before or after receiving the profile (if any), and also when still registering
       // The FCM token will be stored in the following situations:
       // 1. When receiving the updated FCM token
@@ -243,8 +231,14 @@ export default {
       psStore.actions
         .fetchMyProfileStatus()
         .then(() => psStore.actions.fetchMyProfile())
-        // Ignore the errors, they are resolved elsewhere.
-        .catch(() => {})
+        .catch(() => {
+          // Ignore the errors, they are resolved elsewhere.
+        })
+      // Get the message status
+      msStore.actions.fetchMyStatus()
+      this.messageStatusTimer = setInterval(() => {
+        msStore.actions.fetchMyStatus()
+      }, checkMessageStatusInterval)
     }
   },
   beforeDestroy() {
@@ -253,6 +247,10 @@ export default {
       'NetmobielPushMessage',
       this.onPushMessageReceived
     )
+    if (this.messageStatusTimer) {
+      clearInterval(this.messageStatusTimer)
+      this.messageStatusTimer = null
+    }
   },
   methods: {
     onPushMessageReceived(evt) {
@@ -260,7 +258,12 @@ export default {
       // console.log(
       //   `Message received: ${detail.msgId} ${detail.title} ${detail.body}`
       // )
-      if (detail.body) {
+      // Update message count
+      msStore.actions.fetchMyStatus()
+      // Send event to message list (if active)
+      EventBus.$emit('message-received', detail)
+      // Show the message, but only when not already busy with some conversation
+      if (detail.body && this.$route.name !== 'conversation') {
         const textMessage = [detail.title || '', detail.body]
           .filter((elem) => elem)
           .join(': ')
@@ -286,7 +289,9 @@ export default {
       uiStore.actions.finishNotification()
     },
     isProfileComplete(profile) {
-      return !!profile.dateOfBirth
+      return (
+        profile.dateOfBirth != null && profile.dateOfBirth.trim().length > 0
+      )
     },
   },
 }

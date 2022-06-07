@@ -68,6 +68,7 @@ import SystemCreditsPage from '@/pages/management/SystemCreditsPage'
 import PremiumWithdrawalPage from '@/pages/management/PremiumWithdrawalPage'
 import PremiumDepositPage from '@/pages/management/PremiumDepositPage'
 import TermsPage from '@/pages/profile/TermsPage'
+import ShoutOutDriverProposePage from '@/pages/community/shoutout/ShoutOutDriverProposePage'
 
 Vue.use(Router)
 
@@ -337,9 +338,15 @@ const router = new Router({
       name: 'shoutOuts',
     },
     {
-      path: '/shout-out-driver/:shoutOutId;:rideId',
+      path: '/shout-out-driver/:shoutOutId',
       component: ShoutOutDriverDetailPage,
       name: 'shoutOutDriver',
+      props: true,
+    },
+    {
+      path: '/shout-out-driver-propose/:shoutOutId',
+      component: ShoutOutDriverProposePage,
+      name: 'shoutOutDriverPropose',
       props: true,
     },
     {
@@ -396,7 +403,8 @@ const router = new Router({
       name: 'waitForDepositConfirmation',
     },
     {
-      path: '/survey-completed/:surveyId?',
+      // Make it optional to display an error if it is missing. This url is entered from external.
+      path: '/survey-completed/:incentiveCode?',
       component: SurveyCompletedPage,
       name: 'surveyCompleted',
       props: true,
@@ -443,7 +451,7 @@ const router = new Router({
 const unprotectedPaths = ['/', '/logout', '/session-expired']
 
 router.beforeEach((to, from, next) => {
-  //console.log(`Route ${from.path} --> ${to.path}`)
+  //console.log(`Route ${from.name} ${from.path} --> ${to.name} ${to.path}`)
   uiStore.mutations.hideBackButton()
   uiStore.mutations.enableFooter()
   uiStore.mutations.enableHeader()

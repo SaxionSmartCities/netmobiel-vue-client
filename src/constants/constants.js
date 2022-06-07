@@ -45,27 +45,6 @@ export default {
     NEATLY: 'Netjes',
     NICE_CAR: 'Goede auto',
   },
-  COMPLETE_PROFILE_UPDATE: {
-    title: 'Verdien een gratis rit!',
-    content:
-      'Maak jouw profiel compleet en verdien een gratis rit met Netmobiel!',
-    link: {
-      label: 'Profiel compleet maken',
-      // interne link
-      to: '/onboardingPage',
-    },
-  },
-  COMPLETE_SURVEY_UPDATE: {
-    title: 'Verdien met een enquête!',
-    content: 'Vul de enquête in om credits te verdienen!',
-    link: {
-      label: 'Start enquête',
-      // externe link
-      href: '',
-      // callback function
-      notification: undefined,
-    },
-  },
   DEFAULT_PROFILE_SEARCH_PREFERENCES: {
     numPassengers: 1,
     maxTransfers: undefined,

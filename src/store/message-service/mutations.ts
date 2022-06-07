@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { ModuleBuilder } from 'vuex-typex'
-import { Conversation, Message, MessageState } from './types'
+import { CommunicatorUser, Conversation, Message, MessageState } from './types'
 import { RootState } from '@/store/Rootstate'
 import { Page } from '@/store/types'
 import { assignPageResults } from '@/store/storeHelper'
@@ -25,12 +25,16 @@ function setArchivedConversations(
   )
 }
 
-function setConversation(state: MessageState, payload: Conversation) {
+function setConversation(state: MessageState, payload: Conversation | null) {
   state.conversation = payload
 }
 
 function setMessages(state: MessageState, messages: Page<Message>) {
   state.messages = assignPageResults(state.messages, messages)
+}
+
+function setUser(state: MessageState, user: CommunicatorUser) {
+  state.user = user
 }
 
 export const buildMutations = (
@@ -41,5 +45,6 @@ export const buildMutations = (
     setArchivedConversations: msBuilder.commit(setArchivedConversations),
     setConversation: msBuilder.commit(setConversation),
     setMessages: msBuilder.commit(setMessages),
+    setUser: msBuilder.commit(setUser),
   }
 }

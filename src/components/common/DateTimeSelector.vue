@@ -1,6 +1,6 @@
 <template>
   <v-row dense>
-    <v-col cols="5">
+    <v-col cols="6">
       <v-dialog v-model="showDatePicker" persistent>
         <template #activator="{ on }">
           <v-text-field
@@ -37,7 +37,7 @@
         </v-date-picker>
       </v-dialog>
     </v-col>
-    <v-col offset="1" cols="5">
+    <v-col offset="1" cols="4">
       <v-dialog v-model="showTimePicker" persistent>
         <template #activator="{ on }">
           <v-text-field

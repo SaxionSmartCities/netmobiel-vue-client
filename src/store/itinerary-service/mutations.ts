@@ -45,7 +45,7 @@ function setPlanningResults(state: ItineraryState, payload: TripPlan) {
   state.planningRequest.tripPlan = payload
 }
 
-function clearPlanningRequest(state: ItineraryState, payload: any) {
+function clearPlanningRequest(state: ItineraryState) {
   state.planningRequest.travelTime = null
   state.planningRequest.submitStatus = {
     status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
@@ -64,11 +64,11 @@ function clearBookingRequest(state: ItineraryState, payload: any) {
   }
 }
 
-function setSelectedTripPlan(state: ItineraryState, payload: TripPlan) {
+function setSelectedTripPlan(state: ItineraryState, payload: TripPlan | null) {
   state.selectedTripPlan = payload
 }
 
-function setSelectedShoutOut(state: ItineraryState, payload: TripPlan) {
+function setSelectedShoutOut(state: ItineraryState, payload: TripPlan | null) {
   state.selectedShoutOut = payload
 }
 
@@ -88,7 +88,7 @@ function setMyPastShoutOuts(state: ItineraryState, shoutOuts: Page<TripPlan>) {
   state.myPastShoutOuts = assignPageResults(state.myPastShoutOuts, shoutOuts)
 }
 
-function setSelectedTrip(state: ItineraryState, payload: Trip) {
+function setSelectedTrip(state: ItineraryState, payload: Trip | null) {
   state.selectedTrip = payload
 }
 

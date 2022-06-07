@@ -95,7 +95,6 @@ export default {
   methods: {
     continueNavigation() {
       // Check whether we have an initial message to show (a query parameter added by the mobile app)
-      let conversationId
       if (this.$route.query.msgId) {
         // eslint-disable-next-line
         // console.log(`Got an initial message: '${this.$route.query.msgId}'`)
@@ -104,10 +103,12 @@ export default {
           .then((msg) => {
             // Now goto the relevant (i.e., my) conversation. Find whether
             // that should be the sender's conversation or the recipient
-            if (msg.sender?.managedIdentity === this.profile.id) {
+            // Normally that would be the recipient
+            let conversationId
+            if (msg?.sender?.managedIdentity === this.profile.id) {
               conversationId = msg.senderConversationRef
             } else {
-              conversationId = msg.envelopes.find(
+              conversationId = msg?.envelopes.find(
                 (env) => env.recipient.managedIdentity === this.profile.id
               )?.conversationRef
             }

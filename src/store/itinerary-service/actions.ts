@@ -602,7 +602,7 @@ function addShoutOutTravelOffer(
     .then((response) => {
       if (response.status == 202) {
         const message =
-          'Je aanbod is verstuurd en de passagier op de hoogte gebracht.'
+          'Je aanbod is verstuurd en de passagier is op de hoogte gebracht.'
         uiStore.actions.queueInfoNotification(message)
       } else {
         uiStore.actions.queueErrorNotification(response.data.message)

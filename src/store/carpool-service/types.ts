@@ -1,4 +1,3 @@
-import { ExternalUser } from '@/store/profile-service/types'
 import { Page } from '@/store/types'
 
 const defaultPage = {
@@ -10,30 +9,52 @@ const defaultPage = {
 
 export class CarpoolState {
   cars: Car[] = []
-  selectedCar: Car = {}
+  selectedCar: Car | null = null
   carSearch: CarSearch = {
     licensePlate: null,
     result: {},
   }
-  selectedRide: Ride = {}
+  selectedRide: Ride | null = null
   plannedRides: Page<Ride> = defaultPage
   pastRides: Page<Ride> = defaultPage
   proposedRides: Page<Ride> = defaultPage
+  selectedBooking: Booking | null = null
 }
 
 export interface Car {
-  id?: string
+  brand: string
   carRef?: string
-  licensePlate?: string
+  id: string
+  licensePlate: string
+  licensePlateRaw: string
+  nrSeats?: number
+  model: string
+  registrationCountry: string
   registrationYear?: string
   type?: string
-  model?: string
 }
 
 export interface Location {
   label?: string
   latitude: number
   longitude: number
+}
+
+export interface Recurrence {
+  // The repetition interval. One week means every week. Two weeks means every two weeks.
+  interval: number
+  // The unit of the repetition.
+  unit: 'DAY' | 'WEEK'
+  // the horizon date (a local date!) limits the recurrence to a future date where the ride
+  // is no longer repeated. The horizon date is exclusive.
+  horizon: string | null
+  // In case of unit 'week': A bitmask of day included in the recurrence. The days of the week are
+  // numbered according ISO8601: 1 to 7 for Monday to Sunday. The number of the weekday corresponds
+  // with the bit number plus one, i.e., bit 0 corresponds with Monday.
+  daysOfWeekMask: number | null
+  // The time zone of the recurrence. The zone is required to calculate the local time, as it is the
+  // local departure/arrival time that is repeated. Default: Europe/Amsterdam.
+  timeZone: string
 }
 
 export interface Ride {
@@ -53,15 +74,16 @@ export interface Ride {
   driver?: RideshareUser
   driverRef?: string
   duration?: number
-  fromPlace?: Location
+  fromPlace: Location
   id?: number
   legs?: Leg[]
   maxDetourMeters?: number
   maxDetourSeconds?: number
-  nrSeatsAvailable?: number
+  nrSeatsAvailable: number
+  recurrence?: Recurrence
   rideRef?: string
   state?: string
-  toPlace?: Location
+  toPlace: Location
 }
 
 export interface Leg {
@@ -88,23 +110,35 @@ export interface UserRef {
 }
 
 export interface RideshareUser {
-  userRef: string
-  managedIdentity: string
+  email: string
   familyName: string
   givenName: string
   id: string
-  email: string
+  managedIdentity: string
+  userRef: string
 }
 
 export interface Booking {
-  bookingRef?: string
-  departureTime?: string
-  arrivalTime?: string
-  passenger?: RideshareUser
-  passengerRef?: string
-  state?: string
+  arrivalTime: string
+  bookingRef: string
+  cancelledByDriver?: boolean
+  cancelReason?: string
+  confirmationReason?: string
+  confirmationReasonByPassenger?: string
   confirmed?: boolean
-  confirmationReason: string
   confirmedByPassenger?: boolean
-  confirmationReasonByPassenger: string
+  departureTime: string
+  dropOff: Location
+  fareInCredits: number
+  legs?: Leg[]
+  nrSeats: number
+  passenger: RideshareUser
+  passengerRef: string
+  passengerTripPlanRef: string
+  passengerTripRef: string
+  paymentId: string
+  paymentState: 'CANCELLED' | 'PAID' | null
+  pickup: Location
+  ride: Ride
+  state: 'New' | 'Proposed' | 'Requested' | 'Confirmed' | 'Cancelled'
 }

@@ -4,6 +4,7 @@ import {
   BankerState,
   Charity,
   Donation,
+  Incentive,
   PaymentBatch,
   Reward,
   Settings,
@@ -85,6 +86,10 @@ function setRewards(state: BankerState, rewards: Page<Reward>) {
   state.rewards = assignPageResults(state.rewards, rewards)
 }
 
+function setCtaIncentives(state: BankerState, incentives: Page<Incentive>) {
+  state.ctaIncentives = assignPageResults(state.ctaIncentives, incentives)
+}
+
 export const buildMutations = (
   bsBuilder: ModuleBuilder<BankerState, RootState>
 ) => {
@@ -106,5 +111,6 @@ export const buildMutations = (
     setAccountStatements: bsBuilder.commit(setStatements),
     setSystemAccounts: bsBuilder.commit(setSystemAccounts),
     setRewards: bsBuilder.commit(setRewards),
+    setCtaIncentives: bsBuilder.commit(setCtaIncentives),
   }
 }

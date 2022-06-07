@@ -21,6 +21,10 @@ export const buildGetters = (
     return state.messages
   }, 'getMessages')
 
+  const getUser = msBuilder.read((state: MessageState) => {
+    return state.user
+  }, 'getUser')
+
   return {
     get getActualConversations() {
       return getActualConversations()
@@ -33,6 +37,9 @@ export const buildGetters = (
     },
     get getMessages() {
       return getMessages()
+    },
+    get getUser() {
+      return getUser()
     },
   }
 }

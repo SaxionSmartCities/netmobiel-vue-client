@@ -2,7 +2,7 @@
   <content-pane>
     <template #header>
       <v-row
-        v-if="ride.state === 'CANCELLED'"
+        v-if="ride && ride.state === 'CANCELLED'"
         class="cancelled-banner text-center shrink"
         dense
         no-gutters
@@ -11,7 +11,7 @@
         <v-col v-else> Deze rit is geannuleerd </v-col>
       </v-row>
     </template>
-    <v-row>
+    <v-row v-if="ride">
       <v-col>
         <ride-details :ride="ride" :show-map="showMap" @closeMap="onCloseMap" />
       </v-col>
@@ -20,25 +20,26 @@
       <v-col>
         <v-alert type="warning">
           Je passagier reed naar eigen zeggen niet mee:
-          <i>{{
+          <em>{{
             passengerReasonText(confirmedBooking.confirmationReasonByPassenger)
-          }}</i
+          }}</em
           >. Klopt dat? Vraag eventueel opheldering bij de passagier door een
           berichtje te sturen.
         </v-alert>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="ride">
       <v-col>
         <itinerary-leg
           v-for="(leg, index) in generateSteps"
           :key="index"
           :leg="leg"
           :step="index"
+          :part-of-passengers-itinerary="false"
         />
       </v-col>
     </v-row>
-    <v-row dense>
+    <v-row v-if="ride" dense>
       <v-col>
         <v-btn
           large
@@ -64,11 +65,11 @@
           :disabled="!isChatEnabled"
           @click="contactPassenger"
         >
-          Stuur bericht naar passagier
+          Bericht passagier
         </v-btn>
       </v-col>
     </v-row>
-    <v-row dense class="d-flex flex-column">
+    <v-row v-if="ride" dense class="d-flex flex-column">
       <v-col><v-divider /></v-col>
       <v-col class="mt-2">
         <h3>Boekingen</h3>
@@ -220,8 +221,7 @@ export default {
     },
     rideOptions() {
       let options = []
-      const { state } = this.ride
-      switch (state) {
+      switch (this.ride?.state) {
         case 'SCHEDULED':
           // A ride with a proposed or confirmed booking cannot be modified right now
           if (this.activeBookings.length === 0) {
@@ -279,7 +279,7 @@ export default {
   },
   mounted() {
     // Fetch the ride on details page. This is needed for deeplinking.
-    csStore.mutations.setSelectedRide({})
+    csStore.mutations.setSelectedRide(null)
     csStore.actions.fetchRide({ id: this.rideId })
   },
   methods: {
@@ -324,14 +324,17 @@ export default {
     contactPassenger() {
       // We do not know the conversation yet
       const booking = this.selectedBooking
-      const passengerContext =
-        booking.passengerTripRef || booking.passengerTripPlanRef
       this.$router.push({
         name: `conversation`,
         params: {
           chatMeta: {
-            senderContext: booking.bookingRef,
-            recipientContext: passengerContext,
+            // The message is about the booking
+            context: booking.bookingRef,
+            // Context of driver (me) is this ride
+            senderContext: this.ride.rideRef,
+            // Context of the passenger is the trip or the shout-out (trip plan) of the selected booking
+            recipientContext:
+              booking.passengerTripRef || booking.passengerTripPlanRef,
             recipientManagedIdentity: booking.passenger.managedIdentity,
           },
         },

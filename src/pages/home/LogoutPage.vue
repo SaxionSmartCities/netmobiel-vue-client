@@ -33,9 +33,6 @@ export default {
   components: {
     ContentPane,
   },
-  data() {
-    return {}
-  },
   beforeCreate() {
     uiStore.mutations.disableFooter()
   },

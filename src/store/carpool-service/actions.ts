@@ -1,9 +1,9 @@
-import { CarpoolState, Car, UserRef } from './types'
+import { Car, CarpoolState, Recurrence, Ride } from './types'
 import { RootState } from '@/store/Rootstate'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
-import { actions, getters, mutations } from '@/store/carpool-service/index'
+import { mutations } from '@/store/carpool-service/index'
 import * as uiStore from '@/store/ui'
-import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
+import axios, { AxiosError, AxiosRequestHeaders } from 'axios'
 import config from '@/config/config'
 import { generateHeaders } from '@/utils/Utils'
 
@@ -83,7 +83,7 @@ function fetchCar(context: ActionContext, payload: any) {
       mutations.setSelectedCar(resp.data)
     })
     .catch((error) => {
-      mutations.setSelectedCar({})
+      mutations.setSelectedCar(null)
     })
 }
 
@@ -117,12 +117,11 @@ function submitRide(context: ActionContext, payload: any) {
     uiStore.actions.queueErrorNotification('Voeg eerst een auto toe.')
     return
   }
-  const request = {
+  const newRide: Ride = {
     carRef: ridePlanOptions.selectedCarRef,
-    recurrence,
+    recurrence: recurrence as Recurrence,
     fromPlace: from,
     toPlace: to,
-    // remarks: 'Opmerkingen van de chauffeur',
     nrSeatsAvailable: ridePlanOptions.maxPassengers,
     maxDetourSeconds: ridePlanOptions.maxTimeDetour
       ? ridePlanOptions.maxTimeDetour * 60
@@ -132,16 +131,14 @@ function submitRide(context: ActionContext, payload: any) {
   // Set arrival or departure time.
   const formattedDate = travelTime.when.toISOString()
   if (travelTime.arriving) {
-    // @ts-ignore
-    request.arrivalTime = formattedDate
+    newRide.arrivalTime = formattedDate
   } else {
-    // @ts-ignore
-    request.departureTime = formattedDate
+    newRide.departureTime = formattedDate
   }
 
   const URL = `${RIDESHARE_BASE_URL}/rides`
-  axios
-    .post(URL, request, {
+  return axios
+    .post(URL, newRide, {
       headers: generateHeaders(
         GRAVITEE_RIDESHARE_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
@@ -150,12 +147,27 @@ function submitRide(context: ActionContext, payload: any) {
       if (res.status == 201) {
         uiStore.actions.queueInfoNotification('Uw rit is opgeslagen.')
       }
-      fetchRides(context, { offset: 0, maxResults: 10 })
+      return Promise.resolve()
     })
-    .catch(function (error) {
-      uiStore.actions.queueErrorNotification(
-        'Fout bij het versturen van uw rit-aanbod.'
-      )
+    .catch(function (problem: unknown) {
+      let msg = 'Fout bij het inplannen van je rit.'
+      const error = problem as Error | AxiosError
+      if (axios.isAxiosError(error)) {
+        if (
+          error.response?.status === 422 &&
+          error.response.data?.message?.includes('Ride overlaps')
+        ) {
+          msg = 'Je nieuwe rit overlapt met een al ingeplande rit'
+        } else if (
+          error.response?.status === 400 &&
+          error.response.data?.message?.includes('Cannot compute itinerary')
+        ) {
+          msg =
+            'De route planner kan geen geschikte route vinden tussen de aangegeven locaties.'
+        }
+      }
+      uiStore.actions.queueErrorNotification(msg)
+      return Promise.reject()
     })
 }
 
@@ -379,6 +391,26 @@ function fetchRideProposals(
     })
 }
 
+function fetchBooking(context: ActionContext, bookingId: any) {
+  const URL = `${RIDESHARE_BASE_URL}/bookings/${bookingId}`
+  return axios
+    .get(URL, {
+      headers: generateHeaders(
+        GRAVITEE_RIDESHARE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    .then((resp) => {
+      mutations.setSelectedBooking(resp.data)
+      return Promise.resolve(resp.data)
+    })
+    .catch((error) => {
+      uiStore.actions.queueErrorNotification(
+        'Fout bij het ophalen van je boeking.'
+      )
+      return Promise.resolve()
+    })
+}
+
 export const buildActions = (
   csBuilder: ModuleBuilder<CarpoolState, RootState>
 ) => {
@@ -399,5 +431,7 @@ export const buildActions = (
     unconfirmBookedRide: csBuilder.dispatch(unconfirmBookedRide),
 
     fetchRideProposals: csBuilder.dispatch(fetchRideProposals),
+
+    fetchBooking: csBuilder.dispatch(fetchBooking),
   }
 }
