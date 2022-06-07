@@ -309,7 +309,7 @@ export default {
         }
         switch (incentive.ctaButtonAction) {
           case 'plan-ride':
-            link.to = this.plannerRoute
+            link.to = '/plan'
             break
           case 'onboarding-profile':
             link.to = '/onboardingPage'
