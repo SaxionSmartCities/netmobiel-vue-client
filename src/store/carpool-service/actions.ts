@@ -158,6 +158,12 @@ function submitRide(context: ActionContext, payload: any) {
           error.response.data?.message?.includes('Ride overlaps')
         ) {
           msg = 'Je nieuwe rit overlapt met een al ingeplande rit'
+        } else if (
+          error.response?.status === 400 &&
+          error.response.data?.message?.includes('Cannot compute itinerary')
+        ) {
+          msg =
+            'De route planner kan geen geschikte route vinden tussen de aangegeven locaties.'
         }
       }
       uiStore.actions.queueErrorNotification(msg)
