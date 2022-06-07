@@ -40,6 +40,23 @@ export interface Location {
   longitude: number
 }
 
+export interface Recurrence {
+  // The repetition interval. One week means every week. Two weeks means every two weeks.
+  interval: number
+  // The unit of the repetition.
+  unit: 'DAY' | 'WEEK'
+  // the horizon date (a local date!) limits the recurrence to a future date where the ride
+  // is no longer repeated. The horizon date is exclusive.
+  horizon: string | null
+  // In case of unit 'week': A bitmask of day included in the recurrence. The days of the week are
+  // numbered according ISO8601: 1 to 7 for Monday to Sunday. The number of the weekday corresponds
+  // with the bit number plus one, i.e., bit 0 corresponds with Monday.
+  daysOfWeekMask: number | null
+  // The time zone of the recurrence. The zone is required to calculate the local time, as it is the
+  // local departure/arrival time that is repeated. Default: Europe/Amsterdam.
+  timeZone: string
+}
+
 export interface Ride {
   ableToAssist?: boolean
   arrivalTime?: string
@@ -57,15 +74,16 @@ export interface Ride {
   driver?: RideshareUser
   driverRef?: string
   duration?: number
-  fromPlace?: Location
+  fromPlace: Location
   id?: number
   legs?: Leg[]
   maxDetourMeters?: number
   maxDetourSeconds?: number
-  nrSeatsAvailable?: number
+  nrSeatsAvailable: number
+  recurrence?: Recurrence
   rideRef?: string
   state?: string
-  toPlace?: Location
+  toPlace: Location
 }
 
 export interface Leg {
