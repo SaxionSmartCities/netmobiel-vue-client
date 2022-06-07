@@ -67,12 +67,19 @@
                     block
                     depressed
                     color="button"
-                    :disabled="disabledRideAddition"
+                    :disabled="!inputComplete || busySubmitting"
                     @click="onPlanRide()"
                   >
                     Rit aanbieden
                     <v-icon dark right>error_outline</v-icon>
                   </v-btn>
+                </v-col>
+                <v-col class="shrink">
+                  <v-progress-circular
+                    v-if="busySubmitting"
+                    indeterminate
+                    color="button"
+                  ></v-progress-circular>
                 </v-col>
               </v-row>
               <v-row>
@@ -143,6 +150,7 @@ export default {
     return {
       recurrence: undefined,
       warnMissingCar: false,
+      busySubmitting: false,
     }
   },
   computed: {
@@ -157,9 +165,9 @@ export default {
       const cars = csStore.getters.getAvailableCars
       return cars.find((car) => car.carRef === selectedCarRef)
     },
-    disabledRideAddition() {
+    inputComplete() {
       const { from, to, travelTime } = this.searchCriteria
-      return !from?.label || !to?.label || travelTime?.when < moment()
+      return from?.label && to?.label && travelTime?.when > moment()
     },
     topOfTheHour() {
       const now = moment()
@@ -214,12 +222,20 @@ export default {
         this.warnMissingCar = true
         return
       }
-      csStore.actions.submitRide({
-        ...this.searchCriteria,
-        recurrence: this.recurrence,
-        ridePlanOptions,
-      })
-      this.$router.push('/planSubmitted')
+      this.busySubmitting = true
+      csStore.actions
+        .submitRide({
+          ...this.searchCriteria,
+          recurrence: this.recurrence,
+          ridePlanOptions,
+        })
+        .then(() => {
+          this.busySubmitting = false
+          this.$router.push('/planSubmitted')
+        })
+        .catch(() => {
+          this.busySubmitting = false
+        })
     },
   },
 }
