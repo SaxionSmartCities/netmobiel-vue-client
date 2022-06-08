@@ -7,6 +7,8 @@ export class MessageState {
   conversation: Conversation | null = null
   messages: Page<Message> = emptyPage
   user: CommunicatorUser | null = null
+  // The FCM token received from the current device
+  deviceFcmToken: string | null = null
 }
 
 export interface Message {

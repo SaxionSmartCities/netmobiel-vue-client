@@ -131,7 +131,7 @@ export default {
       return psStore.getters.getProfile
     },
     deviceFcmToken() {
-      return psStore.getters.getDeviceFcmToken
+      return msStore.getters.getDeviceFcmToken
     },
     isBackButtonVisible() {
       return uiStore.getters.isBackButtonVisible
@@ -170,7 +170,7 @@ export default {
       // console.log(`FCM token is: ${this.deviceFcmToken}`)
       if (this.myProfile?.id) {
         // Just in case the FCM token arrives after fetching the profile
-        psStore.actions.storeMyFcmToken()
+        msStore.actions.storeMyFcmToken()
       }
     },
     myProfile(newProfile, oldProfile) {
@@ -179,7 +179,7 @@ export default {
         if (oldProfile?.id !== newProfile.id) {
           // A fresh profile has arrived
           // The profile is present. By now the FCM token should also have arrived.
-          psStore.actions.storeMyFcmToken()
+          msStore.actions.storeMyFcmToken()
         }
       }
     },
@@ -213,7 +213,7 @@ export default {
       psStore.mutations.setUserToken(this.$keycloak.token)
       // Fetch the FCM token from the localstorage (app version mid 2021) - for backward compatibility
       if (localStorage.fcm) {
-        psStore.mutations.setDeviceFcmToken(localStorage.fcm)
+        msStore.mutations.setDeviceFcmToken(localStorage.fcm)
       }
       window.addEventListener('NetmobielFcmToken', this.onFcmTokenReceived)
       // Fetch the FCM token via message channel (since jan 2022 app)
@@ -274,7 +274,7 @@ export default {
       // Store the FCM token in the store first, at registration time, there is no profile yet
       const fcmToken = evt.detail?.fcmToken
       // console.log(`FCM received: ${this.fcmToken}`)
-      psStore.mutations.setDeviceFcmToken(fcmToken)
+      msStore.mutations.setDeviceFcmToken(fcmToken)
     },
     onProfileImageClick() {
       // TODO: Only navigate to delegate if role is delegate (route to profile otherwise)

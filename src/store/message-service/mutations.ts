@@ -37,6 +37,10 @@ function setUser(state: MessageState, user: CommunicatorUser) {
   state.user = user
 }
 
+function setDeviceFcmToken(state: MessageState, fcmToken: string | null) {
+  state.deviceFcmToken = fcmToken
+}
+
 export const buildMutations = (
   msBuilder: ModuleBuilder<MessageState, RootState>
 ) => {
@@ -46,5 +50,6 @@ export const buildMutations = (
     setConversation: msBuilder.commit(setConversation),
     setMessages: msBuilder.commit(setMessages),
     setUser: msBuilder.commit(setUser),
+    setDeviceFcmToken: msBuilder.commit(setDeviceFcmToken),
   }
 }

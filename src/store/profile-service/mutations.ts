@@ -139,10 +139,6 @@ function setSearchResults(state: ProfileState, results: Page<PublicProfile>) {
   state.search.results = assignPageResults(state.search.results, results)
 }
 
-function setDeviceFcmToken(state: ProfileState, fcmToken: string | null) {
-  state.deviceFcmToken = fcmToken
-}
-
 function setSurveyInteraction(
   state: ProfileState,
   payload: SurveyInteraction | null
@@ -176,7 +172,6 @@ export const buildMutations = (
     setSearchKeyword: psBuilder.commit(setSearchKeyword),
     setSearchResults: psBuilder.commit(setSearchResults),
     setSearchStatus: psBuilder.commit(setSearchStatus),
-    setDeviceFcmToken: psBuilder.commit(setDeviceFcmToken),
     setSurveyInteraction: psBuilder.commit(setSurveyInteraction),
     setVersion: psBuilder.commit(setVersion),
   }
