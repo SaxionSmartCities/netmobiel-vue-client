@@ -243,28 +243,6 @@ function storeMyRidePreferences(context: ActionContext, payload: any) {
   return updateMyProfile(context, profile)
 }
 
-function storeMyFcmToken(context: ActionContext) {
-  const URL = `${PROFILE_BASE_URL}/profiles/me/fcmToken`
-  const firebaseToken = {
-    token: context.state.deviceFcmToken,
-  }
-  return axios
-    .put(URL, firebaseToken, {
-      headers: generateHeaders(
-        GRAVITEE_PROFILE_SERVICE_API_KEY
-      ) as AxiosRequestHeaders,
-    })
-    .then((response) => {
-      if (response.status !== 204) {
-        // eslint-disable-next-line
-        console.warn(`storeMyFcmToken: Unexpected response ${response.status}`)
-      }
-    })
-    .catch((error) => {
-      // Ignore error
-    })
-}
-
 function updateMyProfile(context: ActionContext, profile: Profile) {
   const URL = `${PROFILE_BASE_URL}/profiles/me`
   return axios
@@ -788,7 +766,6 @@ export const buildActions = (
 
     storeMySearchPreferences: psBuilder.dispatch(storeMySearchPreferences),
     storeMyRidePreferences: psBuilder.dispatch(storeMyRidePreferences),
-    storeMyFcmToken: psBuilder.dispatch(storeMyFcmToken),
     updateMyProfile: psBuilder.dispatch(updateMyProfile),
     updateMyProfileImage: psBuilder.dispatch(updateMyProfileImage),
 

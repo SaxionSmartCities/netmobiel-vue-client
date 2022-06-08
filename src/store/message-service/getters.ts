@@ -25,6 +25,10 @@ export const buildGetters = (
     return state.user
   }, 'getUser')
 
+  const getDeviceFcmToken = msBuilder.read((state: MessageState) => {
+    return state.deviceFcmToken
+  }, 'getDeviceFcmToken')
+
   return {
     get getActualConversations() {
       return getActualConversations()
@@ -40,6 +44,9 @@ export const buildGetters = (
     },
     get getUser() {
       return getUser()
+    },
+    get getDeviceFcmToken() {
+      return getDeviceFcmToken()
     },
   }
 }

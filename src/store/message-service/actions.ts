@@ -266,6 +266,28 @@ function fetchMyStatus(context: ActionContext) {
     })
 }
 
+function storeMyFcmToken(context: ActionContext) {
+  const URL = `${COMMUNICATOR_BASE_URL}/users/me/fcm-token`
+  const firebaseToken = {
+    token: context.state.deviceFcmToken,
+  }
+  return axios
+    .put(URL, firebaseToken, {
+      headers: generateHeaders(
+        GRAVITEE_COMMUNICATOR_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    .then((response) => {
+      if (response.status !== 204) {
+        // eslint-disable-next-line
+        console.warn(`storeMyFcmToken: Unexpected response ${response.status}`)
+      }
+    })
+    .catch((error) => {
+      // Ignore error
+    })
+}
+
 export const buildActions = (
   msBuilder: ModuleBuilder<MessageState, RootState>
 ) => {
@@ -280,5 +302,6 @@ export const buildActions = (
     fetchMessage: msBuilder.dispatch(fetchMessage),
     sendMessage: msBuilder.dispatch(sendMessage),
     fetchMyStatus: msBuilder.dispatch(fetchMyStatus),
+    storeMyFcmToken: msBuilder.dispatch(storeMyFcmToken),
   }
 }
