@@ -3,6 +3,7 @@ import {
   ComplimentType,
   Delegation,
   emptyPublicUser,
+  PageVisit,
   Place,
   Profile,
   ProfileState,
@@ -15,6 +16,7 @@ import { RootState } from '@/store/Rootstate'
 import { decodeJwt } from '@/utils/Utils'
 import { Page } from '@/store/types'
 import { assignPageResults, emptyPage } from '@/store/storeHelper'
+import moment from 'moment'
 
 function setUserToken(state: ProfileState, token: string) {
   state.user.accessToken = token
@@ -150,6 +152,31 @@ function setVersion(state: ProfileState, version: Version) {
   state.version = version
 }
 
+function addPageVisit(state: ProfileState, path: string) {
+  const pv: PageVisit = {
+    path,
+    visitTime: moment().toISOString(),
+  }
+  if (state.sessionLog == null) {
+    state.sessionLog = {
+      userAgent: navigator.userAgent,
+      pageVisits: [],
+    }
+  }
+  state.sessionLog.pageVisits.push(pv)
+}
+
+/**
+ * Clears the session log by removing th efirst n entries from the log.
+ * @param state
+ * @param n
+ */
+function clearPageVisits(state: ProfileState, n: number) {
+  if (state.sessionLog) {
+    state.sessionLog.pageVisits = state.sessionLog.pageVisits.slice(n)
+  }
+}
+
 export const buildMutations = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -174,5 +201,7 @@ export const buildMutations = (
     setSearchStatus: psBuilder.commit(setSearchStatus),
     setSurveyInteraction: psBuilder.commit(setSurveyInteraction),
     setVersion: psBuilder.commit(setVersion),
+    addPageVisit: psBuilder.commit(addPageVisit),
+    clearPageVisits: psBuilder.commit(clearPageVisits),
   }
 }

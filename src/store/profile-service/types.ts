@@ -77,6 +77,7 @@ export class ProfileState {
     results: emptyPage,
   }
   version: Version | null = null
+  sessionLog: UserSession | null = null
 }
 export const emptyPublicUser: ExternalUser = {
   profile: {
@@ -291,4 +292,20 @@ export interface Version {
   readonly caller?: UserRef
   // The effective caller is present only if different from real caller
   readonly effectiveCaller?: UserRef
+}
+
+export interface UserSession {
+  readonly id?: number | undefined
+  readonly sessionId?: string | undefined
+  readonly ipAddress?: string | undefined
+  userAgent: string
+  readonly sessionStart?: string | undefined
+  readonly sessionEnd?: string | undefined
+  pageVisits: PageVisit[]
+  readonly managedIdentity?: string | undefined
+}
+
+export interface PageVisit {
+  path: string
+  visitTime: string
 }
