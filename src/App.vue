@@ -91,6 +91,7 @@ import {
 } from '@/utils/NetmobielApp'
 
 const checkMessageStatusInterval = 1000 * 60 * 15 // msec
+const flushSessionLogInterval = 1000 * 60 // msec
 
 export default {
   name: 'App',
@@ -98,6 +99,7 @@ export default {
   data: () => ({
     offsetTop: 0,
     messageStatusTimer: null,
+    sessionLogFlushTimer: null,
   }),
   computed: {
     profileImage() {
@@ -239,6 +241,11 @@ export default {
       this.messageStatusTimer = setInterval(() => {
         msStore.actions.fetchMyStatus()
       }, checkMessageStatusInterval)
+      this.sessionLogFlushTimer = setInterval(() => {
+        if (this.$keycloak.authenticated) {
+          psStore.actions.flushSessionLog()
+        }
+      }, flushSessionLogInterval)
     }
   },
   beforeDestroy() {
@@ -250,6 +257,10 @@ export default {
     if (this.messageStatusTimer) {
       clearInterval(this.messageStatusTimer)
       this.messageStatusTimer = null
+    }
+    if (this.sessionLogFlushTimer) {
+      clearInterval(this.sessionLogFlushTimer)
+      this.sessionLogFlushTimer = null
     }
   },
   methods: {

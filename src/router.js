@@ -48,6 +48,7 @@ import DelegationOverviewPage from '@/pages/profile/delegation/DelegationOvervie
 import AddDelegationPage from '@/pages/profile/delegation/AddDelegationPage'
 import NewDelegationPage from '@/pages/profile/delegation/NewDelegationPage'
 import * as uiStore from '@/store/ui'
+import * as psStore from '@/store/profile-service'
 import LogoutPage from '@/pages/home/LogoutPage'
 import SessionExpiredPage from '@/pages/SessionExpiredPage'
 import TripUnconfirmPage from '@/pages/trips/TripUnconfirmPage'
@@ -466,6 +467,10 @@ router.beforeEach((to, from, next) => {
     )
     next(`/`)
   } else {
+    psStore.mutations.addPageVisit(to.path)
+    if (to.path === '/logout') {
+      psStore.actions.closeSessionLog()
+    }
     next()
   }
 })

@@ -5,6 +5,7 @@ import {
   Profile,
   ProfileState,
   PublicProfile,
+  UserSession,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { getters, mutations } from '@/store/profile-service'
@@ -12,6 +13,7 @@ import * as uiStore from '@/store/ui'
 import { generateHeaders } from '@/utils/Utils'
 import { Page } from '@/store/types'
 import { emptyPage } from '@/store/storeHelper'
+import moment from 'moment'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -754,6 +756,42 @@ function fetchVersion(context: ActionContext) {
     })
 }
 
+function closeSessionLog(context: ActionContext) {
+  return flushSessionLog(context, true)
+}
+
+function flushSessionLog(context: ActionContext, isFinal: boolean = false) {
+  const URL = `${PROFILE_BASE_URL}/profiles/me/session-log`
+  if (
+    context.state.sessionLog == null ||
+    context.state.sessionLog?.pageVisits.length === 0
+  ) {
+    return Promise.resolve()
+  }
+  // Make a local copy of the current list
+  const localLog: UserSession = {
+    ...context.state.sessionLog,
+    pageVisits: [...context.state.sessionLog.pageVisits],
+  }
+  return axios
+    .post(URL, localLog, {
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+      params: {
+        final: isFinal || undefined,
+      },
+    })
+    .then((response) => {
+      // Clear the list from the page visits just sent
+      // Other pages may have been visited in the mean time
+      mutations.clearPageVisits(localLog.pageVisits.length)
+    })
+    .catch((error) => {
+      // Ignore errors
+    })
+}
+
 export const buildActions = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -794,5 +832,7 @@ export const buildActions = (
     markSurveySubmitted: psBuilder.dispatch(markSurveySubmitted),
 
     fetchVersion: psBuilder.dispatch(fetchVersion),
+    flushSessionLog: psBuilder.dispatch(flushSessionLog),
+    closeSessionLog: psBuilder.dispatch(closeSessionLog),
   }
 }
