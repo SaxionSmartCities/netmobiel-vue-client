@@ -89,6 +89,7 @@ import {
   requestFcmToken,
   runningInsideFlutterApp2021,
 } from '@/utils/NetmobielApp'
+import * as csStore from '@/store/carpool-service'
 
 const checkMessageStatusInterval = 1000 * 60 * 15 // msec
 const flushSessionLogInterval = 1000 * 60 // msec
@@ -146,6 +147,15 @@ export default {
     },
     isDriverOnly() {
       return this.myProfile.userRole === constants.PROFILE_ROLE_DRIVER
+    },
+    isDriver() {
+      return (
+        this.myProfile.userRole === constants.PROFILE_ROLE_DRIVER ||
+        this.myProfile.userRole === constants.PROFILE_ROLE_BOTH
+      )
+    },
+    ridePlanOptions() {
+      return this.myProfile?.ridePlanOptions
     },
     plannerRoute() {
       let newRoute = ''
@@ -233,8 +243,10 @@ export default {
       psStore.actions
         .fetchMyProfileStatus()
         .then(() => psStore.actions.fetchMyProfile())
+        .then(() => this.fetchMyCar())
         .catch(() => {
           // Ignore the errors, they are resolved elsewhere.
+          console.log(`Error retrieving profile?`)
         })
       // Get the message status
       msStore.actions.fetchMyStatus()
@@ -303,6 +315,13 @@ export default {
       return (
         profile.dateOfBirth != null && profile.dateOfBirth.trim().length > 0
       )
+    },
+    fetchMyCar() {
+      if (this.isDriver && this.ridePlanOptions?.selectedCarRef) {
+        return csStore.actions.fetchCar(this.ridePlanOptions?.selectedCarRef)
+      } else {
+        return Promise.resolve()
+      }
     },
   },
 }
