@@ -246,7 +246,6 @@ export default {
         .then(() => this.fetchMyCar())
         .catch(() => {
           // Ignore the errors, they are resolved elsewhere.
-          console.log(`Error retrieving profile?`)
         })
       // Get the message status
       msStore.actions.fetchMyStatus()
