@@ -1,11 +1,5 @@
 import { ModuleBuilder } from 'vuex-typex'
-import {
-  Car,
-  CarpoolState,
-  Ride,
-  CarSearchResult,
-  Booking,
-} from '@/store/carpool-service/types'
+import { Car, CarpoolState, Ride, Booking } from '@/store/carpool-service/types'
 import { RootState } from '@/store/Rootstate'
 import { Page } from '@/store/types'
 import { assignPageResults } from '@/store/storeHelper'
@@ -14,7 +8,7 @@ function setCarSearchLicensePlate(state: CarpoolState, payload: string) {
   state.carSearch.licensePlate = payload
 }
 
-function setCarSearchResult(state: CarpoolState, payload: CarSearchResult) {
+function setCarSearchResult(state: CarpoolState, payload: Car) {
   state.carSearch.result = payload
 }
 

@@ -12,7 +12,7 @@ export class CarpoolState {
   selectedCar: Car | null = null
   carSearch: CarSearch = {
     licensePlate: null,
-    result: {},
+    result: null,
   }
   selectedRide: Ride | null = null
   plannedRides: Page<Ride> = defaultPage
@@ -24,9 +24,15 @@ export class CarpoolState {
 export interface Car {
   brand: string
   carRef?: string
-  id: string
+  co2Emission: number
+  color: string
+  color2: string
+  deleted?: boolean
+  driverRef?: string
+  id: number
   licensePlate: string
   licensePlateRaw: string
+  nrDoors?: number
   nrSeats?: number
   model: string
   registrationCountry: string
@@ -98,11 +104,9 @@ export interface Leg {
   legRef?: string
 }
 
-export interface CarSearchResult {}
-
 export interface CarSearch {
   licensePlate: string | null
-  result: CarSearchResult | null
+  result: Car | null
 }
 
 export interface UserRef {
