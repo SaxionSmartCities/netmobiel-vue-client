@@ -35,7 +35,7 @@ function deleteAccessToken(state: ProfileState) {
 }
 
 function setProfile(state: ProfileState, payload: Profile) {
-  state.user.profile = payload
+  state.profile = payload
 }
 
 function setComplimentTypes(
@@ -103,38 +103,35 @@ function clearPublicReviews(state: ProfileState, profileId: string) {
 }
 
 function setFavoriteLocations(state: ProfileState, places: Page<Place>) {
-  state.user.favoriteLocations = assignPageResults(
-    state.user.favoriteLocations,
-    places
-  )
+  state.favoriteLocations = assignPageResults(state.favoriteLocations, places)
 }
 
-function setDelegations(state: ProfileState, delegations: Delegation[]) {
-  state.user.delegations = delegations
+function setDelegations(state: ProfileState, delegations: Page<Delegation>) {
+  state.delegations = assignPageResults(state.delegations, delegations)
+}
+
+function setDelegation(state: ProfileState, delegation: Delegation | null) {
+  state.delegation = delegation
 }
 
 function setDelegateProfile(state: ProfileState, profile: Profile) {
-  state.user.delegateProfile = profile
+  state.delegateProfile = profile
 }
 
 function setDelegatorId(state: ProfileState, profileId: string) {
-  state.user.delegatorId = profileId
+  state.delegatorId = profileId
 }
 
 function resetDelegate(state: ProfileState) {
-  if (state.user.delegateProfile) {
-    state.user.profile = state.user.delegateProfile
+  if (state.delegateProfile) {
+    state.profile = state.delegateProfile
   }
-  state.user.delegateProfile = null
-  state.user.delegatorId = null
+  state.delegateProfile = null
+  state.delegatorId = null
 }
 
 function setSearchKeyword(state: ProfileState, keyword: string) {
   state.search.keyword = keyword
-}
-
-function setSearchStatus(state: ProfileState, status: string) {
-  state.search.status = status
 }
 
 function setSearchResults(state: ProfileState, results: Page<PublicProfile>) {
@@ -145,7 +142,7 @@ function setSurveyInteraction(
   state: ProfileState,
   payload: SurveyInteraction | null
 ) {
-  state.user.surveyInteraction = payload
+  state.surveyInteraction = payload
 }
 
 function setVersion(state: ProfileState, version: Version) {
@@ -193,12 +190,12 @@ export const buildMutations = (
     clearPublicReviews: psBuilder.commit(clearPublicReviews),
     setFavoriteLocations: psBuilder.commit(setFavoriteLocations),
     setDelegations: psBuilder.commit(setDelegations),
+    setDelegation: psBuilder.commit(setDelegation),
     setDelegateProfile: psBuilder.commit(setDelegateProfile),
     setDelegatorId: psBuilder.commit(setDelegatorId),
     resetDelegate: psBuilder.commit(resetDelegate),
     setSearchKeyword: psBuilder.commit(setSearchKeyword),
     setSearchResults: psBuilder.commit(setSearchResults),
-    setSearchStatus: psBuilder.commit(setSearchStatus),
     setSurveyInteraction: psBuilder.commit(setSurveyInteraction),
     setVersion: psBuilder.commit(setVersion),
     addPageVisit: psBuilder.commit(addPageVisit),

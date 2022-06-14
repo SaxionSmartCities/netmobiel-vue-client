@@ -10,11 +10,15 @@ export const buildGetters = (
   }, 'getUser')
 
   const getProfile = psBuilder.read((state: ProfileState) => {
-    return state.user.profile
+    return state.profile
   }, 'getProfile')
 
+  const getFavoriteLocations = psBuilder.read((state: ProfileState) => {
+    return state.favoriteLocations
+  }, 'getFavoriteLocations')
+
   const getDelegateProfile = psBuilder.read((state: ProfileState) => {
-    return state.user.delegateProfile
+    return state.delegateProfile
   }, 'getDelegateProfile')
 
   const getPublicUsers = psBuilder.read((state: ProfileState) => {
@@ -25,24 +29,24 @@ export const buildGetters = (
     return state.complimentTypes
   }, 'getComplimentTypes')
 
+  const getDelegation = psBuilder.read((state: ProfileState) => {
+    return state.delegation
+  }, 'getDelegation')
+
   const getDelegations = psBuilder.read((state: ProfileState) => {
-    return state.user.delegations
+    return state.delegations
   }, 'getDelegations')
 
   const getDelegatorId = psBuilder.read((state: ProfileState) => {
-    return state.user.delegatorId
+    return state.delegatorId
   }, 'getDelegatorId')
-
-  const getSearchStatus = psBuilder.read((state: ProfileState) => {
-    return state.search.status
-  }, 'getSearchStatus')
 
   const getSearchResults = psBuilder.read((state: ProfileState) => {
     return state.search.results
   }, 'getSearchResults')
 
   const getSurveyInteraction = psBuilder.read((state: ProfileState) => {
-    return state.user.surveyInteraction
+    return state.surveyInteraction
   }, 'getSurveyInteraction')
 
   const getVersion = psBuilder.read((state: ProfileState) => {
@@ -56,6 +60,9 @@ export const buildGetters = (
     get getProfile() {
       return getProfile()
     },
+    get getFavoriteLocations() {
+      return getFavoriteLocations()
+    },
     get getDelegateProfile() {
       return getDelegateProfile()
     },
@@ -68,14 +75,14 @@ export const buildGetters = (
     get getDelegations() {
       return getDelegations()
     },
+    get getDelegation() {
+      return getDelegation()
+    },
     get getDelegatorId() {
       return getDelegatorId()
     },
     get getSearchResults() {
       return getSearchResults()
-    },
-    get getSearchStatus() {
-      return getSearchStatus()
     },
     get getSurveyInteraction() {
       return getSurveyInteraction()
@@ -87,6 +94,7 @@ export const buildGetters = (
       )
     },
     get canActAsTreasurer() {
+      // TODO exclude when delegation is active
       return (
         this.getUser.roles.includes('treasurer') ||
         this.getUser.roles.includes('admin')

@@ -299,8 +299,10 @@ export default {
       msStore.mutations.setDeviceFcmToken(fcmToken)
     },
     onProfileImageClick() {
-      // TODO: Only navigate to delegate if role is delegate (route to profile otherwise)
-      const route = '/profile/delegate'
+      let route = '/profile'
+      if (this.$keycloak.hasRealmRole('delegate')) {
+        route = '/profile/delegate'
+      }
       // Do not route when we are already on the page.
       // (vue router will throw a NavigationDuplicated error)
       if (this.$route.path !== route) {

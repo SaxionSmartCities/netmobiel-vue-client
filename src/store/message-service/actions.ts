@@ -17,7 +17,7 @@ function fetchConversationsForInbox(
   context: ActionContext,
   { select, owner, offset, maxResults }: any
 ): Promise<AxiosResponse<any>> {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const URL = `${COMMUNICATOR_BASE_URL}/conversations/inbox`
   return axios.get(URL, {
     params: {
@@ -78,7 +78,7 @@ function fetchArchivedConversations(
 }
 
 function fetchConversation(context: ActionContext, { id }: any) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const URL = `${COMMUNICATOR_BASE_URL}/conversations/${id}`
   axios
     .get(URL, {
@@ -100,7 +100,7 @@ function fetchConversation(context: ActionContext, { id }: any) {
 }
 
 function acknowledgeConversation(context: ActionContext, conversationId: any) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const URL = `${COMMUNICATOR_BASE_URL}/conversations/${conversationId}/ack`
   axios
     .put(URL, null, {
@@ -126,7 +126,7 @@ function fetchConversationByContext(
   context: ActionContext,
   { conversationContext }: any
 ) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const URL = `${COMMUNICATOR_BASE_URL}/conversations`
   return axios
     .get(URL, {
@@ -160,7 +160,7 @@ function fetchConversationByContext(
 }
 
 function startConversation(context: ActionContext, conversation: Conversation) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const URL = `${COMMUNICATOR_BASE_URL}/conversations`
   // Owner is the calling (effective) user
   return axios
@@ -189,7 +189,7 @@ function fetchMessages(
   context: ActionContext,
   { conversationId, sortDir, maxResults, offset }: any
 ) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const URL = `${COMMUNICATOR_BASE_URL}/conversations/${conversationId}/messages`
   axios
     .get(URL, {
@@ -216,7 +216,7 @@ function fetchMessages(
 }
 
 function sendMessage(context: ActionContext, payload: Message) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const URL = `${COMMUNICATOR_BASE_URL}/messages`
   return axios.post(URL, payload, {
     headers: generateHeaders(
@@ -227,7 +227,7 @@ function sendMessage(context: ActionContext, payload: Message) {
 }
 
 function fetchMessage(context: ActionContext, { id }: any) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const URL = `${COMMUNICATOR_BASE_URL}/messages/${id}`
   return axios
     .get(URL, {
@@ -247,7 +247,7 @@ function fetchMessage(context: ActionContext, { id }: any) {
 }
 
 function fetchMyStatus(context: ActionContext) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const URL = `${COMMUNICATOR_BASE_URL}/users/me`
   return axios
     .get(URL, {

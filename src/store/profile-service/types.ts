@@ -4,6 +4,7 @@ import { Page } from '@/store/types'
 export class ProfileState {
   complimentTypes: ComplimentType[] = []
   publicUsers: Map<string, ExternalUser> = new Map()
+  // User as authenticated by Keycloak
   user: User = {
     accessToken: null,
     // Attributes from (or derived from) the token
@@ -13,72 +14,50 @@ export class ProfileState {
     fullName: '',
     email: '',
     roles: [],
-    // Profile as stored in profile service.
-    profile: {
-      id: null,
-      age: null,
-      consent: {
-        acceptedTerms: false,
-        olderThanSixteen: false,
-        safetyGuidelines: false,
-      },
-      dateOfBirth: null,
-      firstName: null,
-      lastName: null,
-      image: null,
-      email: null,
-      phoneNumber: null,
-      userRole: null,
-      actingRole: null,
-      address: null,
-      searchPreferences: null,
-      ridePlanOptions: null,
-      notificationOptions: {
-        tripConfirmations: true,
-        tripUpdates: true,
-        tripReminders: true,
-        messages: true,
-        shoutouts: true,
-      },
-      interests: [],
-    },
-    favoriteLocations: emptyPage,
-    rating: 2,
-    maxRating: 3,
-    delegatorId: null,
-    delegateProfile: null,
-    delegations: [],
-    privacySecurity: [
-      { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
-      { name: 'Deel reisdata met Netmobiel', value: false },
-      { name: 'Verberg mijn gegevens voor anderen', value: false },
-    ],
-    tripOptions: [{ name: 'Ik bied ritten aan', value: false }],
-    notificationOptions: [
-      { name: 'Bevestiging nieuwe rit', value: true },
-      { name: 'Wijziging bewaarde rit', value: true },
-      { name: 'Herinnering voor aanvang rit', value: false },
-      { name: 'Nieuw persoonlijke bericht', value: true },
-      { name: 'Oproepen uit de community', value: false },
-    ],
-    reviews: [
-      { name: 'Beoordeel je rit', value: true },
-      { name: 'Deel mijn beoordelingen met anderen', value: false },
-    ],
-    credits: {
-      creditAmount: 0,
-      creditHistory: [],
-    },
-    surveyInteraction: null,
   }
+  // Profile as stored in profile service.
+  profile: Profile = {
+    id: null,
+    age: null,
+    consent: {
+      acceptedTerms: false,
+      olderThanSixteen: false,
+      safetyGuidelines: false,
+    },
+    dateOfBirth: null,
+    firstName: null,
+    lastName: null,
+    image: null,
+    email: null,
+    phoneNumber: null,
+    userRole: null,
+    actingRole: null,
+    address: null,
+    searchPreferences: null,
+    ridePlanOptions: null,
+    notificationOptions: {
+      tripConfirmations: true,
+      tripUpdates: true,
+      tripReminders: true,
+      messages: true,
+      shoutouts: true,
+    },
+    interests: [],
+  }
+  favoriteLocations: Page<Place> = emptyPage
+  delegatorId: string | null = null
+  delegateProfile: Profile | null = null
+  delegations: Page<Delegation> = emptyPage
+  delegation: Delegation | null = null
+  surveyInteraction: SurveyInteraction | null = null
   search: ProfileSearch = {
     keyword: '',
-    status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
     results: emptyPage,
   }
   version: Version | null = null
   sessionLog: UserSession | null = null
 }
+
 export const emptyPublicUser: ExternalUser = {
   profile: {
     id: null,
@@ -139,20 +118,6 @@ export interface User {
   fullName: string
   email: string
   roles: string[]
-  // other
-  rating: number
-  maxRating: number
-  privacySecurity: NameValue[]
-  tripOptions: NameValue[]
-  notificationOptions: NameValue[]
-  favoriteLocations: Page<Place>
-  reviews: NameValue[]
-  credits: Credits
-  profile: Profile
-  delegatorId: string | null
-  delegateProfile: Profile | null
-  delegations: Delegation[]
-  surveyInteraction: SurveyInteraction | null
 }
 
 export interface PublicProfile {
@@ -164,6 +129,8 @@ export interface PublicProfile {
   lastName: string | null
   address: Address | null
   interests: string[] | []
+  // Only present in the profile search list for searching delegators
+  managed?: boolean
 }
 
 export interface Profile extends PublicProfile {
@@ -182,7 +149,6 @@ export interface Profile extends PublicProfile {
 
 export interface ProfileSearch {
   keyword: string
-  status: string
   results: Page<PublicProfile>
 }
 
@@ -241,21 +207,13 @@ export interface NotificationOptions {
   shoutouts: boolean
 }
 
-export interface Credits {
-  creditAmount: number
-  creditHistory: any[]
-}
-
-export interface NameValue {
-  name: string
-  value: boolean
-}
-
 export interface Delegation {
-  id: number
   activationTime: string
+  delegate: Profile
   delegateRef: string
+  delegator: Profile
   delegatorRef: string
+  id: number
   revocationTime: string
   submissionTime: string
   transferCode: string

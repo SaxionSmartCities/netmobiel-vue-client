@@ -114,6 +114,7 @@ const router = new Router({
     {
       path: '/profile/delegate',
       component: DelegationOverviewPage,
+      name: 'delegationOverview',
     },
     {
       path: '/profile/delegate/add',
