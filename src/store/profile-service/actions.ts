@@ -5,6 +5,7 @@ import {
   Profile,
   ProfileState,
   PublicProfile,
+  UserSession,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
 import { getters, mutations } from '@/store/profile-service'
@@ -12,6 +13,7 @@ import * as uiStore from '@/store/ui'
 import { generateHeaders } from '@/utils/Utils'
 import { Page } from '@/store/types'
 import { emptyPage } from '@/store/storeHelper'
+import moment from 'moment'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -241,28 +243,6 @@ function storeMyRidePreferences(context: ActionContext, payload: any) {
     ridePlanOptions: { ...payload },
   }
   return updateMyProfile(context, profile)
-}
-
-function storeMyFcmToken(context: ActionContext) {
-  const URL = `${PROFILE_BASE_URL}/profiles/me/fcmToken`
-  const firebaseToken = {
-    token: context.state.deviceFcmToken,
-  }
-  return axios
-    .put(URL, firebaseToken, {
-      headers: generateHeaders(
-        GRAVITEE_PROFILE_SERVICE_API_KEY
-      ) as AxiosRequestHeaders,
-    })
-    .then((response) => {
-      if (response.status !== 204) {
-        // eslint-disable-next-line
-        console.warn(`storeMyFcmToken: Unexpected response ${response.status}`)
-      }
-    })
-    .catch((error) => {
-      // Ignore error
-    })
 }
 
 function updateMyProfile(context: ActionContext, profile: Profile) {
@@ -776,6 +756,42 @@ function fetchVersion(context: ActionContext) {
     })
 }
 
+function closeSessionLog(context: ActionContext) {
+  return flushSessionLog(context, true)
+}
+
+function flushSessionLog(context: ActionContext, isFinal: boolean = false) {
+  const URL = `${PROFILE_BASE_URL}/profiles/me/session-log`
+  if (
+    context.state.sessionLog == null ||
+    context.state.sessionLog?.pageVisits.length === 0
+  ) {
+    return Promise.resolve()
+  }
+  // Make a local copy of the current list
+  const localLog: UserSession = {
+    ...context.state.sessionLog,
+    pageVisits: [...context.state.sessionLog.pageVisits],
+  }
+  return axios
+    .post(URL, localLog, {
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+      params: {
+        final: isFinal || undefined,
+      },
+    })
+    .then((response) => {
+      // Clear the list from the page visits just sent
+      // Other pages may have been visited in the mean time
+      mutations.clearPageVisits(localLog.pageVisits.length)
+    })
+    .catch((error) => {
+      // Ignore errors
+    })
+}
+
 export const buildActions = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
@@ -788,7 +804,6 @@ export const buildActions = (
 
     storeMySearchPreferences: psBuilder.dispatch(storeMySearchPreferences),
     storeMyRidePreferences: psBuilder.dispatch(storeMyRidePreferences),
-    storeMyFcmToken: psBuilder.dispatch(storeMyFcmToken),
     updateMyProfile: psBuilder.dispatch(updateMyProfile),
     updateMyProfileImage: psBuilder.dispatch(updateMyProfileImage),
 
@@ -817,5 +832,7 @@ export const buildActions = (
     markSurveySubmitted: psBuilder.dispatch(markSurveySubmitted),
 
     fetchVersion: psBuilder.dispatch(fetchVersion),
+    flushSessionLog: psBuilder.dispatch(flushSessionLog),
+    closeSessionLog: psBuilder.dispatch(closeSessionLog),
   }
 }

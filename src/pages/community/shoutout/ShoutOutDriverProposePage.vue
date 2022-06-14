@@ -25,26 +25,6 @@
       </v-col>
       <v-col><v-divider /></v-col>
     </v-row>
-    <!--    <v-row>-->
-    <!--      <v-col>-->
-    <!--        <shout-out-travel-proposal-->
-    <!--          v-if="shoutOut"-->
-    <!--          :shout-out="shoutOut"-->
-    <!--          :offer="travelOffer"-->
-    <!--          :search-criteria="searchCriteria"-->
-    <!--          :can-offer="canOffer"-->
-    <!--          @show-map-proposal="showMap = true"-->
-    <!--          @confirmTravelOffer="onConfirmTravelOffer"-->
-    <!--          @proposalCancel="onProposalCancel"-->
-    <!--          @updateTravelTime="onUpdateTravelTime"-->
-    <!--          @departureLocationUpdate="onDepartureLocationUpdate"-->
-    <!--          @departureLocationReset="onDepartureLocationReset"-->
-    <!--          @arrivalLocationUpdate="onArrivalLocationUpdate"-->
-    <!--          @arrivalLocationReset="onArrivalLocationReset"-->
-    <!--          @contact-passenger="onContactPassenger"-->
-    <!--        />-->
-    <!--      </v-col>-->
-    <!--    </v-row>-->
     <v-row v-if="shoutOut && shoutOut.planRef">
       <v-col>
         <shout-out-travel-proposal-editor
@@ -218,9 +198,7 @@ export default {
       return psStore.getters.getProfile?.ridePlanOptions
     },
     selectedCar() {
-      const selectedCarRef = this.ridePlanOptions?.selectedCarRef
-      const cars = csStore.getters.getAvailableCars
-      return cars.find((car) => car.carRef === selectedCarRef)
+      return csStore.getters.getSelectedCar
     },
     shouldShowMap() {
       return this.showMap
@@ -228,9 +206,7 @@ export default {
     routeMapLegs() {
       let legs = null
       if (this.showMap) {
-        if (this.proposedRide?.legs) {
-          legs = this.proposedRide.legs
-        } else if (this.itinerary?.legs) {
+        if (this.itinerary?.legs) {
           legs = this.itinerary.legs
         }
       }
@@ -282,10 +258,10 @@ export default {
         value: this.selectedCar,
         renderingComponent: 'CarViewer',
       })
-      if (this.ridePlanOptions?.maxPassengers != null) {
+      if (this.maxPassengers != null) {
         result.push({
           label: 'Stoelen over',
-          value: this.ridePlanOptions.maxPassengers,
+          value: this.maxPassengers,
         })
       }
       const fare = this.itinerary?.legs
@@ -354,6 +330,12 @@ export default {
           )
         : []
     },
+    maxPassengers() {
+      return Math.min(
+        this.ridePlanOptions.maxPassengers,
+        this.selectedCar.nrSeats - 1
+      )
+    },
   },
   watch: {
     // eslint-disable-next-line no-unused-vars
@@ -386,7 +368,6 @@ export default {
   mounted() {
     isStore.mutations.clearPlanningResults()
     isStore.actions.fetchShoutOut({ id: this.shoutOutId })
-    csStore.actions.fetchCars()
   },
   created() {
     uiStore.mutations.showBackButton()

@@ -89,8 +89,10 @@ import {
   requestFcmToken,
   runningInsideFlutterApp2021,
 } from '@/utils/NetmobielApp'
+import * as csStore from '@/store/carpool-service'
 
 const checkMessageStatusInterval = 1000 * 60 * 15 // msec
+const flushSessionLogInterval = 1000 * 60 // msec
 
 export default {
   name: 'App',
@@ -98,6 +100,7 @@ export default {
   data: () => ({
     offsetTop: 0,
     messageStatusTimer: null,
+    sessionLogFlushTimer: null,
   }),
   computed: {
     profileImage() {
@@ -131,7 +134,7 @@ export default {
       return psStore.getters.getProfile
     },
     deviceFcmToken() {
-      return psStore.getters.getDeviceFcmToken
+      return msStore.getters.getDeviceFcmToken
     },
     isBackButtonVisible() {
       return uiStore.getters.isBackButtonVisible
@@ -144,6 +147,15 @@ export default {
     },
     isDriverOnly() {
       return this.myProfile.userRole === constants.PROFILE_ROLE_DRIVER
+    },
+    isDriver() {
+      return (
+        this.myProfile.userRole === constants.PROFILE_ROLE_DRIVER ||
+        this.myProfile.userRole === constants.PROFILE_ROLE_BOTH
+      )
+    },
+    ridePlanOptions() {
+      return this.myProfile?.ridePlanOptions
     },
     plannerRoute() {
       let newRoute = ''
@@ -170,7 +182,7 @@ export default {
       // console.log(`FCM token is: ${this.deviceFcmToken}`)
       if (this.myProfile?.id) {
         // Just in case the FCM token arrives after fetching the profile
-        psStore.actions.storeMyFcmToken()
+        msStore.actions.storeMyFcmToken()
       }
     },
     myProfile(newProfile, oldProfile) {
@@ -179,7 +191,7 @@ export default {
         if (oldProfile?.id !== newProfile.id) {
           // A fresh profile has arrived
           // The profile is present. By now the FCM token should also have arrived.
-          psStore.actions.storeMyFcmToken()
+          msStore.actions.storeMyFcmToken()
         }
       }
     },
@@ -213,7 +225,7 @@ export default {
       psStore.mutations.setUserToken(this.$keycloak.token)
       // Fetch the FCM token from the localstorage (app version mid 2021) - for backward compatibility
       if (localStorage.fcm) {
-        psStore.mutations.setDeviceFcmToken(localStorage.fcm)
+        msStore.mutations.setDeviceFcmToken(localStorage.fcm)
       }
       window.addEventListener('NetmobielFcmToken', this.onFcmTokenReceived)
       // Fetch the FCM token via message channel (since jan 2022 app)
@@ -231,6 +243,7 @@ export default {
       psStore.actions
         .fetchMyProfileStatus()
         .then(() => psStore.actions.fetchMyProfile())
+        .then(() => this.fetchMyCar())
         .catch(() => {
           // Ignore the errors, they are resolved elsewhere.
         })
@@ -239,6 +252,11 @@ export default {
       this.messageStatusTimer = setInterval(() => {
         msStore.actions.fetchMyStatus()
       }, checkMessageStatusInterval)
+      this.sessionLogFlushTimer = setInterval(() => {
+        if (this.$keycloak.authenticated) {
+          psStore.actions.flushSessionLog()
+        }
+      }, flushSessionLogInterval)
     }
   },
   beforeDestroy() {
@@ -250,6 +268,10 @@ export default {
     if (this.messageStatusTimer) {
       clearInterval(this.messageStatusTimer)
       this.messageStatusTimer = null
+    }
+    if (this.sessionLogFlushTimer) {
+      clearInterval(this.sessionLogFlushTimer)
+      this.sessionLogFlushTimer = null
     }
   },
   methods: {
@@ -274,7 +296,7 @@ export default {
       // Store the FCM token in the store first, at registration time, there is no profile yet
       const fcmToken = evt.detail?.fcmToken
       // console.log(`FCM received: ${this.fcmToken}`)
-      psStore.mutations.setDeviceFcmToken(fcmToken)
+      msStore.mutations.setDeviceFcmToken(fcmToken)
     },
     onProfileImageClick() {
       // TODO: Only navigate to delegate if role is delegate (route to profile otherwise)
@@ -292,6 +314,13 @@ export default {
       return (
         profile.dateOfBirth != null && profile.dateOfBirth.trim().length > 0
       )
+    },
+    fetchMyCar() {
+      if (this.isDriver && this.ridePlanOptions?.selectedCarRef) {
+        return csStore.actions.fetchCar(this.ridePlanOptions?.selectedCarRef)
+      } else {
+        return Promise.resolve()
+      }
     },
   },
 }

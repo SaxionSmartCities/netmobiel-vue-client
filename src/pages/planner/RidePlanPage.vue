@@ -53,8 +53,10 @@
                         {{ selectedCar.model }}
                       </div>
                     </v-col>
-                    <v-col v-if="ridePlanOptions">
-                      {{ ridePlanOptions.maxPassengers }} plaatsen
+                    <v-col v-if="ridePlanOptions && selectedCar">
+                      {{ maxPassengers }}
+                      <span v-if="maxPassengers === 1">plaats</span>
+                      <span v-else>plaatsen</span>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -161,9 +163,7 @@ export default {
       return psStore.getters.getProfile?.ridePlanOptions
     },
     selectedCar() {
-      const selectedCarRef = this.ridePlanOptions?.selectedCarRef
-      const cars = csStore.getters.getAvailableCars
-      return cars.find((car) => car.carRef === selectedCarRef)
+      return csStore.getters.getSelectedCar
     },
     inputComplete() {
       const { from, to, travelTime } = this.searchCriteria
@@ -175,9 +175,14 @@ export default {
         ? now.add(1, 'hour').startOf('hour')
         : now.startOf('hour')
     },
+    maxPassengers() {
+      return Math.min(
+        this.ridePlanOptions.maxPassengers,
+        (this.selectedCar?.nrSeats ?? 1) - 1
+      )
+    },
   },
   mounted() {
-    csStore.actions.fetchCars()
     const fromPlace = gsStore.getters.getPickedLocations.get('from')?.place
     const toPlace = gsStore.getters.getPickedLocations.get('to')?.place
     const { travelTime } = this.searchCriteria

@@ -2,7 +2,7 @@
   <content-pane>
     <v-row>
       <v-col>
-        <h3>Auto toevoegen</h3>
+        <h1>Auto toevoegen</h1>
       </v-col>
     </v-row>
     <v-row>
@@ -24,45 +24,36 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row dense>
       <v-col>
         <v-divider />
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="4" class="pb-0">
-        <em>Merk:</em>
-      </v-col>
-      <v-col class="pb-0">
-        <span v-if="searchResult" class="search-results">
-          {{ searchResult.brand }}
-        </span>
-        <span v-else>-</span>
-      </v-col>
+    <v-row dense>
+      <v-col cols="4"> Merk: </v-col>
+      <v-col>{{ searchResult.brand }}</v-col>
     </v-row>
-    <v-row>
-      <v-col cols="4" class="pb-0">
-        <em>Model:</em>
-      </v-col>
-      <v-col class="pb-0">
-        <span v-if="searchResult" class="search-results">
-          {{ searchResult.model }}
-        </span>
-        <span v-else>-</span>
-      </v-col>
+    <v-row dense>
+      <v-col cols="4"> Model: </v-col>
+      <v-col>{{ searchResult.model }}</v-col>
     </v-row>
-    <v-row>
-      <v-col cols="4" class="pb-5">
-        <em>Bouwjaar:</em>
-      </v-col>
-      <v-col class="pb-5">
-        <span v-if="searchResult" class="search-results">
-          {{ searchResult.registrationYear }}
-        </span>
-        <span v-else>-</span>
-      </v-col>
+    <v-row dense>
+      <v-col cols="4"> Bouwjaar: </v-col>
+      <v-col>{{ searchResult.registrationYear }}</v-col>
     </v-row>
-    <v-row>
+    <v-row dense>
+      <v-col cols="4"> # Stoelen: </v-col>
+      <v-col>{{ searchResult.nrSeats }}</v-col>
+    </v-row>
+    <v-row dense>
+      <v-col cols="4"> # Deuren: </v-col>
+      <v-col>{{ searchResult.nrDoors }}</v-col>
+    </v-row>
+    <v-row dense>
+      <v-col cols="4">CO2 (gr/km):</v-col>
+      <v-col>{{ searchResult.co2Emission }}</v-col>
+    </v-row>
+    <v-row dense>
       <v-col>
         <v-divider />
       </v-col>
@@ -70,7 +61,7 @@
     <v-row>
       <v-col>
         <v-btn
-          :disabled="!searchResult"
+          :disabled="!searchResult.licensePlate"
           rounded
           large
           block
@@ -102,13 +93,13 @@ export default {
   },
   computed: {
     searchResult() {
-      return csStore.getters.getCarSearchResult
+      return csStore.getters.getCarSearchResult ?? {}
     },
   },
   watch: {
     searchLicensePlate(newValue) {
       if (newValue.length === 8) {
-        csStore.actions.fetchByLicensePlate(newValue)
+        csStore.actions.lookupCarByLicensePlate(newValue)
       } else {
         csStore.mutations.clearCarSearchResult()
       }
@@ -122,19 +113,14 @@ export default {
   },
   methods: {
     addCar(car) {
-      const cars = csStore.getters.getAvailableCars
-
-      let storedCar = cars.find((c) => c.licensePlate === car.licensePlate)
-      if (storedCar) {
-        uiStore.actions.queueErrorNotification(
-          'Auto is al opgeslagen aan uw profiel.'
-        )
-      } else {
-        csStore.actions.submitCar(car).then(() => {
-          csStore.actions.fetchCars()
+      csStore.actions
+        .createCarForMe(car)
+        .then(() => {
           this.$router.go(-1)
         })
-      }
+        .catch(() => {
+          // Error message already queued
+        })
     },
   },
 }

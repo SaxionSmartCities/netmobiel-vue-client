@@ -11,10 +11,12 @@ type ActionContext = BareActionContext<CarpoolState, RootState>
 
 const { RIDESHARE_BASE_URL, GRAVITEE_RIDESHARE_SERVICE_API_KEY } = config
 
-function fetchByLicensePlate(context: ActionContext, payload: string): void {
-  mutations.setCarSearchLicensePlate(payload)
-  const plate = payload
-  const URL = `${RIDESHARE_BASE_URL}/carLicenses?country=NL&plate=${plate}`
+function lookupCarByLicensePlate(
+  context: ActionContext,
+  licensePlate: string
+): void {
+  mutations.setCarSearchLicensePlate(licensePlate)
+  const URL = `${RIDESHARE_BASE_URL}/cars/lookup?countryCode=NL&licensePlate=${licensePlate}`
   axios
     .get(URL, {
       headers: generateHeaders(
@@ -26,13 +28,31 @@ function fetchByLicensePlate(context: ActionContext, payload: string): void {
     })
     .catch(function (error) {
       uiStore.actions.queueInfoNotification(
-        `Geen auto gevonden voor kenteken ${plate}.`
+        `Geen auto gevonden met kenteken ${licensePlate}.`
       )
     })
 }
 
-function fetchCars(context: ActionContext) {
-  const URL = `${RIDESHARE_BASE_URL}/cars`
+function fetchCar(context: ActionContext, carRef: string) {
+  const URL = `${RIDESHARE_BASE_URL}/cars/${carRef}`
+  return axios
+    .get(URL, {
+      headers: generateHeaders(
+        GRAVITEE_RIDESHARE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    .then((resp) => {
+      mutations.setSelectedCar(resp.data)
+      return Promise.resolve()
+    })
+    .catch((error) => {
+      mutations.setSelectedCar(null)
+      return Promise.reject()
+    })
+}
+
+function fetchMyCars(context: ActionContext) {
+  const URL = `${RIDESHARE_BASE_URL}/users/me/cars`
   axios
     .get(URL, {
       headers: generateHeaders(
@@ -45,69 +65,57 @@ function fetchCars(context: ActionContext) {
       }
     })
     .catch(function (error) {
-      uiStore.actions.queueInfoNotification(
-        `Onbekende fout bij ophalen van de auto's.`
-      )
+      uiStore.actions.queueInfoNotification(`Fout bij ophalen van je auto's.`)
     })
 }
 
-function submitCar(context: ActionContext, payload: Car) {
-  const URL = `${RIDESHARE_BASE_URL}/cars`
-  axios
+function createCarForMe(context: ActionContext, payload: Car) {
+  const URL = `${RIDESHARE_BASE_URL}/users/me/cars`
+  return axios
     .post(URL, payload, {
       headers: generateHeaders(
         GRAVITEE_RIDESHARE_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
     })
     .then(function (resp) {
-      fetchCars(context)
+      return Promise.resolve()
     })
     .catch(function (error) {
       if (error.response?.status == 409) {
         uiStore.actions.queueErrorNotification(
-          `Kenteken ${payload.licensePlate} is al geregistreerd.`
+          `De auto met kenteken ${payload.licensePlate} zit al in je lijst.`
+        )
+      } else {
+        uiStore.actions.queueErrorNotification(
+          `Fout bij het toevoegen van je auto.`
         )
       }
+      return Promise.reject()
     })
 }
 
-function fetchCar(context: ActionContext, payload: any) {
-  const URL = `${RIDESHARE_BASE_URL}/cars/${payload.id}`
+function removeMyCar(context: ActionContext, payload: Car) {
+  const URL = `${RIDESHARE_BASE_URL}/users/me/cars/${payload.id}`
   return axios
-    .get(URL, {
-      headers: generateHeaders(
-        GRAVITEE_RIDESHARE_SERVICE_API_KEY
-      ) as AxiosRequestHeaders,
-    })
-    .then((resp) => {
-      mutations.setSelectedCar(resp.data)
-    })
-    .catch((error) => {
-      mutations.setSelectedCar(null)
-    })
-}
-
-function removeCar(context: ActionContext, payload: Car) {
-  const URL = `${RIDESHARE_BASE_URL}/cars/${payload.id}`
-  axios
     .delete(URL, {
       headers: generateHeaders(
         GRAVITEE_RIDESHARE_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
     })
     .then(function (resp) {
-      fetchCars(context)
+      return Promise.resolve()
     })
     .catch(function (error) {
       if (error.response?.status == 403) {
         uiStore.actions.queueErrorNotification(
-          `Niet toegestaan auto (${payload.licensePlate}) te verwijderen.`
+          `Niet toegestaan om auto (${payload.licensePlate}) te verwijderen.`
         )
       } else if (error.response?.status == 404) {
         uiStore.actions.queueErrorNotification(
           `Onbekend kenteken ${payload.licensePlate}.`
         )
       }
+      return Promise.reject()
     })
 }
 
@@ -415,11 +423,11 @@ export const buildActions = (
   csBuilder: ModuleBuilder<CarpoolState, RootState>
 ) => {
   return {
-    fetchByLicensePlate: csBuilder.dispatch(fetchByLicensePlate),
-    fetchCars: csBuilder.dispatch(fetchCars),
-    submitCar: csBuilder.dispatch(submitCar),
+    lookupCarByLicensePlate: csBuilder.dispatch(lookupCarByLicensePlate),
+    fetchMyCars: csBuilder.dispatch(fetchMyCars),
+    createCarForMe: csBuilder.dispatch(createCarForMe),
     fetchCar: csBuilder.dispatch(fetchCar),
-    removeCar: csBuilder.dispatch(removeCar),
+    removeMyCar: csBuilder.dispatch(removeMyCar),
 
     fetchRides: csBuilder.dispatch(fetchRides),
     fetchRide: csBuilder.dispatch(fetchRide),

@@ -2,7 +2,7 @@
   <content-pane>
     <v-row>
       <v-col>
-        <h3>Mijn auto's</h3>
+        <h1>Mijn auto's</h1>
       </v-col>
     </v-row>
     <v-row v-for="car in availableCars" :key="car.carRef" dense>
@@ -47,7 +47,7 @@
                 mb-4
                 depressed
                 color="button"
-                @click="removeCar(carToDelete)"
+                @click="removeMyCar(carToDelete)"
               >
                 Verwijderen
               </v-btn>
@@ -76,7 +76,7 @@
 <script>
 import luggageTypes from '@/constants/luggage-types.js'
 import ContentPane from '@/components/common/ContentPane.vue'
-import CarCard from '@/components/cars/CarCard.vue'
+import CarCard from '@/components/cards/CarCard.vue'
 import * as uiStore from '@/store/ui'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
@@ -114,18 +114,22 @@ export default {
   },
   created() {
     uiStore.mutations.showBackButton()
-    csStore.actions.fetchCars()
+    csStore.actions.fetchMyCars()
   },
   methods: {
-    selectAlternativeCar(car) {
+    selectAlternativeCar(car, done = true) {
       const ridePlanOptions = {
         ...psStore.getters.getProfile.ridePlanOptions,
         selectedCarRef: car.carRef,
       }
+      csStore.mutations.setSelectedCar(car)
       psStore.actions
         .storeMyRidePreferences(ridePlanOptions)
         .then(() => psStore.actions.fetchMyProfile())
-        .then(() => this.$router.go(-1))
+        .then(() => (done ? this.$router.go(-1) : Promise.resolve()))
+        .catch(() => {
+          // errors already queued
+        })
     },
     checkDeleteCar(car) {
       this.dialog = true
@@ -140,17 +144,20 @@ export default {
     onCancel() {
       this.dialog = false
     },
-    removeCar(car) {
+    removeMyCar(car) {
       this.dialog = false
       if (this.selectedCarRef === car.carRef) {
         const alternative =
           this.availableCars.length > 1
             ? this.availableCars[0]
             : { carRef: undefined }
-        this.selectAlternativeCar(alternative)
+        this.selectAlternativeCar(alternative, false)
       }
       // Remove car in the backend.
-      csStore.actions.removeCar(car)
+      csStore.actions
+        .removeMyCar(car)
+        .then(() => csStore.actions.fetchMyCars())
+        .catch(() => {})
     },
   },
 }
