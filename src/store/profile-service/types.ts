@@ -210,15 +210,17 @@ export interface NotificationOptions {
 }
 
 export interface Delegation {
-  activationTime: string
+  activationCode: string
+  activationCodeSentTime: string
+  activationCodeTTL: number
+  activationTime: string | null
   delegate: Profile
   delegateRef: string
   delegator: Profile
   delegatorRef: string
   id: number
-  revocationTime: string
+  revocationTime: string | null
   submissionTime: string
-  transferCode: string
 }
 
 export interface Survey {

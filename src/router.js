@@ -400,9 +400,10 @@ const router = new Router({
       name: 'purchaseCredits',
     },
     {
-      path: '/wait-for-deposit-confirmation',
+      path: '/wait-for-deposit-confirmation/:delegatorId?',
       component: WaitForDepositConfirmationPage,
       name: 'waitForDepositConfirmation',
+      props: true,
     },
     {
       // Make it optional to display an error if it is missing. This url is entered from external.

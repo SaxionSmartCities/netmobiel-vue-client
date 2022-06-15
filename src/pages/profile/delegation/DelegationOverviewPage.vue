@@ -10,7 +10,7 @@
       <v-col>
         <span>
           Je gebruikt de app nu namens
-          <em>{{ delegator.firstName }} {{ delegator.lastName }}</em>
+          <strong>{{ delegator.firstName }} {{ delegator.lastName }}</strong>
         </span>
       </v-col>
       <v-col class="shrink">
@@ -135,6 +135,7 @@
 import ContentPane from '@/components/common/ContentPane'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import * as msStore from '@/store/message-service'
 import GenericList from '@/components/lists/GenericList'
 import DelegationItem from '@/components/profile/DelegationItem.vue'
 
@@ -164,7 +165,7 @@ export default {
       const d = this.delegations.data.find(
         (a) => a.delegator.id === this.delegatorId
       )
-      return d.delegator
+      return d?.delegator
     },
     selectedDelegatorName() {
       const delegator = this.activeDelegation?.delegator
@@ -176,6 +177,10 @@ export default {
     this.refreshDelegationList()
   },
   methods: {
+    refreshGUI() {
+      psStore.actions.fetchMyProfile()
+      msStore.actions.fetchMyStatus()
+    },
     refreshDelegationList() {
       const delegateId = this.delegate.id
       // We cannot use 'me', we want the delegate's identity
@@ -184,15 +189,13 @@ export default {
     onStopDelegation() {
       psStore.actions.flushSessionLog()
       psStore.mutations.resetDelegate()
-      psStore.actions.fetchMyProfile()
-      psStore.actions.fetchMyStatus()
+      this.refreshGUI()
     },
     onDelegationSelected(delegation) {
       if (this.delegatorId !== delegation.delegator.id) {
         psStore.actions.flushSessionLog()
         psStore.actions.switchProfile({ delegatorId: delegation.delegator.id })
-        psStore.actions.fetchMyProfile()
-        psStore.actions.fetchMyStatus()
+        this.refreshGUI()
       }
     },
     onResendCode(delegation) {

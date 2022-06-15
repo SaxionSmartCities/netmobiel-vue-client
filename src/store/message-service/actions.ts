@@ -266,6 +266,11 @@ function fetchMyStatus(context: ActionContext) {
     })
 }
 
+/**
+ * The token is attached to the mobile the user is working on.
+ * No delegation should take place, the FCM token should stick to the real user.
+ * @param context
+ */
 function storeMyFcmToken(context: ActionContext) {
   const URL = `${COMMUNICATOR_BASE_URL}/users/me/fcm-token`
   const firebaseToken = {
