@@ -7,13 +7,24 @@
       </v-btn>
       <v-spacer></v-spacer>
       <!-- Show only when a profile has been created and the profile id (managed identity) is defined -->
-      <v-btn v-if="isProfileManaged" icon @click="onProfileImageClick">
-        <round-user-image
-          :profile-image="profileImage"
-          :image-size="30"
-          :avatar-size="34"
-        />
-      </v-btn>
+      <v-badge
+        v-if="isProfileManaged"
+        dark
+        left
+        offset-x="20"
+        offset-y="20"
+        color="red"
+        :value="isDelegationActive"
+        icon="fa-user"
+      >
+        <v-btn icon @click="onProfileImageClick">
+          <round-user-image
+            :profile-image="profileImage"
+            :image-size="30"
+            :avatar-size="34"
+          />
+        </v-btn>
+      </v-badge>
     </v-app-bar>
     <!-- Content -->
     <v-main>
@@ -106,6 +117,9 @@ export default {
     profileImage() {
       return this.myProfile?.image
     },
+    isDelegationActive() {
+      return psStore.getters.getDelegatorId != null
+    },
     selectedNav: {
       get() {
         return uiStore.getters.getSelectedNav
@@ -140,7 +154,7 @@ export default {
       return uiStore.getters.isBackButtonVisible
     },
     isProfileManaged() {
-      return !!psStore.getters.getProfile?.id
+      return psStore.getters.getProfile?.id != null
     },
     isPassengerOnly() {
       return this.myProfile.userRole === constants.PROFILE_ROLE_PASSENGER

@@ -261,7 +261,7 @@ function fetchMyStatus(context: ActionContext) {
     })
     .catch(function (error) {
       uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van de status.'
+        'Fout bij het ophalen van de berichtenstatus.'
       )
     })
 }

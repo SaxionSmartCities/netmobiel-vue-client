@@ -13,6 +13,11 @@
           <em>{{ delegator.firstName }} {{ delegator.lastName }}</em>
         </span>
       </v-col>
+      <v-col class="shrink">
+        <v-btn small rounded depressed color="button" @click="onStopDelegation">
+          Stoppen
+        </v-btn>
+      </v-col>
     </v-row>
     <v-row class="pb-0">
       <v-col>
@@ -26,7 +31,7 @@
           outlined
           color="primary"
           :disabled="delegatorId != null"
-          @click="addDelegation"
+          to="/profile/delegate/add"
         >
           Aanvragen
         </v-btn>
@@ -40,7 +45,7 @@
         <delegation-item
           :delegation="item"
           :selected="item.delegator.id === delegatorId"
-          @select="onAccountSelected"
+          @select="onDelegationSelected"
           @resend-code="onResendCode"
           @remove="onDelegationDelete"
           @activate="onActivate"
@@ -49,7 +54,7 @@
     </generic-list>
     <v-dialog v-model="activationDialog" max-width="400">
       <v-card class="py-1 px-3">
-        <v-card-title class="headline">Activeer Machtiging</v-card-title>
+        <v-card-title class="headline">Machtiging activeren</v-card-title>
         <v-card-text>
           <v-row>
             <v-col class="py-1">
@@ -91,7 +96,7 @@
     </v-dialog>
     <v-dialog v-model="delegationRemovalDialog" max-width="400">
       <v-card class="py-1 px-3">
-        <v-card-title class="headline">Machtiging Verwijderen</v-card-title>
+        <v-card-title class="headline">Machtiging verwijderen</v-card-title>
         <v-card-text
           v-if="activeDelegation && activeDelegation.activationTime == null"
         >
@@ -146,6 +151,9 @@ export default {
     }
   },
   computed: {
+    delegate() {
+      return psStore.getters.getDelegateProfile ?? psStore.getters.getProfile
+    },
     delegations() {
       return psStore.getters.getDelegations
     },
@@ -165,37 +173,32 @@ export default {
   },
   mounted() {
     uiStore.mutations.showBackButton()
-    const delegateId = this.delegateId()
-    psStore.actions.fetchDelegations({ delegateId })
+    this.refreshDelegationList()
   },
   methods: {
-    delegateId() {
-      //FIXME Unclear semantics
-      const delegateId = psStore.getters.getProfile.id
-      const delegateProfile = psStore.getters.getDelegateProfile
-      // Check if we have a delegateProfile, if so then return this id.
-      // This is the case when the delegate is 'impersonating' a delegator.
-      if (delegateProfile) {
-        return delegateProfile.id
-      }
-      return delegateId
+    refreshDelegationList() {
+      const delegateId = this.delegate.id
+      // We cannot use 'me', we want the delegate's identity
+      psStore.actions.fetchDelegations({ delegateId })
     },
-    addDelegation() {
-      this.$router.push('/profile/delegate/add')
+    onStopDelegation() {
+      psStore.actions.flushSessionLog()
+      psStore.mutations.resetDelegate()
+      psStore.actions.fetchMyProfile()
+      psStore.actions.fetchMyStatus()
     },
-    onAccountSelected(delegatorId) {
-      const delegateId = psStore.getters.getDelegateProfile?.id
-      if (delegatorId === delegateId) {
-        psStore.mutations.resetDelegate()
-      } else {
-        psStore.actions.switchProfile({ delegatorId })
+    onDelegationSelected(delegation) {
+      if (this.delegatorId !== delegation.delegator.id) {
+        psStore.actions.flushSessionLog()
+        psStore.actions.switchProfile({ delegatorId: delegation.delegator.id })
+        psStore.actions.fetchMyProfile()
+        psStore.actions.fetchMyStatus()
       }
     },
     onResendCode(delegation) {
-      const delegateId = this.delegateId()
       psStore.actions
         .repeatRequestDelegation(delegation.id)
-        .then(() => psStore.actions.fetchDelegations({ delegateId }))
+        .then(() => this.refreshDelegationList())
     },
     onDelegationDelete(delegation) {
       this.activeDelegation = delegation
@@ -215,25 +218,22 @@ export default {
       } else {
         this.activationDialog = false
         this.activationCodeErrorMessage = null
-        const delegateId = this.delegateId()
         psStore.actions
           .activateDelegation({
             delegationId: this.activeDelegation.id,
             activationCode: this.activationCode,
           })
-          .then(() => psStore.actions.fetchDelegations({ delegateId }))
+          .then(() => this.refreshDelegationList())
       }
     },
     removeDelegation() {
       this.delegationRemovalDialog = false
       if (this.activeDelegation) {
-        const delegateId = this.delegateId()
         psStore.actions
           .deleteDelegation(this.activeDelegation.id)
           .then((success) => {
             if (success) {
-              // refresh delegations
-              psStore.actions.fetchDelegations({ delegateId })
+              this.refreshDelegationList()
             }
           })
       }

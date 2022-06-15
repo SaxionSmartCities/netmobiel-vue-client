@@ -45,7 +45,9 @@ export class ProfileState {
     interests: [],
   }
   favoriteLocations: Page<Place> = emptyPage
+  // The current delegator on behalf of whom the app is used
   delegatorId: string | null = null
+  // The original profile of the authenticated user (the delegate)
   delegateProfile: Profile | null = null
   delegations: Page<Delegation> = emptyPage
   delegation: Delegation | null = null

@@ -695,13 +695,15 @@ function activateDelegation(
 
 function switchProfile(context: ActionContext, { delegatorId }: any) {
   // Is we don't have a delegate profile stored yet we will assume the
-  // current user profile is the delegate.
+  // current user profile is the delegate. Otherwise do not touch.
   if (context.state.delegateProfile == null) {
+    // A copy or should it be a deep copy?
     const profile = { ...context.state.profile }
     mutations.setDelegateProfile(profile)
   }
+  // Switch on the delegation
   mutations.setDelegatorId(delegatorId)
-  fetchMyProfile(context)
+  // Now caller must refresh GUI!
 }
 
 // ==========  SURVEY  =============
@@ -849,6 +851,7 @@ function closeSessionLog(context: ActionContext) {
 }
 
 function flushSessionLog(context: ActionContext, isFinal: boolean = false) {
+  const delegatorId = context.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/profiles/me/session-log`
   if (
     context.state.sessionLog == null ||
@@ -864,7 +867,8 @@ function flushSessionLog(context: ActionContext, isFinal: boolean = false) {
   return axios
     .post(URL, localLog, {
       headers: generateHeaders(
-        GRAVITEE_PROFILE_SERVICE_API_KEY
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
       ) as AxiosRequestHeaders,
       params: {
         final: isFinal || undefined,
