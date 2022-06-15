@@ -28,17 +28,25 @@
           :disabled="delegatorId != null"
           @click="addDelegation"
         >
-          Toevoegen
+          Aanvragen
         </v-btn>
       </v-col>
     </v-row>
-    <delegator-list
-      :delegations="delegations.data"
-      :selected-id="delegatorId"
-      @AccountSelected="onAccountSelected"
-      @DelegationDelete="onDelegationDelete"
-      @activate-delegation="onActivate"
-    />
+    <generic-list
+      :items="delegations.data"
+      empty-list-label="Je beheert op dit moment geen accounts van andere gebruikers."
+    >
+      <template #list-item="{ item }">
+        <delegation-item
+          :delegation="item"
+          :selected="item.delegator.id === delegatorId"
+          @select="onAccountSelected"
+          @resend-code="onResendCode"
+          @remove="onDelegationDelete"
+          @activate="onActivate"
+        />
+      </template>
+    </generic-list>
     <v-dialog v-model="activationDialog" max-width="400">
       <v-card class="py-1 px-3">
         <v-card-title class="headline">Activeer Machtiging</v-card-title>
@@ -47,8 +55,7 @@
             <v-col class="py-1">
               Voer de code in die je hebt gekregen van
               <strong>
-                {{ activeDelegation && activeDelegation.delegator.firstName }}
-                {{ activeDelegation && activeDelegation.delegator.lastName }}
+                {{ selectedDelegatorName }}
               </strong>
             </v-col>
           </v-row>
@@ -85,11 +92,19 @@
     <v-dialog v-model="delegationRemovalDialog" max-width="400">
       <v-card class="py-1 px-3">
         <v-card-title class="headline">Machtiging Verwijderen</v-card-title>
-        <v-card-text>
+        <v-card-text
+          v-if="activeDelegation && activeDelegation.activationTime == null"
+        >
+          Wil je je machtigingsaanvraag aan
+          <strong>
+            {{ selectedDelegatorName }}
+          </strong>
+          intrekken?
+        </v-card-text>
+        <v-card-text v-else>
           Wil je je machtiging van
           <strong>
-            {{ activeDelegation && activeDelegation.delegator.firstName }}
-            {{ activeDelegation && activeDelegation.delegator.lastName }}
+            {{ selectedDelegatorName }}
           </strong>
           beëindigen?
         </v-card-text>
@@ -113,13 +128,14 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
-import DelegatorList from '@/components/lists/DelegatorList'
 import * as uiStore from '@/store/ui'
 import * as psStore from '@/store/profile-service'
+import GenericList from '@/components/lists/GenericList'
+import DelegationItem from '@/components/profile/DelegationItem.vue'
 
 export default {
   name: 'DelegationOverviewPage',
-  components: { ContentPane, DelegatorList },
+  components: { ContentPane, GenericList, DelegationItem },
   data() {
     return {
       activationDialog: false,
@@ -141,6 +157,10 @@ export default {
         (a) => a.delegator.id === this.delegatorId
       )
       return d.delegator
+    },
+    selectedDelegatorName() {
+      const delegator = this.activeDelegation?.delegator
+      return `${delegator?.firstName ?? ''} ${delegator?.lastName ?? ''}`.trim()
     },
   },
   mounted() {
@@ -171,6 +191,12 @@ export default {
         psStore.actions.switchProfile({ delegatorId })
       }
     },
+    onResendCode(delegation) {
+      const delegateId = this.delegateId()
+      psStore.actions
+        .repeatRequestDelegation(delegation.id)
+        .then(() => psStore.actions.fetchDelegations({ delegateId }))
+    },
     onDelegationDelete(delegation) {
       this.activeDelegation = delegation
       this.delegationRemovalDialog = true
@@ -189,10 +215,13 @@ export default {
       } else {
         this.activationDialog = false
         this.activationCodeErrorMessage = null
-        psStore.actions.activateDelegation({
-          delegationId: this.activeDelegation.id,
-          activationCode: this.activationCode,
-        })
+        const delegateId = this.delegateId()
+        psStore.actions
+          .activateDelegation({
+            delegationId: this.activeDelegation.id,
+            activationCode: this.activationCode,
+          })
+          .then(() => psStore.actions.fetchDelegations({ delegateId }))
       }
     },
     removeDelegation() {

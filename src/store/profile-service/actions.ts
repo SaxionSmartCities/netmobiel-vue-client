@@ -533,6 +533,26 @@ function fetchDelegation(context: ActionContext, delegationId: any) {
     })
 }
 
+function createDelegationErrorMessage(
+  defaultMessage: string,
+  error: Error | AxiosError
+) {
+  let userMsg = defaultMessage
+  if (axios.isAxiosError(error)) {
+    if (error.response?.status === 400) {
+      const srvText = error.response.data.message
+      if (srvText?.includes('No phone number set')) {
+        userMsg = 'Gebruiker heeft geen telefoonnummer ingesteld'
+      } else if (srvText.includes('Not a valid phone number')) {
+        userMsg = 'Gebruiker heeft een ongeldig telefoonnummer'
+      } else if (srvText.includes('The activation code is invalid')) {
+        userMsg = 'De activeringscode is onjuist'
+      }
+    }
+  }
+  return userMsg
+}
+
 function requestDelegation(
   context: ActionContext,
   { delegateId, delegatorId }: any
@@ -557,19 +577,37 @@ function requestDelegation(
       return response.headers.location
     })
     .catch((problem) => {
-      const error = problem as Error | AxiosError
-      let userMsg = 'Fout bij opslaan van de machtiging'
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 400) {
-          const srvText = error.response.data.message
-          if (srvText?.includes('No phone number set')) {
-            userMsg = 'Gebruiker heeft geen telefoonnummer ingesteld'
-          } else if (srvText.includes('Not a valid phone number')) {
-            userMsg = 'Gebruiker heeft een ongeldig telefoonnummer'
-          }
-        }
+      const msg = createDelegationErrorMessage(
+        'Fout bij het aanvragen van de machtiging',
+        problem
+      )
+      uiStore.actions.queueErrorNotification(msg)
+    })
+}
+
+function repeatRequestDelegation(context: ActionContext, delegationId: string) {
+  const URL = `${PROFILE_BASE_URL}/delegations/${delegationId}`
+  return axios
+    .put(URL, null, {
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    .then((response) => {
+      if (response.status !== 204) {
+        // eslint-disable-next-line
+        console.warn(`repeatRequestDelegation: Unexpected status ${response.status}`)
       }
-      uiStore.actions.queueErrorNotification(userMsg)
+      uiStore.actions.queueInfoNotification(
+        `Je machtiging is opnieuw aangevraagd.`
+      )
+    })
+    .catch((problem) => {
+      const msg = createDelegationErrorMessage(
+        'Fout bij het opnieuw aanvragen van de machtiging',
+        problem
+      )
+      uiStore.actions.queueErrorNotification(msg)
     })
 }
 
@@ -639,7 +677,7 @@ function activateDelegation(
       }
     )
     .then((response) => {
-      if (response.status !== 201) {
+      if (response.status !== 204) {
         // eslint-disable-next-line
         console.warn(`activateDelegation: Unexpected status ${response.status}`)
       }
@@ -647,19 +685,11 @@ function activateDelegation(
       return response.headers.location
     })
     .catch((problem) => {
-      const error = problem as Error | AxiosError
-      let userMsg = 'Fout bij het activeren van de machtiging'
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 400) {
-          const srvText = error.response.data.message
-          if (srvText?.includes('No phone number set')) {
-            userMsg = 'Gebruiker heeft geen telefoonnummer ingesteld'
-          } else if (srvText.includes('Not a valid phone number')) {
-            userMsg = 'Gebruiker heeft een ongeldig telefoonnummer'
-          }
-        }
-      }
-      uiStore.actions.queueErrorNotification(userMsg)
+      const msg = createDelegationErrorMessage(
+        'Fout bij het activeren van de machtiging',
+        problem
+      )
+      uiStore.actions.queueErrorNotification(msg)
     })
 }
 
@@ -881,6 +911,7 @@ export const buildActions = (
     fetchDelegations: psBuilder.dispatch(fetchDelegations),
     fetchDelegation: psBuilder.dispatch(fetchDelegation),
     requestDelegation: psBuilder.dispatch(requestDelegation),
+    repeatRequestDelegation: psBuilder.dispatch(repeatRequestDelegation),
     activateDelegation: psBuilder.dispatch(activateDelegation),
     deleteDelegation: psBuilder.dispatch(deleteDelegation),
     switchProfile: psBuilder.dispatch(switchProfile),

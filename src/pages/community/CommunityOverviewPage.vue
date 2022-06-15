@@ -8,7 +8,7 @@
           icon="fa-comments"
           name="Berichten"
           :counter="unreadMessageCount"
-        ></community-button>
+        />
       </v-col>
       <v-col>
         <community-button
@@ -17,7 +17,7 @@
           forward="shoutOuts"
           name="Oproepen"
           :counter="shoutOutCount"
-        ></community-button>
+        />
       </v-col>
     </v-row>
     <v-row>
@@ -27,7 +27,7 @@
           icon="fa-gift"
           name="Beloningen"
           forward="rewardOverviewPage"
-        ></community-button>
+        />
       </v-col>
       <v-col>
         <community-button
@@ -36,7 +36,17 @@
           name="Goede Doelen"
           :disabled="!creditsEnabled"
           forward="charityOverviewPage"
-        ></community-button>
+        />
+      </v-col>
+    </v-row>
+    <v-row v-if="canActAsDelegate">
+      <v-col>
+        <community-button
+          class="mx-auto"
+          icon="fa-user-friends"
+          name="Machtigingen"
+          forward="delegationOverview"
+        />
       </v-col>
     </v-row>
     <v-row v-if="canActAsTreasurer">
@@ -46,7 +56,7 @@
           icon="fa-user-tie"
           name="Financiën"
           forward="systemCreditsPage"
-        ></community-button>
+        />
       </v-col>
       <v-col>
         <community-button
@@ -55,7 +65,7 @@
           name="Uitbetalingen"
           forward="paymentBatchOverviewPage"
           :counter="withdrawalsRequestedCount"
-        ></community-button>
+        />
       </v-col>
     </v-row>
     <v-row v-if="canActAsTreasurer">
@@ -65,7 +75,7 @@
           icon="fa-cog"
           name="Systeeminstellingen"
           forward="systemSettingsPage"
-        ></community-button>
+        />
       </v-col>
     </v-row>
   </content-pane>
@@ -133,6 +143,9 @@ export default {
     },
     canActAsTreasurer() {
       return psStore.getters.canActAsTreasurer
+    },
+    canActAsDelegate() {
+      return psStore.getters.canActAsDelegate
     },
   },
   watch: {

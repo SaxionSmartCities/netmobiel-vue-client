@@ -300,7 +300,7 @@ export default {
     },
     onProfileImageClick() {
       let route = '/profile'
-      if (this.$keycloak.hasRealmRole('delegate')) {
+      if (psStore.getters.canActAsDelegate) {
         route = '/profile/delegate'
       }
       // Do not route when we are already on the page.

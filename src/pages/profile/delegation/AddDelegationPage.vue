@@ -2,15 +2,14 @@
   <content-pane>
     <v-row>
       <v-col>
-        <h3>Account toevoegen</h3>
-        <span>
-          Zoek naar een bestaand account om te beheren of maak een nieuwe aan.
-        </span>
+        <h1>Machtiging aanvragen</h1>
+        <span>Zoek naar een bestaand account om te beheren</span>
+        <span v-if="isAccountCreationEnabled">of maak een nieuwe aan</span>.
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <h4 class="text-primary">Zoek bestaande account</h4>
+        <h4 class="text-primary">Zoek bestaand account</h4>
       </v-col>
     </v-row>
     <v-row>
@@ -26,17 +25,26 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row v-if="showResults" class="mr-4">
+    <v-row v-if="showResults">
       <v-col>
-        <h4>Resultaten</h4>
-        <account-list
-          :accounts="searchResults"
-          empty-list-label="Geen accounts gevonden"
-          @AccountSelected="onSelectAccount"
-        />
+        <h4 class="text-primary">Resultaten</h4>
       </v-col>
     </v-row>
-    <v-row v-else>
+    <generic-list
+      v-if="showResults"
+      :items="searchResults"
+      class="mr-4"
+      empty-list-label="Geen accounts gevonden"
+    >
+      <template #list-item="{ item }">
+        <account-item
+          :account="item"
+          :managed="item.managed"
+          @select="onSelectAccount"
+        />
+      </template>
+    </generic-list>
+    <v-row v-else-if="isAccountCreationEnabled">
       <v-col>
         <v-divider class="pb-4" />
         <v-btn
@@ -82,22 +90,24 @@
 
 <script>
 import ContentPane from '@/components/common/ContentPane'
-import AccountList from '@/components/lists/AccountList'
 import { throttle } from 'lodash'
 import * as psStore from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
 import { emptyPage } from '@/store/storeHelper'
 import constants from '@/constants/constants'
+import GenericList from '@/components/lists/GenericList'
+import AccountItem from '@/components/profile/AccountItem'
 const PASSENGER = constants.PROFILE_ROLE_PASSENGER.toUpperCase()
 export default {
   name: 'AddDelegationPage',
-  components: { ContentPane, AccountList },
+  components: { ContentPane, GenericList, AccountItem },
   data() {
     return {
       search: '',
       showResults: false,
       selectedAccount: null,
       delegationRequestDialog: false,
+      isAccountCreationEnabled: false,
     }
   },
   computed: {
