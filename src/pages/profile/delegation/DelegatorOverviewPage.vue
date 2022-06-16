@@ -34,7 +34,7 @@
           outlined
           color="primary"
           :disabled="delegatorId != null"
-          to="/profile/delegate/add"
+          to="/delegators/add"
         >
           Aanvragen
         </v-btn>
@@ -48,6 +48,7 @@
         <delegation-item
           :delegation="item"
           :selected="item.delegator.id === delegatorId"
+          :show-delegators="true"
           @select="onDelegationSelected"
           @resend-code="onResendCode"
           @remove="onDelegationDelete"
@@ -145,7 +146,7 @@ import * as localStorageHelper from '@/utils/localStorageHelper'
 import constants from '@/constants/constants'
 
 export default {
-  name: 'DelegationOverviewPage',
+  name: 'DelegatorOverviewPage',
   components: { ContentPane, GenericList, DelegationItem },
   data() {
     return {

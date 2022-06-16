@@ -47,13 +47,7 @@
     <v-row v-else-if="isAccountCreationEnabled">
       <v-col>
         <v-divider class="pb-4" />
-        <v-btn
-          rounded
-          block
-          outlined
-          color="primary"
-          to="/profile/delegate/new"
-        >
+        <v-btn rounded block outlined color="primary" to="/delegators/new">
           Nieuw account toevoegen
         </v-btn>
       </v-col>
@@ -161,7 +155,7 @@ export default {
       }
       psStore.actions.requestDelegation(payload).then((delegationRef) => {
         if (delegationRef) {
-          this.$router.push({ name: 'delegationOverview' })
+          this.$router.push({ name: 'delegatorOverview' })
         }
       })
     },

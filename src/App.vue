@@ -340,7 +340,7 @@ export default {
     onProfileImageClick() {
       let route = '/profile'
       if (psStore.getters.canActAsDelegate) {
-        route = '/profile/delegate'
+        route = '/delegators'
       }
       // Do not route when we are already on the page.
       // (vue router will throw a NavigationDuplicated error)

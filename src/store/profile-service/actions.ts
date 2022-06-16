@@ -671,7 +671,10 @@ function deleteDelegation(context: ActionContext, delegationId: string) {
     })
 }
 
-function fetchDelegations(context: ActionContext, { delegateId }: any) {
+function fetchDelegations(
+  context: ActionContext,
+  { delegateId, delegatorId, maxResults }: any
+) {
   const URL = `${PROFILE_BASE_URL}/delegations`
   return axios
     .get(URL, {
@@ -680,7 +683,8 @@ function fetchDelegations(context: ActionContext, { delegateId }: any) {
       ) as AxiosRequestHeaders,
       params: {
         delegate: delegateId,
-        maxResults: 50,
+        delegator: delegatorId,
+        maxResults: maxResults ?? 50,
       },
     })
     .then((response) => {

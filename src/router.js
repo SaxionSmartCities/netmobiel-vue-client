@@ -71,6 +71,7 @@ import PremiumDepositPage from '@/pages/management/PremiumDepositPage'
 import TermsPage from '@/pages/profile/TermsPage'
 import ShoutOutDriverProposePage from '@/pages/community/shoutout/ShoutOutDriverProposePage'
 import PageNotFoundPage from '@/pages/PageNotFoundPage'
+import DelegateOverviewPage from '@/pages/profile/delegation/DelegateOverviewPage'
 
 Vue.use(Router)
 
@@ -116,6 +117,11 @@ const router = new Router({
       path: '/delegators',
       component: DelegatorOverviewPage,
       name: 'delegatorOverview',
+    },
+    {
+      path: '/delegates',
+      component: DelegateOverviewPage,
+      name: 'delegateOverview',
     },
     {
       path: '/delegators/add',

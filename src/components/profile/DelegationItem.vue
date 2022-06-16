@@ -4,14 +4,14 @@
     <v-row dense class="align-center mr-2">
       <v-col class="shrink pr-3 mb-3">
         <round-user-image
-          :profile-image="delegation.delegator.image"
+          :profile-image="personProfile.image"
           :image-size="54"
           :avatar-size="60"
         />
       </v-col>
       <v-col>
         <span class="body-1 font-weight-medium">
-          {{ delegatorName }}
+          {{ personName }}
         </span>
         <br />
         <span class="body-2 grey--text">
@@ -34,7 +34,12 @@
         >
           delete
         </v-icon>
-        <v-icon v-if="selected" class="mx-1" large color="button">
+        <v-icon
+          v-if="showDelegators && selected"
+          class="mx-1"
+          large
+          color="button"
+        >
           check
         </v-icon>
         <v-icon
@@ -50,7 +55,7 @@
       </v-col>
     </v-row>
     <v-row
-      v-if="delegation.activationTime == null"
+      v-if="showDelegators && delegation.activationTime == null"
       dense
       class="caption align-center"
     >
@@ -102,16 +107,22 @@ export default {
   props: {
     delegation: { type: Object, required: true },
     selected: { type: Boolean, default: false },
+    showDelegators: { type: Boolean, default: true },
   },
   computed: {
-    delegatorName() {
-      const profile = this.delegation.delegator
+    personProfile() {
+      return this.showDelegators
+        ? this.delegation.delegator
+        : this.delegation.delegate
+    },
+    personName() {
+      const profile = this.personProfile
       return profile
         ? `${profile.firstName ?? ''} ${profile.lastName ?? ''}`.trim()
         : 'Onbekend'
     },
     delegatorLocality() {
-      const profile = this.delegation.delegator
+      const profile = this.personProfile
       return profile?.address?.locality ?? 'Onbekend'
     },
     submissionTime() {
@@ -133,6 +144,7 @@ export default {
     },
     isSelectable() {
       return (
+        this.showDelegators &&
         this.delegation.activationTime != null &&
         this.delegation.revocationTime == null
       )

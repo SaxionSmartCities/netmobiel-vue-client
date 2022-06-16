@@ -39,13 +39,22 @@
         />
       </v-col>
     </v-row>
-    <v-row v-if="canActAsDelegate">
+    <v-row>
       <v-col>
         <community-button
           class="mx-auto"
+          icon="fa-user-tie"
+          name="Gemachtigden"
+          forward="delegateOverview"
+        />
+      </v-col>
+      <v-col>
+        <community-button
+          v-if="canActAsDelegate"
+          class="mx-auto"
           icon="fa-user-friends"
           name="Machtigingen"
-          forward="delegationOverview"
+          forward="delegatorOverview"
         />
       </v-col>
     </v-row>
