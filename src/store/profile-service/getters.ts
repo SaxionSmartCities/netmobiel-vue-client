@@ -1,13 +1,18 @@
 import { ModuleBuilder } from 'vuex-typex'
 import { ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
+import Vue from 'vue'
+
+function hasRealmRole(role: string): boolean {
+  return Vue.prototype.$keycloak.hasRealmRole(role)
+}
 
 export const buildGetters = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
-  const getUser = psBuilder.read((state: ProfileState) => {
-    return state.user
-  }, 'getUser')
+  const getRealUser = psBuilder.read((state: ProfileState) => {
+    return state.realUser
+  }, 'getRealUser')
 
   const getProfile = psBuilder.read((state: ProfileState) => {
     return state.profile
@@ -54,8 +59,9 @@ export const buildGetters = (
   }, 'getVersion')
 
   return {
-    get getUser() {
-      return getUser()
+    // Note: Update the user before using it
+    get getRealUser() {
+      return getRealUser()
     },
     get getProfile() {
       return getProfile()
@@ -88,17 +94,10 @@ export const buildGetters = (
       return getSurveyInteraction()
     },
     get canActAsDelegate() {
-      return (
-        this.getUser.roles.includes('delegate') ||
-        this.getUser.roles.includes('admin')
-      )
+      return hasRealmRole('delegate')
     },
     get canActAsTreasurer() {
-      // TODO exclude when delegation is active
-      return (
-        this.getUser.roles.includes('treasurer') ||
-        this.getUser.roles.includes('admin')
-      )
+      return hasRealmRole('treasurer') || hasRealmRole('admin')
     },
     get getVersion() {
       return getVersion()

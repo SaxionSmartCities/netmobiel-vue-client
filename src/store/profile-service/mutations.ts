@@ -8,8 +8,8 @@ import {
   Profile,
   ProfileState,
   PublicProfile,
-  RidePlanOptions,
   SurveyInteraction,
+  User,
   Version,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
@@ -18,20 +18,8 @@ import { Page } from '@/store/types'
 import { assignPageResults, emptyPage } from '@/store/storeHelper'
 import moment from 'moment'
 
-function setUserToken(state: ProfileState, token: string) {
-  state.user.accessToken = token
-  const decodedObject = decodeJwt(token)
-  state.user.managedIdentity = decodedObject['sub']
-  state.user.givenName = decodedObject['given_name']
-  state.user.familyName = decodedObject['family_name']
-  state.user.email = decodedObject['email']
-  state.user.fullName = decodedObject['name']
-  state.user.roles = decodedObject['realm_access']?.roles
-}
-
-function deleteAccessToken(state: ProfileState) {
-  state.user.accessToken = null
-  state.user.managedIdentity = null
+function setUser(state: ProfileState, user: User) {
+  state.realUser = user
 }
 
 function setProfile(state: ProfileState, payload: Profile) {
@@ -178,8 +166,7 @@ export const buildMutations = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
   return {
-    setUserToken: psBuilder.commit(setUserToken),
-    deleteAccessToken: psBuilder.commit(deleteAccessToken),
+    setUser: psBuilder.commit(setUser),
     setProfile: psBuilder.commit(setProfile),
     setComplimentTypes: psBuilder.commit(setComplimentTypes),
     addPublicProfile: psBuilder.commit(addPublicProfile),

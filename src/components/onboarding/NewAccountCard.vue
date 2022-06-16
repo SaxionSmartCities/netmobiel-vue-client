@@ -105,8 +105,11 @@ export default {
   },
   computed: {
     user() {
-      return psStore.getters.getUser
+      return psStore.getters.getRealUser
     },
+  },
+  mounted() {
+    psStore.actions.updateRealUser()
   },
   methods: {
     submitForm() {

@@ -237,10 +237,10 @@ export default {
             activationCode: this.activationCode,
           })
           .then(() => {
-            // Refresh the keycloak access token, this contains the delegator list
-            // JR: First test what is actually happening
-            // this.$keycloak.updateToken(60)
-            this.refreshDelegationList()
+            // Refresh the keycloak access token (it contains the delegator list)
+            this.$keycloak.keycloak
+              .updateToken(-1)
+              .then(() => this.refreshDelegationList())
           })
       }
     },
@@ -251,6 +251,7 @@ export default {
           .deleteDelegation(this.activeDelegation.id)
           .then((success) => {
             if (success) {
+              this.$keycloak.keycloak.updateToken(-1)
               this.refreshDelegationList()
             }
           })

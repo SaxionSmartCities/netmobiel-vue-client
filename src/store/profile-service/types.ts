@@ -5,16 +5,7 @@ export class ProfileState {
   complimentTypes: ComplimentType[] = []
   publicUsers: Map<string, ExternalUser> = new Map()
   // User as authenticated by Keycloak
-  user: User = {
-    accessToken: null,
-    // Attributes from (or derived from) the token
-    managedIdentity: null,
-    givenName: '',
-    familyName: '',
-    fullName: '',
-    email: '',
-    roles: [],
-  }
+  realUser: User | null = null
   // Profile as stored in profile service.
   profile: Profile = {
     id: null,
@@ -73,6 +64,18 @@ export const emptyPublicUser: ExternalUser = {
   compliments: emptyPage,
   reviews: emptyPage,
 }
+
+// Keycloak user from access token
+export interface User {
+  // Access token issue time stamp
+  issuedAt: number
+  managedIdentity: string
+  givenName: string
+  familyName: string
+  fullName: string
+  email: string
+}
+
 export interface ExternalUser {
   profile: PublicProfile
   compliments: Page<Compliment>
@@ -109,17 +112,6 @@ export interface Review {
   review: string
   // Read-only
   published?: string
-}
-
-export interface User {
-  // Access token
-  accessToken: string | null
-  managedIdentity: string | null
-  givenName: string
-  familyName: string
-  fullName: string
-  email: string
-  roles: string[]
 }
 
 export interface PublicProfile {

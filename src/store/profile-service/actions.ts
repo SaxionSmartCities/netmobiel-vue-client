@@ -6,6 +6,7 @@ import {
   Profile,
   ProfileState,
   PublicProfile,
+  User,
   UserSession,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
@@ -15,6 +16,7 @@ import { generateHeaders } from '@/utils/Utils'
 import { Page } from '@/store/types'
 import { emptyPage } from '@/store/storeHelper'
 import moment from 'moment'
+import Vue from 'vue'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -23,6 +25,22 @@ const { PROFILE_BASE_URL, IMAGES_BASE_URL, GRAVITEE_PROFILE_SERVICE_API_KEY } =
 
 function createAbsoluteImageUrl(imageName: string | null | undefined): string {
   return imageName ? `${IMAGES_BASE_URL}/${imageName}` : ''
+}
+
+function updateRealUser(context: ActionContext) {
+  const kc: any = Vue.prototype.$keycloak
+  // Update only if issues time has changed
+  if (kc?.tokenParsed['iat'] !== getters.getRealUser?.issuedAt) {
+    const user: User = {
+      issuedAt: kc.tokenParsed['iat'],
+      managedIdentity: kc.tokenParsed['sub'],
+      givenName: kc.tokenParsed['given_name'],
+      familyName: kc.tokenParsed['family_name'],
+      email: kc.tokenParsed['email'],
+      fullName: kc.tokenParsed['name'],
+    }
+    mutations.setUser(user)
+  }
 }
 
 function createProfile(
@@ -908,6 +926,8 @@ export const buildActions = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
   return {
+    updateRealUser: psBuilder.dispatch(updateRealUser),
+
     createProfile: psBuilder.dispatch(createProfile),
     fetchMyProfileStatus: psBuilder.dispatch(fetchMyProfileStatus),
     fetchMyProfile: psBuilder.dispatch(fetchMyProfile),

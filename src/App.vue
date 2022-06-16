@@ -243,7 +243,7 @@ export default {
       localStorageHelper.clearValue(constants.STORAGE_KEY_FCM_TOKEN)
     }
     if (this.$keycloak.authenticated) {
-      psStore.mutations.setUserToken(this.$keycloak.token)
+      psStore.actions.updateRealUser()
       // Fetch the FCM token from the local storage (app version mid 2021) - for backward compatibility
       if (localStorageHelper.hasValue(constants.STORAGE_KEY_FCM_TOKEN)) {
         msStore.mutations.setDeviceFcmToken(
