@@ -53,6 +53,9 @@ function removeUpdateById(state: UiState, id: string) {
     state.updateMessages!.splice(indexOf, 1)
   }
 }
+function setAppLoadingCompleted(state: UiState) {
+  state.appLoaded = true
+}
 export const buildMutations = (builder: ModuleBuilder<UiState, RootState>) => {
   return {
     enableHeader: builder.commit(enableHeader),
@@ -72,5 +75,6 @@ export const buildMutations = (builder: ModuleBuilder<UiState, RootState>) => {
     pushUpdate: builder.commit(pushUpdate),
     removeUpdate: builder.commit(removeUpdate),
     removeUpdateById: builder.commit(removeUpdateById),
+    setAppLoadingCompleted: builder.commit(setAppLoadingCompleted),
   }
 }

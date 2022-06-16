@@ -1,13 +1,14 @@
 <template>
   <content-pane>
     <v-row dense>
-      <!-- Never visible in ordinary case -->
-      <v-col> Verwerken van de gegevens... </v-col>
+      <v-col><h1>Enquêteafronding</h1></v-col>
     </v-row>
-    <v-row v-if="error" dense>
+    <v-row dense class="text-body-1">
       <v-col>
-        Verwerken van de gegevens is niet gelukt. Druk op 'Home' om verder te
-        gaan.
+        <span v-if="!error"> Verwerken van de gegevens... </span>
+        <span v-else>
+          Verwerken van de afronding van de enquête is helaas niet gelukt.
+        </span>
       </v-col>
     </v-row>
   </content-pane>
@@ -29,31 +30,52 @@ export default {
       error: false,
     }
   },
+  computed: {
+    isAppLoaded() {
+      return uiStore.getters.isAppLoaded
+    },
+  },
+  watch: {
+    isAppLoaded() {
+      if (this.isAppLoaded) {
+        this.processSurveyCompetion()
+      }
+    },
+  },
   mounted() {
-    if (!this.incentiveCode) {
-      uiStore.actions.queueErrorNotification(
-        `De afronding van de enquête kon niet geregistreerd worden. De enquête ID ontbreekt.`
-      )
-    } else {
-      psStore.actions
-        .fetchSurveys({ incentiveCode: this.incentiveCode })
-        .then((page) => {
-          // If no survey could be found, it has expired or already marked as submitted
-          if (page && page.totalCount === 1) {
-            return psStore.actions.markSurveySubmitted(page.data[0].urn)
-          } else {
-            uiStore.actions.queueErrorNotification(
-              `De afronding van de enquête kon niet geregistreerd worden. De enquête is al geregistreerd of de vervaltermijn is inmiddels verstreken.`
-            )
-            return Promise.reject()
-          }
-        })
-        .then(() => {
-          psStore.mutations.setSurveyInteraction(null)
-          this.$router.push({ name: 'home' })
-        })
-        .catch(() => {})
+    if (this.isAppLoaded) {
+      this.processSurveyCompetion()
     }
+  },
+  methods: {
+    processSurveyCompetion() {
+      if (!this.incentiveCode) {
+        uiStore.actions.queueErrorNotification(
+          `De afronding van de enquête kan niet geregistreerd worden, want de enquête ID ontbreekt.`
+        )
+      } else {
+        psStore.actions
+          .fetchSurveys({ incentiveCode: this.incentiveCode })
+          .then((page) => {
+            // If no survey could be found, it has expired or already marked as submitted
+            if (page && page.totalCount === 1) {
+              return psStore.actions.markSurveySubmitted(page.data[0].urn)
+            } else {
+              uiStore.actions.queueErrorNotification(
+                `De enquête kon niet gevonden worden, of is reeds afgemeld, of de vervaltermijn is inmiddels verstreken.`
+              )
+              return Promise.reject()
+            }
+          })
+          .then(() => {
+            psStore.mutations.setSurveyInteraction(null)
+            this.$router.push({ name: 'home' })
+          })
+          .catch(() => {
+            this.error = true
+          })
+      }
+    },
   },
 }
 </script>

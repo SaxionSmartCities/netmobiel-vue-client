@@ -85,7 +85,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import * as bsStore from '@/store/banker-service'
-import * as psStore from '@/store/profile-service'
+// import * as psStore from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
 import config from '@/config/config'
 import { allowExternalLinks, creditAmountInEuro } from '@/utils/Utils'
@@ -127,9 +127,9 @@ export default {
     },
     startMoneyTransfer() {
       let path = 'wait-for-deposit-confirmation'
-      if (psStore.getters.getDelegatorId != null) {
-        path += `/${psStore.getters.getDelegatorId}`
-      }
+      // if (psStore.getters.getDelegatorId != null) {
+      //   path += `/${psStore.getters.getDelegatorId}`
+      // }
       const deposit = {
         description: this.description,
         amountCredits: this.creditAmount,

@@ -400,7 +400,7 @@ const router = new Router({
       name: 'purchaseCredits',
     },
     {
-      path: '/wait-for-deposit-confirmation/:delegatorId?',
+      path: '/wait-for-deposit-confirmation',
       component: WaitForDepositConfirmationPage,
       name: 'waitForDepositConfirmation',
       props: true,

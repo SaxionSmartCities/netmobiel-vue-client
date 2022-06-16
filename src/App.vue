@@ -101,6 +101,7 @@ import {
   runningInsideFlutterApp2021,
 } from '@/utils/NetmobielApp'
 import * as csStore from '@/store/carpool-service'
+import * as localStorageHelper from '@/utils/localStorageHelper'
 
 const checkMessageStatusInterval = 1000 * 60 * 15 // msec
 const flushSessionLogInterval = 1000 * 60 // msec
@@ -114,6 +115,9 @@ export default {
     sessionLogFlushTimer: null,
   }),
   computed: {
+    realProfile() {
+      return psStore.getters.getDelegateProfile ?? psStore.getters.getProfile
+    },
     profileImage() {
       return this.myProfile?.image
     },
@@ -194,12 +198,12 @@ export default {
       // Only update if profile is (already) available
       // Otherwise save it once registered
       // console.log(`FCM token is: ${this.deviceFcmToken}`)
-      if (this.myProfile?.id) {
+      if (this.realProfile?.id) {
         // Just in case the FCM token arrives after fetching the profile
         msStore.actions.storeMyFcmToken()
       }
     },
-    myProfile(newProfile, oldProfile) {
+    realProfile(newProfile, oldProfile) {
       // console.log(`Profile: ${oldProfile?.id} --> ${newProfile?.id}`)
       if (newProfile?.id) {
         if (oldProfile?.id !== newProfile.id) {
@@ -228,18 +232,23 @@ export default {
     // so we can retrieve it later to update the profile. Local storage is needed because
     // when a session expires or when returning from an external source no FCM token will be on the url
     if (this.$route.query.fcm && typeof this.$route.query.fcm === 'string') {
-      localStorage.setItem('fcm', this.$route.query.fcm)
+      localStorageHelper.setValue(
+        constants.STORAGE_KEY_FCM_TOKEN,
+        this.$route.query.fcm
+      )
     } else if (!runningInsideFlutterApp2021()) {
       // This construction allows testing of the old-style parameter exchange and at the same time ensures
       // clearing old-stuff away.
       // Only the old app (version mid 2021) uses the local storage
-      localStorage.removeItem('fcm')
+      localStorageHelper.clearValue(constants.STORAGE_KEY_FCM_TOKEN)
     }
     if (this.$keycloak.authenticated) {
       psStore.mutations.setUserToken(this.$keycloak.token)
-      // Fetch the FCM token from the localstorage (app version mid 2021) - for backward compatibility
-      if (localStorage.fcm) {
-        msStore.mutations.setDeviceFcmToken(localStorage.fcm)
+      // Fetch the FCM token from the local storage (app version mid 2021) - for backward compatibility
+      if (localStorageHelper.hasValue(constants.STORAGE_KEY_FCM_TOKEN)) {
+        msStore.mutations.setDeviceFcmToken(
+          localStorageHelper.getValue(constants.STORAGE_KEY_FCM_TOKEN)
+        )
       }
       window.addEventListener('NetmobielFcmToken', this.onFcmTokenReceived)
       // Fetch the FCM token via message channel (since jan 2022 app)
@@ -258,11 +267,12 @@ export default {
         .fetchMyProfileStatus()
         .then(() => psStore.actions.fetchMyProfile())
         .then(() => this.fetchMyCar())
+        .then(() => this.switchToDelegator())
+        .then(() => msStore.actions.fetchMyStatus())
+        .then(() => uiStore.mutations.setAppLoadingCompleted())
         .catch(() => {
           // Ignore the errors, they are resolved elsewhere.
         })
-      // Get the message status
-      msStore.actions.fetchMyStatus()
       this.messageStatusTimer = setInterval(() => {
         msStore.actions.fetchMyStatus()
       }, checkMessageStatusInterval)
@@ -289,6 +299,21 @@ export default {
     }
   },
   methods: {
+    switchToDelegator() {
+      if (
+        localStorageHelper.hasValue(constants.STORAGE_KEY_DELEGATOR_ID) &&
+        psStore.getters.canActAsDelegate
+      ) {
+        psStore.actions.switchProfile({
+          delegatorId: localStorageHelper.getValue(
+            constants.STORAGE_KEY_DELEGATOR_ID
+          ),
+        })
+        return psStore.actions.fetchMyProfile()
+      } else {
+        return Promise.resolve()
+      }
+    },
     onPushMessageReceived(evt) {
       const detail = evt.detail
       // console.log(

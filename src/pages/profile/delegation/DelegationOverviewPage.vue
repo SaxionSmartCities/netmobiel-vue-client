@@ -6,7 +6,10 @@
         <span>Namens wie wil je de app gebruiken?</span>
       </v-col>
     </v-row>
-    <v-row v-if="delegatorId != null" class="primary-border mb-3">
+    <v-row
+      v-if="delegatorId != null && delegator != null"
+      class="primary-border mb-3"
+    >
       <v-col>
         <span>
           Je gebruikt de app nu namens
@@ -138,6 +141,8 @@ import * as psStore from '@/store/profile-service'
 import * as msStore from '@/store/message-service'
 import GenericList from '@/components/lists/GenericList'
 import DelegationItem from '@/components/profile/DelegationItem.vue'
+import * as localStorageHelper from '@/utils/localStorageHelper'
+import constants from '@/constants/constants'
 
 export default {
   name: 'DelegationOverviewPage',
@@ -189,12 +194,17 @@ export default {
     onStopDelegation() {
       psStore.actions.flushSessionLog()
       psStore.mutations.resetDelegate()
+      localStorageHelper.clearValue(constants.STORAGE_KEY_DELEGATOR_ID)
       this.refreshGUI()
     },
     onDelegationSelected(delegation) {
       if (this.delegatorId !== delegation.delegator.id) {
         psStore.actions.flushSessionLog()
         psStore.actions.switchProfile({ delegatorId: delegation.delegator.id })
+        localStorageHelper.setValue(
+          constants.STORAGE_KEY_DELEGATOR_ID,
+          delegation.delegator.id
+        )
         this.refreshGUI()
       }
     },
@@ -226,7 +236,12 @@ export default {
             delegationId: this.activeDelegation.id,
             activationCode: this.activationCode,
           })
-          .then(() => this.refreshDelegationList())
+          .then(() => {
+            // Refresh the keycloak access token, this contains the delegator list
+            // JR: First test what is actually happening
+            // this.$keycloak.updateToken(60)
+            this.refreshDelegationList()
+          })
       }
     },
     removeDelegation() {

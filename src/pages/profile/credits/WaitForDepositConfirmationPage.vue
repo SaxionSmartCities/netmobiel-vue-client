@@ -1,8 +1,8 @@
 <template>
   <content-pane>
-    <v-row>
+    <v-row dense>
       <v-col>
-        <h3>Wacht op bevestiging</h3>
+        <h1>Wacht op bevestiging</h1>
       </v-col>
     </v-row>
     <v-row>
@@ -26,8 +26,6 @@
 import ContentPane from '@/components/common/ContentPane.vue'
 import * as bsStore from '@/store/banker-service'
 import * as uiStore from '@/store/ui'
-import * as psStore from '@/store/profile-service'
-import * as msStore from '@/store/message-service'
 
 // The return url from EMS pay, contains the project_id and the order_id as query parameters
 const pageUrl = new URL(location.href)
@@ -47,9 +45,6 @@ export default {
     }
     next()
   },
-  props: {
-    delegatorId: { type: String, default: undefined },
-  },
   data: function () {
     return {
       progressVisible: true,
@@ -63,21 +58,8 @@ export default {
     }, checkInterval)
   },
   methods: {
-    checkDelegation() {
-      if (this.delegatorId && psStore.getters.canActAsDelegate) {
-        // Only if not already set
-        if (this.delegatorId !== psStore.getters.getDelegatorId) {
-          psStore.actions.flushSessionLog()
-          psStore.actions.switchProfile({ delegatorId: this.delegatorId })
-          psStore.actions.fetchMyProfile()
-          msStore.actions.fetchMyStatus()
-        }
-      }
-    },
     // Check the deposit state. After X seconds a timeout occurs and an error message is displayed
     checkDepositStatus() {
-      // This is the easiest place to fix the delegation without timing issues
-      this.checkDelegation()
       const paymentEvent = {
         project_id: pageUrl.searchParams.get('project_id'),
         order_id: pageUrl.searchParams.get('order_id'),
