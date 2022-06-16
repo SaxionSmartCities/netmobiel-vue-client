@@ -44,7 +44,7 @@ import AboutPage from '@/pages/profile/AboutPage'
 import UserProfilePage from '@/pages/profile/UserProfilePage'
 import PurchasePage from '@/pages/profile/credits/PurchasePage'
 import WaitForDepositConfirmationPage from '@/pages/profile/credits/WaitForDepositConfirmationPage'
-import DelegationOverviewPage from '@/pages/profile/delegation/DelegationOverviewPage'
+import DelegatorOverviewPage from '@/pages/profile/delegation/DelegatorOverviewPage'
 import AddDelegationPage from '@/pages/profile/delegation/AddDelegationPage'
 import NewDelegationPage from '@/pages/profile/delegation/NewDelegationPage'
 import * as uiStore from '@/store/ui'
@@ -70,6 +70,7 @@ import PremiumWithdrawalPage from '@/pages/management/PremiumWithdrawalPage'
 import PremiumDepositPage from '@/pages/management/PremiumDepositPage'
 import TermsPage from '@/pages/profile/TermsPage'
 import ShoutOutDriverProposePage from '@/pages/community/shoutout/ShoutOutDriverProposePage'
+import PageNotFoundPage from '@/pages/PageNotFoundPage'
 
 Vue.use(Router)
 
@@ -112,16 +113,16 @@ const router = new Router({
       name: 'profile',
     },
     {
-      path: '/profile/delegate',
-      component: DelegationOverviewPage,
-      name: 'delegationOverview',
+      path: '/delegators',
+      component: DelegatorOverviewPage,
+      name: 'delegatorOverview',
     },
     {
-      path: '/profile/delegate/add',
+      path: '/delegators/add',
       component: AddDelegationPage,
     },
     {
-      path: '/profile/delegate/new',
+      path: '/delegators/new',
       component: NewDelegationPage,
     },
     {
@@ -447,6 +448,12 @@ const router = new Router({
       path: '/terms',
       name: 'termsPage',
       component: TermsPage,
+    },
+    // Catch-all, to prevent a blank page
+    {
+      path: '/*',
+      name: 'pageNotFound',
+      component: PageNotFoundPage,
     },
   ],
 })
