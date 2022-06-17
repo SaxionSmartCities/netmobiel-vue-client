@@ -300,19 +300,21 @@ export default {
   },
   methods: {
     switchToDelegator() {
-      if (
-        localStorageHelper.hasValue(constants.STORAGE_KEY_DELEGATOR_ID) &&
-        psStore.getters.canActAsDelegate
-      ) {
-        psStore.actions.switchProfile({
-          delegatorId: localStorageHelper.getValue(
-            constants.STORAGE_KEY_DELEGATOR_ID
-          ),
-        })
-        return psStore.actions.fetchMyProfile()
-      } else {
-        return Promise.resolve()
+      if (localStorageHelper.hasValue(constants.STORAGE_KEY_DELEGATOR_ID)) {
+        if (psStore.getters.canActAsDelegate) {
+          // The user has the right permission to act as delegate
+          psStore.actions.switchProfile({
+            delegatorId: localStorageHelper.getValue(
+              constants.STORAGE_KEY_DELEGATOR_ID
+            ),
+          })
+          return psStore.actions.fetchMyProfile()
+        } else {
+          // No right. Clear away old delegator stuff
+          localStorageHelper.clearValue(constants.STORAGE_KEY_DELEGATOR_ID)
+        }
       }
+      return Promise.resolve()
     },
     onPushMessageReceived(evt) {
       const detail = evt.detail
