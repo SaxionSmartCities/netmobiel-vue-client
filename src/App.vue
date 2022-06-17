@@ -97,6 +97,7 @@ import config from '@/config/config'
 import * as msStore from '@/store/message-service'
 import { EventBus } from '@/utils/EventBus'
 import {
+  requestCapabilities,
   requestFcmToken,
   runningInsideFlutterApp2021,
 } from '@/utils/NetmobielApp'
@@ -254,6 +255,7 @@ export default {
       // Fetch the FCM token via message channel (since jan 2022 app)
       // console.log(`Request FCM token`)
       requestFcmToken()
+      requestCapabilities()
       // The FCM token is received before or after receiving the profile (if any), and also when still registering
       // The FCM token will be stored in the following situations:
       // 1. When receiving the updated FCM token

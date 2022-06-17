@@ -1,6 +1,7 @@
 import constants from '@/constants/constants'
 import * as PhoneNumber from 'awesome-phonenumber'
 import {
+  netmobielCapabilities,
   runningInsideFlutterApp,
   runningInsideFlutterApp2022,
 } from '@/utils/NetmobielApp'
@@ -191,11 +192,13 @@ function formatPhoneNumber(phoneString, countryCode) {
 }
 
 function allowExternalLinks() {
-  return !runningInsideFlutterApp()
+  return (
+    !runningInsideFlutterApp() || netmobielCapabilities.canHandleExternalUrl
+  )
 }
 
 function isUpdateImageSupported() {
-  return !runningInsideFlutterApp2022()
+  return !runningInsideFlutterApp2022() || netmobielCapabilities.canUpload
 }
 
 export {
