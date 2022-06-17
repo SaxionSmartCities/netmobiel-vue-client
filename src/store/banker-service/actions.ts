@@ -27,6 +27,45 @@ function createAbsoluteImageUrl(imagePath: string | null | undefined): string {
   return imagePath ? `${IMAGES_BASE_URL}/${imagePath}` : ''
 }
 
+// ===========  SETTINGS  ================
+
+async function fetchSettings(context: ActionContext) {
+  try {
+    const resp = await axios.get(`${BANKER_BASE_URL}/settings`, {
+      headers: generateHeaders(
+        GRAVITEE_BANKER_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    mutations.setBankerSettings(resp.data)
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de bankier instellingen.'
+    )
+  }
+}
+
+// ===========  CHECK DEPOSITS  ================
+
+async function getDepositStatus(context: ActionContext, payload: PaymentEvent) {
+  try {
+    const resp = await axios.post(
+      `${BANKER_BASE_URL}/deposit-events`,
+      payload,
+      {
+        headers: generateHeaders(
+          GRAVITEE_BANKER_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+      }
+    )
+    return resp.data
+    // return Promise.resolve({ status: 'Active' })
+  } catch (problem) {
+    await uiStore.actions.queueErrorNotification(
+      'Fout bij het ophalen van de status van de storting.'
+    )
+  }
+}
+
 // ===========  CHARITIES  ================
 
 async function fetchCharities(context: ActionContext, payload: any = {}) {
@@ -204,13 +243,15 @@ async function fetchPopularCharities(context: ActionContext, payload: any) {
 }
 
 async function donate(context: ActionContext, donation: Donation) {
+  const delegatorId = context.rootState.ps.delegatorId
   try {
     const resp = await axios.post(
       `${BANKER_BASE_URL}/charities/${donation.charityRef}/donations`,
       donation,
       {
         headers: generateHeaders(
-          GRAVITEE_BANKER_SERVICE_API_KEY
+          GRAVITEE_BANKER_SERVICE_API_KEY,
+          delegatorId
         ) as AxiosRequestHeaders,
       }
     )
@@ -229,18 +270,21 @@ async function donate(context: ActionContext, donation: Donation) {
 /**
  * Return a paged list of recently donated charities
  * @param context
+ * @param params
  * @params the list of parameters
  */
 async function fetchPreviouslyDonatedCharities(
   context: ActionContext,
   params: any
 ) {
+  const delegatorId = context.rootState.ps.delegatorId
   try {
     const resp = await axios.get(
       `${BANKER_BASE_URL}/users/me/recent-donations`,
       {
         headers: generateHeaders(
-          GRAVITEE_BANKER_SERVICE_API_KEY
+          GRAVITEE_BANKER_SERVICE_API_KEY,
+          delegatorId
         ) as AxiosRequestHeaders,
         params: params,
       }
@@ -261,12 +305,14 @@ async function fetchPreviouslyDonatedCharities(
 }
 
 async function fetchDonationsForCharity(context: ActionContext, payload: any) {
+  const delegatorId = context.rootState.ps.delegatorId
   try {
     const resp = await axios.get(
       `${BANKER_BASE_URL}/charities/${payload.charityId}/donations`,
       {
         headers: generateHeaders(
-          GRAVITEE_BANKER_SERVICE_API_KEY
+          GRAVITEE_BANKER_SERVICE_API_KEY,
+          delegatorId
         ) as AxiosRequestHeaders,
         params: {
           offset: payload.offset,
@@ -282,6 +328,8 @@ async function fetchDonationsForCharity(context: ActionContext, payload: any) {
     )
   }
 }
+
+// ===========  USERS  ================
 
 async function fetchTopDonors(context: ActionContext, payload: any) {
   try {
@@ -306,26 +354,13 @@ async function fetchTopDonors(context: ActionContext, payload: any) {
   }
 }
 
-async function fetchSettings(context: ActionContext) {
-  try {
-    const resp = await axios.get(`${BANKER_BASE_URL}/settings`, {
-      headers: generateHeaders(
-        GRAVITEE_BANKER_SERVICE_API_KEY
-      ) as AxiosRequestHeaders,
-    })
-    mutations.setBankerSettings(resp.data)
-  } catch (problem) {
-    await uiStore.actions.queueErrorNotification(
-      'Fout bij het ophalen van de bankier instellingen.'
-    )
-  }
-}
-
 async function fetchUser(context: ActionContext) {
+  const delegatorId = context.rootState.ps.delegatorId
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/users/me`, {
       headers: generateHeaders(
-        GRAVITEE_BANKER_SERVICE_API_KEY
+        GRAVITEE_BANKER_SERVICE_API_KEY,
+        delegatorId
       ) as AxiosRequestHeaders,
     })
     mutations.setBankerUser(resp.data)
@@ -340,6 +375,7 @@ async function fetchUserStatements(
   context: ActionContext,
   { offset, maxResults, until }: any
 ) {
+  const delegatorId = context.rootState.ps.delegatorId
   const params: any = {}
   params.offset = offset ?? 0
   params.maxResults = maxResults ?? 20
@@ -347,7 +383,8 @@ async function fetchUserStatements(
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/users/me/statements`, {
       headers: generateHeaders(
-        GRAVITEE_BANKER_SERVICE_API_KEY
+        GRAVITEE_BANKER_SERVICE_API_KEY,
+        delegatorId
       ) as AxiosRequestHeaders,
       params,
     })
@@ -363,13 +400,15 @@ async function depositCreditsToMyAccount(
   context: ActionContext,
   payload: Deposit
 ) {
+  const delegatorId = context.rootState.ps.delegatorId
   try {
     const resp = await axios.post(
       `${BANKER_BASE_URL}/users/me/deposits`,
       payload,
       {
         headers: generateHeaders(
-          GRAVITEE_BANKER_SERVICE_API_KEY
+          GRAVITEE_BANKER_SERVICE_API_KEY,
+          delegatorId
         ) as AxiosRequestHeaders,
       }
     )
@@ -386,13 +425,15 @@ async function withdrawCreditsFromMyAccount(
   context: ActionContext,
   payload: Withdrawal
 ) {
+  const delegatorId = context.rootState.ps.delegatorId
   try {
     const resp = await axios.post(
       `${BANKER_BASE_URL}/users/me/withdrawals`,
       payload,
       {
         headers: generateHeaders(
-          GRAVITEE_BANKER_SERVICE_API_KEY
+          GRAVITEE_BANKER_SERVICE_API_KEY,
+          delegatorId
         ) as AxiosRequestHeaders,
       }
     )
@@ -418,10 +459,12 @@ async function fetchUserRewards(
   context: ActionContext,
   { offset, maxResults, until }: any
 ) {
+  const delegatorId = context.rootState.ps.delegatorId
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/users/me/rewards`, {
       headers: generateHeaders(
-        GRAVITEE_BANKER_SERVICE_API_KEY
+        GRAVITEE_BANKER_SERVICE_API_KEY,
+        delegatorId
       ) as AxiosRequestHeaders,
       params: {
         offset: offset,
@@ -439,10 +482,12 @@ async function fetchUserRewards(
 
 async function updatePersonalAccount(context: ActionContext, account: Account) {
   const URL = `${BANKER_BASE_URL}/users/me/account`
+  const delegatorId = context.rootState.ps.delegatorId
   try {
     const resp = await axios.put(URL, account, {
       headers: generateHeaders(
-        GRAVITEE_BANKER_SERVICE_API_KEY
+        GRAVITEE_BANKER_SERVICE_API_KEY,
+        delegatorId
       ) as AxiosRequestHeaders,
     })
     if (resp.status !== 204) {
@@ -470,12 +515,14 @@ async function fetchUserCtaIncentives(
   context: ActionContext,
   { offset, maxResults }: any
 ) {
+  const delegatorId = context.rootState.ps.delegatorId
   try {
     const resp = await axios.get(
       `${BANKER_BASE_URL}/users/me/call-to-actions`,
       {
         headers: generateHeaders(
-          GRAVITEE_BANKER_SERVICE_API_KEY
+          GRAVITEE_BANKER_SERVICE_API_KEY,
+          delegatorId
         ) as AxiosRequestHeaders,
         params: {
           offset: offset,
@@ -491,31 +538,13 @@ async function fetchUserCtaIncentives(
   }
 }
 
-async function getDepositStatus(context: ActionContext, payload: PaymentEvent) {
-  try {
-    const resp = await axios.post(
-      `${BANKER_BASE_URL}/deposit-events`,
-      payload,
-      {
-        headers: generateHeaders(
-          GRAVITEE_BANKER_SERVICE_API_KEY
-        ) as AxiosRequestHeaders,
-      }
-    )
-    return resp.data
-    // return Promise.resolve({ status: 'Active' })
-  } catch (problem) {
-    await uiStore.actions.queueErrorNotification(
-      'Fout bij het ophalen van de status van de storting.'
-    )
-  }
-}
-
 async function fetchUserWithdrawals(context: ActionContext, params: any) {
+  const delegatorId = context.rootState.ps.delegatorId
   try {
     const resp = await axios.get(`${BANKER_BASE_URL}/users/me/withdrawals`, {
       headers: generateHeaders(
-        GRAVITEE_BANKER_SERVICE_API_KEY
+        GRAVITEE_BANKER_SERVICE_API_KEY,
+        delegatorId
       ) as AxiosRequestHeaders,
       params,
     })
@@ -528,12 +557,14 @@ async function fetchUserWithdrawals(context: ActionContext, params: any) {
 }
 
 async function cancelUserWithdrawal(context: ActionContext, wrid: string) {
+  const delegatorId = context.rootState.ps.delegatorId
   try {
     const resp = await axios.delete(
       `${BANKER_BASE_URL}/users/me/withdrawals/${wrid}`,
       {
         headers: generateHeaders(
-          GRAVITEE_BANKER_SERVICE_API_KEY
+          GRAVITEE_BANKER_SERVICE_API_KEY,
+          delegatorId
         ) as AxiosRequestHeaders,
       }
     )
@@ -671,7 +702,7 @@ async function updateAccount(context: ActionContext, account: Account) {
   }
 }
 
-// ===========  WITHDRAWAL & PAYMENT BATCH  ================
+// ===========  WITHDRAWAL  ================
 
 async function fetchWithdrawalsPage(context: ActionContext, params: any) {
   try {
@@ -725,6 +756,8 @@ async function cancelWithdrawal(context: ActionContext, { wrid, reason }: any) {
     return false
   }
 }
+
+// ===========  PAYMENT BATCH  ================
 
 async function fetchPaymentBatches(context: ActionContext, params: any) {
   try {
@@ -851,6 +884,12 @@ export const buildActions = (
   bsBuilder: ModuleBuilder<BankerState, RootState>
 ) => {
   return {
+    // Settings
+    fetchBankerSettings: bsBuilder.dispatch(fetchSettings),
+
+    // Check deposits
+    getDepositStatus: bsBuilder.dispatch(getDepositStatus),
+
     // Charities
     fetchCharities: bsBuilder.dispatch(fetchCharities),
     fetchCharity: bsBuilder.dispatch(fetchCharity),
@@ -874,7 +913,6 @@ export const buildActions = (
     fetchUserWithdrawals: bsBuilder.dispatch(fetchUserWithdrawals),
     cancelUserWithdrawal: bsBuilder.dispatch(cancelUserWithdrawal),
     fetchBankerUser: bsBuilder.dispatch(fetchUser),
-    fetchBankerSettings: bsBuilder.dispatch(fetchSettings),
     fetchUserStatements: bsBuilder.dispatch(fetchUserStatements),
     fetchPreviouslyDonatedCharities: bsBuilder.dispatch(
       fetchPreviouslyDonatedCharities
@@ -890,15 +928,14 @@ export const buildActions = (
     withdrawCredits: bsBuilder.dispatch(withdrawCredits),
     updateAccount: bsBuilder.dispatch(updateAccount),
 
-    // Check deposits
-    getDepositStatus: bsBuilder.dispatch(getDepositStatus),
-
-    // Withdrawals & Payment batches
+    // Withdrawals
     fetchWithdrawalsRequestedCount: bsBuilder.dispatch(
       fetchWithdrawalsRequestedCount
     ),
     fetchWithdrawals: bsBuilder.dispatch(fetchWithdrawals),
     cancelWithdrawal: bsBuilder.dispatch(cancelWithdrawal),
+
+    // Payment batches
     fetchPaymentBatches: bsBuilder.dispatch(fetchPaymentBatches),
     fetchPaymentBatch: bsBuilder.dispatch(fetchPaymentBatch),
     createPaymentBatch: bsBuilder.dispatch(createPaymentBatch),

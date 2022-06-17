@@ -106,7 +106,7 @@ export default {
   },
   computed: {
     user() {
-      return psStore.getters.getUser
+      return psStore.getters.getRealUser
     },
   },
   watch: {
@@ -123,6 +123,9 @@ export default {
     // The registration page should not offer other options
     uiStore.mutations.disableFooter()
     // YbugHelper.show()
+  },
+  mounted() {
+    psStore.actions.updateRealUser()
   },
   methods: {
     gotoLandingPage() {

@@ -1,20 +1,29 @@
 import { ModuleBuilder } from 'vuex-typex'
 import { ProfileState } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
+import Vue from 'vue'
+
+function hasRealmRole(role: string): boolean {
+  return Vue.prototype.$keycloak.hasRealmRole(role)
+}
 
 export const buildGetters = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
-  const getUser = psBuilder.read((state: ProfileState) => {
-    return state.user
-  }, 'getUser')
+  const getRealUser = psBuilder.read((state: ProfileState) => {
+    return state.realUser
+  }, 'getRealUser')
 
   const getProfile = psBuilder.read((state: ProfileState) => {
-    return state.user.profile
+    return state.profile
   }, 'getProfile')
 
+  const getFavoriteLocations = psBuilder.read((state: ProfileState) => {
+    return state.favoriteLocations
+  }, 'getFavoriteLocations')
+
   const getDelegateProfile = psBuilder.read((state: ProfileState) => {
-    return state.user.delegateProfile
+    return state.delegateProfile
   }, 'getDelegateProfile')
 
   const getPublicUsers = psBuilder.read((state: ProfileState) => {
@@ -25,24 +34,24 @@ export const buildGetters = (
     return state.complimentTypes
   }, 'getComplimentTypes')
 
+  const getDelegation = psBuilder.read((state: ProfileState) => {
+    return state.delegation
+  }, 'getDelegation')
+
   const getDelegations = psBuilder.read((state: ProfileState) => {
-    return state.user.delegations
+    return state.delegations
   }, 'getDelegations')
 
   const getDelegatorId = psBuilder.read((state: ProfileState) => {
-    return state.user.delegatorId
+    return state.delegatorId
   }, 'getDelegatorId')
-
-  const getSearchStatus = psBuilder.read((state: ProfileState) => {
-    return state.search.status
-  }, 'getSearchStatus')
 
   const getSearchResults = psBuilder.read((state: ProfileState) => {
     return state.search.results
   }, 'getSearchResults')
 
   const getSurveyInteraction = psBuilder.read((state: ProfileState) => {
-    return state.user.surveyInteraction
+    return state.surveyInteraction
   }, 'getSurveyInteraction')
 
   const getVersion = psBuilder.read((state: ProfileState) => {
@@ -50,11 +59,15 @@ export const buildGetters = (
   }, 'getVersion')
 
   return {
-    get getUser() {
-      return getUser()
+    // Note: Update the user before using it
+    get getRealUser() {
+      return getRealUser()
     },
     get getProfile() {
       return getProfile()
+    },
+    get getFavoriteLocations() {
+      return getFavoriteLocations()
     },
     get getDelegateProfile() {
       return getDelegateProfile()
@@ -68,29 +81,23 @@ export const buildGetters = (
     get getDelegations() {
       return getDelegations()
     },
+    get getDelegation() {
+      return getDelegation()
+    },
     get getDelegatorId() {
       return getDelegatorId()
     },
     get getSearchResults() {
       return getSearchResults()
     },
-    get getSearchStatus() {
-      return getSearchStatus()
-    },
     get getSurveyInteraction() {
       return getSurveyInteraction()
     },
     get canActAsDelegate() {
-      return (
-        this.getUser.roles.includes('delegate') ||
-        this.getUser.roles.includes('admin')
-      )
+      return hasRealmRole('delegate')
     },
     get canActAsTreasurer() {
-      return (
-        this.getUser.roles.includes('treasurer') ||
-        this.getUser.roles.includes('admin')
-      )
+      return hasRealmRole('treasurer') || hasRealmRole('admin')
     },
     get getVersion() {
       return getVersion()

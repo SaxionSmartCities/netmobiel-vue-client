@@ -130,7 +130,7 @@ export default {
       return []
     },
     favorites() {
-      const places = psStore.getters.getUser?.favoriteLocations.data
+      const places = psStore.getters.getFavoriteLocations.data
       return places.map((place) => {
         return {
           ...place,

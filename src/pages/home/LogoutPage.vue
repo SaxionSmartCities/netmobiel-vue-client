@@ -27,7 +27,6 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import * as uiStore from '@/store/ui'
-import * as psStore from '@/store/profile-service'
 
 export default {
   components: {
@@ -37,7 +36,6 @@ export default {
     uiStore.mutations.disableFooter()
   },
   mounted() {
-    psStore.mutations.deleteAccessToken()
     this.$keycloak.logoutFn()
     // Show our logout page, the redirect from keycloak will navigate to the landing page
   },

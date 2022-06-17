@@ -7,6 +7,8 @@ export class UiState {
   notificationBarVisible: boolean = false
   notificationQueue: UiNotification[] = []
   updateMessages: UiUpdateMessage[] = []
+  // Marks the completion of the initial loading in App.vue
+  appLoaded: boolean = false
 }
 
 export interface UiHeader {
