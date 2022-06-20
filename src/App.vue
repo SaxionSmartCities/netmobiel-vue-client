@@ -271,10 +271,14 @@ export default {
         .then(() => this.fetchMyCar())
         .then(() => this.switchToDelegator())
         .then(() => msStore.actions.fetchMyStatus())
-        .then(() => uiStore.mutations.setAppLoadingCompleted())
         .catch(() => {
-          // Ignore the errors, they are resolved elsewhere.
+          // eslint-disable-next-line
+          console.warn(`App: Unexpected reject in startup!`)
+          uiStore.actions.queueErrorNotification(
+            `Een onbekende fout is opgetreden. Mogelijk moet de app opnieuw gestart worden.`
+          )
         })
+        .finally(() => uiStore.mutations.setAppLoadingCompleted())
       this.messageStatusTimer = setInterval(() => {
         msStore.actions.fetchMyStatus()
       }, checkMessageStatusInterval)
