@@ -258,7 +258,7 @@ export default {
         value: this.selectedCar,
         renderingComponent: 'CarViewer',
       })
-      if (this.maxPassengers != null) {
+      if (this.selectedCar != null) {
         result.push({
           label: 'Stoelen over',
           value: this.maxPassengers,
@@ -333,7 +333,7 @@ export default {
     maxPassengers() {
       return Math.min(
         this.ridePlanOptions.maxPassengers,
-        this.selectedCar.nrSeats - 1
+        (this.selectedCar?.nrSeats || 1) - 1
       )
     },
   },
