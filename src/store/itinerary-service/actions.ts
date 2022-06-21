@@ -52,7 +52,7 @@ function searchTripPlan(
     useAsArrivalTime: travelTime.arriving,
   }
   mutations.setPlanningStatus({ status: 'PENDING', message: '' })
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   axios
     .get(URL, {
       headers: generateHeaders(
@@ -77,7 +77,7 @@ function createShoutOutTripPlan(
   context: ActionContext,
   { from, to, travelTime, preferences }: any
 ) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const payload = {
     from,
     to,
@@ -118,7 +118,7 @@ function createShoutOutTripPlan(
 }
 
 function fetchTripPlan(context: ActionContext, { id }: any) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const URL = `${PLANNER_BASE_URL}/plans/${id}`
   axios
     .get(URL, {
@@ -141,7 +141,7 @@ function fetchMyShoutOutTripPlans(
   context: ActionContext,
   { past, inProgress, since, until, sortDir, offset, maxResults }: any
 ) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const params = {
     offset: offset ?? 0,
     maxResults: maxResults,
@@ -184,7 +184,7 @@ function cancelTripPlan(
   const params: any = {
     reason: cancelReason ? cancelReason : undefined,
   }
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   return axios
     .delete(URL, {
       headers: generateHeaders(
@@ -215,7 +215,7 @@ function cancelTripPlan(
  * @param itinerary the itinerary and itinerary reference from a planning request (regular or shout-out).
  */
 function createTrip(context: ActionContext, itinerary: Itinerary) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const tripRequest = { itineraryRef: itinerary.itineraryRef }
   mutations.setBookingStatus({ status: 'PENDING' })
   const now = moment()
@@ -268,7 +268,7 @@ function fetchTrips(
   since && (params['since'] = since)
   sortDir && (params['sortDir'] = sortDir)
 
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const URL = `${PLANNER_BASE_URL}/trips`
   axios
     .get(URL, {
@@ -295,7 +295,7 @@ function fetchTrips(
 }
 
 function fetchCancelledTrips(context: ActionContext) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const params: any = { state: 'CANCELLED' }
   const URL = `${PLANNER_BASE_URL}/trips`
   axios
@@ -317,7 +317,7 @@ function fetchCancelledTrips(context: ActionContext) {
 }
 
 function fetchTrip(context: ActionContext, payload: any) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const tripId = payload.id
   const URL = `${PLANNER_BASE_URL}/trips/${tripId}`
   return axios
@@ -339,7 +339,7 @@ function fetchTrip(context: ActionContext, payload: any) {
 }
 
 function deleteTrip(context: ActionContext, payload: any) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const URL = `${PLANNER_BASE_URL}/trips/${payload.tripId}`
   const params: any = {
     reason: payload.cancelReason ? payload.cancelReason : undefined,
@@ -375,7 +375,7 @@ function deleteTrip(context: ActionContext, payload: any) {
 }
 
 function confirmTrip(context: ActionContext, payload: any) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const URL = `${PLANNER_BASE_URL}/trips/${payload.id}/confirm/true`
   const data = {}
   const config = {
@@ -400,7 +400,7 @@ function confirmTrip(context: ActionContext, payload: any) {
 }
 
 function rejectTrip(context: ActionContext, payload: any) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const URL = `${PLANNER_BASE_URL}/trips/${payload.id}/confirm/false?reason=${payload.reasonCode}`
   const data = {}
   const config = {
@@ -425,7 +425,7 @@ function rejectTrip(context: ActionContext, payload: any) {
 }
 
 function unconfirmTrip(context: ActionContext, payload: any) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.rootState.ps.delegatorId
   const URL = `${PLANNER_BASE_URL}/trips/${payload.id}/unconfirm`
   const config = {
     headers: generateHeaders(

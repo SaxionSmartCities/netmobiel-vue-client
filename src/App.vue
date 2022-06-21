@@ -7,13 +7,24 @@
       </v-btn>
       <v-spacer></v-spacer>
       <!-- Show only when a profile has been created and the profile id (managed identity) is defined -->
-      <v-btn v-if="isProfileManaged" icon @click="onProfileImageClick">
-        <round-user-image
-          :profile-image="profileImage"
-          :image-size="30"
-          :avatar-size="34"
-        />
-      </v-btn>
+      <v-badge
+        v-if="isProfileManaged"
+        dark
+        left
+        offset-x="20"
+        offset-y="20"
+        color="red"
+        :value="isDelegationActive"
+        icon="fa-user"
+      >
+        <v-btn icon @click="onProfileImageClick">
+          <round-user-image
+            :profile-image="profileImage"
+            :image-size="30"
+            :avatar-size="34"
+          />
+        </v-btn>
+      </v-badge>
     </v-app-bar>
     <!-- Content -->
     <v-main>
@@ -86,10 +97,12 @@ import config from '@/config/config'
 import * as msStore from '@/store/message-service'
 import { EventBus } from '@/utils/EventBus'
 import {
+  requestCapabilities,
   requestFcmToken,
   runningInsideFlutterApp2021,
 } from '@/utils/NetmobielApp'
 import * as csStore from '@/store/carpool-service'
+import * as localStorageHelper from '@/utils/localStorageHelper'
 
 const checkMessageStatusInterval = 1000 * 60 * 15 // msec
 const flushSessionLogInterval = 1000 * 60 // msec
@@ -103,8 +116,14 @@ export default {
     sessionLogFlushTimer: null,
   }),
   computed: {
+    realProfile() {
+      return psStore.getters.getDelegateProfile ?? psStore.getters.getProfile
+    },
     profileImage() {
       return this.myProfile?.image
+    },
+    isDelegationActive() {
+      return psStore.getters.getDelegatorId != null
     },
     selectedNav: {
       get() {
@@ -140,7 +159,7 @@ export default {
       return uiStore.getters.isBackButtonVisible
     },
     isProfileManaged() {
-      return !!psStore.getters.getProfile?.id
+      return psStore.getters.getProfile?.id != null
     },
     isPassengerOnly() {
       return this.myProfile.userRole === constants.PROFILE_ROLE_PASSENGER
@@ -180,12 +199,12 @@ export default {
       // Only update if profile is (already) available
       // Otherwise save it once registered
       // console.log(`FCM token is: ${this.deviceFcmToken}`)
-      if (this.myProfile?.id) {
+      if (this.realProfile?.id) {
         // Just in case the FCM token arrives after fetching the profile
         msStore.actions.storeMyFcmToken()
       }
     },
-    myProfile(newProfile, oldProfile) {
+    realProfile(newProfile, oldProfile) {
       // console.log(`Profile: ${oldProfile?.id} --> ${newProfile?.id}`)
       if (newProfile?.id) {
         if (oldProfile?.id !== newProfile.id) {
@@ -214,23 +233,29 @@ export default {
     // so we can retrieve it later to update the profile. Local storage is needed because
     // when a session expires or when returning from an external source no FCM token will be on the url
     if (this.$route.query.fcm && typeof this.$route.query.fcm === 'string') {
-      localStorage.setItem('fcm', this.$route.query.fcm)
+      localStorageHelper.setValue(
+        constants.STORAGE_KEY_FCM_TOKEN,
+        this.$route.query.fcm
+      )
     } else if (!runningInsideFlutterApp2021()) {
       // This construction allows testing of the old-style parameter exchange and at the same time ensures
       // clearing old-stuff away.
       // Only the old app (version mid 2021) uses the local storage
-      localStorage.removeItem('fcm')
+      localStorageHelper.clearValue(constants.STORAGE_KEY_FCM_TOKEN)
     }
     if (this.$keycloak.authenticated) {
-      psStore.mutations.setUserToken(this.$keycloak.token)
-      // Fetch the FCM token from the localstorage (app version mid 2021) - for backward compatibility
-      if (localStorage.fcm) {
-        msStore.mutations.setDeviceFcmToken(localStorage.fcm)
+      psStore.actions.updateRealUser()
+      // Fetch the FCM token from the local storage (app version mid 2021) - for backward compatibility
+      if (localStorageHelper.hasValue(constants.STORAGE_KEY_FCM_TOKEN)) {
+        msStore.mutations.setDeviceFcmToken(
+          localStorageHelper.getValue(constants.STORAGE_KEY_FCM_TOKEN)
+        )
       }
       window.addEventListener('NetmobielFcmToken', this.onFcmTokenReceived)
       // Fetch the FCM token via message channel (since jan 2022 app)
       // console.log(`Request FCM token`)
       requestFcmToken()
+      requestCapabilities()
       // The FCM token is received before or after receiving the profile (if any), and also when still registering
       // The FCM token will be stored in the following situations:
       // 1. When receiving the updated FCM token
@@ -244,11 +269,16 @@ export default {
         .fetchMyProfileStatus()
         .then(() => psStore.actions.fetchMyProfile())
         .then(() => this.fetchMyCar())
+        .then(() => this.switchToDelegator())
+        .then(() => msStore.actions.fetchMyStatus())
         .catch(() => {
-          // Ignore the errors, they are resolved elsewhere.
+          // eslint-disable-next-line
+          console.warn(`App: Unexpected reject in startup!`)
+          uiStore.actions.queueErrorNotification(
+            `Een onbekende fout is opgetreden. Mogelijk moet de app opnieuw gestart worden.`
+          )
         })
-      // Get the message status
-      msStore.actions.fetchMyStatus()
+        .finally(() => uiStore.mutations.setAppLoadingCompleted())
       this.messageStatusTimer = setInterval(() => {
         msStore.actions.fetchMyStatus()
       }, checkMessageStatusInterval)
@@ -275,6 +305,23 @@ export default {
     }
   },
   methods: {
+    switchToDelegator() {
+      if (localStorageHelper.hasValue(constants.STORAGE_KEY_DELEGATOR_ID)) {
+        if (psStore.getters.canActAsDelegate) {
+          // The user has the right permission to act as delegate
+          psStore.actions.switchProfile({
+            delegatorId: localStorageHelper.getValue(
+              constants.STORAGE_KEY_DELEGATOR_ID
+            ),
+          })
+          return psStore.actions.fetchMyProfile()
+        } else {
+          // No right. Clear away old delegator stuff
+          localStorageHelper.clearValue(constants.STORAGE_KEY_DELEGATOR_ID)
+        }
+      }
+      return Promise.resolve()
+    },
     onPushMessageReceived(evt) {
       const detail = evt.detail
       // console.log(
@@ -299,8 +346,10 @@ export default {
       msStore.mutations.setDeviceFcmToken(fcmToken)
     },
     onProfileImageClick() {
-      // TODO: Only navigate to delegate if role is delegate (route to profile otherwise)
-      const route = '/profile/delegate'
+      let route = '/profile'
+      if (psStore.getters.canActAsDelegate) {
+        route = '/delegators'
+      }
       // Do not route when we are already on the page.
       // (vue router will throw a NavigationDuplicated error)
       if (this.$route.path !== route) {

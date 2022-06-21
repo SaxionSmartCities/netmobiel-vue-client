@@ -1,8 +1,8 @@
 <template>
   <content-pane>
-    <v-row>
+    <v-row dense>
       <v-col>
-        <h3>Wacht op bevestiging</h3>
+        <h1>Wacht op bevestiging</h1>
       </v-col>
     </v-row>
     <v-row>
@@ -27,7 +27,7 @@ import ContentPane from '@/components/common/ContentPane.vue'
 import * as bsStore from '@/store/banker-service'
 import * as uiStore from '@/store/ui'
 
-// The return url from EMS pay, contains the project_id and the order_id
+// The return url from EMS pay, contains the project_id and the order_id as query parameters
 const pageUrl = new URL(location.href)
 const checkInterval = 1000 // msec
 const timeout = 5000 // msec

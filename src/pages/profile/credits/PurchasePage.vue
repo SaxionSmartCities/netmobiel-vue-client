@@ -85,6 +85,7 @@
 <script>
 import ContentPane from '@/components/common/ContentPane.vue'
 import * as bsStore from '@/store/banker-service'
+// import * as psStore from '@/store/profile-service'
 import * as uiStore from '@/store/ui'
 import config from '@/config/config'
 import { allowExternalLinks, creditAmountInEuro } from '@/utils/Utils'
@@ -125,10 +126,14 @@ export default {
       return creditAmountInEuro(amountInCredits, this.exchangeRate)
     },
     startMoneyTransfer() {
+      let path = 'wait-for-deposit-confirmation'
+      // if (psStore.getters.getDelegatorId != null) {
+      //   path += `/${psStore.getters.getDelegatorId}`
+      // }
       const deposit = {
         description: this.description,
         amountCredits: this.creditAmount,
-        returnUrl: new URL('wait-for-deposit-confirmation', location.href),
+        returnUrl: new URL(path, location.href),
       }
       // Credits go to the user's personal account
       bsStore.actions.depositCreditsToMyAccount(deposit).then((data) => {

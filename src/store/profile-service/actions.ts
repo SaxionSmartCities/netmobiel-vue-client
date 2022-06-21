@@ -2,9 +2,11 @@ import axios, { AxiosError, AxiosRequestHeaders } from 'axios'
 import config from '@/config/config'
 import { BareActionContext, ModuleBuilder } from 'vuex-typex'
 import {
+  Delegation,
   Profile,
   ProfileState,
   PublicProfile,
+  User,
   UserSession,
 } from '@/store/profile-service/types'
 import { RootState } from '@/store/Rootstate'
@@ -14,6 +16,7 @@ import { generateHeaders } from '@/utils/Utils'
 import { Page } from '@/store/types'
 import { emptyPage } from '@/store/storeHelper'
 import moment from 'moment'
+import Vue from 'vue'
 
 type ActionContext = BareActionContext<ProfileState, RootState>
 
@@ -22,6 +25,22 @@ const { PROFILE_BASE_URL, IMAGES_BASE_URL, GRAVITEE_PROFILE_SERVICE_API_KEY } =
 
 function createAbsoluteImageUrl(imageName: string | null | undefined): string {
   return imageName ? `${IMAGES_BASE_URL}/${imageName}` : ''
+}
+
+function updateRealUser(context: ActionContext) {
+  const kc: any = Vue.prototype.$keycloak
+  // Update only if issues time has changed
+  if (kc?.tokenParsed['iat'] !== getters.getRealUser?.issuedAt) {
+    const user: User = {
+      issuedAt: kc.tokenParsed['iat'],
+      managedIdentity: kc.tokenParsed['sub'],
+      givenName: kc.tokenParsed['given_name'],
+      familyName: kc.tokenParsed['family_name'],
+      email: kc.tokenParsed['email'],
+      fullName: kc.tokenParsed['name'],
+    }
+    mutations.setUser(user)
+  }
 }
 
 function createProfile(
@@ -56,7 +75,7 @@ function createProfile(
 }
 
 function fetchMyProfileStatus(context: ActionContext) {
-  const delegatorId = context.state.user.delegatorId
+  const delegatorId = context.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/profiles/me/status`
   return axios
     .get(URL, {
@@ -74,7 +93,7 @@ function fetchMyProfileStatus(context: ActionContext) {
 }
 
 function fetchMyProfile(context: ActionContext) {
-  const delegatorId = context.state.user.delegatorId
+  const delegatorId = context.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/profiles/me`
   return axios
     .get(URL, {
@@ -141,13 +160,18 @@ function fetchPublicProfile(context: ActionContext, { profileId }: any) {
     })
 }
 
-function fetchProfiles(context: ActionContext, { keyword }: any) {
-  const URL = `${PROFILE_BASE_URL}/profiles?text=${keyword}`
+function fetchProfiles(context: ActionContext, { keyword, role }: any) {
+  const URL = `${PROFILE_BASE_URL}/profiles`
   axios
     .get(URL, {
       headers: generateHeaders(
         GRAVITEE_PROFILE_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
+      params: {
+        text: keyword,
+        role: role,
+        details: false,
+      },
     })
     .then((response) => {
       if (response.status === 200) {
@@ -166,7 +190,7 @@ function fetchProfiles(context: ActionContext, { keyword }: any) {
 }
 
 function fetchMyFavoriteLocations(context: ActionContext) {
-  const delegatorId = context.state.user.delegatorId
+  const delegatorId = context.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/profiles/me/places`
   return axios
     .get(URL, {
@@ -192,11 +216,13 @@ function fetchMyFavoriteLocations(context: ActionContext) {
 }
 
 function storeMyFavoriteLocation(context: ActionContext, { place }: any) {
+  const delegatorId = context.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/profiles/me/places`
   return axios
     .post(URL, place, {
       headers: generateHeaders(
-        GRAVITEE_PROFILE_SERVICE_API_KEY
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
       ) as AxiosRequestHeaders,
     })
     .then((response) => {
@@ -210,11 +236,13 @@ function storeMyFavoriteLocation(context: ActionContext, { place }: any) {
 }
 
 function deleteMyFavoriteLocation(context: ActionContext, { placeId }: any) {
+  const delegatorId = context.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/profiles/me/places/${placeId}`
   return axios
     .delete(URL, {
       headers: generateHeaders(
-        GRAVITEE_PROFILE_SERVICE_API_KEY
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
       ) as AxiosRequestHeaders,
     })
     .then((response) => {
@@ -230,7 +258,7 @@ function deleteMyFavoriteLocation(context: ActionContext, { placeId }: any) {
 function storeMySearchPreferences(context: ActionContext, payload: any) {
   // Insert payload into the profile object.
   const profile = {
-    ...context.state.user.profile,
+    ...context.state.profile,
     searchPreferences: { ...payload },
   }
   return updateMyProfile(context, profile)
@@ -239,18 +267,20 @@ function storeMySearchPreferences(context: ActionContext, payload: any) {
 function storeMyRidePreferences(context: ActionContext, payload: any) {
   // Insert payload into the profile object.
   const profile = {
-    ...context.state.user.profile,
+    ...context.state.profile,
     ridePlanOptions: { ...payload },
   }
   return updateMyProfile(context, profile)
 }
 
 function updateMyProfile(context: ActionContext, profile: Profile) {
+  const delegatorId = context.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/profiles/me`
   return axios
     .put(URL, profile, {
       headers: generateHeaders(
-        GRAVITEE_PROFILE_SERVICE_API_KEY
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
       ) as AxiosRequestHeaders,
     })
     .then((response) => {
@@ -269,6 +299,7 @@ function updateMyProfile(context: ActionContext, profile: Profile) {
 }
 
 function updateMyProfileImage(context: ActionContext, { image }: any) {
+  const delegatorId = context.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/profiles/me/image`
   return axios
     .put(
@@ -276,7 +307,8 @@ function updateMyProfileImage(context: ActionContext, { image }: any) {
       { image },
       {
         headers: generateHeaders(
-          GRAVITEE_PROFILE_SERVICE_API_KEY
+          GRAVITEE_PROFILE_SERVICE_API_KEY,
+          delegatorId
         ) as AxiosRequestHeaders,
       }
     )
@@ -299,6 +331,7 @@ function updateMyProfileImage(context: ActionContext, { image }: any) {
  * @returns {Array<Object>} returns Array of compliments in the response.data
  */
 function fetchUserCompliments(context: ActionContext, { receiverId }: any) {
+  const delegatorId = context.state.delegatorId
   const usr = getters.getPublicUsers.get(receiverId)
   if (usr && usr.compliments.data.length > 0) {
     return Promise.resolve(usr.compliments)
@@ -307,7 +340,8 @@ function fetchUserCompliments(context: ActionContext, { receiverId }: any) {
   return axios
     .get(URL, {
       headers: generateHeaders(
-        GRAVITEE_PROFILE_SERVICE_API_KEY
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
       ) as AxiosRequestHeaders,
       params: { receiverId: receiverId },
     })
@@ -361,6 +395,7 @@ function addUserCompliments(
   actionContext: ActionContext,
   { receiver, context, compliments }: any
 ) {
+  const delegatorId = actionContext.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/compliments`
   return axios
     .post(
@@ -368,7 +403,8 @@ function addUserCompliments(
       { receiver, context, compliments },
       {
         headers: generateHeaders(
-          GRAVITEE_PROFILE_SERVICE_API_KEY
+          GRAVITEE_PROFILE_SERVICE_API_KEY,
+          delegatorId
         ) as AxiosRequestHeaders,
       }
     )
@@ -393,11 +429,13 @@ function removeUserCompliments(
   actionContext: ActionContext,
   { receiverId, complimentId }: any
 ) {
+  const delegatorId = actionContext.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/compliments/${complimentId}`
   return axios
     .delete(URL, {
       headers: generateHeaders(
-        GRAVITEE_PROFILE_SERVICE_API_KEY
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
       ) as AxiosRequestHeaders,
     })
     .then((response) => {
@@ -419,6 +457,7 @@ function removeUserCompliments(
  * @returns {Array<Object>} Returns an Array of reviews in the response.data.reviews
  */
 function fetchUserReviews(context: ActionContext, { receiverId }: any) {
+  const delegatorId = context.state.delegatorId
   const usr = getters.getPublicUsers.get(receiverId)
   if (usr && usr.reviews.data.length > 0) {
     return Promise.resolve(usr.reviews)
@@ -427,7 +466,8 @@ function fetchUserReviews(context: ActionContext, { receiverId }: any) {
   return axios
     .get(URL, {
       headers: generateHeaders(
-        GRAVITEE_PROFILE_SERVICE_API_KEY
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
       ) as AxiosRequestHeaders,
       params: { receiverId: receiverId },
     })
@@ -459,6 +499,7 @@ function addUserReview(
   actionContext: ActionContext,
   { receiver, context, review }: any
 ) {
+  const delegatorId = actionContext.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/reviews`
   return axios
     .post(
@@ -466,7 +507,8 @@ function addUserReview(
       { receiver, context, review },
       {
         headers: generateHeaders(
-          GRAVITEE_PROFILE_SERVICE_API_KEY
+          GRAVITEE_PROFILE_SERVICE_API_KEY,
+          delegatorId
         ) as AxiosRequestHeaders,
       }
     )
@@ -491,11 +533,13 @@ function removeUserReview(
   actionContext: ActionContext,
   { receiverId, reviewId }: any
 ) {
+  const delegatorId = actionContext.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/reviews/${reviewId}`
   return axios
     .delete(URL, {
       headers: generateHeaders(
-        GRAVITEE_PROFILE_SERVICE_API_KEY
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
       ) as AxiosRequestHeaders,
     })
     .then((response) => {
@@ -509,18 +553,50 @@ function removeUserReview(
     })
 }
 
-function fetchDelegation(context: ActionContext, { delegationId }: any) {
+function fetchDelegation(context: ActionContext, delegationId: any) {
   const URL = `${PROFILE_BASE_URL}/delegations/${delegationId}`
-  // TODO: Implement logic.
+  return axios
+    .get(URL, {
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    .then((response) => {
+      mutations.setDelegation(response.data)
+      return response.status
+    })
+    .catch((error) => {
+      mutations.setDelegation(null)
+      return null
+    })
 }
 
-function storeDelegation(
+function createDelegationErrorMessage(
+  defaultMessage: string,
+  error: Error | AxiosError
+) {
+  let userMsg = defaultMessage
+  if (axios.isAxiosError(error)) {
+    if (error.response?.status === 400) {
+      const srvText = error.response.data.message
+      if (srvText?.includes('No phone number set')) {
+        userMsg = 'Gebruiker heeft geen telefoonnummer ingesteld'
+      } else if (srvText.includes('Not a valid phone number')) {
+        userMsg = 'Gebruiker heeft een ongeldig telefoonnummer'
+      } else if (srvText.includes('The activation code is invalid')) {
+        userMsg = 'De activeringscode is onjuist'
+      }
+    }
+  }
+  return userMsg
+}
+
+function requestDelegation(
   context: ActionContext,
   { delegateId, delegatorId }: any
 ) {
   const URL = `${PROFILE_BASE_URL}/delegations`
-  mutations.setSearchStatus('PENDING')
-  axios
+  return axios
     .post(
       URL,
       { delegateRef: delegateId, delegatorRef: delegatorId },
@@ -531,25 +607,49 @@ function storeDelegation(
       }
     )
     .then((response) => {
-      if (response.status === 201) {
-        uiStore.actions.queueInfoNotification(`Je machtiging is opgeslagen!`)
-        mutations.setSearchStatus('SUCCESS')
-      } else {
-        mutations.setSearchStatus('FAILED')
+      if (response.status !== 201) {
+        // eslint-disable-next-line
+        console.warn(`requestDelegation: Unexpected status ${response.status}`)
       }
+      uiStore.actions.queueInfoNotification(`Je machtiging is aangevraagd.`)
+      return response.headers.location
     })
-    .catch((error) => {
-      uiStore.actions.queueErrorNotification(
-        `Fout bij opslaan van de machtiging`
+    .catch((problem) => {
+      const msg = createDelegationErrorMessage(
+        'Fout bij het aanvragen van de machtiging',
+        problem
       )
-      mutations.setSearchStatus('FAILED')
+      uiStore.actions.queueErrorNotification(msg)
     })
 }
 
-function deleteDelegation(
-  context: ActionContext,
-  { delegateId, delegationId }: any
-) {
+function repeatRequestDelegation(context: ActionContext, delegationId: string) {
+  const URL = `${PROFILE_BASE_URL}/delegations/${delegationId}`
+  return axios
+    .put(URL, null, {
+      headers: generateHeaders(
+        GRAVITEE_PROFILE_SERVICE_API_KEY
+      ) as AxiosRequestHeaders,
+    })
+    .then((response) => {
+      if (response.status !== 204) {
+        // eslint-disable-next-line
+        console.warn(`repeatRequestDelegation: Unexpected status ${response.status}`)
+      }
+      uiStore.actions.queueInfoNotification(
+        `Je machtiging is opnieuw aangevraagd.`
+      )
+    })
+    .catch((problem) => {
+      const msg = createDelegationErrorMessage(
+        'Fout bij het opnieuw aanvragen van de machtiging',
+        problem
+      )
+      uiStore.actions.queueErrorNotification(msg)
+    })
+}
+
+function deleteDelegation(context: ActionContext, delegationId: string) {
   const URL = `${PROFILE_BASE_URL}/delegations/${delegationId}`
   return axios
     .delete(URL, {
@@ -560,43 +660,41 @@ function deleteDelegation(
     .then((response) => {
       if (response.status === 204) {
         uiStore.actions.queueInfoNotification(`Je machtiging is verwijderd!`)
-        fetchDelegations(context, { delegateId })
       }
+      return true
     })
     .catch((error) => {
       uiStore.actions.queueErrorNotification(
         `Fout bij het verwijderen van de machtiging`
       )
+      return false
     })
 }
 
-function fetchDelegations(context: ActionContext, { delegateId }: any) {
-  const URL = `${PROFILE_BASE_URL}/delegations?delegate=${delegateId}`
+function fetchDelegations(
+  context: ActionContext,
+  { delegateId, delegatorId, maxResults }: any
+) {
+  const URL = `${PROFILE_BASE_URL}/delegations`
   return axios
     .get(URL, {
       headers: generateHeaders(
         GRAVITEE_PROFILE_SERVICE_API_KEY
       ) as AxiosRequestHeaders,
+      params: {
+        delegate: delegateId,
+        delegator: delegatorId,
+        maxResults: maxResults ?? 50,
+      },
     })
     .then((response) => {
       // Turn relative image URLs into absolute URLs.
-      response.data.data.map((d: any) => {
-        if (d.delegate?.image) {
-          d.delegate.image = `${IMAGES_BASE_URL}/${d.delegate.image}`
-        }
-        if (d.delegator?.image) {
-          d.delegator.image = `${IMAGES_BASE_URL}/${d.delegator.image}`
-        }
+      const delegations = response.data
+      delegations.data.map((d: Delegation) => {
+        d.delegate.image = createAbsoluteImageUrl(d.delegate.image)
+        d.delegator.image = createAbsoluteImageUrl(d.delegator.image)
       })
-      // HACK: Add a delegation for your own account so that you are shown
-      // in the user list in the delegation overview page.
-      let profile = context.state.user.delegateProfile
-      if (!profile) {
-        profile = context.state.user.profile
-      }
-      const own_delegation = { id: -1, delegate: profile, delegator: profile }
-      response.data.data.splice(0, 0, own_delegation)
-      mutations.setDelegations(response.data.data)
+      mutations.setDelegations(delegations)
     })
     .catch((error) => {
       uiStore.actions.queueErrorNotification(
@@ -605,15 +703,49 @@ function fetchDelegations(context: ActionContext, { delegateId }: any) {
     })
 }
 
+function activateDelegation(
+  context: ActionContext,
+  { delegationId, activationCode }: any
+) {
+  const URL = `${PROFILE_BASE_URL}/delegations/${delegationId}/activations`
+  return axios
+    .post(
+      URL,
+      { activationCode },
+      {
+        headers: generateHeaders(
+          GRAVITEE_PROFILE_SERVICE_API_KEY
+        ) as AxiosRequestHeaders,
+      }
+    )
+    .then((response) => {
+      if (response.status !== 204) {
+        // eslint-disable-next-line
+        console.warn(`activateDelegation: Unexpected status ${response.status}`)
+      }
+      uiStore.actions.queueInfoNotification(`Je machtiging is actief.`)
+      return response.headers.location
+    })
+    .catch((problem) => {
+      const msg = createDelegationErrorMessage(
+        'Fout bij het activeren van de machtiging',
+        problem
+      )
+      uiStore.actions.queueErrorNotification(msg)
+    })
+}
+
 function switchProfile(context: ActionContext, { delegatorId }: any) {
   // Is we don't have a delegate profile stored yet we will assume the
-  // current user profile is the delegate.
-  if (context.state.user.delegateProfile == null) {
-    const profile = { ...context.state.user.profile }
+  // current user profile is the delegate. Otherwise do not touch.
+  if (context.state.delegateProfile == null) {
+    // A copy or should it be a deep copy?
+    const profile = { ...context.state.profile }
     mutations.setDelegateProfile(profile)
   }
+  // Switch on the delegation
   mutations.setDelegatorId(delegatorId)
-  fetchMyProfile(context)
+  // Now caller must refresh GUI!
 }
 
 // ==========  SURVEY  =============
@@ -625,7 +757,7 @@ function switchProfile(context: ActionContext, { delegatorId }: any) {
  * @param context
  */
 function createSurveyInvitation(context: ActionContext) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/survey-interactions`
   return axios
     .post(URL, null, {
@@ -648,7 +780,7 @@ function createSurveyInvitation(context: ActionContext) {
 }
 
 function fetchSurveys(context: ActionContext, params: string) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/survey-interactions`
   return axios
     .get(URL, {
@@ -674,7 +806,7 @@ function fetchSurveys(context: ActionContext, params: string) {
 }
 
 function fetchSurvey(context: ActionContext, id: string) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/survey-interactions/${id}`
   return axios
     .get(URL, {
@@ -700,7 +832,7 @@ function fetchSurvey(context: ActionContext, id: string) {
 }
 
 function markSurveyRedirection(context: ActionContext, surveyId: string) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/survey-interactions/${surveyId}/on-redirect`
   return axios
     .put(URL, null, {
@@ -718,7 +850,7 @@ function markSurveyRedirection(context: ActionContext, surveyId: string) {
 }
 
 function markSurveySubmitted(context: ActionContext, surveyId: string) {
-  const delegatorId = context.rootState.ps.user.delegatorId
+  const delegatorId = context.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/survey-interactions/${surveyId}/on-submit`
   return axios
     .put(URL, null, {
@@ -761,6 +893,7 @@ function closeSessionLog(context: ActionContext) {
 }
 
 function flushSessionLog(context: ActionContext, isFinal: boolean = false) {
+  const delegatorId = context.state.delegatorId
   const URL = `${PROFILE_BASE_URL}/profiles/me/session-log`
   if (
     context.state.sessionLog == null ||
@@ -776,7 +909,8 @@ function flushSessionLog(context: ActionContext, isFinal: boolean = false) {
   return axios
     .post(URL, localLog, {
       headers: generateHeaders(
-        GRAVITEE_PROFILE_SERVICE_API_KEY
+        GRAVITEE_PROFILE_SERVICE_API_KEY,
+        delegatorId
       ) as AxiosRequestHeaders,
       params: {
         final: isFinal || undefined,
@@ -796,6 +930,8 @@ export const buildActions = (
   psBuilder: ModuleBuilder<ProfileState, RootState>
 ) => {
   return {
+    updateRealUser: psBuilder.dispatch(updateRealUser),
+
     createProfile: psBuilder.dispatch(createProfile),
     fetchMyProfileStatus: psBuilder.dispatch(fetchMyProfileStatus),
     fetchMyProfile: psBuilder.dispatch(fetchMyProfile),
@@ -821,7 +957,10 @@ export const buildActions = (
     removeUserReview: psBuilder.dispatch(removeUserReview),
 
     fetchDelegations: psBuilder.dispatch(fetchDelegations),
-    storeDelegation: psBuilder.dispatch(storeDelegation),
+    fetchDelegation: psBuilder.dispatch(fetchDelegation),
+    requestDelegation: psBuilder.dispatch(requestDelegation),
+    repeatRequestDelegation: psBuilder.dispatch(repeatRequestDelegation),
+    activateDelegation: psBuilder.dispatch(activateDelegation),
     deleteDelegation: psBuilder.dispatch(deleteDelegation),
     switchProfile: psBuilder.dispatch(switchProfile),
 

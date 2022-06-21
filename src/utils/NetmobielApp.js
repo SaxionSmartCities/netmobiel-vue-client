@@ -1,5 +1,7 @@
 /* global NetmobielAppRequest */
 
+export let netmobielCapabilities = {}
+
 /**
  * Interface with the Flutter Netmobiel App to retrieve the Firebase
  * Cloud Messaging (FCM) token. The API comprises the name of
@@ -17,7 +19,7 @@
 export function mightHaveFcmToken() {
   return (
     Object.prototype.hasOwnProperty.call(window, 'NetmobielAppRequest') &&
-    !!NetmobielAppRequest.postMessage
+    NetmobielAppRequest.postMessage != null
   )
 }
 
@@ -48,6 +50,39 @@ window.setNetmobielFcmToken = function (token) {
     },
   })
   window.dispatchEvent(fcmEvent)
+}
+
+/**
+ * Requests the flutter app to send in the capabilities.
+ * Only in newer version of the netmobiel app (>= 1.3.0)
+ * @returns {boolean}
+ */
+export function requestCapabilities() {
+  const waitForToken = mightHaveFcmToken()
+  if (waitForToken) {
+    NetmobielAppRequest.postMessage('capabilities')
+  }
+  return waitForToken
+}
+
+/**
+ * Setter (called from the Flutter app) for passing the capabilities to the web
+ * application inside the Flutter App. The capabilities are set in thge global
+ * netmobielCapabilities.
+ * @param canUpload The app can upload images
+ * @param canHandleExternalUrl The app can handle an external url
+ */
+window.setNetmobielCapabilities = function (
+  canUpload = false,
+  canHandleExternalUrl = false
+) {
+  // console.log(
+  //   `Capabilities: canUpload ${typeof canUpload} ${canUpload} canHandleExternalUrl ${typeof canHandleExternalUrl} ${canHandleExternalUrl}`
+  // )
+  netmobielCapabilities = {
+    canUpload,
+    canHandleExternalUrl,
+  }
 }
 
 /**

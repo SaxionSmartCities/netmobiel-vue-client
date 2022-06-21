@@ -4,81 +4,53 @@ import { Page } from '@/store/types'
 export class ProfileState {
   complimentTypes: ComplimentType[] = []
   publicUsers: Map<string, ExternalUser> = new Map()
-  user: User = {
-    accessToken: null,
-    // Attributes from (or derived from) the token
-    managedIdentity: null,
-    givenName: '',
-    familyName: '',
-    fullName: '',
-    email: '',
-    roles: [],
-    // Profile as stored in profile service.
-    profile: {
-      id: null,
-      age: null,
-      consent: {
-        acceptedTerms: false,
-        olderThanSixteen: false,
-        safetyGuidelines: false,
-      },
-      dateOfBirth: null,
-      firstName: null,
-      lastName: null,
-      image: null,
-      email: null,
-      phoneNumber: null,
-      userRole: null,
-      actingRole: null,
-      address: null,
-      searchPreferences: null,
-      ridePlanOptions: null,
-      notificationOptions: {
-        tripConfirmations: true,
-        tripUpdates: true,
-        tripReminders: true,
-        messages: true,
-        shoutouts: true,
-      },
-      interests: [],
+  // User as authenticated by Keycloak
+  realUser: User | null = null
+  // Profile as stored in profile service.
+  profile: Profile = {
+    id: null,
+    age: null,
+    consent: {
+      acceptedTerms: false,
+      olderThanSixteen: false,
+      safetyGuidelines: false,
     },
-    favoriteLocations: emptyPage,
-    rating: 2,
-    maxRating: 3,
-    delegatorId: null,
-    delegateProfile: null,
-    delegations: [],
-    privacySecurity: [
-      { name: 'Gebruik mijn locatie tijdens het reizen', value: false },
-      { name: 'Deel reisdata met Netmobiel', value: false },
-      { name: 'Verberg mijn gegevens voor anderen', value: false },
-    ],
-    tripOptions: [{ name: 'Ik bied ritten aan', value: false }],
-    notificationOptions: [
-      { name: 'Bevestiging nieuwe rit', value: true },
-      { name: 'Wijziging bewaarde rit', value: true },
-      { name: 'Herinnering voor aanvang rit', value: false },
-      { name: 'Nieuw persoonlijke bericht', value: true },
-      { name: 'Oproepen uit de community', value: false },
-    ],
-    reviews: [
-      { name: 'Beoordeel je rit', value: true },
-      { name: 'Deel mijn beoordelingen met anderen', value: false },
-    ],
-    credits: {
-      creditAmount: 0,
-      creditHistory: [],
+    dateOfBirth: null,
+    firstName: null,
+    lastName: null,
+    image: null,
+    email: null,
+    phoneNumber: null,
+    userRole: null,
+    actingRole: null,
+    address: null,
+    searchPreferences: null,
+    ridePlanOptions: null,
+    notificationOptions: {
+      tripConfirmations: true,
+      tripUpdates: true,
+      tripReminders: true,
+      messages: true,
+      shoutouts: true,
     },
-    surveyInteraction: null,
+    interests: [],
   }
+  favoriteLocations: Page<Place> = emptyPage
+  // The current delegator on behalf of whom the app is used
+  delegatorId: string | null = null
+  // The original profile of the authenticated user (the delegate)
+  delegateProfile: Profile | null = null
+  delegations: Page<Delegation> = emptyPage
+  delegation: Delegation | null = null
+  surveyInteraction: SurveyInteraction | null = null
   search: ProfileSearch = {
     keyword: '',
-    status: 'UNSUBMITTED', // Or: 'PENDING', 'SUCCESS', 'FAILED'
     results: emptyPage,
   }
   version: Version | null = null
   sessionLog: UserSession | null = null
 }
+
 export const emptyPublicUser: ExternalUser = {
   profile: {
     id: null,
@@ -92,6 +64,18 @@ export const emptyPublicUser: ExternalUser = {
   compliments: emptyPage,
   reviews: emptyPage,
 }
+
+// Keycloak user from access token
+export interface User {
+  // Access token issue time stamp
+  issuedAt: number
+  managedIdentity: string
+  givenName: string
+  familyName: string
+  fullName: string
+  email: string
+}
+
 export interface ExternalUser {
   profile: PublicProfile
   compliments: Page<Compliment>
@@ -130,31 +114,6 @@ export interface Review {
   published?: string
 }
 
-export interface User {
-  // Access token
-  accessToken: string | null
-  managedIdentity: string | null
-  givenName: string
-  familyName: string
-  fullName: string
-  email: string
-  roles: string[]
-  // other
-  rating: number
-  maxRating: number
-  privacySecurity: NameValue[]
-  tripOptions: NameValue[]
-  notificationOptions: NameValue[]
-  favoriteLocations: Page<Place>
-  reviews: NameValue[]
-  credits: Credits
-  profile: Profile
-  delegatorId: string | null
-  delegateProfile: Profile | null
-  delegations: Delegation[]
-  surveyInteraction: SurveyInteraction | null
-}
-
 export interface PublicProfile {
   // The id is the managed identity!
   id: string | null
@@ -164,6 +123,8 @@ export interface PublicProfile {
   lastName: string | null
   address: Address | null
   interests: string[] | []
+  // Only present in the profile search list for searching delegators
+  managed?: boolean
 }
 
 export interface Profile extends PublicProfile {
@@ -182,7 +143,6 @@ export interface Profile extends PublicProfile {
 
 export interface ProfileSearch {
   keyword: string
-  status: string
   results: Page<PublicProfile>
 }
 
@@ -241,24 +201,18 @@ export interface NotificationOptions {
   shoutouts: boolean
 }
 
-export interface Credits {
-  creditAmount: number
-  creditHistory: any[]
-}
-
-export interface NameValue {
-  name: string
-  value: boolean
-}
-
 export interface Delegation {
-  id: number
-  activationTime: string
+  activationCode: string
+  activationCodeSentTime: string
+  activationCodeTTL: number
+  activationTime: string | null
+  delegate: Profile
   delegateRef: string
+  delegator: Profile
   delegatorRef: string
-  revocationTime: string
+  id: number
+  revocationTime: string | null
   submissionTime: string
-  transferCode: string
 }
 
 export interface Survey {

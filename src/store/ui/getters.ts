@@ -31,6 +31,10 @@ export const buildGetters = (builder: ModuleBuilder<UiState, RootState>) => {
     return state.updateMessages
   }, 'getUpdateMessages')
 
+  const isAppLoaded = builder.read((state: UiState) => {
+    return state.appLoaded
+  }, 'isAppLoaded')
+
   return {
     get isHeaderVisible() {
       return isHeaderVisible()
@@ -52,6 +56,9 @@ export const buildGetters = (builder: ModuleBuilder<UiState, RootState>) => {
     },
     get getUpdateMessages() {
       return getUpdateMessages()
+    },
+    get isAppLoaded() {
+      return isAppLoaded()
     },
   }
 }
