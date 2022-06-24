@@ -29,19 +29,6 @@
           </span>
         </template>
       </tab-bar>
-      <slide-show-cancelled-trips
-        v-if="isPassengerView && cancelledTrips.totalCount > 0"
-        :trips="cancelledTrips.data"
-      >
-        <template #card="{ trip }">
-          <travel-card
-            :trip-id="trip.id"
-            :itinerary="trip.itinerary"
-            class="trip-card"
-            @on-trip-selected="onTripSelected"
-          />
-        </template>
-      </slide-show-cancelled-trips>
     </template>
     <v-row v-if="isPassengerView" dense>
       <v-col class="pa-1">
@@ -174,14 +161,12 @@ import { beforeRouteLeave, beforeRouteEnter } from '@/utils/navigation.js'
 import * as csStore from '@/store/carpool-service'
 import * as psStore from '@/store/profile-service'
 import * as isStore from '@/store/itinerary-service'
-import SlideShowCancelledTrips from '@/components/other/SlideShowCancelledTrips'
 import GroupedCardList from '@/components/common/GroupedCardList'
 
 export default {
   name: 'TripsOverviewPage',
   components: {
     GroupedCardList,
-    SlideShowCancelledTrips,
     TabBar,
     ContentPane,
     TravelCard,
@@ -219,7 +204,6 @@ export default {
     ...{
       plannedTrips: () => isStore.getters.getPlannedTrips,
       pastTrips: () => isStore.getters.getPastTrips,
-      cancelledTrips: () => isStore.getters.getCancelledTrips,
       plannedRides: () => csStore.getters.getPlannedRides,
       pastRides: () => csStore.getters.getPastRides,
     },
@@ -289,7 +273,7 @@ export default {
     },
     fetchPlannedTrips(offset = 0) {
       if (offset === 0 || offset < this.plannedTrips.totalCount) {
-        isStore.actions.fetchTrips({
+        isStore.actions.fetchPlannedTrips({
           maxResults: this.maxResults,
           offset: offset,
           since: this.requestTime,
@@ -298,8 +282,7 @@ export default {
     },
     fetchPastTrips(offset = 0) {
       if (offset === 0 || offset < this.pastTrips.totalCount) {
-        isStore.actions.fetchTrips({
-          pastTrips: true,
+        isStore.actions.fetchPastTrips({
           maxResults: this.maxResultsPastTrips,
           offset: offset,
           sortDir: 'DESC',
@@ -309,7 +292,7 @@ export default {
     },
     fetchPlannedRides(offset = 0) {
       if (offset === 0 || offset < this.plannedRides.totalCount) {
-        csStore.actions.fetchRides({
+        csStore.actions.fetchPlannedRides({
           offset: offset,
           maxResults: this.maxResults,
           since: this.requestTime,
@@ -318,8 +301,7 @@ export default {
     },
     fetchPastRides(offset = 0) {
       if (offset === 0 || offset < this.pastRides.totalCount) {
-        csStore.actions.fetchRides({
-          pastRides: true,
+        csStore.actions.fetchPastRides({
           offset: offset,
           maxResults: this.maxResultsPastRides,
           sortDir: 'DESC',

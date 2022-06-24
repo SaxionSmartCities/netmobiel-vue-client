@@ -80,9 +80,7 @@ export default {
         const reisduur = `${Math.round(duration / 60)} minuten`
         result.push({ label: 'Reisduur', value: reisduur })
       }
-      const auto = car
-        ? `${this.ride.car.brand} ${this.ride.car.model}`
-        : 'Onbekend'
+      const auto = car ? `${car.brand} ${car.model}` : 'Onbekend'
       result.push({ label: 'Auto', value: auto })
       result.push({
         label: 'Stoelen over',
@@ -101,7 +99,16 @@ export default {
               value: `${booking.fareInCredits} credits`,
             })
           }
-          if (
+          if (this.ride?.state === 'VALIDATING' && booking.confirmed == null) {
+            result.push({
+              label: 'Bevestiging',
+              value: {
+                path: `/rideConfirm/${this.ride.rideRef}`,
+                label: 'Bevestig rit',
+              },
+              renderingComponent: 'CallToAction',
+            })
+          } else if (
             this.ride?.state === 'VALIDATING' ||
             this.ride?.state === 'COMPLETED'
           ) {

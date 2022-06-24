@@ -19,6 +19,12 @@
         <v-col v-else-if="item.renderingComponent === 'CarViewer'" class="pl-3">
           <car-viewer :selected-car="item.value" />
         </v-col>
+        <v-col
+          v-else-if="item.renderingComponent === 'CallToAction'"
+          class="pl-3"
+        >
+          <call-to-action :cta="item.value" />
+        </v-col>
         <v-col v-else class="pl-3">
           {{ item.value }}
         </v-col>
@@ -31,10 +37,11 @@
 import BookingList from '@/components/common/BookingList.vue'
 import RecurrenceViewer from '@/components/common/RecurrenceViewer.vue'
 import CarViewer from '@/components/common/CarViewer.vue'
+import CallToAction from '@/components/common/CallToAction.vue'
 
 export default {
   name: 'ItinerarySummaryList',
-  components: { BookingList, RecurrenceViewer, CarViewer },
+  components: { CallToAction, BookingList, RecurrenceViewer, CarViewer },
   props: {
     items: { type: Array, default: () => [] },
   },

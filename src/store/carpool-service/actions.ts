@@ -206,17 +206,19 @@ function updateRide(context: ActionContext, payload: any) {
 
 function fetchRides(
   context: ActionContext,
-  { pastRides, offset, maxResults, until, since, sortDir }: any
+  { offset, maxResults, until, since, state, skipCancelled, sortDir }: any
 ) {
   const URL = `${RIDESHARE_BASE_URL}/rides`
   const params: any = {
     maxResults: maxResults ?? 10,
     offset: offset ?? 0,
-    until: until,
-    since: since,
-    sortDir: sortDir,
+    until,
+    since,
+    state,
+    skipCancelled,
+    sortDir,
   }
-  axios
+  return axios
     .get(URL, {
       headers: generateHeaders(
         GRAVITEE_RIDESHARE_SERVICE_API_KEY
@@ -224,17 +226,46 @@ function fetchRides(
       params: params,
     })
     .then(function (resp) {
-      if (pastRides) {
-        mutations.setPastRides(resp.data)
-      } else {
-        mutations.setPlannedRides(resp.data)
-      }
+      return resp.data
     })
     .catch(function (error) {
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van uw rit-aanbod.'
       )
+      return null
     })
+}
+
+function fetchPastRides(context: ActionContext, params: any) {
+  return fetchRides(context, params).then((data) => {
+    if (data) {
+      mutations.setPastRides(data)
+    }
+  })
+}
+
+function fetchPlannedRides(context: ActionContext, params: any) {
+  return fetchRides(context, params).then((data) => {
+    if (data) {
+      mutations.setPlannedRides(data)
+    }
+  })
+}
+
+function fetchValidatingRides(
+  context: ActionContext,
+  { offset, maxResults }: any
+) {
+  const params: any = {
+    state: 'VALIDATING',
+    maxResults,
+    offset,
+  }
+  return fetchRides(context, params).then((data) => {
+    if (data) {
+      mutations.setValidatingRides(data)
+    }
+  })
 }
 
 function fetchRide(context: ActionContext, payload: any) {
@@ -360,45 +391,6 @@ function deleteRide(context: ActionContext, payload: any) {
     })
 }
 
-/**
- * Fetch the rides of the driver (i.e., the caller) having a
- * booking state 'PROPOSED'
- * @param context Store context
- * @param offset Offset in the list to retrieve
- * @param maxResults The number of results
- * @param until limit the list to rides departing before this time
- * @param since limit the list to rides departing after this time
- * @param sortDir the direction to sort the list.
- */
-function fetchRideProposals(
-  context: ActionContext,
-  { offset, maxResults, until, since, sortDir }: any
-) {
-  const URL = `${RIDESHARE_BASE_URL}/rides`
-  const params: any = {}
-  params.maxResults = maxResults ?? 10
-  params.offset = offset ?? 0
-  params.bookingState = 'PROPOSED'
-  params.until = until
-  params.since = since
-  params.sortDir = sortDir
-  axios
-    .get(URL, {
-      headers: generateHeaders(
-        GRAVITEE_RIDESHARE_SERVICE_API_KEY
-      ) as AxiosRequestHeaders,
-      params: params,
-    })
-    .then(function (resp) {
-      mutations.setProposedRides(resp.data)
-    })
-    .catch(function (error) {
-      uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van je rit-aanbod.'
-      )
-    })
-}
-
 function fetchBooking(context: ActionContext, bookingId: any) {
   const URL = `${RIDESHARE_BASE_URL}/bookings/${bookingId}`
   return axios
@@ -429,7 +421,9 @@ export const buildActions = (
     fetchCar: csBuilder.dispatch(fetchCar),
     removeMyCar: csBuilder.dispatch(removeMyCar),
 
-    fetchRides: csBuilder.dispatch(fetchRides),
+    fetchPastRides: csBuilder.dispatch(fetchPastRides),
+    fetchPlannedRides: csBuilder.dispatch(fetchPlannedRides),
+    fetchValidatingRides: csBuilder.dispatch(fetchValidatingRides),
     fetchRide: csBuilder.dispatch(fetchRide),
     submitRide: csBuilder.dispatch(submitRide),
     updateRide: csBuilder.dispatch(updateRide),
@@ -437,8 +431,6 @@ export const buildActions = (
     confirmBookedRide: csBuilder.dispatch(confirmBookedRide),
     rejectBookedRide: csBuilder.dispatch(rejectBookedRide),
     unconfirmBookedRide: csBuilder.dispatch(unconfirmBookedRide),
-
-    fetchRideProposals: csBuilder.dispatch(fetchRideProposals),
 
     fetchBooking: csBuilder.dispatch(fetchBooking),
   }

@@ -86,7 +86,7 @@
     </v-row>
     <v-row v-else-if="legToConfirm && legToConfirm.paymentState === 'PAID'">
       <v-col>
-        <v-alert type="warning">
+        <v-alert type="warning" icon="warning" text dense>
           Helaas, de betaling van deze rit is al doorgevoerd en kan alleen
           worden herzien door je chauffeur.
         </v-alert>
@@ -94,7 +94,9 @@
     </v-row>
     <v-row v-else-if="legToConfirm">
       <v-col>
-        <v-alert type="info">Deze rit moet nog bevestigd worden.</v-alert>
+        <v-alert type="info" icon="info" text dense
+          >Deze rit moet nog bevestigd worden.</v-alert
+        >
       </v-col>
     </v-row>
   </content-pane>

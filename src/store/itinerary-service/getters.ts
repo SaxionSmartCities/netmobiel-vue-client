@@ -41,9 +41,9 @@ export const buildGetters = (
     return state.pastTrips
   }, 'getPastTrips')
 
-  const getCancelledTrips = isBuilder.read((state: ItineraryState) => {
-    return state.cancelledTrips
-  }, 'getCancelledTrips')
+  const getValidatingTrips = isBuilder.read((state: ItineraryState) => {
+    return state.validatingTrips
+  }, 'getValidatingTrips')
 
   const getSelectedShoutOut = isBuilder.read((state: ItineraryState) => {
     return state.selectedShoutOut
@@ -100,8 +100,8 @@ export const buildGetters = (
     get getPastTrips() {
       return getPastTrips()
     },
-    get getCancelledTrips() {
-      return getCancelledTrips()
+    get getValidatingTrips() {
+      return getValidatingTrips()
     },
 
     // Shout-outs

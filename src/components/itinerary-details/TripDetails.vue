@@ -86,7 +86,19 @@ export default {
             label: 'Kosten',
             value: `${rsLeg.fareInCredits} credits`,
           })
-          if (rsLeg.state === 'VALIDATING' || rsLeg.state === 'COMPLETED') {
+          if (rsLeg.state === 'VALIDATING' && rsLeg.confirmed == null) {
+            result.push({
+              label: 'Meegereden',
+              value: {
+                path: `/tripConfirmPage/${this.trip.tripRef}`,
+                label: 'Bevestig rit',
+              },
+              renderingComponent: 'CallToAction',
+            })
+          } else if (
+            rsLeg.state === 'VALIDATING' ||
+            rsLeg.state === 'COMPLETED'
+          ) {
             const cv = this.confirmationText(rsLeg.confirmed)
             result.push({ label: 'Meegereden', value: cv })
             if (rsLeg.confirmed === false) {

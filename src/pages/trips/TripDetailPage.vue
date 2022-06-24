@@ -21,13 +21,13 @@
         />
       </v-col>
     </v-row>
-    <v-row v-if="isDisputed" dense>
+    <v-row v-if="trip && legToConfirm" dense>
       <v-col>
-        <v-alert type="warning">
-          Je chauffeur heeft aangegeven dat je wel hebt meegereden. Klopt dat?
-          Vraag eventueel opheldering bij de chauffeur door een berichtje te
-          sturen.
-        </v-alert>
+        <trip-validation-alert
+          :trip-state="trip.state"
+          :leg="legToConfirm"
+          :verbose="true"
+        />
       </v-col>
     </v-row>
     <v-row>
@@ -141,6 +141,7 @@ import * as isStore from '@/store/itinerary-service'
 import * as gsStore from '@/store/geocoder-service'
 import { geoLocationToPlace } from '@/utils/Utils'
 import * as UrnHelper from '@/utils/UrnHelper'
+import TripValidationAlert from '@/components/itinerary-details/TripValidationAlert'
 
 export default {
   name: 'TripDetailPage',
@@ -148,6 +149,7 @@ export default {
     ContentPane,
     TripDetails,
     ItineraryOptions,
+    TripValidationAlert,
   },
   props: {
     tripId: {
@@ -174,11 +176,13 @@ export default {
       return psStore.getters.getProfile
     },
     hasRideShareDriver() {
-      return this.rideshareDriver !== null
+      return this.rideshareDriver != null
     },
     containsRideshareLeg() {
-      return !!this.trip?.itinerary?.legs.find(
-        (leg) => leg.traverseMode === 'RIDESHARE'
+      return (
+        this.trip?.itinerary?.legs.find(
+          (leg) => leg.traverseMode === 'RIDESHARE'
+        ) != null
       )
     },
     isChatEnabled() {
@@ -217,11 +221,17 @@ export default {
     requiresConfirmation() {
       return !!this.legToConfirm
     },
+    needsReview() {
+      return this.trip.state === 'VALIDATING'
+    },
     isDisputed() {
       return (
         this.legToConfirm?.confirmed === false &&
         this.legToConfirm?.confirmedByProvider === true
       )
+    },
+    actionRequired() {
+      return this.needsReview || this.isDisputed
     },
     tripOptions() {
       let options = []

@@ -8,7 +8,9 @@
       </v-row>
       <v-row v-if="bankSimulated">
         <v-col>
-          <v-alert type="warning"> Banksimulatie is actief. </v-alert>
+          <v-alert type="warning" icon="warning" text dense>
+            Banksimulatie is actief.
+          </v-alert>
         </v-col>
       </v-row>
       <v-row dense>

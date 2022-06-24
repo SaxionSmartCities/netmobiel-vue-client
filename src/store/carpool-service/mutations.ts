@@ -36,8 +36,8 @@ function setPastRides(state: CarpoolState, rides: Page<Ride>) {
   state.pastRides = assignPageResults(state.pastRides, rides)
 }
 
-function setProposedRides(state: CarpoolState, rides: Page<Ride>) {
-  state.proposedRides = assignPageResults(state.proposedRides, rides)
+function setValidatingRides(state: CarpoolState, rides: Page<Ride>) {
+  state.validatingRides = assignPageResults(state.validatingRides, rides)
 }
 
 function setSelectedBooking(state: CarpoolState, payload: Booking | null) {
@@ -56,8 +56,8 @@ export const buildMutations = (
 
     setPlannedRides: csBuilder.commit(setPlannedRides),
     setPastRides: csBuilder.commit(setPastRides),
+    setValidatingRides: csBuilder.commit(setValidatingRides),
     setSelectedRide: csBuilder.commit(setSelectedRide),
-    setProposedRides: csBuilder.commit(setProposedRides),
     setSelectedBooking: csBuilder.commit(setSelectedBooking),
   }
 }

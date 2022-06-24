@@ -46,6 +46,37 @@
         </v-carousel>
       </v-col>
     </v-row>
+    <v-row
+      v-if="validatingTrips.length > 0 || validatingRides.length > 0"
+      dense
+    >
+      <v-col>
+        <h4 class="netmobiel">Actielijst</h4>
+      </v-col>
+    </v-row>
+    <v-row
+      v-if="validatingTrips.length > 0 || validatingRides.length > 0"
+      dense
+    >
+      <v-col>
+        <v-row v-for="trip in validatingTrips" :key="trip.id" xs12 dense>
+          <v-col>
+            <travel-card
+              :trip-id="trip.id"
+              :trip-state="trip.state"
+              :itinerary="trip.itinerary"
+              class="trip-card"
+              @on-trip-selected="onTripSelected"
+            />
+          </v-col>
+        </v-row>
+        <v-row v-for="ride in validatingRides" :key="ride.id" xs12>
+          <v-col>
+            <ride-card :ride="ride" @rideSelected="onRideSelected" />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
     <v-row dense>
       <v-col v-if="!isDrivingPassenger">
         <h4 class="netmobiel">Jouw ritten</h4>
@@ -80,6 +111,7 @@
           <v-col>
             <travel-card
               :trip-id="trip.id"
+              :trip-state="trip.state"
               :itinerary="trip.itinerary"
               class="trip-card"
               @on-trip-selected="onTripSelected"
@@ -157,6 +189,12 @@ export default {
       return isStore.getters.getPlannedTrips.data
         .filter((trip) => trip.state !== 'CANCELLED')
         .slice(0, 2)
+    },
+    validatingTrips() {
+      return isStore.getters.getValidatingTrips.data
+    },
+    validatingRides() {
+      return csStore.getters.getValidatingRides.data
     },
     timeOfDayGreeting() {
       let currentHour = moment().format('HH')
@@ -283,20 +321,30 @@ export default {
             })
           }
         })
-      //TODO: How many cards do we want? Get enough to skip the cancelled rides and trips
-      const maxCards = 8
+      this.requestTime = moment().format()
+      const maxCards = 2
       if (this.isDriverOnly || this.isDrivingPassenger) {
-        csStore.actions.fetchRides({
+        csStore.actions.fetchPlannedRides({
           offset: 0,
           maxResults: maxCards,
           since: this.requestTime,
+          skipCancelled: true,
+        })
+        csStore.actions.fetchValidatingRides({
+          offset: 0,
+          maxResults: 1,
         })
       }
       if (this.isPassengerOnly || this.isDrivingPassenger) {
-        isStore.actions.fetchTrips({
+        isStore.actions.fetchPlannedTrips({
           offset: 0,
           maxResults: maxCards,
           since: this.requestTime,
+          skipCancelled: true,
+        })
+        isStore.actions.fetchValidatingTrips({
+          offset: 0,
+          maxResults: 1,
         })
       }
     },

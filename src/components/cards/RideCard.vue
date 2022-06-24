@@ -19,9 +19,6 @@
               class="d-flex justify-space-between subtitle-1 font-weight-bold"
             >
               <span>Vertrek</span>
-              <v-icon v-if="problemDetected" color="orange"
-                >report_problem</v-icon
-              >
               <span
                 v-if="confirmedBookingCount > 0 || proposedBookingCount === 0"
                 class="booking-count"
@@ -64,6 +61,15 @@
               {{ ride.toPlace.label }}
             </v-col>
           </v-row>
+          <v-row v-if="confirmedBooking" dense class="font-weight-light">
+            <v-col>
+              <ride-validation-alert
+                :ride-state="ride.state"
+                :confirmed-booking="confirmedBooking"
+                :verbose="false"
+              />
+            </v-col>
+          </v-row>
         </v-card-text>
       </v-col>
       <v-card-actions>
@@ -74,7 +80,12 @@
 </template>
 <script>
 import moment from 'moment'
+import RideValidationAlert from '@/components/itinerary-details/RideValidationAlert'
 export default {
+  name: 'RideCard',
+  components: {
+    RideValidationAlert,
+  },
   props: {
     ride: { type: Object, required: true },
     relativeTime: { type: Boolean, default: true },
@@ -124,9 +135,6 @@ export default {
         this.confirmedBooking?.confirmed === true &&
         this.confirmedBooking?.confirmedByPassenger === false
       )
-    },
-    problemDetected() {
-      return this.needsReview && this.isDisputed
     },
   },
   methods: {
