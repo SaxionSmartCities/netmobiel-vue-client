@@ -255,11 +255,13 @@ export interface UserSession {
   userAgent: string
   readonly sessionStart?: string | undefined
   readonly sessionEnd?: string | undefined
-  pageVisits: PageVisit[]
+  userEvents: UserEvent[]
   readonly managedIdentity?: string | undefined
 }
 
-export interface PageVisit {
+export interface UserEvent {
   path: string
-  visitTime: string
+  eventTime: string
+  event: 'CTA_IN_VIEW' | 'CTA_SELECTED' | 'PAGE_VISIT'
+  arguments?: string | null
 }

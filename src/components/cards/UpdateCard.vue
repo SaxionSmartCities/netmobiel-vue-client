@@ -13,7 +13,7 @@
         rounded
         outlined
         color="primary"
-        :to="updateMessage.link.to"
+        @click="gotoPath(updateMessage)"
       >
         {{ updateMessage.link.label }}
       </v-btn>
@@ -22,7 +22,7 @@
         rounded
         outlined
         color="primary"
-        @click="redirect(updateMessage.link)"
+        @click="redirect(updateMessage)"
       >
         {{ updateMessage.link.label }}
       </v-btn>
@@ -31,6 +31,8 @@
 </template>
 
 <script>
+import * as psStore from '@/store/profile-service'
+
 export default {
   props: {
     updateMessage: {
@@ -44,7 +46,20 @@ export default {
     },
   },
   methods: {
-    redirect: function (link) {
+    logCtaSelected(msg) {
+      psStore.mutations.addUserEvent({
+        path: this.$route.path,
+        event: 'CTA_SELECTED',
+        arguments: `cta=${msg.id}`,
+      })
+    },
+    gotoPath: function (msg) {
+      this.logCtaSelected(msg)
+      this.$router.push({ path: msg.link.to })
+    },
+    redirect: function (msg) {
+      this.logCtaSelected(msg)
+      const link = msg.link
       let callback = () => Promise.resolve()
       if (typeof link.notification === 'function') {
         callback = link.notification

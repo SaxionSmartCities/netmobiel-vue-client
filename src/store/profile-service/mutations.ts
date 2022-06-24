@@ -3,7 +3,7 @@ import {
   ComplimentType,
   Delegation,
   emptyPublicUser,
-  PageVisit,
+  UserEvent,
   Place,
   Profile,
   ProfileState,
@@ -137,28 +137,28 @@ function setVersion(state: ProfileState, version: Version) {
   state.version = version
 }
 
-function addPageVisit(state: ProfileState, path: string) {
-  const pv: PageVisit = {
-    path,
-    visitTime: moment().toISOString(),
+function addUserEvent(state: ProfileState, event: UserEvent) {
+  const ev = { ...event }
+  if (!ev.eventTime) {
+    ev.eventTime = moment().toISOString()
   }
   if (state.sessionLog == null) {
     state.sessionLog = {
       userAgent: navigator.userAgent,
-      pageVisits: [],
+      userEvents: [],
     }
   }
-  state.sessionLog.pageVisits.push(pv)
+  state.sessionLog.userEvents.push(ev)
 }
 
 /**
- * Clears the session log by removing th efirst n entries from the log.
+ * Clears the session log by removing the first n entries from the log.
  * @param state
  * @param n
  */
-function clearPageVisits(state: ProfileState, n: number) {
+function cleaUserEvents(state: ProfileState, n: number) {
   if (state.sessionLog) {
-    state.sessionLog.pageVisits = state.sessionLog.pageVisits.slice(n)
+    state.sessionLog.userEvents = state.sessionLog.userEvents.slice(n)
   }
 }
 
@@ -185,7 +185,7 @@ export const buildMutations = (
     setSearchResults: psBuilder.commit(setSearchResults),
     setSurveyInteraction: psBuilder.commit(setSurveyInteraction),
     setVersion: psBuilder.commit(setVersion),
-    addPageVisit: psBuilder.commit(addPageVisit),
-    clearPageVisits: psBuilder.commit(clearPageVisits),
+    addUserEvent: psBuilder.commit(addUserEvent),
+    clearUserEvents: psBuilder.commit(cleaUserEvents),
   }
 }
