@@ -135,7 +135,7 @@
                 <v-expansion-panel-content>
                   <v-row no-gutters>
                     <v-col>
-                      <v-alert type="warning" color="orange">
+                      <v-alert type="warning" icon="warning" text dense>
                         Indien je de passagier hulp kunt bieden bij het in- en
                         uitstappen, dan kun je dat hier aangeven.
                       </v-alert>

@@ -16,18 +16,6 @@
         <ride-details :ride="ride" :show-map="showMap" @closeMap="onCloseMap" />
       </v-col>
     </v-row>
-    <v-row v-if="isDisputed" dense>
-      <v-col>
-        <v-alert type="warning">
-          Je passagier reed naar eigen zeggen niet mee:
-          <em>{{
-            passengerReasonText(confirmedBooking.confirmationReasonByPassenger)
-          }}</em
-          >. Klopt dat? Vraag eventueel opheldering bij de passagier door een
-          berichtje te sturen.
-        </v-alert>
-      </v-col>
-    </v-row>
     <v-row v-if="ride">
       <v-col>
         <itinerary-leg
@@ -36,6 +24,15 @@
           :leg="leg"
           :step="index"
           :part-of-passengers-itinerary="false"
+        />
+      </v-col>
+    </v-row>
+    <v-row v-if="ride && confirmedBooking" dense>
+      <v-col>
+        <ride-validation-alert
+          :ride-state="ride.state"
+          :confirmed-booking="confirmedBooking"
+          :verbose="true"
         />
       </v-col>
     </v-row>
@@ -133,6 +130,7 @@ import { geoLocationToPlace } from '@/utils/Utils'
 import CancelRideDialog from '@/components/dialogs/CancelRideDialog'
 import BookingSummary from '@/components/itinerary-details/RideBookingSummary'
 import constants from '@/constants/constants'
+import RideValidationAlert from '@/components/itinerary-details/RideValidationAlert'
 
 export default {
   name: 'RideDetailPage',
@@ -146,6 +144,7 @@ export default {
     ItineraryLeg,
     ItineraryOptions,
     RideDetails,
+    RideValidationAlert,
   },
   props: {
     rideId: {

@@ -259,18 +259,20 @@ function createTrip(context: ActionContext, itinerary: Itinerary) {
 
 function fetchTrips(
   context: ActionContext,
-  { pastTrips, offset, maxResults, until, since, sortDir }: any
+  { until, since, sortDir, state, skipCancelled, maxResults, offset }: any
 ) {
-  const params: any = {}
-  params['maxResults'] = maxResults || constants.defaultMaxResults
-  params['offset'] = offset || 0
-  until && (params['until'] = until)
-  since && (params['since'] = since)
-  sortDir && (params['sortDir'] = sortDir)
-
+  const params: any = {
+    maxResults: maxResults ?? constants.defaultMaxResults,
+    offset: offset ?? 0,
+    since,
+    until,
+    state,
+    skipCancelled,
+    sortDir,
+  }
   const delegatorId = context.rootState.ps.delegatorId
   const URL = `${PLANNER_BASE_URL}/trips`
-  axios
+  return axios
     .get(URL, {
       headers: generateHeaders(
         GRAVITEE_PLANNER_SERVICE_API_KEY,
@@ -279,41 +281,49 @@ function fetchTrips(
       params: params,
     })
     .then((response) => {
-      if (response.status === 200) {
-        if (pastTrips) {
-          mutations.setPastTrips(response.data)
-        } else {
-          mutations.setPlannedTrips(response.data)
-        }
-      }
+      return response.data
     })
     .catch((error) => {
       uiStore.actions.queueErrorNotification(
         'Fout bij het ophalen van je ritten.'
       )
+      return null
     })
 }
 
-function fetchCancelledTrips(context: ActionContext) {
+function fetchPastTrips(context: ActionContext, params: any) {
   const delegatorId = context.rootState.ps.delegatorId
-  const params: any = { state: 'CANCELLED' }
-  const URL = `${PLANNER_BASE_URL}/trips`
-  axios
-    .get(URL, {
-      headers: generateHeaders(
-        GRAVITEE_PLANNER_SERVICE_API_KEY,
-        delegatorId
-      ) as AxiosRequestHeaders,
-      params: params,
-    })
-    .then((response) => {
-      mutations.setCancelledTrips(response.data)
-    })
-    .catch((error) => {
-      uiStore.actions.queueErrorNotification(
-        'Fout bij het ophalen van geannuleerde ritten.'
-      )
-    })
+  return fetchTrips(context, params).then((data) => {
+    if (data) {
+      mutations.setPastTrips(data)
+    }
+  })
+}
+
+function fetchPlannedTrips(context: ActionContext, params: any) {
+  const delegatorId = context.rootState.ps.delegatorId
+  return fetchTrips(context, params).then((data) => {
+    if (data) {
+      mutations.setPlannedTrips(data)
+    }
+  })
+}
+
+function fetchValidatingTrips(
+  context: ActionContext,
+  { maxResults, offset }: any
+) {
+  const delegatorId = context.rootState.ps.delegatorId
+  const params: any = {
+    state: 'VALIDATING',
+    maxResults,
+    offset,
+  }
+  return fetchTrips(context, params).then((data) => {
+    if (data) {
+      mutations.setValidatingTrips(data)
+    }
+  })
 }
 
 function fetchTrip(context: ActionContext, payload: any) {
@@ -650,8 +660,9 @@ export const buildActions = (
 
     // Trip handling
     createTrip: isBuilder.dispatch(createTrip),
-    fetchTrips: isBuilder.dispatch(fetchTrips),
-    fetchCancelledTrips: isBuilder.dispatch(fetchCancelledTrips),
+    fetchPastTrips: isBuilder.dispatch(fetchPastTrips),
+    fetchPlannedTrips: isBuilder.dispatch(fetchPlannedTrips),
+    fetchValidatingTrips: isBuilder.dispatch(fetchValidatingTrips),
     fetchTrip: isBuilder.dispatch(fetchTrip),
     deleteTrip: isBuilder.dispatch(deleteTrip),
     confirmTrip: isBuilder.dispatch(confirmTrip),

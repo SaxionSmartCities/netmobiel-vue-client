@@ -17,7 +17,7 @@ export class CarpoolState {
   selectedRide: Ride | null = null
   plannedRides: Page<Ride> = defaultPage
   pastRides: Page<Ride> = defaultPage
-  proposedRides: Page<Ride> = defaultPage
+  validatingRides: Page<Ride> = defaultPage
   selectedBooking: Booking | null = null
 }
 
@@ -88,7 +88,14 @@ export interface Ride {
   nrSeatsAvailable: number
   recurrence?: Recurrence
   rideRef?: string
-  state?: string
+  state?:
+    | 'SCHEDULED'
+    | 'DEPARTING'
+    | 'IN_TRANSIT'
+    | 'ARRIVING'
+    | 'VALIDATING'
+    | 'COMPLETED'
+    | 'CANCELLED'
   toPlace: Location
 }
 
@@ -97,7 +104,14 @@ export interface Leg {
   duration: number
   endTime: string
   startTime: string
-  state: string
+  state:
+    | 'SCHEDULED'
+    | 'DEPARTING'
+    | 'IN_TRANSIT'
+    | 'ARRIVING'
+    | 'VALIDATING'
+    | 'COMPLETED'
+    | 'CANCELLED'
   from: string
   to: string
   legGeometry?: string
