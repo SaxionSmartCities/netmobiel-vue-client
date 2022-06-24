@@ -482,7 +482,7 @@ router.beforeEach((to, from, next) => {
     )
     next(`/`)
   } else {
-    psStore.mutations.addPageVisit(to.path)
+    psStore.mutations.addUserEvent({ path: to.path, event: 'PAGE_VISIT' })
     if (to.path === '/logout') {
       psStore.actions.closeSessionLog()
     }

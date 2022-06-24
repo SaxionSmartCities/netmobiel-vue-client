@@ -227,7 +227,7 @@ export default {
   watch: {
     profile(newProfile, oldProfile) {
       if (newProfile.userRole !== oldProfile.userRole) {
-        this.fetchTripsAndRides()
+        this.fetchUserContent()
       }
     },
     ctaIncentives() {
@@ -253,7 +253,7 @@ export default {
     // At least one main page where the profile is always refreshed
     psStore.actions
       .fetchMyProfile()
-      .then(() => this.fetchTripsAndRides())
+      .then(() => this.fetchUserContent())
       .catch((status) => {
         if (status === 404) {
           // Should not happen
@@ -266,10 +266,23 @@ export default {
       })
   },
   methods: {
-    fetchTripsAndRides() {
-      // ... and also fetch the call-to-actions
+    fetchUserContent() {
+      // Fetch trips, rides and also fetch the call-to-actions
       // at most 10 (recent)
-      bsStore.actions.fetchUserCtaIncentives({ offset: 0, maxResults: 10 })
+      // Do not set the incentive page to empty: too much GUi flashes
+      bsStore.actions
+        .fetchUserCtaIncentives({ offset: 0, maxResults: 10 })
+        .then(() => {
+          // If there are still incentive to show, then send an event to mark the view
+          // We use the fresh fetch to get the correct count, instead of a transitory value
+          if (this.ctaIncentives.length > 0) {
+            psStore.mutations.addUserEvent({
+              path: this.$route.path,
+              event: 'CTA_IN_VIEW',
+              arguments: `size=${this.ctaIncentives.length}`,
+            })
+          }
+        })
       //TODO: How many cards do we want? Get enough to skip the cancelled rides and trips
       const maxCards = 8
       if (this.isDriverOnly || this.isDrivingPassenger) {
