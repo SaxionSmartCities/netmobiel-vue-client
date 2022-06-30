@@ -19,9 +19,6 @@
               class="d-flex justify-space-between subtitle-1 font-weight-bold"
             >
               <span>Vertrek</span>
-              <v-icon v-if="problemDetected" color="orange"
-                >report_problem</v-icon
-              >
               <span class="pr-1">Aankomst</span>
             </v-col>
           </v-row>
@@ -63,6 +60,19 @@
               {{ cost }} credits
             </v-col>
           </v-row>
+          <v-row
+            v-if="tripState && legToConfirm"
+            dense
+            class="font-weight-light"
+          >
+            <v-col>
+              <trip-validation-alert
+                :trip-state="tripState"
+                :leg="legToConfirm"
+                :verbose="false"
+              />
+            </v-col>
+          </v-row>
         </v-card-text>
       </v-col>
       <v-card-actions>
@@ -75,14 +85,17 @@
 <script>
 import moment from 'moment'
 import TravelLeg from '@/components/cards/TravelLeg.vue'
+import TripValidationAlert from '@/components/itinerary-details/TripValidationAlert'
 
 export default {
   name: 'TravelCard',
   components: {
     TravelLeg,
+    TripValidationAlert,
   },
   props: {
     tripId: { type: Number, required: false, default: null },
+    // trip state is sometimes not defined, because it is something else! (like a trip plan)
     tripState: { type: String, required: false, default: null },
     itinerary: { type: Object, required: true },
     relativeTime: { type: Boolean, default: true },
@@ -121,41 +134,16 @@ export default {
       }
       return ''
     },
-    overlayIcon() {
-      // console.log(`
-      //   ${this.tripId}: ${this.tripState} - ${this.cancelled}, ${this.completed}, ${this.needsReview}
-      // `)
-      if (this.cancelled) {
-        return 'fa-times-circle'
-      } else if (this.completed) {
-        return 'fa-check-circle'
-      } else if (this.needsReview) {
-        return 'fa-exclamation-triangle'
-      }
-      return ''
-    },
     cancelled() {
       return this.tripState === 'CANCELLED'
     },
     completed() {
       return this.tripState === 'COMPLETED'
     },
-    needsReview() {
-      return this.tripState === 'VALIDATING'
-    },
     legToConfirm() {
       return this.itinerary?.legs.find(
         (lg) => lg.confirmationRequested || lg.confirmationByProviderRequested
       )
-    },
-    isDisputed() {
-      return (
-        this.legToConfirm?.confirmed === false &&
-        this.legToConfirm?.confirmedByProvider === true
-      )
-    },
-    problemDetected() {
-      return this.needsReview && this.isDisputed
     },
   },
   mounted() {

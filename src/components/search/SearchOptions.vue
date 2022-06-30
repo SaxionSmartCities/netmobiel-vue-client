@@ -61,7 +61,7 @@
               <v-expansion-panel-content>
                 <v-row no-gutters>
                   <v-col>
-                    <v-alert type="warning" color="orange">
+                    <v-alert type="warning" icon="warning" text dense>
                       Indien je hulp nodig hebt bij het instappen dan kun je dit
                       hier aangeven. Er wordt dan een verzoek verstuurd naar
                       chauffeur om hier rekening mee te houden.

@@ -100,8 +100,8 @@ function setPastTrips(state: ItineraryState, trips: Page<Trip>) {
   state.pastTrips = assignPageResults(state.pastTrips, trips)
 }
 
-function setCancelledTrips(state: ItineraryState, trips: Page<Trip>) {
-  state.cancelledTrips = assignPageResults(state.cancelledTrips, trips)
+function setValidatingTrips(state: ItineraryState, trips: Page<Trip>) {
+  state.validatingTrips = assignPageResults(state.validatingTrips, trips)
 }
 
 function setSelectedUserReport(
@@ -130,7 +130,7 @@ export const buildMutations = (
     setSelectedTrip: isBuilder.commit(setSelectedTrip),
     setPlannedTrips: isBuilder.commit(setPlannedTrips),
     setPastTrips: isBuilder.commit(setPastTrips),
-    setCancelledTrips: isBuilder.commit(setCancelledTrips),
+    setValidatingTrips: isBuilder.commit(setValidatingTrips),
 
     // Shout-outs
     setSelectedShoutOut: isBuilder.commit(setSelectedShoutOut),

@@ -8,12 +8,14 @@
       </v-row>
       <v-row v-if="bankSimulated">
         <v-col>
-          <v-alert type="warning"> Banksimulatie is actief. </v-alert>
+          <v-alert type="warning" icon="warning" text dense>
+            Banksimulatie is actief.
+          </v-alert>
         </v-col>
       </v-row>
       <v-row v-if="!mobileBankingEnabled">
         <v-col>
-          <v-alert type="warning">
+          <v-alert type="warning" icon="warning" text dense>
             In deze versie is het helaas door een technisch probleem niet
             mogelijk om met je eigen bankierapp af te rekenen. Kies in het iDEAL
             scherm voor de niet-mobiele variant van betalen.

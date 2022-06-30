@@ -43,11 +43,23 @@
           >
           <v-card-text>
             <v-row no-gutters>
-              <v-alert :value="status === 200" type="info">
+              <v-alert
+                :value="status === 200"
+                type="success"
+                icon="check"
+                text
+                dense
+              >
                 <p>Profiel aangemaakt!</p>
                 <p>We sturen je over enkele seconden naar het beginscherm.</p>
               </v-alert>
-              <v-alert :value="status === 409" type="warning">
+              <v-alert
+                :value="status === 409"
+                type="warning"
+                icon="warning"
+                text
+                dense
+              >
                 <p>Profiel bestaat al!</p>
                 <p>We sturen je over enkele seconden naar het beginscherm.</p>
               </v-alert>

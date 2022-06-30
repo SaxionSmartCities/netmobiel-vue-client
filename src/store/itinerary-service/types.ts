@@ -13,7 +13,7 @@ export class ItineraryState {
   myPastShoutOuts: Page<TripPlan> = emptyPage
   plannedTrips: Page<Trip> = emptyPage
   pastTrips: Page<Trip> = emptyPage
-  cancelledTrips: Page<Trip> = emptyPage
+  validatingTrips: Page<Trip> = emptyPage
   searchCriteria: SearchCriteria = {
     from: null,
     to: null,
@@ -62,7 +62,7 @@ export interface TripPlan {
   to: Location
   nrSeats: number
   planRef: string
-  planType: string
+  planType: 'REGULAR' | 'SHOUT_OUT' | 'SHOUT_OUT_SOLUTION'
   itineraries: Itinerary[]
   // Format: ISO8601, including time zone (or 'Z')
   travelTime: string
@@ -89,7 +89,17 @@ export interface TripPlan {
 export interface Trip {
   id: number | null
   tripRef: string | null
-  state: string | null
+  state:
+    | 'PLANNING'
+    | 'BOOKING'
+    | 'SCHEDULED'
+    | 'DEPARTING'
+    | 'IN_TRANSIT'
+    | 'ARRIVING'
+    | 'VALIDATING'
+    | 'COMPLETED'
+    | 'CANCELLED'
+    | null
   from: Location | null
   to: Location | null
   nrSeats: number | null
@@ -187,7 +197,7 @@ export interface Leg {
   confirmationReason?: string
   confirmationReasonByProvider?: string
   paymentId?: string
-  paymentState?: string
+  paymentState?: 'RESERVED' | 'PAID' | 'CANCELLED'
   cancelledByProvider?: boolean
   // If set, the reference to the shout-out that this leg resolves
   shoutOutRef?: string

@@ -897,14 +897,14 @@ function flushSessionLog(context: ActionContext, isFinal: boolean = false) {
   const URL = `${PROFILE_BASE_URL}/profiles/me/session-log`
   if (
     context.state.sessionLog == null ||
-    context.state.sessionLog?.pageVisits.length === 0
+    context.state.sessionLog?.userEvents.length === 0
   ) {
     return Promise.resolve()
   }
   // Make a local copy of the current list
   const localLog: UserSession = {
     ...context.state.sessionLog,
-    pageVisits: [...context.state.sessionLog.pageVisits],
+    userEvents: [...context.state.sessionLog.userEvents],
   }
   return axios
     .post(URL, localLog, {
@@ -919,7 +919,7 @@ function flushSessionLog(context: ActionContext, isFinal: boolean = false) {
     .then((response) => {
       // Clear the list from the page visits just sent
       // Other pages may have been visited in the mean time
-      mutations.clearPageVisits(localLog.pageVisits.length)
+      mutations.clearUserEvents(localLog.userEvents.length)
     })
     .catch((error) => {
       // Ignore errors

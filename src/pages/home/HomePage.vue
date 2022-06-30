@@ -46,6 +46,37 @@
         </v-carousel>
       </v-col>
     </v-row>
+    <v-row
+      v-if="validatingTrips.length > 0 || validatingRides.length > 0"
+      dense
+    >
+      <v-col>
+        <h4 class="netmobiel">Actielijst</h4>
+      </v-col>
+    </v-row>
+    <v-row
+      v-if="validatingTrips.length > 0 || validatingRides.length > 0"
+      dense
+    >
+      <v-col>
+        <v-row v-for="trip in validatingTrips" :key="trip.id" xs12 dense>
+          <v-col>
+            <travel-card
+              :trip-id="trip.id"
+              :trip-state="trip.state"
+              :itinerary="trip.itinerary"
+              class="trip-card"
+              @on-trip-selected="onTripSelected"
+            />
+          </v-col>
+        </v-row>
+        <v-row v-for="ride in validatingRides" :key="ride.id" xs12>
+          <v-col>
+            <ride-card :ride="ride" @rideSelected="onRideSelected" />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
     <v-row dense>
       <v-col v-if="!isDrivingPassenger">
         <h4 class="netmobiel">Jouw ritten</h4>
@@ -80,6 +111,7 @@
           <v-col>
             <travel-card
               :trip-id="trip.id"
+              :trip-state="trip.state"
               :itinerary="trip.itinerary"
               class="trip-card"
               @on-trip-selected="onTripSelected"
@@ -158,6 +190,12 @@ export default {
         .filter((trip) => trip.state !== 'CANCELLED')
         .slice(0, 2)
     },
+    validatingTrips() {
+      return isStore.getters.getValidatingTrips.data
+    },
+    validatingRides() {
+      return csStore.getters.getValidatingRides.data
+    },
     timeOfDayGreeting() {
       let currentHour = moment().format('HH')
 
@@ -227,7 +265,7 @@ export default {
   watch: {
     profile(newProfile, oldProfile) {
       if (newProfile.userRole !== oldProfile.userRole) {
-        this.fetchTripsAndRides()
+        this.fetchUserContent()
       }
     },
     ctaIncentives() {
@@ -253,7 +291,7 @@ export default {
     // At least one main page where the profile is always refreshed
     psStore.actions
       .fetchMyProfile()
-      .then(() => this.fetchTripsAndRides())
+      .then(() => this.fetchUserContent())
       .catch((status) => {
         if (status === 404) {
           // Should not happen
@@ -266,24 +304,47 @@ export default {
       })
   },
   methods: {
-    fetchTripsAndRides() {
-      // ... and also fetch the call-to-actions
+    fetchUserContent() {
+      // Fetch trips, rides and also fetch the call-to-actions
       // at most 10 (recent)
-      bsStore.actions.fetchUserCtaIncentives({ offset: 0, maxResults: 10 })
-      //TODO: How many cards do we want? Get enough to skip the cancelled rides and trips
-      const maxCards = 8
+      // Do not set the incentive page to empty: too much GUi flashes
+      bsStore.actions
+        .fetchUserCtaIncentives({ offset: 0, maxResults: 10 })
+        .then(() => {
+          // If there are still incentive to show, then send an event to mark the view
+          // We use the fresh fetch to get the correct count, instead of a transitory value
+          if (this.ctaIncentives.length > 0) {
+            psStore.mutations.addUserEvent({
+              path: this.$route.path,
+              event: 'CTA_IN_VIEW',
+              arguments: `size=${this.ctaIncentives.length}`,
+            })
+          }
+        })
+      this.requestTime = moment().format()
+      const maxCards = 2
       if (this.isDriverOnly || this.isDrivingPassenger) {
-        csStore.actions.fetchRides({
+        csStore.actions.fetchPlannedRides({
           offset: 0,
           maxResults: maxCards,
           since: this.requestTime,
+          skipCancelled: true,
+        })
+        csStore.actions.fetchValidatingRides({
+          offset: 0,
+          maxResults: 1,
         })
       }
       if (this.isPassengerOnly || this.isDrivingPassenger) {
-        isStore.actions.fetchTrips({
+        isStore.actions.fetchPlannedTrips({
           offset: 0,
           maxResults: maxCards,
           since: this.requestTime,
+          skipCancelled: true,
+        })
+        isStore.actions.fetchValidatingTrips({
+          offset: 0,
+          maxResults: 1,
         })
       }
     },
