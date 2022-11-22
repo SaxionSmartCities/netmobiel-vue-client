@@ -59,9 +59,9 @@ function addStaticResponseInterceptor() {
 Vue.use(VueCompositionAPI)
 Vue.use(VueKeyCloak, {
   config: {
-    authRealm: 'netmobiel',
-    authUrl: 'https://keycloak.actmedialab.nl/auth',
-    authClientId: 'netmobiel-frontend',
+    authRealm: process.env.VUE_APP_KEYCLOAK_REALM,
+    authUrl: process.env.VUE_APP_KEYCLOAK_AUTH_URL,
+    authClientId: process.env.VUE_APP_KEYCLOAK_CLIENT_ID,
   },
   logout: {
     redirectUri: window.location.origin,
