@@ -226,6 +226,22 @@ export default {
     )
   },
   mounted() {
+    if (process.env.VUE_APP_YBUG_ID) {
+      // Include YBug.io feedback widget
+      window.ybug_settings = {
+        id: process.env.VUE_APP_YBUG_ID,
+      }
+      const ybug = document.createElement('script')
+      ybug.setAttribute('type', 'text/javascript')
+      ybug.setAttribute('async', 'true')
+      ybug.setAttribute(
+        'src',
+        `https://widget.ybug.io/button/${window.ybug_settings.id}.js`
+      )
+      const s = document.getElementsByTagName('script')[0]
+      s.parentNode.insertBefore(ybug, s)
+    }
+
     // console.log(`App: Mounted`)
     // The initial message, if any, is passed by a query parameter to the url of the landing page
     window.addEventListener('NetmobielPushMessage', this.onPushMessageReceived)
