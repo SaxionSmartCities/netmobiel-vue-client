@@ -55,10 +55,16 @@
             <v-col v-else class="pt-1"> Reistijd: onbekend </v-col>
             <v-col
               v-if="cost"
-              class="pt-1 text-primary font-weight-bold text-right"
+              class="pt-1 text-primary font-weight-bold text-center"
             >
               {{ cost }} credits
             </v-col>
+            <v-col class="d-flex justify-end">
+              <v-img
+                :src="sustainabilityRatingIcon"
+                max-width="100"
+                contain="contain"
+            /></v-col>
           </v-row>
           <v-row
             v-if="tripState && legToConfirm"
@@ -86,6 +92,7 @@
 import moment from 'moment'
 import TravelLeg from '@/components/cards/TravelLeg.vue'
 import TripValidationAlert from '@/components/itinerary-details/TripValidationAlert'
+import constants from '@/constants/constants'
 
 export default {
   name: 'TravelCard',
@@ -144,6 +151,14 @@ export default {
       return this.itinerary?.legs.find(
         (lg) => lg.confirmationRequested || lg.confirmationByProviderRequested
       )
+    },
+    sustainabilityRatingIcon() {
+      const rating = this.itinerary.sustainabilityRating
+      if (Number.isInteger(rating) && rating >= 1 && rating <= 5) {
+        const icon = constants.SUSTAINABILITY_RATINGS[rating - 1].iconPath
+        return require(`@/assets/${icon}`)
+      }
+      return ''
     },
   },
   mounted() {
