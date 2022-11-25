@@ -80,6 +80,13 @@ export default {
           const reisduur = `${Math.round(duration / 60)} minuten`
           result.push({ label: 'Reisduur', value: reisduur })
         }
+        if (this.sustainabilityRatingIcon) {
+          result.push({
+            label: 'Duurzaamheid',
+            value: this.sustainabilityRatingIcon,
+            renderingComponent: 'ImageViewer',
+          })
+        }
         let rsLeg = legs.find((lg) => lg.traverseMode === 'RIDESHARE')
         if (rsLeg) {
           result.push({
@@ -129,6 +136,14 @@ export default {
       } else {
         return this.trip?.itinerary?.legs
       }
+    },
+    sustainabilityRatingIcon() {
+      const rating = this.trip?.itinerary?.sustainabilityRating
+      if (Number.isInteger(rating) && rating >= 1 && rating <= 5) {
+        const icon = constants.SUSTAINABILITY_RATINGS[rating - 1].iconPath
+        return require(`@/assets/${icon}`)
+      }
+      return ''
     },
   },
   watch: {

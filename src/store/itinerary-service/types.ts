@@ -154,6 +154,7 @@ export interface Itinerary {
   fareInCredits?: number | null
   itineraryRef: string
   score?: number
+  sustainabilityRating?: number
   transfers: number
   transitTime: number
   waitingTime: number
