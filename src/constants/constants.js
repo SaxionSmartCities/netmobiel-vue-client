@@ -181,22 +181,27 @@ export default {
     {
       iconPath: 'duurzaam-1.png',
       rating: 1,
+      label: 'Niet zo best',
     },
     {
       iconPath: 'duurzaam-2.png',
       rating: 2,
+      label: 'Kan beter',
     },
     {
       iconPath: 'duurzaam-3.png',
       rating: 3,
+      label: 'Heel aardig',
     },
     {
       iconPath: 'duurzaam-4.png',
       rating: 4,
+      label: 'Bijna perfect',
     },
     {
       iconPath: 'duurzaam-5.png',
       rating: 5,
+      label: 'Perfect',
     },
   ],
 }

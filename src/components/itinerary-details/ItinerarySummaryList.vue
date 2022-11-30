@@ -31,6 +31,12 @@
         >
           <image-viewer :path="item.value" />
         </v-col>
+        <v-col
+          v-else-if="item.renderingComponent === 'SustainabilityViewer'"
+          class="pl-3"
+        >
+          <sustainability-viewer :itinerary="item.value" />
+        </v-col>
         <v-col v-else class="pl-3">
           {{ item.value }}
         </v-col>
@@ -45,10 +51,12 @@ import RecurrenceViewer from '@/components/common/RecurrenceViewer.vue'
 import CarViewer from '@/components/common/CarViewer.vue'
 import CallToAction from '@/components/common/CallToAction.vue'
 import ImageViewer from '@/components/common/ImageViewer'
+import SustainabilityViewer from '@/components/common/SustainabilityViewer.vue'
 
 export default {
   name: 'ItinerarySummaryList',
   components: {
+    SustainabilityViewer,
     CallToAction,
     BookingList,
     RecurrenceViewer,
