@@ -80,6 +80,13 @@ export default {
           const reisduur = `${Math.round(duration / 60)} minuten`
           result.push({ label: 'Reisduur', value: reisduur })
         }
+        if (this.trip.itinerary.sustainabilityRating) {
+          result.push({
+            label: 'Duurzaamheid',
+            value: this.trip.itinerary,
+            renderingComponent: 'SustainabilityViewer',
+          })
+        }
         let rsLeg = legs.find((lg) => lg.traverseMode === 'RIDESHARE')
         if (rsLeg) {
           result.push({

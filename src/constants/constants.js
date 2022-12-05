@@ -177,4 +177,31 @@ export default {
   PREMIUM_WITHDRAWAL_MAX_AMOUNT: 50000,
   STORAGE_KEY_FCM_TOKEN: 'netmobiel.fcm',
   STORAGE_KEY_DELEGATOR_ID: 'netmobiel.delegatorId',
+  SUSTAINABILITY_RATINGS: [
+    {
+      iconPath: 'duurzaam-1.png',
+      rating: 1,
+      label: 'Niet zo best',
+    },
+    {
+      iconPath: 'duurzaam-2.png',
+      rating: 2,
+      label: 'Kan beter',
+    },
+    {
+      iconPath: 'duurzaam-3.png',
+      rating: 3,
+      label: 'Heel aardig',
+    },
+    {
+      iconPath: 'duurzaam-4.png',
+      rating: 4,
+      label: 'Bijna perfect',
+    },
+    {
+      iconPath: 'duurzaam-5.png',
+      rating: 5,
+      label: 'Perfect',
+    },
+  ],
 }

@@ -149,11 +149,13 @@ export interface BookingRequest {
 
 export interface Itinerary {
   arrivalTime: string
+  averageCo2EmissionRate?: number
   departureTime: string
   duration: number | null
   fareInCredits?: number | null
   itineraryRef: string
   score?: number
+  sustainabilityRating?: number
   transfers: number
   transitTime: number
   waitingTime: number
@@ -201,6 +203,7 @@ export interface Leg {
   cancelledByProvider?: boolean
   // If set, the reference to the shout-out that this leg resolves
   shoutOutRef?: string
+  co2EmissionRate?: number
 }
 
 export interface ModalityCount {
